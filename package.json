@@ -1,0 +1,79 @@
+{
+    "eslintConfig": {
+        "extends": "airbnb",
+        "rules": {
+            "indent": [
+                "error",
+                4
+            ]
+        }
+    },
+    "prettier": {
+        "tabWidth": 4
+    },
+    "stylelint": {
+        "plugins": [
+            "stylelint-scss",
+            "stylelint-order"
+        ],
+        "rules": {
+            "indentation": 4,
+            "number-leading-zero": "always",
+            "max-empty-lines": 1,
+            "string-quotes": "double",
+            "selector-max-id": 0,
+            "selector-list-comma-newline-after": "always",
+            "rule-empty-line-before": [
+                "always",
+                {
+                    "ignore": [
+                        "after-comment",
+                        "first-nested"
+                    ]
+                }
+            ],
+            "comment-empty-line-before": [
+                "always",
+                {
+                    "except": [
+                        "first-nested"
+                    ]
+                }
+            ],
+            "block-opening-brace-space-before": "always",
+            "declaration-colon-space-after": "always-single-line",
+            "declaration-colon-space-before": "never",
+            "declaration-block-single-line-max-declarations": 1,
+            "declaration-property-value-blacklist": {
+                "/^border/": [
+                    "none"
+                ]
+            },
+            "at-rule-empty-line-before": [
+                "always",
+                {
+                    "ignore": [
+                        "after-comment"
+                    ],
+                    "except": [
+                        "after-same-name",
+                        "first-nested"
+                    ]
+                }
+            ],
+            "scss/dollar-variable-pattern": "^_?[a-z]+[\\w-]*$",
+            "scss/at-extend-no-missing-placeholder": true,
+            "order/order": [
+                "declarations",
+                {
+                    "type": "at-rule"
+                },
+                {
+                    "type": "at-rule",
+                    "hasBlock": true
+                },
+                "rules"
+            ]
+        }
+    }
+}
