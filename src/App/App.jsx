@@ -14,15 +14,17 @@ function App() {
                 </Route>
             </Switch>
             <Switch>
-                <Route path="/cards">
-                    <Cards />
-                </Route>
-                <Route path="/login">
-                    <Login />
-                </Route>
-                <Route exact path="/">
-                    <Home />
-                </Route>
+                <main>
+                    <Route path="/cards">
+                        <Cards />
+                    </Route>
+                    <Route path="/login">
+                        <Login />
+                    </Route>
+                    <Route exact path="/">
+                        <Home />
+                    </Route>
+                </main>
             </Switch>
             <Switch>
                 <Route path="/:path">

@@ -10,7 +10,7 @@ function AuthProvider({ children }) {
 
     useEffect(() => {
         onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser || { email: "test@test.com" });
+            setUser(currentUser);
         });
     }, []);
 
