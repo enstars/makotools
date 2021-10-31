@@ -1,15 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter } from "react-router-dom";
 import "./styles/index.scss";
 // import reportWebVitals from './reportWebVitals';
 
+import AuthProvider from "./services/auth";
 import App from "./App";
 
 ReactDOM.render(
-    <BrowserRouter>
+    <AuthProvider>
         <App />
-    </BrowserRouter>,
+    </AuthProvider>,
     document.getElementById("root"),
 );
 
