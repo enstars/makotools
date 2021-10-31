@@ -1,5 +1,3 @@
-# enstars.github.io
+# Ensemble Square
 
 Tools and utilities for Ensemble Stars!! players. 
-
-[Development Info](development.md)
