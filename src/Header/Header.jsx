@@ -1,9 +1,8 @@
 function Header() {
     return (
-        <div className="header">
+        <header>
             <h1>Ensemble Square</h1>
-
-        </div>
+        </header>
     );
 }
 
