@@ -15,7 +15,7 @@ function Header() {
                         <NavLink to="/stories">Stories</NavLink>
                     </nav>
                     <div className="es-header__account">
-                        <span>Username</span>
+                        {/* {user ? user.email : ""} */}
                     </div>
                 </div>
             </div>

@@ -20,12 +20,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -51,5 +45,110 @@
     "prettier": "^2.4.1",
     "sass-loader": "^12.3.0",
     "stylelint-config-standard-scss": "^2.0.0"
+  },
+  "eslintConfig":{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": [
+        "react-app",
+        "react-app/jest",
+        "plugin:react/recommended",
+        "plugin:react/jsx-runtime",
+        "airbnb"
+    ],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 12,
+        "sourceType": "module"
+    },
+    "plugins": ["react"],
+    "rules": {
+        "indent": ["error", 4],
+        "quotes": ["error", "double"],
+        "no-console": "off",
+        "no-alert": "off",
+        "no-unused-vars": ["warn"],
+        "react/jsx-indent": [2, 4],
+        "react/jsx-indent-props": [2, 4],
+        "react/jsx-filename-extension": 0,
+        "react/prop-types": 0,
+        "react/react-in-jsx-scope": 0
+    }
+  },
+  "prettier": {
+    "tabWidth": 4,
+    "singleQuote": false,
+    "trailingComma": "all"
+  },
+  "stylelint": {
+  
+    "plugins": [
+        "stylelint-scss",
+        "stylelint-order"
+    ],
+    "rules": {
+        "indentation": 4,
+        "number-leading-zero": "always",
+        "max-empty-lines": 1,
+        "string-quotes": "double",
+        "selector-max-id": 0,
+        "selector-list-comma-newline-after": "always",
+        "rule-empty-line-before": [
+            "always",
+            {
+                "ignore": [
+                    "after-comment",
+                    "first-nested"
+                ]
+            }
+        ],
+        "comment-empty-line-before": [
+            "always",
+            {
+                "except": [
+                    "first-nested"
+                ]
+            }
+        ],
+        "block-opening-brace-space-before": "always",
+        "declaration-colon-space-after": "always",
+        "declaration-colon-space-before": "never",
+        "declaration-block-single-line-max-declarations": 1,
+        "declaration-property-value-disallowed-list": {
+            "/^border/": [
+                "none"
+            ]
+        },
+        "at-rule-empty-line-before": [
+            "always",
+            {
+                "ignore": [
+                    "after-comment"
+                ],
+                "except": [
+                    "after-same-name",
+                    "first-nested"
+                ]
+            }
+        ],
+        "scss/dollar-variable-pattern": "^_?[a-z]+[\\w-]*$",
+        "scss/at-extend-no-missing-placeholder": true,
+        "order/order": [
+            "declarations",
+            {
+                "type": "at-rule"
+            },
+            {
+                "type": "at-rule",
+                "hasBlock": true
+            },
+            "rules"
+        ]
+    }
+  
   }
 }
