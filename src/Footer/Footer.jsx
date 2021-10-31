@@ -1,5 +1,3 @@
-import { NavLink } from "react-router-dom";
-import { useAuth } from "../services/auth";
 import "./Footer.scss";
 
 function Header() {
