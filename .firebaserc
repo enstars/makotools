@@ -1,5 +1,17 @@
 {
   "projects": {
     "default": "ensemble-square"
+  },
+  "targets": {
+    "ensemble-square": {
+      "hosting": {
+        "development": [
+          "dev-ensemble-square"
+        ],
+        "production": [
+          "ensemble-square"
+        ]
+      }
+    }
   }
 }
