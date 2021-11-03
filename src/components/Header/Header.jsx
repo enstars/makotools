@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { useAuth } from "../services/auth";
+import { useAuth } from "../../services/auth";
 import "./Header.scss";
 
 function HeaderUser() {

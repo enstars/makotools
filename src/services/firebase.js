@@ -1,7 +1,11 @@
 import { initializeApp } from "firebase/app";
 import {
-    getAuth, signInWithRedirect, GoogleAuthProvider, signOut,
+    getAuth, signInWithRedirect, GoogleAuthProvider, signOut, getRedirectResult,
 } from "firebase/auth";
+import {
+    getFirestore, doc, setDoc, serverTimestamp,
+} from "firebase/firestore";
+
 import "firebase/compat/auth";
 
 const firebaseConfig = {
@@ -26,4 +30,19 @@ provider.setCustomParameters({ prompt: "select_account" });
 export const appSignInWithGoogle = () => signInWithRedirect(auth, provider);
 export const appSignOut = () => signOut(auth);
 
+const db = getFirestore();
+
+getRedirectResult(auth)
+    .then((result) => {
+        const { user } = result;
+        console.log(user);
+
+        setDoc(doc(db, "users", user.uid), {
+            googleUser: JSON.stringify(user),
+            // i actually have no idea if this is safe. but this should be only public info so
+            lastLogin: serverTimestamp(),
+        });
+    }).catch((error) => {
+        console.log(error);
+    });
 // export default firebase;

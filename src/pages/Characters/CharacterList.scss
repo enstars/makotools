@@ -1,0 +1,26 @@
+.es-characterList {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.es-characterList__character {
+    display: flex;
+    align-items:center;
+    padding: 5px 10px;
+    gap: 10px;
+    border: solid 2px black;
+    box-shadow: 2px 2px 0px 0px black;
+    color: inherit;
+    text-decoration: none;
+    img {
+        width: 2rem;
+        height: auto;
+    }
+    span {
+        font-weight: 700;
+    }
+}

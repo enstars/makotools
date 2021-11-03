@@ -1,21 +1,40 @@
 @import url("https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap");
+@import 'variables';
 
 * {
   box-sizing: border-box;
 }
 
 :root {
-    font-family: 'Sora';
+    font: 16px 'Sora';
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-    background-color: white;
+    // background-color: hsl(228, 16%, 88%);
+    background: linear-gradient(to right, black 50%, white 50%);
+}
+
+#root {
+    max-width: 900px;
+    margin: auto;
+}
+
+.content {
+    // max-width: 900px;
+    margin: 0px 0px 0px $sidebar-width;
+    background: white;
+    border-radius: 0px 0px 0px 0px;
+    padding: 0px;
 }
 
 main {
-    max-width: 900px;
-    margin: auto;
+    min-height: calc(100vh - #{$footer-height});
+    display: flow-root;
+}
+
+.content-text{
+    padding: 0px 20px;
 }

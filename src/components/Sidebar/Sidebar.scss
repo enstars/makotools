@@ -1,0 +1,142 @@
+@import '../../styles/variables';
+
+aside {
+  color: hsl(230, 76%, 20%);
+  color: white;
+  // background-color: hsl(228, 16%, 88%);
+  // border-right: 1px solid hsl(228, 16%, 88%);
+  // border-radius: 10px;
+  // filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.05))
+  // drop-shadow(0 1px 1px rgba(0, 0, 0, 0.06));
+  // box-shadow: inset 0 1px 1.5px rgba(0, 0, 0, 0.05),
+  // inset 0 1px 1px rgba(0, 0, 0, 0.06);
+  position: fixed;
+  top: 0px;
+  height: 100vh;
+  width: $sidebar-width;
+  z-index: 2;
+  
+  
+  .es-sidebar__content {
+    width: 100%;
+    height: 100%;
+    // padding: 2.5px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    gap: 0px;
+  }
+
+  .es-sidebar__branding{
+    margin-top: 10px;
+    flex: 0 0 auto;
+    font-weight: 800;
+
+    a{
+      text-decoration: none;
+      color:inherit;
+      font-size: 1.6em;
+
+      path{
+        fill: currentColor;
+      }
+    }
+  }
+
+  .es-sidebar__menu{
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: space-between;
+  }
+
+  .es-sidebar__links{
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    a{
+      text-decoration: none;
+      color:inherit;
+      background: hsla(230, 76%, 20%, 0);
+      // padding: 0.5em 0.8em;
+      height: 35px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      // border-radius: 5px;
+      transition: background 0.2s ease,
+      color 0.2s ease;
+      padding: 0px 20px;
+      gap: 15px;
+
+      svg{
+        display: block;
+        // margin: 0 0 2px;
+        font-size: 1.2rem;
+        
+      }
+
+      img {
+        height: 1.2rem;
+        width: auto;
+        background: white;
+        border-radius: 50%;
+        &:before{
+          content:'';
+          display: none;
+        }
+        
+      }
+
+      span{
+        display: block;
+        text-align: center;
+        font-size: 0.9rem;
+        font-weight: 700;
+        // text-transform: uppercase;
+      }
+
+      &.current-page {
+        background: hsla(0, 0%, 100%, 0.1);
+        // color:black;
+        // stroke-width: 3;
+      }
+    }
+  }
+
+  .es-sidebar__account{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    div{
+      span{
+        display: block;
+        text-align: right;
+      }
+      .es-sidebar__name {
+        font-size: 0.9em;
+        font-weight: 700;
+      }
+      .es-sidebar__email {
+        font-size: 0.7em;
+
+      }
+    }
+    img {
+      height: 25px;
+      width: auto;
+      background: white;
+      border-radius: 50%;
+      &:before{
+        content:'';
+        display: none;
+      }
+      
+    }
+  }
+}

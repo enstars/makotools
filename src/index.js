@@ -5,7 +5,7 @@ import "./styles/index.scss";
 // import reportWebVitals from './reportWebVitals';
 
 import AuthProvider from "./services/auth";
-import App from "./App";
+import App from "./components/App";
 
 ReactDOM.render(
     <AuthProvider>
