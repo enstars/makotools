@@ -1,24 +1,53 @@
-@import url("https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap");
-@import 'variables';
+// @import url("https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap");
+// @import url("https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap");
+@import "@fontsource/plus-jakarta-sans/latin.css";
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;400;500;700;900&display=swap");
+@import "variables";
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 :root {
-    font: 16px 'Sora';
+    font: 16px "Plus Jakarta Sans", "Noto Sans JP", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+
+    //   scrollbar-width: thin;
+    scrollbar-color: hsl(0, 0%, 50%) transparent;
+    scrollbar-gutter: stable;
+
+    &::-webkit-scrollbar-thumb {
+        background-color: hsl(0, 0%, 50%);
+    }
+
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+
 }
 
 body {
     // background-color: hsl(228, 16%, 88%);
     background: linear-gradient(to right, black 50%, white 50%);
+
+             overflow: overlay;
 }
 
-#root {
-    max-width: 900px;
+
+
+
+
+
+#root { /* stylelint-disable-line */
+                                 max-width: 900px;
     margin: auto;
 }
 
@@ -28,13 +57,25 @@ body {
     background: white;
     border-radius: 0px 0px 0px 0px;
     padding: 0px;
+    a{
+        color: auto;
+    }
 }
 
 main {
-    min-height: calc(100vh - #{$footer-height});
+    min-height: calc(100vh);
     display: flow-root;
 }
 
-.content-text{
+.content-text {
     padding: 0px 20px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 800;
 }

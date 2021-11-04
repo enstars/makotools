@@ -35,14 +35,14 @@ const db = getFirestore();
 getRedirectResult(auth)
     .then((result) => {
         const { user } = result;
-        console.log(user);
+        // console.log(user);
 
         setDoc(doc(db, "users", user.uid), {
             googleUser: JSON.stringify(user),
             // i actually have no idea if this is safe. but this should be only public info so
             lastLogin: serverTimestamp(),
         });
-    }).catch((error) => {
-        console.log(error);
+    }).catch(() => {
+        // console.error(e);
     });
 // export default firebase;

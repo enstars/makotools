@@ -12,11 +12,11 @@ function Character() {
     useEffect(() => {
         getData("characters").then((characters) => {
             const character = characters.filter((item) => item.id === parseInt(id, 10))[0];
-            console.log(characters);
-            console.log(character);
+            // console.log(characters);
+            // console.log(character);
             setViewCharacter(
                 <>
-                    <img style={{ float: "right" }} src={getB2File(`icon/character_sd_square1_${character.id}.png`)} alt={character.first_name} />
+                    <img style={{ float: "right", width: "400px" }} src={getB2File(`render/character_full1_${character.id}.png`)} alt={character.first_name} />
 
                     <h1>
                         <ruby>

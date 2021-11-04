@@ -1,83 +1,89 @@
-@import '../../styles/colors.scss';
+@import "../../styles/colors.scss";
 
 header {
-  color: $es-blue;
-  background-color: white;
-  border: 1px solid #EEE;
-  border-radius: 10px;
-  filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.05))
-  drop-shadow(0 1px 1px rgba(0, 0, 0, 0.06));
-  margin: 10px auto;
-  height: 50px;
-  max-width: 900px;
+    color: $es-blue;
+    background-color: white;
+    border: 1px solid #EEE;
+    border-radius: 10px;
+    filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.05))
+        drop-shadow(0 1px 1px rgba(0, 0, 0, 0.06));
+    margin: 10px auto;
+    height: 50px;
+    max-width: 900px;
   
-  .es-header__content {
-    width: 100%;
-    height: 100%;
-    padding: 5px 20px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-
-  .es-header__branding{
-    flex: 0 0 auto;
-    font-weight: 800;
-    a{
-
-      text-decoration: none;
-      color:inherit;
+    .es-header__content {
+        width: 100%;
+        height: 100%;
+        padding: 5px 20px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
     }
-  }
 
-  .es-header__menu{
-    flex: 1 1 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+    .es-header__branding {
+        flex: 0 0 auto;
+        font-weight: 800;
 
-  .es-header__links{
-    display: flex;
+        a {
 
-    a{
-      text-decoration: none;
-      color:inherit;
-      background: hsla(225, 6%, 13%, 0);
-      padding: 0.3em 0.8em;
-      border-radius: 0.5em;
-      transition: background 0.2s ease;
-      &.current-page{
-        background: hsla(230, 77%, 20%, 0.1);
-
-      }
+            text-decoration: none;
+            color: inherit;
+        }
     }
-  }
 
-  .es-header__account{
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    div{
-      span{
-        display: block;
-        text-align: right;
-      }
-      .es-header__name {
-        font-size: 0.9em;
-        font-weight: 700;
-      }
-      .es-header__email {
-        font-size: 0.7em;
-
-      }
+    .es-header__menu {
+        flex: 1 1 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
-    img {
-      height: 30px;
-      width: auto;
-      background: white;
-      border-radius: 50%;
+
+    .es-header__links {
+        display: flex;
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            background: hsla(225, 6%, 13%, 0);
+            padding: 0.3em 0.8em;
+            border-radius: 0.5em;
+            transition: background 0.2s ease;
+
+            &.current-page {
+                background: hsla(230, 77%, 20%, 0.1);
+
+            }
+        }
+    }
+
+    .es-header__account {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        div {
+            span {
+                display: block;
+                text-align: right;
+            }
+
+            .es-header__name {
+                font-size: 0.9em;
+                font-weight: 700;
+            }
+
+            .es-header__email {
+                font-size: 0.7em;
+
+            }
+        }
+
+        img {
+            height: 30px;
+            width: auto;
+            background: white;
+            border-radius: 50%;
       
+        }
     }
-  }
 }

@@ -1,26 +1,62 @@
 .es-characterList {
     display: grid;
     gap: 10px;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
 
 .es-characterList__character {
-    display: flex;
-    align-items:center;
-    padding: 5px 10px;
+    height: 180px;
     gap: 10px;
     border: solid 2px black;
     box-shadow: 2px 2px 0px 0px black;
     color: inherit;
     text-decoration: none;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.2s ease;
+
     img {
-        width: 2rem;
-        height: auto;
+        // width: 2rem;
+        // height: auto;
+        position: absolute;
+        top: -60px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 350px;
+        z-index: 1;
     }
-    span {
-        font-weight: 700;
+
+    .es-characterList__info {
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        padding: 5px 5px 3px 3px;
+        font-weight: 900;
+        z-index: 2;
+        color: white;
+        background: black;
+        width: 100%;
+        min-height: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+
+        display: none;
+        
+        
+        span {
+            text-align: center;
+            display: block;
+            height: 100%;
+        }
+    }
+
+    &:hover {
+        box-shadow: 4px 4px 0px 0px black;
+        transform: translate(-2px, -2px)
     }
 }

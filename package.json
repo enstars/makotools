@@ -5,19 +5,21 @@
   "dependencies": {
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
+    "@fontsource/metropolis": "^4.5.0",
+    "@fontsource/plus-jakarta-sans": "^4.5.0",
     "@mui/icons-material": "^5.0.5",
     "@mui/material": "^5.0.6",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "firebase": "^9.2.0",
+    "multiselect-react-dropdown": "^2.0.7",
     "normalize.css": "^8.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-feather": "^2.0.9",
     "react-firebase-hooks": "^3.0.4",
     "react-router-dom": "^5.3.0",
-    "react-scripts": "4.0.3",
     "simplebar-react": "^2.3.6",
     "web-vitals": "^1.0.1"
   },
@@ -49,9 +51,15 @@
     "eslint-plugin-react": "^7.26.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "node-sass": "^6.0.1",
+    "postcss": "^8.3.11",
+    "postcss-scss": "^4.0.2",
     "prettier": "^2.4.1",
+    "react-scripts": "next",
     "sass-loader": "^12.3.0",
-    "stylelint-config-standard-scss": "^2.0.0"
+    "stylelint": "^14.0.1",
+    "stylelint-config-airbnb": "^0.0.0",
+    "stylelint-order": "^5.0.0",
+    "stylelint-scss": "^4.0.0"
   },
   "eslintConfig": {
     "env": {
@@ -96,7 +104,16 @@
         "error",
         "double"
       ],
-      "no-console": "off",
+      "max-len": 0,
+      "no-console": [
+        "warn",
+        {
+          "allow": [
+            "warn",
+            "error"
+          ]
+        }
+      ],
       "no-alert": "off",
       "no-unused-vars": [
         "warn"
@@ -120,6 +137,15 @@
     "trailingComma": "all"
   },
   "stylelint": {
+    "overrides": [
+      {
+        "files": [
+          "**/*.scss"
+        ],
+        "customSyntax": "postcss-scss"
+      }
+    ],
+    "extends": "stylelint-config-airbnb",
     "plugins": [
       "stylelint-scss",
       "stylelint-order"

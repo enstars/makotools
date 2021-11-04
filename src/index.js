@@ -2,6 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "normalize.css/normalize.css";
 import "./styles/index.scss";
+
+import "@fontsource/plus-jakarta-sans";
 // import reportWebVitals from './reportWebVitals';
 
 import AuthProvider from "./services/auth";
