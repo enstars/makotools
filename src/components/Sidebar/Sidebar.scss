@@ -1,19 +1,23 @@
-@import "../../styles/variables";
+@use "../../styles/mixins" as m;
+@use "../../styles/variables" as v;
+
+@keyframes slideInLeft {
+    0% {
+        transform: translate(-100%, 0px);
+    }
+
+    100% {
+        transform: translate(0%, 0px);
+    }
+}
 
 aside {
-    color: hsl(230, 76%, 20%);
     color: white;
-    // background-color: hsl(228, 16%, 88%);
-    // border-right: 1px solid hsl(228, 16%, 88%);
-    // border-radius: 10px;
-    // filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.05))
-    // drop-shadow(0 1px 1px rgba(0, 0, 0, 0.06));
-    // box-shadow: inset 0 1px 1.5px rgba(0, 0, 0, 0.05),
-    // inset 0 1px 1px rgba(0, 0, 0, 0.06);
-    position: fixed;
+    position: sticky;
     top: 0px;
     height: 100vh;
-    width: $sidebar-width;
+    margin-bottom: -100vh;
+    width: v.$sidebar-width;
     z-index: 2;
     overflow: auto;
 
@@ -35,132 +39,152 @@ aside {
     }
   
   
-    .es-sidebar__content {
-        width: 100%;
-        height: 100%;
-        padding: 10px 0px;
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
+}
 
-        gap: 0px;
+.es-sidebar__content {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0px;
+    
+    &.es-sidebarLoaded {
+        display: flex;
+
     }
 
-    .es-sidebar__branding {
-        margin-top: 10px;
-        flex: 0 0 auto;
-        font-weight: 800;
-
-        a {
-            text-decoration: none;
-            color: inherit;
-            font-size: 1.6em;
-
-            path {
-                fill: currentColor;
-            }
-        }
+    &.es-transition {
+        animation: slideInLeft 1000ms 900ms both cubic-bezier(1, 0, 0, 1);
     }
+}
 
-    .es-sidebar__menu {
-        flex: 1 1 auto;
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        justify-content: space-between;
+.es-sidebar__branding {
+    margin: 5px 0px 10px;
+    flex: 0 0 auto;
+    font-weight: 800;
+    line-height: 1;
+    color: white;
+    border-bottom: solid 2px hsla(0, 0%, 100%, 0.5);
+    
+    display: grid;
+    grid-template-columns: 2.2em 1fr;
+    align-items: center;
+    justify-content: start;
+
+    padding: 0px 20px 15px;
+    gap: 0px;
+
+    text-decoration: none;
+
+    @include m.card(1);
+
+    svg {
+        width: 1.8em;
+        height: auto;
     }
+}
 
-    .es-sidebar__links {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
+.es-sidebar__menu {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: space-between;
+}
 
-        a {
-            text-decoration: none;
-            color: inherit;
-            background: hsla(230, 76%, 20%, 0);
-            // padding: 0.5em 0.8em;
-            height: 35px;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: flex-start;
-            // border-radius: 5px;
-            transition: background 0.2s ease,
-                color 0.2s ease;
-            padding: 0px 20px;
-            gap: 15px;
+.es-sidebar__links {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 
-            svg {
-                display: block;
-                // margin: 0 0 2px;
-                font-size: 1.2rem;
-        
-            }
-
-            img {
-                height: 1.2rem;
-                width: auto;
-                background: white;
-                border-radius: 50%;
-
-                &:before {
-                    content: "";
-                    display: none;
-                }
-        
-            }
-
-            span {
-                display: block;
-                text-align: center;
-                font-size: 0.9rem;
-                font-weight: 800;
-                // text-transform: uppercase;
-            }
-
-            &.current-page {
-                background: hsla(0, 0%, 100%, 0.1);
-                // color:black;
-                // stroke-width: 3;
-            }
-        }
-    }
-
-    .es-sidebar__account {
-        display: flex;
+    a {
+        text-decoration: none;
+        color: inherit;
+        background: hsla(230, 76%, 20%, 0);
+        // padding: 0.5em 0.8em;
+        height: 35px;
+        // display: flex;
+        // flex-direction: row;
+        // align-items: center;
+        // justify-content: flex-start;
+        display: grid;
+        grid-template-columns: 1.2em 1fr;
         align-items: center;
-        gap: 10px;
-        margin-bottom: 10px;
+        justify-content: start;
 
-        div {
-            span {
-                display: block;
-                text-align: right;
-            }
+        // border-radius: 5px;
+        transition: background 0.2s ease,
+            color 0.2s ease;
+        padding: 0px 20px;
+        gap: 1em;
 
-            .es-sidebar__name {
-                font-size: 0.9em;
-                font-weight: 700;
-            }
-
-            .es-sidebar__email {
-                font-size: 0.7em;
-
-            }
+        svg {
+            font-size: 1.2rem;
+    
         }
 
         img {
-            height: 25px;
+            height: 1.2rem;
             width: auto;
             background: white;
-            border-radius: 50%;
-
-            &:before {
-                content: "";
-                display: none;
-            }
-      
+            border-radius: 50%; 
         }
+
+        img:before {
+            content: "";
+            display: none;
+        }
+
+        span {
+            font-size: 0.9rem;
+            font-weight: 800;
+        }
+
+        &.current-page {
+            background: hsla(0, 0%, 100%, 1);
+            color: black;
+            border-radius: 5px;
+
+            @include m.card(3);
+        }
+    }
+}
+
+.es-sidebar__account {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+
+    div {
+        span {
+            display: block;
+            text-align: right;
+        }
+
+        .es-sidebar__name {
+            font-size: 0.9em;
+            font-weight: 700;
+        }
+
+        .es-sidebar__email {
+            font-size: 0.7em;
+
+        }
+    }
+
+    img {
+        height: 25px;
+        width: auto;
+        background: white;
+        border-radius: 50%;
+
+        &:before {
+            content: "";
+            display: none;
+        }
+  
     }
 }

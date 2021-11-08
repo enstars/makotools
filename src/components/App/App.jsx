@@ -1,4 +1,8 @@
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import {
+    BrowserRouter, Routes, Route, useLocation,
+} from "react-router-dom";
+import Header from "../Header";
 import Sidebar from "../Sidebar";
 import Footer from "../Footer";
 import Home from "../../pages/Home";
@@ -8,39 +12,54 @@ import Cards from "../../pages/Cards";
 import Settings from "../../pages/Settings";
 import Login from "../../pages/Login";
 import User from "../../pages/User";
+import NoMatch from "../../pages/NoMatch";
+
+function ScrollToTop() {
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [pathname]);
+
+    return null;
+}
 
 function App() {
     return (
         <BrowserRouter>
+            <ScrollToTop />
+            {/* <Routes>
+                <Route path="/" element={<Splash />} />
+            </Routes> */}
+            <div className="es-content__wrapper">
+                <Sidebar />
+                <div className="es-content">
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route
+                            path="*"
+                            element={(
+                                <>
+                                    <Header />
+                                    <main className="es-mainContent">
+                                        <Routes>
+                                            <Route path="/cards" element={<Cards />} />
+                                            <Route path="/characters/:id" element={<Character />} />
+                                            <Route path="/characters" element={<Characters />} />
+                                            <Route path="/user" element={<User />} />
+                                            <Route path="/settings" element={<Settings />} />
+                                            <Route path="/login" element={<Login />} />
+                                            <Route path="/" element={<Home />} />
+                                            <Route path="*" element={<NoMatch />} />
+                                        </Routes>
+                                    </main>
+                                    <Footer />
+                                </>
+                            )}
+                        />
+                    </Routes>
 
-            <Sidebar />
-            <div className="content">
-                <main>
-                    <Switch>
-                        <Route path="/cards">
-                            <Cards />
-                        </Route>
-                        <Route path="/characters/:id">
-                            <Character />
-                        </Route>
-                        <Route path="/characters">
-                            <Characters />
-                        </Route>
-                        <Route path="/user">
-                            <User />
-                        </Route>
-                        <Route path="/settings">
-                            <Settings />
-                        </Route>
-                        <Route path="/login">
-                            <Login />
-                        </Route>
-                        <Route exact path="/">
-                            <Home />
-                        </Route>
-                    </Switch>
-                </main>
-                <Footer />
+                </div>
             </div>
         </BrowserRouter>
     );

@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { StyledEngineProvider } from "@mui/material/styles";
+import { createTheme, ThemeProvider } from "@mui/material";
 
 import "normalize.css/normalize.css";
 import "./styles/index.scss";
@@ -12,12 +14,42 @@ import App from "./components/App";
 
 const queryClient = new QueryClient();
 
+const theme = createTheme({
+    typography: {
+        fontFamily: [
+            "Plus Jakarta Sans",
+            "Noto Sans JP",
+            "-apple-system",
+            "BlinkMacSystemFont",
+            "\"Segoe UI\"",
+            "\"Helvetica Neue\"",
+            "Arial",
+            "sans-serif",
+            "\"Apple Color Emoji\"",
+            "\"Segoe UI Emoji\"",
+            "\"Segoe UI Symbol\"",
+        ].join(","),
+        fontSize: 16,
+    },
+    components: {
+        MuiButtonBase: {
+            defaultProps: {
+                disableRipple: true,
+            },
+        },
+    },
+});
+
 ReactDOM.render(
-    <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-            <App />
-        </AuthProvider>
-    </QueryClientProvider>,
+    <ThemeProvider theme={theme}>
+        <StyledEngineProvider injectFirst>
+            <QueryClientProvider client={queryClient}>
+                <AuthProvider>
+                    <App />
+                </AuthProvider>
+            </QueryClientProvider>
+        </StyledEngineProvider>
+    </ThemeProvider>,
     document.getElementById("root"),
 );
 

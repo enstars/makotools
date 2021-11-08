@@ -1,41 +1,44 @@
-import { NavLink } from "react-router-dom";
-import { useAuth } from "../../services/auth";
+import { useState, useEffect } from "react";
+import { NavLink, useLocation } from "react-router-dom";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
 import "./Header.scss";
 
-function HeaderUser() {
-    const { user } = useAuth();
-    if (user) {
-        return (
-            <>
-                <div>
-                    <span className="es-header__name">{user.displayName}</span>
-                    <span className="es-header__email">{user.email}</span>
-                </div>
-                <img alt={user.displayName} src={user.photoURL} />
-            </>
-        );
-    }
-    return (
-        <>
+function BasicBreadcrumbs() {
+    const location = useLocation();
+    const [pathnames, setPathnames] = useState(location.pathname.split("/").filter((x) => x));
 
-        </>
+    useEffect(() => {
+        setPathnames(location.pathname.split("/").filter((x) => x));
+    }, [location]);
+
+    return (
+        <Breadcrumbs aria-label="Breadcrumb">
+            <NavLink color="inherit" to="/">
+                @ Ensemble Square
+            </NavLink>
+            {pathnames.map((value, index) => {
+                const last = index === pathnames.length - 1;
+                const to = `/${pathnames.slice(0, index + 1).join("/")}`;
+
+                return last ? (
+                    <span>
+                        {value}
+                    </span>
+                ) : (
+                    <NavLink color="inherit" to={to} key={to}>
+                        {value}
+                    </NavLink>
+                );
+            })}
+        </Breadcrumbs>
+
     );
 }
 
 function Header() {
     return (
         <header className="es-header">
-            <div className="es-header__content">
-                <div className="es-header__branding"><NavLink to="/">Ensemble Square</NavLink></div>
-                <div className="es-header__menu">
-                    <nav className="es-header__links">
-                        <NavLink to="/cards" activeClassName="current-page">Cards</NavLink>
-                        <NavLink to="/events" activeClassName="current-page">Events</NavLink>
-                        <NavLink to="/stories" activeClassName="current-page">Stories</NavLink>
-                    </nav>
-                    <div className="es-header__account"><HeaderUser /></div>
-                </div>
-            </div>
+            <BasicBreadcrumbs />
         </header>
     );
 }

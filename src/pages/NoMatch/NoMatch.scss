@@ -1,0 +1,52 @@
+.es-404__wrapper {
+}
+
+.es-404__content {
+    position: absolute;
+    z-index: 2;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    padding: 30px;
+    border-radius: 10px;
+    color: white;
+    filter: drop-shadow(0px 0px 10px hsla(0, 0%, 0%, 1));
+
+    h1 {
+        margin: 0 0 0.5em;
+        line-height: 1.15;
+    }
+    
+    a {
+        display: inline-block;
+        background: white;
+        color: black;
+        text-decoration: none;
+        font-weight: 800;
+        padding: 10px 15px;
+        border-radius: 5px;
+        transition: 0.2s ease;
+
+        &:hover {
+            transform: scale(1.05);
+        }
+
+        &:active {
+            transform: scale(1);
+        }
+    }
+}
+
+.es-404__image {
+    position: absolute;
+    z-index: 1;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+
+    background: linear-gradient(to bottom, transparent 40%, hsla(0, 0%, 0%, 0.7) 100%),
+        center/cover no-repeat linear-gradient(#2a2c8e, #2a2c8e),
+        #2a2c8e;
+}
