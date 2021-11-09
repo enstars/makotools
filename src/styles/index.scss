@@ -35,6 +35,10 @@ html {
 
 }
 
+html {
+    // background: black;
+}
+
 body {
     background: black;
     overflow: overlay;
@@ -70,7 +74,7 @@ body {
     // min-height: calc(100vh);
     background: white;
     border-radius: 10px;
-    min-height: 60vh;
+    min-height: max(350px, 60vh);
     display: flow-root;
     position: relative;
     // overflow: hidden;

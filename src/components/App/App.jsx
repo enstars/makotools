@@ -11,6 +11,7 @@ import Character from "../../pages/Characters/Character";
 import Cards from "../../pages/Cards";
 import Settings from "../../pages/Settings";
 import Login from "../../pages/Login";
+import PrivacyPolicy from "../../pages/PrivacyPolicy";
 import User from "../../pages/User";
 import NoMatch from "../../pages/NoMatch";
 
@@ -49,6 +50,7 @@ function App() {
                                             <Route path="/user" element={<User />} />
                                             <Route path="/settings" element={<Settings />} />
                                             <Route path="/login" element={<Login />} />
+                                            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                                             <Route path="/" element={<Home />} />
                                             <Route path="*" element={<NoMatch />} />
                                         </Routes>

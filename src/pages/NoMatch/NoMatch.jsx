@@ -35,7 +35,7 @@ function NoMatch() {
             break;
         default:
             setRandom404message({
-                text: "Damnit, I can't find the page you're looking for...",
+                text: "Damnit, I can't find the page you're looking for…",
                 image: variant404Image1,
             });
         }
