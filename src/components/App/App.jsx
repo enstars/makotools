@@ -5,6 +5,7 @@ import {
 import Header from "../Header";
 import Sidebar from "../Sidebar";
 import Footer from "../Footer";
+import ErrorBoundary from "../ErrorBoundary";
 import Home from "../../pages/Home";
 import Characters from "../../pages/Characters";
 import Character from "../../pages/Characters/Character";
@@ -36,7 +37,14 @@ function App() {
                 <Sidebar />
                 <div className="es-content">
                     <Routes>
-                        <Route path="/" element={<Home />} />
+                        <Route
+                            path="/"
+                            element={(
+                                <ErrorBoundary>
+                                    <Home />
+                                </ErrorBoundary>
+                            )}
+                        />
                         <Route
                             path="*"
                             element={(
@@ -60,7 +68,6 @@ function App() {
                             )}
                         />
                     </Routes>
-
                 </div>
             </div>
         </BrowserRouter>
