@@ -15,22 +15,21 @@
     "firebase": "^9.2.0",
     "lodash": "^4.17.21",
     "multiselect-react-dropdown": "^2.0.7",
+    "next": "^12.0.3",
     "normalize.css": "^8.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-feather": "^2.0.9",
     "react-firebase-hooks": "^3.0.4",
     "react-query": "^3.31.0",
-    "react-router-dom": "^6.0.1",
     "sass": "^1.43.4",
     "simplebar-react": "^2.3.6",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "browserslist": {
     "production": [
@@ -56,7 +55,6 @@
     "postcss": "^8.3.11",
     "postcss-scss": "^4.0.2",
     "prettier": "^2.4.1",
-    "react-scripts": "next",
     "sass-loader": "^12.3.0",
     "stylelint": "^14.0.1",
     "stylelint-config-airbnb": "^0.0.0",
@@ -67,7 +65,7 @@
     "env": {
       "browser": true,
       "es2021": true
-    },
+    }, 
     "extends": [
       "react-app",
       "react-app/jest",
