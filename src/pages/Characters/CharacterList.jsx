@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import Link from 'next/link'
 import { useQueries } from "react-query";
 import _ from "lodash";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { getData, getB2File } from "../../services/ensquare";
-import "./CharacterList.scss";
+import "./CharacterList.module.scss";
 
 function CharacterList() {
     const [listCharacters, setListCharacters] = useState([]);
@@ -97,26 +97,27 @@ function CharacterList() {
             <div className="es-characterList">
                 {listCharacters.map((character) => (
                     <Link
-                        to={`/characters/${character.id}`}
+                        href={`/characters/${character.id}`}
                         className="es-characterList__character"
                         style={{ "--characterColor": character.personal_color_code }}
                     >
-                        {/* <img src={getB2File(`icon/character_sd_square1_${character.id}.png`)} alt={character.first_name} /> */}
-                        <div className="es-characterList__characterWrapper">
+                        <a>
+                            <div className="es-characterList__characterWrapper">
 
-                            <img
-                                src={getB2File(
-                                    `render/character_full1_${character.id}.png`,
-                                )}
-                                alt={character.first_name}
-                            />
-                            <div className="es-characterList__info">
-                                <span>
-                                    {character.last_name}
-                                    {character.first_name}
-                                </span>
+                                <img
+                                    src={getB2File(
+                                        `render/character_full1_${character.id}.png`,
+                                    )}
+                                    alt={character.first_name}
+                                />
+                                <div className="es-characterList__info">
+                                    <span>
+                                        {character.last_name}
+                                        {character.first_name}
+                                    </span>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </Link>
                 ))}
             </div>

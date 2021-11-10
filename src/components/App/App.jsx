@@ -1,76 +1,36 @@
-import React, { useEffect } from "react";
-import {
-    BrowserRouter, Routes, Route, useLocation,
-} from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useRouter } from 'next/router';
 import Header from "../Header";
-import Sidebar from "../Sidebar";
+import {Sidebar} from "../Sidebar";
 import Footer from "../Footer";
 import ErrorBoundary from "../ErrorBoundary";
-import Home from "../../pages/Home";
-import Characters from "../../pages/Characters";
-import Character from "../../pages/Characters/Character";
-import Cards from "../../pages/Cards";
-import Settings from "../../pages/Settings";
-import Login from "../../pages/Login";
-import PrivacyPolicy from "../../pages/PrivacyPolicy";
-import User from "../../pages/User";
-import NoMatch from "../../pages/NoMatch";
 
-function ScrollToTop() {
-    const { pathname } = useLocation();
-
+function App({ page }) {
+    const location = useRouter();
+    const [currentPath, setCurrentPath] = useState(location.pathname);
+    // let sidebarClasses = "";
     useEffect(() => {
-        window.scrollTo(0, 0);
-    }, [pathname]);
-
-    return null;
-}
-
-function App() {
+        setCurrentPath(location.pathname);
+        console.log(currentPath);
+    }, [location]);
+    
     return (
-        <BrowserRouter>
-            <ScrollToTop />
-            {/* <Routes>
-                <Route path="/" element={<Splash />} />
-            </Routes> */}
-            <div className="es-content__wrapper">
-                <Sidebar />
-                <div className="es-content">
-                    <Routes>
-                        <Route
-                            path="/"
-                            element={(
-                                <ErrorBoundary>
-                                    <Home />
-                                </ErrorBoundary>
-                            )}
-                        />
-                        <Route
-                            path="*"
-                            element={(
-                                <>
-                                    <Header />
-                                    <main className="es-mainContent">
-                                        <Routes>
-                                            <Route path="/cards" element={<Cards />} />
-                                            <Route path="/characters/:id" element={<Character />} />
-                                            <Route path="/characters" element={<Characters />} />
-                                            <Route path="/user" element={<User />} />
-                                            <Route path="/settings" element={<Settings />} />
-                                            <Route path="/login" element={<Login />} />
-                                            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                                            <Route path="/" element={<Home />} />
-                                            <Route path="*" element={<NoMatch />} />
-                                        </Routes>
-                                    </main>
-                                    <Footer />
-                                </>
-                            )}
-                        />
-                    </Routes>
-                </div>
+        <div className="es-content__wrapper">
+            <Sidebar />
+            <div className="es-content">
+                    {(currentPath === "/") ? page : 
+                        <>
+                            <Header />
+                            <main className="es-mainContent">
+                                {/* <ErrorBoundary> */}
+                                    {page}
+                                {/* </ErrorBoundary> */}
+                            </main>
+                            <Footer />
+                        </>
+                    }
             </div>
-        </BrowserRouter>
+        </div>
     );
 }
 

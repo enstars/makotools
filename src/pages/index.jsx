@@ -1,5 +1,5 @@
 import OpenInNewSharpIcon from "@mui/icons-material/OpenInNewSharp";
-import "./Splash.scss";
+// import "./Splash.module.scss";
 
 function Splash() {
     return (

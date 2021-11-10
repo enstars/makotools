@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 import Breadcrumbs from "@mui/material/Breadcrumbs";
-import "./Header.scss";
 
 function BasicBreadcrumbs() {
-    const location = useLocation();
+    const location = useRouter();
     const [pathnames, setPathnames] = useState(location.pathname.split("/").filter((x) => x));
 
     useEffect(() => {
@@ -13,9 +13,9 @@ function BasicBreadcrumbs() {
 
     return (
         <Breadcrumbs aria-label="Breadcrumb">
-            <NavLink color="inherit" to="/">
-                @ Ensemble Square
-            </NavLink>
+            <Link color="inherit" href="/">
+                <a>@ Ensemble Square</a>
+            </Link>
             {pathnames.map((value, index) => {
                 const last = index === pathnames.length - 1;
                 const to = `/${pathnames.slice(0, index + 1).join("/")}`;
@@ -25,9 +25,9 @@ function BasicBreadcrumbs() {
                         {value}
                     </span>
                 ) : (
-                    <NavLink color="inherit" to={to} key={to}>
-                        {value}
-                    </NavLink>
+                    <Link color="inherit" to={to} key={to}>
+                        <a>{value}</a>
+                    </Link>
                 );
             })}
         </Breadcrumbs>

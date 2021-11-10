@@ -47,6 +47,8 @@
     border-radius: 10px;
 
     background: linear-gradient(to bottom, transparent 40%, hsla(0, 0%, 0%, 0.7) 100%),
-        center/cover no-repeat linear-gradient(#2a2c8e, #2a2c8e),
+        center/cover no-repeat var(--es-splash-image),
+        center/cover no-repeat var(--es-splash-image--blur),
         #2a2c8e;
+
 }

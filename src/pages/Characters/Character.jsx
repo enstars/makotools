@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import { getData, getB2File } from "../../services/ensquare";
-import "./CharacterList.scss";
+import "./CharacterList.module.scss";
 
 function Character() {
-    const { id } = useParams();
+    // const { id } = useParams();
+    const id = "1";
     const [viewCharacter, setViewCharacter] = useState();
     const { data: characters } = useQuery(["characters"], () => getData("characters"));
 
