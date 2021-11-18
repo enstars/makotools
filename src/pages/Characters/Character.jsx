@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 import { useQuery } from "react-query";
 import { getData, getB2File } from "../../services/ensquare";
 
@@ -8,7 +9,9 @@ function Character() {
     const router = useRouter();
     const { id } = router.query;
     const [viewCharacter, setViewCharacter] = useState();
-    const { data: characters } = useQuery(["characters"], () => getData("characters"));
+    const { data: characters } = useQuery(["characters"], () =>
+        getData("characters"),
+    );
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -26,12 +29,14 @@ function Character() {
 
     return (
         <div className="content-text">
-            <img
+            <Image
                 style={{ float: "right", width: "400px" }}
                 src={getB2File(
                     `render/character_full1_${viewCharacter.id}.png`,
                 )}
                 alt={viewCharacter.first_name}
+                width="400"
+                height="600"
             />
 
             <h1>
@@ -43,16 +48,8 @@ function Character() {
                 </ruby>
             </h1>
             <ul>
-                <li>
-                    Birthday:
-                    {" "}
-                    {viewCharacter.birthday}
-                </li>
-                <li>
-                    Age:
-                    {" "}
-                    {viewCharacter.age}
-                </li>
+                <li>Birthday: {viewCharacter.birthday}</li>
+                <li>Age: {viewCharacter.age}</li>
             </ul>
         </div>
     );

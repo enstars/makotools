@@ -114,14 +114,18 @@ function CharacterList() {
                 aria-label="units"
             >
                 {filterOptions.map((option) => (
-                    <ToggleButton value={option} aria-label={option.name}>
+                    <ToggleButton
+                        key={option}
+                        value={option}
+                        aria-label={option.name}
+                    >
                         {option.name}
                     </ToggleButton>
                 ))}
             </ToggleButtonGroup>
             <div className="es-characterList">
                 {listCharacters.map((character) => (
-                    <Link to={`/characters/${character.id}`}>
+                    <Link key={character} href={`/characters/${character.id}`}>
                         <a
                             className="es-characterList__character"
                             style={{
