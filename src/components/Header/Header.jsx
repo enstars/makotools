@@ -5,7 +5,9 @@ import Breadcrumbs from "@mui/material/Breadcrumbs";
 
 function BasicBreadcrumbs() {
     const location = useRouter();
-    const [pathnames, setPathnames] = useState(location.pathname.split("/").filter((x) => x));
+    const [pathnames, setPathnames] = useState(
+        location.pathname.split("/").filter((x) => x),
+    );
 
     useEffect(() => {
         setPathnames(location.pathname.split("/").filter((x) => x));
@@ -21,9 +23,7 @@ function BasicBreadcrumbs() {
                 const to = `/${pathnames.slice(0, index + 1).join("/")}`;
 
                 return last ? (
-                    <span>
-                        {value}
-                    </span>
+                    <span key={0}>{value}</span>
                 ) : (
                     <Link color="inherit" href={to} key={to}>
                         <a>{value}</a>
@@ -31,7 +31,6 @@ function BasicBreadcrumbs() {
                 );
             })}
         </Breadcrumbs>
-
     );
 }
 
