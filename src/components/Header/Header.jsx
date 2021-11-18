@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import Link from 'next/link'
-import { useRouter } from 'next/router'
+import Link from "next/link";
+import { useRouter } from "next/router";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 
 function BasicBreadcrumbs() {
@@ -25,7 +25,7 @@ function BasicBreadcrumbs() {
                         {value}
                     </span>
                 ) : (
-                    <Link color="inherit" to={to} key={to}>
+                    <Link color="inherit" href={to} key={to}>
                         <a>{value}</a>
                     </Link>
                 );

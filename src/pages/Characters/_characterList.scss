@@ -44,7 +44,7 @@
 
     @include m.card(0);
 
-    img {
+    .es-characterList__image {
         // width: 2rem;
         // height: auto;
         position: absolute;
@@ -86,7 +86,7 @@
         // box-shadow: 4px 4px 0px 0px black;
         @include m.card(1);
 
-        img {
+        .es-characterList__image {
             transform: translateX(calc(-50% - 0.5em));
         }
 

@@ -67,8 +67,6 @@
       "es2021": true
     }, 
     "extends": [
-      "react-app",
-      "react-app/jest",
       "plugin:react/recommended",
       "plugin:react/jsx-runtime",
       "airbnb"
@@ -128,7 +126,8 @@
       ],
       "react/jsx-filename-extension": 0,
       "react/prop-types": 0,
-      "react/react-in-jsx-scope": 0
+      "react/react-in-jsx-scope": 0,
+      "jsx-a11y/anchor-is-valid": 0
     }
   },
   "prettier": {

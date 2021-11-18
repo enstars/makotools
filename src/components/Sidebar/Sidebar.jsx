@@ -1,36 +1,34 @@
 import React, { useState, useEffect } from "react";
-import Link from 'next/link'
-import { useRouter } from 'next/router'
+import Link from "next/link";
+import { useRouter } from "next/router";
 // import HomeSharpIcon from "@mui/icons-material/HomeSharp";
 import ContentCopySharpIcon from "@mui/icons-material/ContentCopySharp";
 import MilitaryTechSharpIcon from "@mui/icons-material/MilitaryTechSharp";
 import ImportContactsSharpIcon from "@mui/icons-material/ImportContactsSharp";
 import GroupSharpIcon from "@mui/icons-material/GroupSharp";
 import SettingsSharpIcon from "@mui/icons-material/SettingsSharp";
-import AccountCircleSharpIcon from "@mui/icons-material/AccountCircleSharp";
 import { useAuth } from "../../services/auth";
 import { EnsembleSquareLogo } from "../../../public/logo_square";
 
 function ProfileImage() {
-    const [user, setUser] = useState({
+    // eslint-disable-next-line prefer-const
+    let [user, setUser] = useState({
         displayName: "Logged Out",
         photoURL: "",
     });
     const authUser = useAuth();
-    // useEffect(() => {
-    //     user = authUser.user;
-    //     if(user){
-    //         setUser(user);
-    //     }
-    // }, [authUser])
+    useEffect(() => {
+        user = authUser.user;
+        if (user) {
+            setUser(user);
+        }
+    }, [authUser]);
     return (
         <img alt={user.displayName} src={user.photoURL} referrerPolicy="no-referrer" />
     );
 }
 
-
-
-export function Sidebar() {
+function Sidebar() {
     const location = useRouter();
     const [sidebarClasses, setSidebarClasses] = useState("es-sidebar__content");
     // let sidebarClasses = "";
@@ -90,10 +88,11 @@ export function Sidebar() {
                             </a>
                         </Link>
                     </nav>
-                    <div className="es-sidebar__links">
-                    </div>
+                    <div className="es-sidebar__links" />
                 </div>
             </div>
         </aside>
     );
 }
+
+export default Sidebar;

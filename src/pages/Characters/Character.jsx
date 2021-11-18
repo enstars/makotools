@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-// import { useParams } from "react-router-dom";
+import { useRouter } from "next/router";
 import { useQuery } from "react-query";
 import { getData, getB2File } from "../../services/ensquare";
-import "./CharacterList.module.scss";
 
 function Character() {
     // const { id } = useParams();
-    const id = "1";
+    const router = useRouter();
+    const { id } = router.query;
     const [viewCharacter, setViewCharacter] = useState();
     const { data: characters } = useQuery(["characters"], () => getData("characters"));
 
