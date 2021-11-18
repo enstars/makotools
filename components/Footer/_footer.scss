@@ -1,0 +1,10 @@
+@import "../../styles/variables";
+
+.es-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    height: $footer-height;
+    color: white;
+}
