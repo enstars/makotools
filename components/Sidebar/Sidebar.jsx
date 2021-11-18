@@ -8,7 +8,7 @@ import ImportContactsSharpIcon from "@mui/icons-material/ImportContactsSharp";
 import GroupSharpIcon from "@mui/icons-material/GroupSharp";
 import SettingsSharpIcon from "@mui/icons-material/SettingsSharp";
 import { useAuth } from "../../services/auth";
-import { EnsembleSquareLogo } from "../../../public/logo_square";
+import { EnsembleSquareLogo } from "../../public/logo_square";
 
 function ProfileImage() {
     // eslint-disable-next-line prefer-const
@@ -24,7 +24,11 @@ function ProfileImage() {
         }
     }, [authUser]);
     return (
-        <img alt={user.displayName} src={user.photoURL} referrerPolicy="no-referrer" />
+        <img
+            alt={user.displayName}
+            src={user.photoURL}
+            referrerPolicy="no-referrer"
+        />
     );
 }
 
@@ -34,7 +38,9 @@ function Sidebar() {
     // let sidebarClasses = "";
     useEffect(() => {
         if (location.pathname === "/") {
-            setSidebarClasses("es-sidebar__content es-sidebarLoaded es-transition");
+            setSidebarClasses(
+                "es-sidebar__content es-sidebarLoaded es-transition",
+            );
         } else {
             setSidebarClasses("es-sidebar__content es-sidebarLoaded ");
         }

@@ -112,7 +112,7 @@
     height: 100%;
     z-index: 1;
     background: linear-gradient(to bottom, transparent 40%, hsla(0, 0%, 0%, 0.7) 100%),
-        70%/cover no-repeat url("../../public/splash.jpg"),
+        70%/cover no-repeat url("../public/splash.jpg"),
         linear-gradient(#2a2c8e, #2a2c8e);
     animation: splash2 1000ms 0ms both cubic-bezier(0.13,1,0.37,0.99);
 }

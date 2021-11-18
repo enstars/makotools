@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import variant404Image1 from "../../../public/404_1.png";
-import variant404Image2 from "../../../public/404_2.png";
-import variant404Image3 from "../../../public/404_3.png";
+import variant404Image1 from "../../public/404_1.png";
+import variant404Image2 from "../../public/404_2.png";
+import variant404Image3 from "../../public/404_3.png";
 // import "./NoMatch.module.scss";
 
 function NoMatch() {
