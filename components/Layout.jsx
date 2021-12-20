@@ -39,7 +39,8 @@ const StyledWrapper = styled.div`
   }
 
   .es-mainContent {
-    min-height: max(350px, 60vh);
+    min-height: 100vh;
+    /* min-height: max(350px, 60vh); */
     display: flow-root;
     position: relative;
   }
