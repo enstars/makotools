@@ -1,216 +1,181 @@
 {
-    "name": "es-react",
-    "version": "0.1.0",
-    "private": true,
-    "dependencies": {
-        "@emotion/react": "^11.5.0",
-        "@emotion/styled": "^11.3.0",
-        "@fontsource/metropolis": "^4.5.0",
-        "@fontsource/plus-jakarta-sans": "^4.5.0",
-        "@mui/icons-material": "^5.0.5",
-        "@mui/material": "^5.0.6",
-        "@testing-library/jest-dom": "^5.11.4",
-        "@testing-library/react": "^11.1.0",
-        "@testing-library/user-event": "^12.1.10",
-        "firebase": "^9.2.0",
-        "lodash": "^4.17.21",
-        "multiselect-react-dropdown": "^2.0.7",
-        "next": "^12.0.3",
-        "normalize.css": "^8.0.1",
-        "react": "^17.0.2",
-        "react-dom": "^17.0.2",
-        "react-feather": "^2.0.9",
-        "react-firebase-hooks": "^3.0.4",
-        "react-query": "^3.31.0",
-        "sass": "^1.43.4",
-        "simplebar-react": "^2.3.6",
-        "web-vitals": "^1.0.1"
+  "name": "es-react",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.5.0",
+    "@emotion/styled": "^11.3.0",
+    "@fontsource/barlow": "^4.5.0",
+    "@fontsource/metropolis": "^4.5.0",
+    "@fontsource/plus-jakarta-sans": "^4.5.0",
+    "@mui/icons-material": "^5.0.5",
+    "@mui/material": "^5.0.6",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "firebase": "^9.2.0",
+    "lodash": "^4.17.21",
+    "multiselect-react-dropdown": "^2.0.7",
+    "next": "^12.0.8-canary.10",
+    "normalize.css": "^8.0.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-feather": "^2.0.9",
+    "react-firebase-hooks": "^3.0.4",
+    "react-query": "^3.31.0",
+    "sass": "^1.43.4",
+    "sharp": "^0.29.3",
+    "simplebar-react": "^2.3.6",
+    "styled-components": "^5.3.3",
+    "web-vitals": "^1.0.1"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "babel-plugin-styled-components": "^2.0.2",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-next": "^12.0.4",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.26.1",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "postcss": "^8.3.11",
+    "postcss-scss": "^4.0.2",
+    "prettier": "^2.4.1",
+    "sass-loader": "^12.3.0",
+    "stylelint": "^14.0.1",
+    "stylelint-config-airbnb": "^0.0.0",
+    "stylelint-order": "^5.0.0",
+    "stylelint-scss": "^4.0.0"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es2021": true
     },
-    "scripts": {
-        "dev": "next dev",
-        "build": "next build",
-        "start": "next start",
-        "lint": "next lint"
+    "extends": [
+      "next/core-web-vitals",
+      "prettier"
+    ],
+    "parserOptions": {
+      "ecmaFeatures": {
+        "jsx": true
+      },
+      "ecmaVersion": 12,
+      "sourceType": "module"
     },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
+    "settings": {
+      "import/resolver": {
+        "node": {
+          "extensions": [
+            ".js",
+            ".jsx",
+            ".ts",
+            ".tsx"
+          ]
+        }
+      }
+    },
+    "plugins": [
+      "react"
+    ]
+  },
+  "prettier": {
+    "tabWidth": 2,
+    "singleQuote": false,
+    "trailingComma": "all"
+  },
+  "stylelint": {
+    "overrides": [
+      {
+        "files": [
+          "**/*.scss"
         ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
+        "customSyntax": "postcss-scss"
+      }
+    ],
+    "extends": "stylelint-config-airbnb",
+    "plugins": [
+      "stylelint-scss",
+      "stylelint-order"
+    ],
+    "rules": {
+      "indentation": 2,
+      "number-leading-zero": "always",
+      "max-empty-lines": 1,
+      "string-quotes": "double",
+      "selector-max-id": 0,
+      "selector-list-comma-newline-after": "always",
+      "rule-empty-line-before": [
+        "always",
+        {
+          "ignore": [
+            "after-comment",
+            "first-nested"
+          ]
+        }
+      ],
+      "comment-empty-line-before": [
+        "always",
+        {
+          "except": [
+            "first-nested"
+          ]
+        }
+      ],
+      "block-opening-brace-space-before": "always",
+      "declaration-colon-space-after": "always",
+      "declaration-colon-space-before": "never",
+      "declaration-block-single-line-max-declarations": 1,
+      "declaration-property-value-disallowed-list": {
+        "/^border/": [
+          "none"
         ]
-    },
-    "devDependencies": {
-        "eslint": "^7.32.0",
-        "eslint-config-airbnb": "^18.2.1",
-        "eslint-config-next": "^12.0.4",
-        "eslint-config-prettier": "^8.3.0",
-        "eslint-plugin-import": "^2.25.2",
-        "eslint-plugin-jsx-a11y": "^6.4.1",
-        "eslint-plugin-prettier": "^4.0.0",
-        "eslint-plugin-react": "^7.26.1",
-        "eslint-plugin-react-hooks": "^4.2.0",
-        "postcss": "^8.3.11",
-        "postcss-scss": "^4.0.2",
-        "prettier": "^2.4.1",
-        "sass-loader": "^12.3.0",
-        "stylelint": "^14.0.1",
-        "stylelint-config-airbnb": "^0.0.0",
-        "stylelint-order": "^5.0.0",
-        "stylelint-scss": "^4.0.0"
-    },
-    "eslintConfig": {
-        "env": {
-            "browser": true,
-            "es2021": true
-        },
-        "extends": [
-            "next/core-web-vitals",
-            "prettier"
-        ],
-        "parserOptions": {
-            "ecmaFeatures": {
-                "jsx": true
-            },
-            "ecmaVersion": 12,
-            "sourceType": "module"
-        },
-        "settings": {
-            "import/resolver": {
-                "node": {
-                    "extensions": [
-                        ".js",
-                        ".jsx",
-                        ".ts",
-                        ".tsx"
-                    ]
-                }
-            }
-        },
-        "plugins": [
-            "react"
-        ],
-        "rules": {
-            "indent": [
-                "error",
-                4,
-                {
-                    "SwitchCase": 1
-                }
-            ],
-            "quotes": [
-                "error",
-                "double"
-            ],
-            "max-len": 0,
-            "no-console": [
-                "warn",
-                {
-                    "allow": [
-                        "warn",
-                        "error"
-                    ]
-                }
-            ],
-            "no-alert": "off",
-            "no-unused-vars": [
-                "warn"
-            ],
-            "react/jsx-indent": [
-                2,
-                4
-            ],
-            "react/jsx-indent-props": [
-                2,
-                4
-            ],
-            "react/jsx-filename-extension": 0,
-            "react/prop-types": 0,
-            "react/react-in-jsx-scope": 0,
-            "jsx-a11y/anchor-is-valid": 0
+      },
+      "at-rule-empty-line-before": [
+        "always",
+        {
+          "ignore": [
+            "after-comment"
+          ],
+          "except": [
+            "after-same-name",
+            "first-nested"
+          ]
         }
-    },
-    "prettier": {
-        "tabWidth": 4,
-        "singleQuote": false,
-        "trailingComma": "all"
-    },
-    "stylelint": {
-        "overrides": [
-            {
-                "files": [
-                    "**/*.scss"
-                ],
-                "customSyntax": "postcss-scss"
-            }
-        ],
-        "extends": "stylelint-config-airbnb",
-        "plugins": [
-            "stylelint-scss",
-            "stylelint-order"
-        ],
-        "rules": {
-            "indentation": 4,
-            "number-leading-zero": "always",
-            "max-empty-lines": 1,
-            "string-quotes": "double",
-            "selector-max-id": 0,
-            "selector-list-comma-newline-after": "always",
-            "rule-empty-line-before": [
-                "always",
-                {
-                    "ignore": [
-                        "after-comment",
-                        "first-nested"
-                    ]
-                }
-            ],
-            "comment-empty-line-before": [
-                "always",
-                {
-                    "except": [
-                        "first-nested"
-                    ]
-                }
-            ],
-            "block-opening-brace-space-before": "always",
-            "declaration-colon-space-after": "always",
-            "declaration-colon-space-before": "never",
-            "declaration-block-single-line-max-declarations": 1,
-            "declaration-property-value-disallowed-list": {
-                "/^border/": [
-                    "none"
-                ]
-            },
-            "at-rule-empty-line-before": [
-                "always",
-                {
-                    "ignore": [
-                        "after-comment"
-                    ],
-                    "except": [
-                        "after-same-name",
-                        "first-nested"
-                    ]
-                }
-            ],
-            "scss/dollar-variable-pattern": "^_?[a-z]+[\\w-]*$",
-            "scss/at-extend-no-missing-placeholder": true,
-            "order/order": [
-                "declarations",
-                {
-                    "type": "at-rule"
-                },
-                {
-                    "type": "at-rule",
-                    "hasBlock": true
-                },
-                "rules"
-            ]
-        }
+      ],
+      "scss/dollar-variable-pattern": "^_?[a-z]+[\\w-]*$",
+      "scss/at-extend-no-missing-placeholder": true,
+      "order/order": [
+        "declarations",
+        {
+          "type": "at-rule"
+        },
+        {
+          "type": "at-rule",
+          "hasBlock": true
+        },
+        "rules"
+      ]
     }
+  }
 }

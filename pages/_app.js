@@ -5,16 +5,30 @@ import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { StyledEngineProvider } from "@mui/material/styles";
 import { createTheme, ThemeProvider } from "@mui/material";
 
-import Header from "../components/Header";
-import Sidebar from "../components/Sidebar";
-import Footer from "../components/Footer";
-import ErrorBoundary from "../components/ErrorBoundary";
+import "@fontsource/barlow/100.css";
+import "@fontsource/barlow/200.css";
+import "@fontsource/barlow/300.css";
+import "@fontsource/barlow/400.css";
+import "@fontsource/barlow/500.css";
+import "@fontsource/barlow/600.css";
+import "@fontsource/barlow/700.css";
+import "@fontsource/barlow/800.css";
+import "@fontsource/barlow/900.css";
+import "@fontsource/barlow/100-italic.css";
+import "@fontsource/barlow/200-italic.css";
+import "@fontsource/barlow/300-italic.css";
+import "@fontsource/barlow/400-italic.css";
+import "@fontsource/barlow/500-italic.css";
+import "@fontsource/barlow/600-italic.css";
+import "@fontsource/barlow/700-italic.css";
+import "@fontsource/barlow/800-italic.css";
+import "@fontsource/barlow/900-italic.css";
 
 import "normalize.css/normalize.css";
 import "../styles/index.scss";
-import "@fontsource/plus-jakarta-sans";
+// import "@fontsource/plus-jakarta-sans";
 
-import "../components/Sidebar/Sidebar.scss";
+// import "../components/Sidebar/Sidebar.scss";
 // import reportWebVitals from './reportWebVitals';
 
 import AuthProvider from "../services/auth";
@@ -22,9 +36,12 @@ import AuthProvider from "../services/auth";
 // const queryClient = new QueryClient();
 
 const theme = createTheme({
+    palette: {
+        mode: "dark",
+    },
     typography: {
         fontFamily: [
-            "Plus Jakarta Sans",
+            "Barlow",
             "Noto Sans JP",
             "-apple-system",
             "BlinkMacSystemFont",
@@ -57,6 +74,8 @@ function MyApp({ Component, pageProps }) {
         // console.log(currentPath);
     }, [location]);
 
+    const getLayout = Component.getLayout || ((page) => page);
+
     return (
         <ThemeProvider theme={theme}>
             <StyledEngineProvider injectFirst>
@@ -72,28 +91,10 @@ function MyApp({ Component, pageProps }) {
                                 scrolling="no"
                                 marginHeight="0"
                                 marginWidth="0"
-                                src="https://virtualsky.lco.global/embed/index.html?longitude=139.839478&latitude=35.652832&projection=stereo&mouse=false&keyboard=false&cardinalpoints=false&showplanets=false&showplanetlabels=false&showdate=false&showposition=false&color=#000&az=318.6611215126213"
+                                src="https://virtualsky.lco.global/embed/index.html?longitude=139.839478&latitude=35.652832&gradient=false&projection=stereo&mouse=false&keyboard=false&cardinalpoints=false&showplanets=false&showplanetlabels=false&showdate=false&showposition=false&color=#000&az=318.6611215126213"
                                 allowtransparency="true"
                             />
-                            <div className="es-content__wrapper">
-                                <Sidebar />
-                                <div className="es-content">
-                                    {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-                                    {currentPath === "/" ? (
-                                        <Component {...pageProps} />
-                                    ) : (
-                                        <>
-                                            <Header />
-                                            <main className="es-mainContent">
-                                                <ErrorBoundary>
-                                                    <Component />
-                                                </ErrorBoundary>
-                                            </main>
-                                            <Footer />
-                                        </>
-                                    )}
-                                </div>
-                            </div>
+                            {getLayout(<Component {...pageProps} />)}
                         </AuthProvider>
                     </Hydrate>
                 </QueryClientProvider>
