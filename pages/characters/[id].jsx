@@ -12,7 +12,7 @@ function Character() {
   const { id } = router.query;
   const [viewCharacter, setViewCharacter] = useState();
   const { data: characters } = useQuery(["characters"], () =>
-    getData("characters"),
+    getData("characters")
   );
 
   useEffect(() => {
@@ -35,7 +35,6 @@ function Character() {
       ></Title>
       <div className="content-text">
         <Image
-          //   style={{ float: "right", width: "600px" }}
           src={getB2File(`render/character_full1_${viewCharacter.id}.png`)}
           alt={viewCharacter.first_name}
           layout="responsive"
