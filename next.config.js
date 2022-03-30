@@ -1,10 +1,10 @@
 module.exports = {
-    images: {
-        domains: ["uchuu.ensemble.moe"],
-    },
+  images: {
+    domains: ["uchuu.ensemble.moe"],
+  },
 
-    experimental: {
-        // Enables the styled-components SWC transform
-        styledComponents: true,
-    },
+  experimental: {
+    // Enables the styled-components SWC transform
+    styledComponents: true,
+  },
 };

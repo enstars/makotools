@@ -1,3 +1,34 @@
 $sidebar-width: 200px;
 $footer-height: 100px;
 $es-blue: #0c195c;
+
+
+:root {
+    --ritsu-900: hsl(224, 23%, 9%);
+    --ritsu-800: hsl(229, 19%, 11%);
+    --ritsu-700: hsl(228, 18%, 16%);
+    --ritsu-600: hsl(229, 17%, 26%);
+    --ritsu-500: hsl(224, 16%, 42%);
+    --ritsu-300: hsl(223, 28%, 75%);
+    --ritsu-100: hsl(230, 60%, 98%);
+
+    --ritsu-900--hsl: 224, 23%, 9%;
+    --ritsu-800--hsl: 229, 19%, 11%;
+    --ritsu-700--hsl: 228, 18%, 16%;
+    --ritsu-600--hsl: 229, 17%, 26%;
+    --ritsu-500--hsl: 224, 16%, 42%;
+    --ritsu-300--hsl: 223, 28%, 75%;
+    --ritsu-100--hsl: 230, 60%, 98%;
+
+    --hokuto-900: hsl(228, 45%, 9%);
+    --hokuto-700: hsl(228, 38%, 15%);
+    --hokuto-500: hsl(224, 42%, 35%);
+    --hokuto-300: hsl(222, 53%, 63%);
+    --hokuto-100: hsl(230, 89%, 86%);
+
+
+    --shadow: 0 0 0 1px hsla(0, 0%, 0%, 0.1),0 4px 11px hsla(0, 0%, 0%, 0.1);
+    --base-fonts: "InterVariable","Inter","Noto Sans JP", "Metropolis", -apple-system,
+    BlinkMacSystemFont, Segoe UI, Roboto, "IBM Plex Sans Thai Looped", Ubuntu,
+    Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}

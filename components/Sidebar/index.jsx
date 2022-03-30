@@ -9,66 +9,37 @@ import MilitaryTechRoundedIcon from "@mui/icons-material/MilitaryTechRounded";
 import ImportContactsRoundedIcon from "@mui/icons-material/ImportContactsRounded";
 import GroupRoundedIcon from "@mui/icons-material/GroupRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
-import { useAuth } from "../services/auth";
-import { EnsembleSquareLogo } from "../public/logo_square";
-
+import { useAuth } from "../../services/auth";
+import { EnsembleSquareLogo } from "../../public/logo_square";
+import { Icon } from "@iconify/react";
+import usersIcon from "@iconify/icons-tabler/users";
+import playCard from "@iconify/icons-tabler/play-card";
+import awardIcon from "@iconify/icons-tabler/award";
+import book2 from "@iconify/icons-tabler/book-2";
+import settingsIcon from "@iconify/icons-tabler/settings";
 const StyledWrapper = styled.aside`
   /* background: #1e1e23; */
-  border-right: solid 1px hsla(0, 0%, 100%, 0.2);
-  @keyframes slideInLeft {
-    0% {
-      transform: translate(-100%, 0px);
-    }
-
-    100% {
-      transform: translate(0%, 0px);
-    }
-  }
-
-  color: white;
-  position: sticky;
+  font-family: "Metropolis", "InterVariable", "Inter";
+  /* color: white; */
+  position: fixed;
   top: 0px;
   height: 100vh;
-  margin-bottom: -100vh;
   width: 200px;
   z-index: 2;
   overflow: auto;
 
-  scrollbar-width: thin;
-  scrollbar-color: hsl(0, 0%, 40%) transparent;
-  scrollbar-gutter: stable;
-
-  &::-webkit-scrollbar-thumb {
-    background-color: hsl(0, 0%, 40%);
-  }
-
-  &::-webkit-scrollbar {
-    width: 5px;
-  }
-
-  &::-webkit-scrollbar-track {
-    width: 10px;
-    background-color: transparent;
-  }
-
   .es-sidebar__content {
     width: 100%;
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0px;
+    display: grid;
+    grid-template-rows: auto 1fr;
   }
 
   .es-sidebar__branding {
-    flex: 0 0 auto;
-    height: 30px;
     font-weight: 800;
     line-height: 1;
-    color: white;
+    /* color: white; */
     position: relative;
-
-    border-bottom: solid 1px hsla(0, 0%, 100%, 0.2);
 
     text-decoration: none;
     color: inherit;
@@ -103,46 +74,30 @@ const StyledWrapper = styled.aside`
 
   .es-sidebar__links {
     a {
+      /* font-size: 0.8em; */
+      /* text-transform: uppercase; */
+      /* text-transform: lowercase; */
       text-decoration: none;
+      letter-spacing: 0.05em;
       color: inherit;
-      background: hsla(230, 76%, 20%, 0);
-      display: grid;
-      grid-template-columns: 1.2em 1fr;
+      display: flex;
       align-items: center;
-      justify-content: start;
 
-      transition: background 0.2s ease, color 0.2s ease;
       padding: 5px 1em;
-      gap: 1em;
-
+      opacity: 0.7;
       svg {
-        font-size: 1rem;
-        place-self: center;
-      }
-
-      .profile-image {
-        width: 16px;
-        height: 16px;
-        background: white;
-        border-radius: 32px;
-        position: relative;
-        place-self: center;
-        overflow: hidden;
-        border: solid 1px hsla(0, 0%, 100%, 0.2);
-      }
-
-      img:before {
-        content: "";
-        display: none;
-      }
-
-      span {
-        font-size: 0.8rem;
+        margin-right: 0.5em;
+        g {
+          stroke-width: 1;
+        }
       }
 
       &.active {
-        background: hsla(0, 0%, 100%, 0.2);
+        opacity: 1;
         font-weight: 700;
+        svg g {
+          stroke-width: 2;
+        }
       }
     }
   }
@@ -208,7 +163,11 @@ function ProfileImage() {
     <div className="profile-image">
       <Image
         referrerPolicy="no-referrer"
-        src={user.photoURL}
+        src={
+          user.photoURL
+            ? `/api/imageproxy?url=${encodeURIComponent(user.photoURL)}`
+            : "/404_2.png"
+        }
         alt={user.displayName}
         objectFit="cover"
         layout="fill"
@@ -235,32 +194,27 @@ function Sidebar() {
               {
                 link: "characters",
                 name: "Characters",
-                icon: <GroupRoundedIcon />,
+                icon: <Icon icon={usersIcon} />,
               },
               {
                 link: "cards",
                 name: "Cards",
-                icon: <ContentCopyRoundedIcon />,
+                icon: <Icon icon={playCard} />,
               },
               {
                 link: "events",
                 name: "Events",
-                icon: <MilitaryTechRoundedIcon />,
+                icon: <Icon icon={awardIcon} />,
               },
               {
                 link: "stories",
                 name: "Stories",
-                icon: <ImportContactsRoundedIcon />,
-              },
-              {
-                link: "user",
-                name: "Profile",
-                icon: <ProfileImage />,
+                icon: <Icon icon={book2} />,
               },
               {
                 link: "settings",
                 name: "Settings",
-                icon: <SettingsRoundedIcon />,
+                icon: <Icon icon={settingsIcon} />,
               },
             ].map(({ link, name, icon }, i) => (
               <Link key={i} href={`/${link}`}>

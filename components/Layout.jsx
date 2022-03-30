@@ -7,27 +7,13 @@ import Footer from "./Footer";
 import ErrorBoundary from "./ErrorBoundary";
 
 const StyledWrapper = styled.div`
-  color: white;
+  /* color: white; */
 
   .es-content__wrapper {
     margin: auto;
     display: flow-root;
     max-width: 1100px;
     position: relative;
-
-    &::before {
-      content: "";
-      display: block;
-      position: fixed;
-      width: calc((100vw - 1100px) / 2);
-      /* background: red; */
-      top: 0px;
-      /* left: 0px; */
-      transform: translate(-100%, 0);
-      height: 30px;
-      box-sizing: border-box;
-      border-bottom: solid 1px hsla(0, 0%, 100%, 0.2);
-    }
   }
 
   .es-content {
@@ -35,7 +21,7 @@ const StyledWrapper = styled.div`
     padding: 0px;
   }
   a {
-    color: #b7e5f4;
+    color: var(--hokuto-100);
   }
 
   .es-mainContent {
@@ -49,10 +35,10 @@ const StyledWrapper = styled.div`
     padding: 10px 20px 20px;
   }
 
-  @media only screen and (min-width: 1100px) {
-    .es-content__wrapper {
-      border-right: solid 1px hsla(0, 0%, 100%, 0.2);
-    }
+  --content-margin: 0.5rem;
+
+  @media only screen and (min-width: 600px) {
+    --content-margin: 1rem;
   }
 `;
 

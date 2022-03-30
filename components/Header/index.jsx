@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Breadcrumbs from "./Breadcrumbs";
 
 const HeaderWrapper = styled.header`
-  border-bottom: solid 1px hsla(0, 0%, 100%, 0.2);
+  /* border-bottom: solid 1px hsla(0, 0%, 100%, 0.2); */
   padding: 5px 10px;
   display: flex;
   align-items: center;
@@ -11,8 +11,7 @@ const HeaderWrapper = styled.header`
   position: fixed;
   z-index: 100;
   width: calc(100% - 200px);
-  background: rgba(16, 16, 20, 0.6);
-  backdrop-filter: blur(20px);
+  background: rgba(16, 16, 20, 0.9);
   transition: transform 0.2s ease;
 `;
 

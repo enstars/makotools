@@ -1,21 +1,16 @@
 import styled from "styled-components";
-import Breadcrumbs from "./Breadcrumbs";
+import Breadcrumbs from "./Header/Breadcrumbs";
 const StyledWrapper = styled.header`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 200px;
-  padding: 10px 20px 10px;
-  --backgroundColor: #0e2dc8;
+  padding: 1.25rem;
+  background: var(--ritsu-700);
 
-  background: linear-gradient(
-    315deg,
-    var(--backgroundColor) -50%,
-    transparent 100%
-  );
   color: white;
   user-select: none;
-  /* border-radius: 5px 5px 0px 0px; */
+  border-radius: 0.5rem;
   overflow: hidden;
   position: relative;
 
@@ -24,7 +19,12 @@ const StyledWrapper = styled.header`
     font-size: 2.5em;
     position: relative;
     z-index: 10;
+    font-weight: 900;
+    font-family: "Metropolis";
+    line-height: 1;
   }
+
+  margin: var(--content-margin);
 `;
 function Title({ title, color = "#0e2dc8", children }) {
   return (

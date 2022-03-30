@@ -1,8 +1,3 @@
-@use "mixins" as m;
-// @import url("https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap");
-// @import url("https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap");
-// @import "@fontsource/plus-jakarta-sans/latin.css";
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;400;500;700;900&display=swap");
 @import "variables";
 
 * {
@@ -10,50 +5,22 @@
 }
 
 :root {
-  font: 16px "Barlow", "Noto Sans JP", sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  font-family: "InterVariable","Inter","Noto Sans JP", "Metropolis", -apple-system,
+    BlinkMacSystemFont, Segoe UI, Roboto, "IBM Plex Sans Thai Looped", Ubuntu,
+    Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
 
-html {
 
-  //   scrollbar-width: thin;
-  scrollbar-color: hsl(0, 0%, 50%) transparent;
-  scrollbar-gutter: stable;
-
-  &::-webkit-scrollbar-thumb {
-    background-color: hsl(0, 0%, 50%);
-  }
-
-  &::-webkit-scrollbar {
-    width: 5px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
 
 }
 
-html {
-  //   background: black;
-}
-
-body {
-  background: black;
-  background: #101014;
-  background: linear-gradient(to bottom, #101014,#0f0f28);
-  overflow: overlay;
+body {  
+  background: var(--ritsu-900);
+  color: var(--ritsu-100);
   display: flow-root;
-}
-
-.es-site__background {
-  position: fixed;
-  z-index: -1;
-  width: 100vw;
-  height: calc(100vh + 100px);
-  top: 0px;
-  left: 0px;
-  mix-blend-mode: lighten;
-  opacity: 0.5;
 }

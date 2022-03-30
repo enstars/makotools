@@ -1,0 +1,87 @@
+
+  .wrapper {
+    display: block;
+    height: 180px;
+    gap: 15px;
+    color: inherit;
+    text-decoration: none;
+    position: relative;
+
+    /* z-index: 1; */
+
+    * {
+      transition: all 0.5s cubic-bezier(0, 1, 0, 1);
+    }
+  }
+
+
+
+.content {
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: left /250% 100% no-repeat
+      linear-gradient(-45deg, var(--characterColor) 50%, transparent 50%);
+    transition: all 0.5s cubic-bezier(0, 1, 0, 1), background 0.2s ease;
+
+    &:hover {
+    // z-index: 3;
+    background-position: right;
+    // @include m.card(1);
+
+    .image {
+        visibility: hidden;
+        &.bloomed {
+        visibility: visible;
+        z-index: 2;
+        }
+    }
+
+    .info {
+        transform: translate(15px, 0%);
+    }
+    }
+}
+.image {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 400px;
+  height: 180px;
+  z-index: 1;
+  pointer-events: none;
+
+  &.bloomed {
+    visibility: hidden;
+    top: -100%;
+    z-index: -5;
+  }
+}
+
+.info {
+  pointer-events: none;
+  position: absolute;
+  top: 0px;
+  right: 0%;
+  padding: 5px;
+  font-weight: 900;
+  line-height: 1;
+  z-index: 2;
+  color: white;
+  background: hsla(var(--ritsu-900--hsl), 0.6);
+  width: 1.5em;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  transform: translate(100%, 0%);
+  writing-mode: vertical-lr;
+  text-orientation: mixed;
+  width: 40px;
+  padding-right: 20px;
+  font-family: "Metropolis", var(--base-fonts);
+}
