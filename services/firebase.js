@@ -67,12 +67,15 @@ getRedirectResult(auth)
 
 function syncFirestoreUserData(user) {
   // console.log(user);
-  setFirestoreUserData(user.uid, {
-    // googleUser: JSON.stringify(user),
-    user: JSON.stringify(user),
-    // i actually have no idea if this is safe. but this should be only public info so
-    lastLogin: serverTimestamp(),
-  });
+  setFirestoreUserData(
+    {
+      // googleUser: JSON.stringify(user),
+      user: JSON.stringify(user),
+      // i actually have no idea if this is safe. but this should be only public info so
+      lastLogin: serverTimestamp(),
+    },
+    user.uid
+  );
 }
 
 function setFirestoreUserData(data, uid = auth.currentUser.uid) {
@@ -83,9 +86,7 @@ async function getFirestoreUserData(uid = auth.currentUser.uid) {
   const docSnap = await getDoc(doc(db, "users", uid));
 
   if (docSnap.exists()) {
-    // Convert to City object
     const data = docSnap.data();
-    // Use a City instance method
     return data;
   }
   return null;

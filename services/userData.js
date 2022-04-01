@@ -21,7 +21,7 @@ function UserDataProvider({ children }) {
       if (currentUser?.uid) {
         const currentUserData = await getFirestoreUserData(currentUser.uid);
         console.log(currentUserData);
-        if (currentUserData.user)
+        if (currentUserData?.user)
           currentUserData.user = JSON.parse(currentUserData.user);
         setUserData(currentUserData);
       } else setUserData(null);
