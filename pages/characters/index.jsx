@@ -7,8 +7,7 @@ import _ from "lodash";
 import { getData, getB2File } from "../../services/ensquare";
 import Title from "../../components/Title";
 import Main from "../../components/Main";
-import Dropdown from "../../components/library/Dropdown";
-
+import Dropdown from "../../components/core/Dropdown";
 const StyledWrapper = styled.div`
   .header-render {
     position: absolute;
@@ -68,23 +67,23 @@ function Characters() {
       let charactersWithUnits = unitToCharactersQuery.data;
 
       if (chosenUnit) {
-        const filterOptionsChosenID = chosenUnit.id;
-        // console.log(filterOptionsChosenID);
+        const filterOptionsChosenID = chosenUnit.unit_id;
+        console.log(filterOptionsChosenID);
         charactersWithUnits = charactersWithUnits.filter(
           (character) => filterOptionsChosenID === character.unit_id
         );
+        console.log(charactersWithUnits);
       }
-      // console.log(charactersWithUnits);
       const charactersWithUnitsSorted = _.sortBy(charactersWithUnits, [
         function findUnitOrder(charactersWithUnit) {
           const thisUnit = unitsQuery.data.filter(
-            (unit) => unit.id === charactersWithUnit.unit_id
+            (unit) => unit.unit_id === charactersWithUnit.unit_id
           )[0] || {
             name: "MaM",
-            order_num: 14,
+            order: 14,
           }; // MaM *sobs*
           // eslint-disable-next-line dot-notation
-          return thisUnit.order_num;
+          return thisUnit.order;
         },
         "order_num_in_unit_as_list",
       ]);
@@ -93,7 +92,7 @@ function Characters() {
         const char = JSON.parse(
           JSON.stringify(
             charactersQuery.data.filter(
-              (chara) => chara.id === charaUnit.character_id
+              (chara) => chara.character_id === charaUnit.character_id
             )[0]
           )
         );
@@ -104,14 +103,13 @@ function Characters() {
         } else {
           char.doubleface = false;
         }
-        char.unique_id = `${char.id}-${charaUnit.unit_id}`;
+        char.unique_id = `${char.character_id}-${charaUnit.unit_id}`;
 
         return char;
       });
 
       setListCharacters(characters);
-
-      setfilterOptions(unitsQuery.data);
+      setfilterOptions(unitsQuery.data.sort((a, b) => !!(a?.order > b?.order)));
     }
   }, [hasAllData, chosenUnit]);
 
@@ -145,7 +143,7 @@ function Characters() {
               options={filterOptions.map((o) => {
                 return {
                   value: o,
-                  label: o.name,
+                  label: o.unit_name,
                 };
               })}
               onChange={handleNewUnit}

@@ -16,7 +16,10 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "firebase": "^9.2.0",
+    "framer-motion": "^6.2.8",
     "lodash": "^4.17.21",
+    "lodash.debounce": "^4.0.8",
+    "lodash.throttle": "^4.1.1",
     "multiselect-react-dropdown": "^2.0.7",
     "next": "^12.0.8-canary.10",
     "normalize.css": "^8.0.1",
@@ -30,6 +33,7 @@
     "sharp": "^0.29.3",
     "simplebar-react": "^2.3.6",
     "styled-components": "^5.3.3",
+    "use-debounce": "^7.0.1",
     "web-vitals": "^1.0.1"
   },
   "scripts": {

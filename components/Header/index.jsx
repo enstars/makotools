@@ -11,7 +11,7 @@ const HeaderWrapper = styled.header`
   position: fixed;
   z-index: 100;
   width: calc(100% - 200px);
-  background: rgba(16, 16, 20, 0.9);
+  background: hsla(var(--ritsu-900--hsl), 0.8);
   transition: transform 0.2s ease;
 `;
 

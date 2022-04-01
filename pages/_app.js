@@ -23,6 +23,7 @@ import "normalize.css/normalize.css";
 import "../styles/index.scss";
 
 import AuthProvider from "../services/auth";
+import UserDataProvider from "../services/userData";
 
 // const queryClient = new QueryClient();
 
@@ -77,19 +78,9 @@ function MyApp({ Component, pageProps }) {
           <QueryClientProvider client={queryClient}>
             <Hydrate state={pageProps.dehydratedState}>
               <AuthProvider>
-                {/* <iframe
-                  title="Site Background"
-                  className="es-site__background"
-                  width="1920"
-                  height="1080"
-                  frameBorder="0"
-                  scrolling="no"
-                  marginHeight="0"
-                  marginWidth="0"
-                  src="https://virtualsky.lco.global/embed/index.html?longitude=139.839478&latitude=35.652832&gradient=false&projection=stereo&mouse=false&keyboard=false&cardinalpoints=false&showplanets=false&showplanetlabels=false&showdate=false&showposition=false&color=#000&az=318.6611215126213"
-                  allowtransparency="true"
-                /> */}
-                {getLayout(<Component {...pageProps} />)}
+                <UserDataProvider>
+                  {getLayout(<Component {...pageProps} />)}
+                </UserDataProvider>
               </AuthProvider>
             </Hydrate>
           </QueryClientProvider>

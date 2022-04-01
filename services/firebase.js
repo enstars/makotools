@@ -8,9 +8,21 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { getFirestore, doc, setDoc, serverTimestamp } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  serverTimestamp,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+
 import "firebase/compat/auth";
 
+// Config & Initialization
 const firebaseConfig = {
   apiKey: "AIzaSyA530zKJVq_vi56gzta4J_jGWIxgCIJg2k",
   authDomain: "ensemble-square.firebaseapp.com",
@@ -20,37 +32,70 @@ const firebaseConfig = {
   appId: "1:940403567905:web:51d666cacd10e979cb2260",
   measurementId: "G-L1FLXJKQC5",
 };
-
 const firebaseApp = initializeApp(firebaseConfig);
 
+// Authentication
 export const auth = getAuth(firebaseApp);
-
 const provider = new GoogleAuthProvider();
-
 provider.setCustomParameters({ prompt: "select_account" });
 
 export const appSignInWithGoogle = () => signInWithRedirect(auth, provider);
 export const appSignOut = () => signOut(auth);
-
 export const appSignInWithEmailAndPassword = (email, password) =>
-  signInWithEmailAndPassword(auth, email, password);
+  signInWithEmailAndPassword(auth, email, password).then((result) =>
+    syncFirestoreUserData(result.user)
+  );
 export const appSignUpWithEmailAndPassword = (email, password) =>
-  createUserWithEmailAndPassword(auth, email, password);
+  createUserWithEmailAndPassword(auth, email, password).then((result) =>
+    syncFirestoreUserData(result.user)
+  );
 
+// Firestore Database
 const db = getFirestore();
 
 getRedirectResult(auth)
   .then((result) => {
-    const { user } = result;
-    console.log(user);
-
-    setDoc(doc(db, "users", user.uid), {
-      googleUser: JSON.stringify(user),
-      // i actually have no idea if this is safe. but this should be only public info so
-      lastLogin: serverTimestamp(),
-    });
+    if (result) {
+      const { user } = result;
+      // console.log(user);
+      syncFirestoreUserData(user);
+    }
   })
-  .catch(() => {
-    // console.error(e);
+  .catch((e) => {
+    console.error(e);
   });
-// export default firebase;
+
+function syncFirestoreUserData(user) {
+  // console.log(user);
+  setFirestoreUserData(user.uid, {
+    // googleUser: JSON.stringify(user),
+    user: JSON.stringify(user),
+    // i actually have no idea if this is safe. but this should be only public info so
+    lastLogin: serverTimestamp(),
+  });
+}
+
+function setFirestoreUserData(data, uid = auth.currentUser.uid) {
+  setDoc(doc(db, "users", uid), data, { merge: true });
+}
+
+async function getFirestoreUserData(uid = auth.currentUser.uid) {
+  const docSnap = await getDoc(doc(db, "users", uid));
+
+  if (docSnap.exists()) {
+    // Convert to City object
+    const data = docSnap.data();
+    // Use a City instance method
+    return data;
+  }
+  return null;
+}
+
+async function validateUsernameDb(username) {
+  const q = query(collection(db, "users"), where("username", "==", username));
+  const querySnap = await getDocs(q);
+  const usernameValid = !!!querySnap.size;
+  return usernameValid;
+}
+
+export { setFirestoreUserData, getFirestoreUserData, validateUsernameDb };

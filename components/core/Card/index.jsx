@@ -2,9 +2,9 @@ import styled from "styled-components";
 
 const StyledCard = styled.div`
   box-shadow: var(--shadow);
+  border: solid 1px var(--ritsu-600);
   background: var(--ritsu-700);
   border-radius: 0.25rem;
-  border: solid 1px var(--ritsu-600);
   overflow: hidden;
   transition: transform 0.2s ease;
 

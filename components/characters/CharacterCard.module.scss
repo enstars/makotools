@@ -1,49 +1,44 @@
+.wrapper {
+  display: block;
+  height: 180px;
+  gap: 15px;
+  color: inherit;
+  text-decoration: none;
+  position: relative;
 
-  .wrapper {
-    display: block;
-    height: 180px;
-    gap: 15px;
-    color: inherit;
-    text-decoration: none;
-    position: relative;
+  /* z-index: 1; */
 
-    /* z-index: 1; */
-
-    * {
-      transition: all 0.5s cubic-bezier(0, 1, 0, 1);
-    }
+  * {
+    transition: all 0.5s cubic-bezier(0, 1, 0, 1);
   }
-
-
+}
 
 .content {
-    overflow: hidden;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background: left /250% 100% no-repeat
-      linear-gradient(-45deg, var(--characterColor) 50%, transparent 50%);
-    transition: all 0.5s cubic-bezier(0, 1, 0, 1), background 0.2s ease;
+  overflow: hidden;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: left / 250% 100% no-repeat
+    linear-gradient(-45deg, var(--characterColor) 50%, transparent 50%);
+  transition: all 0.5s cubic-bezier(0, 1, 0, 1), background 0.2s ease;
 
-    &:hover {
-    // z-index: 3;
+  &:hover {
     background-position: right;
-    // @include m.card(1);
 
     .image {
-        visibility: hidden;
-        &.bloomed {
+      visibility: hidden;
+      &.bloomed {
         visibility: visible;
         z-index: 2;
-        }
+      }
     }
 
     .info {
-        transform: translate(15px, 0%);
+      transform: translate(15px, 0%);
     }
-    }
+  }
 }
 .image {
   position: relative;

@@ -2,30 +2,20 @@ import Link from "next/link";
 import styled from "styled-components";
 
 const StyledFooter = styled.footer`
-  padding: 0;
-  min-height: 300px;
-  color: white;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.25rem;
+  border: solid 1px var(--ritsu-600);
+
+  border-radius: 0.5rem;
+  overflow: hidden;
   position: relative;
-  background: bottom center / 100% no-repeat url("/footer_image.png");
-  display: flow-root;
+  margin: var(--content-margin);
 
-  &::before {
-    float: left;
-    padding-top: 50%;
-    content: "";
-  }
-
-  &::after {
-    display: block;
-    content: "";
-    clear: both;
-  }
 
   .footer-content {
-      margin: 100px 40px 20px;
-      padding: 20px;
-      border-radius: 5px;
-      background: #101014c1;
       max-width: 400px;
 
       a {

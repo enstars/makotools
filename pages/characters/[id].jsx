@@ -18,7 +18,9 @@ function Character() {
   useEffect(() => {
     window.scrollTo(0, 0);
     if (characters) {
-      const character = characters.find((item) => item.id === parseInt(id, 10));
+      const character = characters.find(
+        (item) => item.character_id === parseInt(id, 10)
+      );
       setViewCharacter(character);
     }
   }, [characters, id]);
@@ -30,26 +32,33 @@ function Character() {
   return (
     <>
       <Title
-        title={viewCharacter.name}
-        color={viewCharacter.personal_color_code}
+        title={`${viewCharacter.first_name} ${viewCharacter.last_name}`}
       ></Title>
       <div className="content-text">
+        <h1>
+          <ruby>
+            {viewCharacter.first_name}
+            <rp> (</rp>
+            <rt>{viewCharacter.last_nameRuby}</rt>
+            <rp>)</rp>
+          </ruby>
+          <ruby>
+            {viewCharacter.last_name}
+            <rp> (</rp>
+            <rt>{viewCharacter.last_nameRuby__1}</rt>
+            <rp>)</rp>
+          </ruby>
+        </h1>
+
         <Image
-          src={getB2File(`render/character_full1_${viewCharacter.id}.png`)}
+          src={getB2File(
+            `render/character_full1_${viewCharacter.character_id}.png`
+          )}
           alt={viewCharacter.first_name}
           layout="responsive"
           width="600"
           height="600"
         />
-
-        <h1>
-          <ruby>
-            {viewCharacter.name}
-            <rp> (</rp>
-            <rt>{viewCharacter.kana_name}</rt>
-            <rp>)</rp>
-          </ruby>
-        </h1>
         <ul>
           <li>Birthday: {viewCharacter.birthday}</li>
           <li>Age: {viewCharacter.age}</li>

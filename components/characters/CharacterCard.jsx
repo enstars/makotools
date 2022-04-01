@@ -5,16 +5,16 @@ import { getData, getB2File } from "../../services/ensquare";
 import { Chat } from "@mui/icons-material";
 import { twoStarIDs } from "../../data/characterIDtoCardID";
 import styles from "./CharacterCard.module.scss";
-import Card from "../library/Card";
+import Card from "../core/Card";
 
 export function CharacterCard({ character }) {
   return (
     <Card>
-      <Link href={`/characters/${character.id}`}>
+      <Link href={`/characters/${character.character_id}`}>
         <a
           className={styles.wrapper}
           style={{
-            "--characterColor": character.personal_color_code,
+            "--characterColor": character.image_color,
           }}
         >
           <div className={styles.content}>
@@ -24,12 +24,12 @@ export function CharacterCard({ character }) {
                   character.doubleface
                     ? getB2File(
                         `cards/card_full1_${
-                          twoStarIDs.doubleface[character.id]
+                          twoStarIDs.doubleface[character.character_id]
                         }_normal.png`
                       )
                     : getB2File(
                         `cards/card_full1_${
-                          twoStarIDs[character.id]
+                          twoStarIDs[character.character_id]
                         }_normal.png`
                       )
                 }
@@ -45,12 +45,12 @@ export function CharacterCard({ character }) {
                   character.doubleface
                     ? getB2File(
                         `cards/card_full1_${
-                          twoStarIDs.doubleface[character.id]
+                          twoStarIDs.doubleface[character.character_id]
                         }_evolution.png`
                       )
                     : getB2File(
                         `cards/card_full1_${
-                          twoStarIDs[character.id]
+                          twoStarIDs[character.character_id]
                         }_evolution.png`
                       )
                 }

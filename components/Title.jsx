@@ -7,8 +7,9 @@ const StyledWrapper = styled.header`
   height: 200px;
   padding: 1.25rem;
   background: var(--ritsu-700);
+  box-shadow: var(--shadow);
+  border: solid 1px var(--ritsu-600);
 
-  color: white;
   user-select: none;
   border-radius: 0.5rem;
   overflow: hidden;

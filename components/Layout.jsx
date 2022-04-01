@@ -19,6 +19,7 @@ const StyledWrapper = styled.div`
   .es-content {
     margin-left: 200px;
     padding: 0px;
+    min-height: 100vh;
   }
   a {
     color: var(--hokuto-100);
@@ -26,9 +27,18 @@ const StyledWrapper = styled.div`
 
   .es-mainContent {
     min-height: 100vh;
-    /* min-height: max(350px, 60vh); */
     display: flow-root;
     position: relative;
+    display: flex;
+    flex-direction: column;
+
+    & > *:not(:last-child) {
+      margin-bottom: 0;
+    }
+
+    .es-expand {
+      flex: 1 1 0;
+    }
   }
 
   .content-text {
@@ -56,10 +66,11 @@ function Layout({ children: Component, footer = true }) {
         <Sidebar />
         <div className="es-content">
           <Header />
-          <main className="es-mainContent">
+          <article className="es-mainContent">
             <ErrorBoundary>{Component}</ErrorBoundary>
-          </main>
-          {footer ? <Footer /> : null}
+            <div className="es-expand"></div>
+            {footer ? <Footer /> : null}
+          </article>
         </div>
       </div>
     </StyledWrapper>

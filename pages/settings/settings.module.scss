@@ -1,0 +1,13 @@
+input.usernameInput {
+  padding-left: 2em;
+  &:focus {
+    padding-left: 2em;
+  }
+}
+
+.usernameInputSign {
+  position: absolute;
+  left: calc(0.75em);
+  bottom: 0.75em;
+  color: var(--ritsu-400);
+}
