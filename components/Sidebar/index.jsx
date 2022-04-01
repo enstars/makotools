@@ -3,13 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 import styled from "styled-components";
 import { useRouter } from "next/router";
-// import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
-import MilitaryTechRoundedIcon from "@mui/icons-material/MilitaryTechRounded";
-import ImportContactsRoundedIcon from "@mui/icons-material/ImportContactsRounded";
-import GroupRoundedIcon from "@mui/icons-material/GroupRounded";
-import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import { useAuth } from "../../services/auth";
+import { useUserData } from "../../services/userData";
 import { EnsembleSquareLogo } from "../../public/logo_square";
 import { Icon } from "@iconify/react";
 import usersIcon from "@iconify/icons-tabler/users";
@@ -17,6 +12,8 @@ import playCard from "@iconify/icons-tabler/play-card";
 import awardIcon from "@iconify/icons-tabler/award";
 import book2 from "@iconify/icons-tabler/book-2";
 import settingsIcon from "@iconify/icons-tabler/settings";
+import { motion } from "framer-motion";
+import styles from "./sidebar.module.scss";
 const StyledWrapper = styled.aside`
   /* background: #1e1e23; */
   font-family: "Metropolis", "InterVariable", "Inter";
@@ -27,6 +24,7 @@ const StyledWrapper = styled.aside`
   width: 200px;
   z-index: 2;
   overflow: auto;
+  padding-left: var(--content-margin);
 
   .es-sidebar__content {
     width: 100%;
@@ -74,9 +72,7 @@ const StyledWrapper = styled.aside`
 
   .es-sidebar__links {
     a {
-      /* font-size: 0.8em; */
-      /* text-transform: uppercase; */
-      /* text-transform: lowercase; */
+      position: relative;
       text-decoration: none;
       letter-spacing: 0.05em;
       color: inherit;
@@ -98,6 +94,17 @@ const StyledWrapper = styled.aside`
         svg g {
           stroke-width: 2;
         }
+      }
+
+      .highlight {
+        background: hsla(var(--ritsu-100--hsl), 0.2);
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        border-radius: 0.25rem;
+        z-index: 0;
       }
     }
   }
@@ -146,38 +153,9 @@ const StyledWrapper = styled.aside`
   }
 `;
 
-function ProfileImage() {
-  // eslint-disable-next-line prefer-const
-  let [user, setUser] = useState({
-    displayName: "Logged Out",
-    photoURL: "/404_1.png",
-  });
-  const authUser = useAuth();
-  useEffect(() => {
-    user = authUser.user;
-    if (user) {
-      setUser(user);
-    }
-  }, [authUser]);
-  return (
-    <div className="profile-image">
-      <Image
-        referrerPolicy="no-referrer"
-        src={
-          user.photoURL
-            ? `/api/imageproxy?url=${encodeURIComponent(user.photoURL)}`
-            : "/404_2.png"
-        }
-        alt={user.displayName}
-        objectFit="cover"
-        layout="fill"
-      />
-    </div>
-  );
-}
-
 function Sidebar() {
   const location = useRouter();
+  const { userData } = useUserData();
 
   return (
     <StyledWrapper className="es-sidebar">
@@ -211,11 +189,6 @@ function Sidebar() {
                 name: "Stories",
                 icon: <Icon icon={book2} />,
               },
-              {
-                link: "settings",
-                name: "Settings",
-                icon: <Icon icon={settingsIcon} />,
-              },
             ].map(({ link, name, icon }, i) => (
               <Link key={i} href={`/${link}`}>
                 <a
@@ -225,11 +198,27 @@ function Sidebar() {
                 >
                   {icon}
                   <span>{name}</span>
+                  {location.asPath.split("/")[1] === link && (
+                    <motion.div layoutId="highlight" className="highlight" />
+                  )}
                 </a>
               </Link>
             ))}
           </nav>
-          <div className="es-sidebar__links" />
+        </div>
+        <div className={styles.account}>
+          {/* {JSON.stringify(userData)} */}
+          {userData ? (
+            <Link href="/settings">
+              <a className={styles.userAccount}>
+                @{userData.username || "null"}
+              </a>
+            </Link>
+          ) : (
+            <Link href="/login">
+              <a className="es-userLink">Log in / Sign up</a>
+            </Link>
+          )}
         </div>
       </div>
     </StyledWrapper>
