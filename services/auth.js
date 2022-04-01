@@ -7,14 +7,14 @@ const AuthContext = React.createContext();
 export const useAuth = () => useContext(AuthContext);
 
 function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({ loading: true });
   const router = useRouter();
   useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser.uid !== user?.uid) {
-        setUser(currentUser);
-        // router.push("/");
-      }
+      setUser(currentUser);
+      //   if (currentUser?.uid !== user?.uid) {
+      //     // router.push("/");
+      //   }
     });
   }, [router, user?.uid]);
 

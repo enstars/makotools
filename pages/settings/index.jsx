@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUserData } from "../../services/userData";
 import Title from "../../components/Title";
 import Main from "../../components/Main";
@@ -9,44 +9,59 @@ import Button from "../../components/core/Button";
 import styles from "./settings.module.scss";
 import Username from "./Username";
 import Setting from "./Setting";
+import { appSignOut } from "../../services/firebase";
+import { useAuth } from "../../services/auth";
+import { useRouter } from "next/router";
 
 function Page() {
-  return (
-    <>
-      <Title title="Settings" />
-      <Main>
-        <Setting type="text" option="name" label="Name" defaultValue="User" />
-        <Username />
-        <Setting
-          type="choice"
-          option="dark_mode"
-          label="Mode"
-          options={[
-            { value: false, label: "Light Mode" },
-            { value: true, label: "Dark Mode" },
-          ]}
-          defaultValue={true}
-        />
-        <Setting
-          type="choice"
-          option="content_region"
-          label="Game Region"
-          options={[
-            { value: "jp", label: "Japan" },
-            { value: "cn", label: "Mainland China" },
-            { value: "kr", label: "Korea" },
-            { value: "tw", label: "Taiwan" },
-            {
-              value: "en",
-              label: "United Kingdom, Canada, Australia",
-            },
-            { value: "us", label: "United States" },
-          ]}
-          defaultValue={"jp"}
-        />
-      </Main>
-    </>
-  );
+  const router = useRouter();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (!!!user) {
+      router.push("/login");
+    }
+  }, [user, router]);
+
+  if (user?.uid)
+    return (
+      <>
+        <Title title="Settings" />
+        <Main>
+          <Setting type="text" option="name" label="Name" defaultValue="User" />
+          <Username />
+          <Setting
+            type="choice"
+            option="dark_mode"
+            label="Mode"
+            options={[
+              { value: false, label: "Light Mode" },
+              { value: true, label: "Dark Mode" },
+            ]}
+            defaultValue={true}
+          />
+          <Setting
+            type="choice"
+            option="content_region"
+            label="Game Region"
+            options={[
+              { value: "jp", label: "Japan" },
+              { value: "cn", label: "Mainland China" },
+              { value: "kr", label: "Korea" },
+              { value: "tw", label: "Taiwan" },
+              {
+                value: "en",
+                label: "United Kingdom, Canada, Australia",
+              },
+              { value: "us", label: "United States" },
+            ]}
+            defaultValue={"jp"}
+          />
+          <Button onClick={appSignOut}>Log Out</Button>
+        </Main>
+      </>
+    );
+  return null;
 }
 
 export default Page;

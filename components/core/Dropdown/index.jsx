@@ -1,11 +1,11 @@
 import dynamic from "next/dynamic";
 import Select from "react-select";
 
-const CLRSelect = dynamic(() => import("react-select"), { ssr: false });
+// const CLRSelect = dynamic(() => import("react-select"), { ssr: false });
 function Dropdown(props) {
   return (
-    <CLRSelect
-      // menuPortalTarget={document?.body || null}
+    <Select
+      menuPortalTarget={typeof document !== "undefined" ? document?.body : null}
       theme={(theme) => ({
         ...theme,
         borderRadius: "0.25rem",

@@ -18,15 +18,13 @@ function UserDataProvider({ children }) {
 
   useEffect(() => {
     onAuthStateChanged(auth, async (currentUser) => {
-      console.log(222);
-      console.log(currentUser);
       if (currentUser?.uid) {
-        console.log(222222);
         const currentUserData = await getFirestoreUserData(currentUser.uid);
-        // console.log(currentUserData);
-        currentUserData.user = JSON.parse(currentUserData.user);
+        console.log(currentUserData);
+        if (currentUserData.user)
+          currentUserData.user = JSON.parse(currentUserData.user);
         setUserData(currentUserData);
-      }
+      } else setUserData(null);
     });
   }, []);
 

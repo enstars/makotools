@@ -1,12 +1,8 @@
-import Homepage3D from "../components/Homepage3D";
-
-function Splash() {
-  return <>{/* <Homepage3D /> */}</>;
-}
 function Home() {
   return (
     <>
-      <Splash />
+      yeah i know this is kinda boring for a first page ill fill it up later.
+      for now just click sidebar stuff
       {/* <div className="content-text" /> */}
     </>
   );
