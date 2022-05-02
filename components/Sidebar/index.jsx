@@ -15,6 +15,7 @@ import {
   IconAward,
   IconBooks,
   IconLogin,
+  IconUser,
 } from "@tabler/icons";
 import {
   Navbar,
@@ -161,13 +162,7 @@ function Sidebar({ opened, setOpened }) {
                       sx={{ flexWrap: "nowrap", alignItems: "flex-start" }}
                     >
                       <Avatar color="blue" size="sm" radius="md">
-                        {userData.name
-                          .match(/(\b\S)?/g)
-                          .join("")
-                          .split("")
-                          .slice(0, 2)
-                          .join("")
-                          .toUpperCase()}
+                        <IconUser size={16} />
                       </Avatar>
                       <Box sx={{ minWidth: 0 }}>
                         <Text
@@ -179,10 +174,10 @@ function Sidebar({ opened, setOpened }) {
                             overflow: "hidden",
                           }}
                         >
-                          {userData?.name}
+                          {userData?.name || userData.user.email.split("@")[0]}
                         </Text>
                         <Text size="xs" color="dimmed" mt={-2}>
-                          @{userData?.username}
+                          @{userData?.username || userData.user.email}
                         </Text>
                       </Box>
                     </Group>
