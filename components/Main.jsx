@@ -1,7 +1,7 @@
 import styled from "styled-components";
 const contentWidth = 900;
 const MainContent = styled.main`
-  margin: var(--content-margin);
+  /* margin: var(--content-margin); */
 `;
 // function Main({ fullWidth, children }) {
 //   if (fullWidth) return <MainContent>{children}</MainContent>;

@@ -1,9 +1,17 @@
 // import App from 'next/app'
 import React, { useState, useEffect } from "react";
+import { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
-import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import Head from "next/head";
-import { MantineProvider } from "@mantine/core";
+import { getCookie, setCookies } from "cookies-next";
+
+import {
+  MantineProvider,
+  ColorScheme,
+  ColorSchemeProvider,
+} from "@mantine/core";
+
+import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 
 import "@fontsource/metropolis/400.css";
 import "@fontsource/metropolis/500.css";
@@ -26,10 +34,12 @@ import UserDataProvider from "../services/userData";
 
 // const queryClient = new QueryClient();
 
-function MyApp({ Component, pageProps }) {
+function App({ Component, pageProps, ...props }) {
   const location = useRouter();
   const [currentPath, setCurrentPath] = useState(location.pathname);
   const [queryClient] = useState(() => new QueryClient());
+  const [colorScheme, setColorScheme] = useState(props.colorScheme);
+  // const [colorScheme, setColorScheme] = useState("dark");
 
   useEffect(() => {
     setCurrentPath(location.pathname);
@@ -38,6 +48,16 @@ function MyApp({ Component, pageProps }) {
 
   const getLayout = Component.getLayout || ((page) => page);
 
+  const toggleColorScheme = (value) => {
+    const nextColorScheme =
+      value || (colorScheme === "dark" ? "light" : "dark");
+    setColorScheme(nextColorScheme);
+    // when color scheme is updated save it to cookie
+    setCookies("color-scheme", nextColorScheme, {
+      maxAge: 60 * 60 * 24 * 30,
+    });
+  };
+
   return (
     <>
       <Head>
@@ -45,24 +65,63 @@ function MyApp({ Component, pageProps }) {
       </Head>
       <AuthProvider>
         <UserDataProvider>
-          <MantineProvider
-            withGlobalStyles
-            withNormalizeCSS
-            theme={{
-              /** Put your mantine theme override here */
-              colorScheme: "light",
-            }}
+          <ColorSchemeProvider
+            colorScheme={colorScheme}
+            toggleColorScheme={toggleColorScheme}
           >
-            <QueryClientProvider client={queryClient}>
-              <Hydrate state={pageProps.dehydratedState}>
+            <MantineProvider
+              withGlobalStyles
+              withNormalizeCSS
+              theme={{
+                colorScheme,
+                colors: {
+                  // override dark colors to change them for all components
+                  dark: [
+                    "#D3D6E0",
+                    "#AAB1C2",
+                    "#8E97AD",
+                    "#5F6982",
+                    "#3A4259",
+                    "#2C3347",
+                    "#212736",
+                    "#191C27",
+                    "#171921",
+                    "#12141C",
+                  ],
+                  blue: [
+                    "#E8ECFD",
+                    "#C0CAF4",
+                    "#A4B1E8",
+                    "#8297EE",
+                    "#5E78E3",
+                    "#3C59D1",
+                    "#324CB3",
+                    "#273E96",
+                    "#1C2F7D",
+                    "#14297A",
+                  ],
+                },
+                headings: {
+                  fontFamily: "Metropolis, InterVariable, Inter, sans-serif",
+                },
+              }}
+            >
+              <QueryClientProvider client={queryClient}>
+                {/* <Hydrate state={pageProps.dehydratedState}> */}
                 {getLayout(<Component {...pageProps} />)}
-              </Hydrate>
-            </QueryClientProvider>
-          </MantineProvider>
+                {/* </Hydrate> */}
+              </QueryClientProvider>
+            </MantineProvider>
+          </ColorSchemeProvider>
         </UserDataProvider>
       </AuthProvider>
     </>
   );
 }
 
-export default MyApp;
+App.getInitialProps = ({ ctx }) => ({
+  // get color scheme from cookie
+  colorScheme: getCookie("color-scheme", ctx) || "dark",
+});
+
+export default App;
