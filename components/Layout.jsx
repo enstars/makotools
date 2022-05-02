@@ -75,25 +75,27 @@ function Layout({ children: Component, footer = true }) {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
   return (
-    <AppShell
-      styles={{
-        main: {
-          background:
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[8]
-              : theme.colors.gray[0],
-        },
-      }}
-      navbarOffsetBreakpoint="sm"
-      asideOffsetBreakpoint="sm"
-      fixed
-      navbar={<Sidebar opened={opened} setOpened={setOpened} />}
-    >
-      <ErrorBoundary>{Component}</ErrorBoundary>
-      <Footer height={60} p="md">
-        Application footer
-      </Footer>
-    </AppShell>
+    <ErrorBoundary>
+      <AppShell
+        styles={{
+          main: {
+            background:
+              theme.colorScheme === "dark"
+                ? theme.colors.dark[8]
+                : theme.colors.gray[0],
+          },
+        }}
+        navbarOffsetBreakpoint="sm"
+        asideOffsetBreakpoint="sm"
+        fixed
+        navbar={<Sidebar opened={opened} setOpened={setOpened} />}
+      >
+        <ErrorBoundary>{Component}</ErrorBoundary>
+        <Footer height={60} p="md">
+          Application footer
+        </Footer>
+      </AppShell>
+    </ErrorBoundary>
   );
 }
 export default Layout;

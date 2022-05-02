@@ -7,6 +7,7 @@ import { useUserData } from "../../services/userData";
 import { EnsembleSquareLogo } from "../../public/logo_square";
 import { motion } from "framer-motion";
 import UserMenu from "./UserMenu";
+import ErrorBoundary from "../ErrorBoundary";
 
 import {
   IconUsers,
@@ -125,81 +126,83 @@ function Sidebar({ opened, setOpened }) {
       </Navbar.Section>
 
       <Navbar.Section>
-        <Box
-          sx={{
-            paddingTop: theme.spacing.sm,
-          }}
-        >
-          {userData.loading ? (
-            "loading"
-          ) : userData.loggedIn ? (
-            <UserMenu
-              trigger={
-                <Box
-                  sx={(theme) => ({
-                    display: "block",
-                    width: "100%",
-                    padding: theme.spacing.xs,
-                    borderRadius: theme.radius.sm,
-                    color:
-                      theme.colorScheme === "dark"
-                        ? theme.colors.dark[0]
-                        : theme.black,
-
-                    "&:hover": {
-                      backgroundColor:
+        <ErrorBoundary>
+          <Box
+            sx={{
+              paddingTop: theme.spacing.sm,
+            }}
+          >
+            {userData.loading ? (
+              "loading"
+            ) : userData.loggedIn ? (
+              <UserMenu
+                trigger={
+                  <Box
+                    sx={(theme) => ({
+                      display: "block",
+                      width: "100%",
+                      padding: theme.spacing.xs,
+                      borderRadius: theme.radius.sm,
+                      color:
                         theme.colorScheme === "dark"
-                          ? theme.colors.dark[6]
-                          : theme.colors.gray[0],
-                    },
-                  })}
-                >
-                  <Group
-                    spacing="sm"
-                    sx={{ flexWrap: "nowrap", alignItems: "flex-start" }}
+                          ? theme.colors.dark[0]
+                          : theme.black,
+
+                      "&:hover": {
+                        backgroundColor:
+                          theme.colorScheme === "dark"
+                            ? theme.colors.dark[6]
+                            : theme.colors.gray[0],
+                      },
+                    })}
                   >
-                    <Avatar color="blue" size="sm" radius="md">
-                      {userData.name
-                        .match(/(\b\S)?/g)
-                        .join("")
-                        .split("")
-                        .slice(0, 2)
-                        .join("")
-                        .toUpperCase()}
-                    </Avatar>
-                    <Box sx={{ minWidth: 0 }}>
-                      <Text
-                        size="sm"
-                        weight={500}
-                        sx={{
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                        }}
-                      >
-                        {userData.name}
-                      </Text>
-                      <Text size="xs" color="dimmed" mt={-2}>
-                        @{userData.username}
-                      </Text>
-                    </Box>
+                    <Group
+                      spacing="sm"
+                      sx={{ flexWrap: "nowrap", alignItems: "flex-start" }}
+                    >
+                      <Avatar color="blue" size="sm" radius="md">
+                        {userData.name
+                          .match(/(\b\S)?/g)
+                          .join("")
+                          .split("")
+                          .slice(0, 2)
+                          .join("")
+                          .toUpperCase()}
+                      </Avatar>
+                      <Box sx={{ minWidth: 0 }}>
+                        <Text
+                          size="sm"
+                          weight={500}
+                          sx={{
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                          }}
+                        >
+                          {userData?.name}
+                        </Text>
+                        <Text size="xs" color="dimmed" mt={-2}>
+                          @{userData?.username}
+                        </Text>
+                      </Box>
+                    </Group>
+                  </Box>
+                }
+              />
+            ) : (
+              <Link href="/login" passHref>
+                <SidebarButton>
+                  <Group>
+                    <ThemeIcon variant="light">
+                      <IconLogin size={16} />
+                    </ThemeIcon>
+                    <Text size="sm">Log In</Text>
                   </Group>
-                </Box>
-              }
-            />
-          ) : (
-            <Link href="/login" passHref>
-              <SidebarButton>
-                <Group>
-                  <ThemeIcon variant="light">
-                    <IconLogin size={16} />
-                  </ThemeIcon>
-                  <Text size="sm">Log In</Text>
-                </Group>
-              </SidebarButton>
-            </Link>
-          )}
-        </Box>
+                </SidebarButton>
+              </Link>
+            )}
+          </Box>
+        </ErrorBoundary>
       </Navbar.Section>
     </Navbar>
   );
