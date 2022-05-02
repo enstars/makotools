@@ -9,7 +9,7 @@ export const useUserData = () => useContext(UserDataContext);
 
 function UserDataProvider({ children }) {
   const { user } = useAuth();
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState({ loading: true });
 
   const setUserDataKey = (data) => {
     setUserData({ ...userData, ...data });
@@ -23,8 +23,10 @@ function UserDataProvider({ children }) {
         console.log(currentUserData);
         if (currentUserData?.user)
           currentUserData.user = JSON.parse(currentUserData.user);
+        currentUserData.loading = false;
+        currentUserData.loggedIn = true;
         setUserData(currentUserData);
-      } else setUserData(null);
+      } else setUserData({ loading: false, loggedIn: false });
     });
   }, []);
 

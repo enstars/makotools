@@ -2,7 +2,6 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { getData, getB2File } from "../../services/ensquare";
-import { Chat } from "@mui/icons-material";
 import { twoStarIDs } from "../../data/characterIDtoCardID";
 import styles from "./CharacterCard.module.scss";
 import Card from "../core/Card";

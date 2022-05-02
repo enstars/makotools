@@ -2,9 +2,20 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import Sidebar from "./Sidebar";
-import Header from "./Header";
+// import Header from "./Header";
 import Footer from "./Footer";
 import ErrorBoundary from "./ErrorBoundary";
+import {
+  AppShell,
+  Navbar,
+  Header,
+  // Footer,
+  Aside,
+  Text,
+  MediaQuery,
+  Burger,
+  useMantineTheme,
+} from "@mantine/core";
 
 const StyledWrapper = styled.div`
   /* color: white; */
@@ -60,20 +71,29 @@ function Layout({ children: Component, footer = true }) {
     setCurrentPath(location.pathname);
     // console.log(currentPath);
   }, [location]);
+
+  const theme = useMantineTheme();
+  const [opened, setOpened] = useState(false);
   return (
-    <StyledWrapper>
-      <div className="es-content__wrapper">
-        <Sidebar />
-        <div className="es-content">
-          <Header />
-          <article className="es-mainContent">
-            <ErrorBoundary>{Component}</ErrorBoundary>
-            <div className="es-expand"></div>
-            {footer ? <Footer /> : null}
-          </article>
-        </div>
-      </div>
-    </StyledWrapper>
+    <AppShell
+      styles={{
+        main: {
+          background:
+            theme.colorScheme === "dark"
+              ? theme.colors.dark[8]
+              : theme.colors.gray[0],
+        },
+      }}
+      navbarOffsetBreakpoint="sm"
+      asideOffsetBreakpoint="sm"
+      fixed
+      navbar={<Sidebar opened={opened} setOpened={setOpened} />}
+    >
+      <ErrorBoundary>{Component}</ErrorBoundary>
+      <Footer height={60} p="md">
+        Application footer
+      </Footer>
+    </AppShell>
   );
 }
 export default Layout;

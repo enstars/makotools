@@ -3,7 +3,7 @@ module.exports = {
     domains: ["uchuu.ensemble.moe"],
   },
 
-  experimental: {
+  compiler: {
     // Enables the styled-components SWC transform
     styledComponents: true,
   },

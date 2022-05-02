@@ -45,15 +45,15 @@ function Page() {
             option="content_region"
             label="Game Region"
             options={[
-              { value: "jp", label: "Japan" },
-              { value: "cn", label: "Mainland China" },
-              { value: "kr", label: "Korea" },
-              { value: "tw", label: "Taiwan" },
+              { value: "jp", label: "JP (Japan)" },
+              { value: "cn", label: "CN (Mainland China)" },
+              { value: "kr", label: "KR (Korea)" },
+              { value: "tw", label: "TW (Taiwan)" },
               {
                 value: "en",
-                label: "United Kingdom, Canada, Australia",
+                label: "EN (United Kingdom, Canada, Australia)",
               },
-              { value: "us", label: "United States" },
+              { value: "us", label: "US (United States)" },
             ]}
             defaultValue={"jp"}
           />
