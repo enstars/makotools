@@ -21,7 +21,13 @@
   top: 0;
   left: 0;
   background: left / 250% 100% no-repeat
-    linear-gradient(-45deg, var(--characterColor) 50%, transparent 50%);
+    linear-gradient(
+      -45deg,
+      var(--characterColor) 30%,
+      var(--characterColor--light) 30%,
+      var(--characterColor--light) 50%,
+      transparent 50%
+    );
   transition: all 0.5s cubic-bezier(0, 1, 0, 1), background 0.2s ease;
 
   &:hover {
@@ -51,7 +57,9 @@
 
   &.bloomed {
     visibility: hidden;
-    top: -100%;
+    // top: -100%;
+    position: absolute;
+    top: 0;
     z-index: -5;
   }
 }

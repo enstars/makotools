@@ -1,39 +1,14 @@
 import styled from "styled-components";
 import Breadcrumbs from "./Header/Breadcrumbs";
-const StyledWrapper = styled.header`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 200px;
-  padding: 1.25rem;
-  background: var(--ritsu-700);
-  box-shadow: var(--shadow);
-  border: solid 1px var(--ritsu-600);
-
-  user-select: none;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  position: relative;
-
-  h1 {
-    margin: 0;
-    font-size: 2.5em;
-    position: relative;
-    z-index: 10;
-    font-weight: 900;
-    font-family: "Metropolis";
-    line-height: 1;
-  }
-
-  margin: var(--content-margin);
-`;
-function Title({ title, color = "#0e2dc8", children }) {
+import { Box, Title } from "@mantine/core";
+function TitleApp({ title, children }) {
   return (
-    <StyledWrapper style={{ "--backgroundColor": color }}>
+    <Box sx={{ position: "relative", overflow: "hidden" }}>
       <Breadcrumbs />
-      <h1>{title}</h1>
-      {children}
-    </StyledWrapper>
+      <Title order={1} mt={64} mb={8}>
+        {title}
+      </Title>
+    </Box>
   );
 }
-export default Title;
+export default TitleApp;

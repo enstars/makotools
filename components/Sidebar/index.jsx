@@ -5,7 +5,6 @@ import styled from "styled-components";
 import { useRouter } from "next/router";
 import { useUserData } from "../../services/userData";
 import { EnsembleSquareLogo } from "../../public/logo_square";
-import { motion } from "framer-motion";
 import UserMenu from "./UserMenu";
 import ErrorBoundary from "../ErrorBoundary";
 
@@ -29,18 +28,28 @@ import {
   MediaQuery,
   Burger,
   useMantineTheme,
+  useMantineColorScheme,
   ThemeIcon,
 } from "@mantine/core";
 
-const SidebarButton = forwardRef(function button({ children, ...props }, ref) {
+import { useColorScheme } from "@mantine/hooks";
+
+const SidebarButton = forwardRef(function button(
+  { children, fullPadding, ...props },
+  ref
+) {
   return (
     <UnstyledButton
       component="a"
       sx={(theme) => ({
         display: "block",
+        // boxSizing: "border-box",
         width: "100%",
-        padding: theme.spacing.xs,
-        borderRadius: theme.radius.sm,
+        paddingLeft: theme.spacing.sm,
+        paddingRight: theme.spacing.sm,
+        paddingTop: fullPadding ? theme.spacing.xs : theme.spacing.xs / 2,
+        paddingBottom: fullPadding ? theme.spacing.xs : theme.spacing.xs / 2,
+        // borderRadius: theme.radius.sm,
         color:
           theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
 
@@ -63,141 +72,204 @@ function Sidebar({ opened, setOpened }) {
   const location = useRouter();
   const { userData } = useUserData();
   const theme = useMantineTheme();
+  const { colorScheme } = useMantineColorScheme();
+  const dark = colorScheme === "dark";
 
   return (
     <Navbar
-      p="md"
-      hiddenBreakpoint="sm"
-      // hidden={!opened}
-      width={{ sm: 300 }}
+      style={{ position: "sticky", top: 0, height: "100vh" }}
+      // fixed
+      position={{ top: 0, left: 0 }}
+      width={{
+        sm: 250,
+        lg: 300,
+        base: 56,
+      }}
     >
-      <Navbar.Section mt="xs">
-        <Link href="/">
-          <a className="es-sidebar__branding">
-            <EnsembleSquareLogo color="white" />
-            <span>Ensemble Square</span>
-          </a>
-        </Link>
-
-        <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-          <Burger
-            opened={opened}
-            onClick={() => setOpened((o) => !o)}
-            size="sm"
-            color={theme.colors.gray[6]}
-            mr="xl"
-          />
-        </MediaQuery>
-      </Navbar.Section>
-
-      <Navbar.Section grow component={ScrollArea} mx="-xs" px="xs">
-        {[
-          {
-            link: "/characters",
-            name: "Characters",
-            icon: IconUsers,
-          },
-          {
-            link: "/cards",
-            name: "Cards",
-            icon: IconPlayCard,
-          },
-          {
-            link: "/events",
-            name: "Events",
-            icon: IconAward,
-          },
-          {
-            link: "/stories",
-            name: "Stories",
-            icon: IconBooks,
-          },
-        ].map((link) => (
-          <Link key={link.link} href={link.link} passHref>
-            <SidebarButton>
-              <Group>
-                <ThemeIcon variant="light">
-                  <link.icon size={16} />
+      <Navbar.Section
+        mb={theme.spacing.xs / 2}
+        sx={{
+          borderBottom: "solid 1px",
+          borderColor: dark ? theme.colors.dark[5] : theme.colors.gray[2],
+        }}
+      >
+        <Link href="/" passHref>
+          <SidebarButton fullPadding>
+            <MediaQuery
+              query="(max-width: 768px)"
+              styles={{ justifyContent: "center" }}
+            >
+              <Group spacing="sm">
+                <ThemeIcon
+                  variant={location.asPath === "/" ? "filled" : "light"}
+                >
+                  <EnsembleSquareLogo />
                 </ThemeIcon>
-                <Text size="sm">{link.name}</Text>
+                <MediaQuery
+                  query="(max-width: 768px)"
+                  styles={{
+                    display: "none",
+                  }}
+                >
+                  <Text
+                    size="sm"
+                    weight={location.asPath === "/" ? "700" : "500"}
+                    sx={{ fontFamily: theme.headings.fontFamily }}
+                  >
+                    Ensemble Square
+                  </Text>
+                </MediaQuery>
               </Group>
-            </SidebarButton>
-          </Link>
-        ))}
+            </MediaQuery>
+          </SidebarButton>
+        </Link>
+      </Navbar.Section>
+      <Navbar.Section grow component={ScrollArea}>
+        <Group spacing={0} direction="column">
+          {[
+            {
+              link: "/characters",
+              name: "Characters",
+              icon: IconUsers,
+            },
+            {
+              link: "/cards",
+              name: "Cards",
+              icon: IconPlayCard,
+            },
+            {
+              link: "/events",
+              name: "Events",
+              icon: IconAward,
+            },
+            {
+              link: "/stories",
+              name: "Stories",
+              icon: IconBooks,
+            },
+          ].map((link) => (
+            <Link key={link.link} href={link.link} passHref>
+              <SidebarButton>
+                <MediaQuery
+                  query="(max-width: 768px)"
+                  styles={{ justifyContent: "center" }}
+                >
+                  <Group spacing="sm">
+                    <ThemeIcon
+                      variant={
+                        `/${location.asPath.split("/")[1]}` === link.link
+                          ? "filled"
+                          : "light"
+                      }
+                    >
+                      <link.icon size={16} />
+                    </ThemeIcon>
+                    <MediaQuery
+                      query="(max-width: 768px)"
+                      styles={{
+                        display: "none",
+                      }}
+                    >
+                      <Text
+                        size="sm"
+                        weight={
+                          `/${location.asPath.split("/")[1]}` === link.link
+                            ? "700"
+                            : "500"
+                        }
+                      >
+                        {link.name}
+                      </Text>
+                    </MediaQuery>
+                  </Group>
+                </MediaQuery>
+              </SidebarButton>
+            </Link>
+          ))}
+        </Group>
       </Navbar.Section>
 
-      <Navbar.Section>
-        <ErrorBoundary>
-          <Box
-            sx={{
-              paddingTop: theme.spacing.sm,
-            }}
-          >
-            {userData.loading ? (
-              "loading"
-            ) : userData.loggedIn ? (
-              <UserMenu
-                trigger={
-                  <Box
-                    sx={(theme) => ({
-                      display: "block",
-                      width: "100%",
-                      padding: theme.spacing.xs,
-                      borderRadius: theme.radius.sm,
-                      color:
-                        theme.colorScheme === "dark"
-                          ? theme.colors.dark[0]
-                          : theme.black,
+      <Navbar.Section
+        sx={{
+          borderTop: "solid 1px",
+          borderColor: dark ? theme.colors.dark[5] : theme.colors.gray[2],
+        }}
+        mt="sm"
+      >
+        <Box>
+          <UserMenu
+            trigger={
+              <Box
+                sx={(theme) => ({
+                  display: "block",
+                  width: "100%",
+                  padding: theme.spacing.xs,
+                  // borderRadius: theme.radius.sm,
+                  color:
+                    theme.colorScheme === "dark"
+                      ? theme.colors.dark[0]
+                      : theme.black,
 
-                      "&:hover": {
-                        backgroundColor:
-                          theme.colorScheme === "dark"
-                            ? theme.colors.dark[6]
-                            : theme.colors.gray[0],
-                      },
-                    })}
+                  "&:hover": {
+                    backgroundColor:
+                      theme.colorScheme === "dark"
+                        ? theme.colors.dark[6]
+                        : theme.colors.gray[0],
+                  },
+                })}
+              >
+                <MediaQuery
+                  query="(max-width: 768px)"
+                  styles={{ justifyContent: "center" }}
+                >
+                  <Group
+                    spacing="sm"
+                    sx={{ flexWrap: "nowrap", alignItems: "flex-start" }}
                   >
-                    <Group
-                      spacing="sm"
-                      sx={{ flexWrap: "nowrap", alignItems: "flex-start" }}
+                    <Avatar color="blue" size="sm" radius="md">
+                      <IconUser size={16} />
+                    </Avatar>
+
+                    <MediaQuery
+                      query="(max-width: 768px)"
+                      styles={{ display: "none" }}
                     >
-                      <Avatar color="blue" size="sm" radius="md">
-                        <IconUser size={16} />
-                      </Avatar>
-                      <Box sx={{ minWidth: 0 }}>
-                        <Text
-                          size="sm"
-                          weight={500}
-                          sx={{
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                          }}
-                        >
-                          {userData?.name || userData.user.email.split("@")[0]}
+                      {userData.loading ? (
+                        <Text size="sm" color="dimmed">
+                          Loading
                         </Text>
-                        <Text size="xs" color="dimmed" mt={-2}>
-                          @{userData?.username || userData.user.email}
+                      ) : userData.loggedIn ? (
+                        <Box sx={{ minWidth: 0 }}>
+                          <Text
+                            size="sm"
+                            weight={500}
+                            sx={{
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                            }}
+                          >
+                            {userData?.name ||
+                              userData.user.email.split("@")[0]}
+                          </Text>
+                          <Text size="xs" color="dimmed" mt={-2}>
+                            {userData.username
+                              ? `@${userData.username}`
+                              : userData.user.email}
+                          </Text>
+                        </Box>
+                      ) : (
+                        <Text size="sm" color="dimmed">
+                          Not Logged In
                         </Text>
-                      </Box>
-                    </Group>
-                  </Box>
-                }
-              />
-            ) : (
-              <Link href="/login" passHref>
-                <SidebarButton>
-                  <Group>
-                    <ThemeIcon variant="light">
-                      <IconLogin size={16} />
-                    </ThemeIcon>
-                    <Text size="sm">Log In</Text>
+                      )}
+                    </MediaQuery>
                   </Group>
-                </SidebarButton>
-              </Link>
-            )}
-          </Box>
-        </ErrorBoundary>
+                </MediaQuery>
+              </Box>
+            }
+          />
+        </Box>
       </Navbar.Section>
     </Navbar>
   );

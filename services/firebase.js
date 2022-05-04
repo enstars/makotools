@@ -41,14 +41,32 @@ provider.setCustomParameters({ prompt: "select_account" });
 
 export const appSignInWithGoogle = () => signInWithRedirect(auth, provider);
 export const appSignOut = () => signOut(auth);
-export const appSignInWithEmailAndPassword = (email, password) =>
-  signInWithEmailAndPassword(auth, email, password).then((result) =>
-    syncFirestoreUserData(result.user)
-  );
-export const appSignUpWithEmailAndPassword = (email, password) =>
-  createUserWithEmailAndPassword(auth, email, password).then((result) =>
-    syncFirestoreUserData(result.user)
-  );
+export const appSignInWithEmailAndPassword = (
+  email,
+  password,
+  callback = () => {}
+) =>
+  signInWithEmailAndPassword(auth, email, password)
+    .then((result) => syncFirestoreUserData(result.user))
+    .catch((error) => {
+      callback({ status: "error", error });
+    });
+export const appSignUpWithEmailAndPassword = (
+  email,
+  password,
+  userInfo,
+  callback = () => {}
+) => {
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((result) => {
+      syncFirestoreUserData(result.user, callback, userInfo);
+      console.log(0);
+    })
+    .catch((error) => {
+      // console.log(callback);
+      callback({ status: "error", error });
+    });
+};
 
 // Firestore Database
 const db = getFirestore();
@@ -65,10 +83,11 @@ getRedirectResult(auth)
     console.error(e);
   });
 
-function syncFirestoreUserData(user) {
+function syncFirestoreUserData(user, callback = () => {}, userInfo = {}) {
   // console.log(user);
   setFirestoreUserData(
     {
+      ...userInfo,
       // googleUser: JSON.stringify(user),
       user: JSON.stringify(user),
       // i actually have no idea if this is safe. but this should be only public info so

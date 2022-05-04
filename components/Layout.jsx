@@ -2,19 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import Sidebar from "./Sidebar";
-// import Header from "./Header";
+import Header from "./Header";
 import Footer from "./Footer";
 import ErrorBoundary from "./ErrorBoundary";
 import {
   AppShell,
-  Navbar,
-  Header,
-  // Footer,
-  Aside,
-  Text,
-  MediaQuery,
-  Burger,
+  Container,
   useMantineTheme,
+  useMantineColorScheme,
 } from "@mantine/core";
 
 const StyledWrapper = styled.div`
@@ -63,9 +58,11 @@ const StyledWrapper = styled.div`
   }
 `;
 
-function Layout({ children: Component, footer = true }) {
+function Layout({ children: Component, footer = true, sidebar = true }) {
   const location = useRouter();
   const [currentPath, setCurrentPath] = useState(location.pathname);
+  const { colorScheme } = useMantineColorScheme();
+  const dark = colorScheme === "dark";
 
   useEffect(() => {
     setCurrentPath(location.pathname);
@@ -83,17 +80,40 @@ function Layout({ children: Component, footer = true }) {
               theme.colorScheme === "dark"
                 ? theme.colors.dark[8]
                 : theme.colors.gray[0],
+            padding: 0,
+          },
+          body: {
+            minHeight: "100vh",
+            position: "relative",
+            zIndex: 1,
           },
         }}
-        navbarOffsetBreakpoint="sm"
-        asideOffsetBreakpoint="sm"
-        fixed
-        navbar={<Sidebar opened={opened} setOpened={setOpened} />}
+        // navbarOffsetBreakpoint="sm"
+        // asideOffsetBreakpoint="sm"
+        // fixed
+        navbar={
+          sidebar ? <Sidebar opened={opened} setOpened={setOpened} /> : null
+        }
       >
-        <ErrorBoundary>{Component}</ErrorBoundary>
-        <Footer height={60} p="md">
-          Application footer
-        </Footer>
+        <Header />
+        <Container
+          p="md"
+          sx={{
+            position: "relative",
+            zIndex: 1,
+            background:
+              theme.colorScheme === "dark"
+                ? theme.colors.dark[8]
+                : theme.colors.gray[0],
+
+            borderBottom: "solid 1px",
+            borderColor: dark ? theme.colors.dark[5] : theme.colors.gray[2],
+            minHeight: "100vh",
+          }}
+        >
+          <ErrorBoundary>{Component}</ErrorBoundary>
+        </Container>
+        {footer ? <Footer /> : null}
       </AppShell>
     </ErrorBoundary>
   );

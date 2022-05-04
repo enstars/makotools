@@ -9,10 +9,10 @@ function Page() {
   const { userData, setUserDataKey } = useUserData();
 
   useEffect(() => {
-    if (!!user) {
+    if (!userData.loading && userData.loggedIn) {
       router.push("/");
     }
-  }, [user, router]);
+  }, [userData, router]);
 
   return <Login />;
 }
@@ -20,6 +20,11 @@ function Page() {
 export default Page;
 
 import Layout from "../../components/Layout";
+
 Page.getLayout = function getLayout(page) {
-  return <Layout footer={false}>{page}</Layout>;
+  return (
+    <Layout footer={false} sidebar={false}>
+      {page}
+    </Layout>
+  );
 };

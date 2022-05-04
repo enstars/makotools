@@ -1,38 +1,29 @@
 import Link from "next/link";
 import styled from "styled-components";
 
-const StyledFooter = styled.footer`
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 1.25rem;
-  border: solid 1px var(--ritsu-600);
-
-  border-radius: 0.5rem;
-  overflow: hidden;
-  position: relative;
-  margin: var(--content-margin);
-
-
-  .footer-content {
-      max-width: 400px;
-
-      a {
-          display: block;
-      }
-      .disclaimer {
-          margin: 1em 0 0;
-          font-size: 0.9em;
-      }
-  }
-
-  .
-`;
+import {
+  Footer,
+  Paper,
+  Title,
+  Text,
+  Anchor,
+  Divider,
+  useMantineTheme,
+} from "@mantine/core";
 
 function Header() {
+  const theme = useMantineTheme();
   return (
-    <StyledFooter className="es-footer">
+    <Footer
+      style={{
+        position: "sticky",
+        bottom: 0,
+        zIndex: 0,
+        display: "flow-root",
+        borderTop: "none",
+      }}
+      p="md"
+    >
       {/* <div className="footer-bg">
         <Image
           src={FooterImage}
@@ -41,18 +32,22 @@ function Header() {
           objectFit="cover"
         />
       </div> */}
-      <div className="footer-content">
+      <Text
+        size="lg"
+        weight="800"
+        sx={{ fontFamily: theme.headings.fontFamily }}
+      >
         Ensemble Square
-        <Link href="/privacy-policy">
-          <a>Privacy Policy</a>
-        </Link>
-        <p className="disclaimer">
-          Not official nor related to Ensemble Stars!!, Happy Elements K.K, or
-          Happy Elements in any way. All assets belong to their respective
-          owners.
-        </p>
-      </div>
-    </StyledFooter>
+      </Text>
+      <Link href="/privacy-policy" passHref>
+        <Anchor component="a">Privacy Policy</Anchor>
+      </Link>
+      <Divider my="sm" />
+      <Text size="xs" color="dimmed">
+        Not official nor related to Ensemble Stars!!, Happy Elements K.K, or
+        Happy Elements in any way. All assets belong to their respective owners.
+      </Text>
+    </Footer>
   );
 }
 

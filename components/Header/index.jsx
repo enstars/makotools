@@ -1,34 +1,31 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Breadcrumbs from "./Breadcrumbs";
+import { useWindowScroll } from "@mantine/hooks";
+import { Affix, Transition, useMantineTheme, Header } from "@mantine/core";
 
-const HeaderWrapper = styled.header`
-  /* border-bottom: solid 1px hsla(0, 0%, 100%, 0.2); */
-  padding: 5px 10px;
-  display: flex;
-  align-items: center;
-  height: 30px;
-  position: fixed;
-  z-index: 100;
-  width: calc(100% - 200px);
-  background: hsla(var(--ritsu-900--hsl), 0.8);
-  transition: transform 0.2s ease;
-`;
-
-function Header() {
-  const [scrollPastHeader, setScrollPastHeader] = useState(false);
-  useEffect(() => {
-    window.addEventListener("scroll", () => {
-      setScrollPastHeader(window.scrollY > 40);
-    });
-  }, []);
+function HeaderApp() {
+  const [scroll, scrollTo] = useWindowScroll();
   return (
-    <HeaderWrapper
-      style={{ transform: `translate(0%, ${scrollPastHeader ? 0 : -100}%)` }}
+    <Affix
+      position={{ top: 0, right: 0 }}
+      sx={{ width: " calc(100% - var(--mantine-navbar-width))" }}
     >
-      <Breadcrumbs />
-    </HeaderWrapper>
+      <Transition transition="slide-down" mounted={scroll.y > 40}>
+        {(transitionStyles) => (
+          <Header
+            style={{
+              ...transitionStyles,
+            }}
+            px="sm"
+            py={6}
+          >
+            <Breadcrumbs />
+          </Header>
+        )}
+      </Transition>
+    </Affix>
   );
 }
 
-export default Header;
+export default HeaderApp;

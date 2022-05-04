@@ -12,15 +12,13 @@ import {
 } from "@mantine/core";
 
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
+import { NotificationsProvider } from "@mantine/notifications";
 
-import "@fontsource/metropolis/400.css";
-import "@fontsource/metropolis/500.css";
-import "@fontsource/metropolis/700.css";
-import "@fontsource/metropolis/900.css";
-import "@fontsource/metropolis/400-italic.css";
-import "@fontsource/metropolis/500-italic.css";
-import "@fontsource/metropolis/700-italic.css";
-import "@fontsource/metropolis/900-italic.css";
+import "@fontsource/sora/400.css";
+import "@fontsource/sora/500.css";
+import "@fontsource/sora/700.css";
+import "@fontsource/sora/800.css";
+import "@fontsource/sora/variable.css";
 import "@fontsource/noto-sans-jp/400.css";
 import "@fontsource/noto-sans-jp/700.css";
 import "@fontsource/inter";
@@ -70,6 +68,7 @@ function App({ Component, pageProps, ...props }) {
             toggleColorScheme={toggleColorScheme}
           >
             <MantineProvider
+              emotionOptions={{ key: "ensq" }}
               withGlobalStyles
               withNormalizeCSS
               theme={{
@@ -102,15 +101,19 @@ function App({ Component, pageProps, ...props }) {
                   ],
                 },
                 headings: {
-                  fontFamily: "Metropolis, InterVariable, Inter, sans-serif",
+                  fontFamily:
+                    "SoraVariable, Sora, Metropolis, InterVariable, Inter, sans-serif",
+                  fontWeight: 800,
                 },
               }}
             >
-              <QueryClientProvider client={queryClient}>
-                {/* <Hydrate state={pageProps.dehydratedState}> */}
-                {getLayout(<Component {...pageProps} />)}
-                {/* </Hydrate> */}
-              </QueryClientProvider>
+              <NotificationsProvider>
+                <QueryClientProvider client={queryClient}>
+                  {/* <Hydrate state={pageProps.dehydratedState}> */}
+                  {getLayout(<Component {...pageProps} />)}
+                  {/* </Hydrate> */}
+                </QueryClientProvider>
+              </NotificationsProvider>
             </MantineProvider>
           </ColorSchemeProvider>
         </UserDataProvider>
