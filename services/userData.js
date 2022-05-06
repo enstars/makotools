@@ -20,7 +20,7 @@ function UserDataProvider({ children }) {
     onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser?.uid) {
         const currentUserData = await getFirestoreUserData(currentUser.uid);
-        console.log(currentUserData);
+        // console.log(currentUserData);
         if (currentUserData?.user)
           currentUserData.user = JSON.parse(currentUserData.user);
         currentUserData.loading = false;

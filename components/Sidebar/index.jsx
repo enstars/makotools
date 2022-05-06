@@ -56,8 +56,8 @@ const SidebarButton = forwardRef(function button(
         "&:hover": {
           backgroundColor:
             theme.colorScheme === "dark"
-              ? theme.colors.dark[6]
-              : theme.colors.gray[0],
+              ? theme.colors.dark[8]
+              : theme.colors.gray[1],
         },
       })}
       ref={ref}
@@ -77,7 +77,15 @@ function Sidebar({ opened, setOpened }) {
 
   return (
     <Navbar
-      style={{ position: "sticky", top: 0, height: "100vh" }}
+      sx={{
+        position: "sticky",
+        top: 0,
+        height: "100vh",
+        backgroundColor:
+          theme.colorScheme === "dark"
+            ? theme.colors.dark[9]
+            : theme.colors.gray[0],
+      }}
       // fixed
       position={{ top: 0, left: 0 }}
       width={{
@@ -194,7 +202,7 @@ function Sidebar({ opened, setOpened }) {
           borderTop: "solid 1px",
           borderColor: dark ? theme.colors.dark[5] : theme.colors.gray[2],
         }}
-        mt="sm"
+        // mt="sm"
       >
         <Box>
           <UserMenu
@@ -213,8 +221,8 @@ function Sidebar({ opened, setOpened }) {
                   "&:hover": {
                     backgroundColor:
                       theme.colorScheme === "dark"
-                        ? theme.colors.dark[6]
-                        : theme.colors.gray[0],
+                        ? theme.colors.dark[8]
+                        : theme.colors.gray[1],
                   },
                 })}
               >

@@ -21,6 +21,10 @@ function Header() {
         zIndex: 0,
         display: "flow-root",
         borderTop: "none",
+        backgroundColor:
+          theme.colorScheme === "dark"
+            ? theme.colors.dark[9]
+            : theme.colors.gray[0],
       }}
       p="md"
     >
@@ -40,7 +44,9 @@ function Header() {
         Ensemble Square
       </Text>
       <Link href="/privacy-policy" passHref>
-        <Anchor component="a">Privacy Policy</Anchor>
+        <Anchor component="a" size="sm">
+          Privacy Policy
+        </Anchor>
       </Link>
       <Divider my="sm" />
       <Text size="xs" color="dimmed">

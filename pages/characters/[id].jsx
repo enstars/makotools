@@ -2,66 +2,56 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { useQuery } from "react-query";
-import { getData, getB2File } from "../../services/ensquare";
+import { getData, getB2File, getLocalizedData } from "../../services/ensquare";
 import Layout from "../../components/Layout";
 import Title from "../../components/Title";
+import Head from "next/head";
 
-function Character() {
+function Character({ characters, i }) {
   // const { id } = useParams();
   const router = useRouter();
   const { id } = router.query;
-  const [viewCharacter, setViewCharacter] = useState();
-  const { data: characters } = useQuery(["characters"], () =>
-    getData("characters")
-  );
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    if (characters) {
-      const character = characters.find(
-        (item) => item.character_id === parseInt(id, 10)
-      );
-      setViewCharacter(character);
-    }
-  }, [characters, id]);
-
-  if (!viewCharacter) {
-    return null;
-  }
+  console.log(characters);
 
   return (
     <>
-      <Title
-        title={`${viewCharacter.first_name} ${viewCharacter.last_name}`}
-      ></Title>
-      <div className="content-text">
-        <h1>
-          <ruby>
-            {viewCharacter.first_name}
-            <rp> (</rp>
-            <rt>{viewCharacter.last_nameRuby}</rt>
-            <rp>)</rp>
-          </ruby>
-          <ruby>
-            {viewCharacter.last_name}
-            <rp> (</rp>
-            <rt>{viewCharacter.last_nameRuby__1}</rt>
-            <rp>)</rp>
-          </ruby>
-        </h1>
+      <Head>
+        <title>{`${characters[0][i].first_name} ${characters[0][i].last_name} - EnSquare`}</title>
+        <meta name="description" content={characters[0][i].introduction} />
+      </Head>
 
+      <Title
+        title={
+          <>
+            <ruby>
+              {characters[0][i].first_name}
+              <rp> (</rp>
+              <rt>{characters[0][i].first_nameRuby}</rt>
+              <rp>)</rp>
+            </ruby>{" "}
+            <ruby>
+              {characters[0][i].last_name}
+              <rp> (</rp>
+              <rt>{characters[0][i].last_nameRuby}</rt>
+              <rp>)</rp>
+            </ruby>
+          </>
+        }
+      ></Title>
+      <p>{characters[0][i].introduction}</p>
+      <div className="content-text">
         <Image
           src={getB2File(
-            `render/character_full1_${viewCharacter.character_id}.png`
+            `render/character_full1_${characters[0][i].character_id}.png`
           )}
-          alt={viewCharacter.first_name}
+          alt={characters[0][i].first_name}
           layout="responsive"
           width="600"
           height="600"
         />
         <ul>
-          <li>Birthday: {viewCharacter.birthday}</li>
-          <li>Age: {viewCharacter.age}</li>
+          <li>Birthday: {characters[0][i].birthday}</li>
+          <li>Age: {characters[0][i].age}</li>
         </ul>
       </div>
     </>
@@ -69,6 +59,41 @@ function Character() {
 }
 
 export default Character;
+
+export async function getServerSideProps({ req, res, locale }) {
+  res.setHeader(
+    "Cache-Control",
+    "public, s-maxage=7200, stale-while-revalidate=172800"
+  );
+  // refresh every 2 hours, stale for 48hrs
+  console.log(locale);
+  const characters = await getLocalizedData("characters", locale);
+  const charactersEN = await getData("characters", "en");
+  const urlSegments = req.url.split("/");
+  const lastSegment = decodeURIComponent(urlSegments[urlSegments.length - 1])
+    .toLocaleLowerCase()
+    .trim();
+  const characterID = parseInt(lastSegment, 10);
+  const isName = isNaN(characterID);
+  console.log(lastSegment);
+  const characterIndex = charactersEN.indexOf(
+    charactersEN.find(
+      isName
+        ? (item) =>
+            `${item.last_name} ${item.first_name}`.toLocaleLowerCase() ===
+              lastSegment ||
+            `${item.first_name} ${item.last_name}`.toLocaleLowerCase() ===
+              lastSegment ||
+            `${item.first_name}`.toLocaleLowerCase() === lastSegment
+        : (item) => item.character_id === characterID
+    )
+  );
+
+  // console.log(charactersEN);
+  return {
+    props: { characters, i: characterIndex },
+  };
+}
 
 Character.getLayout = function getLayout(page) {
   return <Layout>{page}</Layout>;

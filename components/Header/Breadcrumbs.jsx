@@ -54,7 +54,7 @@ function BreadcrumbsApp() {
 
           return (
             <Link key={value} href={to} passHref>
-              <PageAnchor inherit>{value}</PageAnchor>
+              <PageAnchor inherit>{decodeURIComponent(value)}</PageAnchor>
             </Link>
           );
         })}

@@ -1,11 +1,12 @@
 import Layout from "../../components/Layout";
 import Main from "../../components/Main";
 import Title from "../../components/Title";
+import { TypographyStylesProvider } from "@mantine/core";
 function PrivacyPolicy() {
   return (
     <>
       <Title title="Privacy Policy"></Title>
-      <Main>
+      <TypographyStylesProvider>
         <p>
           Ensemble Square operates the https://stars.ensemble.moe/ website,
           which provides the SERVICE.
@@ -123,7 +124,7 @@ function PrivacyPolicy() {
           or practices of any third-party sites or services.
         </p>
 
-        <p>Children&apos;s Privacy</p>
+        <h3>Children&apos;s Privacy</h3>
 
         <p>
           Our Services do not address anyone under the age of 13. We do not
@@ -151,7 +152,7 @@ function PrivacyPolicy() {
           If you have any questions or suggestions about our Privacy Policy, do
           not hesitate to contact us.
         </p>
-      </Main>
+      </TypographyStylesProvider>
     </>
   );
 }

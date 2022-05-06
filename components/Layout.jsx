@@ -8,6 +8,8 @@ import ErrorBoundary from "./ErrorBoundary";
 import {
   AppShell,
   Container,
+  Box,
+  Paper,
   useMantineTheme,
   useMantineColorScheme,
 } from "@mantine/core";
@@ -76,10 +78,6 @@ function Layout({ children: Component, footer = true, sidebar = true }) {
       <AppShell
         styles={{
           main: {
-            background:
-              theme.colorScheme === "dark"
-                ? theme.colors.dark[8]
-                : theme.colors.gray[0],
             padding: 0,
           },
           body: {
@@ -88,31 +86,29 @@ function Layout({ children: Component, footer = true, sidebar = true }) {
             zIndex: 1,
           },
         }}
-        // navbarOffsetBreakpoint="sm"
-        // asideOffsetBreakpoint="sm"
-        // fixed
         navbar={
           sidebar ? <Sidebar opened={opened} setOpened={setOpened} /> : null
         }
       >
         <Header />
-        <Container
-          p="md"
+        <Paper
           sx={{
             position: "relative",
             zIndex: 1,
-            background:
-              theme.colorScheme === "dark"
-                ? theme.colors.dark[8]
-                : theme.colors.gray[0],
-
             borderBottom: "solid 1px",
             borderColor: dark ? theme.colors.dark[5] : theme.colors.gray[2],
-            minHeight: "100vh",
           }}
+          radius={0}
         >
-          <ErrorBoundary>{Component}</ErrorBoundary>
-        </Container>
+          <Container
+            p="md"
+            sx={{
+              minHeight: "100vh",
+            }}
+          >
+            <ErrorBoundary>{Component}</ErrorBoundary>
+          </Container>
+        </Paper>
         {footer ? <Footer /> : null}
       </AppShell>
     </ErrorBoundary>

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import styled from "styled-components";
 import _ from "lodash";
-import { getData, getB2File } from "../../services/ensquare";
+import { getData, getLocalizedData } from "../../services/ensquare";
 import Title from "../../components/Title";
 import Main from "../../components/Main";
 import Dropdown from "../../components/core/Dropdown";
@@ -47,7 +47,7 @@ function Characters({ characters, unit_to_characters, units }) {
   const [chosenUnit, setChosenUnit] = useState(null);
   const theme = useMantineTheme();
   useEffect(() => {
-    let charactersWithUnits = unit_to_characters;
+    let charactersWithUnits = unit_to_characters[0];
 
     if (chosenUnit) {
       const filterOptionsChosenID = chosenUnit.unit_id;
@@ -59,7 +59,7 @@ function Characters({ characters, unit_to_characters, units }) {
     }
     const charactersWithUnitsSorted = _.sortBy(charactersWithUnits, [
       function findUnitOrder(charactersWithUnit) {
-        const thisUnit = units.filter(
+        const thisUnit = units[0].filter(
           (unit) => unit.unit_id === charactersWithUnit.unit_id
         )[0] || {
           name: "MaM",
@@ -72,27 +72,21 @@ function Characters({ characters, unit_to_characters, units }) {
     ]);
 
     const charactersFiltered = charactersWithUnitsSorted.map((charaUnit) => {
-      const char = JSON.parse(
-        JSON.stringify(
-          characters.filter(
-            (chara) => chara.character_id === charaUnit.character_id
-          )[0]
-        )
+      const charIndex = characters[0].indexOf(
+        characters[0].filter(
+          (chara) => chara.character_id === charaUnit.character_id
+        )[0]
       );
-      // console.log(charaUnit.unit_id);
-      if (charaUnit.unit_id === 17) {
-        char.doubleface = true;
-        // console.log(".");
-      } else {
-        char.doubleface = false;
-      }
-      char.unique_id = `${char.character_id}-${charaUnit.unit_id}`;
 
-      return char;
+      return {
+        i: charIndex,
+        doubleface: charaUnit.unit_id === 17,
+        unique_id: `${characters[0][charIndex].character_id}-${charaUnit.unit_id}`,
+      };
     });
 
     setListCharacters(charactersFiltered);
-    setfilterOptions(units.sort((a, b) => !!(a?.order > b?.order)));
+    setfilterOptions(units[0].sort((a, b) => !!(a?.order > b?.order)));
   }, [chosenUnit]);
 
   const handleNewUnit = (e) => {
@@ -114,7 +108,7 @@ function Characters({ characters, unit_to_characters, units }) {
         <Group>
           <Select
             label="Unit"
-            // placeholder=""
+            placeholder="Pick a unit..."
             data={filterOptions.map((o) => {
               return {
                 value: o,
@@ -127,6 +121,7 @@ function Characters({ characters, unit_to_characters, units }) {
             allowDeselect
             // sx={{ maxWidth: 200 }}
             size="sm"
+            variant="default"
           />
         </Group>
       </Paper>
@@ -141,7 +136,11 @@ function Characters({ characters, unit_to_characters, units }) {
         {listCharacters.map((character, i) => {
           // console.log(character);
           return (
-            <CharacterCard key={character.unique_id} character={character} />
+            <CharacterCard
+              key={character.unique_id}
+              {...character}
+              characters={characters}
+            />
           );
         })}
       </Box>
@@ -151,33 +150,16 @@ function Characters({ characters, unit_to_characters, units }) {
 
 export default Characters;
 
-// // This function gets called at build time
-//   const queryClient = new QueryClient();
-
-//   await queryClient.prefetchQuery("characters", getData("characters"));
-//   await queryClient.prefetchQuery(
-//     "unit_to_characters",
-//     getData("unit_to_characters")
-//   );
-//   await queryClient.prefetchQuery("units", getData("units"));
-
-//   return {
-//     props: {
-//       dehydratedState: dehydrate(queryClient),
-//     },
-//   };
-// }
-
-export async function getServerSideProps({ res }) {
+export async function getServerSideProps({ res, locale, ...context }) {
   res.setHeader(
     "Cache-Control",
     "public, s-maxage=7200, stale-while-revalidate=172800"
   );
   // refresh every 2 hours, stale for 48hrs
-
-  const characters = await getData("characters");
-  const unit_to_characters = await getData("unit_to_characters");
-  const units = await getData("units");
+  console.log(locale);
+  const characters = await getLocalizedData("characters");
+  const unit_to_characters = await getLocalizedData("unit_to_characters");
+  const units = await getLocalizedData("units");
 
   return {
     props: { characters, unit_to_characters, units },
