@@ -59,6 +59,11 @@ const SidebarButton = forwardRef(function button(
               ? theme.colors.dark[8]
               : theme.colors.gray[1],
         },
+
+        "@media (max-width: 768px)": {
+          padding: theme.spacing.xs / 2,
+          // paddingRight: theme.spacing.xs / 2,
+        },
       })}
       ref={ref}
       {...props}
@@ -91,14 +96,19 @@ function Sidebar({ opened, setOpened }) {
       width={{
         sm: 250,
         lg: 300,
-        base: 56,
+        base: 40,
       }}
     >
       <Navbar.Section
-        mb={theme.spacing.xs / 2}
+        // mb={theme.spacing.xs / 2}
         sx={{
           borderBottom: "solid 1px",
           borderColor: dark ? theme.colors.dark[5] : theme.colors.gray[2],
+
+          "@media (min-width: 768px)": {
+            marginBottom: theme.spacing.xs / 2,
+            // paddingRight: theme.spacing.xs / 2,
+          },
         }}
       >
         <Link href="/" passHref>
@@ -207,25 +217,7 @@ function Sidebar({ opened, setOpened }) {
         <Box>
           <UserMenu
             trigger={
-              <Box
-                sx={(theme) => ({
-                  display: "block",
-                  width: "100%",
-                  padding: theme.spacing.xs,
-                  // borderRadius: theme.radius.sm,
-                  color:
-                    theme.colorScheme === "dark"
-                      ? theme.colors.dark[0]
-                      : theme.black,
-
-                  "&:hover": {
-                    backgroundColor:
-                      theme.colorScheme === "dark"
-                        ? theme.colors.dark[8]
-                        : theme.colors.gray[1],
-                  },
-                })}
-              >
+              <SidebarButton component="div" fullPadding>
                 <MediaQuery
                   query="(max-width: 768px)"
                   styles={{ justifyContent: "center" }}
@@ -274,7 +266,7 @@ function Sidebar({ opened, setOpened }) {
                     </MediaQuery>
                   </Group>
                 </MediaQuery>
-              </Box>
+              </SidebarButton>
             }
           />
         </Box>

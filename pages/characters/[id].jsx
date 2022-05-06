@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import Image from "next/image";
-import { useQuery } from "react-query";
 import { getData, getB2File, getLocalizedData } from "../../services/ensquare";
 import Layout from "../../components/Layout";
 import Title from "../../components/Title";
 import Head from "next/head";
+import ImageViewer from "../../components/core/ImageViewer";
+import { Text } from "@mantine/core";
 
 function Character({ characters, i }) {
   // const { id } = useParams();
@@ -25,29 +25,37 @@ function Character({ characters, i }) {
           <>
             <ruby>
               {characters[0][i].first_name}
-              <rp> (</rp>
-              <rt>{characters[0][i].first_nameRuby}</rt>
-              <rp>)</rp>
+              {characters[0][i].first_nameRuby && (
+                <>
+                  <rp> (</rp>
+                  <Text component="rt">{characters[0][i].first_nameRuby}</Text>
+                  <rp>)</rp>
+                </>
+              )}
             </ruby>{" "}
             <ruby>
               {characters[0][i].last_name}
-              <rp> (</rp>
-              <rt>{characters[0][i].last_nameRuby}</rt>
-              <rp>)</rp>
+
+              {characters[0][i].last_nameRuby && (
+                <>
+                  <rp> (</rp>
+                  <Text component="rt">{characters[0][i].last_nameRuby}</Text>
+                  <rp>)</rp>
+                </>
+              )}
             </ruby>
           </>
         }
       ></Title>
-      <p>{characters[0][i].introduction}</p>
+      <Text>{characters[0][i].introduction}</Text>
       <div className="content-text">
-        <Image
+        <ImageViewer
           src={getB2File(
             `render/character_full1_${characters[0][i].character_id}.png`
           )}
           alt={characters[0][i].first_name}
-          layout="responsive"
-          width="600"
-          height="600"
+          width={300}
+          height={300}
         />
         <ul>
           <li>Birthday: {characters[0][i].birthday}</li>
@@ -66,7 +74,7 @@ export async function getServerSideProps({ req, res, locale }) {
     "public, s-maxage=7200, stale-while-revalidate=172800"
   );
   // refresh every 2 hours, stale for 48hrs
-  console.log(locale);
+  // console.log(locale);
   const characters = await getLocalizedData("characters", locale);
   const charactersEN = await getData("characters", "en");
   const urlSegments = req.url.split("/");
@@ -75,7 +83,7 @@ export async function getServerSideProps({ req, res, locale }) {
     .trim();
   const characterID = parseInt(lastSegment, 10);
   const isName = isNaN(characterID);
-  console.log(lastSegment);
+  // console.log(lastSegment);
   const characterIndex = charactersEN.indexOf(
     charactersEN.find(
       isName
