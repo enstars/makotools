@@ -6,10 +6,13 @@ import { twoStarIDs } from "../../data/characterIDtoCardID";
 import styles from "./CharacterCard.module.scss";
 import { Card, Paper } from "@mantine/core";
 
-export function CharacterCard({ character }) {
+export function CharacterCard({ i, doubleface, unique_id, characters }) {
+  const character = characters[0][i];
+  const characterSubLang = characters[1]?.[i] || undefined;
+  // console.log(characters);
   return (
     <Link href={`/characters/${character.character_id}`} passHref>
-      <Paper
+      <Card
         withBorder
         component="a"
         className={styles.wrapper}
@@ -22,7 +25,7 @@ export function CharacterCard({ character }) {
           <div className={styles.image}>
             <Image
               src={
-                character.doubleface
+                doubleface
                   ? getB2File(
                       `cards/card_full1_${
                         twoStarIDs.doubleface[character.character_id]
@@ -43,7 +46,7 @@ export function CharacterCard({ character }) {
           <div className={[styles.image, styles.bloomed].join(" ")}>
             <Image
               src={
-                character.doubleface
+                doubleface
                   ? getB2File(
                       `cards/card_full1_${
                         twoStarIDs.doubleface[character.character_id]
@@ -65,11 +68,13 @@ export function CharacterCard({ character }) {
             <span>
               {character.last_name}
               {character.first_name}
-              {character.doubleface ? " (DF)" : ""}
+              {characterSubLang?.last_name}
+              {characterSubLang?.first_name}
+              {doubleface ? " (DF)" : ""}
             </span>
           </div>
         </div>
-      </Paper>
+      </Card>
     </Link>
   );
 }

@@ -74,14 +74,8 @@ function NoMatch() {
   });
 
   useEffect(() => {
-    const variant404 = Math.floor(Math.random() * 3);
+    const variant404 = Math.floor(Math.random() * 2);
     switch (variant404) {
-      case 0:
-        setRandom404message({
-          text: "Damnit, I can't find the page you're looking for…",
-          image: variant404Image1,
-        });
-        break;
       case 1:
         setRandom404message({
           text: "No, this is no use… I can't find any inspiration!",
