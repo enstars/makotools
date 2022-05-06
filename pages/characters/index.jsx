@@ -1,7 +1,6 @@
 import { CharacterCard } from "./../../components/characters/CharacterCard";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import styled from "styled-components";
 import _ from "lodash";
 import { getData, getLocalizedData } from "../../services/ensquare";
 import Title from "../../components/Title";
@@ -15,30 +14,6 @@ import {
   Text,
   useMantineTheme,
 } from "@mantine/core";
-const StyledWrapper = styled.div`
-  .header-render {
-    position: absolute;
-    bottom: -110px;
-    right: -30px;
-    height: 300px;
-    width: 300px;
-    z-index: 0;
-  }
-  .es-characterList {
-    display: grid;
-    gap: 10px;
-    grid-template-columns: 
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .filters {
-    margin: var(--content-margin) 0;
-    display: flex;
-    justify-content: flex-end;
-  }
-`;
 
 function Characters({ characters, unit_to_characters, units }) {
   //   console.debug(twoStarIDs);
