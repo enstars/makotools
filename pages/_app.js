@@ -36,7 +36,7 @@ function App({ Component, pageProps, ...props }) {
   const location = useRouter();
   const [currentPath, setCurrentPath] = useState(location.pathname);
   const [queryClient] = useState(() => new QueryClient());
-  const [colorScheme, setColorScheme] = useState(props.colorScheme);
+  const [colorScheme, setStateColorScheme] = useState(props.colorScheme);
   // const [colorScheme, setColorScheme] = useState("dark");
 
   useEffect(() => {
@@ -46,14 +46,17 @@ function App({ Component, pageProps, ...props }) {
 
   const getLayout = Component.getLayout || ((page) => page);
 
+  const setAppColorScheme = (value) => {
+    setStateColorScheme(value);
+    // when color scheme is updated save it to cookie
+    setCookies("color-scheme", value, {
+      maxAge: 60 * 60 * 24 * 30,
+    });
+  };
   const toggleColorScheme = (value) => {
     const nextColorScheme =
       value || (colorScheme === "dark" ? "light" : "dark");
-    setColorScheme(nextColorScheme);
-    // when color scheme is updated save it to cookie
-    setCookies("color-scheme", nextColorScheme, {
-      maxAge: 60 * 60 * 24 * 30,
-    });
+    setAppColorScheme(nextColorScheme);
   };
 
   return (
@@ -62,10 +65,11 @@ function App({ Component, pageProps, ...props }) {
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <AuthProvider>
-        <UserDataProvider>
+        <UserDataProvider setAppColorScheme={setAppColorScheme}>
           <ColorSchemeProvider
             colorScheme={colorScheme}
             toggleColorScheme={toggleColorScheme}
+            setAppColorScheme={setAppColorScheme}
           >
             <MantineProvider
               emotionOptions={{ key: "ensq" }}
@@ -99,7 +103,20 @@ function App({ Component, pageProps, ...props }) {
                     "#1C2F7D",
                     "#14297A",
                   ],
+                  lightblue: [
+                    "#e7f5ff",
+                    "#d0ebff",
+                    "#a5d8ff",
+                    "#74c0fc",
+                    "#4dabf7",
+                    "#339af0",
+                    "#228be6",
+                    "#1c7ed6",
+                    "#1971c2",
+                    "#1864ab",
+                  ],
                 },
+                fontFamily: "InterVariable, Inter, Noto Sans JP, sans-serif",
                 headings: {
                   fontFamily:
                     "SoraVariable, Sora, Metropolis, InterVariable, Inter, sans-serif",
@@ -110,7 +127,7 @@ function App({ Component, pageProps, ...props }) {
               <NotificationsProvider>
                 <QueryClientProvider client={queryClient}>
                   {/* <Hydrate state={pageProps.dehydratedState}> */}
-                  {getLayout(<Component {...pageProps} />)}
+                  {getLayout(<Component {...pageProps} />, pageProps)}
                   {/* </Hydrate> */}
                 </QueryClientProvider>
               </NotificationsProvider>

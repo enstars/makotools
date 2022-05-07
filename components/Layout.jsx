@@ -60,7 +60,12 @@ const StyledWrapper = styled.div`
   }
 `;
 
-function Layout({ children: Component, footer = true, sidebar = true }) {
+function Layout({
+  children: Component,
+  footer = true,
+  sidebar = true,
+  pageTitle,
+}) {
   const location = useRouter();
   const [currentPath, setCurrentPath] = useState(location.pathname);
   const { colorScheme } = useMantineColorScheme();
@@ -90,7 +95,7 @@ function Layout({ children: Component, footer = true, sidebar = true }) {
           sidebar ? <Sidebar opened={opened} setOpened={setOpened} /> : null
         }
       >
-        <Header />
+        <Header pageTitle={pageTitle} />
         <Paper
           sx={{
             position: "relative",
@@ -101,6 +106,7 @@ function Layout({ children: Component, footer = true, sidebar = true }) {
           radius={0}
         >
           <Container
+            size="sm"
             p="md"
             sx={{
               minHeight: "100vh",

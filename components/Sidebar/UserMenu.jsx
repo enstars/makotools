@@ -29,6 +29,7 @@ function UserMenu({ trigger }) {
   const [opened, handlers] = useDisclosure(false);
   const { userData } = useUserData();
 
+  console.log(theme);
   return (
     <Menu
       //   size="lg"
@@ -46,7 +47,7 @@ function UserMenu({ trigger }) {
       onClose={handlers.close}
       styles={{ body: { position: "relative", left: theme.spacing.xs } }}
     >
-      <Menu.Label>Settings</Menu.Label>
+      <Menu.Label>Quick Settings</Menu.Label>
       {/* <Menu.Item disabled icon={<IconUserCircle size={14} />}>
         Profile
       </Menu.Item> */}

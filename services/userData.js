@@ -7,7 +7,7 @@ import { auth } from "./firebase";
 const UserDataContext = React.createContext();
 export const useUserData = () => useContext(UserDataContext);
 
-function UserDataProvider({ children }) {
+function UserDataProvider({ children, setAppColorScheme }) {
   const { user } = useAuth();
   const [userData, setUserData] = useState({ loading: true });
 
@@ -20,7 +20,7 @@ function UserDataProvider({ children }) {
     onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser?.uid) {
         const currentUserData = await getFirestoreUserData(currentUser.uid);
-        // console.log(currentUserData);
+        console.log(currentUserData);
         if (currentUserData?.user)
           currentUserData.user = JSON.parse(currentUserData.user);
         currentUserData.loading = false;
@@ -29,6 +29,12 @@ function UserDataProvider({ children }) {
       } else setUserData({ loading: false, loggedIn: false });
     });
   }, []);
+
+  useEffect(() => {
+    if (typeof userData.dark_mode !== "undefined") {
+      setAppColorScheme(userData.dark_mode ? "dark" : "light");
+    }
+  }, [userData]);
 
   return (
     <UserDataContext.Provider value={{ userData, setUserDataKey }}>
