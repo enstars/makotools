@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Title from "../../components/Title";
+import Title from "../../components/PageTitle";
 import Main from "../../components/Main";
 
 import dynamic from "next/dynamic";

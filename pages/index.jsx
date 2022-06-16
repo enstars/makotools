@@ -25,10 +25,10 @@ function Home() {
       </Text>
       <List my="sm" withPadding>
         <List.Item>
-          View any card's stats, live skills, and support skiils.
+          View any card&apos;s stats, live skills, and support skiils.
         </List.Item>
         <List.Item>
-          View an event's start / end date, with live countdowns and
+          View an event&apos;s start / end date, with live countdowns and
           optimization tips.
         </List.Item>
         <List.Item>
@@ -40,9 +40,9 @@ function Home() {
       </List>
       <Card withBorder shadow="sm" p="lg">
         <Text mb="sm" align="center">
-          If you're interested, help us out by signing up! This helps us gauge
-          interest, and signed in users can test out new features in beta before
-          they get released!
+          If you&apos;re interested, help us out by signing up! This helps us
+          gauge interest, and signed in users can test out new features in beta
+          before they get released!
         </Text>
         <Group position="center">
           <Link href="login" passHref>
