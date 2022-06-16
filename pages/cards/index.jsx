@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import TitleApp from "../../components/Title";
+import PageTitle from "../../components/PageTitle";
 import { getLocalizedData } from "../../services/ensquare";
 import { Table, Box, Text, useMantineTheme } from "@mantine/core";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -9,10 +9,10 @@ function Page({ characters, unit_to_characters, units, cards }) {
   const theme = useMantineTheme();
   const [count, setCount] = useState(20);
   const [cardsList, setCardsList] = useState([]);
-  console.log(cards);
+  // console.log(cards);
 
   useEffect(() => {
-    setCardsList(cards[0].slice(0, count));
+    setCardsList(cards[0][1].slice(0, count));
   }, [count]);
 
   const loadMore = () => {
@@ -21,15 +21,15 @@ function Page({ characters, unit_to_characters, units, cards }) {
 
   return (
     <div className="content-text">
-      <TitleApp title="Cards" />
+      <PageTitle title="Cards" />
       <InfiniteScroll
         dataLength={cardsList.length} //This is important field to render the next data
         next={loadMore}
-        hasMore={count < cards[0].length}
+        hasMore={count < cards[0][1].length}
         loader={<h4>Loading...</h4>}
         endMessage={
           <p style={{ textAlign: "center" }}>
-            <b>Yay! You have seen it all</b>
+            <b>You reached the end!</b>
           </p>
         }
         style={{
@@ -54,8 +54,8 @@ export async function getServerSideProps({ res, locale, ...context }) {
     "public, s-maxage=7200, stale-while-revalidate=172800"
   );
   // refresh every 2 hours, stale for 48hrs
-  console.log(locale);
-  const characters = await getLocalizedData("characters");
+  // console.log(locale);
+  const characters = await getLocalizedData("characters", locale);
   const unit_to_characters = await getLocalizedData("unit_to_characters");
   const units = await getLocalizedData("units");
   const cards = await getLocalizedData("cards");

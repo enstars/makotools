@@ -1,5 +1,5 @@
 import { useState, useEffect, forwardRef } from "react";
-import Title from "../../components/Title";
+import Title from "../../components/PageTitle";
 import { useAuth } from "../../services/auth";
 import { useUserData } from "../../services/userData";
 import { useRouter } from "next/router";
