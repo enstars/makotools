@@ -60,7 +60,7 @@ export const appSignUpWithEmailAndPassword = (
   createUserWithEmailAndPassword(auth, email, password)
     .then((result) => {
       syncFirestoreUserData(result.user, callback, userInfo);
-      console.log(0);
+      // console.log(0);
     })
     .catch((error) => {
       // console.log(callback);

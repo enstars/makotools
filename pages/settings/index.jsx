@@ -224,6 +224,7 @@ function Page() {
                     onClick={() => setUsernameModalOpen(true)}
                     variant="filled"
                     color="blue"
+                    disabled
                   >
                     <IconPencil size={14} />
                   </ActionIcon>

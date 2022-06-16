@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import _ from "lodash";
 import { getData, getLocalizedData } from "../../services/ensquare";
-import Title from "../../components/Title";
+import Title from "../../components/PageTitle";
 import Main from "../../components/Main";
 import Dropdown from "../../components/core/Dropdown";
 import {
@@ -21,20 +21,21 @@ function Characters({ characters, unit_to_characters, units }) {
   const [filterOptions, setfilterOptions] = useState([]);
   const [chosenUnit, setChosenUnit] = useState(null);
   const theme = useMantineTheme();
+  // console.log(characters, unit_to_characters, units);
   useEffect(() => {
-    let charactersWithUnits = unit_to_characters[0];
+    let charactersWithUnits = unit_to_characters[0][1];
 
     if (chosenUnit) {
       const filterOptionsChosenID = chosenUnit.unit_id;
-      console.log(filterOptionsChosenID);
+      // console.log(filterOptionsChosenID);
       charactersWithUnits = charactersWithUnits.filter(
         (character) => filterOptionsChosenID === character.unit_id
       );
-      console.log(charactersWithUnits);
+      // console.log(charactersWithUnits);
     }
     const charactersWithUnitsSorted = _.sortBy(charactersWithUnits, [
       function findUnitOrder(charactersWithUnit) {
-        const thisUnit = units[0].filter(
+        const thisUnit = units[0][1].filter(
           (unit) => unit.unit_id === charactersWithUnit.unit_id
         )[0] || {
           name: "MaM",
@@ -46,9 +47,11 @@ function Characters({ characters, unit_to_characters, units }) {
       "order_num_in_unit_as_list",
     ]);
 
+    // console.log("a", charactersWithUnitsSorted);
+
     const charactersFiltered = charactersWithUnitsSorted.map((charaUnit) => {
-      const charIndex = characters[0].indexOf(
-        characters[0].filter(
+      const charIndex = characters[0][1].indexOf(
+        characters[0][1].filter(
           (chara) => chara.character_id === charaUnit.character_id
         )[0]
       );
@@ -56,12 +59,12 @@ function Characters({ characters, unit_to_characters, units }) {
       return {
         i: charIndex,
         doubleface: charaUnit.unit_id === 17,
-        unique_id: `${characters[0][charIndex].character_id}-${charaUnit.unit_id}`,
+        unique_id: `${characters[0][1]?.[charIndex]?.character_id}-${charaUnit.unit_id}`,
       };
     });
 
     setListCharacters(charactersFiltered);
-    setfilterOptions(units[0].sort((a, b) => !!(a?.order > b?.order)));
+    setfilterOptions(units[0][1].sort((a, b) => !!(a?.order > b?.order)));
   }, [chosenUnit]);
 
   const handleNewUnit = (e) => {
@@ -109,7 +112,7 @@ function Characters({ characters, unit_to_characters, units }) {
         }}
       >
         {listCharacters.map((character, i) => {
-          // console.log(character);
+          console.log(character);
           return (
             <CharacterCard
               key={character.unique_id}
@@ -131,10 +134,13 @@ export async function getServerSideProps({ res, locale, ...context }) {
     "public, s-maxage=7200, stale-while-revalidate=172800"
   );
   // refresh every 2 hours, stale for 48hrs
-  console.log(locale);
-  const characters = await getLocalizedData("characters");
-  const unit_to_characters = await getLocalizedData("unit_to_characters");
-  const units = await getLocalizedData("units");
+  // console.log(locale);
+  const characters = await getLocalizedData("characters", locale);
+  const unit_to_characters = await getLocalizedData(
+    "unit_to_characters",
+    locale
+  );
+  const units = await getLocalizedData("units", locale);
 
   return {
     props: { characters, unit_to_characters, units },

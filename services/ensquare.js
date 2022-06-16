@@ -17,17 +17,25 @@ export function getB2File(path) {
 }
 
 export async function getLocalizedData(data, locale = "en") {
-  const jpData = await getData(data, "ja");
+  const jaData = await getData(data, "ja");
   const enData = await getData(data, "en");
 
-  if (locale === "ja") {
-    return [jpData];
-  }
-
   if (enData.status === "error") {
-    return [jpData];
+    return [
+      ["en", jaData],
+      ["ja", null],
+    ];
   }
-  return [enData, jpData];
+  if (locale === "ja") {
+    return [
+      ["ja", jaData],
+      ["en", enData],
+    ];
+  }
+  return [
+    ["en", enData],
+    ["ja", jaData],
+  ];
 }
 
 /*

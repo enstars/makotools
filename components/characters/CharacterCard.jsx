@@ -4,12 +4,13 @@ import Image from "next/image";
 import { getData, getB2File } from "../../services/ensquare";
 import { twoStarIDs } from "../../data/characterIDtoCardID";
 import styles from "./CharacterCard.module.scss";
-import { Card, Paper } from "@mantine/core";
+import { Card, Paper, Title, useMantineTheme, Box } from "@mantine/core";
 
 export function CharacterCard({ i, doubleface, unique_id, characters }) {
-  const character = characters[0][i];
-  const characterSubLang = characters[1]?.[i] || undefined;
-  // console.log(characters);
+  const theme = useMantineTheme();
+  const character = characters[0][1][i];
+  const characterSubLang = characters[1][1]?.[i] || undefined;
+  console.log(characters);
   return (
     <Link href={`/characters/${character.character_id}`} passHref>
       <Card
@@ -65,13 +66,12 @@ export function CharacterCard({ i, doubleface, unique_id, characters }) {
             />
           </div>
           <div className={styles.info}>
-            <span>
+            <Title order={2} sx={{ fontSize: theme.fontSizes.sm }}>
               {character.last_name}
+              {characters[0][0] === "en" && " "}
               {character.first_name}
-              {characterSubLang?.last_name}
-              {characterSubLang?.first_name}
               {doubleface ? " (DF)" : ""}
-            </span>
+            </Title>
           </div>
         </div>
       </Card>

@@ -24,12 +24,12 @@ import { appSignOut } from "../../services/firebase";
 
 function UserMenu({ trigger }) {
   const theme = useMantineTheme();
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+  const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
   const [opened, handlers] = useDisclosure(false);
-  const { userData } = useUserData();
+  const { userData, setUserDataKey } = useUserData();
 
-  console.log(theme);
+  //   console.log(theme);
   return (
     <Menu
       //   size="lg"
@@ -39,6 +39,7 @@ function UserMenu({ trigger }) {
       sx={{
         display: "block",
         width: "100%",
+        pointerEvents: userData.loading ? "none" : null,
       }}
       closeOnItemClick={false}
       gutter={0}
@@ -53,7 +54,7 @@ function UserMenu({ trigger }) {
       </Menu.Item> */}
       <Menu.Item
         onClick={() => {
-          toggleColorScheme();
+          setUserDataKey({ dark_mode: colorScheme !== "dark" });
         }}
         icon={<IconMoonStars size={14} />}
         rightSection={<Switch checked={dark} size="xs" readOnly />}

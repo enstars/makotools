@@ -20,12 +20,13 @@ import "@fontsource/sora/700.css";
 import "@fontsource/sora/800.css";
 import "@fontsource/sora/variable.css";
 import "@fontsource/noto-sans-jp/400.css";
+import "@fontsource/noto-sans-jp/500.css";
 import "@fontsource/noto-sans-jp/700.css";
 import "@fontsource/inter";
 import "@fontsource/inter/variable-full.css";
 
-import "normalize.css/normalize.css";
-import "../styles/index.scss";
+// import "normalize.css/normalize.css";
+// import "../styles/index.scss";
 
 import AuthProvider from "../services/auth";
 import UserDataProvider from "../services/userData";

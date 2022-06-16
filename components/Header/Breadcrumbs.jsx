@@ -33,6 +33,7 @@ function BreadcrumbsApp() {
       transform="capitalize"
       weight="500"
       // sx={{ fontFamily: theme.headings.fontFamily }}
+      sx={{ zIndex: 10, position: "relative" }}
     >
       <Breadcrumbs
         separator={

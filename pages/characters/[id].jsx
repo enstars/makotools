@@ -2,66 +2,83 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { getData, getB2File, getLocalizedData } from "../../services/ensquare";
 import Layout from "../../components/Layout";
-import Title from "../../components/Title";
+import Title from "../../components/PageTitle";
 import Head from "next/head";
 import ImageViewer from "../../components/core/ImageViewer";
-import { Text } from "@mantine/core";
+import { Text, Box } from "@mantine/core";
 
 function Character({ characters, i }) {
   // const { id } = useParams();
   const router = useRouter();
   const { id } = router.query;
-  console.log(characters);
+  // console.log(characters);
 
+  const character = characters[0][1][i];
   return (
     <>
       <Head>
-        <title>{`${characters[0][i].first_name} ${characters[0][i].last_name} - EnSquare`}</title>
-        <meta name="description" content={characters[0][i].introduction} />
+        <title>{`${character.first_name} ${character.last_name} - EnSquare`}</title>
+        <meta name="description" content={character.introduction} />
       </Head>
 
       <Title
         title={
           <>
             <ruby>
-              {characters[0][i].first_name}
-              {characters[0][i].first_nameRuby && (
+              {character.first_name}
+              {character.first_nameRuby && (
                 <>
                   <rp> (</rp>
-                  <Text component="rt">{characters[0][i].first_nameRuby}</Text>
+                  <Text component="rt">{character.first_nameRuby}</Text>
                   <rp>)</rp>
                 </>
               )}
             </ruby>{" "}
             <ruby>
-              {characters[0][i].last_name}
+              {character.last_name}
 
-              {characters[0][i].last_nameRuby && (
+              {character.last_nameRuby && (
                 <>
                   <rp> (</rp>
-                  <Text component="rt">{characters[0][i].last_nameRuby}</Text>
+                  <Text component="rt">{character.last_nameRuby}</Text>
                   <rp>)</rp>
                 </>
               )}
             </ruby>
           </>
         }
-      ></Title>
-      <Text>{characters[0][i].introduction}</Text>
-      <div className="content-text">
-        <ImageViewer
-          src={getB2File(
-            `render/character_full1_${characters[0][i].character_id}.png`
-          )}
-          alt={characters[0][i].first_name}
-          width={300}
-          height={300}
-        />
-        <ul>
-          <li>Birthday: {characters[0][i].birthday}</li>
-          <li>Age: {characters[0][i].age}</li>
-        </ul>
-      </div>
+        space={192}
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            paddingTop: 16,
+            width: "100%",
+            display: "flex",
+            justifyContent: "flex-end",
+            zIndex: 5,
+            mask: "linear-gradient(185deg, #000F 190px, #0000 245px)",
+            background: `linear-gradient(205deg, ${character.image_color}44, transparent 205px)`,
+            borderRadius: 16,
+          }}
+        >
+          <ImageViewer
+            src={getB2File(
+              `render/character_full1_${character.character_id}.png`
+            )}
+            alt={character.first_name}
+            width={300}
+            height={600}
+            objectFit="cover"
+          />
+        </Box>
+      </Title>
+      <Text>{character.introduction}</Text>
+      {/* Birthday
+      {character.birthday}
+      
+      Age
+      {character.age} */}
     </>
   );
 }
