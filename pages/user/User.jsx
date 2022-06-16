@@ -1,6 +1,4 @@
 function User() {
-    return (
-        <div className="content-text" />
-    );
+  return <div className="content-text" />;
 }
 export default User;
