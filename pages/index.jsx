@@ -13,11 +13,11 @@ function Home() {
   return (
     <>
       <MantineTitle order={1} mt={80}>
-        Welcome to Ensemble Square!
+        Welcome to MakoTools!
       </MantineTitle>
       <Text my="sm">
-        Ensemble Square is a website containing information, tools, and a lot
-        more to aid you in playing Ensemble Stars!! Music English Version.
+        MakoTools is a website containing information, tools, and a lot more to
+        aid you in playing Ensemble Stars!! Music English Version.
       </Text>
       <Text my="sm">
         <b>The site is unfortunately still a work-in-progress</b>, but planned

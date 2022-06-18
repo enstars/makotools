@@ -7,7 +7,10 @@ import { useUserData } from "../../services/userData";
 import { EnsembleSquareLogo } from "../../public/logo_square";
 import UserMenu from "./UserMenu";
 import ErrorBoundary from "../ErrorBoundary";
-
+import MakotoolsLight from "../assets/Logo/mkt_light_icon.svg?url";
+import MakotoolsDark from "../assets/Logo/mkt_dark_icon.svg?url";
+import MakotoolsTextLight from "../assets/Logo/mkt_light_text.svg?url";
+import MakotoolsTextDark from "../assets/Logo/mkt_dark_text.svg?url";
 import {
   IconUsers,
   IconPlayCard,
@@ -35,7 +38,7 @@ import {
 import { useColorScheme } from "@mantine/hooks";
 
 const SidebarButton = forwardRef(function button(
-  { children, fullPadding, ...props },
+  { children, fullPadding, sx, ...props },
   ref
 ) {
   return (
@@ -45,25 +48,24 @@ const SidebarButton = forwardRef(function button(
         display: "block",
         // boxSizing: "border-box",
         width: "100%",
-        paddingLeft: theme.spacing.sm,
-        paddingRight: theme.spacing.sm,
-        paddingTop: fullPadding ? theme.spacing.xs : theme.spacing.xs / 2,
-        paddingBottom: fullPadding ? theme.spacing.xs : theme.spacing.xs / 2,
+        paddingLeft: theme.spacing.md,
+        paddingRight: theme.spacing.md,
+        paddingTop: fullPadding ? theme.spacing.sm : theme.spacing.sm / 2,
+        paddingBottom: fullPadding ? theme.spacing.sm : theme.spacing.sm / 2,
         // borderRadius: theme.radius.sm,
-        color:
-          theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
 
         "&:hover": {
           backgroundColor:
             theme.colorScheme === "dark"
-              ? theme.colors.dark[8]
-              : theme.colors.gray[1],
+              ? theme.colors.dark[7]
+              : theme.colors.gray[2],
         },
 
         "@media (max-width: 768px)": {
-          padding: theme.spacing.xs / 2,
+          padding: theme.spacing.xs,
           // paddingRight: theme.spacing.xs / 2,
         },
+        ...sx,
       })}
       ref={ref}
       {...props}
@@ -117,25 +119,36 @@ function Sidebar({ opened, setOpened }) {
               query="(max-width: 768px)"
               styles={{ justifyContent: "center" }}
             >
-              <Group spacing="sm">
-                <ThemeIcon
-                  variant={location.asPath === "/" ? "filled" : "light"}
-                >
-                  <EnsembleSquareLogo />
-                </ThemeIcon>
+              <Group spacing={0}>
+                <Image
+                  src={
+                    theme.colorScheme === "dark"
+                      ? MakotoolsDark
+                      : MakotoolsLight
+                  }
+                  alt="MakoTools site logo"
+                  width={20}
+                  height={20}
+                  objectFit="contain"
+                />
                 <MediaQuery
                   query="(max-width: 768px)"
-                  styles={{
-                    display: "none",
-                  }}
+                  styles={{ display: "none" }}
                 >
-                  <Text
-                    size="sm"
-                    weight={location.asPath === "/" ? "700" : "500"}
-                    sx={{ fontFamily: theme.headings.fontFamily }}
-                  >
-                    Ensemble Square
-                  </Text>
+                  <Box ml="xs" sx={{ display: "flex" }}>
+                    <Image
+                      src={
+                        theme.colorScheme === "dark"
+                          ? MakotoolsTextDark
+                          : MakotoolsTextLight
+                      }
+                      alt="MakoTools site name"
+                      width={120}
+                      height={20}
+                      objectFit="contain"
+                      objectPosition="left"
+                    />
+                  </Box>
                 </MediaQuery>
               </Group>
             </MediaQuery>
@@ -167,21 +180,26 @@ function Sidebar({ opened, setOpened }) {
             },
           ].map((link) => (
             <Link key={link.link} href={link.link} passHref>
-              <SidebarButton>
+              <SidebarButton
+                sx={
+                  `/${location.asPath.split("/")[1]}` === link.link
+                    ? {
+                        backgroundColor:
+                          theme.colorScheme === "dark"
+                            ? theme.colors.dark[8]
+                            : theme.colors.gray[1],
+                      }
+                    : {}
+                }
+              >
                 <MediaQuery
                   query="(max-width: 768px)"
                   styles={{ justifyContent: "center" }}
                 >
-                  <Group spacing="sm">
-                    <ThemeIcon
-                      variant={
-                        `/${location.asPath.split("/")[1]}` === link.link
-                          ? "filled"
-                          : "light"
-                      }
-                    >
+                  <Group spacing={0}>
+                    <Box sx={{ display: "flex" }}>
                       <link.icon size={16} />
-                    </ThemeIcon>
+                    </Box>
                     <MediaQuery
                       query="(max-width: 768px)"
                       styles={{
@@ -189,6 +207,7 @@ function Sidebar({ opened, setOpened }) {
                       }}
                     >
                       <Text
+                        ml="md"
                         size="sm"
                         weight={
                           `/${location.asPath.split("/")[1]}` === link.link
@@ -226,7 +245,7 @@ function Sidebar({ opened, setOpened }) {
                     spacing="sm"
                     sx={{ flexWrap: "nowrap", alignItems: "flex-start" }}
                   >
-                    <Avatar color="blue" size="sm" radius="md">
+                    <Avatar color="blue" size="sm" radius="xl">
                       <IconUser size={16} />
                     </Avatar>
 
