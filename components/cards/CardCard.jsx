@@ -24,10 +24,11 @@ const attributes = [
   { name: "Fl", color: "yellow" },
 ];
 
-export default function CardCard({ i, cards }) {
-  const card = cards.main.data[i];
-  const cardMainLang = cards.localized[0].data[i];
-  const cardSubLang = cards.localized[1].data?.[i] || undefined;
+export default function CardCard({ i, cards, id }) {
+  const card = cards.main.data.find((c) => c.id === id);
+  const cardMainLang = cards.localized[0].data.find((c) => c.id === id);
+  const cardSubLang =
+    cards.localized[1].data?.find((c) => c.id === id) || undefined;
   // console.log(card);
   return (
     // <Link passHref>
@@ -88,13 +89,15 @@ export default function CardCard({ i, cards }) {
           {attributes[card.type].name} {card.rarity}
           <IconStar size={10} style={{ verticalAlign: -1 }} />
         </Badge>
-        <Badge
-          sx={{
-            textTransform: "none",
-          }}
-        >
-          40k
-        </Badge>
+        {card?.stats?.ir[0] && (
+          <Badge
+            sx={{
+              textTransform: "none",
+            }}
+          >
+            IR {card.stats.ir[0] + card.stats.ir[1] + card.stats.ir[2]}
+          </Badge>
+        )}
       </Group>
     </Card>
     // </Link>

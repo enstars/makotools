@@ -48,7 +48,7 @@ function Home() {
       </List>
       <Text my="sm">
         For the time being, we have a small preview of the site&apos;s look to
-        show, so feel free to play around and sign up if you're interested!
+        show, so feel free to play around and sign up if you&apos;re interested!
         Hopefully we&apos;ll be able to release parts of the site in future
         updates.
       </Text>

@@ -12,7 +12,14 @@ function Page({ cards }) {
   // console.log(cards);
 
   useEffect(() => {
-    setCardsList(cards.main.data.slice(0, count));
+    setCardsList(
+      cards.main.data
+        .filter((c) => {
+          console.log(c);
+          return c.rarity === 5;
+        })
+        .slice(0, count)
+    );
   }, [count]);
 
   const loadMore = () => {
@@ -22,6 +29,9 @@ function Page({ cards }) {
   return (
     <div className="content-text">
       <PageTitle title="Cards" />
+      <Text color="dimmed" mb="sm" size="sm">
+        Only 5-star cards are shown on this page at the moment!
+      </Text>
       <InfiniteScroll
         dataLength={cardsList.length} //This is important field to render the next data
         next={loadMore}
@@ -39,7 +49,7 @@ function Page({ cards }) {
         }}
       >
         {cardsList.map((e, i) => (
-          <CardCard key={e.id} cards={cards} i={i} />
+          <CardCard key={e.id} cards={cards} i={i} id={e.id} />
         ))}
       </InfiniteScroll>
     </div>
