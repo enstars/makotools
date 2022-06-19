@@ -5,14 +5,14 @@ import { Table, Box, Text, useMantineTheme } from "@mantine/core";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CardCard from "../../components/cards/CardCard";
 
-function Page({ characters, unit_to_characters, units, cards }) {
+function Page({ cards }) {
   const theme = useMantineTheme();
   const [count, setCount] = useState(20);
   const [cardsList, setCardsList] = useState([]);
   // console.log(cards);
 
   useEffect(() => {
-    setCardsList(cards[0][1].slice(0, count));
+    setCardsList(cards.main.data.slice(0, count));
   }, [count]);
 
   const loadMore = () => {
@@ -25,7 +25,7 @@ function Page({ characters, unit_to_characters, units, cards }) {
       <InfiniteScroll
         dataLength={cardsList.length} //This is important field to render the next data
         next={loadMore}
-        hasMore={count < cards[0][1].length}
+        hasMore={count < cards.main.data.length}
         loader={<h4>Loading...</h4>}
         endMessage={
           <p style={{ textAlign: "center" }}>
@@ -55,13 +55,13 @@ export async function getServerSideProps({ res, locale, ...context }) {
   );
   // refresh every 2 hours, stale for 48hrs
   // console.log(locale);
-  const characters = await getLocalizedData("characters", locale);
-  const unit_to_characters = await getLocalizedData("unit_to_characters");
-  const units = await getLocalizedData("units");
+  // const characters = await getLocalizedData("characters", locale);
+  // const unit_to_characters = await getLocalizedData("unit_to_characters");
+  // const units = await getLocalizedData("units");
   const cards = await getLocalizedData("cards");
 
   return {
-    props: { characters, unit_to_characters, units, cards },
+    props: { cards },
   };
 }
 

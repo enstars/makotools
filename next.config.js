@@ -50,4 +50,8 @@ module.exports = {
     ],
     defaultLocale: "en",
   },
+
+  async redirects() {
+    return [];
+  },
 };

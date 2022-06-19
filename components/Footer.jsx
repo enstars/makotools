@@ -41,7 +41,7 @@ function Header() {
         weight="800"
         sx={{ fontFamily: theme.headings.fontFamily }}
       >
-        Ensemble Square
+        MakoTools
       </Text>
       <Link href="/privacy-policy" passHref>
         <Anchor component="a" size="sm">

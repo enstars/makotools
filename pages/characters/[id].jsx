@@ -11,9 +11,9 @@ function Character({ characters, i }) {
   // const { id } = useParams();
   const router = useRouter();
   const { id } = router.query;
-  // console.log(characters);
 
-  const character = characters[0][1][i];
+  const character = characters.localized[0].data[i];
+  console.log(character);
   return (
     <>
       <Head>
@@ -93,7 +93,7 @@ export async function getServerSideProps({ req, res, locale }) {
   // refresh every 2 hours, stale for 48hrs
   // console.log(locale);
   const characters = await getLocalizedData("characters", locale);
-  const charactersEN = await getData("characters", "en");
+  const { data: charactersEN } = await getData("characters", "en");
   const urlSegments = req.url.split("/");
   const lastSegment = decodeURIComponent(urlSegments[urlSegments.length - 1])
     .toLocaleLowerCase()

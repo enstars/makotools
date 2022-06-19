@@ -7,12 +7,20 @@ import {
   Paper,
   Card,
   Group,
+  Box,
 } from "@mantine/core";
 
+import { useUserData } from "../services/userData";
+import Banner from "../assets/banner.png";
+import Image from "next/image";
 function Home() {
+  const { userData } = useUserData();
+  // console.log(userData.loggedIn);
   return (
     <>
-      <MantineTitle order={1} mt={80}>
+      <Box mt={80} />
+      <Image src={Banner} style={{ borderRadius: 12 }} />
+      <MantineTitle order={1} mt="sm">
         Welcome to MakoTools!
       </MantineTitle>
       <Text my="sm">
@@ -38,20 +46,28 @@ function Home() {
           Find fan-translated comics and other various from the series.
         </List.Item>
       </List>
-      <Card withBorder shadow="sm" p="lg">
-        <Text mb="sm" align="center">
-          If you&apos;re interested, help us out by signing up! This helps us
-          gauge interest, and signed in users can test out new features in beta
-          before they get released!
-        </Text>
-        <Group position="center">
-          <Link href="login" passHref>
-            <Button component="a" px="xl">
-              Sign up today!
-            </Button>
-          </Link>
-        </Group>
-      </Card>
+      <Text my="sm">
+        For the time being, we have a small preview of the site&apos;s look to
+        show, so feel free to play around and sign up if you're interested!
+        Hopefully we&apos;ll be able to release parts of the site in future
+        updates.
+      </Text>
+      {!userData.loggedIn && (
+        <Card withBorder shadow="sm" p="lg">
+          <Text mb="sm" align="center">
+            If you&apos;re interested, help us out by signing up! This helps us
+            gauge interest, and signed in users can test out new features in
+            beta before they get released!
+          </Text>
+          <Group position="center">
+            <Link href="login" passHref>
+              <Button component="a" px="xl">
+                Sign up today!
+              </Button>
+            </Link>
+          </Group>
+        </Card>
+      )}
     </>
   );
 }

@@ -4,7 +4,6 @@ import Image from "next/image";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import { useUserData } from "../../services/userData";
-import { EnsembleSquareLogo } from "../../public/logo_square";
 import UserMenu from "./UserMenu";
 import ErrorBoundary from "../ErrorBoundary";
 import MakotoolsLight from "../assets/Logo/mkt_light_icon.svg?url";
@@ -106,9 +105,10 @@ function Sidebar({ opened, setOpened }) {
         sx={{
           borderBottom: "solid 1px",
           borderColor: dark ? theme.colors.dark[5] : theme.colors.gray[2],
+          marginBottom: theme.spacing.xs / 2,
 
-          "@media (min-width: 768px)": {
-            marginBottom: theme.spacing.xs / 2,
+          "@media (max-width: 768px)": {
+            marginBottom: 0,
             // paddingRight: theme.spacing.xs / 2,
           },
         }}

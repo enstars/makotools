@@ -8,9 +8,9 @@ import { Card, Paper, Title, useMantineTheme, Box } from "@mantine/core";
 
 export function CharacterCard({ i, doubleface, unique_id, characters }) {
   const theme = useMantineTheme();
-  const character = characters[0][1][i];
-  const characterSubLang = characters[1][1]?.[i] || undefined;
-  console.log(characters);
+  const character = characters.localized[0].data[i];
+  const characterSubLang = characters.localized[1].data?.[i] || undefined;
+  // console.log(characters);
   return (
     <Link href={`/characters/${character.character_id}`} passHref>
       <Card
@@ -68,7 +68,7 @@ export function CharacterCard({ i, doubleface, unique_id, characters }) {
           <div className={styles.info}>
             <Title order={2} sx={{ fontSize: theme.fontSizes.sm }}>
               {character.last_name}
-              {characters[0][0] === "en" && " "}
+              {characters.localized[0].lang === "en" && " "}
               {character.first_name}
               {doubleface ? " (DF)" : ""}
             </Title>

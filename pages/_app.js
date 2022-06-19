@@ -1,17 +1,11 @@
 // import App from 'next/app'
 import React, { useState, useEffect } from "react";
-import { GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { getCookie, setCookies } from "cookies-next";
 
-import {
-  MantineProvider,
-  ColorScheme,
-  ColorSchemeProvider,
-} from "@mantine/core";
+import { MantineProvider, ColorSchemeProvider } from "@mantine/core";
 
-import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { NotificationsProvider } from "@mantine/notifications";
 
 import "@fontsource/sora/400.css";
@@ -25,25 +19,12 @@ import "@fontsource/noto-sans-jp/700.css";
 import "@fontsource/inter";
 import "@fontsource/inter/variable-full.css";
 
-// import "normalize.css/normalize.css";
-// import "../styles/index.scss";
-
 import AuthProvider from "../services/auth";
 import UserDataProvider from "../services/userData";
 
-// const queryClient = new QueryClient();
-
 function App({ Component, pageProps, ...props }) {
   const location = useRouter();
-  const [currentPath, setCurrentPath] = useState(location.pathname);
-  const [queryClient] = useState(() => new QueryClient());
   const [colorScheme, setStateColorScheme] = useState(props.colorScheme);
-  // const [colorScheme, setColorScheme] = useState("dark");
-
-  useEffect(() => {
-    setCurrentPath(location.pathname);
-    // console.log(currentPath);
-  }, [location]);
 
   const getLayout = Component.getLayout || ((page) => page);
 
@@ -126,11 +107,9 @@ function App({ Component, pageProps, ...props }) {
               }}
             >
               <NotificationsProvider>
-                <QueryClientProvider client={queryClient}>
-                  {/* <Hydrate state={pageProps.dehydratedState}> */}
-                  {getLayout(<Component {...pageProps} />, pageProps)}
-                  {/* </Hydrate> */}
-                </QueryClientProvider>
+                {/* <Hydrate state={pageProps.dehydratedState}> */}
+                {getLayout(<Component {...pageProps} />, pageProps)}
+                {/* </Hydrate> */}
               </NotificationsProvider>
             </MantineProvider>
           </ColorSchemeProvider>
