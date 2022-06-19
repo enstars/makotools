@@ -153,5 +153,5 @@ export async function getServerSideProps({ res, locale, ...context }) {
 
 import Layout from "../../components/Layout";
 Characters.getLayout = function getLayout(page) {
-  return <Layout>{page}</Layout>;
+  return <Layout wide>{page}</Layout>;
 };

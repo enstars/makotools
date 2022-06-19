@@ -96,7 +96,6 @@ function Sidebar({ opened, setOpened }) {
       position={{ top: 0, left: 0 }}
       width={{
         sm: 250,
-        lg: 300,
         base: 40,
       }}
     >

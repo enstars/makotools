@@ -98,6 +98,7 @@ function App({ Component, pageProps, ...props }) {
                     "#1864ab",
                   ],
                 },
+                lineHeight: 1.5,
                 fontFamily: "InterVariable, Inter, Noto Sans JP, sans-serif",
                 headings: {
                   fontFamily:

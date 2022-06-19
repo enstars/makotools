@@ -18,6 +18,7 @@ function Layout({
   children: Component,
   footer = true,
   sidebar = true,
+  wide = false,
   pageTitle,
 }) {
   const location = useRouter();
@@ -60,9 +61,10 @@ function Layout({
           radius={0}
         >
           <Container
-            size="sm"
+            size={wide ? "xl" : "sm"}
             p="xl"
             sx={{
+              width: "100%",
               minHeight: "100vh",
               "@media (max-width: 768px)": {
                 padding: theme.spacing.md,

@@ -5,7 +5,7 @@ import { Table, Box, Text, useMantineTheme } from "@mantine/core";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CardCard from "../../components/cards/CardCard";
 
-function Page({ cards }) {
+function Page({ cards, characters }) {
   const theme = useMantineTheme();
   const [count, setCount] = useState(20);
   const [cardsList, setCardsList] = useState([]);
@@ -44,12 +44,18 @@ function Page({ cards }) {
         }
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(176px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fill, minmax(224px, 1fr))",
           gap: theme.spacing.xs,
         }}
       >
         {cardsList.map((e, i) => (
-          <CardCard key={e.id} cards={cards} i={i} id={e.id} />
+          <CardCard
+            key={e.id}
+            cards={cards}
+            i={i}
+            id={e.id}
+            characters={characters.main.data}
+          />
         ))}
       </InfiniteScroll>
     </div>
@@ -65,17 +71,17 @@ export async function getServerSideProps({ res, locale, ...context }) {
   );
   // refresh every 2 hours, stale for 48hrs
   // console.log(locale);
-  // const characters = await getLocalizedData("characters", locale);
+  const characters = await getLocalizedData("characters", locale);
   // const unit_to_characters = await getLocalizedData("unit_to_characters");
   // const units = await getLocalizedData("units");
   const cards = await getLocalizedData("cards");
 
   return {
-    props: { cards },
+    props: { characters, cards },
   };
 }
 
 import Layout from "../../components/Layout";
 Page.getLayout = function getLayout(page) {
-  return <Layout>{page}</Layout>;
+  return <Layout wide>{page}</Layout>;
 };
