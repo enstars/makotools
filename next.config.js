@@ -1,3 +1,25 @@
+const appLocales = [
+  // game languages
+  "en", // English
+  "ja", // Japanese
+  "zh", // Standard Mandarin / Simplified
+  "zh-TW", // Taiwanese Mandarin / Traditional
+  "ko", // Korean
+  // Oissu Statistics
+  "id", // Indonesian
+  "fil", // Filipino
+  "vi", // Vietnamese
+  "ru", // Russian
+  "ms", // Malaysian
+  "es", // Spanish
+  "pt", // Portugese
+  "pt-BR", // Brazilian Portugese
+  "fr", // French
+  "de", // German
+  "it", // Italian
+  "ar", // Arabic
+  "th", // Thai
+];
 module.exports = {
   webpack(config) {
     config.module.rules.push(
@@ -13,6 +35,8 @@ module.exports = {
         use: ["@svgr/webpack"],
       }
     );
+    config.resolve.alias["cldr$"] = "cldrjs";
+    config.resolve.alias["cldr"] = "cldrjs/dist/cldr";
 
     return config;
   },
@@ -26,28 +50,7 @@ module.exports = {
   },
 
   i18n: {
-    locales: [
-      // game languages
-      "en", // English
-      "ja", // Japanese
-      "zh-CN", // Standard Mandarin / Simplified
-      "zh-TW", // Taiwanese Mandarin / Traditional
-      "ko", // Korean
-      // Oissu Statistics
-      "id", // Indonesian
-      "fil", // Filipino
-      "vi", // Vietnamese
-      "ru", // Russian
-      "ms", // Malaysian
-      "es", // Spanish
-      "pt", // Portugese
-      "pt-BR", // Brazilian Portugese
-      "fr", // French
-      "de", // German
-      "it", // Italian
-      "ar", // Arabic
-      "th", // Thai
-    ],
+    locales: appLocales,
     defaultLocale: "en",
   },
 

@@ -1,0 +1,7 @@
+[
+  {},
+  { "name": "Sp", "color": "red", "fullname": "Sparkle" },
+  { "name": "Br", "color": "lightblue", "fullname": "Brilliant" },
+  { "name": "Gl", "color": "green", "fullname": "Glitter" },
+  { "name": "Fl", "color": "yellow", "fullname": "Flash" }
+]

@@ -1,7 +1,15 @@
 import { useState, useEffect } from "react";
 import PageTitle from "../../components/PageTitle";
 import { getLocalizedData } from "../../services/ensquare";
-import { Table, Box, Text, useMantineTheme } from "@mantine/core";
+import {
+  Table,
+  Box,
+  Text,
+  Paper,
+  Group,
+  Select,
+  useMantineTheme,
+} from "@mantine/core";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CardCard from "../../components/cards/CardCard";
 
@@ -16,7 +24,7 @@ function Page({ cards, characters }) {
       cards.main.data
         .filter((c) => {
           console.log(c);
-          return c.rarity === 5;
+          return c.rarity === 5 && c.id <= 9999;
         })
         .slice(0, count)
     );
@@ -29,6 +37,30 @@ function Page({ cards, characters }) {
   return (
     <div className="content-text">
       <PageTitle title="Cards" />
+      {/* <Paper mb="sm" p="md" withBorder>
+        <Text weight="700" size="xs" color="dimmed">
+          Search Options
+        </Text>
+        <Group>
+          <Select
+            label="Unit"
+            placeholder="Pick a unit..."
+            data={filterOptions.map((o) => {
+              return {
+                value: o,
+                label: o.unit_name,
+              };
+            })}
+            onChange={handleNewUnit}
+            searchable
+            clearable
+            allowDeselect
+            // sx={{ maxWidth: 200 }}
+            size="sm"
+            variant="default"
+          />
+        </Group>
+      </Paper> */}
       <Text color="dimmed" mb="sm" size="sm">
         Only 5-star cards are shown on this page at the moment!
       </Text>

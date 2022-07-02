@@ -97,8 +97,8 @@ function syncFirestoreUserData(user, callback = () => {}, userInfo = {}) {
   );
 }
 
-function setFirestoreUserData(data, uid = auth.currentUser.uid) {
-  setDoc(doc(db, "users", uid), data, { merge: true });
+function setFirestoreUserData(data, uid = auth?.currentUser?.uid || null) {
+  if (uid) setDoc(doc(db, "users", uid), data, { merge: true });
 }
 
 async function getFirestoreUserData(uid = auth.currentUser.uid) {

@@ -47,7 +47,12 @@ function ImageViewer({ src, alt, ...props }) {
           ></MantineImage>
         </Paper>
       </Modal>
-      <Image src={src} alt={alt} onClick={() => setOpened(true)} {...props} />
+      <MantineImage
+        src={src}
+        alt={alt}
+        onClick={() => setOpened(true)}
+        {...props}
+      />
     </>
   );
 }
