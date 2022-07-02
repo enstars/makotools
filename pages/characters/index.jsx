@@ -5,7 +5,6 @@ import _ from "lodash";
 import { getData, getLocalizedData } from "../../services/ensquare";
 import Title from "../../components/PageTitle";
 import Main from "../../components/Main";
-import Dropdown from "../../components/core/Dropdown";
 import {
   Select,
   Box,
