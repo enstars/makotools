@@ -19,6 +19,7 @@ function HeaderApp() {
             }}
             px="sm"
             py={6}
+            sx={(theme) => ({ boxShadow: theme.shadows.sm })}
           >
             <Breadcrumbs />
           </Header>

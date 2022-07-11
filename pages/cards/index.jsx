@@ -162,7 +162,7 @@ function Page({ cards, characters }) {
                 iconWrapper: { display: "none" },
               }}
             >
-              {[1, 2, 3, 4, 5].map((r) => (
+              {[4, 5].map((r) => (
                 <Chip key={r} value={r}>
                   {r}
                 </Chip>

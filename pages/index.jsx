@@ -43,7 +43,7 @@ function Home() {
           Calculate how much dias you have to save up for events.
         </List.Item>
         <List.Item>
-          Find fan-translated comics and other various from the series.
+          Find fan-translated comics and other various media from the series.
         </List.Item>
       </List>
       <Text my="sm">
