@@ -24,6 +24,8 @@ import { useLocalStorage } from "@mantine/hooks";
 const CARD_LIST_INITIAL_COUNT = 20;
 
 function Page({ cards, characters }) {
+  console.log(cards);
+
   const theme = useMantineTheme();
   const [count, setCount] = useState(CARD_LIST_INITIAL_COUNT);
   const [cardsList, setCardsList] = useState([]);
@@ -102,7 +104,7 @@ function Page({ cards, characters }) {
 
   const loadMore = () => {
     const newCount = count + CARD_LIST_INITIAL_COUNT;
-    console.log("more -> ", newCount);
+    // console.log("more -> ", newCount);
     setCount(newCount);
   };
 
@@ -241,7 +243,7 @@ export async function getServerSideProps({ res, locale, ...context }) {
   const characters = await getLocalizedData("characters", locale);
   // const unit_to_characters = await getLocalizedData("unit_to_characters");
   // const units = await getLocalizedData("units");
-  const cards = await getLocalizedData("cards");
+  const cards = await getLocalizedData("cards", locale);
 
   return {
     props: { characters, cards },

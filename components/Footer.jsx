@@ -52,6 +52,8 @@ function Header() {
       <Text size="xs" color="dimmed">
         Not official nor related to Ensemble Stars!!, Happy Elements K.K, or
         Happy Elements in any way. All assets belong to their respective owners.
+        MakoTools is a collaboration project between EN:Link, The Ensemble Stars
+        Wiki, Daydream Guides, and is developed by the Enstars Dev Team!
       </Text>
     </Footer>
   );

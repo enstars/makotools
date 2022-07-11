@@ -94,8 +94,7 @@ function App({ Component, pageProps, ...props }) {
           lineHeight: 1.5,
           fontFamily: "InterVariable, Inter, Noto Sans JP, sans-serif",
           headings: {
-            fontFamily:
-              "SoraVariable, Sora, Metropolis, InterVariable, Inter, sans-serif",
+            fontFamily: "SoraVariable, Sora, InterVariable, Inter, sans-serif",
             fontWeight: 800,
           },
           other: { transition: "0.3s cubic-bezier(.19,.73,.37,.93)" },

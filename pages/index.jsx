@@ -8,6 +8,7 @@ import {
   Card,
   Group,
   Box,
+  Divider,
 } from "@mantine/core";
 
 import { useUserData } from "../services/userData";
@@ -33,7 +34,7 @@ function Home() {
       </Text>
       <List my="sm" withPadding>
         <List.Item>
-          View any card&apos;s stats, live skills, and support skiils.
+          View any card&apos;s stats, skills, and related items.
         </List.Item>
         <List.Item>
           View an event&apos;s start / end date, with live countdowns and
@@ -61,13 +62,18 @@ function Home() {
           </Text>
           <Group position="center">
             <Link href="login" passHref>
-              <Button component="a" px="xl">
+              <Button component="a" px="xl" variant="light" color="green">
                 Sign up today!
               </Button>
             </Link>
           </Group>
         </Card>
       )}
+      {/* <Divider my="xl" />
+      <Text size="sm">
+        MakoTools is a collaboration project between EN:Link, The Ensemble Stars
+        Wiki, Daydream Guides, and is developed by the @Enstars Dev Team!
+      </Text> */}
     </>
   );
 }
