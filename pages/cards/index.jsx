@@ -2,94 +2,229 @@ import { useState, useEffect } from "react";
 import PageTitle from "../../components/PageTitle";
 import { getLocalizedData } from "../../services/ensquare";
 import {
+  useMantineTheme,
   Table,
   Box,
   Text,
   Paper,
   Group,
   Select,
-  useMantineTheme,
+  Chips,
+  Chip,
+  InputWrapper,
+  Center,
+  Loader,
+  Switch,
+  MultiSelect,
 } from "@mantine/core";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CardCard from "../../components/cards/CardCard";
+import { useLocalStorage } from "@mantine/hooks";
+
+const CARD_LIST_INITIAL_COUNT = 20;
 
 function Page({ cards, characters }) {
   const theme = useMantineTheme();
-  const [count, setCount] = useState(20);
+  const [count, setCount] = useState(CARD_LIST_INITIAL_COUNT);
   const [cardsList, setCardsList] = useState([]);
+  const [slicedCardsList, setSlicedCardsList] = useState([]);
+  const [viewOptions, setViewOptions] = useLocalStorage({
+    key: "cardFilters",
+    defaultValue: {
+      filterRarity: [5],
+      filterCharacters: [],
+      sortOption: "id",
+    },
+  });
+  const [cardOptions, setCardOptions] = useLocalStorage({
+    key: "cardOptions",
+    defaultValue: {
+      showFullInfo: false,
+    },
+  });
+
+  let characterIDtoSort = {};
+  characters.main.data.forEach((c) => {
+    characterIDtoSort[c.character_id] = c.sort_id || c.character_id;
+  });
+
+  const SORT_OPTIONS = [
+    { value: "id", label: "Card ID" },
+    {
+      value: "character",
+      label: "Character",
+    },
+  ];
+
+  const SORT_FUNCTIONS = {
+    id: (a, b) => a.id > b.id,
+    character: (a, b) =>
+      characterIDtoSort[a.character_id] > characterIDtoSort[b.character_id],
+  };
   // console.log(cards);
 
   useEffect(() => {
-    setCardsList(
-      cards.main.data
-        .filter((c) => {
-          console.log(c);
-          return c.rarity === 5 && c.id <= 9999;
-        })
-        .slice(0, count)
-    );
-  }, [count]);
+    const filteredList = cards.main.data
+      .filter((c) => {
+        // console.log(c);
+        return c.id <= 9999;
+      })
+      .filter((c) => {
+        // console.log(c);
+        return viewOptions.filterRarity.includes(c.rarity);
+      })
+      .filter((c) => {
+        if (viewOptions.filterCharacters.length)
+          return viewOptions.filterCharacters.includes(
+            c.character_id.toString()
+          );
+        return true;
+      })
+      .sort((a, b) => a.id > b.id)
+      .sort(SORT_FUNCTIONS[viewOptions.sortOption]);
+    // .sort(
+    //   viewOptions.sortOption === "id"
+    //     ? (a, b) => a.id > b.id
+    //     : viewOptions.sortOption === "character"
+    //     ?
+    //     : (a, b) => a.id > b.id
+    // );
+    setCardsList(filteredList);
+    setCount(CARD_LIST_INITIAL_COUNT);
+    // setSlicedCardsList(filteredList.slice(0, CARD_LIST_INITIAL_COUNT));
+    console.log("updated filter: ", JSON.parse(JSON.stringify(filteredList)));
+    // console.log("sliced: ", filteredList.slice(0, CARD_LIST_INITIAL_COUNT));
+  }, [viewOptions]);
+
+  useEffect(() => {
+    setSlicedCardsList(cardsList.slice(0, count));
+  }, [cardsList, count]);
 
   const loadMore = () => {
-    setCount(count + 20);
+    const newCount = count + CARD_LIST_INITIAL_COUNT;
+    console.log("more -> ", newCount);
+    setCount(newCount);
   };
 
   return (
     <div className="content-text">
       <PageTitle title="Cards" />
-      {/* <Paper mb="sm" p="md" withBorder>
+
+      <Paper mb="sm" p="md" withBorder>
         <Text weight="700" size="xs" color="dimmed">
           Search Options
         </Text>
         <Group>
           <Select
-            label="Unit"
+            label="Sort by"
             placeholder="Pick a unit..."
-            data={filterOptions.map((o) => {
-              return {
-                value: o,
-                label: o.unit_name,
-              };
-            })}
-            onChange={handleNewUnit}
-            searchable
-            clearable
-            allowDeselect
+            data={SORT_OPTIONS}
+            // onChange={handleNewUnit}
+            value={viewOptions.sortOption}
+            onChange={(val) => {
+              // console.log(val);
+              setViewOptions({ ...viewOptions, sortOption: val });
+            }}
             // sx={{ maxWidth: 200 }}
             size="sm"
             variant="default"
           />
-        </Group>
-      </Paper> */}
-      <Text color="dimmed" mb="sm" size="sm">
-        Only 5-star cards are shown on this page at the moment!
-      </Text>
-      <InfiniteScroll
-        dataLength={cardsList.length} //This is important field to render the next data
-        next={loadMore}
-        hasMore={count < cards.main.data.length}
-        loader={<h4>Loading...</h4>}
-        endMessage={
-          <p style={{ textAlign: "center" }}>
-            <b>You reached the end!</b>
-          </p>
-        }
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(224px, 1fr))",
-          gap: theme.spacing.xs,
-        }}
-      >
-        {cardsList.map((e, i) => (
-          <CardCard
-            key={e.id}
-            cards={cards}
-            i={i}
-            id={e.id}
-            characters={characters.main.data}
+          <MultiSelect
+            label="Characters"
+            placeholder="Pick a character..."
+            data={characters.localized[0].data.map((c) => {
+              return { value: c.character_id.toString(), label: c.first_name };
+            })}
+            // onChange={handleNewUnit}
+            value={viewOptions.filterCharacters}
+            onChange={(val) => {
+              // console.log(val);
+              setViewOptions({ ...viewOptions, filterCharacters: val });
+            }}
+            // sx={{ maxWidth: 200 }}
+            size="sm"
+            variant="default"
+            searchable
           />
-        ))}
-      </InfiniteScroll>
+          <InputWrapper id="rarity" label="Rarity">
+            <Chips
+              color="yellow"
+              variant="filled"
+              multiple
+              value={viewOptions.filterRarity}
+              onChange={(filterRarity) => {
+                setViewOptions({ ...viewOptions, filterRarity });
+              }}
+              spacing={3}
+              radius="md"
+              styles={{
+                label: { paddingLeft: 10, paddingRight: 10 },
+                iconWrapper: { display: "none" },
+              }}
+            >
+              {[1, 2, 3, 4, 5].map((r) => (
+                <Chip key={r} value={r}>
+                  {r}
+                </Chip>
+              ))}
+            </Chips>
+          </InputWrapper>
+          <Switch
+            label="Show full info"
+            checked={cardOptions.showFullInfo}
+            onChange={(event) =>
+              setCardOptions({
+                ...cardOptions,
+                showFullInfo: event.currentTarget.checked,
+              })
+            }
+          />
+        </Group>
+      </Paper>
+      {slicedCardsList.length ? (
+        <>
+          <Text color="dimmed" mt="xl" mb="sm" size="sm">
+            {cardsList.length} results found.
+          </Text>
+          <InfiniteScroll
+            dataLength={slicedCardsList.length} //This is important field to render the next data
+            next={loadMore}
+            hasMore={count < cards.main.data.length}
+            loader={
+              <Center sx={{ gridColumn: "s/e" }} my="lg">
+                <Loader variant="bars" />
+              </Center>
+            }
+            // endMessage={
+            //   // <p style={{ textAlign: "center" }}>
+            //   //   <b>You reached the end!</b>
+            //   // </p>
+            // }
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                "[s] repeat(auto-fill, minmax(224px, 1fr)) [e]",
+              gap: theme.spacing.xs,
+              alignItems: "flex-start",
+            }}
+          >
+            {slicedCardsList.map((e, i) => (
+              <CardCard
+                key={e.id}
+                cards={cards}
+                i={i}
+                id={e.id}
+                characters={characters.main.data}
+                cardOptions={cardOptions}
+              />
+            ))}
+          </InfiniteScroll>
+        </>
+      ) : (
+        <Text align="center" color="dimmed" mt="xl" mb="sm" size="sm">
+          No cards found.
+        </Text>
+      )}
     </div>
   );
 }

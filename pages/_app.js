@@ -46,76 +46,77 @@ function App({ Component, pageProps, ...props }) {
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
-      <AuthProvider>
-        <UserDataProvider setAppColorScheme={setAppColorScheme}>
-          <ColorSchemeProvider
-            colorScheme={colorScheme}
-            toggleColorScheme={toggleColorScheme}
-            setAppColorScheme={setAppColorScheme}
-          >
-            <MantineProvider
-              emotionOptions={{ key: "ensq" }}
-              withGlobalStyles
-              withNormalizeCSS
-              theme={{
-                colorScheme,
-                colors: {
-                  // override dark colors to change them for all components
-                  dark: [
-                    "#D3D6E0",
-                    "#AAB1C2",
-                    "#8E97AD",
-                    "#5F6982",
-                    "#3A4259",
-                    "#2C3347",
-                    "#212736",
-                    "#191C27",
-                    "#171921",
-                    "#12141C",
-                  ],
-                  blue: [
-                    "#E8ECFD",
-                    "#C0CAF4",
-                    "#A4B1E8",
-                    "#8297EE",
-                    "#5E78E3",
-                    "#3C59D1",
-                    "#324CB3",
-                    "#273E96",
-                    "#1C2F7D",
-                    "#14297A",
-                  ],
-                  lightblue: [
-                    "#e7f5ff",
-                    "#d0ebff",
-                    "#a5d8ff",
-                    "#74c0fc",
-                    "#4dabf7",
-                    "#339af0",
-                    "#228be6",
-                    "#1c7ed6",
-                    "#1971c2",
-                    "#1864ab",
-                  ],
-                },
-                lineHeight: 1.5,
-                fontFamily: "InterVariable, Inter, Noto Sans JP, sans-serif",
-                headings: {
-                  fontFamily:
-                    "SoraVariable, Sora, Metropolis, InterVariable, Inter, sans-serif",
-                  fontWeight: 800,
-                },
-              }}
-            >
-              <NotificationsProvider>
+      <MantineProvider
+        emotionOptions={{ key: "ensq" }}
+        withGlobalStyles
+        withNormalizeCSS
+        theme={{
+          colorScheme,
+          colors: {
+            // override dark colors to change them for all components
+            dark: [
+              "#D3D6E0",
+              "#AAB1C2",
+              "#8E97AD",
+              "#5F6982",
+              "#3A4259",
+              "#2C3347",
+              "#212736",
+              "#191C27",
+              "#171921",
+              "#12141C",
+            ],
+            blue: [
+              "#E8ECFD",
+              "#C0CAF4",
+              "#A4B1E8",
+              "#8297EE",
+              "#5E78E3",
+              "#3C59D1",
+              "#324CB3",
+              "#273E96",
+              "#1C2F7D",
+              "#14297A",
+            ],
+            lightblue: [
+              "#e7f5ff",
+              "#d0ebff",
+              "#a5d8ff",
+              "#74c0fc",
+              "#4dabf7",
+              "#339af0",
+              "#228be6",
+              "#1c7ed6",
+              "#1971c2",
+              "#1864ab",
+            ],
+          },
+          lineHeight: 1.5,
+          fontFamily: "InterVariable, Inter, Noto Sans JP, sans-serif",
+          headings: {
+            fontFamily:
+              "SoraVariable, Sora, Metropolis, InterVariable, Inter, sans-serif",
+            fontWeight: 800,
+          },
+          other: { transition: "0.3s cubic-bezier(.19,.73,.37,.93)" },
+        }}
+      >
+        <NotificationsProvider>
+          <AuthProvider>
+            <UserDataProvider setAppColorScheme={setAppColorScheme}>
+              <ColorSchemeProvider
+                colorScheme={colorScheme}
+                toggleColorScheme={toggleColorScheme}
+                setAppColorScheme={setAppColorScheme}
+              >
                 {/* <Hydrate state={pageProps.dehydratedState}> */}
                 {getLayout(<Component {...pageProps} />, pageProps)}
                 {/* </Hydrate> */}
-              </NotificationsProvider>
-            </MantineProvider>
-          </ColorSchemeProvider>
-        </UserDataProvider>
-      </AuthProvider>
+              </ColorSchemeProvider>
+            </UserDataProvider>
+          </AuthProvider>
+        </NotificationsProvider>
+      </MantineProvider>
     </>
   );
 }

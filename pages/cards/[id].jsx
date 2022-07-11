@@ -18,16 +18,17 @@ import {
 import { IconStar } from "@tabler/icons";
 import attributes from "../../components/cards/attributes.json";
 
-function Character({ cards, characters, i, characterID }) {
+function Character({ character, card }) {
+  console.log(card);
   // const { id } = useParams();
   // const router = useRouter();
   // const { id } = router.query;
   const theme = useMantineTheme();
-  const card = cards.main.data[i];
-  const cardLocalizedMain = cards.localized[0].data[i];
-  const character = characters.main.data[characterID];
-  const characterLocalizedMain = characters.localized[0].data[characterID];
-  console.log(card);
+  // const card = cards.main.data[i];
+  const cardLocalizedMain = card.localized[0];
+  // const character = characters.main.data[characterID];
+  const characterLocalizedMain = character.localized[0];
+  // console.log(cardsJP);
   return (
     <>
       <Head>
@@ -41,7 +42,7 @@ function Character({ cards, characters, i, characterID }) {
             {characterLocalizedMain.first_name}
             <Group mt="sm" spacing="xs">
               <Badge size="xl" color="yellow" sx={{ textTransform: "none" }}>
-                {card.rarity}
+                {card.main.rarity}
                 <IconStar
                   size={13}
                   strokeWidth={3}
@@ -50,10 +51,10 @@ function Character({ cards, characters, i, characterID }) {
               </Badge>
               <Badge
                 size="xl"
-                color={attributes[card.type].color}
+                color={attributes[card.main.type].color}
                 sx={{ textTransform: "none" }}
               >
-                {attributes[card.type].fullname}
+                {attributes[card.main.type].fullname}
               </Badge>
             </Group>
             {/* <Paper
@@ -95,9 +96,11 @@ function Character({ cards, characters, i, characterID }) {
           >
             <ImageViewer
               radius="md"
-              alt={card.title}
+              alt={card.main.title}
               withPlaceholder
-              src={getB2File(`assets/card_rectangle4_${card.id}_${type}.png`)}
+              src={getB2File(
+                `assets/card_rectangle4_${card.main.id}_${type}.png`
+              )}
               // width={240}
             ></ImageViewer>
           </AspectRatio>
@@ -119,22 +122,22 @@ export async function getServerSideProps({ req, res, locale }) {
 
   const cards = await getLocalizedData("cards", locale);
   const characters = await getLocalizedData("characters", locale);
-  const { data: cardsJP } = await getData("cards", "ja");
+  // const { data: cardsJP } = await getData("cards", "ja");
   const urlSegments = req.url.split("/");
   const lastURLSegment = decodeURIComponent(urlSegments[urlSegments.length - 1])
     .toLocaleLowerCase()
     .trim();
   const cardID = parseInt(lastURLSegment, 10);
   // console.log(lastSegment);
-  const cardIndex = cardsJP.indexOf(
-    cardsJP.find(
+  // console.log(cardsJP);
+  const cardIndex = cards.main.data.indexOf(
+    cards.main.data.find(
       isNaN(cardID)
         ? (item) => `${item.title}`.toLocaleLowerCase() === lastURLSegment
         : (item) => item.id === cardID
     )
   );
-  // console.log();
-  const characterID = characters.main.data.indexOf(
+  const characterIndex = characters.main.data.indexOf(
     characters.main.data.find(
       (c) =>
         c.character_id ===
@@ -142,9 +145,18 @@ export async function getServerSideProps({ req, res, locale }) {
     )
   );
 
+  const character = {
+    main: characters.main.data[characterIndex],
+    localized: characters.localized.map((l) => l.data[characterIndex]),
+  };
+  const card = {
+    main: cards.main.data[cardIndex],
+    localized: cards.localized.map((l) => l.data[cardIndex]),
+  };
+
   // console.log(charactersEN);
   return {
-    props: { cards, characters, i: cardIndex, characterID },
+    props: { character, card },
   };
 }
 

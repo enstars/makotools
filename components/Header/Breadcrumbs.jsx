@@ -10,9 +10,9 @@ import {
 } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons";
 
-function PageAnchor(props) {
-  return <Anchor {...props} />;
-}
+// function PageAnchor({ref,...props}) {
+//   return <Anchor  {...props} />;
+// }
 
 function BreadcrumbsApp() {
   const theme = useMantineTheme();
@@ -47,7 +47,7 @@ function BreadcrumbsApp() {
         }
       >
         <Link href="/" passHref>
-          <PageAnchor inherit>Ensemble Square</PageAnchor>
+          <Anchor>Makotools</Anchor>
         </Link>
         {pathnames.map((value, index) => {
           const last = index === pathnames.length - 1;
@@ -55,7 +55,7 @@ function BreadcrumbsApp() {
 
           return (
             <Link key={value} href={to} passHref>
-              <PageAnchor inherit>{decodeURIComponent(value)}</PageAnchor>
+              <Anchor>{decodeURIComponent(value)}</Anchor>
             </Link>
           );
         })}

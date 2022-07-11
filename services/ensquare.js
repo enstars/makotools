@@ -19,7 +19,8 @@ export function getData(data, lang = "ja", source = false) {
 }
 
 export function getB2File(path) {
-  return `https://uchuu.ensemble.moe/file/ensemble-square/${path}`;
+  // return `https://uchuu.ensemble.moe/file/ensemble-square/${path}`;
+  return `https://assets.ensemble.link/${path}`;
 }
 
 export async function getLocalizedData(data, locale = "en") {

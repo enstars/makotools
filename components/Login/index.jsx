@@ -92,6 +92,7 @@ function Login() {
             />
             <form
               onSubmit={form.onSubmit((values) => {
+                console.log(values);
                 if (isRegister) {
                   appSignUpWithEmailAndPassword(
                     form.values.email,
@@ -109,6 +110,7 @@ function Login() {
                     }
                   );
                 } else {
+                  console.log("sign in");
                   appSignInWithEmailAndPassword(
                     form.values.email,
                     form.values.password,
@@ -148,15 +150,16 @@ function Login() {
                   {...form.getInputProps("password")}
                 />
                 {isRegister && (
-                  <InputWrapper id="terms" {...form.getInputProps("terms")}>
-                    <Checkbox
-                      label="I agree to the Terms of Service"
-                      checked={form.values.terms}
-                      onChange={(event) =>
-                        form.setFieldValue("terms", event.currentTarget.checked)
-                      }
-                    />
-                  </InputWrapper>
+                  <Checkbox
+                    label="I agree to the Terms of Service"
+                    // checked={form.values.terms}
+                    // onChange={(event) =>
+                    //   form.setFieldValue("terms", event.currentTarget.checked)
+                    // }
+                    {...form.getInputProps("terms", { type: "checkbox" })}
+                  />
+                  // <InputWrapper id="terms" {...form.getInputProps("terms")}>
+                  // </InputWrapper>
                 )}
                 <Group
                   // mt="xs"
@@ -183,7 +186,12 @@ function Login() {
                     </>
                   ) : (
                     <>
-                      <Button type="submit">Sign up</Button>
+                      <Button
+                        type="submit"
+                        onClick={appSignUpWithEmailAndPassword}
+                      >
+                        Sign up
+                      </Button>
                     </>
                   )}
                 </Group>
