@@ -24,7 +24,7 @@ function Characters({
   const [filterOptions, setfilterOptions] = useState([]);
   const [chosenUnit, setChosenUnit] = useState(null);
   const theme = useMantineTheme();
-  console.log(characters, unitToCharacters, units);
+  // console.log(characters, unitToCharacters, units);
   useEffect(() => {
     let charactersWithUnits = unitToCharacters.main.data;
 

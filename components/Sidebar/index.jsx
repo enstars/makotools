@@ -32,40 +32,43 @@ import {
   useMantineTheme,
   useMantineColorScheme,
   ThemeIcon,
+  Badge,
 } from "@mantine/core";
-
 import { useColorScheme } from "@mantine/hooks";
 
 const SidebarButton = forwardRef(function button(
   { children, fullPadding, sx, ...props },
   ref
 ) {
+  // console.log(sx);
   return (
     <UnstyledButton
       component="a"
-      sx={(theme) => ({
-        display: "block",
-        // boxSizing: "border-box",
-        width: "100%",
-        paddingLeft: theme.spacing.md,
-        paddingRight: theme.spacing.md,
-        paddingTop: fullPadding ? theme.spacing.sm : theme.spacing.sm / 2,
-        paddingBottom: fullPadding ? theme.spacing.sm : theme.spacing.sm / 2,
-        // borderRadius: theme.radius.sm,
+      sx={(theme) => [
+        {
+          display: "block",
+          // boxSizing: "border-box",
+          width: "100%",
+          paddingLeft: theme.spacing.md,
+          paddingRight: theme.spacing.md,
+          paddingTop: fullPadding ? theme.spacing.sm : theme.spacing.sm / 2,
+          paddingBottom: fullPadding ? theme.spacing.sm : theme.spacing.sm / 2,
+          // borderRadius: theme.radius.sm,
 
-        "&:hover": {
-          backgroundColor:
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[7]
-              : theme.colors.gray[2],
-        },
+          "&:hover": {
+            backgroundColor:
+              theme.colorScheme === "dark"
+                ? theme.colors.dark[7]
+                : theme.colors.gray[2],
+          },
 
-        "@media (max-width: 768px)": {
-          padding: theme.spacing.xs,
-          // paddingRight: theme.spacing.xs / 2,
+          "@media (max-width: 768px)": {
+            padding: theme.spacing.xs,
+            // paddingRight: theme.spacing.xs / 2,
+          },
         },
-        ...sx,
-      })}
+        sx,
+      ]}
       ref={ref}
       {...props}
     >
@@ -91,6 +94,7 @@ function Sidebar({ opened, setOpened }) {
           theme.colorScheme === "dark"
             ? theme.colors.dark[9]
             : theme.colors.gray[0],
+        zIndex: 210,
       }}
       // fixed
       position={{ top: 0, left: 0 }}
@@ -171,16 +175,18 @@ function Sidebar({ opened, setOpened }) {
               link: "/events",
               name: "Events",
               icon: IconAward,
+              soon: true,
             },
             {
               link: "/stories",
               name: "Stories",
               icon: IconBooks,
+              soon: true,
             },
           ].map((link) => (
             <Link key={link.link} href={link.link} passHref>
               <SidebarButton
-                sx={
+                sx={[
                   `/${location.asPath.split("/")[1]}` === link.link
                     ? {
                         backgroundColor:
@@ -188,8 +194,9 @@ function Sidebar({ opened, setOpened }) {
                             ? theme.colors.dark[8]
                             : theme.colors.gray[1],
                       }
-                    : {}
-                }
+                    : {},
+                  link.soon ? { pointerEvents: "none", opacity: 0.5 } : {},
+                ]}
               >
                 <MediaQuery
                   query="(max-width: 768px)"
@@ -197,7 +204,7 @@ function Sidebar({ opened, setOpened }) {
                 >
                   <Group spacing={0}>
                     <Box sx={{ display: "flex" }}>
-                      <link.icon size={16} />
+                      <link.icon size={18} />
                     </Box>
                     <MediaQuery
                       query="(max-width: 768px)"
@@ -207,14 +214,14 @@ function Sidebar({ opened, setOpened }) {
                     >
                       <Text
                         ml="md"
-                        size="sm"
+                        // size="sm"
                         weight={
                           `/${location.asPath.split("/")[1]}` === link.link
                             ? "700"
-                            : "500"
+                            : "400"
                         }
                       >
-                        {link.name}
+                        {link.name} {link.soon && <Badge size="xs">Soon</Badge>}
                       </Text>
                     </MediaQuery>
                   </Group>

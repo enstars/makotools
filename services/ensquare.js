@@ -5,15 +5,12 @@ export function getData(data, lang = "ja", source = false) {
   const databaseURL = source
     ? `https://data.ensemble.moe/${lang}/${data}.json`
     : `https://tl.data.ensemble.moe/${lang}/${data}.json`;
-  // console.log(databaseURL);
   return fetch(databaseURL)
     .then((response) => response.json())
     .then((responseJson) => {
       return { lang, source, status: "success", data: responseJson };
     })
     .catch((error) => {
-      // console.error(error);
-      // console.error("error");
       return { lang, source, status: "error", data: null };
     });
 }

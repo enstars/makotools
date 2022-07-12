@@ -24,7 +24,7 @@ import { useLocalStorage } from "@mantine/hooks";
 const CARD_LIST_INITIAL_COUNT = 20;
 
 function Page({ cards, characters }) {
-  console.log(cards);
+  // console.log(cards);
 
   const theme = useMantineTheme();
   const [count, setCount] = useState(CARD_LIST_INITIAL_COUNT);
@@ -82,19 +82,12 @@ function Page({ cards, characters }) {
           );
         return true;
       })
-      .sort((a, b) => a.id > b.id)
+      .sort(SORT_FUNCTIONS["id"])
       .sort(SORT_FUNCTIONS[viewOptions.sortOption]);
-    // .sort(
-    //   viewOptions.sortOption === "id"
-    //     ? (a, b) => a.id > b.id
-    //     : viewOptions.sortOption === "character"
-    //     ?
-    //     : (a, b) => a.id > b.id
-    // );
     setCardsList(filteredList);
     setCount(CARD_LIST_INITIAL_COUNT);
     // setSlicedCardsList(filteredList.slice(0, CARD_LIST_INITIAL_COUNT));
-    console.log("updated filter: ", JSON.parse(JSON.stringify(filteredList)));
+    // console.log("updated filter: ", JSON.parse(JSON.stringify(filteredList)));
     // console.log("sliced: ", filteredList.slice(0, CARD_LIST_INITIAL_COUNT));
   }, [viewOptions]);
 
@@ -114,9 +107,9 @@ function Page({ cards, characters }) {
 
       <Paper mb="sm" p="md" withBorder>
         <Text weight="700" size="xs" color="dimmed">
-          Search Options
+          <IconSearch size="1em" /> Search Options
         </Text>
-        <Group>
+        <Group sx={{ alignItems: "flex-start" }}>
           <Select
             label="Sort by"
             placeholder="Pick a unit..."
@@ -127,9 +120,10 @@ function Page({ cards, characters }) {
               // console.log(val);
               setViewOptions({ ...viewOptions, sortOption: val });
             }}
-            // sx={{ maxWidth: 200 }}
-            size="sm"
+            sx={{ maxWidth: 200 }}
+            // size="sm"
             variant="default"
+            icon={<IconArrowsSort size="1em" />}
           />
           <MultiSelect
             label="Characters"
@@ -143,8 +137,8 @@ function Page({ cards, characters }) {
               // console.log(val);
               setViewOptions({ ...viewOptions, filterCharacters: val });
             }}
-            // sx={{ maxWidth: 200 }}
-            size="sm"
+            sx={{ width: "100%", maxWidth: 400 }}
+            // size="sm"
             variant="default"
             searchable
           />
@@ -171,6 +165,8 @@ function Page({ cards, characters }) {
               ))}
             </Chips>
           </InputWrapper>
+        </Group>
+        <Group mt="xs">
           <Switch
             label="Show full info"
             checked={cardOptions.showFullInfo}
@@ -251,6 +247,7 @@ export async function getServerSideProps({ res, locale, ...context }) {
 }
 
 import Layout from "../../components/Layout";
+import { IconArrowsSort, IconSearch } from "@tabler/icons";
 Page.getLayout = function getLayout(page) {
   return <Layout wide>{page}</Layout>;
 };

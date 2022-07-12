@@ -9,7 +9,7 @@ function HeaderApp() {
   return (
     <Affix
       position={{ top: 0, right: 0 }}
-      sx={{ width: " calc(100% - var(--mantine-navbar-width))" }}
+      sx={{ width: " calc(100% - var(--mantine-navbar-width))", zIndex: 200 }}
     >
       <Transition transition="slide-down" mounted={scroll.y > 40}>
         {(transitionStyles) => (
@@ -18,7 +18,7 @@ function HeaderApp() {
               ...transitionStyles,
             }}
             px="sm"
-            py={6}
+            py={8}
             sx={(theme) => ({ boxShadow: theme.shadows.sm })}
           >
             <Breadcrumbs />

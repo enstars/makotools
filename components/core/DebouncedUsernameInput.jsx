@@ -76,7 +76,7 @@ function DebouncedUsernameInput({ dataKey = "username", changedCallback }) {
 
   return (
     <>
-      <Group spacing="xs">
+      <Group spacing="xs" sx={{ flexWrap: "nowrap" }}>
         <TextInput
           value={inputValue}
           icon={<IconAt size="16" />}

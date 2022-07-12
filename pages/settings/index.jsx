@@ -60,13 +60,28 @@ const gameRegions = [
   },
   {
     value: "en",
-    label: "United Kingdom, Canada, Australia",
+    label: "Worldwide (English)",
     icon: <Flags.GB height={16} style={{ borderRadius: 3 }} />,
   },
+  // {
+  //   value: "us",
+  //   label: "United States",
+  //   icon: <Flags.US height={16} style={{ borderRadius: 3 }} />,
+  // },
+];
+
+const tlBadgeOptions = [
   {
-    value: "us",
-    label: "United States",
-    icon: <Flags.US height={16} style={{ borderRadius: 3 }} />,
+    value: "none",
+    label: "Hide all badges",
+  },
+  {
+    value: "unofficial",
+    label: "Only show badges for unofficial translations",
+  },
+  {
+    value: "all",
+    label: "Show all badges",
   },
 ];
 
@@ -89,31 +104,24 @@ function DarkModeOption() {
   const { userData, setUserDataKey } = useUserData();
 
   return (
-    <SegmentedControl
+    <Select
       value={colorScheme || "dark"}
-      itemComponent={SelectItemForwardRef}
+      // itemComponent={SelectItemForwardRef}
       label={"Mode"}
       onChange={(value) => {
         setUserDataKey({ dark_mode: value === "dark" });
       }}
+      itemComponent={SelectItemForwardRef}
       data={[
         {
           value: "light",
-          label: (
-            <Group sx={{ display: "inline-flex" }} spacing={6}>
-              <IconSun size={16} />
-              <Text size="sm">Light Mode</Text>
-            </Group>
-          ),
+          label: "Light Mode",
+          icon: <IconSun size={16} />,
         },
         {
           value: "dark",
-          label: (
-            <Group sx={{ display: "inline-flex" }} spacing={6}>
-              <IconMoonStars size={16} />
-              <Text size="sm">Dark Mode</Text>
-            </Group>
-          ),
+          label: "Dark Mode",
+          icon: <IconMoonStars size={16} />,
         },
       ]}
       icon={
@@ -124,31 +132,31 @@ function DarkModeOption() {
         )
       }
       // {...(userData.loading && { disabled: true })}
-      size="xs"
+      // size="xs"
     />
   );
 }
 
-function DropdownOption({ dataKey, data, label }) {
+function DropdownOption({ dataKey, data, label, ...props }) {
   const { userData, setUserDataKey } = useUserData();
 
   return (
     <Select
-      value={userData?.[dataKey] || "jp"}
+      value={userData?.[dataKey] || null}
       label={label}
       onChange={(value) => {
         setUserDataKey({ [dataKey]: value });
       }}
       itemComponent={SelectItemForwardRef}
       icon={
-        data.filter((r) => r.value === userData?.[dataKey])[0]?.icon ||
-        gameRegions[0].icon
+        data.filter((r) => r.value === userData?.[dataKey])[0]?.icon || null
       }
       data={data}
-      searchable
       // size="xs"
       // data={[]}
       // {...(userData.loading && { disabled: true })}
+
+      {...props}
     />
   );
 }
@@ -187,6 +195,7 @@ function Page() {
               dataKey="content_region"
               label="Game Region"
               data={gameRegions}
+              description="This setting currently does not have an effect on content yet."
             />
           </Stack>
         </Accordion.Item>
@@ -200,6 +209,12 @@ function Page() {
         >
           <Stack>
             <DarkModeOption />
+            <DropdownOption
+              dataKey="show_tl_badge"
+              label="Show officialty badges for translations"
+              data={tlBadgeOptions}
+              description="This setting may not be applied site-wide at this time."
+            />
           </Stack>
         </Accordion.Item>
         <Accordion.Item
@@ -211,12 +226,18 @@ function Page() {
           }
         >
           <Stack>
-            <DebouncedUserInput label="Name" dataKey="name" />
+            <DebouncedUserInput
+              label="Name"
+              dataKey="name"
+              placeholder={userData.user.email.split("@")[0]}
+            />
             <Group align="end" spacing="xs">
               <TextInput
                 label="Username"
                 value={userData?.username}
                 disabled
+                description="Username changes are unavailable during the beta."
+                placeholder={"Username not set"}
                 icon={<IconAt size={16} />}
                 sx={{ flexGrow: 1 }}
                 rightSection={
@@ -224,7 +245,7 @@ function Page() {
                     onClick={() => setUsernameModalOpen(true)}
                     variant="filled"
                     color="blue"
-                    disabled
+                    disabled //temporarily
                   >
                     <IconPencil size={14} />
                   </ActionIcon>

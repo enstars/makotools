@@ -1,21 +1,18 @@
-import Layout from "../../components/Layout";
-import Main from "../../components/Main";
-import Title from "../../components/PageTitle";
+import Layout from "../../../components/Layout";
+import Main from "../../../components/Main";
+import Title from "../../../components/PageTitle";
 import { TypographyStylesProvider } from "@mantine/core";
 function PrivacyPolicy() {
   return (
     <>
       <Title title="Privacy Policy"></Title>
       <TypographyStylesProvider>
-        <p>
-          Ensemble Square operates the https://stars.ensemble.moe/ website,
-          which provides the SERVICE.
-        </p>
+        <p>Google made us put this here, so here it is.</p>
 
         <p>
           This page is used to inform website visitors regarding our policies
           with the collection, use, and disclosure of Personal Information if
-          anyone decided to use our Service, the Ensemble Square website.
+          anyone decided to use our Service, the MakoTools website.
         </p>
 
         <p>
@@ -23,28 +20,7 @@ function PrivacyPolicy() {
           use of information in relation with this policy. The Personal
           Information that we collect are used for providing and improving the
           Service. We will not use or share your information with anyone except
-          as described in this Privacy Policy. Our Privacy Policy was created
-          with the help of the{" "}
-          <a href="https://www.privacypolicytemplate.net">
-            Privacy Policy Template Generator
-          </a>
-          .
-        </p>
-
-        <p>
-          The terms used in this Privacy Policy have the same meanings as in our
-          Terms and Conditions, which is accessible at
-          https://stars.ensemble.moe/, unless otherwise defined in this Privacy
-          Policy.
-        </p>
-
-        <h2>Information Collection and Use</h2>
-
-        <p>
-          For a better experience while using our Service, we may require you to
-          provide us with certain personally identifiable information, including
-          but not limited to your name, phone number, and postal address. The
-          information that we collect will be used to contact or identify you.
+          as described in this Privacy Policy.
         </p>
 
         <h2>Log Data</h2>
@@ -72,14 +48,6 @@ function PrivacyPolicy() {
           refuse these cookies, and know when a cookie is being sent to your
           computer. If you choose to refuse our cookies, you may not be able to
           use some portions of our Service.
-        </p>
-
-        <p>
-          For more general information on cookies, please read{" "}
-          <a href="https://www.generateprivacypolicy.com/#cookies">
-            &quot;Cookies&quot; article from the Privacy Policy Generator
-          </a>
-          .
         </p>
 
         <h2>Service Providers</h2>

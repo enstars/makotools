@@ -5,7 +5,7 @@ import { useDebouncedCallback } from "use-debounce";
 import { TextInput, Loader, useMantineTheme } from "@mantine/core";
 import { IconCheck } from "@tabler/icons";
 
-function DebouncedUserInput({ label, dataKey }) {
+function DebouncedUserInput({ label, dataKey, ...props }) {
   const theme = useMantineTheme();
   const { userData, setUserDataKey } = useUserData();
   const [inputValue, setInputValue] = useState(userData?.[dataKey]);
@@ -39,6 +39,7 @@ function DebouncedUserInput({ label, dataKey }) {
           <Loader size="xs" />
         )
       }
+      {...props}
     />
   );
 }

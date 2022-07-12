@@ -29,25 +29,32 @@ function BreadcrumbsApp() {
 
   return (
     <Text
-      size="xs"
-      transform="capitalize"
-      weight="500"
+      // size=
+      transform="uppercase"
+      weight="600"
       // sx={{ fontFamily: theme.headings.fontFamily }}
-      sx={{ zIndex: 10, position: "relative" }}
+      sx={(theme) => ({
+        zIndex: 10,
+        position: "relative",
+        letterSpacing: "0.05em",
+        fontSize: theme.fontSizes.sm - 2,
+      })}
     >
       <Breadcrumbs
         separator={
-          <IconChevronRight
-            size={12}
-            style={{
-              marginLeft: -theme.spacing.xs / 2,
-              marginRight: -theme.spacing.xs / 2,
-            }}
-          />
+          <Text inherit color="dimmed">
+            /
+          </Text>
         }
+        styles={(theme) => ({
+          separator: {
+            marginLeft: theme.spacing.xs / 1.75,
+            marginRight: theme.spacing.xs / 1.75,
+          },
+        })}
       >
         <Link href="/" passHref>
-          <Anchor>Makotools</Anchor>
+          <Anchor inherit>Makotools</Anchor>
         </Link>
         {pathnames.map((value, index) => {
           const last = index === pathnames.length - 1;
@@ -55,7 +62,7 @@ function BreadcrumbsApp() {
 
           return (
             <Link key={value} href={to} passHref>
-              <Anchor>{decodeURIComponent(value)}</Anchor>
+              <Anchor inherit>{decodeURIComponent(value)}</Anchor>
             </Link>
           );
         })}

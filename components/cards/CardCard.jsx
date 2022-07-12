@@ -24,6 +24,7 @@ import { showNotification } from "@mantine/notifications";
 import { useRouter } from "next/router";
 import attributes from "./attributes.json";
 import ImageViewer from "../../components/core/ImageViewer";
+import OfficialityBadge from "../OfficialityBadge";
 
 function RarityBadge({ card }) {
   const theme = useMantineTheme();
@@ -156,18 +157,30 @@ export default function CardCard({ cards, id, cardOptions }) {
         </Group>
       </Card.Section>
       <Card.Section px="sm" pt="xs">
-        <Text size="sm" weight="700">{`${cardMainLang.title}`}</Text>
+        <Text size="sm" weight="700">
+          {`${cardMainLang.title}`}&nbsp;
+          <OfficialityBadge langData={cards.localized[0]} />
+        </Text>
         {cardSubLang && (
-          <Text
-            size="xs"
-            color="dimmed"
-            weight="500"
-          >{`${cardSubLang.title}`}</Text>
+          <Text size="xs" color="dimmed" weight="500">
+            {`${cardSubLang.title}`}&nbsp;
+            <OfficialityBadge langData={cards.localized[1]} />
+          </Text>
         )}
       </Card.Section>
       <Divider my="xs" size="xs" />
-      <Card.Section px="sm" pb="xs">
-        <Group spacing={3} sx={{ justifyContent: "space-between" }} mt={3}>
+      <Card.Section
+        px="sm"
+        pb="xs"
+        sx={{
+          whiteSpace: "nowrap",
+        }}
+      >
+        <Group
+          spacing={3}
+          sx={{ justifyContent: "space-between", flexWrap: "nowrap" }}
+          mt={3}
+        >
           {cardOptions.showFullInfo ? (
             <Text
               inline
@@ -177,6 +190,10 @@ export default function CardCard({ cards, id, cardOptions }) {
                 textTransform: "none",
                 fontFeatureSettings: "'kern' 1, 'ss02' 1",
                 display: "flex",
+                flexGrow: 1,
+                flexShrink: 1,
+                flexBasis: 0,
+                minWidth: 0,
               }}
             >
               <Text
@@ -209,9 +226,12 @@ export default function CardCard({ cards, id, cardOptions }) {
                   {attributes[card.type].name}
                 </Text>
               </Tooltip>
-              <Text inline inherit color="dimmed">{`${
-                cardMainLang?.name?.split(" ")?.[0]
-              }`}</Text>
+              <Text
+                inline
+                inherit
+                color="dimmed"
+                sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
+              >{`${cardMainLang?.name?.split(" ")?.[0]}`}</Text>
             </Text>
           ) : (
             <Box />
@@ -220,7 +240,10 @@ export default function CardCard({ cards, id, cardOptions }) {
             weight="700"
             size="sm"
             sx={{
-              fontVariantNumeric: "tabular-nums",
+              // fontVariantNumeric: "tabular-nums",
+              whiteSpace: "nowrap",
+              flexGrow: 0,
+              flexShrink: 0,
             }}
             inline
           >

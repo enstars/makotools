@@ -1,5 +1,6 @@
 import Link from "next/link";
 import {
+  useMantineTheme,
   Title as MantineTitle,
   Text,
   List,
@@ -9,28 +10,70 @@ import {
   Group,
   Box,
   Divider,
+  createStyles,
+  AspectRatio,
+  Image as MantineImage,
 } from "@mantine/core";
 
 import { useUserData } from "../services/userData";
 import Banner from "../assets/banner.png";
+import AffiliatesLight from "../assets/affiliates_light.svg?url";
+import AffiliatesDark from "../assets/affiliates_dark.svg?url";
 import Image from "next/image";
+
+const useStyles = createStyles((theme) => ({
+  affiliates: { maxWidth: theme.breakpoints.md, margin: "0 auto" },
+}));
+
 function Home() {
   const { userData } = useUserData();
+  const { classes } = useStyles();
+  const theme = useMantineTheme();
   // console.log(userData.loggedIn);
   return (
     <>
       <Box mt={80} />
-      <Image src={Banner} style={{ borderRadius: 12 }} />
+      <Image src={Banner} style={{ borderRadius: 0 }} />
       <MantineTitle order={1} mt="sm">
-        Welcome to MakoTools!
+        Welcome to{" "}
+        <Text
+          inline
+          inherit
+          component="span"
+          sx={(theme) => ({
+            color:
+              theme.colorScheme === "dark"
+                ? theme.colors.blue[2]
+                : theme.colors.blue[5],
+          })}
+        >
+          MakoTools
+        </Text>
+        !
       </MantineTitle>
       <Text my="sm">
         MakoTools is a website containing information, tools, and a lot more to
-        aid you in playing Ensemble Stars!! Music English Version.
+        aid you in playing Ensemble Stars!! Music English Version, created in
+        collaboration between EN:Link, Daydream Guides, and The Ensemble Stars
+        EN/CN Wiki.
       </Text>
+      <AspectRatio
+        ratio={3 / 1}
+        mx="auto"
+        sx={(theme) => ({
+          svg: {
+            width: "100%",
+          },
+          maxWidth: 400,
+        })}
+      >
+        <MantineImage
+          src={theme.colorScheme === "dark" ? AffiliatesDark : AffiliatesLight}
+          alt="Affiliates: EN:Link, Daydream, Ensemble Stars Wiki"
+        />
+      </AspectRatio>
       <Text my="sm">
-        <b>The site is unfortunately still a work-in-progress</b>, but planned
-        features include:
+        <b>MakoTools is still in development</b>, but planned features include:
       </Text>
       <List my="sm" withPadding>
         <List.Item>
@@ -69,11 +112,6 @@ function Home() {
           </Group>
         </Card>
       )}
-      {/* <Divider my="xl" />
-      <Text size="sm">
-        MakoTools is a collaboration project between EN:Link, The Ensemble Stars
-        Wiki, Daydream Guides, and is developed by the @Enstars Dev Team!
-      </Text> */}
     </>
   );
 }
@@ -82,5 +120,5 @@ export default Home;
 
 import Layout from "../components/Layout";
 Home.getLayout = function getLayout(page) {
-  return <Layout>{page}</Layout>;
+  return <Layout footerTextOnly>{page}</Layout>;
 };

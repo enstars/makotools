@@ -5,6 +5,7 @@ import Sidebar from "./Sidebar";
 import Header from "./Header";
 import Footer from "./Footer";
 import ErrorBoundary from "./ErrorBoundary";
+import Meta from "./Meta";
 import {
   AppShell,
   Container,
@@ -20,6 +21,8 @@ function Layout({
   sidebar = true,
   wide = false,
   pageTitle,
+  meta,
+  footerTextOnly,
 }) {
   const location = useRouter();
   const [currentPath, setCurrentPath] = useState(location.pathname);
@@ -71,10 +74,13 @@ function Layout({
               },
             }}
           >
-            <ErrorBoundary>{Component}</ErrorBoundary>
+            <ErrorBoundary>
+              <Meta {...meta}></Meta>
+              {Component}
+            </ErrorBoundary>
           </Container>
         </Paper>
-        {footer ? <Footer /> : null}
+        {footer ? <Footer wide={wide} textOnly={footerTextOnly} /> : null}
       </AppShell>
     </ErrorBoundary>
   );
