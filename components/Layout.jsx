@@ -62,6 +62,7 @@ function Layout({
             borderColor: dark ? theme.colors.dark[5] : theme.colors.gray[2],
           }}
           radius={0}
+          shadow="lg"
         >
           <Container
             size={wide ? "xl" : "sm"}
@@ -70,7 +71,8 @@ function Layout({
               width: "100%",
               minHeight: "100vh",
               "@media (max-width: 768px)": {
-                padding: theme.spacing.md,
+                paddingLeft: theme.spacing.md,
+                paddingRight: theme.spacing.md,
               },
             }}
           >

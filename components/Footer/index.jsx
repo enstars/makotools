@@ -33,7 +33,9 @@ function PageFooter({ wide, textOnly }) {
           theme.colorScheme === "dark"
             ? theme.colors.dark[9]
             : theme.colors.gray[0],
+        // paddingTop: theme.spacing.xl * 2,
       }}
+      pt="xl"
       p="md"
     >
       <Container
