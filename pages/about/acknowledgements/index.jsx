@@ -23,23 +23,23 @@ function PrivacyPolicy() {
           .
         </p>
         <p>
-          We've received a lot of help from various teams, including The English
-          Ensemble Stars Wiki, @enstarsENG, @enstimes, @cnstars_en,
+          We&apos;ve received a lot of help from various teams, including The
+          English Ensemble Stars Wiki, @enstarsENG, @enstimes, @cnstars_en,
           @enstars_link, @ESMiSC_EN, @ensemble_scans, and most recently
           @DaydreamGuides, and The Chinese Ensemble Stars Wiki.
         </p>
       </TypographyStylesProvider>
       <Text color="dimmed" size="xs">
-        As for individuals, I cannot list everyone's names due to anonimity
-        reasons, so I'll just list them by who they produce instead: Thanks to
-        the MidorP, ChiakiP, YutaP, SoumaP wiki staff, the EveryoneP, TomoyaP,
-        ToriP, 3AP, EveP (JunP), SoumaP, SubaruP, Mao+IzumiP, SubaruP &amp;
-        RitsuP, LeoP, MadaraP, KanataP, HikariDormP, TatsumiP, ReiP, IbaraP,
-        RitsuP translators, the HiiroP, EveryoneP, MakotoP, HokkeP, NagisaP,
-        NatsumeP proofreaders, the NatsumeP, ArashiP developer, the ShinobuP,
-        AkitoP, KogaP, KeitoP game researchers, the LeoP, KanataP loremaster,
-        the SubaruP, RitsuP, ChiakiP, AiraP CN wiki staff, and my TsukasaP,
-        ToriP, MakotoP, KaoruP, IzumiP, EichiP, LeoP friends!
+        As for individuals, I cannot list everyone&apos;s names due to anonimity
+        reasons, so I&apos;ll just list them by who they produce instead: Thanks
+        to the MidorP, ChiakiP, YutaP, SoumaP wiki staff, the EveryoneP,
+        TomoyaP, ToriP, 3AP, EveP (JunP), SoumaP, SubaruP, Mao+IzumiP, SubaruP
+        &amp; RitsuP, LeoP, MadaraP, KanataP, HikariDormP, TatsumiP, ReiP,
+        IbaraP, RitsuP translators, the HiiroP, EveryoneP, MakotoP, HokkeP,
+        NagisaP, NatsumeP proofreaders, the NatsumeP, ArashiP developer, the
+        ShinobuP, AkitoP, KogaP, KeitoP game researchers, the LeoP, KanataP
+        loremaster, the SubaruP, RitsuP, ChiakiP, AiraP CN wiki staff, and my
+        TsukasaP, ToriP, MakotoP, KaoruP, IzumiP, EichiP, LeoP friends!
       </Text>
     </>
   );
