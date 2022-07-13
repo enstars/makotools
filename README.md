@@ -7,6 +7,19 @@
 
 MakoTools is a website containing information, tools, and a lot more to aid you in playing Ensemble Stars!! Music English Version, created in collaboration between <a href="https://twitter.com/enstars_link" target="_blank">EN:Link</a>, The <a href="https://ensemble-stars.fandom.com" target="_blank">English</a> / <a href="https://ensemblestars.huijiwiki.com" target="_blank">Chinese</a> Ensemble Stars Wiki, and <a href="https://twitter.com/DaydreamGuides" target="_blank">Daydream Guides</a>.
 
+## Data Sources
+> *Todo: Rename these two repos to match*
+
+### Source Game Data
+- Curated at [enstars/data](https://github.com/enstars/data)
+  - Contains data from @gradualcolors, @watatomo, Daydream
+- Accessible at https://data.ensemble.moe/{lang}/{data}.json (Hosted on GitHub sites)
+
+### Unofficially Translated Data
+- Curated at [enstars/enstars-tl](https://github.com/enstars/enstars-tl)
+  - Contains data from The English Ensemble Stars Wiki
+- Accessible at https://tl.data.ensemble.moe/{lang}/{data}.json (Hosted on Cloudflare Pages)
+
 ## Development
 <img src="https://img.shields.io/github/checks-status/enstars/makotools/development?color=8bd5ca&label=dev&logo=github&style=for-the-badge&labelColor=302D41"> <img src="https://img.shields.io/website?down_color=ed8796&down_message=offline&label=dev%20status&logo=vercel&style=for-the-badge&up_color=8aadf4&up_message=online&url=https%3A%2F%2Fstars.ensemble.moe&labelColor=302D41">
 
