@@ -103,6 +103,11 @@ function PageFooter({ wide, textOnly }) {
                 Privacy Policy
               </Anchor>
             </Link>
+            <Link href="/issues" passHref>
+              <Anchor component="a" size="sm">
+                Issues and Suggestions
+              </Anchor>
+            </Link>
             <Link href={`mailto:${MAKOTOOLS.EMAIL}`} passHref>
               <Anchor component="a" size="sm">
                 Contact Us
