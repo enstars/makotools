@@ -55,6 +55,12 @@ module.exports = {
   },
 
   async redirects() {
-    return [];
+    return [
+      {
+        source: "/issues",
+        destination: "https://forms.gle/W2oLnbUeTBJm647R9",
+        permanent: false,
+      },
+    ];
   },
 };
