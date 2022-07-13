@@ -18,10 +18,10 @@ function HeaderApp() {
               ...transitionStyles,
             }}
             px="sm"
-            py={8}
+            py="sm"
             sx={(theme) => ({ boxShadow: theme.shadows.sm })}
           >
-            <Breadcrumbs />
+            <Breadcrumbs sx={{ height: 20 }} />
           </Header>
         )}
       </Transition>

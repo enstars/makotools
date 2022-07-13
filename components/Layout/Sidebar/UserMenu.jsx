@@ -7,10 +7,12 @@ import {
   Switch,
   useMantineTheme,
   useMantineColorScheme,
+  MediaQuery,
+  Box,
 } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import { useDisclosure } from "@mantine/hooks";
-import { useUserData } from "../../services/userData";
+import { useUserData } from "../../../services/userData";
 
 import {
   IconUserCircle,
@@ -18,9 +20,10 @@ import {
   IconLogin,
   IconLogout,
   IconMoonStars,
+  IconUser,
 } from "@tabler/icons";
 
-import { appSignOut } from "../../services/firebase";
+import { appSignOut } from "../../../services/firebase";
 
 function UserMenu({ trigger }) {
   const theme = useMantineTheme();
@@ -32,22 +35,74 @@ function UserMenu({ trigger }) {
   //   console.log(theme);
   return (
     <Menu
-      //   size="lg"
+      size="md"
       position="top"
       transition="pop"
       control={trigger}
       sx={{
         display: "block",
         width: "100%",
-        pointerEvents: userData.loading ? "none" : null,
+        // pointerEvents: userData.loading ? "none" : null,
       }}
       closeOnItemClick={false}
       gutter={0}
       opened={opened}
       onOpen={handlers.open}
       onClose={handlers.close}
-      styles={{ body: { position: "relative", left: theme.spacing.xs } }}
+      styles={{
+        body: { position: "relative", left: theme.spacing.xs },
+        itemBody: {
+          maxWidth: "100%",
+          minWidth: 0,
+        },
+        itemLabel: {
+          maxWidth: "100%",
+          minWidth: 0,
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        },
+      }}
     >
+      <Menu.Item
+        icon={
+          <Avatar
+            color="blue"
+            size="sm"
+            radius="xl"
+            sx={{ "*": { display: "flex" } }}
+          ></Avatar>
+        }
+      >
+        {userData.loading ? (
+          <Text size="sm" color="dimmed">
+            Loading
+          </Text>
+        ) : userData.loggedIn ? (
+          <Box
+            sx={{
+              "*": {
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+              },
+            }}
+          >
+            <Text size="sm" weight={500}>
+              {userData?.name || userData.user.email.split("@")[0]}
+            </Text>
+            <Text size="xs" color="dimmed" mt={-2}>
+              {userData.username
+                ? `@${userData.username}`
+                : userData.user.email}
+            </Text>
+          </Box>
+        ) : (
+          <Text size="sm" color="dimmed">
+            Not Logged In
+          </Text>
+        )}
+      </Menu.Item>
+      <Divider />
       <Menu.Label>Quick Settings</Menu.Label>
       {/* <Menu.Item disabled icon={<IconUserCircle size={14} />}>
         Profile
@@ -63,7 +118,11 @@ function UserMenu({ trigger }) {
       </Menu.Item>
       <Menu.Label>Account</Menu.Label>
 
-      {!userData.loading && userData.loggedIn && (
+      {userData.loading ? (
+        <Menu.Item icon={<IconLogin size={14} />} disabled>
+          Log In
+        </Menu.Item>
+      ) : userData.loggedIn ? (
         <>
           <Menu.Item
             component={NextLink}
@@ -83,8 +142,7 @@ function UserMenu({ trigger }) {
             Logout
           </Menu.Item>
         </>
-      )}
-      {!userData.loading && !userData.loggedIn && (
+      ) : (
         <>
           <Menu.Item
             component={NextLink}

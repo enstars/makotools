@@ -1,10 +1,10 @@
 import Link from "next/link";
 import styled from "styled-components";
 import Image from "next/image";
-import { MAKOTOOLS } from "../../services/constants";
-import MakotoolsLight from "../assets/Logo/mkt_light.svg?url";
-import MakotoolsDark from "../assets/Logo/mkt_dark.svg?url";
-import Affiliates from "../../assets/affiliates.svg";
+import { MAKOTOOLS } from "../../../services/constants";
+import MakotoolsLight from "../../assets/Logo/mkt_light.svg?url";
+import MakotoolsDark from "../../assets/Logo/mkt_dark.svg?url";
+import Affiliates from "../../../assets/affiliates.svg";
 import {
   Footer,
   Paper,
@@ -32,7 +32,7 @@ function PageFooter({ wide, textOnly }) {
         backgroundColor:
           theme.colorScheme === "dark"
             ? theme.colors.dark[9]
-            : theme.colors.gray[0],
+            : theme.fn.lighten(theme.colors.gray[0], 0.3),
         // paddingTop: theme.spacing.xl * 2,
       }}
       pt="xl"
@@ -113,7 +113,17 @@ function PageFooter({ wide, textOnly }) {
           <Box sx={{ flexGrow: 0.1 }}></Box>
           <Box sx={{ flex: "1 1 350px", maxWidth: 560 }}>
             {!textOnly && (
-              <Text color="dimmed" mb="xs">
+              <Text
+                color="dimmed"
+                mb="xs"
+                sx={{
+                  // display: "flex",
+                  svg: {
+                    maxWidth: "calc(100% - var(--mantine-navbar-width))",
+                    aspectRatio: "270/72",
+                  },
+                }}
+              >
                 <Affiliates viewBox="0 0 898 239" width={270} height={72} />
               </Text>
             )}
@@ -126,23 +136,23 @@ function PageFooter({ wide, textOnly }) {
               >
                 EN:Link
               </Anchor>
-              , The Ensemble Stars{" "}
+              , The{" "}
               <Anchor
                 inherit
                 href="https://ensemble-stars.fandom.com"
                 target="_blank"
               >
-                EN
+                English
               </Anchor>
-              /
+              {" / "}
               <Anchor
                 inherit
                 href="https://ensemblestars.huijiwiki.com"
                 target="_blank"
               >
-                CN
+                Chinese
               </Anchor>{" "}
-              Wiki,{" "}
+              Ensemble Stars Wiki,{" "}
               <Anchor
                 inherit
                 href="https://twitter.com/DaydreamGuides"

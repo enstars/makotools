@@ -4,8 +4,8 @@ import styled from "styled-components";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import Footer from "./Footer";
-import ErrorBoundary from "./ErrorBoundary";
-import Meta from "./Meta";
+import ErrorBoundary from "../ErrorBoundary";
+import Meta from "../Meta";
 import {
   AppShell,
   Container,
@@ -13,6 +13,7 @@ import {
   Paper,
   useMantineTheme,
   useMantineColorScheme,
+  MediaQuery,
 } from "@mantine/core";
 
 function Layout({
@@ -38,10 +39,12 @@ function Layout({
   const [opened, setOpened] = useState(false);
   return (
     <ErrorBoundary>
+      {/* <MediaQuery smallerThan="xs" styles={{ "--mantine-navbar-width": 0 }}> */}
       <AppShell
         styles={{
           main: {
             padding: 0,
+            maxWidth: "calc(100% - var(--mantine-navbar-width))",
           },
           body: {
             minHeight: "100vh",
@@ -50,7 +53,11 @@ function Layout({
           },
         }}
         navbar={
-          sidebar ? <Sidebar opened={opened} setOpened={setOpened} /> : null
+          sidebar ? (
+            <ErrorBoundary>
+              <Sidebar hiddenBreakpoint="xs" hidden={!opened} />
+            </ErrorBoundary>
+          ) : null
         }
       >
         <Header pageTitle={pageTitle} />
@@ -84,6 +91,7 @@ function Layout({
         </Paper>
         {footer ? <Footer wide={wide} textOnly={footerTextOnly} /> : null}
       </AppShell>
+      {/* </MediaQuery> */}
     </ErrorBoundary>
   );
 }

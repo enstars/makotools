@@ -47,9 +47,10 @@ function App({ Component, pageProps, ...props }) {
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <MantineProvider
-        emotionOptions={{ key: "ensq" }}
+        // emotionOptions={{ key: "mktl" }}
         withGlobalStyles
         withNormalizeCSS
+        // withCSSVariables
         theme={{
           colorScheme,
           colors: {
@@ -91,6 +92,7 @@ function App({ Component, pageProps, ...props }) {
               "#1864ab",
             ],
           },
+          primaryShade: { light: 6, dark: 5 },
           lineHeight: 1.5,
           fontFamily: "InterVariable, Inter, Noto Sans JP, sans-serif",
           headings: {
@@ -98,6 +100,7 @@ function App({ Component, pageProps, ...props }) {
             fontWeight: 800,
           },
           other: { transition: "0.3s cubic-bezier(.19,.73,.37,.93)" },
+          // other: { transition: "2s cubic-bezier(.19,.73,.37,.93)" },
         }}
       >
         <NotificationsProvider>

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Breadcrumbs from "./Header/Breadcrumbs";
+import Breadcrumbs from "./Layout/Header/Breadcrumbs";
 import { Box, Title } from "@mantine/core";
 function TitleApp({ title, children, space }) {
   return (
