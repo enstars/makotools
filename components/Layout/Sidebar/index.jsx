@@ -144,7 +144,7 @@ function Sidebar(props) {
   const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
 
-  const [collapsed, toggleCollapsed] = useToggle(true, [true, false]);
+  const [collapsed, toggleCollapsed] = useToggle(false, [true, false]);
   if (props.permanentlyExpanded && collapsed) toggleCollapsed();
   return (
     <Navbar
