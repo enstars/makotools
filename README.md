@@ -28,9 +28,7 @@ MakoTools is a website containing information, tools, and a lot more to aid you 
 2. Set the `NODE_ENV` variable.  
 Input the following in the terminal depending on your OS:  
 Linux and Mac: `export NODE_ENV=development yarn run dev`  
-Windows: `$env:NODE_ENV = 'development yarn run dev'`  
-
-Then, input `echo $NODE_DEV`. If done correctly, the terminal should return `development`.
+Windows: `$env:NODE_ENV = 'development yarn run dev'`  Then, input `echo $NODE_DEV`. If done correctly, the terminal should return `development`.
 3. Run `yarn run dev`. If everything is working correctly, you should be greeted with Ukki's wonderful face!
 
 If new volunteers have any questions, message us on Discord! This README will be updated as development continues.
