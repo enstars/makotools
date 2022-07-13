@@ -1,5 +1,4 @@
 import Layout from "../../../components/Layout";
-import Main from "../../../components/Main";
 import Title from "../../../components/PageTitle";
 import { Anchor, Text, TypographyStylesProvider } from "@mantine/core";
 import { MAKOTOOLS } from "../../../services/constants";

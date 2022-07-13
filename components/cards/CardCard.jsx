@@ -22,7 +22,7 @@ import {
 import { IconStar, IconSum } from "@tabler/icons";
 import { showNotification } from "@mantine/notifications";
 import { useRouter } from "next/router";
-import attributes from "./attributes.json";
+import attributes from "../../data/attributes.json";
 import ImageViewer from "../../components/core/ImageViewer";
 import OfficialityBadge from "../OfficialityBadge";
 

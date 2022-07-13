@@ -4,7 +4,7 @@ import Image from "next/image";
 import { MAKOTOOLS } from "../../../services/constants";
 import MakotoolsLight from "../../../assets/Logo/mkt_light.svg?url";
 import MakotoolsDark from "../../../assets/Logo/mkt_dark.svg?url";
-import Affiliates from "../../../assets/affiliates.svg";
+import Affiliates from "../../../assets/Affiliates/affiliates.svg";
 import {
   Footer,
   Paper,

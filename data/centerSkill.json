@@ -1,0 +1,26 @@
+{
+  "Sparkle": {
+    "Vo": 1,
+    "Da": 2,
+    "Pf": 3,
+    "All": 4
+  },
+  "Brilliant": {
+    "Vo": 5,
+    "Da": 6,
+    "Pf": 7,
+    "All": 8
+  },
+  "Glitter": {
+    "Vo": 9,
+    "Da": 10,
+    "Pf": 11,
+    "All": 12
+  },
+  "Flash": {
+    "Vo": 13,
+    "Da": 14,
+    "Pf": 15,
+    "All": 16
+  }
+}
