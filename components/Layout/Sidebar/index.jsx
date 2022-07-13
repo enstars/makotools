@@ -6,10 +6,10 @@ import { useRouter } from "next/router";
 import { useUserData } from "../../../services/userData";
 import UserMenu from "./UserMenu";
 import ErrorBoundary from "../../ErrorBoundary";
-import MakotoolsLight from "../../assets/Logo/mkt_light_icon.svg?url";
-import MakotoolsDark from "../../assets/Logo/mkt_dark_icon.svg?url";
-import MakotoolsTextLight from "../../assets/Logo/mkt_light_text.svg?url";
-import MakotoolsTextDark from "../../assets/Logo/mkt_dark_text.svg?url";
+import MakotoolsLight from "../../../assets/Logo/mkt_light_icon.svg?url";
+import MakotoolsDark from "../../../assets/Logo/mkt_dark_icon.svg?url";
+import MakotoolsTextLight from "../../../assets/Logo/mkt_light_text.svg?url";
+import MakotoolsTextDark from "../../../assets/Logo/mkt_dark_text.svg?url";
 import {
   IconUsers,
   IconPlayCard,

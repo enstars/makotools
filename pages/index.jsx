@@ -18,8 +18,8 @@ import {
 
 import { useUserData } from "../services/userData";
 import Banner from "../assets/banner.png";
-import AffiliatesLight from "../assets/affiliates_light.svg?url";
-import AffiliatesDark from "../assets/affiliates_dark.svg?url";
+import AffiliatesLight from "../assets/Affiliates/affiliates_light.svg?url";
+import AffiliatesDark from "../assets/Affiliates/affiliates_dark.svg?url";
 import Image from "next/image";
 
 const useStyles = createStyles((theme) => ({
