@@ -236,13 +236,7 @@ function Sidebar(props) {
         </Group>
       </Navbar.Section>
 
-      <Navbar.Section
-        grow
-        component={ScrollArea}
-        sx={{
-          width: 250,
-        }}
-      >
+      <Navbar.Section grow component={ScrollArea}>
         <Group spacing={0} direction="column">
           {[
             {

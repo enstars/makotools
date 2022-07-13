@@ -12,6 +12,7 @@ import {
   Divider,
   createStyles,
   AspectRatio,
+  Anchor,
   Image as MantineImage,
 } from "@mantine/core";
 
@@ -54,8 +55,35 @@ function Home() {
       <Text my="sm">
         MakoTools is a website containing information, tools, and a lot more to
         aid you in playing Ensemble Stars!! Music English Version, created in
-        collaboration between EN:Link, Daydream Guides, and The Ensemble Stars
-        EN/CN Wiki.
+        collaboration between{" "}
+        <Anchor inherit href="https://twitter.com/enstars_link" target="_blank">
+          EN:Link
+        </Anchor>
+        , The{" "}
+        <Anchor
+          inherit
+          href="https://ensemble-stars.fandom.com"
+          target="_blank"
+        >
+          English
+        </Anchor>
+        {" / "}
+        <Anchor
+          inherit
+          href="https://ensemblestars.huijiwiki.com"
+          target="_blank"
+        >
+          Chinese
+        </Anchor>{" "}
+        Ensemble Stars Wiki,{" "}
+        <Anchor
+          inherit
+          href="https://twitter.com/DaydreamGuides"
+          target="_blank"
+        >
+          Daydream Guides
+        </Anchor>
+        .
       </Text>
       <AspectRatio
         ratio={3 / 1}

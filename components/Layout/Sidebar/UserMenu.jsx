@@ -72,6 +72,7 @@ function UserMenu({ trigger }) {
             sx={{ "*": { display: "flex" } }}
           ></Avatar>
         }
+        sx={{ pointerEvents: "none" }}
       >
         {userData.loading ? (
           <Text size="sm" color="dimmed">
