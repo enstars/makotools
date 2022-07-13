@@ -57,7 +57,7 @@ module.exports = {
   async redirects() {
     return [
       {
-        source: "/issues",
+        source: "/issues/form",
         destination: "https://forms.gle/W2oLnbUeTBJm647R9",
         permanent: false,
       },
