@@ -21,6 +21,11 @@ import "@fontsource/inter/variable-full.css";
 
 import AuthProvider from "../services/auth";
 import UserDataProvider from "../services/userData";
+import initAuth from "../services/firebase/initAuth";
+
+import { useAuthUser, withAuthUser } from "next-firebase-auth";
+
+initAuth();
 
 function App({ Component, pageProps, ...props }) {
   const location = useRouter();
@@ -129,4 +134,4 @@ App.getInitialProps = ({ ctx }) => ({
   colorScheme: getCookie("color-scheme", ctx) || "dark",
 });
 
-export default App;
+export default withAuthUser()(App);
