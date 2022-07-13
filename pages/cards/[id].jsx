@@ -16,7 +16,7 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { IconStar } from "@tabler/icons";
-import attributes from "../../components/cards/attributes.json";
+import attributes from "../../data/attributes.json";
 
 function Character({ character, card }) {
   console.log(card);

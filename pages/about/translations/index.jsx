@@ -2,7 +2,7 @@ import Layout from "../../../components/Layout";
 import Title from "../../../components/PageTitle";
 import { TypographyStylesProvider } from "@mantine/core";
 import { MAKOTOOLS } from "../../../services/constants";
-function PrivacyPolicy() {
+function Translations() {
   return (
     <>
       <Title title="About Translations"></Title>
@@ -32,8 +32,8 @@ function PrivacyPolicy() {
   );
 }
 
-export default PrivacyPolicy;
+export default Translations;
 
-PrivacyPolicy.getLayout = function getLayout(page) {
+Translations.getLayout = function getLayout(page) {
   return <Layout>{page}</Layout>;
 };
