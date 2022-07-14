@@ -6,39 +6,72 @@ import { auth } from "./firebase";
 import { showNotification } from "@mantine/notifications";
 
 import { IconAlertTriangle, IconArrowLeft } from "@tabler/icons";
+import { useAuthUser } from "next-firebase-auth";
 
 const UserDataContext = React.createContext();
 export const useUserData = () => useContext(UserDataContext);
 
 function UserDataProvider({ children, setAppColorScheme }) {
-  const { user } = useAuth();
-  const [userData, setUserData] = useState({ loading: true });
+  // const { user } = useAuth();
+
+  const AuthUser = useAuthUser();
+  // const [userData, setUserData] = useState({ loading: true });
+  const [userData, setUserData] = useState({
+    loading: true,
+  });
 
   const setUserDataKey = (data) => {
     setUserData({ ...userData, ...data });
     setFirestoreUserData(data);
   };
+  // console.log(userData, AuthUser);
   useEffect(() => {
-    onAuthStateChanged(auth, async (currentUser) => {
-      try {
-        if (currentUser?.uid) {
-          const currentUserData = await getFirestoreUserData(currentUser.uid);
-          // console.log(currentUserData);
-          if (currentUserData?.user)
-            currentUserData.user = JSON.parse(currentUserData.user);
-          currentUserData.loading = false;
-          currentUserData.loggedIn = true;
-          setUserData(currentUserData);
-        } else setUserData({ loading: false, loggedIn: false });
-      } catch (e) {
-        console.log(e);
-        showNotification({
-          message: JSON.stringify(e),
-          color: "red",
-          icon: <IconAlertTriangle size={16} />,
-        });
-      }
+    setUserData({
+      loading: false,
+      loggedIn: !!AuthUser.id,
+      user: AuthUser,
     });
+
+    // if (user.loggedIn) {
+    //   try {
+    //     const currentUserData = await getFirestoreUserData(user.id);
+    //     // console.log(currentUserData);
+    //     if (currentUserData?.user)
+    //       currentUserData.user = JSON.parse(currentUserData.user);
+    //     currentUserData.loading = false;
+    //     currentUserData.loggedIn = true;
+    //     setUserData(currentUserData);
+    //   } catch (e) {
+    //     console.log(e);
+    //     showNotification({
+    //       message: JSON.stringify(e),
+    //       color: "red",
+    //       icon: <IconAlertTriangle size={16} />,
+    //     });
+    //   }
+    // }
+  }, [AuthUser]);
+  useEffect(() => {
+    // onAuthStateChanged(auth, async (currentUser) => {
+    //   try {
+    //     if (currentUser?.uid) {
+    //       const currentUserData = await getFirestoreUserData(currentUser.uid);
+    //       // console.log(currentUserData);
+    //       if (currentUserData?.user)
+    //         currentUserData.user = JSON.parse(currentUserData.user);
+    //       currentUserData.loading = false;
+    //       currentUserData.loggedIn = true;
+    //       setUserData(currentUserData);
+    //     } else setUserData({ loading: false, loggedIn: false });
+    //   } catch (e) {
+    //     console.log(e);
+    //     showNotification({
+    //       message: JSON.stringify(e),
+    //       color: "red",
+    //       icon: <IconAlertTriangle size={16} />,
+    //     });
+    //   }
+    // });
   }, []);
 
   useEffect(() => {

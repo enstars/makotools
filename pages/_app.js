@@ -22,6 +22,7 @@ import "@fontsource/inter/variable-full.css";
 import AuthProvider from "../services/auth";
 import UserDataProvider from "../services/userData";
 import initAuth from "../services/firebase/initAuth";
+import FirebaseUserProvider from "../services/firebase/firebaseUser";
 
 import { useAuthUser, withAuthUser } from "next-firebase-auth";
 
@@ -110,19 +111,21 @@ function App({ Component, pageProps, ...props }) {
         }}
       >
         <NotificationsProvider>
-          <AuthProvider>
-            <UserDataProvider setAppColorScheme={setAppColorScheme}>
-              <ColorSchemeProvider
-                colorScheme={colorScheme}
-                toggleColorScheme={toggleColorScheme}
-                setAppColorScheme={setAppColorScheme}
-              >
-                {/* <Hydrate state={pageProps.dehydratedState}> */}
-                {getLayout(<Component {...pageProps} />, pageProps)}
-                {/* </Hydrate> */}
-              </ColorSchemeProvider>
-            </UserDataProvider>
-          </AuthProvider>
+          <FirebaseUserProvider setAppColorScheme={setAppColorScheme}>
+            <AuthProvider>
+              <UserDataProvider setAppColorScheme={setAppColorScheme}>
+                <ColorSchemeProvider
+                  colorScheme={colorScheme}
+                  toggleColorScheme={toggleColorScheme}
+                  setAppColorScheme={setAppColorScheme}
+                >
+                  {/* <Hydrate state={pageProps.dehydratedState}> */}
+                  {getLayout(<Component {...pageProps} />, pageProps)}
+                  {/* </Hydrate> */}
+                </ColorSchemeProvider>
+              </UserDataProvider>
+            </AuthProvider>
+          </FirebaseUserProvider>
         </NotificationsProvider>
       </MantineProvider>
     </>

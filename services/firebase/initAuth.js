@@ -1,6 +1,10 @@
 // ./initAuth.js
 import { init } from "next-firebase-auth";
 
+const parseKey = (key) => {
+  return key?.replace(/\\n/g, "\n") || undefined;
+};
+
 const initAuth = () => {
   init({
     authPageURL: "/login",
@@ -20,7 +24,9 @@ const initAuth = () => {
         clientEmail:
           "firebase-adminsdk-ftvei@ensemble-square.iam.gserviceaccount.com",
         // The private key must not be accessible on the client side.
-        privateKey: process.env.FIREBASE_PRIVATE_KEY,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY
+          ? parseKey(process.env.FIREBASE_PRIVATE_KEY)
+          : undefined,
       },
       //   databaseURL: "https://my-example-app.firebaseio.com",
     },
@@ -45,7 +51,7 @@ const initAuth = () => {
       overwrite: true,
       path: "/",
       sameSite: "strict",
-      secure: true, // set this to false in local (non-HTTPS) development
+      secure: process.env.NODE_ENV === "development" ? false : true, // set this to false in local (non-HTTPS) development
       signed: true,
     },
     onVerifyTokenError: (err) => {
