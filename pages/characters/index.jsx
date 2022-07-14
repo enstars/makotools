@@ -4,7 +4,6 @@ import Image from "next/image";
 import _ from "lodash";
 import { getData, getLocalizedData } from "../../services/ensquare";
 import Title from "../../components/PageTitle";
-import Main from "../../components/Main";
 import {
   Select,
   Box,

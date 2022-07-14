@@ -1,9 +1,8 @@
 import Layout from "../../../components/Layout";
-import Main from "../../../components/Main";
 import Title from "../../../components/PageTitle";
 import { Anchor, Text, TypographyStylesProvider } from "@mantine/core";
 import { MAKOTOOLS } from "../../../services/constants";
-function PrivacyPolicy() {
+function Acknowledgements() {
   return (
     <>
       <Title title="Acknowledgements"></Title>
@@ -45,8 +44,8 @@ function PrivacyPolicy() {
   );
 }
 
-export default PrivacyPolicy;
+export default Acknowledgements;
 
-PrivacyPolicy.getLayout = function getLayout(page) {
+Acknowledgements.getLayout = function getLayout(page) {
   return <Layout>{page}</Layout>;
 };

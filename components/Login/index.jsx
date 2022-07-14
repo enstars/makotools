@@ -25,7 +25,7 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
-import Google from "./google.svg";
+import Google from "../../assets/google.svg";
 import { IconAlertTriangle, IconArrowLeft } from "@tabler/icons";
 import Link from "next/link";
 import { useUserData } from "../../services/userData";

@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getData, getB2File } from "../../services/ensquare";
 import { twoStarIDs } from "../../data/characterIDtoCardID";
-import styles from "./CharacterCard.module.scss";
+import styles from "../../styles/CharacterCard.module.scss";
 import { Card, Paper, Title, useMantineTheme, Box } from "@mantine/core";
 
 export function CharacterCard({ i, doubleface, unique_id, characters }) {

@@ -2,9 +2,9 @@ import Link from "next/link";
 import styled from "styled-components";
 import Image from "next/image";
 import { MAKOTOOLS } from "../../../services/constants";
-import MakotoolsLight from "../../assets/Logo/mkt_light.svg?url";
-import MakotoolsDark from "../../assets/Logo/mkt_dark.svg?url";
-import Affiliates from "../../../assets/affiliates.svg";
+import MakotoolsLight from "../../../assets/Logo/mkt_light.svg?url";
+import MakotoolsDark from "../../../assets/Logo/mkt_dark.svg?url";
+import Affiliates from "../../../assets/Affiliates/affiliates.svg";
 import {
   Footer,
   Paper,
@@ -101,6 +101,11 @@ function PageFooter({ wide, textOnly }) {
             <Link href="/about/privacy" passHref>
               <Anchor component="a" size="sm">
                 Privacy Policy
+              </Anchor>
+            </Link>
+            <Link href="/issues" passHref>
+              <Anchor component="a" size="sm">
+                Issues and Suggestions
               </Anchor>
             </Link>
             <Link href={`mailto:${MAKOTOOLS.EMAIL}`} passHref>
