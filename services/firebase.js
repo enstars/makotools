@@ -35,7 +35,7 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 
 // Authentication
-export const auth = getAuth(firebaseApp);
+export const auth = getAuth();
 const provider = new GoogleAuthProvider();
 provider.setCustomParameters({ prompt: "select_account" });
 
@@ -71,30 +71,30 @@ export const appSignUpWithEmailAndPassword = (
 // Firestore Database
 const db = getFirestore();
 
-getRedirectResult(auth)
-  .then((result) => {
-    if (result) {
-      const { user } = result;
-      // console.log(user);
-      syncFirestoreUserData(user);
-    }
-  })
-  .catch((e) => {
-    console.error(e);
-  });
+// getRedirectResult(auth)
+//   .then((result) => {
+//     if (result) {
+//       const { user } = result;
+//       // console.log(user);
+//       syncFirestoreUserData(user);
+//     }
+//   })
+//   .catch((e) => {
+//     console.error(e);
+//   });
 
 function syncFirestoreUserData(user, callback = () => {}, userInfo = {}) {
   // console.log(user);
-  setFirestoreUserData(
-    {
-      ...userInfo,
-      // googleUser: JSON.stringify(user),
-      user: JSON.stringify(user),
-      // i actually have no idea if this is safe. but this should be only public info so
-      lastLogin: serverTimestamp(),
-    },
-    user.uid
-  );
+  // setFirestoreUserData(
+  //   {
+  //     ...userInfo,
+  //     // googleUser: JSON.stringify(user),
+  //     user: JSON.stringify(user),
+  //     // i actually have no idea if this is safe. but this should be only public info so
+  //     lastLogin: serverTimestamp(),
+  //   },
+  //   user.uid
+  // );
 }
 
 function setFirestoreUserData(data, uid = auth?.currentUser?.uid || null) {

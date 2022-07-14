@@ -6,8 +6,15 @@ import { useRouter } from "next/router";
 const AuthContext = React.createContext();
 export const useAuth = () => useContext(AuthContext);
 
+import {
+  useAuthUser,
+  withAuthUser,
+  withAuthUserTokenSSR,
+} from "next-firebase-auth";
+
 function AuthProvider({ children }) {
-  const [user, setUser] = useState({ loading: true });
+  const AuthUser = useAuthUser();
+  const [user, setUser] = useState(AuthUser);
   const router = useRouter();
   useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => {
