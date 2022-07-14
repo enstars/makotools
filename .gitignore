@@ -26,3 +26,6 @@ yarn-error.log*
 .next
 
 Icon
+
+package-lock.json
+yarn.lock
