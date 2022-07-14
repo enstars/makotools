@@ -26,13 +26,13 @@ import {
 import "firebase/compat/auth";
 
 const parseKey = (key) => {
-  return key?.replace(/\\n/g, "\n") || undefined;
+  return key?.replace(/\\n/g, "\n")?.replace(/'/g, "") || undefined;
 };
 
 // Config & Initialization
 const firebaseConfig = {
   apiKey: "AIzaSyA530zKJVq_vi56gzta4J_jGWIxgCIJg2k",
-  authDomain: "ensemble-square.firebaseapp.com",
+  authDomain: "auth.ensemble.moe",
   projectId: "ensemble-square",
   storageBucket: "ensemble-square.appspot.com",
   messagingSenderId: "940403567905",
@@ -98,19 +98,29 @@ export default initAuth;
 // const firebaseApp = initializeApp(firebaseConfig);
 
 // Authentication
-const clientAuth = getAuth();
-const provider = new GoogleAuthProvider();
-provider.setCustomParameters({ prompt: "select_account" });
+// const clientAuth = getAuth();
+// const provider = new GoogleAuthProvider();
+// provider.setCustomParameters({ prompt: "select_account" });
 
-export const appSignInWithGoogle = () =>
+export const appSignInWithGoogle = () => {
+  const clientAuth = getAuth();
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: "select_account" });
   signInWithRedirect(clientAuth, provider);
-export const appSignOut = () => signOut(clientAuth);
+};
+export const appSignOut = () => {
+  const clientAuth = getAuth();
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: "select_account" });
+  signOut(clientAuth);
+};
 
 export const appSignInWithEmailAndPassword = (
   email,
   password,
   callback = () => {}
-) =>
+) => {
+  const clientAuth = getAuth();
   signInWithEmailAndPassword(clientAuth, email, password)
     .then((result) => {
       //   syncFirestoreUserData(result.user);
@@ -118,25 +128,29 @@ export const appSignInWithEmailAndPassword = (
     .catch((error) => {
       callback({ status: "error", error });
     });
+};
 export const appSignUpWithEmailAndPassword = (
   email,
   password,
   userInfo,
   callback = () => {}
 ) => {
-  createUserWithEmailAndPassword(clientAuth, email, password)
-    .then((result) => {
-      //   syncFirestoreUserData(result.user, callback, userInfo);
-      // console.log(0);
-    })
-    .catch((error) => {
-      // console.log(callback);
-      callback({ status: "error", error });
-    });
+  {
+    const clientAuth = getAuth();
+    createUserWithEmailAndPassword(clientAuth, email, password)
+      .then((result) => {
+        //   syncFirestoreUserData(result.user, callback, userInfo);
+        setFirestoreUserData(userInfo, result.user.uid);
+        // console.log(0);
+      })
+      .catch((error) => {
+        // console.log(callback);
+        callback({ status: "error", error });
+      });
+  }
 };
 
 // Firestore Database
-const db = getFirestore();
 
 // getRedirectResult(clientAuth)
 //   .then((result) => {
@@ -164,15 +178,20 @@ const db = getFirestore();
 //   );
 // }
 
-function setFirestoreUserData(
-  data,
-  uid = clientAuth?.currentUser?.uid || null
-) {
-  if (uid) setDoc(doc(db, "users", uid), data, { merge: true });
+function setFirestoreUserData(data, uid) {
+  const clientAuth = getAuth();
+  const db = getFirestore();
+  setDoc(doc(db, "users", uid || clientAuth?.currentUser?.uid), data, {
+    merge: true,
+  });
 }
 
-async function getFirestoreUserData(uid = clientAuth.currentUser.uid) {
-  const docSnap = await getDoc(doc(db, "users", uid));
+async function getFirestoreUserData(uid) {
+  const clientAuth = getAuth();
+  const db = getFirestore();
+  const docSnap = await getDoc(
+    doc(db, "users", uid || clientAuth?.currentUser?.uid)
+  );
 
   if (docSnap.exists()) {
     const data = docSnap.data();
@@ -182,6 +201,7 @@ async function getFirestoreUserData(uid = clientAuth.currentUser.uid) {
 }
 
 async function validateUsernameDb(username) {
+  const db = getFirestore();
   const q = query(collection(db, "users"), where("username", "==", username));
   const querySnap = await getDocs(q);
   const usernameValid = !!!querySnap.size;

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { getCookie, setCookies } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 
 import { MantineProvider, ColorSchemeProvider } from "@mantine/core";
 
@@ -19,10 +19,9 @@ import "@fontsource/noto-sans-jp/700.css";
 import "@fontsource/inter";
 import "@fontsource/inter/variable-full.css";
 
-import AuthProvider from "../services/auth";
 import UserDataProvider from "../services/userData";
-import initAuth from "../services/firebase/initAuth";
-import FirebaseUserProvider from "../services/firebase/firebaseUser";
+import initAuth from "../services/firebase/authentication";
+import FirebaseUserProvider from "../services/firebase/user";
 
 import { useAuthUser, withAuthUser } from "next-firebase-auth";
 
@@ -37,14 +36,9 @@ function App({ Component, pageProps, ...props }) {
   const setAppColorScheme = (value) => {
     setStateColorScheme(value);
     // when color scheme is updated save it to cookie
-    setCookies("color-scheme", value, {
+    setCookie("color-scheme", value, {
       maxAge: 60 * 60 * 24 * 30,
     });
-  };
-  const toggleColorScheme = (value) => {
-    const nextColorScheme =
-      value || (colorScheme === "dark" ? "light" : "dark");
-    setAppColorScheme(nextColorScheme);
   };
 
   return (
@@ -112,29 +106,21 @@ function App({ Component, pageProps, ...props }) {
       >
         <NotificationsProvider>
           <FirebaseUserProvider setAppColorScheme={setAppColorScheme}>
-            <AuthProvider>
-              <UserDataProvider setAppColorScheme={setAppColorScheme}>
-                <ColorSchemeProvider
-                  colorScheme={colorScheme}
-                  toggleColorScheme={toggleColorScheme}
-                  setAppColorScheme={setAppColorScheme}
-                >
-                  {/* <Hydrate state={pageProps.dehydratedState}> */}
-                  {getLayout(<Component {...pageProps} />, pageProps)}
-                  {/* </Hydrate> */}
-                </ColorSchemeProvider>
-              </UserDataProvider>
-            </AuthProvider>
+            <UserDataProvider setAppColorScheme={setAppColorScheme}>
+              <ColorSchemeProvider
+                colorScheme={colorScheme}
+                setAppColorScheme={setAppColorScheme}
+              >
+                {/* <Hydrate state={pageProps.dehydratedState}> */}
+                {getLayout(<Component {...pageProps} />, pageProps)}
+                {/* </Hydrate> */}
+              </ColorSchemeProvider>
+            </UserDataProvider>
           </FirebaseUserProvider>
         </NotificationsProvider>
       </MantineProvider>
     </>
   );
 }
-
-App.getInitialProps = ({ ctx }) => ({
-  // get color scheme from cookie
-  colorScheme: getCookie("color-scheme", ctx) || "dark",
-});
 
 export default withAuthUser()(App);

@@ -17,12 +17,12 @@ function AuthProvider({ children }) {
   const [user, setUser] = useState(AuthUser);
   const router = useRouter();
   useEffect(() => {
-    onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      //   if (currentUser?.uid !== user?.uid) {
-      //     // router.push("/");
-      //   }
-    });
+    // onAuthStateChanged(auth, (currentUser) => {
+    //   setUser(currentUser);
+    //   //   if (currentUser?.uid !== user?.uid) {
+    //   //     // router.push("/");
+    //   //   }
+    // });
   }, [router, user?.uid]);
 
   // console.log(user);

@@ -1,6 +1,5 @@
 import { useState, useEffect, forwardRef } from "react";
 import Title from "../../components/PageTitle";
-import { useAuth } from "../../services/auth";
 import { useUserData } from "../../services/userData";
 import { useRouter } from "next/router";
 import DebouncedUserInput from "../../components/core/DebouncedUserInput";
@@ -163,7 +162,6 @@ function DropdownOption({ dataKey, data, label, ...props }) {
 
 function Page() {
   const router = useRouter();
-  const { user } = useAuth();
   const { userData } = useUserData();
   const [usernameModalOpen, setUsernameModalOpen] = useState(false);
 

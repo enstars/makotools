@@ -1,6 +1,6 @@
 // ./pages/api/login
 import { setAuthCookies } from "next-firebase-auth";
-import initAuth from "../../services/firebase/initAuth"; // the module you created above
+import initAuth from "../../services/firebase/authentication"; // the module you created above
 
 initAuth();
 

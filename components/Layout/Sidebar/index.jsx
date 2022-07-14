@@ -3,7 +3,6 @@ import Link from "next/link";
 import Image from "next/image";
 import styled from "styled-components";
 import { useRouter } from "next/router";
-import { useUserData } from "../../../services/userData";
 import UserMenu from "./UserMenu";
 import ErrorBoundary from "../../ErrorBoundary";
 import MakotoolsLight from "../../../assets/Logo/mkt_light_icon.svg?url";
@@ -139,7 +138,6 @@ const SidebarButton = forwardRef(function button(
 function Sidebar(props) {
   const location = useRouter();
 
-  const { userData } = useUserData();
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";

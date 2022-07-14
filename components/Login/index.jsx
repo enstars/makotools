@@ -3,9 +3,8 @@ import {
   appSignInWithGoogle,
   appSignInWithEmailAndPassword,
   appSignUpWithEmailAndPassword,
-} from "../../services/firebase";
+} from "../../services/firebase/authentication";
 // import Button from "../core/Button";
-import { useAuth } from "../../services/auth";
 import {
   Center,
   Container,
@@ -28,7 +27,8 @@ import { showNotification } from "@mantine/notifications";
 import Google from "../../assets/google.svg";
 import { IconAlertTriangle, IconArrowLeft } from "@tabler/icons";
 import Link from "next/link";
-import { useUserData } from "../../services/userData";
+// import { useUserData } from "../../services/userData";
+import { useFirebaseUser } from "../../services/firebase/user";
 
 function Login() {
   const [isRegister, setIsRegister] = useState(false);
@@ -45,12 +45,22 @@ function Login() {
       email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
       password: (val) =>
         val.length >= 6 ? null : "Password must be over 6 characters long",
-      terms: (val) => (val ? null : "You must agree to the Terms of Service"),
+      terms: (val) =>
+        !isRegister
+          ? null
+          : val
+          ? null
+          : "You must agree to the Terms of Service",
     },
   });
 
-  const authUser = useAuth();
-  const { userData } = useUserData();
+  // const authUser = useAuth();
+  // const { userData } = useUserData();
+  const userData = {
+    loading: false,
+    loggedIn: false,
+  };
+  const { firebaseUser } = useFirebaseUser();
 
   return (
     <Container pt="lg" style={{ height: "100%", maxWidth: 400 }}>
@@ -180,20 +190,9 @@ function Login() {
                       ? "Already have an account? Sign in"
                       : "Don't have an account? Sign up"}
                   </Anchor>
-                  {!isRegister ? (
-                    <>
-                      <Button type="submit">Sign in</Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button
-                        type="submit"
-                        onClick={appSignUpWithEmailAndPassword}
-                      >
-                        Sign up
-                      </Button>
-                    </>
-                  )}
+                  <Button type="submit">
+                    {!isRegister ? "Sign in" : "Sign up"}
+                  </Button>
                 </Group>
               </Stack>
             </form>

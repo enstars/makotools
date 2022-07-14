@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { getFirestoreUserData, setFirestoreUserData } from "./initAuth";
+import { getFirestoreUserData, setFirestoreUserData } from "./authentication";
 import { showNotification } from "@mantine/notifications";
 
 import { IconAlertTriangle, IconArrowLeft } from "@tabler/icons";
