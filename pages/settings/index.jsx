@@ -1,6 +1,7 @@
 import { useState, useEffect, forwardRef } from "react";
 import Title from "../../components/PageTitle";
-import { useUserData } from "../../services/userData";
+// import { useUserData } from "../../services/userData";
+import { useFirebaseUser } from "../../services/firebase/user";
 import { useRouter } from "next/router";
 import DebouncedUserInput from "../../components/core/DebouncedUserInput";
 import DebouncedUsernameInput from "../../components/core/DebouncedUsernameInput";
@@ -100,7 +101,7 @@ const SelectItemForwardRef = forwardRef(function SelectItem(
 
 function DarkModeOption() {
   const { colorScheme } = useMantineColorScheme();
-  const { userData, setUserDataKey } = useUserData();
+  const { firebaseUser, setUserDataKey } = useFirebaseUser();
 
   return (
     <Select
@@ -137,18 +138,18 @@ function DarkModeOption() {
 }
 
 function DropdownOption({ dataKey, data, label, ...props }) {
-  const { userData, setUserDataKey } = useUserData();
+  const { firebaseUser, setUserDataKey } = useFirebaseUser();
 
   return (
     <Select
-      value={userData?.[dataKey] || null}
+      value={firebaseUser?.[dataKey] || null}
       label={label}
       onChange={(value) => {
         setUserDataKey({ [dataKey]: value });
       }}
       itemComponent={SelectItemForwardRef}
       icon={
-        data.filter((r) => r.value === userData?.[dataKey])[0]?.icon || null
+        data.filter((r) => r.value === firebaseUser?.[dataKey])[0]?.icon || null
       }
       data={data}
       // size="xs"
@@ -162,19 +163,19 @@ function DropdownOption({ dataKey, data, label, ...props }) {
 
 function Page() {
   const router = useRouter();
-  const { userData } = useUserData();
+  const { firebaseUser } = useFirebaseUser();
   const [usernameModalOpen, setUsernameModalOpen] = useState(false);
 
   useEffect(() => {
-    if (!userData.loading && !userData.loggedIn) {
+    if (!firebaseUser.loading && !firebaseUser.loggedIn) {
       router.push("/login");
     }
-  }, [userData, router]);
+  }, [firebaseUser, router]);
 
   return (
     <>
       <Title title="Settings" />
-      <LoadingOverlay visible={userData.loading} />
+      <LoadingOverlay visible={firebaseUser.loading} />
       <Accordion
         disableIconRotation
         multiple
@@ -227,12 +228,12 @@ function Page() {
             <DebouncedUserInput
               label="Name"
               dataKey="name"
-              placeholder={userData?.user?.email?.split("@")?.[0] || ""}
+              placeholder={firebaseUser?.user?.email?.split("@")?.[0] || ""}
             />
             <Group align="end" spacing="xs">
               <TextInput
                 label="Username"
-                value={userData?.username}
+                value={firebaseUser?.username}
                 disabled
                 description="Username changes are unavailable during the beta."
                 placeholder={"Username not set"}

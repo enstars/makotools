@@ -12,7 +12,7 @@ import {
 } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import { useDisclosure } from "@mantine/hooks";
-import { useUserData } from "../../../services/userData";
+// import { useUserData } from "../../../services/userData";
 
 import {
   IconUserCircle,
@@ -30,7 +30,7 @@ function UserMenu({ trigger }) {
   const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
   const [opened, handlers] = useDisclosure(false);
-  const { userData, setUserDataKey } = useUserData();
+  // const { firebaseUser, setUserDataKey } = useUserData();
   const { firebaseUser } = useFirebaseUser();
 
   //   console.log(theme);
@@ -75,11 +75,11 @@ function UserMenu({ trigger }) {
         }
         sx={{ pointerEvents: "none" }}
       >
-        {userData.loading ? (
+        {firebaseUser.loading ? (
           <Text size="sm" color="dimmed">
             Loading
           </Text>
-        ) : userData.loggedIn ? (
+        ) : firebaseUser.loggedIn ? (
           <Box
             sx={{
               "*": {
@@ -90,12 +90,12 @@ function UserMenu({ trigger }) {
             }}
           >
             <Text size="sm" weight={500}>
-              {userData?.name || userData.user.email.split("@")[0]}
+              {firebaseUser?.name || firebaseUser.user.email.split("@")[0]}
             </Text>
             <Text size="xs" color="dimmed" mt={-2}>
-              {userData.username
-                ? `@${userData.username}`
-                : userData.user.email}
+              {firebaseUser.username
+                ? `@${firebaseUser.username}`
+                : firebaseUser.user.email}
             </Text>
           </Box>
         ) : (
@@ -120,11 +120,11 @@ function UserMenu({ trigger }) {
       </Menu.Item>
       <Menu.Label>Account</Menu.Label>
 
-      {userData.loading ? (
+      {firebaseUser.loading ? (
         <Menu.Item icon={<IconLogin size={14} />} disabled>
           Log In
         </Menu.Item>
-      ) : userData.loggedIn ? (
+      ) : firebaseUser.loggedIn ? (
         <>
           <Menu.Item
             component={NextLink}
