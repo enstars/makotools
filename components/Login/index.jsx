@@ -6,6 +6,7 @@ import {
 } from "../../services/firebase/authentication";
 // import Button from "../core/Button";
 import {
+  Alert,
   Center,
   Container,
   Paper,
@@ -25,7 +26,7 @@ import {
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
 import Google from "../../assets/google.svg";
-import { IconAlertTriangle, IconArrowLeft } from "@tabler/icons";
+import { IconAlertTriangle, IconArrowLeft, IconBrandFirefox } from "@tabler/icons";
 import Link from "next/link";
 // import { useUserData } from "../../services/userData";
 import { useFirebaseUser } from "../../services/firebase/user";
@@ -80,6 +81,12 @@ function Login() {
               Back to Ensemble Square
             </Anchor>
           </Link>
+          {
+            //TODO: remove alert once google auth for firefox works :kaoruplead:
+          }
+          <Alert icon={<IconBrandFirefox size={32} />} title="IMPORTANT: Firefox users" color="yellow" variant="outline">
+            Sign in with Google is currently unavailable for Firefox. Please sign in with email instead. Sorry for the inconvenience!
+          </Alert>
           <Paper radius="md" p="md" withBorder sx={{ width: "100%" }}>
             <LoadingOverlay visible={userData.loading} />
             <Title order={2} size="lg" mb="sm">
