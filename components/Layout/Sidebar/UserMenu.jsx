@@ -24,6 +24,7 @@ import {
 } from "@tabler/icons";
 
 import { appSignOut } from "../../../services/firebase";
+import { useFirebaseUser } from "../../../services/firebase/user";
 
 function UserMenu({ trigger }) {
   const theme = useMantineTheme();
@@ -31,6 +32,7 @@ function UserMenu({ trigger }) {
   const dark = colorScheme === "dark";
   const [opened, handlers] = useDisclosure(false);
   const { userData, setUserDataKey } = useUserData();
+  const { firebaseUser } = useFirebaseUser();
 
   //   console.log(theme);
   return (
@@ -135,7 +137,8 @@ function UserMenu({ trigger }) {
           </Menu.Item>
           <Menu.Item
             onClick={() => {
-              appSignOut();
+              // appSignOut();
+              firebaseUser.user.signOut();
               handlers.close();
             }}
             icon={<IconLogout size={14} />}
