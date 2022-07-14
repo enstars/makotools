@@ -23,7 +23,6 @@ import {
   IconUser,
 } from "@tabler/icons";
 
-import { appSignOut } from "../../../services/firebase";
 import { useFirebaseUser } from "../../../services/firebase/user";
 
 function UserMenu({ trigger }) {

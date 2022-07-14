@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { useUserData } from "../../services/userData";
-import { validateUsernameDb } from "../../services/firebase";
+import { validateUsernameDb } from "../../services/firebase/authentication";
 import { useDebouncedCallback } from "use-debounce";
 
 import {

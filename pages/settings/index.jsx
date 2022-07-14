@@ -227,7 +227,7 @@ function Page() {
             <DebouncedUserInput
               label="Name"
               dataKey="name"
-              placeholder={userData.user.email.split("@")[0]}
+              placeholder={userData?.user?.email?.split("@")?.[0] || ""}
             />
             <Group align="end" spacing="xs">
               <TextInput

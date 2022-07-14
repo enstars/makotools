@@ -1,6 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useAuth } from "./auth";
-import { getFirestoreUserData, setFirestoreUserData } from "./firebase";
+import {
+  getFirestoreUserData,
+  setFirestoreUserData,
+} from "./firebase/authentication";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import { showNotification } from "@mantine/notifications";
