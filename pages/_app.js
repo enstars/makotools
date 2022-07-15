@@ -115,7 +115,7 @@ function App({ Component, pageProps, ...props }) {
         />
       </Head>
       <RouteChangeLoader />
-      <NotificationsProvider>
+      <NotificationsProvider position="top-center">
         <FirebaseUserProvider setAppColorScheme={setAppColorScheme}>
           <ColorSchemeProvider
             colorScheme={colorScheme}
