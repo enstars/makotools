@@ -16,7 +16,8 @@ import {
   Image as MantineImage,
 } from "@mantine/core";
 
-import { useUserData } from "../services/userData";
+// import { useUserData } from "../services/userData";
+import { useFirebaseUser } from "../services/firebase/user";
 import Banner from "../assets/banner.png";
 import AffiliatesLight from "../assets/Affiliates/affiliates_light.svg?url";
 import AffiliatesDark from "../assets/Affiliates/affiliates_dark.svg?url";
@@ -27,7 +28,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 function Home() {
-  const { userData } = useUserData();
+  const { firebaseUser } = useFirebaseUser();
   const { classes } = useStyles();
   const theme = useMantineTheme();
   // console.log(userData.loggedIn);
@@ -124,7 +125,7 @@ function Home() {
         Hopefully we&apos;ll be able to release parts of the site in future
         updates.
       </Text>
-      {!userData.loggedIn && (
+      {!firebaseUser.loggedIn && (
         <Card withBorder shadow="sm" p="lg">
           <Text mb="sm" align="center">
             If you&apos;re interested, help us out by signing up! This helps us

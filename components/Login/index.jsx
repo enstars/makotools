@@ -86,15 +86,15 @@ function Login() {
 
   // const authUser = useAuth();
   // const { userData } = useUserData();
-  const userData = {
-    loading: false,
-    loggedIn: false,
-  };
+  // const userData = {
+  //   loading: false,
+  //   loggedIn: false,
+  // };
   const { firebaseUser } = useFirebaseUser();
 
   return (
     <Container pt="lg" style={{ height: "100%", maxWidth: 400 }}>
-      {!userData.loading && userData.loggedIn ? (
+      {!firebaseUser.loading && firebaseUser.loggedIn ? (
         <Text align="center" color="dimmed" size="sm">
           Redirecting you to Ensemble Square
         </Text>
@@ -136,7 +136,7 @@ function Login() {
             </Alert>
           )}
           <Paper radius="md" p="md" withBorder sx={{ width: "100%" }}>
-            <LoadingOverlay visible={userData.loading} />
+            <LoadingOverlay visible={firebaseUser.loading} />
             <Title order={2} size="lg" mb="sm">
               {isRegister ? "Sign up" : "Sign in"}
             </Title>

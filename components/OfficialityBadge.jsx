@@ -1,11 +1,12 @@
 import { IconBadge, IconBadgeOff } from "@tabler/icons";
 import { Text, Tooltip } from "@mantine/core";
-import { useUserData } from "../services/userData";
+// import { useUserData } from "../services/userData";
+import { useFirebaseUser } from "../services/firebase/user";
 
 function OfficialityBadge({ langData }) {
   //   console.log(langData);
-  const { userData } = useUserData();
-  const showTlBadge = userData.show_tl_badge || "none";
+  const { firebaseUser } = useFirebaseUser();
+  const showTlBadge = firebaseUser.show_tl_badge || "none";
 
   if (langData.lang !== "en") return null;
   if (showTlBadge === "none") return null;
