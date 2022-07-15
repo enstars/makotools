@@ -33,6 +33,28 @@ import { useFirebaseUser } from "../../services/firebase/user";
 
 function Login() {
   const [isRegister, setIsRegister] = useState(false);
+  const [signOnError, setSignOnError] = useState(null);
+
+  function signOnAlertMsg(error) {
+    console.log(error);
+    const { code } = error;
+    let message;
+    switch (code) {
+      case "wrong-password":
+        message = "The password is incorrect. Please try again.";
+        break;
+      case "user-not-found":
+        message = "A user with this email address could not be found. Please try again.";
+        break;
+      case "timeout":
+        message = "The operation has timed out. Please try again or <a href='/issues'>submit an issue</a> if problem is persistent.";
+      default:
+        message = "An unknown sign in error has occured. Please try again or <a href='/issues'>submit an issue</a> if problem is persistent.";
+        break;
+    }
+
+    return message;
+  }
 
   const form = useForm({
     initialValues: {
@@ -87,6 +109,11 @@ function Login() {
           <Alert icon={<IconBrandFirefox size={32} />} title="IMPORTANT: Firefox users" color="yellow" variant="outline">
             Sign in with Google is currently unavailable for Firefox. Please sign in with email instead. Sorry for the inconvenience!
           </Alert>
+          {signOnError && (
+            <Alert icon={<IconAlertTriangle />} title={signOnError.type === "login" ? "Login Error" : "Registration Error"} color="red">
+              {signOnAlertMsg(signOnError)}
+            </Alert>
+          )}
           <Paper radius="md" p="md" withBorder sx={{ width: "100%" }}>
             <LoadingOverlay visible={userData.loading} />
             <Title order={2} size="lg" mb="sm">
@@ -109,6 +136,7 @@ function Login() {
             />
             <form
               onSubmit={form.onSubmit((values) => {
+                setSignOnError(null);
                 console.log(values);
                 if (isRegister) {
                   appSignUpWithEmailAndPassword(
@@ -117,12 +145,18 @@ function Login() {
                     { name: form.values.name },
                     (res) => {
                       if (res.status === "error") {
-                        console.log(res.error);
-                        showNotification({
-                          message: res.error.message,
-                          color: "red",
-                          icon: <IconAlertTriangle size={16} />,
-                        });
+                        // console.log(res.error);
+                        // showNotification({
+                        //   message: res.error.message,
+                        //   color: "red",
+                        //   icon: <IconAlertTriangle size={16} />,
+                        // });
+                        const errorCode = res.error.code.split('/')[1];
+                        const errorObj = {
+                          type: "registration",
+                          code: errorCode
+                        }
+                        setSignOnError(errorObj);
                       }
                     }
                   );
@@ -133,12 +167,17 @@ function Login() {
                     form.values.password,
                     (res) => {
                       if (res.status === "error") {
-                        console.log(res.error);
-                        showNotification({
-                          message: res.error.message,
-                          color: "red",
-                          icon: <IconAlertTriangle size={16} />,
-                        });
+                        // showNotification({
+                        //   message: res.error.message,
+                        //   color: "red",
+                        //   icon: <IconAlertTriangle size={16} />,
+                        // });
+                        const errorCode = res.error.code.split('/')[1];
+                        const errorObj = {
+                          type: "login",
+                          code: errorCode
+                        }
+                        setSignOnError(errorObj);
                       }
                     }
                   );
@@ -189,7 +228,7 @@ function Login() {
                     component="button"
                     type="button"
                     color="dimmed"
-                    onClick={() => setIsRegister(!isRegister)}
+                    onClick={() => {setIsRegister(!isRegister); setSignOnError(null)}}
                     size="xs"
                     style={{ maxWidth: "100%" }}
                   >
