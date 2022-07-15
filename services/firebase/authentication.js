@@ -5,6 +5,7 @@ import { initializeApp } from "firebase/app";
 import {
   getAuth,
   signInWithRedirect,
+  signInWithPopup,
   GoogleAuthProvider,
   signOut,
   getRedirectResult,
@@ -106,7 +107,8 @@ export const appSignInWithGoogle = () => {
   const clientAuth = getAuth();
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
-  signInWithRedirect(clientAuth, provider);
+  // signInWithRedirect(clientAuth, provider);
+  signInWithPopup(clientAuth, provider);
 };
 export const appSignOut = () => {
   const clientAuth = getAuth();

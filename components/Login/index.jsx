@@ -26,7 +26,11 @@ import {
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
 import Google from "../../assets/google.svg";
-import { IconAlertTriangle, IconArrowLeft, IconBrandFirefox } from "@tabler/icons";
+import {
+  IconAlertTriangle,
+  IconArrowLeft,
+  IconBrandFirefox,
+} from "@tabler/icons";
 import Link from "next/link";
 // import { useUserData } from "../../services/userData";
 import { useFirebaseUser } from "../../services/firebase/user";
@@ -44,12 +48,15 @@ function Login() {
         message = "The password is incorrect. Please try again.";
         break;
       case "user-not-found":
-        message = "A user with this email address could not be found. Please try again.";
+        message =
+          "A user with this email address could not be found. Please try again.";
         break;
       case "timeout":
-        message = "The operation has timed out. Please try again or <a href='/issues'>submit an issue</a> if problem is persistent.";
+        message =
+          "The operation has timed out. Please try again or <a href='/issues'>submit an issue</a> if problem is persistent.";
       default:
-        message = "An unknown sign in error has occured. Please try again or <a href='/issues'>submit an issue</a> if problem is persistent.";
+        message =
+          "An unknown sign in error has occured. Please try again or <a href='/issues'>submit an issue</a> if problem is persistent.";
         break;
     }
 
@@ -106,11 +113,25 @@ function Login() {
           {
             //TODO: remove alert once google auth for firefox works :kaoruplead:
           }
-          <Alert icon={<IconBrandFirefox size={32} />} title="IMPORTANT: Firefox users" color="yellow" variant="outline">
-            Sign in with Google is currently unavailable for Firefox. Please sign in with email instead. Sorry for the inconvenience!
+          <Alert
+            icon={<IconBrandFirefox size={32} />}
+            title="IMPORTANT: Firefox users"
+            color="yellow"
+            variant="outline"
+          >
+            Sign in with Google is currently unavailable for Firefox. Please
+            sign in with email instead. Sorry for the inconvenience!
           </Alert>
           {signOnError && (
-            <Alert icon={<IconAlertTriangle />} title={signOnError.type === "login" ? "Login Error" : "Registration Error"} color="red">
+            <Alert
+              icon={<IconAlertTriangle />}
+              title={
+                signOnError.type === "login"
+                  ? "Login Error"
+                  : "Registration Error"
+              }
+              color="red"
+            >
               {signOnAlertMsg(signOnError)}
             </Alert>
           )}
@@ -151,11 +172,11 @@ function Login() {
                         //   color: "red",
                         //   icon: <IconAlertTriangle size={16} />,
                         // });
-                        const errorCode = res.error.code.split('/')[1];
+                        const errorCode = res.error.code.split("/")[1];
                         const errorObj = {
                           type: "registration",
-                          code: errorCode
-                        }
+                          code: errorCode,
+                        };
                         setSignOnError(errorObj);
                       }
                     }
@@ -172,11 +193,11 @@ function Login() {
                         //   color: "red",
                         //   icon: <IconAlertTriangle size={16} />,
                         // });
-                        const errorCode = res.error.code.split('/')[1];
+                        const errorCode = res.error.code.split("/")[1];
                         const errorObj = {
                           type: "login",
-                          code: errorCode
-                        }
+                          code: errorCode,
+                        };
                         setSignOnError(errorObj);
                       }
                     }
@@ -228,7 +249,10 @@ function Login() {
                     component="button"
                     type="button"
                     color="dimmed"
-                    onClick={() => {setIsRegister(!isRegister); setSignOnError(null)}}
+                    onClick={() => {
+                      setIsRegister(!isRegister);
+                      setSignOnError(null);
+                    }}
                     size="xs"
                     style={{ maxWidth: "100%" }}
                   >
