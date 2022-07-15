@@ -96,25 +96,12 @@ const initAuth = () => {
 
 export default initAuth;
 
-// const firebaseApp = initializeApp(firebaseConfig);
-
-// Authentication
-// const clientAuth = getAuth();
-// const provider = new GoogleAuthProvider();
-// provider.setCustomParameters({ prompt: "select_account" });
-
 export const appSignInWithGoogle = () => {
   const clientAuth = getAuth();
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
   // signInWithRedirect(clientAuth, provider);
   signInWithPopup(clientAuth, provider);
-};
-export const appSignOut = () => {
-  const clientAuth = getAuth();
-  const provider = new GoogleAuthProvider();
-  provider.setCustomParameters({ prompt: "select_account" });
-  signOut(clientAuth);
 };
 
 export const appSignInWithEmailAndPassword = (
@@ -141,8 +128,8 @@ export const appSignUpWithEmailAndPassword = (
     const clientAuth = getAuth();
     createUserWithEmailAndPassword(clientAuth, email, password)
       .then((result) => {
-        //   syncFirestoreUserData(result.user, callback, userInfo);
         setFirestoreUserData(userInfo, result.user.uid);
+        // syncFirestoreUserData(result.user, , userInfo);
         // console.log(0);
       })
       .catch((error) => {
@@ -166,24 +153,25 @@ export const appSignUpWithEmailAndPassword = (
 //     console.error(e);
 //   });
 
-// function syncFirestoreUserData(user, callback = () => {}, userInfo = {}) {
-//   // console.log(user);
-//   setFirestoreUserData(
-//     {
-//       ...userInfo,
-//       // googleUser: JSON.stringify(user),
-//       user: JSON.stringify(user),
-//       // i actually have no idea if this is safe. but this should be only public info so
-//       lastLogin: serverTimestamp(),
-//     },
-//     user.uid
-//   );
-// }
+export function syncFirestoreUserData(uid, callback = () => {}) {
+  // console.log(user);
+  console.log("synced");
+  // const clientAuth = getAuth();
 
-function setFirestoreUserData(data, uid) {
-  const clientAuth = getAuth();
-  const db = getFirestore();
-  setDoc(doc(db, "users", uid || clientAuth?.currentUser?.uid), data, {
+  const app = initializeApp(firebaseConfig);
+
+  setFirestoreUserData(
+    {
+      lastLogin: serverTimestamp(),
+    },
+    uid,
+    app
+  );
+}
+
+function setFirestoreUserData(data, uid, app) {
+  const db = getFirestore(app);
+  setDoc(doc(db, "users", uid), data, {
     merge: true,
   });
 }

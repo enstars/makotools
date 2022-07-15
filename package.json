@@ -42,6 +42,7 @@
     "next-firebase-auth": "^1.0.0-canary.9",
     "next-i18next": "^11.0.0",
     "normalize.css": "^8.0.1",
+    "nprogress": "^0.2.0",
     "numbro": "^2.3.6",
     "numeral": "^2.0.6",
     "react": "^18.2.0",

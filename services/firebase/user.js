@@ -15,7 +15,13 @@ function FirebaseUserProvider({ children, setAppColorScheme }) {
   });
 
   const setUserDataKey = (data) => {
-    setFirebaseUser({ ...firebaseUser, ...data });
+    setFirebaseUser({
+      ...firebaseUser,
+      firestore: {
+        ...firebaseUser.firestore,
+        ...data,
+      },
+    });
     setFirestoreUserData(data);
   };
 

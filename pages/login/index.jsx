@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import Login from "../../components/Login";
-// import { useUserData } from "../../services/userData";
-import { useFirebaseUser } from "../../services/firebase/user"
+import { useFirebaseUser } from "../../services/firebase/user";
 import { useRouter } from "next/router";
 function Page() {
   const router = useRouter();

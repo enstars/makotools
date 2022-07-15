@@ -8,7 +8,9 @@ import { IconCheck } from "@tabler/icons";
 function DebouncedUserInput({ label, dataKey, ...props }) {
   const theme = useMantineTheme();
   const { firebaseUser, setUserDataKey } = useFirebaseUser();
-  const [inputValue, setInputValue] = useState(firebaseUser?.[dataKey]);
+  const [inputValue, setInputValue] = useState(
+    firebaseUser.firestore?.[dataKey]
+  );
 
   const handleValueChange = useDebouncedCallback((value) => {
     setUserDataKey({ [dataKey]: value });
@@ -20,7 +22,7 @@ function DebouncedUserInput({ label, dataKey, ...props }) {
   );
 
   useEffect(() => {
-    setInputValue(firebaseUser?.[dataKey]);
+    setInputValue(firebaseUser.firestore?.[dataKey]);
   }, [firebaseUser, dataKey]);
 
   return (
@@ -31,9 +33,8 @@ function DebouncedUserInput({ label, dataKey, ...props }) {
         setInputValue(e.target.value);
         memoizedHandleValueChange(e.target.value);
       }}
-      // {...(userData.loading && { disabled: true })}
       rightSection={
-        inputValue === firebaseUser?.[dataKey] ? (
+        inputValue === firebaseUser.firestore?.[dataKey] ? (
           <IconCheck size={18} color={theme.colors.green[5]} />
         ) : (
           <Loader size="xs" />

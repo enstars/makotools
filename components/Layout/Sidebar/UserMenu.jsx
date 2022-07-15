@@ -12,7 +12,6 @@ import {
 } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import { useDisclosure } from "@mantine/hooks";
-// import { useUserData } from "../../../services/userData";
 
 import {
   IconUserCircle,
@@ -30,8 +29,7 @@ function UserMenu({ trigger }) {
   const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
   const [opened, handlers] = useDisclosure(false);
-  // const { firebaseUser, setUserDataKey } = useUserData();
-  const { firebaseUser } = useFirebaseUser();
+  const { firebaseUser, setUserDataKey } = useFirebaseUser();
 
   //   console.log(theme);
   return (
@@ -43,7 +41,7 @@ function UserMenu({ trigger }) {
       sx={{
         display: "block",
         width: "100%",
-        // pointerEvents: userData.loading ? "none" : null,
+        // pointerEvents: firebaseUser.loading ? "none" : null,
       }}
       closeOnItemClick={false}
       gutter={0}
@@ -90,11 +88,12 @@ function UserMenu({ trigger }) {
             }}
           >
             <Text size="sm" weight={500}>
-              {firebaseUser?.name || firebaseUser.user.email.split("@")[0]}
+              {firebaseUser.firestore?.name ||
+                firebaseUser.user.email.split("@")[0]}
             </Text>
             <Text size="xs" color="dimmed" mt={-2}>
-              {firebaseUser.username
-                ? `@${firebaseUser.username}`
+              {firebaseUser.firestore.username
+                ? `@${firebaseUser.firestore.username}`
                 : firebaseUser.user.email}
             </Text>
           </Box>

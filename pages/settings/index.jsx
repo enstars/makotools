@@ -1,6 +1,5 @@
 import { useState, useEffect, forwardRef } from "react";
 import Title from "../../components/PageTitle";
-// import { useUserData } from "../../services/userData";
 import { useFirebaseUser } from "../../services/firebase/user";
 import { useRouter } from "next/router";
 import DebouncedUserInput from "../../components/core/DebouncedUserInput";
@@ -131,7 +130,6 @@ function DarkModeOption() {
           <IconSun size={16} />
         )
       }
-      // {...(userData.loading && { disabled: true })}
       // size="xs"
     />
   );
@@ -142,19 +140,19 @@ function DropdownOption({ dataKey, data, label, ...props }) {
 
   return (
     <Select
-      value={firebaseUser?.[dataKey] || null}
+      value={firebaseUser.firestore?.[dataKey] || null}
       label={label}
       onChange={(value) => {
         setUserDataKey({ [dataKey]: value });
       }}
       itemComponent={SelectItemForwardRef}
       icon={
-        data.filter((r) => r.value === firebaseUser?.[dataKey])[0]?.icon || null
+        data.filter((r) => r.value === firebaseUser.firestore?.[dataKey])[0]
+          ?.icon || null
       }
       data={data}
       // size="xs"
       // data={[]}
-      // {...(userData.loading && { disabled: true })}
 
       {...props}
     />
@@ -233,7 +231,7 @@ function Page() {
             <Group align="end" spacing="xs">
               <TextInput
                 label="Username"
-                value={firebaseUser?.username}
+                value={firebaseUser.firestore?.username}
                 disabled
                 description="Username changes are unavailable during the beta."
                 placeholder={"Username not set"}

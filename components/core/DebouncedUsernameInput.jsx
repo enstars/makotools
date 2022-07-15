@@ -16,9 +16,13 @@ import { IconCheck, IconX, IconAt } from "@tabler/icons";
 function DebouncedUsernameInput({ dataKey = "username", changedCallback }) {
   const theme = useMantineTheme();
   const { firebaseUser, setUserDataKey } = useFirebaseUser();
-  const [inputValue, setInputValue] = useState(firebaseUser?.[dataKey]);
+  const [inputValue, setInputValue] = useState(
+    firebaseUser.firestore?.[dataKey]
+  );
 
-  const [newUsername, setNewUsername] = useState(firebaseUser?.[dataKey]);
+  const [newUsername, setNewUsername] = useState(
+    firebaseUser.firestore?.[dataKey]
+  );
   const [usernameMsg, setUsernameMsg] = useState("");
   const [usernameJudgement, setUsernameJudgement] = useState(true);
 
@@ -32,12 +36,14 @@ function DebouncedUsernameInput({ dataKey = "username", changedCallback }) {
   );
 
   useEffect(() => {
-    setInputValue(firebaseUser?.[dataKey]);
+    setInputValue(firebaseUser.firestore?.[dataKey]);
   }, [firebaseUser, dataKey]);
 
   const validateUsername = async (value) => {
     setUsernameJudgement(false);
     setNewUsername(null);
+
+    // TODO : move this validation server side
     if (value === firebaseUser.firestore.username) {
       setUsernameMsg("");
       setUsernameJudgement(true);
@@ -85,8 +91,7 @@ function DebouncedUsernameInput({ dataKey = "username", changedCallback }) {
             setInputValue(e.target.value);
             memoizedHandleValueChange(e.target.value);
           }}
-          // {...(userData.loading && { disabled: true })}
-          {...(inputValue === firebaseUser?.[dataKey]
+          {...(inputValue === firebaseUser.firestore?.[dataKey]
             ? null
             : !usernameJudgement
             ? { rightSection: <Loader size="xs" /> }

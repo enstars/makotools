@@ -32,7 +32,6 @@ import {
   IconBrandFirefox,
 } from "@tabler/icons";
 import Link from "next/link";
-// import { useUserData } from "../../services/userData";
 import { useFirebaseUser } from "../../services/firebase/user";
 
 function Login() {
@@ -84,12 +83,6 @@ function Login() {
     },
   });
 
-  // const authUser = useAuth();
-  // const { userData } = useUserData();
-  // const userData = {
-  //   loading: false,
-  //   loggedIn: false,
-  // };
   const { firebaseUser } = useFirebaseUser();
 
   return (

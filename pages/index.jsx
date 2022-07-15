@@ -16,22 +16,16 @@ import {
   Image as MantineImage,
 } from "@mantine/core";
 
-// import { useUserData } from "../services/userData";
 import { useFirebaseUser } from "../services/firebase/user";
 import Banner from "../assets/banner.png";
 import AffiliatesLight from "../assets/Affiliates/affiliates_light.svg?url";
 import AffiliatesDark from "../assets/Affiliates/affiliates_dark.svg?url";
 import Image from "next/image";
 
-const useStyles = createStyles((theme) => ({
-  affiliates: { maxWidth: theme.breakpoints.md, margin: "0 auto" },
-}));
-
 function Home() {
   const { firebaseUser } = useFirebaseUser();
-  const { classes } = useStyles();
   const theme = useMantineTheme();
-  // console.log(userData.loggedIn);
+
   return (
     <>
       <Box mt={80} />
