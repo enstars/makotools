@@ -99,8 +99,8 @@ const SelectItemForwardRef = forwardRef(function SelectItem(
 });
 
 function DarkModeOption() {
+  const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
-  const { firebaseUser, setUserDataKey } = useFirebaseUser();
 
   return (
     <Select
@@ -108,7 +108,7 @@ function DarkModeOption() {
       // itemComponent={SelectItemForwardRef}
       label={"Mode"}
       onChange={(value) => {
-        setUserDataKey({ dark_mode: value === "dark" });
+        theme.other.setAppColorScheme(value);
       }}
       itemComponent={SelectItemForwardRef}
       data={[

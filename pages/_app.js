@@ -1,4 +1,4 @@
-// import App from 'next/app'
+import App from "next/app";
 import React, { useState, useEffect } from "react";
 import Router, { useRouter } from "next/router";
 import Head from "next/head";
@@ -34,18 +34,25 @@ Router.onRouteChangeError = () => NProgress.done();
 
 initAuth();
 
-function App({ Component, pageProps, ...props }) {
+function MakoTools({ Component, pageProps, ...props }) {
   const location = useRouter();
-  const [colorScheme, setStateColorScheme] = useState(props.colorScheme);
+  const [colorScheme, setStateColorScheme] = useState(
+    props.colorScheme || "dark"
+  );
+  console.log(Component, pageProps, props);
 
   const getLayout = Component.getLayout || ((page) => page);
 
   const setAppColorScheme = (value) => {
     setStateColorScheme(value);
+
     // when color scheme is updated save it to cookie
     setCookie("color-scheme", value, {
       maxAge: 60 * 60 * 24 * 30,
     });
+  };
+  const toggleAppColorScheme = () => {
+    setAppColorScheme(colorScheme === "light" ? "dark" : "light");
   };
 
   return (
@@ -103,7 +110,11 @@ function App({ Component, pageProps, ...props }) {
           fontFamily: "SoraVariable, Sora, InterVariable, Inter, sans-serif",
           fontWeight: 800,
         },
-        other: { transition: "0.3s cubic-bezier(.19,.73,.37,.93)" },
+        other: {
+          transition: "0.3s cubic-bezier(.19,.73,.37,.93)",
+          setAppColorScheme,
+          toggleAppColorScheme,
+        },
         // other: { transition: "2s cubic-bezier(.19,.73,.37,.93)" },
       }}
     >
@@ -116,7 +127,11 @@ function App({ Component, pageProps, ...props }) {
       </Head>
       <RouteChangeLoader />
       <NotificationsProvider>
-        <FirebaseUserProvider setAppColorScheme={setAppColorScheme}>
+        <FirebaseUserProvider
+          setAppColorScheme={setAppColorScheme}
+          colorScheme={colorScheme}
+        >
+          {/*  TODO: Remove this just use the theme povider */}
           <ColorSchemeProvider
             colorScheme={colorScheme}
             setAppColorScheme={setAppColorScheme}
@@ -131,4 +146,15 @@ function App({ Component, pageProps, ...props }) {
   );
 }
 
-export default withAuthUser()(App);
+MakoTools.getInitialProps = ({ ctx }) => {
+  console.log(getCookie("color-scheme", ctx));
+  // const nextApp = App.getInitialProps(ctx);
+  return {
+    // get color scheme from cookie
+    // ...nextApp,
+    // a: "aaaaaaaaaaaaaaaaaaaaaaa",
+    colorScheme: getCookie("color-scheme", ctx) || "light",
+  };
+};
+
+export default withAuthUser()(MakoTools);

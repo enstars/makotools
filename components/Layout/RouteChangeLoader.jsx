@@ -3,9 +3,6 @@ import { useMantineTheme } from "@mantine/core";
 
 function RouteChangeLoader() {
   const theme = useMantineTheme();
-  console.log(
-    theme.colors[theme.primaryColor][theme.primaryShade[theme.colorScheme]]
-  );
   return (
     <Head>
       <style>{`#nprogress .bar { background: ${

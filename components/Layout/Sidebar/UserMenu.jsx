@@ -29,7 +29,7 @@ function UserMenu({ trigger }) {
   const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
   const [opened, handlers] = useDisclosure(false);
-  const { firebaseUser, setUserDataKey } = useFirebaseUser();
+  const { firebaseUser } = useFirebaseUser();
 
   //   console.log(theme);
   return (
@@ -57,8 +57,6 @@ function UserMenu({ trigger }) {
         itemLabel: {
           maxWidth: "100%",
           minWidth: 0,
-          overflow: "hidden",
-          textOverflow: "ellipsis",
         },
       }}
     >
@@ -71,7 +69,9 @@ function UserMenu({ trigger }) {
             sx={{ "*": { display: "flex" } }}
           ></Avatar>
         }
-        sx={{ pointerEvents: "none" }}
+        sx={{
+          pointerEvents: "none",
+        }}
       >
         {firebaseUser.loading ? (
           <Text size="sm" color="dimmed">
@@ -110,7 +110,7 @@ function UserMenu({ trigger }) {
       </Menu.Item> */}
       <Menu.Item
         onClick={() => {
-          setUserDataKey({ dark_mode: colorScheme !== "dark" });
+          theme.other.toggleAppColorScheme();
         }}
         icon={<IconMoonStars size={14} />}
         rightSection={<Switch checked={dark} size="xs" readOnly />}

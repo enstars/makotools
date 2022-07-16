@@ -8,7 +8,7 @@ import { useAuthUser } from "next-firebase-auth";
 const FirebaseUserContext = React.createContext();
 export const useFirebaseUser = () => useContext(FirebaseUserContext);
 
-function FirebaseUserProvider({ children, setAppColorScheme }) {
+function FirebaseUserProvider({ children, colorScheme }) {
   const AuthUser = useAuthUser();
   const [firebaseUser, setFirebaseUser] = useState({
     loading: true,
@@ -37,8 +37,10 @@ function FirebaseUserProvider({ children, setAppColorScheme }) {
     if (userState.loggedIn) {
       const setFirestoreData = async () => {
         try {
-          const currentUserData = await getFirestoreUserData(firebaseUser.id);
+          const currentUserData = await getFirestoreUserData(AuthUser.id);
           setFirebaseUser({ ...userState, firestore: currentUserData });
+          if (currentUserData?.dark_mode)
+            setAppColorScheme(currentUserData.dark_mode ? "dark" : "light");
         } catch (e) {
           console.log(e);
           showNotification({
@@ -54,10 +56,14 @@ function FirebaseUserProvider({ children, setAppColorScheme }) {
   }, [AuthUser]);
 
   useEffect(() => {
-    if (typeof firebaseUser.dark_mode !== "undefined") {
-      setAppColorScheme(firebaseUser.dark_mode ? "dark" : "light");
-    }
-  }, [firebaseUser]);
+    if (firebaseUser.loggedIn)
+      setUserDataKey({ dark_mode: colorScheme === "dark" });
+  }, [colorScheme, firebaseUser]);
+  // useEffect(() => {
+  //   if (typeof firebaseUser.firestore.dark_mode !== "undefined") {
+  //     setAppColorScheme(firebaseUser.firestore.dark_mode ? "dark" : "light");
+  //   }
+  // }, [firebaseUser]);
 
   return (
     <FirebaseUserContext.Provider value={{ firebaseUser, setUserDataKey }}>
