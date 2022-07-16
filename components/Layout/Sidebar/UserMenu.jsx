@@ -12,8 +12,10 @@ import {
 } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import { useDisclosure } from "@mantine/hooks";
+import { showNotification } from "@mantine/notifications";
 
 import {
+  IconCircleCheck,
   IconUserCircle,
   IconSettings,
   IconLogin,
@@ -92,8 +94,8 @@ function UserMenu({ trigger }) {
                 firebaseUser.user.email.split("@")[0]}
             </Text>
             <Text size="xs" color="dimmed" mt={-2}>
-              {firebaseUser.firestore.username
-                ? `@${firebaseUser.firestore.username}`
+              {firebaseUser.firestore?.username
+                ? `@${firebaseUser.firestore?.username}`
                 : firebaseUser.user.email}
             </Text>
           </Box>
@@ -138,6 +140,13 @@ function UserMenu({ trigger }) {
               // appSignOut();
               firebaseUser.user.signOut();
               handlers.close();
+              showNotification({
+                message: "Successfully signed out",
+                autoClose: 5000,
+                icon: <IconCircleCheck />,
+                className: "signout-notification",
+                color: "lime"
+              })
             }}
             icon={<IconLogout size={14} />}
           >

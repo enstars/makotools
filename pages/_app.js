@@ -126,7 +126,7 @@ function MakoTools({ Component, pageProps, ...props }) {
         />
       </Head>
       <RouteChangeLoader />
-      <NotificationsProvider>
+      <NotificationsProvider position="top-center">
         <FirebaseUserProvider
           setAppColorScheme={setAppColorScheme}
           colorScheme={colorScheme}

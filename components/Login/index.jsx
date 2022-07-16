@@ -24,7 +24,6 @@ import {
   LoadingOverlay,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { showNotification } from "@mantine/notifications";
 import Google from "../../assets/google.svg";
 import {
   IconAlertTriangle,
@@ -44,18 +43,22 @@ function Login() {
     let message;
     switch (code) {
       case "wrong-password":
-        message = "The password is incorrect. Please try again.";
+        message = (<span>The password is incorrect. Please try again.</span>);
         break;
       case "user-not-found":
         message =
-          "A user with this email address could not be found. Please try again.";
+          (<span>A user with this email address could not be found. Please try again.</span>);
         break;
       case "timeout":
         message =
-          "The operation has timed out. Please try again or <a href='/issues'>submit an issue</a> if problem is persistent.";
+          (<span>The operation has timed out. Please try again or <Anchor href='/issues'>submit an issue</Anchor> if the problem is persistent.</span>);
+          break;
+      case "too-many-requests":
+        message = (<span>The server has received too many sign on requests. Please wait and try again later.</span>);
+        break;
       default:
         message =
-          "An unknown sign in error has occured. Please try again or <a href='/issues'>submit an issue</a> if problem is persistent.";
+          (<span>An unknown sign on error has occured. Please try again or <Anchor href='/issues'>submit an issue</Anchor> if the problem is persistent.</span>);
         break;
     }
 
@@ -103,18 +106,6 @@ function Login() {
               Back to Ensemble Square
             </Anchor>
           </Link>
-          {
-            //TODO: remove alert once google auth for firefox works :kaoruplead:
-          }
-          <Alert
-            icon={<IconBrandFirefox size={32} />}
-            title="IMPORTANT: Firefox users"
-            color="yellow"
-            variant="outline"
-          >
-            Sign in with Google is currently unavailable for Firefox. Please
-            sign in with email instead. Sorry for the inconvenience!
-          </Alert>
           {signOnError && (
             <Alert
               icon={<IconAlertTriangle />}
@@ -124,6 +115,9 @@ function Login() {
                   : "Registration Error"
               }
               color="red"
+              style={{
+                marginBottom: 10
+              }}
             >
               {signOnAlertMsg(signOnError)}
             </Alert>
