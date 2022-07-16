@@ -9,11 +9,9 @@ import Meta from "../Meta";
 import {
   AppShell,
   Container,
-  Box,
   Paper,
   useMantineTheme,
-  useMantineColorScheme,
-  MediaQuery,
+  useMantineColorScheme
 } from "@mantine/core";
 
 function Layout({
@@ -32,14 +30,12 @@ function Layout({
 
   useEffect(() => {
     setCurrentPath(location.pathname);
-    // console.log(currentPath);
   }, [location]);
 
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
   return (
     <ErrorBoundary>
-      {/* <MediaQuery smallerThan="xs" styles={{ "--mantine-navbar-width": 0 }}> */}
       <AppShell
         styles={{
           main: {
@@ -91,7 +87,6 @@ function Layout({
         </Paper>
         {footer ? <Footer wide={wide} textOnly={footerTextOnly} /> : null}
       </AppShell>
-      {/* </MediaQuery> */}
     </ErrorBoundary>
   );
 }

@@ -23,7 +23,7 @@ import "@fontsource/inter/variable-full.css";
 import initAuth from "../services/firebase/authentication";
 import FirebaseUserProvider from "../services/firebase/user";
 
-import { useAuthUser, withAuthUser } from "next-firebase-auth";
+import { withAuthUser } from "next-firebase-auth";
 import RouteChangeLoader from "../components/Layout/RouteChangeLoader";
 
 Router.onRouteChangeStart = (url) => {
@@ -60,7 +60,6 @@ function MakoTools({ Component, pageProps, ...props }) {
       emotionOptions={{ key: "mktl" }}
       withGlobalStyles
       withNormalizeCSS
-      // withCSSVariables
       theme={{
         colorScheme,
         colors: {
@@ -102,7 +101,6 @@ function MakoTools({ Component, pageProps, ...props }) {
             "#1864ab",
           ],
         },
-        // primaryColor: "green",
         primaryShade: { light: 6, dark: 5 },
         lineHeight: 1.5,
         fontFamily: "InterVariable, Inter, Noto Sans JP, sans-serif",
@@ -115,7 +113,6 @@ function MakoTools({ Component, pageProps, ...props }) {
           setAppColorScheme,
           toggleAppColorScheme,
         },
-        // other: { transition: "2s cubic-bezier(.19,.73,.37,.93)" },
       }}
     >
       <Head>
@@ -136,9 +133,7 @@ function MakoTools({ Component, pageProps, ...props }) {
             colorScheme={colorScheme}
             setAppColorScheme={setAppColorScheme}
           >
-            {/* <Hydrate state={pageProps.dehydratedState}> */}
             {getLayout(<Component {...pageProps} />, pageProps)}
-            {/* </Hydrate> */}
           </ColorSchemeProvider>
         </FirebaseUserProvider>
       </NotificationsProvider>
@@ -148,11 +143,8 @@ function MakoTools({ Component, pageProps, ...props }) {
 
 MakoTools.getInitialProps = ({ ctx }) => {
   console.log(getCookie("color-scheme", ctx));
-  // const nextApp = App.getInitialProps(ctx);
   return {
     // get color scheme from cookie
-    // ...nextApp,
-    // a: "aaaaaaaaaaaaaaaaaaaaaaa",
     colorScheme: getCookie("color-scheme", ctx) || "light",
   };
 };

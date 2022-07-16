@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { getData, getB2File, getLocalizedData } from "../../services/ensquare";
 import Layout from "../../components/Layout";
@@ -8,12 +7,10 @@ import ImageViewer from "../../components/core/ImageViewer";
 import { Text, Box } from "@mantine/core";
 
 function Character({ characters, i }) {
-  // const { id } = useParams();
   const router = useRouter();
   const { id } = router.query;
 
   const character = characters.localized[0].data[i];
-  console.log(character);
   return (
     <>
       <Head>
@@ -76,7 +73,7 @@ function Character({ characters, i }) {
       <Text>{character.introduction}</Text>
       {/* Birthday
       {character.birthday}
-      
+
       Age
       {character.age} */}
     </>
@@ -91,7 +88,6 @@ export async function getServerSideProps({ req, res, locale }) {
     "public, s-maxage=7200, stale-while-revalidate=172800"
   );
   // refresh every 2 hours, stale for 48hrs
-  // console.log(locale);
   const characters = await getLocalizedData("characters", locale);
   const { data: charactersEN } = await getData("characters", "en");
   const urlSegments = req.url.split("/");
@@ -100,7 +96,6 @@ export async function getServerSideProps({ req, res, locale }) {
     .trim();
   const characterID = parseInt(lastSegment, 10);
   const isName = isNaN(characterID);
-  // console.log(lastSegment);
   const characterIndex = charactersEN.indexOf(
     charactersEN.find(
       isName
@@ -114,7 +109,6 @@ export async function getServerSideProps({ req, res, locale }) {
     )
   );
 
-  // console.log(charactersEN);
   return {
     props: { characters, i: characterIndex },
   };

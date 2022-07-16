@@ -1,5 +1,5 @@
 import React from "react";
-import { Center, Box, Text, Button, Group } from "@mantine/core";
+import { Anchor, Center, Box, Text, Button, Group } from "@mantine/core";
 import Router from "next/router";
 import Jun from "../assets/ErrorBoundary/Jun.webp";
 import Image from "next/image";
@@ -18,7 +18,6 @@ class ErrorBoundary extends React.Component {
     const { hasError } = this.state;
     const { children } = this.props;
     if (hasError) {
-      // console.log(this);
       return (
         <Center sx={{ width: "100%", height: "100%" }}>
           <Box sx={{ maxWidth: 250, marginTop: 24 }}>
@@ -27,8 +26,8 @@ class ErrorBoundary extends React.Component {
               Ah fuck—an error occured!
             </Text>
             <Text size="sm">
-              Hopefully we know about this one. Wanna help report the bug to us
-              anyways?
+              Hopefully we know about this one. <Anchor href="/issues">Wanna help report the bug to us
+              anyways?</Anchor>
             </Text>
             <Group direction="column" align="end" mt="sm">
               <Group direction="column" align="center" spacing={0}>

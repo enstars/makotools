@@ -9,17 +9,11 @@ import {
   useMantineTheme,
   Drawer,
   Box,
-  Button,
-  Burger,
   MediaQuery,
   ActionIcon,
 } from "@mantine/core";
-import { IconChevronRight, IconMenu2 } from "@tabler/icons";
+import { IconMenu2 } from "@tabler/icons";
 import Sidebar from "../Sidebar";
-
-// function PageAnchor({ref,...props}) {
-//   return <Anchor  {...props} />;
-// }
 
 function BreadcrumbsApp(props) {
   const theme = useMantineTheme();
@@ -31,17 +25,13 @@ function BreadcrumbsApp(props) {
 
   useEffect(() => {
     setPathnames(location.asPath.split("/").filter((x) => x));
-    // console.log(location);
-    // console.log(pathnames);
   }, [location]);
 
   return (
     <Box px="xs" {...props}>
-      {/* <MediaQuery largerThan="xs" styles={{ display: "none" }}> */}
       <Drawer
         opened={opened}
         onClose={() => setOpened(false)}
-        // padding="xl"
         size="sm"
         styles={{ header: { display: "none" } }}
         shadow="xl"
@@ -55,7 +45,6 @@ function BreadcrumbsApp(props) {
           hidden={false}
         />
       </Drawer>
-      {/* </MediaQuery> */}
       <Group>
         <MediaQuery largerThan="xs" styles={{ display: "none" }}>
           <ActionIcon>
@@ -63,10 +52,8 @@ function BreadcrumbsApp(props) {
           </ActionIcon>
         </MediaQuery>
         <Text
-          // size=
           transform="uppercase"
           weight="600"
-          // sx={{ fontFamily: theme.headings.fontFamily }}
           sx={(theme) => ({
             zIndex: 10,
             position: "relative",

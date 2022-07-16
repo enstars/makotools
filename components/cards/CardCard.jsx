@@ -1,9 +1,6 @@
 import React, { useEffect } from "react";
-import Link from "next/link";
-// import Image from "next/image";
 import CardStatsShort from "../core/CardStatsShort";
-import { getData, getB2File } from "../../services/ensquare";
-import { twoStarIDs } from "../../data/characterIDtoCardID";
+import { getB2File } from "../../services/ensquare";
 import {
   Card,
   Paper,
@@ -15,12 +12,10 @@ import {
   Divider,
   Tooltip,
   Skeleton,
-  BackgroundImage,
   useMantineTheme,
   useMantineColorScheme,
 } from "@mantine/core";
 import { IconStar, IconSum } from "@tabler/icons";
-import { showNotification } from "@mantine/notifications";
 import { useRouter } from "next/router";
 import attributes from "../../data/attributes.json";
 import ImageViewer from "../../components/core/ImageViewer";
@@ -31,7 +26,6 @@ function RarityBadge({ card }) {
   return (
     <Paper
       component={Box}
-      // color={attributes[card.type].color}
       variant="filled"
       sx={{
         position: "absolute",
@@ -41,12 +35,9 @@ function RarityBadge({ card }) {
         borderBottomRightRadius: theme.radius.sm,
         transform: "skew(-15deg)",
         pointerEvents: "none",
-        //attributes[card.type].color
         background: card.type
           ? theme.colors[attributes[card.type]?.color][7]
           : null,
-        // borderRight: `solid ${theme.radius.sm}px`,
-        // borderRightColor: theme.colors[attributes[card.type].color][7],
         zIndex: 12,
         transition: "0.3s cubic-bezier(.19,.73,.37,.93)",
       }}
@@ -79,21 +70,16 @@ export default function CardCard({ cards, id, cardOptions }) {
   const cardMainLang = cards.localized[0].data.find((c) => c.id === id);
   const cardSubLang =
     cards.localized[1].data?.find((c) => c.id === id) || undefined;
-  // if (id === 2190) console.log(card.stats.ir);
 
   const statsIR = card.stats.ir.da + card.stats.ir.vo + card.stats.ir.pf;
   const statsIR4 = card.stats.ir4.da + card.stats.ir4.vo + card.stats.ir4.pf;
 
-  //  statsIR.toString().length > 5 ? 3 : 2
-
-  // <Link passHref href={`cards/${id}`}>
 
   return (
     <Card
       withBorder
       p={0}
       onClick={() => {
-        // console.log("clicked");
         router.push(`cards/${id}`);
       }}
       sx={{ "&:hover": { cursor: "pointer" } }}
@@ -142,7 +128,6 @@ export default function CardCard({ cards, id, cardOptions }) {
                   : `assets/card_rectangle4_${card.id}_${type}.png` // 1-3 -> frameless
               )}
               alt={card.title}
-              // fit="cover"
               radius={3}
               height="100%"
               withPlaceholder
@@ -212,14 +197,6 @@ export default function CardCard({ cards, id, cardOptions }) {
                   strokeWidth={3}
                   style={{ verticalAlign: -1 }}
                 />
-                {/* {[...Array(card.rarity)].map((e, i) => (
-                <IconStar
-                  key={e}
-                  size={12}
-                  strokeWidth={3}
-                  style={{ verticalAlign: -1, marginRight: 2 }}
-                />
-              ))} */}
               </Text>
               <Tooltip label={attributes[card.type].fullname} withArrow>
                 <Text inline inherit color={attributes[card.type].color} mr={4}>
@@ -240,7 +217,6 @@ export default function CardCard({ cards, id, cardOptions }) {
             weight="700"
             size="sm"
             sx={{
-              // fontVariantNumeric: "tabular-nums",
               whiteSpace: "nowrap",
               flexGrow: 0,
               flexShrink: 0,

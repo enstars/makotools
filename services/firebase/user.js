@@ -59,11 +59,6 @@ function FirebaseUserProvider({ children, colorScheme }) {
     if (firebaseUser.loggedIn)
       setUserDataKey({ dark_mode: colorScheme === "dark" });
   }, [colorScheme, firebaseUser]);
-  // useEffect(() => {
-  //   if (typeof firebaseUser.firestore.dark_mode !== "undefined") {
-  //     setAppColorScheme(firebaseUser.firestore.dark_mode ? "dark" : "light");
-  //   }
-  // }, [firebaseUser]);
 
   return (
     <FirebaseUserContext.Provider value={{ firebaseUser, setUserDataKey }}>

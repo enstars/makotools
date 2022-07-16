@@ -78,8 +78,6 @@ function DebouncedUsernameInput({ dataKey = "username", changedCallback }) {
     changedCallback();
   };
 
-  //   const memoizedHandleUsernameChange = useMemo(() => handleUsernameChange, []);
-
   return (
     <>
       <Group spacing="xs" sx={{ flexWrap: "nowrap" }}>

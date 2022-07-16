@@ -2,6 +2,7 @@ import Layout from "../../../components/Layout";
 import Title from "../../../components/PageTitle";
 import { Anchor, Text, TypographyStylesProvider } from "@mantine/core";
 import { MAKOTOOLS } from "../../../services/constants";
+
 function Acknowledgements() {
   return (
     <>

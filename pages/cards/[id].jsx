@@ -101,7 +101,6 @@ function Character({ character, card }) {
               src={getB2File(
                 `assets/card_rectangle4_${card.main.id}_${type}.png`
               )}
-              // width={240}
             ></ImageViewer>
           </AspectRatio>
         ))}
@@ -118,7 +117,6 @@ export async function getServerSideProps({ req, res, locale }) {
     "public, s-maxage=7200, stale-while-revalidate=172800"
   );
   // refresh every 2 hours, stale for 48hrs
-  // console.log(locale);
 
   const cards = await getLocalizedData("cards", locale);
   const characters = await getLocalizedData("characters", locale);
@@ -128,8 +126,6 @@ export async function getServerSideProps({ req, res, locale }) {
     .toLocaleLowerCase()
     .trim();
   const cardID = parseInt(lastURLSegment, 10);
-  // console.log(lastSegment);
-  // console.log(cardsJP);
   const cardIndex = cards.main.data.indexOf(
     cards.main.data.find(
       isNaN(cardID)
@@ -154,7 +150,6 @@ export async function getServerSideProps({ req, res, locale }) {
     localized: cards.localized.map((l) => l.data[cardIndex]),
   };
 
-  // console.log(charactersEN);
   return {
     props: { character, card },
   };

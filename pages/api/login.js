@@ -12,7 +12,6 @@ const handler = async (req, res) => {
     const authToken = req.headers.authorization;
     const authUser = await verifyIdToken(authToken);
     console.log(authUser);
-    // initAuth();
     syncFirestoreUserData(authToken.id);
   } catch (e) {
     console.log(e);

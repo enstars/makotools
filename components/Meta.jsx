@@ -7,14 +7,12 @@ function Meta({ title, desc, img }) {
     : MAKOTOOLS.SITE_TITLE;
   const pageDesc = desc || MAKOTOOLS.META_DESC;
   const pageImg = img || MAKOTOOLS.SITE_URL + MAKOTOOLS.SITE_META_BANNER;
-  // const pageImg = img || MAKOTOOLS.SITE_META_BANNER;
   return (
     <Head>
       <title>{pageTitle}</title>
       <meta name="title" content={pageTitle} />
       <meta name="description" content={pageDesc} />
-
-      {/* <meta property="og:type" content="profile" /> */}
+      
       <meta property="og:url" content={MAKOTOOLS.SITE_URL} />
       <meta property="og:title" content={pageTitle} />
       <meta property="og:description" content={pageDesc} />
@@ -32,4 +30,4 @@ function Meta({ title, desc, img }) {
 
 export default Meta;
 
-//stolen from tomoya.moe heehee
+//stolen from tomoya.moe heehee (lol)

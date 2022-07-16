@@ -1,6 +1,5 @@
 import { CharacterCard } from "./../../components/characters/CharacterCard";
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
 import _ from "lodash";
 import { getData, getLocalizedData } from "../../services/ensquare";
 import Title from "../../components/PageTitle";
@@ -18,22 +17,18 @@ function Characters({
   unit_to_characters: unitToCharacters,
   units,
 }) {
-  //   console.debug(twoStarIDs);
   const [listCharacters, setListCharacters] = useState([]);
   const [filterOptions, setfilterOptions] = useState([]);
   const [chosenUnit, setChosenUnit] = useState(null);
   const theme = useMantineTheme();
-  // console.log(characters, unitToCharacters, units);
   useEffect(() => {
     let charactersWithUnits = unitToCharacters.main.data;
 
     if (chosenUnit) {
       const filterOptionsChosenID = chosenUnit.unit_id;
-      // console.log(filterOptionsChosenID);
       charactersWithUnits = charactersWithUnits.filter(
         (character) => filterOptionsChosenID === character.unit_id
       );
-      // console.log(charactersWithUnits);
     }
     const charactersWithUnitsSorted = _.sortBy(charactersWithUnits, [
       function findUnitOrder(charactersWithUnit) {
@@ -42,14 +37,12 @@ function Characters({
         )[0] || {
           name: "MaM",
           order: 14,
-        }; // MaM *sobs*
+        }; // MaM *sobs* mama... cries
         // eslint-disable-next-line dot-notation
         return thisUnit.order;
       },
       "order_num_in_unit_as_list",
     ]);
-
-    // console.log("a", charactersWithUnitsSorted);
 
     const charactersFiltered = charactersWithUnitsSorted.map((charaUnit) => {
       const charIndex = characters.main.data.indexOf(
@@ -99,7 +92,6 @@ function Characters({
             searchable
             clearable
             allowDeselect
-            // sx={{ maxWidth: 200 }}
             size="sm"
             variant="default"
           />
@@ -114,7 +106,6 @@ function Characters({
         }}
       >
         {listCharacters.map((character, i) => {
-          // console.log(character);
           return (
             <CharacterCard
               key={character.unique_id}
@@ -136,7 +127,6 @@ export async function getServerSideProps({ res, locale, ...context }) {
     "public, s-maxage=7200, stale-while-revalidate=172800"
   );
   // refresh every 2 hours, stale for 48hrs
-  // console.log(locale);
   const characters = await getLocalizedData("characters", locale);
   const unit_to_characters = await getLocalizedData(
     "unit_to_characters",

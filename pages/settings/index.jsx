@@ -6,13 +6,9 @@ import DebouncedUserInput from "../../components/core/DebouncedUserInput";
 import DebouncedUsernameInput from "../../components/core/DebouncedUsernameInput";
 import {
   Modal,
-  Button,
   Group,
   Select,
-  Loader,
   Text,
-  Paper,
-  Tabs,
   Stack,
   Title as MantineTitle,
   ThemeIcon,
@@ -21,8 +17,7 @@ import {
   useMantineColorScheme,
   TextInput,
   Accordion,
-  ActionIcon,
-  SegmentedControl,
+  ActionIcon
 } from "@mantine/core";
 
 import {
@@ -62,7 +57,7 @@ const gameRegions = [
     label: "Worldwide (English)",
     icon: <Flags.GB height={16} style={{ borderRadius: 3 }} />,
   },
-  // {
+  // { come on baby america
   //   value: "us",
   //   label: "United States",
   //   icon: <Flags.US height={16} style={{ borderRadius: 3 }} />,
@@ -105,7 +100,6 @@ function DarkModeOption() {
   return (
     <Select
       value={colorScheme || "dark"}
-      // itemComponent={SelectItemForwardRef}
       label={"Mode"}
       onChange={(value) => {
         theme.other.setAppColorScheme(value);
@@ -130,7 +124,6 @@ function DarkModeOption() {
           <IconSun size={16} />
         )
       }
-      // size="xs"
     />
   );
 }
@@ -151,8 +144,6 @@ function DropdownOption({ dataKey, data, label, ...props }) {
           ?.icon || null
       }
       data={data}
-      // size="xs"
-      // data={[]}
 
       {...props}
     />

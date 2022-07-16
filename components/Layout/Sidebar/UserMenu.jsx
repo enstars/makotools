@@ -33,9 +33,9 @@ function UserMenu({ trigger }) {
   const [opened, handlers] = useDisclosure(false);
   const { firebaseUser } = useFirebaseUser();
 
-  //   console.log(theme);
   return (
     <Menu
+      id="sidebar-menu"
       size="md"
       position="top"
       transition="pop"
@@ -43,7 +43,6 @@ function UserMenu({ trigger }) {
       sx={{
         display: "block",
         width: "100%",
-        // pointerEvents: firebaseUser.loading ? "none" : null,
       }}
       closeOnItemClick={false}
       gutter={0}
@@ -63,6 +62,7 @@ function UserMenu({ trigger }) {
       }}
     >
       <Menu.Item
+        id="sidebar-logged-in"
         icon={
           <Avatar
             color="blue"
@@ -89,11 +89,11 @@ function UserMenu({ trigger }) {
               },
             }}
           >
-            <Text size="sm" weight={500}>
+            <Text id="sidebar-user-name" size="sm" weight={500}>
               {firebaseUser.firestore?.name ||
                 firebaseUser.user.email.split("@")[0]}
             </Text>
-            <Text size="xs" color="dimmed" mt={-2}>
+            <Text id="sidebar-user-email" size="xs" color="dimmed" mt={-2}>
               {firebaseUser.firestore?.username
                 ? `@${firebaseUser.firestore?.username}`
                 : firebaseUser.user.email}
@@ -106,11 +106,12 @@ function UserMenu({ trigger }) {
         )}
       </Menu.Item>
       <Divider />
-      <Menu.Label>Quick Settings</Menu.Label>
+      <Menu.Label id="sidebar-label-quick-settings">Quick Settings</Menu.Label>
       {/* <Menu.Item disabled icon={<IconUserCircle size={14} />}>
         Profile
       </Menu.Item> */}
       <Menu.Item
+        id="sidebar-dark-mode"
         onClick={() => {
           theme.other.toggleAppColorScheme();
         }}
@@ -119,15 +120,16 @@ function UserMenu({ trigger }) {
       >
         Dark Mode
       </Menu.Item>
-      <Menu.Label>Account</Menu.Label>
+      <Menu.Label id="sidebar-label-account">Account</Menu.Label>
 
       {firebaseUser.loading ? (
-        <Menu.Item icon={<IconLogin size={14} />} disabled>
+        <Menu.Item className="sidebar-link-login" icon={<IconLogin size={14} />} disabled>
           Log In
         </Menu.Item>
       ) : firebaseUser.loggedIn ? (
         <>
           <Menu.Item
+            id="sidebar-link-settings"
             component={NextLink}
             href="/settings"
             icon={<IconSettings size={14} />}
@@ -136,8 +138,8 @@ function UserMenu({ trigger }) {
             Settings
           </Menu.Item>
           <Menu.Item
+            id="sidebar-link-logout"
             onClick={() => {
-              // appSignOut();
               firebaseUser.user.signOut();
               handlers.close();
               showNotification({
@@ -156,6 +158,7 @@ function UserMenu({ trigger }) {
       ) : (
         <>
           <Menu.Item
+            className="sidebar-link-login"
             component={NextLink}
             href="/login"
             icon={<IconLogin size={14} />}

@@ -4,11 +4,8 @@ import { init } from "next-firebase-auth";
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
-  signInWithRedirect,
   signInWithPopup,
   GoogleAuthProvider,
-  signOut,
-  getRedirectResult,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
@@ -53,7 +50,6 @@ const initAuth = () => {
     onLogoutRequestError: (err) => {
       console.error(err);
     },
-    // firebaseAuthEmulatorHost: "localhost:9099",
     firebaseAdminInitConfig: {
       credential: {
         projectId: "ensemble-square",
@@ -64,7 +60,6 @@ const initAuth = () => {
           ? parseKey(process.env.FIREBASE_PRIVATE_KEY)
           : undefined,
       },
-      //   databaseURL: "https://my-example-app.firebaseio.com",
     },
     // Use application default credentials (takes precedence over firebaseAdminInitConfig if set)
     // useFirebaseAdminDefaultCredential: true,
@@ -83,7 +78,7 @@ const initAuth = () => {
       path: "/",
       sameSite: "strict",
       secure: process.env.NODE_ENV === "development" ? false : true, // set this to false in local (non-HTTPS) development
-      signed: true,
+      signed: false,
     },
     onVerifyTokenError: (err) => {
       console.error(err);
@@ -100,7 +95,6 @@ export const appSignInWithGoogle = () => {
   const clientAuth = getAuth();
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
-  // signInWithRedirect(clientAuth, provider);
   signInWithPopup(clientAuth, provider);
 };
 
@@ -129,11 +123,8 @@ export const appSignUpWithEmailAndPassword = (
     createUserWithEmailAndPassword(clientAuth, email, password)
       .then((result) => {
         setFirestoreUserData(userInfo, result.user.uid);
-        // syncFirestoreUserData(result.user, , userInfo);
-        // console.log(0);
       })
       .catch((error) => {
-        // console.log(callback);
         callback({ status: "error", error });
       });
   }
@@ -141,22 +132,7 @@ export const appSignUpWithEmailAndPassword = (
 
 // Firestore Database
 
-// getRedirectResult(clientAuth)
-//   .then((result) => {
-//     if (result) {
-//       const { user } = result;
-//       // console.log(user);
-//       syncFirestoreUserData(user);
-//     }
-//   })
-//   .catch((e) => {
-//     console.error(e);
-//   });
-
 export function syncFirestoreUserData(uid, callback = () => {}) {
-  // console.log(user);
-  console.log("synced");
-  // const clientAuth = getAuth();
 
   const app = initializeApp(firebaseConfig);
 
