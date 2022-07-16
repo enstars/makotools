@@ -156,20 +156,13 @@ export const appSignUpWithEmailAndPassword = (
 export async function syncFirestoreUserData(
   db,
   uid,
-  timestamp,
   data,
   callback = () => {}
 ) {
   console.log("synced");
 
   const docRef = db.collection("users").doc(uid);
-  const res = await docRef.set(
-    {
-      lastLogin: timestamp,
-      ...data,
-    },
-    { merge: true }
-  );
+  const res = await docRef.set(data, { merge: true });
 }
 
 function setFirestoreUserData(data, uid, app) {
