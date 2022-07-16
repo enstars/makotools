@@ -17,7 +17,7 @@ import {
   doc,
   setDoc,
   getDoc,
-  serverTimestamp,
+  // serverTimestamp,
   collection,
   query,
   where,
@@ -153,25 +153,29 @@ export const appSignUpWithEmailAndPassword = (
 //     console.error(e);
 //   });
 
-export function syncFirestoreUserData(uid, callback = () => {}) {
-  // console.log(user);
+export async function syncFirestoreUserData(
+  db,
+  uid,
+  timestamp,
+  data,
+  callback = () => {}
+) {
   console.log("synced");
-  // const clientAuth = getAuth();
 
-  const app = initializeApp(firebaseConfig);
-
-  setFirestoreUserData(
+  const docRef = db.collection("users").doc(uid);
+  const res = await docRef.set(
     {
-      lastLogin: serverTimestamp(),
+      lastLogin: timestamp,
+      ...data,
     },
-    uid,
-    app
+    { merge: true }
   );
 }
 
 function setFirestoreUserData(data, uid, app) {
+  const clientAuth = getAuth();
   const db = getFirestore(app);
-  setDoc(doc(db, "users", uid), data, {
+  setDoc(doc(db, "users", uid || clientAuth?.currentUser?.uid), data, {
     merge: true,
   });
 }
