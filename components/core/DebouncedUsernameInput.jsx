@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
-import { useUserData } from "../../services/userData";
-import { validateUsernameDb } from "../../services/firebase";
+import { useFirebaseUser } from "../../services/firebase/user";
+import { validateUsernameDb } from "../../services/firebase/authentication";
 import { useDebouncedCallback } from "use-debounce";
 
 import {
@@ -15,10 +15,14 @@ import { IconCheck, IconX, IconAt } from "@tabler/icons";
 
 function DebouncedUsernameInput({ dataKey = "username", changedCallback }) {
   const theme = useMantineTheme();
-  const { userData, setUserDataKey } = useUserData();
-  const [inputValue, setInputValue] = useState(userData?.[dataKey]);
+  const { firebaseUser, setUserDataKey } = useFirebaseUser();
+  const [inputValue, setInputValue] = useState(
+    firebaseUser.firestore?.[dataKey]
+  );
 
-  const [newUsername, setNewUsername] = useState(userData?.[dataKey]);
+  const [newUsername, setNewUsername] = useState(
+    firebaseUser.firestore?.[dataKey]
+  );
   const [usernameMsg, setUsernameMsg] = useState("");
   const [usernameJudgement, setUsernameJudgement] = useState(true);
 
@@ -32,13 +36,15 @@ function DebouncedUsernameInput({ dataKey = "username", changedCallback }) {
   );
 
   useEffect(() => {
-    setInputValue(userData?.[dataKey]);
-  }, [userData, dataKey]);
+    setInputValue(firebaseUser.firestore?.[dataKey]);
+  }, [firebaseUser, dataKey]);
 
   const validateUsername = async (value) => {
     setUsernameJudgement(false);
     setNewUsername(null);
-    if (value === userData.username) {
+
+    // TODO : move this validation server side
+    if (value === firebaseUser.firestore.username) {
       setUsernameMsg("");
       setUsernameJudgement(true);
     } else if (value.replace(/[A-z0-9_]/g, "").length > 0) {
@@ -76,7 +82,7 @@ function DebouncedUsernameInput({ dataKey = "username", changedCallback }) {
 
   return (
     <>
-      <Group spacing="xs">
+      <Group spacing="xs" sx={{ flexWrap: "nowrap" }}>
         <TextInput
           value={inputValue}
           icon={<IconAt size="16" />}
@@ -85,8 +91,7 @@ function DebouncedUsernameInput({ dataKey = "username", changedCallback }) {
             setInputValue(e.target.value);
             memoizedHandleValueChange(e.target.value);
           }}
-          // {...(userData.loading && { disabled: true })}
-          {...(inputValue === userData?.[dataKey]
+          {...(inputValue === firebaseUser.firestore?.[dataKey]
             ? null
             : !usernameJudgement
             ? { rightSection: <Loader size="xs" /> }
@@ -104,7 +109,7 @@ function DebouncedUsernameInput({ dataKey = "username", changedCallback }) {
         />
         <Button
           onClick={validateAndSaveUsername}
-          {...(inputValue !== userData?.[dataKey] &&
+          {...(inputValue !== firebaseUser?.[dataKey] &&
           (usernameJudgement || newUsername)
             ? null
             : { disabled: true })}
@@ -113,7 +118,7 @@ function DebouncedUsernameInput({ dataKey = "username", changedCallback }) {
         </Button>
       </Group>
       <Text mt="xs" color="dimmed" size="xs">
-        {inputValue !== userData?.[dataKey] && usernameJudgement
+        {inputValue !== firebaseUser?.[dataKey] && usernameJudgement
           ? usernameMsg
           : "Pick a new username..."}
       </Text>

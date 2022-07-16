@@ -1,42 +1,131 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
+// import Image from "next/image";
+import CardStatsShort from "../core/CardStatsShort";
 import { getData, getB2File } from "../../services/ensquare";
 import { twoStarIDs } from "../../data/characterIDtoCardID";
-import { Card, Paper, Group, Box, Text, Badge } from "@mantine/core";
-import { IconStar } from "@tabler/icons";
+import {
+  Card,
+  Paper,
+  Group,
+  Box,
+  Text,
+  Badge,
+  Image,
+  Divider,
+  Tooltip,
+  Skeleton,
+  BackgroundImage,
+  useMantineTheme,
+  useMantineColorScheme,
+} from "@mantine/core";
+import { IconStar, IconSum } from "@tabler/icons";
 import { showNotification } from "@mantine/notifications";
+import { useRouter } from "next/router";
+import attributes from "../../data/attributes.json";
+import ImageViewer from "../../components/core/ImageViewer";
+import OfficialityBadge from "../OfficialityBadge";
 
-const attributes = [
-  {},
-  { name: "Sp", color: "red" },
-  { name: "Br", color: "lightblue" },
-  { name: "Gl", color: "green" },
-  { name: "Fl", color: "yellow" },
-];
-
-export default function CardCard({ i, cards }) {
-  const card = cards[0][1][i];
-  const cardSubLang = cards[1][1]?.[i] || undefined;
-  // console.log(characters);
+function RarityBadge({ card }) {
+  const theme = useMantineTheme();
   return (
-    // <Link passHref>
+    <Paper
+      component={Box}
+      // color={attributes[card.type].color}
+      variant="filled"
+      sx={{
+        position: "absolute",
+        top: 9,
+        left: -12.5,
+        borderTopRightRadius: theme.radius.sm,
+        borderBottomRightRadius: theme.radius.sm,
+        transform: "skew(-15deg)",
+        pointerEvents: "none",
+        //attributes[card.type].color
+        background: card.type
+          ? theme.colors[attributes[card.type]?.color][7]
+          : null,
+        // borderRight: `solid ${theme.radius.sm}px`,
+        // borderRightColor: theme.colors[attributes[card.type].color][7],
+        zIndex: 12,
+        transition: "0.3s cubic-bezier(.19,.73,.37,.93)",
+      }}
+      pl={20}
+      pr={10}
+      py={2}
+      radius={0}
+    >
+      <Text
+        size="xs"
+        weight="700"
+        sx={{
+          transform: "skew(15deg)",
+          fontFeatureSettings: "'kern' 1, 'ss02' 1",
+        }}
+        color="white"
+      >
+        {card.rarity}
+        <IconStar size={10} strokeWidth={3} style={{ verticalAlign: -1 }} />
+      </Text>
+    </Paper>
+  );
+}
+
+export default function CardCard({ cards, id, cardOptions }) {
+  const router = useRouter();
+  const theme = useMantineTheme();
+  const { colorScheme } = useMantineColorScheme();
+  const card = cards.main.data.find((c) => c.id === id);
+  const cardMainLang = cards.localized[0].data.find((c) => c.id === id);
+  const cardSubLang =
+    cards.localized[1].data?.find((c) => c.id === id) || undefined;
+  // if (id === 2190) console.log(card.stats.ir);
+
+  const statsIR = card.stats.ir.da + card.stats.ir.vo + card.stats.ir.pf;
+  const statsIR4 = card.stats.ir4.da + card.stats.ir4.vo + card.stats.ir4.pf;
+
+  //  statsIR.toString().length > 5 ? 3 : 2
+
+  // <Link passHref href={`cards/${id}`}>
+
+  return (
     <Card
       withBorder
-      // component="a"
-      p="xs"
-      onClick={() =>
-        showNotification({
-          title: "The card pages aren't available yet!",
-          // message: "Hey there, your code is awesome! 🤥",
-        })
-      }
+      p={0}
+      onClick={() => {
+        // console.log("clicked");
+        router.push(`cards/${id}`);
+      }}
+      sx={{ "&:hover": { cursor: "pointer" } }}
     >
-      <Card.Section>
-        <Group spacing={0} grow>
+      <Card.Section sx={{ position: "relative" }} px={3} pt={3}>
+        <Group
+          grow
+          sx={{
+            "&:hover .mantine-Image-imageWrapper": { opacity: 0.25 },
+          }}
+          spacing={3}
+        >
           {["normal", "evolution"].map((type) => (
-            <Box
+            <ImageViewer
               key={type}
+              styles={{
+                figure: {
+                  height: "100%",
+                  "&:hover > figcaption > div": {
+                    left: -12.5 - 30,
+                  },
+                  "&&&:hover > div": { opacity: 0.9 },
+                },
+                imageWrapper: {
+                  height: "100%",
+                  transition: theme.other.transition,
+                },
+                image: {
+                  objectFit: "cover",
+                  objectPosition: "top center",
+                },
+              }}
               sx={{
                 position: "relative",
                 height: 100,
@@ -44,50 +133,139 @@ export default function CardCard({ i, cards }) {
                 flexShrink: 1,
                 flexGrow: 1,
                 maxWidth: "100%",
-                transition: "0.2s ease",
-                "&:hover": { flexGrow: 2 },
+                "&:hover": { flexGrow: card.rarity >= 4 ? 2.5 : 1.1 },
+                transition: theme.other.transition,
               }}
-            >
-              <Image
-                src={getB2File(`cards/card_square1_${card.id}_${type}.png`)}
-                alt={card.title}
-                layout="fill"
-                objectFit="cover"
-              />
-            </Box>
+              src={getB2File(
+                card.rarity >= 4
+                  ? `assets/card_still_full1_${card.id}_${type}.png` // 4-5 -> full cg
+                  : `assets/card_rectangle4_${card.id}_${type}.png` // 1-3 -> frameless
+              )}
+              alt={card.title}
+              // fit="cover"
+              radius={3}
+              height="100%"
+              withPlaceholder
+              placeholder={
+                <>
+                  <Skeleton width="100%" height="100%" />
+                </>
+              }
+              caption={type === "normal" && <RarityBadge card={card} />}
+            />
           ))}
         </Group>
       </Card.Section>
-      <Box mt="xs">
-        <Text size="sm" weight="700">{`(${card.title}) ${card.name}`}</Text>
+      <Card.Section px="sm" pt="xs">
+        <Text size="sm" weight="700">
+          {`${cardMainLang.title}`}&nbsp;
+          <OfficialityBadge langData={cards.localized[0]} />
+        </Text>
         {cardSubLang && (
-          <Text
-            size="xs"
-            color="dimmed"
-            weight="500"
-          >{`(${cardSubLang.title}) ${cardSubLang.name}`}</Text>
+          <Text size="xs" color="dimmed" weight="500">
+            {`${cardSubLang.title}`}&nbsp;
+            <OfficialityBadge langData={cards.localized[1]} />
+          </Text>
         )}
-      </Box>
-      <Group mt="xs" spacing={3}>
-        <Badge
-          color={attributes[card.type_id].color}
-          sx={{
-            textTransform: "none",
-            fontFeatureSettings: "'ss02' 1",
-          }}
+      </Card.Section>
+      <Divider my="xs" size="xs" />
+      <Card.Section
+        px="sm"
+        pb="xs"
+        sx={{
+          whiteSpace: "nowrap",
+        }}
+      >
+        <Group
+          spacing={3}
+          sx={{ justifyContent: "space-between", flexWrap: "nowrap" }}
+          mt={3}
         >
-          {attributes[card.type_id].name} {card.rare_type_id}
-          <IconStar size={10} style={{ verticalAlign: -1 }} />
-        </Badge>
-        <Badge
-          sx={{
-            textTransform: "none",
-          }}
-        >
-          40k
-        </Badge>
-      </Group>
+          {cardOptions.showFullInfo ? (
+            <Text
+              inline
+              size="sm"
+              weight="700"
+              sx={{
+                textTransform: "none",
+                fontFeatureSettings: "'kern' 1, 'ss02' 1",
+                display: "flex",
+                flexGrow: 1,
+                flexShrink: 1,
+                flexBasis: 0,
+                minWidth: 0,
+              }}
+            >
+              <Text
+                inline
+                inherit
+                color={
+                  colorScheme === "dark"
+                    ? theme.colors.yellow[2]
+                    : theme.colors.yellow[7]
+                }
+                mr={4}
+              >
+                {card.rarity}
+                <IconStar
+                  size={12}
+                  strokeWidth={3}
+                  style={{ verticalAlign: -1 }}
+                />
+                {/* {[...Array(card.rarity)].map((e, i) => (
+                <IconStar
+                  key={e}
+                  size={12}
+                  strokeWidth={3}
+                  style={{ verticalAlign: -1, marginRight: 2 }}
+                />
+              ))} */}
+              </Text>
+              <Tooltip label={attributes[card.type].fullname} withArrow>
+                <Text inline inherit color={attributes[card.type].color} mr={4}>
+                  {attributes[card.type].name}
+                </Text>
+              </Tooltip>
+              <Text
+                inline
+                inherit
+                color="dimmed"
+                sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
+              >{`${cardMainLang?.name?.split(" ")?.[0]}`}</Text>
+            </Text>
+          ) : (
+            <Box />
+          )}
+          <Text
+            weight="700"
+            size="sm"
+            sx={{
+              // fontVariantNumeric: "tabular-nums",
+              whiteSpace: "nowrap",
+              flexGrow: 0,
+              flexShrink: 0,
+            }}
+            inline
+          >
+            <Text inline component="span" color="dimmed" mr={2}>
+              <IconSum
+                size={18}
+                style={{ verticalAlign: -3 }}
+                strokeWidth={2.5}
+              />
+            </Text>
+            <CardStatsShort>{statsIR}</CardStatsShort>
+            {card?.rarity === 5 && (
+              <>
+                <Text component="span" inherit inline color="dimmed">
+                  {" / "}
+                </Text>
+                <CardStatsShort>{statsIR4}</CardStatsShort>
+              </>
+            )}
+          </Text>
+        </Group>
+      </Card.Section>
     </Card>
-    // </Link>
   );
 }

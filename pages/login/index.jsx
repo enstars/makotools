@@ -1,18 +1,16 @@
 import { useEffect } from "react";
 import Login from "../../components/Login";
-import { useUserData } from "../../services/userData";
-import { useAuth } from "../../services/auth";
+import { useFirebaseUser } from "../../services/firebase/user";
 import { useRouter } from "next/router";
 function Page() {
   const router = useRouter();
-  const { user } = useAuth();
-  const { userData, setUserDataKey } = useUserData();
+  const { firebaseUser } = useFirebaseUser();
 
   useEffect(() => {
-    if (!userData.loading && userData.loggedIn) {
+    if (!firebaseUser.loading && firebaseUser.loggedIn) {
       router.push("/");
     }
-  }, [userData, router]);
+  }, [firebaseUser, router]);
 
   return <Login />;
 }

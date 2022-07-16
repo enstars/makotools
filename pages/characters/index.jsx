@@ -4,8 +4,6 @@ import Image from "next/image";
 import _ from "lodash";
 import { getData, getLocalizedData } from "../../services/ensquare";
 import Title from "../../components/PageTitle";
-import Main from "../../components/Main";
-import Dropdown from "../../components/core/Dropdown";
 import {
   Select,
   Box,
@@ -15,15 +13,19 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 
-function Characters({ characters, unit_to_characters, units }) {
+function Characters({
+  characters,
+  unit_to_characters: unitToCharacters,
+  units,
+}) {
   //   console.debug(twoStarIDs);
   const [listCharacters, setListCharacters] = useState([]);
   const [filterOptions, setfilterOptions] = useState([]);
   const [chosenUnit, setChosenUnit] = useState(null);
   const theme = useMantineTheme();
-  // console.log(characters, unit_to_characters, units);
+  // console.log(characters, unitToCharacters, units);
   useEffect(() => {
-    let charactersWithUnits = unit_to_characters[0][1];
+    let charactersWithUnits = unitToCharacters.main.data;
 
     if (chosenUnit) {
       const filterOptionsChosenID = chosenUnit.unit_id;
@@ -35,7 +37,7 @@ function Characters({ characters, unit_to_characters, units }) {
     }
     const charactersWithUnitsSorted = _.sortBy(charactersWithUnits, [
       function findUnitOrder(charactersWithUnit) {
-        const thisUnit = units[0][1].filter(
+        const thisUnit = units.main.data.filter(
           (unit) => unit.unit_id === charactersWithUnit.unit_id
         )[0] || {
           name: "MaM",
@@ -50,8 +52,8 @@ function Characters({ characters, unit_to_characters, units }) {
     // console.log("a", charactersWithUnitsSorted);
 
     const charactersFiltered = charactersWithUnitsSorted.map((charaUnit) => {
-      const charIndex = characters[0][1].indexOf(
-        characters[0][1].filter(
+      const charIndex = characters.main.data.indexOf(
+        characters.main.data.filter(
           (chara) => chara.character_id === charaUnit.character_id
         )[0]
       );
@@ -59,12 +61,12 @@ function Characters({ characters, unit_to_characters, units }) {
       return {
         i: charIndex,
         doubleface: charaUnit.unit_id === 17,
-        unique_id: `${characters[0][1]?.[charIndex]?.character_id}-${charaUnit.unit_id}`,
+        unique_id: `${characters.main.data?.[charIndex]?.character_id}-${charaUnit.unit_id}`,
       };
     });
 
     setListCharacters(charactersFiltered);
-    setfilterOptions(units[0][1].sort((a, b) => !!(a?.order > b?.order)));
+    setfilterOptions(units.main.data.sort((a, b) => !!(a?.order > b?.order)));
   }, [chosenUnit]);
 
   const handleNewUnit = (e) => {
@@ -112,7 +114,7 @@ function Characters({ characters, unit_to_characters, units }) {
         }}
       >
         {listCharacters.map((character, i) => {
-          console.log(character);
+          // console.log(character);
           return (
             <CharacterCard
               key={character.unique_id}
@@ -149,5 +151,5 @@ export async function getServerSideProps({ res, locale, ...context }) {
 
 import Layout from "../../components/Layout";
 Characters.getLayout = function getLayout(page) {
-  return <Layout>{page}</Layout>;
+  return <Layout wide>{page}</Layout>;
 };

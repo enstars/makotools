@@ -3,10 +3,10 @@ import {
   appSignInWithGoogle,
   appSignInWithEmailAndPassword,
   appSignUpWithEmailAndPassword,
-} from "../../services/firebase";
+} from "../../services/firebase/authentication";
 // import Button from "../core/Button";
-import { useAuth } from "../../services/auth";
 import {
+  Alert,
   Center,
   Container,
   Paper,
@@ -24,14 +24,46 @@ import {
   LoadingOverlay,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { showNotification } from "@mantine/notifications";
-import Google from "./google.svg";
-import { IconAlertTriangle, IconArrowLeft } from "@tabler/icons";
+import Google from "../../assets/google.svg";
+import {
+  IconAlertTriangle,
+  IconArrowLeft,
+  IconBrandFirefox,
+} from "@tabler/icons";
 import Link from "next/link";
-import { useUserData } from "../../services/userData";
+import { useFirebaseUser } from "../../services/firebase/user";
 
 function Login() {
   const [isRegister, setIsRegister] = useState(false);
+  const [signOnError, setSignOnError] = useState(null);
+
+  function signOnAlertMsg(error) {
+    console.log(error);
+    const { code } = error;
+    let message;
+    switch (code) {
+      case "wrong-password":
+        message = (<span>The password is incorrect. Please try again.</span>);
+        break;
+      case "user-not-found":
+        message =
+          (<span>A user with this email address could not be found. Please try again.</span>);
+        break;
+      case "timeout":
+        message =
+          (<span>The operation has timed out. Please try again or <Anchor href='/issues'>submit an issue</Anchor> if the problem is persistent.</span>);
+          break;
+      case "too-many-requests":
+        message = (<span>The server has received too many sign on requests. Please wait and try again later.</span>);
+        break;
+      default:
+        message =
+          (<span>An unknown sign on error has occured. Please try again or <Anchor href='/issues'>submit an issue</Anchor> if the problem is persistent.</span>);
+        break;
+    }
+
+    return message;
+  }
 
   const form = useForm({
     initialValues: {
@@ -45,16 +77,20 @@ function Login() {
       email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
       password: (val) =>
         val.length >= 6 ? null : "Password must be over 6 characters long",
-      terms: (val) => (val ? null : "You must agree to the Terms of Service"),
+      terms: (val) =>
+        !isRegister
+          ? null
+          : val
+          ? null
+          : "You must agree to the Terms of Service",
     },
   });
 
-  const authUser = useAuth();
-  const { userData } = useUserData();
+  const { firebaseUser } = useFirebaseUser();
 
   return (
     <Container pt="lg" style={{ height: "100%", maxWidth: 400 }}>
-      {!userData.loading && userData.loggedIn ? (
+      {!firebaseUser.loading && firebaseUser.loggedIn ? (
         <Text align="center" color="dimmed" size="sm">
           Redirecting you to Ensemble Square
         </Text>
@@ -70,8 +106,24 @@ function Login() {
               Back to Ensemble Square
             </Anchor>
           </Link>
+          {signOnError && (
+            <Alert
+              icon={<IconAlertTriangle />}
+              title={
+                signOnError.type === "login"
+                  ? "Login Error"
+                  : "Registration Error"
+              }
+              color="red"
+              style={{
+                marginBottom: 10
+              }}
+            >
+              {signOnAlertMsg(signOnError)}
+            </Alert>
+          )}
           <Paper radius="md" p="md" withBorder sx={{ width: "100%" }}>
-            <LoadingOverlay visible={userData.loading} />
+            <LoadingOverlay visible={firebaseUser.loading} />
             <Title order={2} size="lg" mb="sm">
               {isRegister ? "Sign up" : "Sign in"}
             </Title>
@@ -92,6 +144,8 @@ function Login() {
             />
             <form
               onSubmit={form.onSubmit((values) => {
+                setSignOnError(null);
+                console.log(values);
                 if (isRegister) {
                   appSignUpWithEmailAndPassword(
                     form.values.email,
@@ -99,27 +153,39 @@ function Login() {
                     { name: form.values.name },
                     (res) => {
                       if (res.status === "error") {
-                        console.log(res.error);
-                        showNotification({
-                          message: res.error.message,
-                          color: "red",
-                          icon: <IconAlertTriangle size={16} />,
-                        });
+                        // console.log(res.error);
+                        // showNotification({
+                        //   message: res.error.message,
+                        //   color: "red",
+                        //   icon: <IconAlertTriangle size={16} />,
+                        // });
+                        const errorCode = res.error.code.split("/")[1];
+                        const errorObj = {
+                          type: "registration",
+                          code: errorCode,
+                        };
+                        setSignOnError(errorObj);
                       }
                     }
                   );
                 } else {
+                  console.log("sign in");
                   appSignInWithEmailAndPassword(
                     form.values.email,
                     form.values.password,
                     (res) => {
                       if (res.status === "error") {
-                        console.log(res.error);
-                        showNotification({
-                          message: res.error.message,
-                          color: "red",
-                          icon: <IconAlertTriangle size={16} />,
-                        });
+                        // showNotification({
+                        //   message: res.error.message,
+                        //   color: "red",
+                        //   icon: <IconAlertTriangle size={16} />,
+                        // });
+                        const errorCode = res.error.code.split("/")[1];
+                        const errorObj = {
+                          type: "login",
+                          code: errorCode,
+                        };
+                        setSignOnError(errorObj);
                       }
                     }
                   );
@@ -148,15 +214,16 @@ function Login() {
                   {...form.getInputProps("password")}
                 />
                 {isRegister && (
-                  <InputWrapper id="terms" {...form.getInputProps("terms")}>
-                    <Checkbox
-                      label="I agree to the Terms of Service"
-                      checked={form.values.terms}
-                      onChange={(event) =>
-                        form.setFieldValue("terms", event.currentTarget.checked)
-                      }
-                    />
-                  </InputWrapper>
+                  <Checkbox
+                    label="I agree to the Terms of Service"
+                    // checked={form.values.terms}
+                    // onChange={(event) =>
+                    //   form.setFieldValue("terms", event.currentTarget.checked)
+                    // }
+                    {...form.getInputProps("terms", { type: "checkbox" })}
+                  />
+                  // <InputWrapper id="terms" {...form.getInputProps("terms")}>
+                  // </InputWrapper>
                 )}
                 <Group
                   // mt="xs"
@@ -169,7 +236,10 @@ function Login() {
                     component="button"
                     type="button"
                     color="dimmed"
-                    onClick={() => setIsRegister(!isRegister)}
+                    onClick={() => {
+                      setIsRegister(!isRegister);
+                      setSignOnError(null);
+                    }}
                     size="xs"
                     style={{ maxWidth: "100%" }}
                   >
@@ -177,15 +247,9 @@ function Login() {
                       ? "Already have an account? Sign in"
                       : "Don't have an account? Sign up"}
                   </Anchor>
-                  {!isRegister ? (
-                    <>
-                      <Button type="submit">Sign in</Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button type="submit">Sign up</Button>
-                    </>
-                  )}
+                  <Button type="submit">
+                    {!isRegister ? "Sign in" : "Sign up"}
+                  </Button>
                 </Group>
               </Stack>
             </form>

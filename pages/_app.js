@@ -1,17 +1,12 @@
-// import App from 'next/app'
+import App from "next/app";
 import React, { useState, useEffect } from "react";
-import { GetServerSidePropsContext } from "next";
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 import Head from "next/head";
-import { getCookie, setCookies } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
+import NProgress from "nprogress";
 
-import {
-  MantineProvider,
-  ColorScheme,
-  ColorSchemeProvider,
-} from "@mantine/core";
+import { MantineProvider, ColorSchemeProvider } from "@mantine/core";
 
-import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { NotificationsProvider } from "@mantine/notifications";
 
 import "@fontsource/sora/400.css";
@@ -25,124 +20,131 @@ import "@fontsource/noto-sans-jp/700.css";
 import "@fontsource/inter";
 import "@fontsource/inter/variable-full.css";
 
-// import "normalize.css/normalize.css";
-// import "../styles/index.scss";
+import initAuth from "../services/firebase/authentication";
+import FirebaseUserProvider from "../services/firebase/user";
 
-import AuthProvider from "../services/auth";
-import UserDataProvider from "../services/userData";
+import { useAuthUser, withAuthUser } from "next-firebase-auth";
+import RouteChangeLoader from "../components/Layout/RouteChangeLoader";
 
-// const queryClient = new QueryClient();
+Router.onRouteChangeStart = (url) => {
+  NProgress.start();
+};
+Router.onRouteChangeComplete = () => NProgress.done();
+Router.onRouteChangeError = () => NProgress.done();
 
-function App({ Component, pageProps, ...props }) {
+initAuth();
+
+function MakoTools({ Component, pageProps, ...props }) {
   const location = useRouter();
-  const [currentPath, setCurrentPath] = useState(location.pathname);
-  const [queryClient] = useState(() => new QueryClient());
-  const [colorScheme, setStateColorScheme] = useState(props.colorScheme);
-  // const [colorScheme, setColorScheme] = useState("dark");
-
-  useEffect(() => {
-    setCurrentPath(location.pathname);
-    // console.log(currentPath);
-  }, [location]);
+  const [colorScheme, setStateColorScheme] = useState(
+    props.colorScheme || "dark"
+  );
 
   const getLayout = Component.getLayout || ((page) => page);
 
   const setAppColorScheme = (value) => {
     setStateColorScheme(value);
+
     // when color scheme is updated save it to cookie
-    setCookies("color-scheme", value, {
+    setCookie("color-scheme", value, {
       maxAge: 60 * 60 * 24 * 30,
     });
   };
-  const toggleColorScheme = (value) => {
-    const nextColorScheme =
-      value || (colorScheme === "dark" ? "light" : "dark");
-    setAppColorScheme(nextColorScheme);
+  const toggleAppColorScheme = () => {
+    setAppColorScheme(colorScheme === "light" ? "dark" : "light");
   };
 
   return (
-    <>
+    <MantineProvider
+      emotionOptions={{ key: "mktl" }}
+      withGlobalStyles
+      withNormalizeCSS
+      // withCSSVariables
+      theme={{
+        colorScheme,
+        colors: {
+          // override dark colors to change them for all components
+          dark: [
+            "#D3D6E0",
+            "#AAB1C2",
+            "#8E97AD",
+            "#5F6982",
+            "#3A4259",
+            "#2C3347",
+            "#212736",
+            "#191C27",
+            "#171921",
+            "#12141C",
+          ],
+          blue: [
+            "#E8ECFD",
+            "#C0CAF4",
+            "#A4B1E8",
+            "#8297EE",
+            "#5E78E3",
+            "#3C59D1",
+            "#324CB3",
+            "#273E96",
+            "#1C2F7D",
+            "#14297A",
+          ],
+          lightblue: [
+            "#e7f5ff",
+            "#d0ebff",
+            "#a5d8ff",
+            "#74c0fc",
+            "#4dabf7",
+            "#339af0",
+            "#228be6",
+            "#1c7ed6",
+            "#1971c2",
+            "#1864ab",
+          ],
+        },
+        // primaryColor: "green",
+        primaryShade: { light: 6, dark: 5 },
+        lineHeight: 1.5,
+        fontFamily: "InterVariable, Inter, Noto Sans JP, sans-serif",
+        headings: {
+          fontFamily: "SoraVariable, Sora, InterVariable, Inter, sans-serif",
+          fontWeight: 800,
+        },
+        other: {
+          transition: "0.3s cubic-bezier(.19,.73,.37,.93)",
+          setAppColorScheme,
+          toggleAppColorScheme,
+        },
+        // other: { transition: "2s cubic-bezier(.19,.73,.37,.93)" },
+      }}
+    >
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
-      <AuthProvider>
-        <UserDataProvider setAppColorScheme={setAppColorScheme}>
+      <RouteChangeLoader />
+      <NotificationsProvider position="top-center">
+        <FirebaseUserProvider
+          setAppColorScheme={setAppColorScheme}
+          colorScheme={colorScheme}
+        >
+          {/*  TODO: Remove this just use the theme povider */}
           <ColorSchemeProvider
             colorScheme={colorScheme}
-            toggleColorScheme={toggleColorScheme}
             setAppColorScheme={setAppColorScheme}
           >
-            <MantineProvider
-              emotionOptions={{ key: "ensq" }}
-              withGlobalStyles
-              withNormalizeCSS
-              theme={{
-                colorScheme,
-                colors: {
-                  // override dark colors to change them for all components
-                  dark: [
-                    "#D3D6E0",
-                    "#AAB1C2",
-                    "#8E97AD",
-                    "#5F6982",
-                    "#3A4259",
-                    "#2C3347",
-                    "#212736",
-                    "#191C27",
-                    "#171921",
-                    "#12141C",
-                  ],
-                  blue: [
-                    "#E8ECFD",
-                    "#C0CAF4",
-                    "#A4B1E8",
-                    "#8297EE",
-                    "#5E78E3",
-                    "#3C59D1",
-                    "#324CB3",
-                    "#273E96",
-                    "#1C2F7D",
-                    "#14297A",
-                  ],
-                  lightblue: [
-                    "#e7f5ff",
-                    "#d0ebff",
-                    "#a5d8ff",
-                    "#74c0fc",
-                    "#4dabf7",
-                    "#339af0",
-                    "#228be6",
-                    "#1c7ed6",
-                    "#1971c2",
-                    "#1864ab",
-                  ],
-                },
-                fontFamily: "InterVariable, Inter, Noto Sans JP, sans-serif",
-                headings: {
-                  fontFamily:
-                    "SoraVariable, Sora, Metropolis, InterVariable, Inter, sans-serif",
-                  fontWeight: 800,
-                },
-              }}
-            >
-              <NotificationsProvider>
-                <QueryClientProvider client={queryClient}>
-                  {/* <Hydrate state={pageProps.dehydratedState}> */}
-                  {getLayout(<Component {...pageProps} />, pageProps)}
-                  {/* </Hydrate> */}
-                </QueryClientProvider>
-              </NotificationsProvider>
-            </MantineProvider>
+            {/* <Hydrate state={pageProps.dehydratedState}> */}
+            {getLayout(<Component {...pageProps} />, pageProps)}
+            {/* </Hydrate> */}
           </ColorSchemeProvider>
-        </UserDataProvider>
-      </AuthProvider>
-    </>
+        </FirebaseUserProvider>
+      </NotificationsProvider>
+    </MantineProvider>
   );
 }
 
-App.getInitialProps = ({ ctx }) => ({
-  // get color scheme from cookie
-  colorScheme: getCookie("color-scheme", ctx) || "dark",
-});
+MakoTools.getInitialProps = ({ ctx }) => {
+  return {
+    colorScheme: getCookie("color-scheme", ctx) || "light",
+  };
+};
 
-export default App;
+export default withAuthUser()(MakoTools);
