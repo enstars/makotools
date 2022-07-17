@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import {
   Modal,
   Text,
@@ -15,19 +15,15 @@ import { IconDownload, IconArrowUpRightCircle } from "@tabler/icons";
 const useStyles = createStyles((theme, _params, getRef) => ({
   figure: {
     [`&:hover .${getRef("backdrop")}`]: {
-      // transform: "translateY(0)",
       backgroundPositionY: 70,
     },
     [`&:hover .${getRef("button")}`]: {
-      // transform: "translateY(0)",
       opacity: 0.7,
 
       "&:hover": {
         opacity: 1,
       },
-    },
-    // overflow: "hidden",
-    // position: "relative",
+    }
   },
 
   backdrop: {
@@ -37,14 +33,12 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     bottom: 0,
     background:
       "70px 50px / 120% 120% no-repeat radial-gradient(#000F 15%, transparent 60%)",
-    // background: "blue",
     padding: 5,
     paddingBottom: 3,
     zIndex: 14,
     width: 160,
     height: 120,
     pointerEvents: "none",
-    // transform: "translateY(32px)",
     backgroundPositionY: 140,
     transition: theme.other.transition,
     borderBottomRightRadius: 3,
@@ -54,8 +48,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     position: "absolute",
     right: 0,
     bottom: 0,
-    // background: "radial-gradient(#000F, transparent 50%)",
-    // background: "blue",
     padding: 5,
     paddingBottom: 3,
     zIndex: 15,
@@ -72,17 +64,13 @@ function ImageViewer({ caption, ...props }) {
     <>
       <Modal
         size="lg"
-        // overflow="inside"
         opened={opened}
         onClose={() => {
           setOpened(false);
-          // console.log("closed modal");
         }}
         centered
         onClick={(e) => {
-          // e.preventDefault();
           e.stopPropagation();
-          // e.nativeEvent.stopImmediatePropagation();
         }}
         title={
           <>

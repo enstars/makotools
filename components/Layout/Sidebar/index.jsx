@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef } from "react";
+import React, { forwardRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styled from "styled-components";
@@ -14,9 +14,7 @@ import {
   IconPlayCard,
   IconAward,
   IconBooks,
-  IconLogin,
   IconUser,
-  IconSettings,
   IconDotsCircleHorizontal,
   IconChevronRight,
 } from "@tabler/icons";
@@ -24,19 +22,12 @@ import {
   Navbar,
   ScrollArea,
   Group,
-  Stack,
-  Avatar,
   Text,
-  UnstyledButton,
   Box,
-  MediaQuery,
-  Burger,
   useMantineTheme,
   useMantineColorScheme,
-  ThemeIcon,
   Badge,
   Button,
-  AspectRatio,
   Tooltip,
 } from "@mantine/core";
 import { useColorScheme, useToggle } from "@mantine/hooks";
@@ -132,8 +123,6 @@ const SidebarButton = forwardRef(function button(
       <StyledButton {...props} />
     </Tooltip>
   );
-  // return <StyledButton ref={ref} />;
-  // return <div ref={ref}>a</div>;
 });
 
 function Sidebar(props) {
@@ -166,7 +155,6 @@ function Sidebar(props) {
       {...props}
     >
       <Navbar.Section
-        // mb={theme.spacing.xs / 2}
         sx={{
           borderBottom: "solid 1px",
           borderColor: dark ? theme.colors.dark[5] : theme.colors.gray[2],
@@ -264,7 +252,6 @@ function Sidebar(props) {
             <SidebarButton
               key={link.link}
               collapsed={collapsed}
-              // sx={link.soon ? { pointerEvents: "none", opacity: 0.5 } : {}}
               active={`/${location.asPath.split("/")[1]}` === link.link}
               contents={{ ...link }}
               link={link.soon ? undefined : link.link}
@@ -283,7 +270,6 @@ function Sidebar(props) {
           borderTop: "solid 1px",
           borderColor: dark ? theme.colors.dark[5] : theme.colors.gray[2],
         }}
-        // mt="sm"
       >
         <Box>
           <UserMenu
@@ -296,7 +282,6 @@ function Sidebar(props) {
                   icon: IconDotsCircleHorizontal,
                 }}
               />
-              // <div>s</div>
             }
           />
         </Box>

@@ -3,7 +3,6 @@ import { Text, Tooltip } from "@mantine/core";
 import { useFirebaseUser } from "../services/firebase/user";
 
 function OfficialityBadge({ langData }) {
-  //   console.log(langData);
   const { firebaseUser } = useFirebaseUser();
   const showTlBadge = firebaseUser.firestore?.show_tl_badge || "none";
 

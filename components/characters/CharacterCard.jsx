@@ -1,16 +1,15 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { getData, getB2File } from "../../services/ensquare";
+import { getB2File } from "../../services/ensquare";
 import { twoStarIDs } from "../../data/characterIDtoCardID";
 import styles from "../../styles/CharacterCard.module.scss";
-import { Card, Paper, Title, useMantineTheme, Box } from "@mantine/core";
+import { Card, Title, useMantineTheme } from "@mantine/core";
 
 export function CharacterCard({ i, doubleface, unique_id, characters }) {
   const theme = useMantineTheme();
   const character = characters.localized[0].data[i];
   const characterSubLang = characters.localized[1].data?.[i] || undefined;
-  // console.log(characters);
   return (
     <Link href={`/characters/${character.character_id}`} passHref>
       <Card
@@ -38,8 +37,7 @@ export function CharacterCard({ i, doubleface, unique_id, characters }) {
                       }_normal.png`
                     )
               }
-              alt={character.first_name} // width="2000"
-              // height="2000"
+              alt={character.first_name}
               layout="fill"
               objectFit="contain"
             />
@@ -59,8 +57,7 @@ export function CharacterCard({ i, doubleface, unique_id, characters }) {
                       }_evolution.png`
                     )
               }
-              alt={character.first_name} // width="2000"
-              // height="2000"
+              alt={character.first_name} 
               layout="fill"
               objectFit="contain"
             />

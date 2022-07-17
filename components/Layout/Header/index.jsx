@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Breadcrumbs from "./Breadcrumbs";
 import { useWindowScroll } from "@mantine/hooks";

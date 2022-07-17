@@ -3,8 +3,6 @@ import PageTitle from "../../components/PageTitle";
 import { getLocalizedData } from "../../services/ensquare";
 import {
   useMantineTheme,
-  Table,
-  Box,
   Text,
   Paper,
   Group,
@@ -24,7 +22,6 @@ import { useLocalStorage } from "@mantine/hooks";
 const CARD_LIST_INITIAL_COUNT = 20;
 
 function Page({ cards, characters }) {
-  // console.log(cards);
 
   const theme = useMantineTheme();
   const [count, setCount] = useState(CARD_LIST_INITIAL_COUNT);
@@ -63,16 +60,13 @@ function Page({ cards, characters }) {
     character: (a, b) =>
       characterIDtoSort[a.character_id] > characterIDtoSort[b.character_id],
   };
-  // console.log(cards);
 
   useEffect(() => {
     const filteredList = cards.main.data
       .filter((c) => {
-        // console.log(c);
         return c.id <= 9999;
       })
       .filter((c) => {
-        // console.log(c);
         return viewOptions.filterRarity.includes(c.rarity);
       })
       .filter((c) => {
@@ -86,9 +80,6 @@ function Page({ cards, characters }) {
       .sort(SORT_FUNCTIONS[viewOptions.sortOption]);
     setCardsList(filteredList);
     setCount(CARD_LIST_INITIAL_COUNT);
-    // setSlicedCardsList(filteredList.slice(0, CARD_LIST_INITIAL_COUNT));
-    // console.log("updated filter: ", JSON.parse(JSON.stringify(filteredList)));
-    // console.log("sliced: ", filteredList.slice(0, CARD_LIST_INITIAL_COUNT));
   }, [viewOptions]);
 
   useEffect(() => {
@@ -97,7 +88,6 @@ function Page({ cards, characters }) {
 
   const loadMore = () => {
     const newCount = count + CARD_LIST_INITIAL_COUNT;
-    // console.log("more -> ", newCount);
     setCount(newCount);
   };
 
@@ -114,14 +104,11 @@ function Page({ cards, characters }) {
             label="Sort by"
             placeholder="Pick a unit..."
             data={SORT_OPTIONS}
-            // onChange={handleNewUnit}
             value={viewOptions.sortOption}
             onChange={(val) => {
-              // console.log(val);
               setViewOptions({ ...viewOptions, sortOption: val });
             }}
             sx={{ maxWidth: 200 }}
-            // size="sm"
             variant="default"
             icon={<IconArrowsSort size="1em" />}
           />
@@ -131,14 +118,11 @@ function Page({ cards, characters }) {
             data={characters.localized[0].data.map((c) => {
               return { value: c.character_id.toString(), label: c.first_name };
             })}
-            // onChange={handleNewUnit}
             value={viewOptions.filterCharacters}
             onChange={(val) => {
-              // console.log(val);
               setViewOptions({ ...viewOptions, filterCharacters: val });
             }}
             sx={{ width: "100%", maxWidth: 400 }}
-            // size="sm"
             variant="default"
             searchable
           />
@@ -235,7 +219,6 @@ export async function getServerSideProps({ res, locale, ...context }) {
     "public, s-maxage=7200, stale-while-revalidate=172800"
   );
   // refresh every 2 hours, stale for 48hrs
-  // console.log(locale);
   const characters = await getLocalizedData("characters", locale);
   // const unit_to_characters = await getLocalizedData("unit_to_characters");
   // const units = await getLocalizedData("units");

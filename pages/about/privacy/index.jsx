@@ -1,6 +1,7 @@
 import Layout from "../../../components/Layout";
 import Title from "../../../components/PageTitle";
 import { TypographyStylesProvider } from "@mantine/core";
+
 function PrivacyPolicy() {
   return (
     <>

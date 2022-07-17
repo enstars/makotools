@@ -7,8 +7,6 @@ import MakotoolsDark from "../../../assets/Logo/mkt_dark.svg?url";
 import Affiliates from "../../../assets/Affiliates/affiliates.svg";
 import {
   Footer,
-  Paper,
-  Title,
   Text,
   Anchor,
   Divider,
@@ -34,8 +32,7 @@ function PageFooter({ wide, textOnly }) {
         backgroundColor:
           theme.colorScheme === "dark"
             ? theme.colors.dark[9]
-            : theme.fn.lighten(theme.colors.gray[0], 0.3),
-        // paddingTop: theme.spacing.xl * 2,
+            : theme.fn.lighten(theme.colors.gray[0], 0.3)
       }}
       pt="xl"
       p="md"
@@ -46,7 +43,6 @@ function PageFooter({ wide, textOnly }) {
         py="md"
         sx={(theme) => ({
           width: "100%",
-          // minHeight: "100vh",
           "@media (max-width: 768px)": {
             padding: theme.spacing.md,
           },
@@ -125,7 +121,6 @@ function PageFooter({ wide, textOnly }) {
                 color="dimmed"
                 mb="xs"
                 sx={{
-                  // display: "flex",
                   svg: {
                     maxWidth: "calc(100% - var(--mantine-navbar-width))",
                     aspectRatio: "270/72",

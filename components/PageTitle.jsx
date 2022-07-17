@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Breadcrumbs from "./Layout/Header/Breadcrumbs";
 import { Box, Title } from "@mantine/core";
+
 function TitleApp({ title, children, space }) {
   return (
     <Box sx={{ position: "relative", overflow: "hidden" }}>
@@ -17,4 +18,5 @@ function TitleApp({ title, children, space }) {
     </Box>
   );
 }
+
 export default TitleApp;
