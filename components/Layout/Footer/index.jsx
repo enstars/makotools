@@ -16,14 +16,16 @@ import {
   Box,
   Container,
 } from "@mantine/core";
+import SupportBanner from "../SupportBanner";
 
 function PageFooter({ wide, textOnly }) {
   const theme = useMantineTheme();
   return (
     <Footer
       style={{
-        position: "sticky",
-        bottom: 0,
+        // position: "sticky",
+        top: 0,
+        // bottom: 0,
         zIndex: 0,
         display: "flow-root",
         borderTop: "none",
@@ -84,6 +86,7 @@ function PageFooter({ wide, textOnly }) {
                 />
               </>
             )}
+            <SupportBanner mb="xs" sx={{ width: "100%" }} />
             <Link href="/about/translations" passHref>
               <Anchor component="a" size="sm">
                 Translations

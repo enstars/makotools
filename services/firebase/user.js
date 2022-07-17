@@ -8,7 +8,7 @@ import { useAuthUser } from "next-firebase-auth";
 const FirebaseUserContext = React.createContext();
 export const useFirebaseUser = () => useContext(FirebaseUserContext);
 
-function FirebaseUserProvider({ children, colorScheme }) {
+function FirebaseUserProvider({ children, colorScheme, setAppColorScheme }) {
   const AuthUser = useAuthUser();
   const [firebaseUser, setFirebaseUser] = useState({
     loading: true,
@@ -58,7 +58,12 @@ function FirebaseUserProvider({ children, colorScheme }) {
   useEffect(() => {
     if (firebaseUser.loggedIn)
       setUserDataKey({ dark_mode: colorScheme === "dark" });
-  }, [colorScheme, firebaseUser]);
+  }, [colorScheme]);
+  // useEffect(() => {
+  //   if (typeof firebaseUser.firestore.dark_mode !== "undefined") {
+  //     setAppColorScheme(firebaseUser.firestore.dark_mode ? "dark" : "light");
+  //   }
+  // }, [firebaseUser]);
 
   return (
     <FirebaseUserContext.Provider value={{ firebaseUser, setUserDataKey }}>

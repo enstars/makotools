@@ -30,7 +30,8 @@ import {
   Button,
   Tooltip,
 } from "@mantine/core";
-import { useToggle } from "@mantine/hooks";
+import { useColorScheme, useToggle } from "@mantine/hooks";
+import SupportBanner from "../SupportBanner";
 
 const SidebarButton = forwardRef(function button(
   { contents, link, rootStyles, ...props },
@@ -257,6 +258,11 @@ function Sidebar(props) {
             />
           ))}
         </Group>
+        {!collapsed && (
+          <Box p="xs">
+            <SupportBanner />
+          </Box>
+        )}
       </Navbar.Section>
 
       <Navbar.Section

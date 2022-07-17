@@ -3,16 +3,22 @@ import { setAuthCookies, verifyIdToken } from "next-firebase-auth";
 import initAuth, {
   syncFirestoreUserData,
 } from "../../services/firebase/authentication"; // the module you created above
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
 
 initAuth();
-
+const db = getFirestore();
 const handler = async (req, res) => {
   try {
     await setAuthCookies(req, res);
     const authToken = req.headers.authorization;
     const authUser = await verifyIdToken(authToken);
     console.log(authUser);
-    syncFirestoreUserData(authToken.id);
+    // console.log(defaultFirestore);
+    // initAuth();
+    syncFirestoreUserData(db, authUser.id, {
+      email: authUser.email,
+      lastLogin: FieldValue.serverTimestamp(),
+    });
   } catch (e) {
     console.log(e);
     return res.status(500).json({ error: "Unexpected error." });

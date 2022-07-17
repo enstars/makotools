@@ -39,7 +39,6 @@ function MakoTools({ Component, pageProps, ...props }) {
   const [colorScheme, setStateColorScheme] = useState(
     props.colorScheme || "dark"
   );
-  console.log(Component, pageProps, props);
 
   const getLayout = Component.getLayout || ((page) => page);
 
@@ -117,10 +116,6 @@ function MakoTools({ Component, pageProps, ...props }) {
     >
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css"
-        />
       </Head>
       <RouteChangeLoader />
       <NotificationsProvider position="top-center">
@@ -142,9 +137,7 @@ function MakoTools({ Component, pageProps, ...props }) {
 }
 
 MakoTools.getInitialProps = ({ ctx }) => {
-  console.log(getCookie("color-scheme", ctx));
   return {
-    // get color scheme from cookie
     colorScheme: getCookie("color-scheme", ctx) || "light",
   };
 };
