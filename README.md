@@ -24,12 +24,22 @@ MakoTools is a website containing information, tools, and a lot more to aid you 
 <img src="https://img.shields.io/github/checks-status/enstars/makotools/development?color=8bd5ca&label=dev&logo=github&style=for-the-badge&labelColor=302D41"> <img src="https://img.shields.io/website?down_color=ed8796&down_message=offline&label=dev%20status&logo=vercel&style=for-the-badge&up_color=8aadf4&up_message=online&url=https%3A%2F%2Fstars.ensemble.moe&labelColor=302D41">
 
 ### How to Set Up Locally
-1. In the root directory of the project, run `yarn install` in the terminal. This will add all of the necessary packages to your instance of the project.
-2. Set the `NODE_ENV` variable.  
-Input the following in the terminal depending on your OS:  
-Linux and Mac: `export NODE_ENV=development yarn run dev`  
-Windows: `$env:NODE_ENV = 'development yarn run dev'`  Then, input `echo $NODE_DEV`. If done correctly, the terminal should return `development`.
-3. Run `yarn run dev`. If everything is working correctly, you should be greeted with Ukki's wonderful face!
+1. Install node.js and NPM. Follow the instructions [here](https://docs.npmjs.com/cli/v8/configuring-npm/install) depending on your operating system.
+2. Install yarn. In the terminal, run `npm install --global yarn`.
+3. Run `npm install` to install the required packages to your repository.
+4. These next few steps will vary depending on how you want to run the project. Running in **development** mode will allow you to update the project as you update the code. Meanwhile, running in **production** mode will create a build by validating the code of the project and run that build.
+
+#### Running in Production mode
+1. By default, the run environment will be set to production. First, run `yarn run build` to create a build for the project. If the build process returns any errors, submit an issue.
+2. Run `yarn run start` to launch the program.
+
+#### Running in Development mode
+1. Since development mode is not the default for the run environment, set the environment to development.<br />
+In a Unix terminal (MacOS, LinuxOS, etc.), run `export NODE_ENV=development` . <br />
+In Windows Command Prompt or PowerShell, run `set NODE_ENV=development`.
+2. To verify this updated `NODE_ENV`, run `echo $NODE_ENV` (Unix), or `set NODE_ENV` (Windows CMD/PowerShell). Either `development` (Unix) or `NODE_ENV=development` (Windows CMD) should be returned.
+3. Run `yarn run dev`. If any errors occur, please submit an issue.
+
 
 ### Repository Structure
 The repository is currently organized by file type.
