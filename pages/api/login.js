@@ -6,9 +6,7 @@ import initAuth, {
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 
 initAuth();
-
 const db = getFirestore();
-
 const handler = async (req, res) => {
   try {
     await setAuthCookies(req, res);
@@ -17,8 +15,9 @@ const handler = async (req, res) => {
     console.log(authUser);
     // console.log(defaultFirestore);
     // initAuth();
-    syncFirestoreUserData(db, authUser.id, FieldValue.serverTimestamp(), {
+    syncFirestoreUserData(db, authUser.id, {
       email: authUser.email,
+      lastLogin: FieldValue.serverTimestamp(),
     });
   } catch (e) {
     console.log(e);
