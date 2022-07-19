@@ -1,7 +1,11 @@
 import { useEffect } from "react";
+
 import Login from "../../components/Login";
+import Breadcrumbs from "../../components/Layout/Header/Breadcrumbs";
+
 import { useFirebaseUser } from "../../services/firebase/user";
 import { useRouter } from "next/router";
+
 function Page() {
   const router = useRouter();
   const { firebaseUser } = useFirebaseUser();
@@ -12,7 +16,12 @@ function Page() {
     }
   }, [firebaseUser, router]);
 
-  return <Login />;
+  return (
+    <>
+      <Breadcrumbs />
+      <Login />
+    </>
+  );
 }
 
 export default Page;
