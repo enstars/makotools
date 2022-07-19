@@ -30,7 +30,7 @@ MakoTools is a website containing information, tools, and a lot more to aid you 
 ### How to Set Up Locally
 1. Install node.js and NPM. Follow the instructions [here](https://docs.npmjs.com/cli/v8/configuring-npm/install) depending on your operating system.
 2. Install yarn. In the terminal, run `npm install --global yarn`.
-3. Run `yarn init` to install the required packages to your repository.
+3. Run `yarn install` to install the required packages to your repository.
 4. These next few steps will vary depending on how you want to run the project. Running in **development** mode will allow you to update the project as you update the code. Meanwhile, running in **production** mode will create a build by validating the code of the project and run that build.
 
 #### Running in Production mode
