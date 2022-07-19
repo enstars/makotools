@@ -110,6 +110,12 @@ export async function getServerSideProps({ req, res, locale }) {
     )
   );
 
+  if (characterIndex === -1) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: { characters, i: characterIndex },
   };
