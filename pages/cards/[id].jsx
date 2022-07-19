@@ -4,7 +4,7 @@ import Layout from "../../components/Layout";
 import Title from "../../components/PageTitle";
 import Head from "next/head";
 import ImageViewer from "../../components/core/ImageViewer";
-import { Group, AspectRatio, Badge, useMantineTheme } from "@mantine/core";
+import { Group, AspectRatio, Badge } from "@mantine/core";
 import { IconStar } from "@tabler/icons";
 import attributes from "../../data/attributes.json";
 
@@ -13,7 +13,6 @@ function Character({ character, card }) {
   // const { id } = useParams();
   // const router = useRouter();
   // const { id } = router.query;
-  const theme = useMantineTheme();
   // const card = cards.main.data[i];
   const cardLocalizedMain = card.mainLang;
   // const character = characters.main.data[characterID];
