@@ -16,7 +16,7 @@ function Character({ character, card }) {
   // const card = cards.main.data[i];
   const cardLocalizedMain = card.mainLang;
   // const character = characters.main.data[characterID];
-  const characterLocalizedMain = character.subLang;
+  const characterLocalizedMain = character.mainLang;
   // console.log(cardsJP);
   return (
     <>

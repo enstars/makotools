@@ -32,7 +32,7 @@ export async function getLocalizedData(data, locale = "en") {
   return {
     main: jaData,
     mainLang: localized[0],
-    subLang: localized[1],
+    subLang: localized[1] || null,
     localized,
     localized_full: localized,
   };
