@@ -66,7 +66,7 @@ function Character({ characters, i }) {
             alt={character.first_name}
             width={300}
             height={600}
-            objectFit="cover"
+            objectfit="cover"
           />
         </Box>
       </Title>
@@ -90,6 +90,7 @@ export async function getServerSideProps({ req, res, locale }) {
   // refresh every 2 hours, stale for 48hrs
   const characters = await getLocalizedData("characters", locale);
   const { data: charactersEN } = await getData("characters", "en");
+  console.log(JSON.stringify(characters));
   const urlSegments = req.url.split("/");
   const lastSegment = decodeURIComponent(urlSegments[urlSegments.length - 1])
     .toLocaleLowerCase()
