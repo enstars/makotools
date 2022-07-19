@@ -6,10 +6,10 @@ import { twoStarIDs } from "../../data/characterIDtoCardID";
 import styles from "../../styles/CharacterCard.module.scss";
 import { Card, Title, useMantineTheme } from "@mantine/core";
 
-export function CharacterCard({ i, doubleface, unique_id, characters }) {
+export function CharacterCard({ i, doubleface, characters }) {
   const theme = useMantineTheme();
-  const character = characters.localized[0].data[i];
-  const characterSubLang = characters.localized[1].data?.[i] || undefined;
+  const character = characters.mainLang.data[i];
+  const characterSubLang = characters.subLang.data?.[i] || undefined;
   return (
     <Link href={`/characters/${character.character_id}`} passHref>
       <Card
@@ -57,7 +57,7 @@ export function CharacterCard({ i, doubleface, unique_id, characters }) {
                       }_evolution.png`
                     )
               }
-              alt={character.first_name} 
+              alt={character.first_name}
               layout="fill"
               objectFit="contain"
             />
@@ -65,7 +65,7 @@ export function CharacterCard({ i, doubleface, unique_id, characters }) {
           <div className={styles.info}>
             <Title order={2} sx={{ fontSize: theme.fontSizes.sm }}>
               {character.last_name}
-              {characters.localized[0].lang === "en" && " "}
+              {characters.mainLang.lang === "en" && " "}
               {character.first_name}
               {doubleface ? " (DF)" : ""}
             </Title>
