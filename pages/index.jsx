@@ -146,5 +146,5 @@ export default Home;
 
 import Layout from "../components/Layout";
 Home.getLayout = function getLayout(page) {
-  return <Layout hideHeader footerTextOnly>{page}</Layout>;
+  return <Layout footerTextOnly>{page}</Layout>;
 };
