@@ -123,6 +123,13 @@ export async function getServerSideProps({ req, res, locale }) {
         : (item) => item.id === cardID
     )
   );
+
+  if (cardIndex === -1) {
+    return {
+      notFound: true,
+    };
+  }
+
   const characterIndex = characters.main.data.indexOf(
     characters.main.data.find(
       (c) =>
