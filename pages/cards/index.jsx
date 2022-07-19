@@ -22,7 +22,6 @@ import { useLocalStorage } from "@mantine/hooks";
 const CARD_LIST_INITIAL_COUNT = 20;
 
 function Page({ cards, characters }) {
-
   const theme = useMantineTheme();
   const [count, setCount] = useState(CARD_LIST_INITIAL_COUNT);
   const [cardsList, setCardsList] = useState([]);
@@ -115,7 +114,7 @@ function Page({ cards, characters }) {
           <MultiSelect
             label="Characters"
             placeholder="Pick a character..."
-            data={characters.localized[0].data.map((c) => {
+            data={characters.localized.mainLang.data.map((c) => {
               return { value: c.character_id.toString(), label: c.first_name };
             })}
             value={viewOptions.filterCharacters}

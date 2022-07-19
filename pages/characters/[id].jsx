@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import { getData, getB2File, getLocalizedData } from "../../services/ensquare";
 import Layout from "../../components/Layout";
 import Title from "../../components/PageTitle";
@@ -6,11 +5,7 @@ import Head from "next/head";
 import ImageViewer from "../../components/core/ImageViewer";
 import { Text, Box } from "@mantine/core";
 
-function Character({ characters, i }) {
-  const router = useRouter();
-  const { id } = router.query;
-
-  const character = characters.localized[0].data[i];
+function Character({ character }) {
   return (
     <>
       <Head>
@@ -90,7 +85,6 @@ export async function getServerSideProps({ req, res, locale }) {
   // refresh every 2 hours, stale for 48hrs
   const characters = await getLocalizedData("characters", locale);
   const { data: charactersEN } = await getData("characters", "en");
-  console.log(JSON.stringify(characters));
   const urlSegments = req.url.split("/");
   const lastSegment = decodeURIComponent(urlSegments[urlSegments.length - 1])
     .toLocaleLowerCase()
@@ -111,7 +105,7 @@ export async function getServerSideProps({ req, res, locale }) {
   );
 
   return {
-    props: { characters, i: characterIndex },
+    props: { character: characters.localized.mainLang.data[characterIndex] },
   };
 }
 

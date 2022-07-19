@@ -21,16 +21,18 @@ export function getB2File(path) {
 export async function getLocalizedData(data, locale = "en") {
   const jaData = await getData(data, "ja", true);
   const enFanData = await getData(data, "en");
-  const enData = await getData(data, "en", true);
 
-  let localized = [enFanData, jaData, enData];
+  const localized = { mainLang: {}, subLang: {} };
   if (locale === "ja") {
-    localized = [jaData, enFanData, enData];
+    localized.mainLang = jaData;
+    localized.subLang = enFanData;
+  } else {
+    localized.mainLang = enFanData;
+    localized.subLang = jaData;
   }
   return {
     main: jaData,
-    localized: localized.filter((l) => l.status === "success"),
-    localized_full: localized,
+    localized,
   };
 }
 

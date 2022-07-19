@@ -1,7 +1,7 @@
 import { CharacterCard } from "./../../components/characters/CharacterCard";
 import React, { useState, useEffect } from "react";
 import _ from "lodash";
-import { getData, getLocalizedData } from "../../services/ensquare";
+import { getLocalizedData } from "../../services/ensquare";
 import Title from "../../components/PageTitle";
 import {
   Select,
@@ -105,7 +105,7 @@ function Characters({
           gap: theme.spacing.xs,
         }}
       >
-        {listCharacters.map((character, i) => {
+        {listCharacters.map((character) => {
           return (
             <CharacterCard
               key={character.unique_id}

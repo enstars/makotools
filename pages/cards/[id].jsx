@@ -1,33 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import { getData, getB2File, getLocalizedData } from "../../services/ensquare";
+import React from "react";
+import { getB2File, getLocalizedData } from "../../services/ensquare";
 import Layout from "../../components/Layout";
 import Title from "../../components/PageTitle";
 import Head from "next/head";
 import ImageViewer from "../../components/core/ImageViewer";
-import {
-  Text,
-  Box,
-  BackgroundImage,
-  Image,
-  Group,
-  AspectRatio,
-  Badge,
-  useMantineTheme,
-} from "@mantine/core";
+import { Group, AspectRatio, Badge } from "@mantine/core";
 import { IconStar } from "@tabler/icons";
 import attributes from "../../data/attributes.json";
+import { mapValues } from "lodash";
 
 function Character({ character, card }) {
   console.log(card);
   // const { id } = useParams();
   // const router = useRouter();
   // const { id } = router.query;
-  const theme = useMantineTheme();
   // const card = cards.main.data[i];
-  const cardLocalizedMain = card.localized[0];
+  const cardLocalizedMain = card.localized.mainLang;
   // const character = characters.main.data[characterID];
-  const characterLocalizedMain = character.localized[0];
+  const characterLocalizedMain = character.localized.mainLang;
   // console.log(cardsJP);
   return (
     <>
@@ -143,11 +133,11 @@ export async function getServerSideProps({ req, res, locale }) {
 
   const character = {
     main: characters.main.data[characterIndex],
-    localized: characters.localized.map((l) => l.data[characterIndex]),
+    localized: mapValues(characters.localized, (l) => l.data[characterIndex]),
   };
   const card = {
     main: cards.main.data[cardIndex],
-    localized: cards.localized.map((l) => l.data[cardIndex]),
+    localized: mapValues(cards.localized, (l) => l.data[cardIndex]),
   };
 
   return {

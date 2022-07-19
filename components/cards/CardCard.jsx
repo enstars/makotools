@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import CardStatsShort from "../core/CardStatsShort";
 import { getB2File } from "../../services/ensquare";
 import {
@@ -7,8 +7,6 @@ import {
   Group,
   Box,
   Text,
-  Badge,
-  Image,
   Divider,
   Tooltip,
   Skeleton,
@@ -67,13 +65,12 @@ export default function CardCard({ cards, id, cardOptions }) {
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
   const card = cards.main.data.find((c) => c.id === id);
-  const cardMainLang = cards.localized[0].data.find((c) => c.id === id);
+  const cardMainLang = cards.localized.mainLang.data.find((c) => c.id === id);
   const cardSubLang =
-    cards.localized[1].data?.find((c) => c.id === id) || undefined;
+    cards.localized.subLang.data.find((c) => c.id === id) || undefined;
 
   const statsIR = card.stats.ir.da + card.stats.ir.vo + card.stats.ir.pf;
   const statsIR4 = card.stats.ir4.da + card.stats.ir4.vo + card.stats.ir4.pf;
-
 
   return (
     <Card
@@ -144,12 +141,12 @@ export default function CardCard({ cards, id, cardOptions }) {
       <Card.Section px="sm" pt="xs">
         <Text size="sm" weight="700">
           {`${cardMainLang.title}`}&nbsp;
-          <OfficialityBadge langData={cards.localized[0]} />
+          <OfficialityBadge langData={cards.localized.mainLang} />
         </Text>
         {cardSubLang && (
           <Text size="xs" color="dimmed" weight="500">
             {`${cardSubLang.title}`}&nbsp;
-            <OfficialityBadge langData={cards.localized[1]} />
+            <OfficialityBadge langData={cards.localized.subLang} />
           </Text>
         )}
       </Card.Section>
