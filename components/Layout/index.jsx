@@ -16,8 +16,9 @@ import {
 
 function Layout({
   children: Component,
-  footer = true,
-  sidebar = true,
+  hideFooter = false,
+  hideSidebar = false,
+  hideHeader = false,
   wide = false,
   pageTitle,
   meta,
@@ -49,14 +50,14 @@ function Layout({
           },
         }}
         navbar={
-          sidebar ? (
+          !hideSidebar ? (
             <ErrorBoundary>
               <Sidebar hiddenBreakpoint="xs" hidden={!opened} />
             </ErrorBoundary>
           ) : null
         }
       >
-        <Header pageTitle={pageTitle} />
+        {!hideHeader && <Header pageTitle={pageTitle} />}
         <Paper
           sx={{
             position: "relative",
@@ -85,7 +86,7 @@ function Layout({
             </ErrorBoundary>
           </Container>
         </Paper>
-        {footer ? <Footer wide={wide} textOnly={footerTextOnly} /> : null}
+        {!hideFooter ? <Footer wide={wide} textOnly={footerTextOnly} /> : null}
       </AppShell>
     </ErrorBoundary>
   );

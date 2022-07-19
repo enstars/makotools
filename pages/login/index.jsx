@@ -30,7 +30,7 @@ import Layout from "../../components/Layout";
 
 Page.getLayout = function getLayout(page) {
   return (
-    <Layout footer={false} sidebar={false}>
+    <Layout hideHeader hideFooter hideSidebar>
       {page}
     </Layout>
   );
