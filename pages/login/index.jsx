@@ -16,12 +16,7 @@ function Page() {
     }
   }, [firebaseUser, router]);
 
-  return (
-    <>
-      <Breadcrumbs />
-      <Login />
-    </>
-  );
+  return <Login />;
 }
 
 export default Page;
