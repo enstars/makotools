@@ -27,9 +27,13 @@ export async function getLocalizedData(data, locale = "en") {
   if (locale === "ja") {
     localized = [jaData, enFanData, enData];
   }
+  localized = localized.filter((l) => l.status === "success");
+
   return {
     main: jaData,
-    localized: localized.filter((l) => l.status === "success"),
+    mainLang: localized[0],
+    subLang: localized[1] || null,
+    localized,
     localized_full: localized,
   };
 }
