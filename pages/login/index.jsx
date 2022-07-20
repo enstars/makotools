@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 
 import Login from "../../components/Login";
-import Breadcrumbs from "../../components/Layout/Header/Breadcrumbs";
 
 import { useFirebaseUser } from "../../services/firebase/user";
 import { useRouter } from "next/router";
