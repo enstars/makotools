@@ -44,22 +44,40 @@ function Login() {
     let message;
     switch (code) {
       case "wrong-password":
-        message = (<span>The password is incorrect. Please try again.</span>);
+        message = <span>The password is incorrect. Please try again.</span>;
         break;
       case "user-not-found":
-        message =
-          (<span>A user with this email address could not be found. Please try again.</span>);
+        message = (
+          <span>
+            A user with this email address could not be found. Please try again.
+          </span>
+        );
         break;
       case "timeout":
-        message =
-          (<span>The operation has timed out. Please try again or <Anchor href='/issues'>submit an issue</Anchor> if the problem is persistent.</span>);
-          break;
+        message = (
+          <span>
+            The operation has timed out. Please try again or{" "}
+            <Anchor href="/issues">submit an issue</Anchor> if the problem is
+            persistent.
+          </span>
+        );
+        break;
       case "too-many-requests":
-        message = (<span>The server has received too many sign on requests. Please wait and try again later.</span>);
+        message = (
+          <span>
+            The server has received too many sign on requests. Please wait and
+            try again later.
+          </span>
+        );
         break;
       default:
-        message =
-          (<span>An unknown sign on error has occured. Please try again or <Anchor href='/issues'>submit an issue</Anchor> if the problem is persistent.</span>);
+        message = (
+          <span>
+            An unknown sign on error has occured. Please try again or{" "}
+            <Anchor href="/issues">submit an issue</Anchor> if the problem is
+            persistent.
+          </span>
+        );
         break;
     }
 
@@ -90,7 +108,11 @@ function Login() {
   const { firebaseUser } = useFirebaseUser();
 
   return (
-    <Container id="signin-container" pt="lg" style={{ height: "100%", maxWidth: 400 }}>
+    <Container
+      id="signin-container"
+      pt="lg"
+      style={{ height: "100%", maxWidth: 400 }}
+    >
       {!firebaseUser.loading && firebaseUser.loggedIn ? (
         <Text id="signin-redirect" align="center" color="dimmed" size="sm">
           Redirecting you to Ensemble Square
@@ -119,13 +141,19 @@ function Login() {
               }
               color="red"
               style={{
-                marginBottom: 10
+                marginBottom: 10,
               }}
             >
               {signOnAlertMsg(signOnError)}
             </Alert>
           )}
-          <Paper id="signin-paper-container" radius="md" p="md" withBorder sx={{ width: "100%" }}>
+          <Paper
+            id="signin-paper-container"
+            radius="md"
+            p="md"
+            withBorder
+            sx={{ width: "100%" }}
+          >
             <LoadingOverlay visible={firebaseUser.loading} />
             <Title id="signin-title" order={2} size="lg" mb="sm">
               {isRegister ? "Sign up" : "Sign in"}

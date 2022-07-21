@@ -17,7 +17,7 @@ import {
   useMantineColorScheme,
   TextInput,
   Accordion,
-  ActionIcon
+  ActionIcon,
 } from "@mantine/core";
 
 import {
@@ -144,7 +144,6 @@ function DropdownOption({ dataKey, data, label, ...props }) {
           ?.icon || null
       }
       data={data}
-
       {...props}
     />
   );

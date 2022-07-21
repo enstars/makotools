@@ -11,7 +11,7 @@ import {
   Container,
   Paper,
   useMantineTheme,
-  useMantineColorScheme
+  useMantineColorScheme,
 } from "@mantine/core";
 
 function Layout({

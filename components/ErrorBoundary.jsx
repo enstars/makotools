@@ -21,13 +21,15 @@ class ErrorBoundary extends React.Component {
       return (
         <Center sx={{ width: "100%", height: "100%" }}>
           <Box sx={{ maxWidth: 250, marginTop: 24 }}>
-            <Image src={Jun} width={36} height={36} />
+            <Image src={Jun} width={36} height={36} alt="Jun eating a roll" />
             <Text size="md" weight="700">
               Ah fuck—an error occured!
             </Text>
             <Text size="sm">
-              Hopefully we know about this one. <Anchor href="/issues">Wanna help report the bug to us
-              anyways?</Anchor>
+              Hopefully we know about this one.{" "}
+              <Anchor href="/issues">
+                Wanna help report the bug to us anyways?
+              </Anchor>
             </Text>
             <Group direction="column" align="end" mt="sm">
               <Group direction="column" align="center" spacing={0}>

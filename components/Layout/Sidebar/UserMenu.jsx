@@ -123,7 +123,11 @@ function UserMenu({ trigger }) {
       <Menu.Label id="sidebar-label-account">Account</Menu.Label>
 
       {firebaseUser.loading ? (
-        <Menu.Item className="sidebar-link-login" icon={<IconLogin size={14} />} disabled>
+        <Menu.Item
+          className="sidebar-link-login"
+          icon={<IconLogin size={14} />}
+          disabled
+        >
           Log In
         </Menu.Item>
       ) : firebaseUser.loggedIn ? (
@@ -147,8 +151,8 @@ function UserMenu({ trigger }) {
                 autoClose: 5000,
                 icon: <IconCircleCheck />,
                 className: "signout-notification",
-                color: "lime"
-              })
+                color: "lime",
+              });
             }}
             icon={<IconLogout size={14} />}
           >

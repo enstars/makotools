@@ -132,30 +132,6 @@ export const appSignUpWithEmailAndPassword = (
 
 // Firestore Database
 
-// getRedirectResult(clientAuth)
-//   .then((result) => {
-//     if (result) {
-//       const { user } = result;
-//       // console.log(user);
-//       syncFirestoreUserData(user);
-//     }
-//   })
-//   .catch((e) => {
-//     console.error(e);
-//   });
-
-export async function syncFirestoreUserData(
-  db,
-  uid,
-  data,
-  callback = () => {}
-) {
-  console.log("synced");
-
-  const docRef = db.collection("users").doc(uid);
-  const res = await docRef.set(data, { merge: true });
-}
-
 function setFirestoreUserData(data, uid, app) {
   const clientAuth = getAuth();
   const db = getFirestore(app);
