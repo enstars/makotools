@@ -2,8 +2,5 @@
   "editor.codeActionsOnSave": {
     "source.fixAll": true
   },
-  "eslint.validate": ["javascript"],
-  "stylelint.customSyntax": "postcss-scss",
-  "stylelint.validate": ["css", "less", "postcss", "scss"],
-  "stylelint.snippet": ["css", "less", "postcss", "scss"]
+  "eslint.validate": ["javascript"]
 }
