@@ -1,7 +1,10 @@
 import { useEffect } from "react";
+
 import Login from "../../components/Login";
+
 import { useFirebaseUser } from "../../services/firebase/user";
 import { useRouter } from "next/router";
+
 function Page() {
   const router = useRouter();
   const { firebaseUser } = useFirebaseUser();
@@ -21,7 +24,7 @@ import Layout from "../../components/Layout";
 
 Page.getLayout = function getLayout(page) {
   return (
-    <Layout footer={false} sidebar={false}>
+    <Layout hideHeader hideFooter hideSidebar>
       {page}
     </Layout>
   );

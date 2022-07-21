@@ -16,6 +16,8 @@ import {
   Image as MantineImage,
 } from "@mantine/core";
 
+import Breadcrumbs from "../components/Layout/Header/Breadcrumbs";
+
 import { useFirebaseUser } from "../services/firebase/user";
 import Banner from "../assets/banner.png";
 import AffiliatesLight from "../assets/Affiliates/affiliates_light.svg?url";
@@ -28,6 +30,7 @@ function Home() {
 
   return (
     <>
+      <Breadcrumbs />
       <Box mt={80} />
       <Image src={Banner} style={{ borderRadius: 0 }} />
       <MantineTitle order={1} mt="sm">

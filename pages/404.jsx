@@ -75,5 +75,5 @@ export default NoMatch;
 
 import Layout from "../components/Layout";
 NoMatch.getLayout = function getLayout(page) {
-  return <Layout footer={false}>{page}</Layout>;
+  return <Layout hideFooter>{page}</Layout>;
 };
