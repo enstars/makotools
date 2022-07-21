@@ -25,4 +25,5 @@ yarn-error.log*
 # next.js
 .next
 
-Icon
+# vscode config
+.vscode

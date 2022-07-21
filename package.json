@@ -1,5 +1,5 @@
 {
-  "name": "es-react",
+  "name": "makotools",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -86,7 +86,7 @@
     "babel-plugin-styled-components": "^2.0.2",
     "eslint": "^8.19.0",
     "eslint-config-airbnb": "^18.2.1",
-    "eslint-config-next": "^12.0.4",
+    "eslint-config-next": "^12.2.2",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-jsx-a11y": "^6.4.1",
@@ -102,5 +102,25 @@
     "stylelint-config-airbnb": "^0.0.0",
     "stylelint-order": "^5.0.0",
     "stylelint-scss": "^4.0.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "next/core-web-vitals",
+      "prettier"
+    ],
+    "plugins": [
+      "prettier"
+    ],
+    "rules": {
+      "prettier/prettier": [
+        "warn"
+      ],
+      "no-nested-ternary": [
+        "off"
+      ],
+      "react/jsx-props-no-spreading": [
+        "off"
+      ]
+    }
   }
 }
