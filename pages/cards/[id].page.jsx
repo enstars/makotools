@@ -1,13 +1,14 @@
 import React from "react";
 import { getB2File, getLocalizedData } from "../../services/ensquare";
 import Layout from "../../components/Layout";
-import Title from "../../components/PageTitle";
+import PageTitle from "../../components/PageTitle";
 import Head from "next/head";
 import ImageViewer from "../../components/core/ImageViewer";
-import { Group, AspectRatio, Badge } from "@mantine/core";
+import { Group, AspectRatio, Badge, Title, Table } from "@mantine/core";
 import { IconStar } from "@tabler/icons";
 import attributes from "../../data/attributes.json";
 import Reactions from "../../components/core/Reactions";
+import Stats from "./Card/Stats";
 
 function Character({ character, card }) {
   console.log(card);
@@ -34,7 +35,7 @@ function Character({ character, card }) {
         {/* <title>{`${character.first_name} ${character.last_name} - EnSquare`}</title> */}
         {/* <meta name="description" content={character.introduction} /> */}
       </Head>
-      <Title
+      <PageTitle
         title={
           <>
             ({cardLocalizedMain.title}) {characterLocalizedMain.last_name}{" "}
@@ -86,7 +87,7 @@ function Character({ character, card }) {
           </>
         }
         getBreadcrumbs={getBreadcrumbs}
-      ></Title>
+      ></PageTitle>
 
       <Reactions />
       <Group>
@@ -107,6 +108,7 @@ function Character({ character, card }) {
           </AspectRatio>
         ))}
       </Group>
+      <Stats card={card} />
     </>
   );
 }

@@ -1,7 +1,7 @@
 import Breadcrumbs from "./Layout/Header/Breadcrumbs";
 import { Box, Title } from "@mantine/core";
 
-function TitleApp({ title, children, space, getBreadcrumbs }) {
+function PageTitle({ title, children, space, getBreadcrumbs }) {
   return (
     <Box sx={{ position: "relative", overflow: "hidden" }}>
       {children}
@@ -18,4 +18,4 @@ function TitleApp({ title, children, space, getBreadcrumbs }) {
   );
 }
 
-export default TitleApp;
+export default PageTitle;

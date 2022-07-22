@@ -139,7 +139,7 @@ export default function CardCard({ cards, id, cardOptions }) {
       </Card.Section>
       <Card.Section px="sm" pt="xs">
         <Text size="sm" weight="700">
-          {`${cardMainLang.title}`}&nbsp;
+          {`${cardMainLang?.title}`}&nbsp;
           <OfficialityBadge langData={cards.mainLang} />
         </Text>
         {cardSubLang && (
