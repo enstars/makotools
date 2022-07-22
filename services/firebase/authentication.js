@@ -30,7 +30,7 @@ const parseKey = (key) => {
 // Config & Initialization
 const firebaseConfig = {
   apiKey: "AIzaSyA530zKJVq_vi56gzta4J_jGWIxgCIJg2k",
-  authDomain: "auth.ensemble.moe",
+  authDomain: "ensemble-square.web.app",
   projectId: "ensemble-square",
   storageBucket: "ensemble-square.appspot.com",
   messagingSenderId: "940403567905",
