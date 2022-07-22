@@ -23,6 +23,7 @@ function Layout({
   pageTitle,
   meta,
   footerTextOnly,
+  getBreadcrumbs,
 }) {
   const location = useRouter();
   const [currentPath, setCurrentPath] = useState(location.pathname);
@@ -57,7 +58,9 @@ function Layout({
           ) : null
         }
       >
-        {!hideHeader && <Header pageTitle={pageTitle} />}
+        {!hideHeader && (
+          <Header pageTitle={pageTitle} getBreadcrumbs={getBreadcrumbs} />
+        )}
         <Paper
           sx={{
             position: "relative",

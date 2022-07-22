@@ -116,5 +116,10 @@ export async function getServerSideProps({ req, res, locale }) {
 }
 
 Character.getLayout = function getLayout(page) {
-  return <Layout>{page}</Layout>;
+  const character = page.props.character;
+  const getBreadcrumbs = (path) => {
+    console.log("PATH", path);
+    return path.split("/").filter((x) => x);
+  };
+  return <Layout getBreadcrumbs={getBreadcrumbs}>{page}</Layout>;
 };
