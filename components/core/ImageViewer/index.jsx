@@ -10,9 +10,9 @@ import {
   Box,
   createStyles,
 } from "@mantine/core";
-import { IconDownload, IconArrowUpRightCircle } from "@tabler/icons";
+import { IconArrowUpRightCircle, IconArrowsDiagonal } from "@tabler/icons";
 
-const useStyles = createStyles((theme, _params, getRef) => ({
+const useStyles = createStyles((theme, { radius }, getRef) => ({
   figure: {
     [`&:hover .${getRef("backdrop")}`]: {
       backgroundPositionY: 70,
@@ -23,7 +23,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
       "&:hover": {
         opacity: 1,
       },
-    }
+    },
   },
 
   backdrop: {
@@ -41,7 +41,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     pointerEvents: "none",
     backgroundPositionY: 140,
     transition: theme.other.transition,
-    borderBottomRightRadius: 3,
+    borderBottomRightRadius: isNaN(radius) ? theme.radius?.[radius] : radius,
   },
   button: {
     ref: getRef("button"),
@@ -59,7 +59,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 function ImageViewer({ caption, ...props }) {
   const [opened, setOpened] = useState(false);
   const theme = useMantineTheme();
-  const { classes } = useStyles();
+  const { classes } = useStyles({ radius: props.radius });
   return (
     <>
       <Modal
@@ -117,9 +117,21 @@ function ImageViewer({ caption, ...props }) {
         classNames={{
           figure: classes.figure,
         }}
+        styles={{
+          caption: {
+            margin: 0,
+          },
+          root: {
+            display: "flex",
+          },
+        }}
         caption={
           <>
-            <Box className={classes.backdrop} component="span" />
+            <Box
+              className={classes.backdrop}
+              component="span"
+              radius={props.radius}
+            />
             <UnstyledButton
               className={classes.button}
               onClick={(e) => {
@@ -127,7 +139,7 @@ function ImageViewer({ caption, ...props }) {
                 setOpened(true);
               }}
             >
-              <IconDownload size={16} color="white" strokeWidth={2.5} />
+              <IconArrowsDiagonal size={16} color="white" strokeWidth={2.5} />
             </UnstyledButton>
             {caption}
           </>

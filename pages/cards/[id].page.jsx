@@ -92,7 +92,7 @@ function Character({ character, card }) {
       <Group>
         {["normal", "evolution"].map((type) => (
           <AspectRatio
-            ratio={3 / 4}
+            ratio={4 / 5}
             key={type}
             sx={{ minHeight: 10, flexGrow: 1 }}
           >

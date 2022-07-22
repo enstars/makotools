@@ -79,6 +79,12 @@ function MakoTools({ Component, pageProps, ...props }) {
                 : theme.colors.gray[9],
           },
         }),
+        Image: {
+          image: {
+            position: "relative",
+            zIndex: 10,
+          },
+        },
       }}
       theme={{
         colorScheme,

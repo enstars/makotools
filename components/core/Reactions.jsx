@@ -135,30 +135,6 @@ function Reactions() {
               {reactions?.map((r) => (
                 <Emote key={r.id} emote={r.emote} />
               ))}
-              {reactions?.map((r) => (
-                <Emote key={r.id} emote={r.emote} />
-              ))}
-              {reactions?.map((r) => (
-                <Emote key={r.id} emote={r.emote} />
-              ))}
-              {reactions?.map((r) => (
-                <Emote key={r.id} emote={r.emote} />
-              ))}
-              {reactions?.map((r) => (
-                <Emote key={r.id} emote={r.emote} />
-              ))}
-              {reactions?.map((r) => (
-                <Emote key={r.id} emote={r.emote} />
-              ))}
-              {reactions?.map((r) => (
-                <Emote key={r.id} emote={r.emote} />
-              ))}
-              {reactions?.map((r) => (
-                <Emote key={r.id} emote={r.emote} />
-              ))}
-              {reactions?.map((r) => (
-                <Emote key={r.id} emote={r.emote} />
-              ))}
             </Group>
           </Collapse>
         </Box>
