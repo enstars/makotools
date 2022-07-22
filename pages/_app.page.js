@@ -6,7 +6,6 @@ import { getCookie, setCookie } from "cookies-next";
 import NProgress from "nprogress";
 
 import { MantineProvider, ColorSchemeProvider, Tooltip } from "@mantine/core";
-
 import { NotificationsProvider } from "@mantine/notifications";
 
 import "@fontsource/sora/400.css";
@@ -17,8 +16,10 @@ import "@fontsource/sora/variable.css";
 import "@fontsource/noto-sans-jp/400.css";
 import "@fontsource/noto-sans-jp/500.css";
 import "@fontsource/noto-sans-jp/700.css";
-import "@fontsource/inter";
-import "@fontsource/inter/variable-full.css";
+// import "@fontsource/inter";
+// import "@fontsource/inter/variable-full.css";
+
+import "../styles/styles.css";
 
 import initAuth from "../services/firebase/authentication";
 import FirebaseUserProvider from "../services/firebase/user";
@@ -129,7 +130,8 @@ function MakoTools({ Component, pageProps, ...props }) {
         },
         primaryShade: { light: 6, dark: 5 },
         lineHeight: 1.5,
-        fontFamily: "InterVariable, Inter, Noto Sans JP, sans-serif",
+        // fontFamily: "InterVariable, Inter, Noto Sans JP, sans-serif",
+        fontFamily: "Inter var, Inter, Noto Sans JP, sans-serif",
         headings: {
           fontFamily: "SoraVariable, Sora, InterVariable, Inter, sans-serif",
           fontWeight: 800,
