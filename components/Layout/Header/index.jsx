@@ -4,7 +4,6 @@ import { Affix, Transition, Header } from "@mantine/core";
 
 function HeaderApp({ getBreadcrumbs }) {
   const [scroll] = useWindowScroll();
-  console.log("HeaderApp", getBreadcrumbs);
   return (
     <Affix
       position={{ top: 0, right: 0 }}
@@ -20,9 +19,7 @@ function HeaderApp({ getBreadcrumbs }) {
             py="sm"
             sx={(theme) => ({ boxShadow: theme.shadows.sm })}
           >
-            <Breadcrumbs sx={{ height: 20 }} getBreadcrumbs={getBreadcrumbs}>
-              test
-            </Breadcrumbs>
+            <Breadcrumbs sx={{ height: 20 }} getBreadcrumbs={getBreadcrumbs} />
           </Header>
         )}
       </Transition>
