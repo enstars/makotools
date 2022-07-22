@@ -22,6 +22,8 @@ import { useLocalStorage } from "@mantine/hooks";
 const CARD_LIST_INITIAL_COUNT = 20;
 
 function Page({ cards, characters }) {
+  // console.log(characters);
+
   const theme = useMantineTheme();
   const [count, setCount] = useState(CARD_LIST_INITIAL_COUNT);
   const [cardsList, setCardsList] = useState([]);
@@ -198,6 +200,17 @@ function Page({ cards, characters }) {
                 characters={characters.main.data}
                 cardOptions={cardOptions}
               />
+
+              // <div
+              //   key={e.id}
+              //   cards={cards}
+              //   i={i}
+              //   id={e.id}
+              //   characters={characters.main.data}
+              //   cardOptions={cardOptions}
+              // >
+              //   {e.id}
+              // </div>
             ))}
           </InfiniteScroll>
         </>
@@ -218,10 +231,25 @@ export async function getServerSideProps({ res, locale }) {
     "public, s-maxage=7200, stale-while-revalidate=172800"
   );
   // refresh every 2 hours, stale for 48hrs
-  const characters = await getLocalizedData("characters", locale);
+  const characters = await getLocalizedData("characters", locale, [
+    "character_id",
+    "first_name",
+  ]);
   // const unit_to_characters = await getLocalizedData("unit_to_characters");
   // const units = await getLocalizedData("units");
-  const cards = await getLocalizedData("cards", locale);
+  const cards = await getLocalizedData("cards", locale, [
+    "id",
+    "name",
+    "title",
+    "type",
+    "rarity",
+    "stats.ir.da",
+    "stats.ir.vo",
+    "stats.ir.pf",
+    "stats.ir4.da",
+    "stats.ir4.vo",
+    "stats.ir4.pf",
+  ]);
 
   return {
     props: { characters, cards },
