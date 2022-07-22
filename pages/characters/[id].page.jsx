@@ -6,6 +6,14 @@ import ImageViewer from "../../components/core/ImageViewer";
 import { Text, Box } from "@mantine/core";
 
 function Character({ character }) {
+  const getBreadcrumbs = (path) => {
+    const pathNames = path.split("/");
+    pathNames[
+      pathNames.length - 1
+    ] = `${character.first_name} ${character.last_name}`;
+    return pathNames.filter((x) => x);
+  };
+
   return (
     <>
       <Head>
@@ -40,6 +48,7 @@ function Character({ character }) {
           </>
         }
         space={192}
+        getBreadcrumbs={getBreadcrumbs}
       >
         <Box
           sx={{
@@ -77,7 +86,7 @@ function Character({ character }) {
 
 export default Character;
 
-export async function getServerSideProps({ req, res, locale }) {
+export async function getServerSideProps({ res, locale, params }) {
   res.setHeader(
     "Cache-Control",
     "public, s-maxage=7200, stale-while-revalidate=172800"
@@ -85,10 +94,7 @@ export async function getServerSideProps({ req, res, locale }) {
   // refresh every 2 hours, stale for 48hrs
   const characters = await getLocalizedData("characters", locale);
   const { data: charactersEN } = await getData("characters", "en");
-  const urlSegments = req.url.split("/");
-  const lastSegment = decodeURIComponent(urlSegments[urlSegments.length - 1])
-    .toLocaleLowerCase()
-    .trim();
+  const lastSegment = params.id.toLocaleLowerCase();
   const characterID = parseInt(lastSegment, 10);
   const isName = isNaN(characterID);
   const characterIndex = charactersEN.indexOf(

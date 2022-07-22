@@ -1,12 +1,11 @@
-import styled from "styled-components";
 import Breadcrumbs from "./Layout/Header/Breadcrumbs";
 import { Box, Title } from "@mantine/core";
 
-function TitleApp({ title, children, space }) {
+function TitleApp({ title, children, space, getBreadcrumbs }) {
   return (
     <Box sx={{ position: "relative", overflow: "hidden" }}>
       {children}
-      <Breadcrumbs />
+      <Breadcrumbs getBreadcrumbs={getBreadcrumbs} />
       <Title
         order={1}
         mt={space || 64}
