@@ -7,6 +7,7 @@ import ImageViewer from "../../components/core/ImageViewer";
 import { Group, AspectRatio, Badge } from "@mantine/core";
 import { IconStar } from "@tabler/icons";
 import attributes from "../../data/attributes.json";
+import Reactions from "../../components/core/Reactions";
 
 function Character({ character, card }) {
   console.log(card);
@@ -76,6 +77,8 @@ function Character({ character, card }) {
           </>
         }
       ></Title>
+
+      <Reactions />
       <Group>
         {["normal", "evolution"].map((type) => (
           <AspectRatio

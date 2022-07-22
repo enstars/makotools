@@ -5,7 +5,7 @@ import Head from "next/head";
 import { getCookie, setCookie } from "cookies-next";
 import NProgress from "nprogress";
 
-import { MantineProvider, ColorSchemeProvider } from "@mantine/core";
+import { MantineProvider, ColorSchemeProvider, Tooltip } from "@mantine/core";
 
 import { NotificationsProvider } from "@mantine/notifications";
 
@@ -59,6 +59,27 @@ function MakoTools({ Component, pageProps, ...props }) {
       emotionOptions={{ key: "mktl" }}
       withGlobalStyles
       withNormalizeCSS
+      styles={{
+        Tooltip: (theme) => ({
+          body: {
+            backgroundColor:
+              theme.colorScheme === "dark"
+                ? theme.colors.dark[9]
+                : theme.colors.gray[9],
+            color:
+              theme.colorScheme === "dark"
+                ? theme.colors.dark[1]
+                : theme.colors.gray[1],
+            fontWeight: 500,
+          },
+          arrow: {
+            backgroundColor:
+              theme.colorScheme === "dark"
+                ? theme.colors.dark[9]
+                : theme.colors.gray[9],
+          },
+        }),
+      }}
       theme={{
         colorScheme,
         colors: {
