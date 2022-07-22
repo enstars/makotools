@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import {
@@ -6,7 +6,6 @@ import {
   Anchor,
   Text,
   Group,
-  useMantineTheme,
   Drawer,
   Box,
   MediaQuery,
@@ -15,17 +14,12 @@ import {
 import { IconMenu2 } from "@tabler/icons";
 import Sidebar from "../Sidebar";
 
-function BreadcrumbsApp(props) {
-  const theme = useMantineTheme();
-  const location = useRouter();
-  const [pathnames, setPathnames] = useState(
-    location.asPath.split("/").filter((x) => x)
-  );
-  const [opened, setOpened] = useState(false);
+const defaultGetBreadcrumbs = (path) => path.split("/").filter((x) => x);
 
-  useEffect(() => {
-    setPathnames(location.asPath.split("/").filter((x) => x));
-  }, [location]);
+function BreadcrumbsApp({ getBreadcrumbs = defaultGetBreadcrumbs, ...props }) {
+  const location = useRouter();
+  const [opened, setOpened] = useState(false);
+  const breadcrumbs = getBreadcrumbs(location.asPath);
 
   return (
     <Box px="xs" {...props}>
@@ -77,13 +71,13 @@ function BreadcrumbsApp(props) {
             <Link href="/" passHref>
               <Anchor inherit>Makotools</Anchor>
             </Link>
-            {pathnames.map((value, index) => {
-              const last = index === pathnames.length - 1;
+            {breadcrumbs.map((crumb, index) => {
+              const pathnames = defaultGetBreadcrumbs(location.asPath);
               const to = `/${pathnames.slice(0, index + 1).join("/")}`;
 
               return (
-                <Link key={value} href={to} passHref>
-                  <Anchor inherit>{decodeURIComponent(value)}</Anchor>
+                <Link key={crumb} href={to} passHref>
+                  <Anchor inherit>{decodeURIComponent(crumb)}</Anchor>
                 </Link>
               );
             })}

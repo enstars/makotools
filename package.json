@@ -123,5 +123,7 @@
         "off"
       ]
     }
-  }
+  },
+  "_comment": "Add empty prettier key in order to override code editor settings while applying all Prettier defaults",
+  "prettier": {}
 }
