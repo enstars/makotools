@@ -195,17 +195,17 @@ export const getServerSideProps = getServerSideUser(
             image1: `card_rectangle4_${cardID}_normal.png`,
             image2: `card_rectangle4_${cardID}_evolution.png`,
             stats1: getLocalizedNumber(
-              sumStats(card.main.stats.ir, 0),
+              sumStats(card.main.stats.ir, "???"),
               locale,
               false
             ),
             stats2: getLocalizedNumber(
-              sumStats(card.main.stats.ir2, 0),
+              sumStats(card.main.stats.ir2, "???"),
               locale,
               false
             ),
             stats3: getLocalizedNumber(
-              sumStats(card.main.stats.ir4, 0),
+              sumStats(card.main.stats.ir4, "???"),
               locale,
               false
             ),
