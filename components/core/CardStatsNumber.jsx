@@ -1,28 +1,32 @@
 import { useRouter } from "next/router";
 
 function getLocalizedNumber(number, locale, short = false) {
-  let ReactGlobalize = require("react-globalize");
-  let Globalize = require("globalize");
-  let FormatNumber = ReactGlobalize.FormatNumber;
+  if (!isNaN(number)) {
+    let ReactGlobalize = require("react-globalize");
+    let Globalize = require("globalize");
+    let FormatNumber = ReactGlobalize.FormatNumber;
 
-  Globalize.load(
-    require("cldr-data/supplemental/likelySubtags"),
-    require("cldr-data/supplemental/numberingSystems"),
-    require("cldr-data/supplemental/plurals"),
-    require("cldr-data/supplemental/ordinals"),
-    require(`cldr-data/main/${locale}/numbers`),
-    require(`cldr-data/main/${locale}/units`)
-  );
+    Globalize.load(
+      require("cldr-data/supplemental/likelySubtags"),
+      require("cldr-data/supplemental/numberingSystems"),
+      require("cldr-data/supplemental/plurals"),
+      require("cldr-data/supplemental/ordinals"),
+      require(`cldr-data/main/${locale}/numbers`),
+      require(`cldr-data/main/${locale}/units`)
+    );
 
-  return Globalize(locale).numberFormatter(
-    short
-      ? {
-          compact: "short",
-          minimumSignificantDigits: number > 99999 ? 3 : 2,
-          maximumSignificantDigits: number > 99999 ? 3 : 2,
-        }
-      : {}
-  )(number);
+    return Globalize(locale).numberFormatter(
+      short
+        ? {
+            compact: "short",
+            minimumSignificantDigits: number > 99999 ? 3 : 2,
+            maximumSignificantDigits: number > 99999 ? 3 : 2,
+          }
+        : {}
+    )(number);
+  } else {
+    return number;
+  }
 }
 
 function CardStatsNumber({ children, short = false }) {
