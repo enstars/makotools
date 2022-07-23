@@ -140,7 +140,7 @@ function Stats({ card }) {
             </thead>
             <tbody>
               {["min", "max", "ir", "ir1", "ir2", "ir3", "ir4"].map((p) => {
-                if (card.main.stats?.[p]) {
+                if (card.main.stats?.[p]?.da) {
                   const { da, vo, pf } = card.main.stats?.[p];
                   const sum = da + vo + pf;
                   return (

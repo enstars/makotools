@@ -24,6 +24,8 @@ function getLocalizedNumber(number, locale, short = false) {
           }
         : {}
     )(number);
+  } else {
+    return number;
   }
 }
 
