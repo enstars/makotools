@@ -76,7 +76,7 @@ function BigData({ data, label }) {
   );
 }
 
-function sumStats(stats, fallback = "?") {
+function sumStats(stats, fallback = 0) {
   const sum = stats?.da + stats?.vo + stats?.pf;
   if (!stats?.da) return fallback;
   return sum;
@@ -140,7 +140,9 @@ function Stats({ card }) {
             </thead>
             <tbody>
               {["min", "max", "ir", "ir1", "ir2", "ir3", "ir4"].map((p) => {
-                if (card.main.stats?.[p].da) {
+                console.log(p, typeof p);
+                console.log(card.main);
+                if (card.main.stats?.[p]) {
                   const { da, vo, pf } = card.main.stats?.[p];
                   const sum = da + vo + pf;
                   return (
@@ -171,19 +173,19 @@ function Stats({ card }) {
         <BigData
           label="Max stats (1 copy)"
           data={
-            <CardStatsNumber>{sumStats(card.main.stats?.ir)}</CardStatsNumber>
+            <CardStatsNumber>{sumStats(card.main.stats?.ir) > 0 ? sumStats(card.main.stats?.ir) : "???"}</CardStatsNumber>
           }
         />
         <BigData
           label="Max stats (3 copies)"
           data={
-            <CardStatsNumber>{sumStats(card.main.stats?.ir2)}</CardStatsNumber>
+            <CardStatsNumber>{sumStats(card.main.stats?.ir2) > 0 ? sumStats(card.main.stats?.ir2) : "???"}</CardStatsNumber>
           }
         />
         <BigData
           label="Max stats (5 copies)"
           data={
-            <CardStatsNumber>{sumStats(card.main.stats?.ir4)}</CardStatsNumber>
+            <CardStatsNumber>{sumStats(card.main.stats?.ir4) > 0 ? sumStats(card.main.stats?.ir4) : "???"}</CardStatsNumber>
           }
         />
       </Group>
