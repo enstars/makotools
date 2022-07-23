@@ -30,7 +30,6 @@ function Home() {
 
   return (
     <>
-      <Breadcrumbs />
       <Box mt={80} />
       <Image src={Banner} style={{ borderRadius: 0 }} />
       <MantineTitle order={1} mt="sm">
