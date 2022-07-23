@@ -10,81 +10,83 @@ import {
   Box,
   MediaQuery,
   ActionIcon,
+  ScrollArea,
 } from "@mantine/core";
 import { IconMenu2 } from "@tabler/icons";
 import Sidebar from "../Sidebar";
 
 const defaultGetBreadcrumbs = (path) => path.split("/").filter((x) => x);
 
-function BreadcrumbsApp({ getBreadcrumbs = defaultGetBreadcrumbs, ...props }) {
+function BreadcrumbsApp({
+  getBreadcrumbs = defaultGetBreadcrumbs,
+  breadcrumbs,
+  setOpened,
+  ...props
+}) {
   const location = useRouter();
-  const [opened, setOpened] = useState(false);
-  const breadcrumbs = getBreadcrumbs(location.asPath);
+  let pageBreadcrumbs = breadcrumbs || getBreadcrumbs(location.asPath);
 
   return (
-    <Box px="xs" {...props}>
-      <Drawer
-        opened={opened}
-        onClose={() => setOpened(false)}
-        size="sm"
-        styles={{ header: { display: "none" } }}
-        shadow="xl"
-      >
-        <Sidebar
-          permanentlyExpanded
-          width={0}
-          onCollapse={() => {
-            setOpened(false);
-          }}
-          hidden={false}
-        />
-      </Drawer>
-      <Group>
-        <MediaQuery largerThan="xs" styles={{ display: "none" }}>
-          <ActionIcon>
-            <IconMenu2 size={18} onClick={() => setOpened(!opened)} />
+    <Group noWrap align="center" py="xs" {...props}>
+      <MediaQuery largerThan="xs" styles={{ display: "none" }}>
+        <Box sx={{ alignSelf: "stretch" }}>
+          <ActionIcon onClick={() => setOpened((o) => !o)}>
+            <IconMenu2 size={18} />
           </ActionIcon>
-        </MediaQuery>
-        <Text
-          transform="uppercase"
-          weight="600"
-          sx={(theme) => ({
-            zIndex: 10,
-            position: "relative",
-            letterSpacing: "0.05em",
-            fontSize: theme.fontSizes.sm - 2,
+        </Box>
+      </MediaQuery>
+      <Text
+        // component={ScrollArea}
+        transform="uppercase"
+        weight="600"
+        sx={(theme) => ({
+          zIndex: 10,
+          position: "relative",
+          letterSpacing: "0.05em",
+          fontSize: theme.fontSizes.sm - 2,
+          // marginTop: theme.fontSizes.sm * 0.15,
+          maxWidth: "100%",
+        })}
+        inline
+        scrollbarSize={5}
+      >
+        <Breadcrumbs
+          // py="xs"
+          separator={
+            <Text inherit color="dimmed" component="span">
+              /
+            </Text>
+          }
+          styles={(theme) => ({
+            separator: {
+              display: "inline",
+              marginLeft: theme.spacing.xs / 1.75,
+              marginRight: theme.spacing.xs / 1.75,
+            },
+            root: {
+              // whiteSpace: "nowrap",
+              display: "block",
+              lineHeight: 1.5,
+              paddingTop: theme.spacing.xs * 0.25,
+              paddingBottom: theme.spacing.xs * 0.25,
+            },
           })}
         >
-          <Breadcrumbs
-            separator={
-              <Text inherit color="dimmed">
-                /
-              </Text>
-            }
-            styles={(theme) => ({
-              separator: {
-                marginLeft: theme.spacing.xs / 1.75,
-                marginRight: theme.spacing.xs / 1.75,
-              },
-            })}
-          >
-            <Link href="/" passHref>
-              <Anchor inherit>Makotools</Anchor>
-            </Link>
-            {breadcrumbs.map((crumb, index) => {
-              const pathnames = defaultGetBreadcrumbs(location.asPath);
-              const to = `/${pathnames.slice(0, index + 1).join("/")}`;
+          <Link href="/" passHref>
+            <Anchor inherit>Makotools</Anchor>
+          </Link>
+          {pageBreadcrumbs.map((crumb, index) => {
+            const to = `/${pageBreadcrumbs.slice(0, index + 1).join("/")}`;
 
-              return (
-                <Link key={crumb} href={to} passHref>
-                  <Anchor inherit>{decodeURIComponent(crumb)}</Anchor>
-                </Link>
-              );
-            })}
-          </Breadcrumbs>
-        </Text>
-      </Group>
-    </Box>
+            return (
+              <Link key={crumb} href={to} passHref>
+                <Anchor inherit>{decodeURIComponent(crumb)}</Anchor>
+              </Link>
+            );
+          })}
+        </Breadcrumbs>
+      </Text>
+    </Group>
   );
 }
 

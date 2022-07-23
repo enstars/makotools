@@ -20,6 +20,7 @@ import EmoteSelector from "./EmoteSelector";
 import Emote from "./Emote";
 import { IconChevronDown, IconChevronUp, IconMoodSmile } from "@tabler/icons";
 import { Collapse } from "react-collapse";
+import { grid } from "@mui/system";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -93,9 +94,16 @@ function Reactions() {
           <EmoteSelector
             target={(onClick) => {
               return (
-                <ActionIcon variant="light" color="blue" onClick={onClick}>
-                  <IconMoodSmile size={16} />
-                </ActionIcon>
+                <Button
+                  variant="light"
+                  size="xs"
+                  color="blue"
+                  onClick={onClick}
+                  leftIcon={<IconMoodSmile size={16} />}
+                  px="xs"
+                >
+                  Reactions
+                </Button>
               );
             }}
             callback={(emote) => {
@@ -105,52 +113,63 @@ function Reactions() {
             disabled={!firebaseUser.loggedIn}
           />
         </Tooltip>
-
-        <Box
-          sx={{
-            flexGrow: 1,
-            overflow: "hidden",
-            paddingTop: 2,
-            maskImage: collapsed
-              ? "linear-gradient(to left, transparent, black 28px)"
-              : "",
-
-            // marginRight: collapsed ? -30 : 0,
-          }}
-        >
-          <Collapse
-            isOpened={true}
-            theme={{
-              collapse: classes.wrapper,
-              content: classes.content,
-            }}
-          >
-            <Group
-              spacing="xs"
+        {reactions.length ? (
+          <>
+            <Box
               sx={{
-                maxHeight: collapsed ? 24 : null,
+                flexGrow: 1,
+                overflow: "hidden",
+                paddingTop: 2,
+                maskImage: collapsed
+                  ? "linear-gradient(to left, transparent, black 28px)"
+                  : "",
+
                 // marginRight: collapsed ? -30 : 0,
               }}
             >
-              {reactions?.map((r) => (
-                <Emote key={r.id} emote={r.emote} />
-              ))}
-            </Group>
-          </Collapse>
-        </Box>
+              <Collapse
+                isOpened={true}
+                theme={{
+                  collapse: classes.wrapper,
+                  content: classes.content,
+                }}
+              >
+                <Group
+                  spacing="xs"
+                  sx={{
+                    maxHeight: collapsed ? 24 : null,
+                    // marginRight: collapsed ? -30 : 0,
+                  }}
+                >
+                  {reactions?.map((r) => (
+                    <Emote key={r.id} emote={r.emote} />
+                  ))}
+                </Group>
+              </Collapse>
+            </Box>
 
-        <ActionIcon
-          variant="light"
-          onClick={() => {
-            setCollapsed((c) => !c);
-          }}
-        >
-          {collapsed ? (
-            <IconChevronDown size={16} />
-          ) : (
-            <IconChevronUp size={16} />
-          )}
-        </ActionIcon>
+            <ActionIcon
+              variant="light"
+              onClick={() => {
+                setCollapsed((c) => !c);
+              }}
+            >
+              {collapsed ? (
+                <IconChevronDown size={16} />
+              ) : (
+                <IconChevronUp size={16} />
+              )}
+            </ActionIcon>
+          </>
+        ) : (
+          <Box
+            sx={{ alignSelf: "stretch", display: "flex", alignItems: "center" }}
+          >
+            <Text size="sm" color="dimmed">
+              Be the first to add a reaction!
+            </Text>
+          </Box>
+        )}
       </Group>
     </Paper>
   );

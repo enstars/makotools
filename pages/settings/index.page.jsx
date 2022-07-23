@@ -78,6 +78,32 @@ const tlBadgeOptions = [
     label: "Show all badges",
   },
 ];
+const nameOrderOptions = [
+  {
+    value: "firstlast",
+    label: "Given name, Family name",
+    example: "Eg. Subaru Akehoshi",
+  },
+  {
+    value: "lastfirst",
+    label: "Family name, Given name",
+    example: "Eg. Akehoshi Subaru",
+  },
+];
+
+const nameOrderItem = forwardRef(function SelectItem(
+  { label, example, ...others },
+  ref
+) {
+  return (
+    <div ref={ref} {...others}>
+      <Text size="sm">{label}</Text>
+      <Text size="xs" color="dimmed">
+        {example}
+      </Text>
+    </div>
+  );
+});
 
 const SelectItemForwardRef = forwardRef(function SelectItem(
   { label, icon, ...props },
@@ -184,6 +210,15 @@ function Page() {
               data={gameRegions}
               description="This setting currently does not have an effect on content yet."
             />
+
+            <DropdownOption
+              dataKey="name_order"
+              label="Preferred name order"
+              data={nameOrderOptions}
+              description="Only applies to names displayed in western languages. East asian languages retain their original name order."
+              placeholder={nameOrderOptions[0].label}
+              itemComponent={nameOrderItem}
+            />
           </Stack>
         </Accordion.Item>
         <Accordion.Item
@@ -201,6 +236,7 @@ function Page() {
               label="Show officialty badges for translations"
               data={tlBadgeOptions}
               description="This setting may not be applied site-wide at this time."
+              placeholder={tlBadgeOptions[0].label}
             />
           </Stack>
         </Accordion.Item>

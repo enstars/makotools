@@ -4,6 +4,7 @@ import Title from "../../components/PageTitle";
 import Head from "next/head";
 import ImageViewer from "../../components/core/ImageViewer";
 import { Text, Box } from "@mantine/core";
+import Reactions from "../../components/core/Reactions";
 
 function Character({ character }) {
   const getBreadcrumbs = (path) => {
@@ -75,6 +76,7 @@ function Character({ character }) {
         </Box>
       </Title>
       <Text>{character.introduction}</Text>
+      <Reactions />
       {/* Birthday
       {character.birthday}
 

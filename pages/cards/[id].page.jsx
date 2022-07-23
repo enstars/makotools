@@ -9,8 +9,16 @@ import { IconStar } from "@tabler/icons";
 import attributes from "../../data/attributes.json";
 import Reactions from "../../components/core/Reactions";
 import Stats from "./Card/Stats";
+import NameOrder, { getNameOrder } from "../../components/core/NameOrder";
+import {
+  withAuthUser,
+  AuthAction,
+  withAuthUserTokenSSR,
+  getFirebaseAdmin,
+} from "next-firebase-auth";
+import getServerSideUser from "../../services/firebase/getSSRUser";
 
-function Character({ character, card }) {
+function Page({ character, card, title }) {
   console.log(card);
   // const { id } = useParams();
   // const router = useRouter();
@@ -21,25 +29,16 @@ function Character({ character, card }) {
   const characterLocalizedMain = character.mainLang;
   // console.log(cardsJP);
 
-  const getBreadcrumbs = (path) => {
-    const pathNames = path.split("/");
-    pathNames[
-      pathNames.length - 1
-    ] = `(${cardLocalizedMain.title}) ${characterLocalizedMain.last_name} ${characterLocalizedMain.first_name}`;
-    return pathNames.filter((x) => x);
-  };
-
   return (
     <>
-      <Head>
-        {/* <title>{`${character.first_name} ${character.last_name} - EnSquare`}</title> */}
-        {/* <meta name="description" content={character.introduction} /> */}
-      </Head>
       <PageTitle
         title={
           <>
-            ({cardLocalizedMain.title}) {characterLocalizedMain.last_name}{" "}
-            {characterLocalizedMain.first_name}
+            ({cardLocalizedMain.title}){" "}
+            <NameOrder
+              last={characterLocalizedMain.last_name}
+              first={characterLocalizedMain.first_name}
+            />
             <Group mt="sm" spacing="xs">
               <Badge size="xl" color="yellow" sx={{ textTransform: "none" }}>
                 {card.main.rarity}
@@ -86,10 +85,8 @@ function Character({ character, card }) {
             </Paper> */}
           </>
         }
-        getBreadcrumbs={getBreadcrumbs}
       ></PageTitle>
 
-      <Reactions />
       <Group>
         {["normal", "evolution"].map((type) => (
           <AspectRatio
@@ -109,62 +106,85 @@ function Character({ character, card }) {
         ))}
       </Group>
       <Stats card={card} />
+      <Reactions />
     </>
   );
 }
 
-export default Character;
+export default Page;
 
-export async function getServerSideProps({ res, locale, params }) {
-  res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=7200, stale-while-revalidate=172800"
-  );
-  // refresh every 2 hours, stale for 48hrs
+export const getServerSideProps = getServerSideUser(
+  async ({ req, res, locale, params, user, firestore }) => {
+    res.setHeader(
+      "Cache-Control",
+      "public, s-maxage=7200, stale-while-revalidate=172800"
+    );
+    // refresh every 2 hours, stale for 48hrs
 
-  const cards = await getLocalizedData("cards", locale);
-  const characters = await getLocalizedData("characters", locale);
-  // const { data: cardsJP } = await getData("cards", "ja");
-  const lastURLSegment = params.id.toLocaleLowerCase();
-  const cardID = parseInt(lastURLSegment, 10);
-  const cardIndex = cards.main.data.indexOf(
-    cards.main.data.find(
-      isNaN(cardID)
-        ? (item) => item.title.toLocaleLowerCase() === lastURLSegment
-        : (item) => item.id === cardID
-    )
-  );
+    const cards = await getLocalizedData("cards", locale);
+    const characters = await getLocalizedData("characters", locale);
+    // const { data: cardsJP } = await getData("cards", "ja");
+    const lastURLSegment = params.id.toLocaleLowerCase();
+    const cardID = parseInt(lastURLSegment, 10);
+    const cardIndex = cards.main.data.indexOf(
+      cards.main.data.find(
+        isNaN(cardID)
+          ? (item) => item.title.toLocaleLowerCase() === lastURLSegment
+          : (item) => item.id === cardID
+      )
+    );
 
-  if (cardIndex === -1) {
+    if (cardIndex === -1) {
+      return {
+        notFound: true,
+      };
+    }
+
+    const characterIndex = characters.main.data.indexOf(
+      characters.main.data.find(
+        (c) =>
+          c.character_id ===
+          cards.main.data.find((c) => c.id === cardID).character_id
+      )
+    );
+
+    const character = {
+      main: characters.main.data[characterIndex],
+      mainLang: characters.mainLang.data[characterIndex],
+      subLang: characters.subLang.data[characterIndex],
+    };
+    const card = {
+      main: cards.main.data[cardIndex],
+      mainLang: cards.mainLang.data[cardIndex],
+      subLang: cards.subLang.data[cardIndex],
+    };
+
+    const title = `(${card.mainLang.title}) ${getNameOrder(
+      character.mainLang,
+      firestore.name_order,
+      locale
+    )}`;
+
+    // const breadcrumbs = req.url.split("/").filter((e) => e);
+    // breadcrumbs[breadcrumbs.length - 1] = title;
+    // -> this doesnt work very well, see:
+    //    https://github.com/vercel/next.js/discussions/15787
+
+    const breadcrumbs = ["cards", title];
     return {
-      notFound: true,
+      props: {
+        character,
+        card,
+        title,
+        breadcrumbs,
+        meta: {
+          title,
+        },
+      },
     };
   }
+);
 
-  const characterIndex = characters.main.data.indexOf(
-    characters.main.data.find(
-      (c) =>
-        c.character_id ===
-        cards.main.data.find((c) => c.id === cardID).character_id
-    )
-  );
-
-  const character = {
-    main: characters.main.data[characterIndex],
-    mainLang: characters.mainLang.data[characterIndex],
-    subLang: characters.subLang.data[characterIndex],
-  };
-  const card = {
-    main: cards.main.data[cardIndex],
-    mainLang: cards.mainLang.data[cardIndex],
-    subLang: cards.subLang.data[cardIndex],
-  };
-
-  return {
-    props: { character, card },
-  };
-}
-
-Character.getLayout = function getLayout(page) {
-  return <Layout>{page}</Layout>;
+Page.getLayout = function getLayout(page, pageProps) {
+  return <Layout pageProps={pageProps}>{page}</Layout>;
 };

@@ -2,6 +2,7 @@ import Head from "next/head";
 import { MAKOTOOLS } from "../services/constants";
 
 function Meta({ title, desc, img }) {
+  console.log("meta", title, desc, img);
   const pageTitle = title
     ? `${title} - ${MAKOTOOLS.SITE_TITLE}`
     : MAKOTOOLS.SITE_TITLE;
@@ -12,7 +13,7 @@ function Meta({ title, desc, img }) {
       <title>{pageTitle}</title>
       <meta name="title" content={pageTitle} />
       <meta name="description" content={pageDesc} />
-      
+
       <meta property="og:url" content={MAKOTOOLS.SITE_URL} />
       <meta property="og:title" content={pageTitle} />
       <meta property="og:description" content={pageDesc} />

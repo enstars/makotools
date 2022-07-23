@@ -59,7 +59,7 @@ function StatCell({ header, total, children, ...props }) {
 }
 function BigData({ data, label }) {
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1, flexBasis: 150 }}>
       <Text size="sm" color="dimmed" weight={700}>
         {label}
       </Text>
@@ -78,7 +78,7 @@ function BigData({ data, label }) {
 
 function sumStats(stats, fallback = "?") {
   const sum = stats?.da + stats?.vo + stats?.pf;
-  if (isNaN(sum)) return fallback;
+  if (!stats?.da) return fallback;
   return sum;
 }
 
@@ -170,25 +170,19 @@ function Stats({ card }) {
         <BigData
           label="Max stats (1 copy)"
           data={
-            <CardStatsNumber>
-              {sumStats(card.main.stats?.ir, "Unknown")}
-            </CardStatsNumber>
+            <CardStatsNumber>{sumStats(card.main.stats?.ir)}</CardStatsNumber>
           }
         />
         <BigData
           label="Max stats (3 copies)"
           data={
-            <CardStatsNumber>
-              {sumStats(card.main.stats?.ir2, "Unknown")}
-            </CardStatsNumber>
+            <CardStatsNumber>{sumStats(card.main.stats?.ir2)}</CardStatsNumber>
           }
         />
         <BigData
           label="Max stats (5 copies)"
           data={
-            <CardStatsNumber>
-              {sumStats(card.main.stats?.ir4, "Unknown")}
-            </CardStatsNumber>
+            <CardStatsNumber>{sumStats(card.main.stats?.ir4)}</CardStatsNumber>
           }
         />
       </Group>

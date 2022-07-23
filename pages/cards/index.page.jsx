@@ -249,6 +249,7 @@ export async function getServerSideProps({ res, locale }) {
     "stats.ir4.da",
     "stats.ir4.vo",
     "stats.ir4.pf",
+    "character_id",
   ]);
 
   return {

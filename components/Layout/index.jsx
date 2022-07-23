@@ -13,6 +13,7 @@ import {
   useMantineTheme,
   useMantineColorScheme,
 } from "@mantine/core";
+import BreadcrumbsApp from "./Header/Breadcrumbs";
 
 function Layout({
   children: Component,
@@ -20,10 +21,10 @@ function Layout({
   hideSidebar = false,
   hideHeader = false,
   wide = false,
-  pageTitle,
+  title,
   meta,
   footerTextOnly,
-  getBreadcrumbs,
+  pageProps,
 }) {
   const location = useRouter();
   const [currentPath, setCurrentPath] = useState(location.pathname);
@@ -38,6 +39,7 @@ function Layout({
   const [opened, setOpened] = useState(false);
   return (
     <ErrorBoundary>
+      <Meta {...{ ...pageProps.meta, ...meta }} />
       <AppShell
         styles={{
           main: {
@@ -58,9 +60,6 @@ function Layout({
           ) : null
         }
       >
-        {!hideHeader && (
-          <Header pageTitle={pageTitle} getBreadcrumbs={getBreadcrumbs} />
-        )}
         <Paper
           sx={{
             position: "relative",
@@ -73,7 +72,8 @@ function Layout({
         >
           <Container
             size={wide ? "xl" : "sm"}
-            p="xl"
+            px="xl"
+            py="md"
             sx={{
               width: "100%",
               minHeight: "100vh",
@@ -84,7 +84,13 @@ function Layout({
             }}
           >
             <ErrorBoundary>
-              <Meta {...meta}></Meta>
+              {!hideHeader && (
+                <Header
+                  title={pageProps?.title}
+                  getBreadcrumbs={pageProps?.getBreadcrumbs}
+                  breadcrumbs={pageProps?.breadcrumbs}
+                />
+              )}
               {Component}
             </ErrorBoundary>
           </Container>
