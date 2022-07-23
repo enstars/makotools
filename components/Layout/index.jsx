@@ -39,7 +39,7 @@ function Layout({
   const [opened, setOpened] = useState(false);
   return (
     <ErrorBoundary>
-      <Meta {...{ ...pageProps.meta, ...meta }} />
+      <Meta {...{ ...pageProps?.meta, ...meta }} />
       <AppShell
         styles={{
           main: {

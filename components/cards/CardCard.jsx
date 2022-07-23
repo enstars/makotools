@@ -18,6 +18,7 @@ import { useRouter } from "next/router";
 import attributes from "../../data/attributes.json";
 import ImageViewer from "../../components/core/ImageViewer";
 import OfficialityBadge from "../OfficialityBadge";
+import CardStatsNumber from "../core/CardStatsNumber";
 
 function RarityBadge({ card }) {
   const theme = useMantineTheme();
@@ -226,13 +227,13 @@ export default function CardCard({ cards, id, cardOptions }) {
                 strokeWidth={2.5}
               />
             </Text>
-            <CardStatsShort>{statsIR}</CardStatsShort>
+            <CardStatsNumber short>{statsIR}</CardStatsNumber>
             {card?.rarity === 5 && (
               <>
                 <Text component="span" inherit inline color="dimmed">
                   {" / "}
                 </Text>
-                <CardStatsShort>{statsIR4}</CardStatsShort>
+                <CardStatsNumber short>{statsIR4}</CardStatsNumber>
               </>
             )}
           </Text>

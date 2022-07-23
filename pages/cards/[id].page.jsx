@@ -1,5 +1,9 @@
 import React from "react";
-import { getB2File, getLocalizedData } from "../../services/ensquare";
+import {
+  getB2File,
+  getLocalizedData,
+  getPreviewImageURL,
+} from "../../services/ensquare";
 import Layout from "../../components/Layout";
 import PageTitle from "../../components/PageTitle";
 import Head from "next/head";
@@ -8,7 +12,7 @@ import { Group, AspectRatio, Badge, Title, Table } from "@mantine/core";
 import { IconStar } from "@tabler/icons";
 import attributes from "../../data/attributes.json";
 import Reactions from "../../components/core/Reactions";
-import Stats from "./Card/Stats";
+import Stats, { sumStats } from "./Card/Stats";
 import NameOrder, { getNameOrder } from "../../components/core/NameOrder";
 import {
   withAuthUser,
@@ -17,6 +21,7 @@ import {
   getFirebaseAdmin,
 } from "next-firebase-auth";
 import getServerSideUser from "../../services/firebase/getSSRUser";
+import { getLocalizedNumber } from "../../components/core/CardStatsNumber";
 
 function Page({ character, card, title }) {
   console.log(card);
@@ -170,6 +175,7 @@ export const getServerSideProps = getServerSideUser(
     // -> this doesnt work very well, see:
     //    https://github.com/vercel/next.js/discussions/15787
 
+    // getLocalizedNumber
     const breadcrumbs = ["cards", title];
     return {
       props: {
@@ -179,6 +185,33 @@ export const getServerSideProps = getServerSideUser(
         breadcrumbs,
         meta: {
           title,
+          img: getPreviewImageURL("card", {
+            title: card.mainLang.title,
+            name: getNameOrder(
+              character.mainLang,
+              firestore.name_order,
+              locale
+            ),
+            image1: `card_rectangle4_${cardID}_normal.png`,
+            image2: `card_rectangle4_${cardID}_evolution.png`,
+            stats1: getLocalizedNumber(
+              sumStats(card.main.stats.ir, "???"),
+              locale,
+              false
+            ),
+            stats2: getLocalizedNumber(
+              sumStats(card.main.stats.ir2, "???"),
+              locale,
+              false
+            ),
+            stats3: getLocalizedNumber(
+              sumStats(card.main.stats.ir4, "???"),
+              locale,
+              false
+            ),
+            path: `/cards/${cardID}`,
+          }),
+          desc: `View ${card.mainLang.title}'s stats, skills, and more!`,
         },
       },
     };

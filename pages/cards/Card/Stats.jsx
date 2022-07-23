@@ -81,6 +81,7 @@ function sumStats(stats, fallback = "?") {
   if (!stats?.da) return fallback;
   return sum;
 }
+export { sumStats };
 
 function Stats({ card }) {
   const [opened, setOpened] = useState(false);

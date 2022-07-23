@@ -68,3 +68,9 @@ Source [Official] => JP -> CN
 English [Fan]
 
 */
+
+export function getPreviewImageURL(type, params) {
+  return `https://preview.ensemble.link/render/${type}.png?${Object.keys(params)
+    .map((key) => `${key}=${encodeURIComponent(params[key])}`)
+    .join("&")}`;
+}
