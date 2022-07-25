@@ -296,6 +296,6 @@ function Page() {
 export default Page;
 
 import Layout from "../../components/Layout";
-Page.getLayout = function getLayout(page) {
-  return <Layout>{page}</Layout>;
+Page.getLayout = function getLayout(page, pageProps) {
+  return <Layout pageProps={pageProps}>{page}</Layout>;
 };

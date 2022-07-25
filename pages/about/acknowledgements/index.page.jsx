@@ -3,7 +3,7 @@ import Title from "../../../components/PageTitle";
 import { Anchor, Text, TypographyStylesProvider } from "@mantine/core";
 import { MAKOTOOLS } from "../../../services/constants";
 
-function Acknowledgements() {
+function Page() {
   return (
     <>
       <Title title="Acknowledgements"></Title>
@@ -45,8 +45,8 @@ function Acknowledgements() {
   );
 }
 
-export default Acknowledgements;
+export default Page;
 
-Acknowledgements.getLayout = function getLayout(page) {
-  return <Layout>{page}</Layout>;
+Page.getLayout = function getLayout(page, pageProps) {
+  return <Layout pageProps={pageProps}>{page}</Layout>;
 };

@@ -2,7 +2,7 @@ import Layout from "../../components/Layout";
 import Title from "../../components/PageTitle";
 import { Accordion, Anchor, TypographyStylesProvider } from "@mantine/core";
 import { MAKOTOOLS } from "../../services/constants";
-function IssuesAndSuggestions() {
+function Page() {
   return (
     <>
       <Title title="Issues and Suggestions"></Title>
@@ -49,8 +49,8 @@ function IssuesAndSuggestions() {
   );
 }
 
-export default IssuesAndSuggestions;
+export default Page;
 
-IssuesAndSuggestions.getLayout = function getLayout(page) {
-  return <Layout>{page}</Layout>;
+Page.getLayout = function getLayout(page, pageProps) {
+  return <Layout pageProps={pageProps}>{page}</Layout>;
 };

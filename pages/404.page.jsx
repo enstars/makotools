@@ -15,7 +15,7 @@ import {
 } from "@mantine/core";
 // import "./NoMatch.module.scss";
 
-function NoMatch() {
+function Page() {
   const [message, setMessage] = useState(null);
   useEffect(() => {
     const variant = Math.floor(Math.random() * 2);
@@ -74,6 +74,6 @@ function NoMatch() {
 export default NoMatch;
 
 import Layout from "../components/Layout";
-NoMatch.getLayout = function getLayout(page) {
-  return <Layout hideFooter>{page}</Layout>;
+NoMatch.getLayout = function getLayout(page, pageProps) {
+  return <Layout hideFooter pageProps={pageProps}>{page}</Layout>;
 };
