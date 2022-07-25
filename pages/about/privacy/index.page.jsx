@@ -2,7 +2,7 @@ import Layout from "../../../components/Layout";
 import Title from "../../../components/PageTitle";
 import { TypographyStylesProvider } from "@mantine/core";
 
-function PrivacyPolicy() {
+function Page() {
   return (
     <>
       <Title title="Privacy Policy"></Title>
@@ -125,8 +125,8 @@ function PrivacyPolicy() {
   );
 }
 
-export default PrivacyPolicy;
+export default Page;
 
-PrivacyPolicy.getLayout = function getLayout(page) {
-  return <Layout>{page}</Layout>;
+Page.getLayout = function getLayout(page, pageProps) {
+  return <Layout pageProps={pageProps}>{page}</Layout>;
 };

@@ -6,7 +6,7 @@ import ImageViewer from "../../components/core/ImageViewer";
 import { Text, Box } from "@mantine/core";
 import Reactions from "../../components/core/Reactions";
 
-function Character({ character }) {
+function Page({ character }) {
   const getBreadcrumbs = (path) => {
     const pathNames = path.split("/");
     pathNames[
@@ -86,7 +86,7 @@ function Character({ character }) {
   );
 }
 
-export default Character;
+export default Page;
 
 export async function getServerSideProps({ res, locale, params }) {
   res.setHeader(
@@ -123,6 +123,6 @@ export async function getServerSideProps({ res, locale, params }) {
   };
 }
 
-Character.getLayout = function getLayout(page) {
-  return <Layout>{page}</Layout>;
+Page.getLayout = function getLayout(page, pageProps) {
+  return <Layout pageProps={pageProps}>{page}</Layout>;
 };
