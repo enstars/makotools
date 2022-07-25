@@ -12,8 +12,6 @@ import {
   getDocs,
 } from "firebase/firestore";
 
-import "firebase/compat/auth";
-
 function setFirestoreUserData(data, uid, app) {
   const clientAuth = getAuth();
   const db = getFirestore(app);

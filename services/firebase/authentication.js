@@ -12,8 +12,6 @@ import {
 
 import { setFirestoreUserData } from "./firestore";
 
-import "firebase/compat/auth";
-
 const parseKey = (key) => {
   return key?.replace(/\\n/g, "\n")?.replace(/'/g, "") || undefined;
 };
