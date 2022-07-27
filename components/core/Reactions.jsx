@@ -20,7 +20,6 @@ import EmoteSelector from "./EmoteSelector";
 import Emote from "./Emote";
 import { IconChevronDown, IconChevronUp, IconMoodSmile } from "@tabler/icons";
 import { Collapse } from "react-collapse";
-import { grid } from "@mui/system";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
