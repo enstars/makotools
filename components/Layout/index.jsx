@@ -41,6 +41,7 @@ function Layout({
     <ErrorBoundary>
       <Meta {...{ ...pageProps?.meta, ...meta }} />
       <AppShell
+        fixed={false}
         styles={{
           main: {
             padding: 0,

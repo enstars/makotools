@@ -51,7 +51,7 @@ function UserMenu({ trigger }) {
       opened={opened}
       onOpen={handlers.open}
       onClose={handlers.close}
-      withinPortal={true}
+      // withinPortal={true}
       styles={{
         dropdown: { left: theme.spacing.xs },
         itemBody: {

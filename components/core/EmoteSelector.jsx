@@ -19,29 +19,34 @@ function EmoteSelector({ target, callback, ...props }) {
       opened={opened}
       onClose={() => setOpened(false)}
       //   target={target}
-      target={target(() => {
-        setOpened((o) => !o);
-      })}
+      // target={}
       width={226}
       position="bottom-start"
       withArrow
-      styles={(theme) => ({ inner: { padding: theme.spacing.xs / 2 } })}
+      styles={(theme) => ({ dropdown: { padding: theme.spacing.xs / 2 } })}
       {...props}
     >
-      <Group spacing={2}>
-        {emotes.map((e) => (
-          <ActionIcon
-            key={e.name}
-            size="lg"
-            p={2}
-            onClick={() => {
-              onClickEmote(e);
-            }}
-          >
-            <Emote emote={e} size={32} />
-          </ActionIcon>
-        ))}
-      </Group>
+      <Popover.Target>
+        {target(() => {
+          setOpened((o) => !o);
+        })}
+      </Popover.Target>
+      <Popover.Dropdown>
+        <Group spacing={2}>
+          {emotes.map((e) => (
+            <ActionIcon
+              key={e.name}
+              size="lg"
+              p={2}
+              onClick={() => {
+                onClickEmote(e);
+              }}
+            >
+              <Emote emote={e} size={32} />
+            </ActionIcon>
+          ))}
+        </Group>
+      </Popover.Dropdown>
     </Popover>
   );
 }

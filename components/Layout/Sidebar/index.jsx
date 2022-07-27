@@ -37,6 +37,7 @@ import {
   Button,
   Tooltip,
   NavLink,
+  Stack,
 } from "@mantine/core";
 import { useColorScheme, useToggle } from "@mantine/hooks";
 import SupportBanner from "../SupportBanner";
@@ -226,9 +227,9 @@ function Sidebar(props) {
           },
         }}
       >
-        <Group
+        <Stack
           spacing={0}
-          direction="column"
+          // direction="column"
           sx={{ maxWidth: "100%", minWidth: 0 }}
         >
           {[
@@ -289,7 +290,7 @@ function Sidebar(props) {
               </Link>
             );
           })}
-        </Group>
+        </Stack>
       </Navbar.Section>
 
       <Navbar.Section

@@ -10,6 +10,7 @@ import {
   ColorSchemeProvider,
   Tooltip,
   NavLink,
+  createEmotionCache,
 } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
 
@@ -44,6 +45,8 @@ import {
 // Router.onRouteChangeError = () => NProgress.done();
 
 initAuth();
+
+const emotionCache = createEmotionCache({ key: "mktl" });
 
 function MakoTools({ Component, pageProps, ...props }) {
   const router = useRouter();
@@ -84,7 +87,7 @@ function MakoTools({ Component, pageProps, ...props }) {
 
   return (
     <MantineProvider
-      emotionOptions={{ key: "mktl" }}
+      emotionCache={emotionCache}
       withGlobalStyles
       withNormalizeCSS
       theme={{

@@ -45,7 +45,7 @@ function HeaderApp({ getBreadcrumbs, title, breadcrumbs }) {
                 boxShadow: theme.shadows.sm,
                 paddingTop: theme.spacing.xs / 1.5,
                 paddingBottom: theme.spacing.xs / 1.5,
-                minHeight: 44.5,
+                minHeight: 37,
                 display: "flex",
                 alignItems: "center",
               })}
@@ -54,7 +54,11 @@ function HeaderApp({ getBreadcrumbs, title, breadcrumbs }) {
                 getBreadcrumbs={getBreadcrumbs}
                 breadcrumbs={breadcrumbs}
                 setOpened={setOpened}
-                sx={{ minWidth: 0 }}
+                sx={(theme) => ({
+                  minWidth: 0,
+                  paddingTop: theme.spacing.xs / 1.5,
+                  paddingBottom: theme.spacing.xs / 1.5,
+                })}
               />
             </Header>
           )}
