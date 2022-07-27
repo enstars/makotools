@@ -9,7 +9,7 @@ import {
   Select,
   Chips,
   Chip,
-  InputWrapper,
+  Input,
   Center,
   Loader,
   Switch,
@@ -127,7 +127,7 @@ function Page({ cards, characters }) {
             variant="default"
             searchable
           />
-          <InputWrapper id="rarity" label="Rarity">
+          <Input.Wrapper id="rarity" label="Rarity">
             <Chips
               color="yellow"
               variant="filled"
@@ -149,7 +149,7 @@ function Page({ cards, characters }) {
                 </Chip>
               ))}
             </Chips>
-          </InputWrapper>
+          </Input.Wrapper>
         </Group>
         <Group mt="xs">
           <Switch

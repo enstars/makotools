@@ -9,6 +9,10 @@ import MakotoolsLight from "../../../assets/Logo/mkt_light_icon.svg?url";
 import MakotoolsDark from "../../../assets/Logo/mkt_dark_icon.svg?url";
 import MakotoolsTextLight from "../../../assets/Logo/mkt_light_text.svg?url";
 import MakotoolsTextDark from "../../../assets/Logo/mkt_dark_text.svg?url";
+import MakotoolsLightComponent from "../../../assets/Logo/mkt_light_icon.svg";
+import MakotoolsDarkComponent from "../../../assets/Logo/mkt_dark_icon.svg";
+import MakotoolsTextLightComponent from "../../../assets/Logo/mkt_light_text.svg";
+import MakotoolsTextDarkComponent from "../../../assets/Logo/mkt_dark_text.svg";
 import {
   IconUsers,
   IconPlayCard,
@@ -17,6 +21,9 @@ import {
   IconUser,
   IconDotsCircleHorizontal,
   IconChevronRight,
+  IconChevronLeft,
+  IconBrandPatreon,
+  IconSettings,
 } from "@tabler/icons";
 import {
   Navbar,
@@ -29,6 +36,7 @@ import {
   Badge,
   Button,
   Tooltip,
+  NavLink,
 } from "@mantine/core";
 import { useColorScheme, useToggle } from "@mantine/hooks";
 import SupportBanner from "../SupportBanner";
@@ -132,7 +140,8 @@ function Sidebar(props) {
   const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
 
-  const [collapsed, toggleCollapsed] = useToggle(false, [true, false]);
+  const [collapsed, toggleCollapsed] = useToggle([false, true]);
+  console.log("collapsed", collapsed);
   if (props.permanentlyExpanded && collapsed) toggleCollapsed();
   return (
     <Navbar
@@ -158,73 +167,70 @@ function Sidebar(props) {
         sx={{
           borderBottom: "solid 1px",
           borderColor: dark ? theme.colors.dark[5] : theme.colors.gray[2],
-          marginBottom: false ? 0 : theme.spacing.xs / 2,
+          // marginBottom: false ? 0 : theme.spacing.xs / 2,
         }}
       >
-        <Group spacing={0} sx={{ flexWrap: "nowrap", alignItems: "stretch" }}>
-          {!collapsed && (
-            <SidebarButton
-              collapsed={collapsed}
-              link="/"
-              rootStyles={{ root: { flexGrow: 1 } }}
-            >
-              <Group
-                spacing={0}
-                sx={{ justifyContent: "center", flexWrap: "nowrap" }}
-              >
-                <Image
-                  src={
-                    theme.colorScheme === "dark"
-                      ? MakotoolsDark
-                      : MakotoolsLight
-                  }
-                  alt="MakoTools site logo"
-                  width={20}
-                  height={20}
-                  objectFit="contain"
-                />
-                {!collapsed && (
-                  <Box ml="xs" sx={{ display: "flex", flexGrow: 1 }}>
-                    <Image
-                      src={
-                        theme.colorScheme === "dark"
-                          ? MakotoolsTextDark
-                          : MakotoolsTextLight
-                      }
-                      alt="MakoTools site name"
-                      width={120}
-                      height={20}
-                      objectFit="contain"
-                      objectPosition="left"
+        <Link href="/" passHref>
+          <NavLink
+            component="a"
+            py="xs"
+            label={
+              !collapsed && (
+                <Text inline>
+                  {theme.colorScheme === "light" ? (
+                    <MakotoolsTextLightComponent
+                      viewBox="0 0 1753 281"
+                      width={90}
+                      height={14}
                     />
-                  </Box>
-                )}
-              </Group>
-            </SidebarButton>
-          )}
-          <SidebarButton
-            component="button"
-            onClick={() => {
-              toggleCollapsed();
-              if (props?.onCollapse) props.onCollapse();
-            }}
-            px={0}
-            rootStyles={{ root: { flex: "0 0 40px" } }}
-            styles={(theme) => ({
-              label: {
-                justifyContent: "center",
-                minHeight: 20,
-                transform: `rotate(${collapsed ? 0 : 180}deg)`,
-              },
-            })}
-          >
-            <IconChevronRight size={18} />
-          </SidebarButton>
-        </Group>
+                  ) : (
+                    <MakotoolsTextDarkComponent
+                      viewBox="0 0 1753 281"
+                      width={90}
+                      height={14}
+                    />
+                  )}
+                </Text>
+              )
+            }
+            icon={
+              theme.colorScheme === "light" ? (
+                <MakotoolsLightComponent
+                  viewBox="0 0 281 281"
+                  width={16}
+                  height={16}
+                />
+              ) : (
+                <MakotoolsDarkComponent
+                  viewBox="0 0 281 281"
+                  width={16}
+                  height={16}
+                />
+              )
+            }
+          />
+        </Link>
       </Navbar.Section>
 
-      <Navbar.Section grow component={ScrollArea}>
-        <Group spacing={0} direction="column">
+      <Navbar.Section
+        grow
+        component={ScrollArea}
+        styles={{
+          viewport: {
+            "&>*": {
+              minWidth: "0 !important",
+              display: "block !important",
+              maxWidth: "100%",
+              width: "100%",
+            },
+          },
+        }}
+      >
+        <Group
+          spacing={0}
+          direction="column"
+          sx={{ maxWidth: "100%", minWidth: 0 }}
+        >
           {[
             {
               link: "/characters",
@@ -248,21 +254,42 @@ function Sidebar(props) {
               icon: IconBooks,
               soon: true,
             },
-          ].map((link) => (
-            <SidebarButton
-              key={link.link}
-              collapsed={collapsed}
-              active={`/${location.asPath.split("/")[1]}` === link.link}
-              contents={{ ...link }}
-              link={link.soon ? undefined : link.link}
-            />
-          ))}
+            {
+              link: "https://www.patreon.com/makotools",
+              name: "Patreon",
+              // icon: IconBrandPatreon,
+              props: {
+                // active: true,
+                color: "orange",
+                variant: "subtle",
+                icon: (
+                  <IconBrandPatreon size={16} color={theme.colors.orange[5]} />
+                ),
+                description: collapsed ? null : "Support us!",
+              },
+            },
+          ].map((link) => {
+            const navLinkComponent = (
+              <NavLink
+                py="xs"
+                label={collapsed ? false : <Text inline>{link.name}</Text>}
+                icon={<link.icon size={16} />}
+                active={`/${location.asPath.split("/")[1]}` === link.link}
+                link={link.soon ? undefined : link.link}
+                disabled={link.soon}
+                sx={{ maxWidth: "100%", minWidth: 0 }}
+                styles={collapsed && { icon: { margin: 0 } }}
+                {...link?.props}
+              />
+            );
+            if (link.soon) return <>{navLinkComponent}</>;
+            return (
+              <Link key={link.link} href={link.link}>
+                {navLinkComponent}
+              </Link>
+            );
+          })}
         </Group>
-        {!collapsed && (
-          <Box p="xs">
-            <SupportBanner />
-          </Box>
-        )}
       </Navbar.Section>
 
       <Navbar.Section
@@ -271,20 +298,30 @@ function Sidebar(props) {
           borderColor: dark ? theme.colors.dark[5] : theme.colors.gray[2],
         }}
       >
-        <Box>
-          <UserMenu
-            trigger={
-              <SidebarButton
-                collapsed={collapsed}
-                component="div"
-                contents={{
-                  name: "More",
-                  icon: IconDotsCircleHorizontal,
-                }}
-              />
-            }
-          />
-        </Box>
+        <UserMenu
+          trigger={
+            <NavLink
+              // py="xs"
+              label={"Settings"}
+              icon={<IconSettings size={16} />}
+            />
+          }
+        />
+        <NavLink
+          onClick={() => {
+            console.log(collapsed);
+            toggleCollapsed();
+            if (props?.onCollapse) props.onCollapse();
+          }}
+          label={!collapsed && <Text inline>Collapse</Text>}
+          icon={
+            collapsed ? (
+              <IconChevronRight size={16} />
+            ) : (
+              <IconChevronLeft size={16} />
+            )
+          }
+        />
       </Navbar.Section>
     </Navbar>
   );
