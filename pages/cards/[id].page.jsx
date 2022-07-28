@@ -20,7 +20,7 @@ import {
   withAuthUserTokenSSR,
   getFirebaseAdmin,
 } from "next-firebase-auth";
-import getServerSideUser from "../../services/firebase/getSSRUser";
+import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { getLocalizedNumber } from "../../components/core/CardStatsNumber";
 
 function Page({ character, card, title }) {

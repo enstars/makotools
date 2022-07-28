@@ -47,8 +47,10 @@ function DebouncedUsernameInput({ dataKey = "username", changedCallback }) {
     if (value === firebaseUser.firestore.username) {
       setUsernameMsg("");
       setUsernameJudgement(true);
-    } else if (value.replace(/[A-z0-9_]/g, "").length > 0) {
-      setUsernameMsg("Username must only contain alphanumeric characters!");
+    } else if (value.replace(/[a-z0-9_]/g, "").length > 0) {
+      setUsernameMsg(
+        "Username must only contain lowercase alphanumeric characters!"
+      );
       setUsernameJudgement(true);
     } else if (value.length === 0) {
       setUsernameMsg("Username cannot be empty!");

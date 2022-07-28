@@ -274,15 +274,14 @@ function Sidebar(props) {
               <NavLink
                 py="xs"
                 label={collapsed ? false : <Text inline>{link.name}</Text>}
-                icon={<link.icon size={16} />}
+                icon={link?.icon && <link.icon size={16} />}
                 active={`/${location.asPath.split("/")[1]}` === link.link}
                 link={link.soon ? undefined : link.link}
                 disabled={link.soon}
                 sx={{ maxWidth: "100%", minWidth: 0 }}
-                styles={[
-                  collapsed && { icon: { margin: 0 } },
-                  { icon: { paddingTop: 0 } },
-                ]}
+                styles={{
+                  icon: [collapsed && { margin: 0 }, { paddingTop: 0 }],
+                }}
                 {...link?.props}
               />
             );

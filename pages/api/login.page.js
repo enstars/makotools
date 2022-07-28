@@ -12,6 +12,18 @@ import { getFirestore, FieldValue } from "firebase-admin/firestore";
 
 initAuth();
 
+const genRanHex = (size) =>
+  [...Array(size)]
+    .map(() => Math.floor(Math.random() * 16).toString(16))
+    .join("")
+    .toUpperCase();
+
+async function validateSUID(docCollection, suid) {
+  const querySnap = await docCollection.where("suid", "==", suid).get();
+  const suidValid = !querySnap.size;
+  return suidValid;
+}
+
 const handler = async (req, res) => {
   try {
     await setAuthCookies(req, res);
@@ -21,7 +33,8 @@ const handler = async (req, res) => {
     // console.log(defaultFirestore);
     // initAuth();
     const db = getFirebaseAdmin().firestore();
-    const docRef = db.collection("users").doc(authUser.id);
+    const docCollection = db.collection("users");
+    const docRef = docCollection.doc(authUser.id);
     const docSet = await docRef.set(
       {
         email: authUser.email,
@@ -29,8 +42,35 @@ const handler = async (req, res) => {
       },
       { merge: true }
     );
-    // const docGet = (await docRef.get())?.data();
-    // console.log(docGet);
+    const docGet = (await docRef.get())?.data();
+    let suid = docGet?.suid;
+    if (!suid) {
+      let uniqueSUID = "";
+      while (!uniqueSUID) {
+        uniqueSUID = genRanHex(6);
+        if (validateSUID(docCollection, uniqueSUID)) {
+          const docSetSUID = await docRef.set(
+            {
+              suid: uniqueSUID,
+            },
+            { merge: true }
+          );
+          suid = uniqueSUID;
+        } else {
+          uniqueSUID = "";
+        }
+      }
+    }
+    if (!docGet?.username) {
+      const docSetUsername = await docRef.set(
+        {
+          username: suid,
+        },
+        { merge: true }
+      );
+    }
+
+    console.log(docGet);
 
     return res.status(200).json({ success: true });
   } catch (e) {

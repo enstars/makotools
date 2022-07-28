@@ -5,12 +5,13 @@ export default function getServerSideUser(f) {
     // whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
   })(async ({ AuthUser, ...props }) => {
     console.log(AuthUser);
+    const admin = getFirebaseAdmin();
     if (AuthUser.id) {
-      const db = getFirebaseAdmin().firestore();
+      const db = admin.firestore();
       const docRef = db.collection("users").doc(AuthUser.id);
       const firestore = await (await docRef.get()).data();
-      return f({ user: AuthUser, firestore, ...props });
+      return f({ user: AuthUser, firestore, admin, ...props });
     }
-    return f({ user: AuthUser, firestore: {}, ...props });
+    return f({ user: AuthUser, firestore: {}, admin, ...props });
   });
 }
