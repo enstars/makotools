@@ -22,9 +22,9 @@ export default Page;
 
 import Layout from "../../components/Layout";
 
-Page.getLayout = function getLayout(page) {
+Page.getLayout = function getLayout(page, pageProps) {
   return (
-    <Layout hideHeader hideFooter hideSidebar>
+    <Layout hideHeader hideFooter hideSidebar pageProps={pageProps}>
       {page}
     </Layout>
   );

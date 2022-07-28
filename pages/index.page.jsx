@@ -24,7 +24,7 @@ import AffiliatesLight from "../assets/Affiliates/affiliates_light.svg?url";
 import AffiliatesDark from "../assets/Affiliates/affiliates_dark.svg?url";
 import Image from "next/image";
 
-function Home() {
+function Page() {
   const { firebaseUser } = useFirebaseUser();
   const theme = useMantineTheme();
 
@@ -141,9 +141,9 @@ function Home() {
   );
 }
 
-export default Home;
+export default Page;
 
 import Layout from "../components/Layout";
-Home.getLayout = function getLayout(page) {
-  return <Layout footerTextOnly>{page}</Layout>;
+Page.getLayout = function getLayout(page, pageProps) {
+  return <Layout footerTextOnly pageProps={pageProps}>{page}</Layout>;
 };

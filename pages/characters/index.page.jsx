@@ -12,7 +12,7 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 
-function Characters({
+function Page({
   characters,
   unit_to_characters: unitToCharacters,
   units,
@@ -119,7 +119,7 @@ function Characters({
   );
 }
 
-export default Characters;
+export default Page;
 
 export async function getServerSideProps({ res, locale }) {
   res.setHeader(
@@ -140,6 +140,6 @@ export async function getServerSideProps({ res, locale }) {
 }
 
 import Layout from "../../components/Layout";
-Characters.getLayout = function getLayout(page) {
-  return <Layout wide>{page}</Layout>;
+Page.getLayout = function getLayout(page, pageProps) {
+  return <Layout wide pageProps={pageProps}>{page}</Layout>;
 };

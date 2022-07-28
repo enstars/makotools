@@ -3,7 +3,7 @@ import Title from "../../../components/PageTitle";
 import { TypographyStylesProvider } from "@mantine/core";
 import { MAKOTOOLS } from "../../../services/constants";
 
-function Translations() {
+function Page() {
   return (
     <>
       <Title title="About Translations"></Title>
@@ -33,8 +33,8 @@ function Translations() {
   );
 }
 
-export default Translations;
+export default Page;
 
-Translations.getLayout = function getLayout(page) {
-  return <Layout>{page}</Layout>;
+Page.getLayout = function getLayout(page, pageProps) {
+  return <Layout pageProps={pageProps}>{page}</Layout>;
 };
