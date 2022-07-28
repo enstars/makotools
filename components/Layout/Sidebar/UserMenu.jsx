@@ -9,6 +9,8 @@ import {
   useMantineColorScheme,
   MediaQuery,
   Box,
+  Tooltip,
+  ActionIcon,
 } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import { useDisclosure } from "@mantine/hooks";
@@ -26,7 +28,7 @@ import {
 
 import { useFirebaseUser } from "../../../services/firebase/user";
 
-function UserMenu({ trigger }) {
+function UserMenu({ trigger, collapsed }) {
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
@@ -53,7 +55,6 @@ function UserMenu({ trigger }) {
       onClose={handlers.close}
       // withinPortal={true}
       styles={{
-        dropdown: { left: theme.spacing.xs },
         itemBody: {
           maxWidth: "100%",
           minWidth: 0,
@@ -61,11 +62,16 @@ function UserMenu({ trigger }) {
         itemLabel: {
           maxWidth: "100%",
           minWidth: 0,
+          lineHeight: 1.15,
         },
       }}
       // middlewares={}
     >
-      <Menu.Target>{trigger}</Menu.Target>
+      <Tooltip label="Settings" position="right" disabled={!collapsed}>
+        <span>
+          <Menu.Target>{trigger}</Menu.Target>
+        </span>
+      </Tooltip>
       {/* <Menu.Target>
         <div>a</div>
       </Menu.Target> */}
@@ -114,7 +120,7 @@ function UserMenu({ trigger }) {
             </Text>
           )}
         </Menu.Item>
-        <Divider />
+        <Menu.Divider />
         <Menu.Label id="sidebar-label-quick-settings">
           Quick Settings
         </Menu.Label>

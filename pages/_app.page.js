@@ -93,27 +93,6 @@ function MakoTools({ Component, pageProps, ...props }) {
       theme={{
         colorScheme,
         components: {
-          Tooltip: {
-            styles: (theme) => ({
-              body: {
-                backgroundColor:
-                  theme.colorScheme === "dark"
-                    ? theme.colors.dark[9]
-                    : theme.colors.gray[9],
-                color:
-                  theme.colorScheme === "dark"
-                    ? theme.colors.dark[1]
-                    : theme.colors.gray[1],
-                fontWeight: 500,
-              },
-              arrow: {
-                backgroundColor:
-                  theme.colorScheme === "dark"
-                    ? theme.colors.dark[9]
-                    : theme.colors.gray[9],
-              },
-            }),
-          },
           NavLink: {
             styles: (theme) => ({
               root: {

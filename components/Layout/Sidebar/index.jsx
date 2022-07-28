@@ -279,15 +279,39 @@ function Sidebar(props) {
                 link={link.soon ? undefined : link.link}
                 disabled={link.soon}
                 sx={{ maxWidth: "100%", minWidth: 0 }}
-                styles={collapsed && { icon: { margin: 0 } }}
+                styles={[
+                  collapsed && { icon: { margin: 0 } },
+                  { icon: { paddingTop: 0 } },
+                ]}
                 {...link?.props}
               />
             );
-            if (link.soon) return <>{navLinkComponent}</>;
+            if (link.soon)
+              return (
+                <Tooltip
+                  key={link.link}
+                  label={link.name}
+                  position="right"
+                  disabled={!collapsed}
+                  withinPortal
+                >
+                  <div>{navLinkComponent}</div>
+                </Tooltip>
+              );
             return (
-              <Link key={link.link} href={link.link}>
-                {navLinkComponent}
-              </Link>
+              <Tooltip
+                key={link.link}
+                label={link.name}
+                position="right"
+                disabled={!collapsed}
+                withinPortal
+              >
+                <div>
+                  <Link key={link.link} href={link.link}>
+                    {navLinkComponent}
+                  </Link>
+                </div>
+              </Tooltip>
             );
           })}
         </Stack>
@@ -300,6 +324,7 @@ function Sidebar(props) {
         }}
       >
         <UserMenu
+          collapsed={collapsed}
           trigger={
             <NavLink
               // py="xs"
