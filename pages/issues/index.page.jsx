@@ -1,11 +1,11 @@
 import Layout from "../../components/Layout";
-import Title from "../../components/PageTitle";
+import PageTitle from "../../components/PageTitle";
 import { Accordion, Anchor, TypographyStylesProvider } from "@mantine/core";
 import { MAKOTOOLS } from "../../services/constants";
 function Page() {
   return (
     <>
-      <Title title="Issues and Suggestions"></Title>
+      <PageTitle title="Issues and Suggestions"></PageTitle>
       <TypographyStylesProvider>
         <p>
           Did you run into an error on the website? Do you have a suggestion to

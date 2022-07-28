@@ -1,6 +1,6 @@
 import { getData, getB2File, getLocalizedData } from "../../services/ensquare";
 import Layout from "../../components/Layout";
-import Title from "../../components/PageTitle";
+import PageTitle from "../../components/PageTitle";
 import Head from "next/head";
 import ImageViewer from "../../components/core/ImageViewer";
 import { Text, Box } from "@mantine/core";
@@ -22,7 +22,7 @@ function Page({ character }) {
         <meta name="description" content={character.introduction} />
       </Head>
 
-      <Title
+      <PageTitle
         title={
           <>
             <ruby>
@@ -74,7 +74,7 @@ function Page({ character }) {
             objectfit="cover"
           />
         </Box>
-      </Title>
+      </PageTitle>
       <Text>{character.introduction}</Text>
       <Reactions />
       {/* Birthday

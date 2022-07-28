@@ -1,12 +1,12 @@
 import Layout from "../../../components/Layout";
-import Title from "../../../components/PageTitle";
+import PageTitle from "../../../components/PageTitle";
 import { Anchor, Text, TypographyStylesProvider } from "@mantine/core";
 import { MAKOTOOLS } from "../../../services/constants";
 
 function Page() {
   return (
     <>
-      <Title title="Acknowledgements"></Title>
+      <PageTitle title="Acknowledgements"></PageTitle>
       <TypographyStylesProvider>
         <p>
           Originally a dream of a certain TomoyaP, MakoTools has been built with

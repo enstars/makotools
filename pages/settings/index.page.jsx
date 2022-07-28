@@ -1,5 +1,5 @@
 import { useState, useEffect, forwardRef } from "react";
-import Title from "../../components/PageTitle";
+import PageTitle from "../../components/PageTitle";
 import { useFirebaseUser } from "../../services/firebase/user";
 import { useRouter } from "next/router";
 import DebouncedUserInput from "../../components/core/DebouncedUserInput";
@@ -188,7 +188,7 @@ function Page() {
 
   return (
     <>
-      <Title title="Settings" />
+      <PageTitle title="Settings" />
       <LoadingOverlay visible={firebaseUser.loading} />
       <Accordion
         disableIconRotation

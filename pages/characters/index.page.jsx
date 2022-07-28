@@ -2,7 +2,7 @@ import { CharacterCard } from "./../../components/characters/CharacterCard";
 import React, { useState, useEffect } from "react";
 import _ from "lodash";
 import { getLocalizedData } from "../../services/ensquare";
-import Title from "../../components/PageTitle";
+import PageTitle from "../../components/PageTitle";
 import {
   Select,
   Box,
@@ -12,11 +12,7 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 
-function Page({
-  characters,
-  unit_to_characters: unitToCharacters,
-  units,
-}) {
+function Page({ characters, unit_to_characters: unitToCharacters, units }) {
   const [listCharacters, setListCharacters] = useState([]);
   const [filterOptions, setfilterOptions] = useState([]);
   const [chosenUnit, setChosenUnit] = useState(null);
@@ -73,7 +69,7 @@ function Page({
 
   return (
     <>
-      <Title title="Characters" />
+      <PageTitle title="Characters" />
       <Paper mb="sm" p="md" withBorder>
         <Text weight="700" size="xs" color="dimmed">
           Search Options
@@ -141,5 +137,9 @@ export async function getServerSideProps({ res, locale }) {
 
 import Layout from "../../components/Layout";
 Page.getLayout = function getLayout(page, pageProps) {
-  return <Layout wide pageProps={pageProps}>{page}</Layout>;
+  return (
+    <Layout wide pageProps={pageProps}>
+      {page}
+    </Layout>
+  );
 };

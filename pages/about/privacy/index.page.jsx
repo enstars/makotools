@@ -1,11 +1,11 @@
 import Layout from "../../../components/Layout";
-import Title from "../../../components/PageTitle";
+import PageTitle from "../../../components/PageTitle";
 import { TypographyStylesProvider } from "@mantine/core";
 
 function Page() {
   return (
     <>
-      <Title title="Privacy Policy"></Title>
+      <PageTitle title="Privacy Policy"></PageTitle>
       <TypographyStylesProvider>
         <p>Google made us put this here, so here it is.</p>
 

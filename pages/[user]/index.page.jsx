@@ -1,5 +1,5 @@
 import Layout from "../../components/Layout";
-import Title from "../../components/PageTitle";
+import PageTitle from "../../components/PageTitle";
 import {
   Accordion,
   Anchor,
@@ -13,13 +13,13 @@ function Page({ profile }) {
     <>
       {profile.name ? (
         <>
-          <Title title={profile.name}></Title>
+          <PageTitle title={profile.name}></PageTitle>
           <Text color="dimmed" weight={800} size="lg">
             @{profile.username}
           </Text>
         </>
       ) : (
-        <Title title={profile.username}></Title>
+        <PageTitle title={`@${profile.username}`}></PageTitle>
       )}
     </>
   );
