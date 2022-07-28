@@ -9,17 +9,23 @@ import {
   Select,
   Chips,
   Chip,
-  InputWrapper,
+  Input,
   Center,
   Loader,
   Switch,
   MultiSelect,
+  Button,
 } from "@mantine/core";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CardCard from "../../components/cards/CardCard";
 import { useLocalStorage } from "@mantine/hooks";
 
 const CARD_LIST_INITIAL_COUNT = 20;
+const CARD_VIEW_OPTIONS_DEFAULT = {
+  filterRarity: [5],
+  filterCharacters: [],
+  sortOption: "id",
+};
 
 function Page({ cards, characters }) {
   // console.log(characters);
@@ -30,11 +36,7 @@ function Page({ cards, characters }) {
   const [slicedCardsList, setSlicedCardsList] = useState([]);
   const [viewOptions, setViewOptions] = useLocalStorage({
     key: "cardFilters",
-    defaultValue: {
-      filterRarity: [5],
-      filterCharacters: [],
-      sortOption: "id",
-    },
+    defaultValue: CARD_VIEW_OPTIONS_DEFAULT,
   });
   const [cardOptions, setCardOptions] = useLocalStorage({
     key: "cardOptions",
@@ -127,29 +129,34 @@ function Page({ cards, characters }) {
             variant="default"
             searchable
           />
-          <InputWrapper id="rarity" label="Rarity">
-            <Chips
-              color="yellow"
-              variant="filled"
+          <Input.Wrapper id="rarity" label="Rarity">
+            <Chip.Group
               multiple
-              value={viewOptions.filterRarity}
-              onChange={(filterRarity) => {
+              value={viewOptions.filterRarity.map((v) => v.toString())}
+              onChange={(value) => {
+                const filterRarity = value.map((v) => parseInt(v, 10));
+                console.log(filterRarity);
                 setViewOptions({ ...viewOptions, filterRarity });
               }}
               spacing={3}
-              radius="md"
-              styles={{
-                label: { paddingLeft: 10, paddingRight: 10 },
-                iconWrapper: { display: "none" },
-              }}
             >
               {[4, 5].map((r) => (
-                <Chip key={r} value={r}>
+                <Chip
+                  key={r}
+                  value={r.toString()}
+                  radius="md"
+                  styles={{
+                    label: { paddingLeft: 10, paddingRight: 10 },
+                    iconWrapper: { display: "none" },
+                  }}
+                  color="yellow"
+                  variant="filled"
+                >
                   {r}
                 </Chip>
               ))}
-            </Chips>
-          </InputWrapper>
+            </Chip.Group>
+          </Input.Wrapper>
         </Group>
         <Group mt="xs">
           <Switch
@@ -162,8 +169,17 @@ function Page({ cards, characters }) {
               })
             }
           />
+          <Button
+            compact
+            onClick={() => {
+              setViewOptions(CARD_VIEW_OPTIONS_DEFAULT);
+            }}
+          >
+            Reset all filters
+          </Button>
         </Group>
       </Paper>
+      {slicedCardsList.length}
       {slicedCardsList.length ? (
         <>
           <Text color="dimmed" mt="xl" mb="sm" size="sm">
@@ -172,7 +188,7 @@ function Page({ cards, characters }) {
           <InfiniteScroll
             dataLength={slicedCardsList.length} //This is important field to render the next data
             next={loadMore}
-            hasMore={count < cards.main.data.length}
+            hasMore={count < cardsList.length}
             loader={
               <Center sx={{ gridColumn: "s/e" }} my="lg">
                 <Loader variant="bars" />
@@ -259,6 +275,7 @@ export async function getServerSideProps({ res, locale }) {
 
 import Layout from "../../components/Layout";
 import { IconArrowsSort, IconSearch } from "@tabler/icons";
+import { slice } from "lodash";
 Page.getLayout = function getLayout(page) {
   return <Layout wide>{page}</Layout>;
 };

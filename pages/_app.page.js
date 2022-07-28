@@ -3,9 +3,15 @@ import React, { useState, useEffect } from "react";
 import Router, { useRouter } from "next/router";
 import Head from "next/head";
 import { getCookie, setCookie } from "cookies-next";
-import NProgress from "nprogress";
+// import NProgress from "nprogress";
 
-import { MantineProvider, ColorSchemeProvider, Tooltip } from "@mantine/core";
+import {
+  MantineProvider,
+  ColorSchemeProvider,
+  Tooltip,
+  NavLink,
+  createEmotionCache,
+} from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
 
 import "@fontsource/sora/400.css";
@@ -26,17 +32,24 @@ import FirebaseUserProvider from "../services/firebase/user";
 
 import { withAuthUser } from "next-firebase-auth";
 import RouteChangeLoader from "../components/Layout/RouteChangeLoader";
+import {
+  startNavigationProgress,
+  resetNavigationProgress,
+  NavigationProgress,
+} from "@mantine/nprogress";
 
-Router.onRouteChangeStart = (url) => {
-  NProgress.start();
-};
-Router.onRouteChangeComplete = () => NProgress.done();
-Router.onRouteChangeError = () => NProgress.done();
+// Router.onRouteChangeStart = (url) => {
+//   NProgress.start();
+// };
+// Router.onRouteChangeComplete = () => NProgress.done();
+// Router.onRouteChangeError = () => NProgress.done();
 
 initAuth();
 
+const emotionCache = createEmotionCache({ key: "mktl" });
+
 function MakoTools({ Component, pageProps, ...props }) {
-  const location = useRouter();
+  const router = useRouter();
   const [colorScheme, setStateColorScheme] = useState(
     props.colorScheme || "dark"
   );
@@ -55,40 +68,47 @@ function MakoTools({ Component, pageProps, ...props }) {
     setAppColorScheme(colorScheme === "light" ? "dark" : "light");
   };
 
+  // https://mantine.dev/others/nprogress/
+  useEffect(() => {
+    const handleStart = (url) =>
+      url !== router.asPath && startNavigationProgress();
+    const handleComplete = () => resetNavigationProgress();
+
+    router.events.on("routeChangeStart", handleStart);
+    router.events.on("routeChangeComplete", handleComplete);
+    router.events.on("routeChangeError", handleComplete);
+
+    return () => {
+      router.events.off("routeChangeStart", handleStart);
+      router.events.off("routeChangeComplete", handleComplete);
+      router.events.off("routeChangeError", handleComplete);
+    };
+  }, [router.asPath]);
+
   return (
     <MantineProvider
-      emotionOptions={{ key: "mktl" }}
+      emotionCache={emotionCache}
       withGlobalStyles
       withNormalizeCSS
-      styles={{
-        Tooltip: (theme) => ({
-          body: {
-            backgroundColor:
-              theme.colorScheme === "dark"
-                ? theme.colors.dark[9]
-                : theme.colors.gray[9],
-            color:
-              theme.colorScheme === "dark"
-                ? theme.colors.dark[1]
-                : theme.colors.gray[1],
-            fontWeight: 500,
-          },
-          arrow: {
-            backgroundColor:
-              theme.colorScheme === "dark"
-                ? theme.colors.dark[9]
-                : theme.colors.gray[9],
-          },
-        }),
-        Image: {
-          image: {
-            position: "relative",
-            zIndex: 10,
-          },
-        },
-      }}
       theme={{
         colorScheme,
+        components: {
+          NavLink: {
+            styles: (theme) => ({
+              root: {
+                "& > *:last-child": {
+                  margin: 0,
+                },
+              },
+            }),
+          },
+          Image: {
+            image: {
+              position: "relative",
+              zIndex: 10,
+            },
+          },
+        },
         colors: {
           // override dark colors to change them for all components
           dark: [
@@ -143,6 +163,7 @@ function MakoTools({ Component, pageProps, ...props }) {
         },
       }}
     >
+      <NavigationProgress />
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>

@@ -27,7 +27,7 @@ function BreadcrumbsApp({
   let pageBreadcrumbs = breadcrumbs || getBreadcrumbs(location.asPath);
 
   return (
-    <Group noWrap align="center" py="xs" {...props}>
+    <Group noWrap align="center" {...props}>
       <MediaQuery largerThan="xs" styles={{ display: "none" }}>
         <Box sx={{ alignSelf: "stretch" }}>
           <ActionIcon onClick={() => setOpened((o) => !o)}>

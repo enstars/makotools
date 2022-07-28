@@ -16,7 +16,7 @@ import {
   Text,
   Button,
   Divider,
-  InputWrapper,
+  Input,
   TextInput,
   PasswordInput,
   Group,

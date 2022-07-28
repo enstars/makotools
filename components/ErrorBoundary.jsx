@@ -1,5 +1,5 @@
 import React from "react";
-import { Anchor, Center, Box, Text, Button, Group } from "@mantine/core";
+import { Anchor, Center, Box, Text, Button, Group, Stack } from "@mantine/core";
 import Router from "next/router";
 import Jun from "../assets/ErrorBoundary/Jun.webp";
 import Image from "next/image";
@@ -27,20 +27,20 @@ class ErrorBoundary extends React.Component {
             </Text>
             <Text size="sm">
               Hopefully we know about this one.{" "}
-              <Anchor href="/issues">
+              <Anchor inherit href="/issues">
                 Wanna help report the bug to us anyways?
               </Anchor>
             </Text>
-            <Group direction="column" align="end" mt="sm">
-              <Group direction="column" align="center" spacing={0}>
+            <Stack align="end" mt="sm">
+              <Stack align="center" spacing={0}>
                 <Button onClick={() => Router.reload(window.location.pathname)}>
                   GODDAMN!
                 </Button>
                 <Text size="xs" color="dimmed" mt={5}>
                   (Refresh the page)
                 </Text>
-              </Group>
-            </Group>
+              </Stack>
+            </Stack>
           </Box>
         </Center>
       );
