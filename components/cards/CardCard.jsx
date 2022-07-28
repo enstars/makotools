@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import CardStatsShort from "../core/CardStatsShort";
 import { getB2File } from "../../services/ensquare";
 import {
@@ -12,13 +12,27 @@ import {
   Skeleton,
   useMantineTheme,
   useMantineColorScheme,
+  Button,
+  ActionIcon,
+  Popover,
+  Stack,
 } from "@mantine/core";
-import { IconStar, IconSum } from "@tabler/icons";
+import {
+  IconBoxMultiple1,
+  IconFilePlus,
+  IconMinus,
+  IconPlaylistAdd,
+  IconPlus,
+  IconStar,
+  IconSum,
+} from "@tabler/icons";
 import { useRouter } from "next/router";
 import attributes from "../../data/attributes.json";
 import ImageViewer from "../../components/core/ImageViewer";
 import OfficialityBadge from "../OfficialityBadge";
 import CardStatsNumber from "../core/CardStatsNumber";
+import { addCard } from "../../services/collection";
+import { useFirebaseUser } from "../../services/firebase/user";
 
 function RarityBadge({ card }) {
   const theme = useMantineTheme();
@@ -69,9 +83,16 @@ export default function CardCard({ cards, id, cardOptions }) {
   const cardMainLang = cards.mainLang.data.find((c) => c.id === id);
   const cardSubLang = cards.subLang.data?.find((c) => c.id === id) || undefined;
 
+  const { firebaseUser, setUserDataKey } = useFirebaseUser();
+
   const statsIR = card.stats.ir.da + card.stats.ir.vo + card.stats.ir.pf;
   const statsIR4 = card.stats.ir4.da + card.stats.ir4.vo + card.stats.ir4.pf;
 
+  const collection = firebaseUser.firestore?.collection || [];
+  const thisColItem = collection?.find((c) => c.id === id);
+  const [collectionOpened, setCollectionOpened] = useState(false);
+
+  // if (thisColItem?.count === 0) setCollectionOpened(false);
   return (
     <Card
       withBorder
@@ -150,93 +171,186 @@ export default function CardCard({ cards, id, cardOptions }) {
           </Text>
         )}
       </Card.Section>
-      <Divider my="xs" size="xs" />
+      <Divider mt="xs" size="xs" />
       <Card.Section
-        px="sm"
-        pb="xs"
         sx={{
           whiteSpace: "nowrap",
         }}
       >
-        <Group
-          spacing={3}
-          sx={{ justifyContent: "space-between", flexWrap: "nowrap" }}
-          mt={3}
-        >
-          {cardOptions.showFullInfo ? (
-            <Text
-              inline
-              size="sm"
-              weight="700"
-              sx={{
-                textTransform: "none",
-                fontFeatureSettings: "'kern' 1, 'ss02' 1",
-                display: "flex",
-                flexGrow: 1,
-                flexShrink: 1,
-                flexBasis: 0,
-                minWidth: 0,
-              }}
-            >
+        <Group spacing={0}>
+          {firebaseUser.loggedIn && (
+            <Group>
+              <Box
+                // ml="xs"
+                sx={(theme) => ({
+                  marginLeft: theme.spacing.xs / 2,
+                })}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!thisColItem) {
+                    const newCollection = addCard(collection, card.id, 1);
+                    setUserDataKey({ collection: newCollection });
+                  } else {
+                    setCollectionOpened((o) => !o);
+                  }
+                }}
+              >
+                <Popover
+                  offset={4}
+                  opened={collectionOpened}
+                  onChange={setCollectionOpened}
+                  styles={{ dropdown: { padding: 0 } }}
+                  position="right-center"
+                  withinPortal
+                >
+                  <Popover.Target>
+                    <ActionIcon
+                      variant="light"
+                      {...(thisColItem?.count > 0 ? { color: "orange" } : {})}
+                      // color="red"
+                    >
+                      {thisColItem?.count > 0 ? (
+                        <Text inline size="xs" weight="700">
+                          {thisColItem.count}
+                          <Text
+                            component="span"
+                            sx={{ verticalAlign: "-0.05em", lineHeight: 0 }}
+                          >
+                            ×
+                          </Text>
+                        </Text>
+                      ) : (
+                        <IconPlaylistAdd size={16} />
+                      )}
+                    </ActionIcon>
+                  </Popover.Target>
+                  <Popover.Dropdown>
+                    <Stack spacing={0}>
+                      <ActionIcon
+                        variant="subtle"
+                        color="green"
+                        onClick={(e) => {
+                          e.stopPropagation();
+
+                          const newCollection = addCard(collection, card.id, 1);
+                          setUserDataKey({ collection: newCollection });
+                        }}
+                        disabled={thisColItem?.count >= 5}
+                      >
+                        <IconPlus size={16} />
+                      </ActionIcon>
+                      <ActionIcon
+                        variant="subtle"
+                        color="red"
+                        onClick={(e) => {
+                          e.stopPropagation();
+
+                          const newCollection = addCard(
+                            collection,
+                            card.id,
+                            -1
+                          );
+                          setUserDataKey({ collection: newCollection });
+                        }}
+                        disabled={thisColItem?.count <= 0}
+                      >
+                        <IconMinus size={16} />
+                      </ActionIcon>
+                    </Stack>
+                  </Popover.Dropdown>
+                </Popover>
+              </Box>
+            </Group>
+          )}
+          <Group
+            px="sm"
+            py="xs"
+            spacing={3}
+            sx={{ flex: "1" }}
+            noWrap
+            position="apart"
+            // mt={3}
+          >
+            {cardOptions.showFullInfo ? (
               <Text
                 inline
-                inherit
-                color={
-                  colorScheme === "dark"
-                    ? theme.colors.yellow[2]
-                    : theme.colors.yellow[7]
-                }
-                mr={4}
+                size="sm"
+                weight="700"
+                sx={{
+                  textTransform: "none",
+                  fontFeatureSettings: "'kern' 1, 'ss02' 1",
+                  display: "flex",
+                  flexGrow: 1,
+                  flexShrink: 1,
+                  flexBasis: 0,
+                  minWidth: 0,
+                }}
               >
-                {card.rarity}
-                <IconStar
-                  size={12}
-                  strokeWidth={3}
-                  style={{ verticalAlign: -1 }}
+                <Text
+                  inline
+                  inherit
+                  color={
+                    colorScheme === "dark"
+                      ? theme.colors.yellow[2]
+                      : theme.colors.yellow[7]
+                  }
+                  mr={4}
+                >
+                  {card.rarity}
+                  <IconStar
+                    size={12}
+                    strokeWidth={3}
+                    style={{ verticalAlign: -1 }}
+                  />
+                </Text>
+                <Tooltip label={attributes[card.type].fullname} withArrow>
+                  <Text
+                    inline
+                    inherit
+                    color={attributes[card.type].color}
+                    mr={4}
+                  >
+                    {attributes[card.type].name}
+                  </Text>
+                </Tooltip>
+                <Text
+                  inline
+                  inherit
+                  color="dimmed"
+                  sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
+                >{`${cardMainLang?.name?.split(" ")?.[0]}`}</Text>
+              </Text>
+            ) : (
+              <Box />
+            )}
+            <Text
+              weight="700"
+              size="sm"
+              sx={{
+                whiteSpace: "nowrap",
+                flexGrow: 0,
+                flexShrink: 0,
+              }}
+              inline
+            >
+              <Text inline component="span" color="dimmed" mr={2}>
+                <IconSum
+                  size={18}
+                  style={{ verticalAlign: -3 }}
+                  strokeWidth={2.5}
                 />
               </Text>
-              <Tooltip label={attributes[card.type].fullname} withArrow>
-                <Text inline inherit color={attributes[card.type].color} mr={4}>
-                  {attributes[card.type].name}
-                </Text>
-              </Tooltip>
-              <Text
-                inline
-                inherit
-                color="dimmed"
-                sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
-              >{`${cardMainLang?.name?.split(" ")?.[0]}`}</Text>
+              <CardStatsNumber short>{statsIR}</CardStatsNumber>
+              {card?.rarity === 5 && (
+                <>
+                  <Text component="span" inherit inline color="dimmed">
+                    {" / "}
+                  </Text>
+                  <CardStatsNumber short>{statsIR4}</CardStatsNumber>
+                </>
+              )}
             </Text>
-          ) : (
-            <Box />
-          )}
-          <Text
-            weight="700"
-            size="sm"
-            sx={{
-              whiteSpace: "nowrap",
-              flexGrow: 0,
-              flexShrink: 0,
-            }}
-            inline
-          >
-            <Text inline component="span" color="dimmed" mr={2}>
-              <IconSum
-                size={18}
-                style={{ verticalAlign: -3 }}
-                strokeWidth={2.5}
-              />
-            </Text>
-            <CardStatsNumber short>{statsIR}</CardStatsNumber>
-            {card?.rarity === 5 && (
-              <>
-                <Text component="span" inherit inline color="dimmed">
-                  {" / "}
-                </Text>
-                <CardStatsNumber short>{statsIR4}</CardStatsNumber>
-              </>
-            )}
-          </Text>
+          </Group>
         </Group>
       </Card.Section>
     </Card>
