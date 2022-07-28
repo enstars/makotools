@@ -41,6 +41,7 @@ import {
 } from "@mantine/core";
 import { useColorScheme, useToggle } from "@mantine/hooks";
 import SupportBanner from "../SupportBanner";
+import { useFirebaseUser } from "../../../services/firebase/user";
 
 const SidebarButton = forwardRef(function button(
   { contents, link, rootStyles, ...props },
@@ -140,6 +141,7 @@ function Sidebar(props) {
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
+  const { firebaseUser } = useFirebaseUser();
 
   const [collapsed, toggleCollapsed] = useToggle([false, true]);
   console.log("collapsed", collapsed);
@@ -255,6 +257,13 @@ function Sidebar(props) {
               icon: IconBooks,
               soon: true,
             },
+            ...[
+              firebaseUser.loggedIn && {
+                link: `/@${firebaseUser.firestore.username}`,
+                name: "Profile",
+                icon: IconUser,
+              },
+            ],
             {
               link: "https://www.patreon.com/makotools",
               name: "Patreon",
