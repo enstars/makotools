@@ -3,41 +3,26 @@ import PageTitle from "../../components/PageTitle";
 import { useFirebaseUser } from "../../services/firebase/user";
 import { useRouter } from "next/router";
 import SelectSetting from "./shared/SelectSetting";
-import Region from "./content/region";
+import Region from "./content/Region";
 import NameOrder from "./content/NameOrder";
 import DarkMode from "./appearance/DarkMode";
 import ShowTlBadge from "./appearance/ShowTlBadge";
 import Name from "./profile/Name";
 import Username from "./profile/Username";
+import ColorCode from "./profile/ColorCode";
+import { useViewportSize } from "@mantine/hooks";
+import { AuthAction } from "next-firebase-auth";
+import getServerSideUser from "../../services/firebase/getServerSideUser";
 import {
-  Modal,
-  Group,
-  Select,
-  Text,
   Stack,
-  Title as MantineTitle,
-  ThemeIcon,
-  LoadingOverlay,
   useMantineTheme,
   useMantineColorScheme,
-  TextInput,
-  Accordion,
-  ActionIcon,
   Tabs,
-  Textarea,
   Center,
   Loader,
 } from "@mantine/core";
 
-import {
-  IconSun,
-  IconMoonStars,
-  IconUserCircle,
-  IconBrush,
-  IconDeviceGamepad2,
-  IconAt,
-  IconPencil,
-} from "@tabler/icons";
+import { IconUserCircle, IconBrush, IconDeviceGamepad2 } from "@tabler/icons";
 import Bio from "./profile/Bio";
 
 function Page() {
@@ -124,10 +109,6 @@ function Page() {
 export default Page;
 
 import Layout from "../../components/Layout";
-import ColorCode from "./profile/ColorCode";
-import { useViewportSize } from "@mantine/hooks";
-import { AuthAction } from "next-firebase-auth";
-import getServerSideUser from "../../services/firebase/getServerSideUser";
 
 Page.getLayout = function getLayout(page, pageProps) {
   return <Layout pageProps={pageProps}>{page}</Layout>;
