@@ -1,8 +1,9 @@
 import { getFirebaseAdmin, withAuthUserTokenSSR } from "next-firebase-auth";
 
-export default function getServerSideUser(f) {
+export default function getServerSideUser(f, config) {
   return withAuthUserTokenSSR({
     // whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
+    ...config,
   })(async ({ AuthUser, ...props }) => {
     console.log(AuthUser);
     const admin = getFirebaseAdmin();

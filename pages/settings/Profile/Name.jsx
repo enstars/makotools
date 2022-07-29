@@ -1,17 +1,15 @@
 import React from "react";
 import TextSetting from "../shared/TextSetting";
 import { useFirebaseUser } from "../../../services/firebase/user";
-import { Textarea } from "@mantine/core";
 
 function Name() {
   const { firebaseUser } = useFirebaseUser();
   return (
     <TextSetting
-      label="Bio"
-      dataKey="bio"
-      placeholder="Say something about yourself!"
-      charLimit={316}
-      Component={Textarea}
+      label="Name"
+      dataKey="name"
+      placeholder={firebaseUser?.user?.email?.split("@")?.[0] || ""}
+      charLimit={50}
     />
   );
 }
