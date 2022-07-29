@@ -258,11 +258,13 @@ function Sidebar(props) {
               soon: true,
             },
             ...[
-              firebaseUser.loggedIn && {
-                link: `/@${firebaseUser.firestore.username}`,
-                name: "Profile",
-                icon: IconUser,
-              },
+              firebaseUser.loggedIn
+                ? {
+                    link: `/@${firebaseUser?.firestore?.username}`,
+                    name: "Profile",
+                    icon: IconUser,
+                  }
+                : {},
             ],
             {
               link: "https://www.patreon.com/makotools",
@@ -278,23 +280,36 @@ function Sidebar(props) {
                 description: collapsed ? null : "Support us!",
               },
             },
-          ].map((link) => {
-            const navLinkComponent = (
-              <NavLink
-                py="xs"
-                label={collapsed ? false : <Text inline>{link.name}</Text>}
-                icon={link?.icon && <link.icon size={16} />}
-                active={`/${location.asPath.split("/")[1]}` === link.link}
-                link={link.soon ? undefined : link.link}
-                disabled={link.soon}
-                sx={{ maxWidth: "100%", minWidth: 0 }}
-                styles={{
-                  icon: [collapsed && { margin: 0 }, { paddingTop: 0 }],
-                }}
-                {...link?.props}
-              />
-            );
-            if (link.soon)
+          ]
+            .filter((l) => l.link)
+            .map((link) => {
+              const navLinkComponent = (
+                <NavLink
+                  py="xs"
+                  label={collapsed ? false : <Text inline>{link.name}</Text>}
+                  icon={link?.icon && <link.icon size={16} />}
+                  active={`/${location.asPath.split("/")[1]}` === link.link}
+                  link={link.soon ? undefined : link.link}
+                  disabled={link.soon}
+                  sx={{ maxWidth: "100%", minWidth: 0 }}
+                  styles={{
+                    icon: [collapsed && { margin: 0 }, { paddingTop: 0 }],
+                  }}
+                  {...link?.props}
+                />
+              );
+              if (link.soon)
+                return (
+                  <Tooltip
+                    key={link.link}
+                    label={link.name}
+                    position="right"
+                    disabled={!collapsed}
+                    withinPortal
+                  >
+                    <div>{navLinkComponent}</div>
+                  </Tooltip>
+                );
               return (
                 <Tooltip
                   key={link.link}
@@ -303,25 +318,14 @@ function Sidebar(props) {
                   disabled={!collapsed}
                   withinPortal
                 >
-                  <div>{navLinkComponent}</div>
+                  <div>
+                    <Link key={link.link} href={link.link}>
+                      {navLinkComponent}
+                    </Link>
+                  </div>
                 </Tooltip>
               );
-            return (
-              <Tooltip
-                key={link.link}
-                label={link.name}
-                position="right"
-                disabled={!collapsed}
-                withinPortal
-              >
-                <div>
-                  <Link key={link.link} href={link.link}>
-                    {navLinkComponent}
-                  </Link>
-                </div>
-              </Tooltip>
-            );
-          })}
+            })}
         </Stack>
       </Navbar.Section>
 

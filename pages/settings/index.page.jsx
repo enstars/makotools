@@ -18,6 +18,8 @@ import {
   TextInput,
   Accordion,
   ActionIcon,
+  Tabs,
+  Textarea,
 } from "@mantine/core";
 
 import {
@@ -190,19 +192,32 @@ function Page() {
     <>
       <PageTitle title="Settings" />
       <LoadingOverlay visible={firebaseUser.loading} />
-      <Accordion
-        disableIconRotation
-        multiple
-        styles={{ control: { paddingTop: 14, paddingBottom: 14 } }}
-      >
-        <Accordion.Item
-          label="Content"
-          icon={
-            <ThemeIcon color="yellow" variant="light">
-              <IconDeviceGamepad2 size={14} />
-            </ThemeIcon>
-          }
-        >
+      <Tabs defaultValue="content">
+        <Tabs.List>
+          <Tabs.Tab
+            value="content"
+            icon={<IconDeviceGamepad2 size={14} />}
+            color="yellow"
+          >
+            Content
+          </Tabs.Tab>
+          <Tabs.Tab
+            value="appearance"
+            icon={<IconBrush size={14} />}
+            color="violet"
+          >
+            Appearance
+          </Tabs.Tab>
+          <Tabs.Tab
+            value="profile"
+            icon={<IconUserCircle size={14} />}
+            color="lightblue"
+          >
+            Profile
+          </Tabs.Tab>
+        </Tabs.List>
+
+        <Tabs.Panel value="content" pt="xs">
           <Stack>
             <DropdownOption
               dataKey="content_region"
@@ -216,19 +231,13 @@ function Page() {
               label="Preferred name order"
               data={nameOrderOptions}
               description="Only applies to names displayed in western languages. East asian languages retain their original name order."
-              placeholder={nameOrderOptions[0].label}
+              placeholder={nameOrderOptions[0].label + " (Default)"}
               itemComponent={nameOrderItem}
             />
           </Stack>
-        </Accordion.Item>
-        <Accordion.Item
-          label="Appearance"
-          icon={
-            <ThemeIcon color="violet" variant="light">
-              <IconBrush size={14} />
-            </ThemeIcon>
-          }
-        >
+        </Tabs.Panel>
+
+        <Tabs.Panel value="appearance" pt="xs">
           <Stack>
             <DarkModeOption />
             <DropdownOption
@@ -239,42 +248,34 @@ function Page() {
               placeholder={tlBadgeOptions[0].label}
             />
           </Stack>
-        </Accordion.Item>
-        <Accordion.Item
-          label="Profile"
-          icon={
-            <ThemeIcon color="blue" variant="light">
-              <IconUserCircle size={14} />
-            </ThemeIcon>
-          }
-        >
+        </Tabs.Panel>
+
+        <Tabs.Panel value="profile" pt="xs">
           <Stack>
             <DebouncedUserInput
               label="Name"
               dataKey="name"
               placeholder={firebaseUser?.user?.email?.split("@")?.[0] || ""}
             />
-            <Group align="end" spacing="xs">
-              <TextInput
-                label="Username"
-                value={firebaseUser.firestore?.username}
-                disabled
-                description="Username changes are unavailable during the beta."
-                placeholder={"Username not set"}
-                icon={<IconAt size={16} />}
-                sx={{ flexGrow: 1 }}
-                rightSection={
-                  <ActionIcon
-                    onClick={() => setUsernameModalOpen(true)}
-                    variant="filled"
-                    color="blue"
-                    disabled //temporarily
-                  >
-                    <IconPencil size={14} />
-                  </ActionIcon>
-                }
-              />
-            </Group>
+            <TextInput
+              label="Username"
+              value={firebaseUser.firestore?.username}
+              disabled
+              description="Username changes are unavailable during the beta."
+              placeholder={"Username not set"}
+              icon={<IconAt size={16} />}
+              sx={{ flexGrow: 1 }}
+              rightSection={
+                <ActionIcon
+                  onClick={() => setUsernameModalOpen(true)}
+                  variant="filled"
+                  color="blue"
+                  disabled //temporarily
+                >
+                  <IconPencil size={14} />
+                </ActionIcon>
+              }
+            />
             <Modal
               opened={usernameModalOpen}
               onClose={() => setUsernameModalOpen(false)}
@@ -286,9 +287,46 @@ function Page() {
                 changedCallback={() => setUsernameModalOpen(false)}
               />
             </Modal>
+            <Bio />
           </Stack>
+        </Tabs.Panel>
+      </Tabs>
+      {/* <Accordion
+        disableIconRotation
+        multiple
+        styles={{ control: { paddingTop: 14, paddingBottom: 14 } }}
+      >
+        <Accordion.Item value="content">
+          <Accordion.Control
+            icon={
+            }
+          >
+            Content
+          </Accordion.Control>
+          <Accordion.Panel>
+          </Accordion.Panel>
         </Accordion.Item>
-      </Accordion>
+        <Accordion.Item value="appearance">
+          <Accordion.Control
+            icon={
+            }
+          >
+            Appearance
+          </Accordion.Control>
+          <Accordion.Panel>
+          </Accordion.Panel>
+        </Accordion.Item>
+        <Accordion.Item value="profile">
+          <Accordion.Control
+            icon={
+            }
+          >
+            Profile
+          </Accordion.Control>
+          <Accordion.Panel>
+          </Accordion.Panel>
+        </Accordion.Item>
+      </Accordion> */}
     </>
   );
 }
@@ -296,6 +334,8 @@ function Page() {
 export default Page;
 
 import Layout from "../../components/Layout";
+import RichText from "../../components/core/RichText";
+import Bio from "./Profile/Bio";
 Page.getLayout = function getLayout(page, pageProps) {
   return <Layout pageProps={pageProps}>{page}</Layout>;
 };

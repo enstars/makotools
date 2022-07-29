@@ -15,6 +15,7 @@
     "@mantine/next": "^5.0.0",
     "@mantine/notifications": "^5.0.0",
     "@mantine/nprogress": "^5.0.0",
+    "@mantine/rte": "^5.0.0",
     "@mantine/spotlight": "^5.0.0",
     "@svgr/webpack": "^6.3.1",
     "@tabler/icons": "^1.68.0",
