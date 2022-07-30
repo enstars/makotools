@@ -38,12 +38,6 @@ import {
   NavigationProgress,
 } from "@mantine/nprogress";
 
-// Router.onRouteChangeStart = (url) => {
-//   NProgress.start();
-// };
-// Router.onRouteChangeComplete = () => NProgress.done();
-// Router.onRouteChangeError = () => NProgress.done();
-
 initAuth();
 
 const emotionCache = createEmotionCache({ key: "mktl" });

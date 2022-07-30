@@ -4,6 +4,7 @@ import {
   appSignInWithGoogle,
   appSignInWithEmailAndPassword,
   appSignUpWithEmailAndPassword,
+  appSignInWithTwitter,
 } from "../../services/firebase/authentication";
 import { useFirebaseUser } from "../../services/firebase/user";
 
@@ -25,14 +26,20 @@ import {
   Stack,
   Title,
   LoadingOverlay,
+  Badge,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import {
   IconAlertTriangle,
   IconArrowLeft,
   IconBrandFirefox,
+  IconBrandGoogle,
+  IconBrandTwitter,
 } from "@tabler/icons";
 import Link from "next/link";
+import getServerSideUser from "../../services/firebase/getServerSideUser";
+import { AuthAction } from "next-firebase-auth";
+import { showNotification } from "@mantine/notifications";
 
 function Login() {
   const [isRegister, setIsRegister] = useState(false);
@@ -57,8 +64,10 @@ function Login() {
         message = (
           <span>
             The operation has timed out. Please try again or{" "}
-            <Anchor href="/issues">submit an issue</Anchor> if the problem is
-            persistent.
+            <Anchor inherit href="/issues">
+              submit an issue
+            </Anchor>{" "}
+            if the problem is persistent.
           </span>
         );
         break;
@@ -115,7 +124,7 @@ function Login() {
     >
       {!firebaseUser.loading && firebaseUser.loggedIn ? (
         <Text id="signin-redirect" align="center" color="dimmed" size="sm">
-          Redirecting you to Ensemble Square
+          Redirecting you to MakoTools
         </Text>
       ) : (
         <>
@@ -158,15 +167,34 @@ function Login() {
             <Title id="signin-title" order={2} size="lg" mb="sm">
               {isRegister ? "Sign up" : "Sign in"}
             </Title>
-            <Button
-              id="signin-google"
-              variant="default"
-              leftIcon={<Google />}
-              onClick={appSignInWithGoogle}
-              style={{ width: "100%" }}
-            >
-              {isRegister ? "Sign up" : "Sign in"} with Google
-            </Button>
+            <Stack spacing="xs">
+              <Button
+                id="signin-google"
+                variant="default"
+                leftIcon={<IconBrandGoogle size={16} />}
+                onClick={appSignInWithGoogle}
+                style={{ width: "100%" }}
+              >
+                {isRegister ? "Sign up" : "Sign in"} with Google
+              </Button>
+              <Button
+                id="signin-twitter"
+                variant="default"
+                leftIcon={<IconBrandTwitter size={16} />}
+                onClick={() => {
+                  // appSignInWithTwitter((e) => {
+                  //   console.log(e.message, JSON.stringify(e));
+                  // });
+                  showNotification({
+                    title: "Twitter sign-on is coming soon!",
+                  });
+                }}
+                style={{ width: "100%" }}
+              >
+                {isRegister ? "Sign up" : "Sign in"} with Twitter{" "}
+                <Badge ml="xs">Soon</Badge>
+              </Button>
+            </Stack>
 
             <Divider
               id="signin-email-divider"

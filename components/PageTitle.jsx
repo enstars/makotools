@@ -1,7 +1,7 @@
 import Breadcrumbs from "./Layout/Header/Breadcrumbs";
 import { Box, Title } from "@mantine/core";
 
-function PageTitle({ title, children, space, getBreadcrumbs }) {
+function PageTitle({ title, children, space, mb = 8, getBreadcrumbs }) {
   return (
     <Box sx={{ position: "relative", overflow: "hidden" }}>
       {children}
@@ -9,7 +9,7 @@ function PageTitle({ title, children, space, getBreadcrumbs }) {
       <Title
         order={1}
         mt={space || 64}
-        mb={8}
+        mb={mb}
         sx={{ zIndex: 10, position: "relative" }}
       >
         {title}

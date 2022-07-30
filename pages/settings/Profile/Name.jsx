@@ -8,7 +8,7 @@ function Name() {
     <TextSetting
       label="Name"
       dataKey="name"
-      placeholder={firebaseUser?.user?.email?.split("@")?.[0] || ""}
+      placeholder={"Not set"}
       charLimit={50}
     />
   );

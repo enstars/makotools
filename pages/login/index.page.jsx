@@ -21,6 +21,8 @@ function Page() {
 export default Page;
 
 import Layout from "../../components/Layout";
+import getServerSideUser from "../../services/firebase/getServerSideUser";
+import { AuthAction } from "next-firebase-auth";
 
 Page.getLayout = function getLayout(page, pageProps) {
   return (
@@ -29,3 +31,12 @@ Page.getLayout = function getLayout(page, pageProps) {
     </Layout>
   );
 };
+
+export const getServerSideProps = getServerSideUser(
+  () => {
+    return { props: {} };
+  },
+  {
+    whenAuthed: AuthAction.REDIRECT_TO_APP,
+  }
+);

@@ -9,7 +9,7 @@ import DarkMode from "./appearance/DarkMode";
 import ShowTlBadge from "./appearance/ShowTlBadge";
 import Name from "./profile/Name";
 import Username from "./profile/Username";
-import ColorCode from "./profile/ColorCode";
+import ColorCode from "./account/ColorCode";
 import { useViewportSize } from "@mantine/hooks";
 import { AuthAction } from "next-firebase-auth";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
@@ -20,9 +20,19 @@ import {
   Tabs,
   Center,
   Loader,
+  Text,
+  Alert,
 } from "@mantine/core";
 
-import { IconUserCircle, IconBrush, IconDeviceGamepad2 } from "@tabler/icons";
+import {
+  IconUserCircle,
+  IconBrush,
+  IconDeviceGamepad2,
+  IconEditCircle,
+  IconIdBadge,
+  IconPalette,
+  IconPencil,
+} from "@tabler/icons";
 import Bio from "./profile/Bio";
 
 function Page() {
@@ -37,7 +47,7 @@ function Page() {
 
   return (
     <>
-      <PageTitle title="Settings" />
+      <PageTitle title="Settings" mb={16} />
       {firebaseUser.loading ? (
         <Center>
           <Loader />
@@ -63,17 +73,24 @@ function Page() {
             </Tabs.Tab>
             <Tabs.Tab
               value="appearance"
-              icon={<IconBrush size={14} />}
+              icon={<IconPalette size={14} />}
               color="violet"
             >
               Appearance
             </Tabs.Tab>
             <Tabs.Tab
               value="profile"
-              icon={<IconUserCircle size={14} />}
+              icon={<IconPencil size={14} />}
               color="lightblue"
             >
               Profile
+            </Tabs.Tab>
+            <Tabs.Tab
+              value="account"
+              icon={<IconUserCircle size={14} />}
+              color="blue"
+            >
+              Account
             </Tabs.Tab>
           </Tabs.List>
 
@@ -94,9 +111,20 @@ function Page() {
 
           <Tabs.Panel value="profile">
             <Stack>
+              <Alert size="sm" color="yellow">
+                These are publicly accessible from your profile page, so make
+                sure to follow our community guidelines.
+              </Alert>
               <Name />
               <Username />
               <Bio />
+              <StartPlaying />
+            </Stack>
+          </Tabs.Panel>
+
+          <Tabs.Panel value="account">
+            <Stack>
+              <Email />
               <ColorCode />
             </Stack>
           </Tabs.Panel>
@@ -109,6 +137,8 @@ function Page() {
 export default Page;
 
 import Layout from "../../components/Layout";
+import StartPlaying from "./profile/StartPlaying";
+import Email from "./account/Email";
 
 Page.getLayout = function getLayout(page, pageProps) {
   return <Layout pageProps={pageProps}>{page}</Layout>;

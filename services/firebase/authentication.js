@@ -6,6 +6,7 @@ import {
   getAuth,
   signInWithPopup,
   GoogleAuthProvider,
+  TwitterAuthProvider,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
@@ -85,6 +86,13 @@ export const appSignInWithGoogle = () => {
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
   signInWithPopup(clientAuth, provider);
+};
+export const appSignInWithTwitter = (errorCallback = console.log) => {
+  const clientAuth = getAuth();
+  const provider = new TwitterAuthProvider();
+  provider.setCustomParameters({ force_login: "true" });
+  // provider.setCustomParameters({ lang: "th" });
+  signInWithPopup(clientAuth, provider).catch(errorCallback);
 };
 
 export const appSignInWithEmailAndPassword = (

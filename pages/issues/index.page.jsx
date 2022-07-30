@@ -1,7 +1,24 @@
 import Layout from "../../components/Layout";
 import PageTitle from "../../components/PageTitle";
-import { Accordion, Anchor, TypographyStylesProvider } from "@mantine/core";
+import {
+  Accordion,
+  Anchor,
+  Box,
+  Button,
+  Card,
+  Center,
+  Divider,
+  Paper,
+  Stack,
+  Text,
+  ThemeIcon,
+  Title,
+  TypographyStylesProvider,
+} from "@mantine/core";
 import { MAKOTOOLS } from "../../services/constants";
+import { IconForms, IconGitPullRequest, IconMail } from "@tabler/icons";
+import Link from "next/link";
+import { method, methodOf } from "lodash";
 function Page() {
   return (
     <>
@@ -15,36 +32,82 @@ function Page() {
           If you&apos;d like to report a bug or provide a suggestion, use any of
           the following methods to reach out to the development team:
         </p>
-        <Accordion>
-          <Accordion.Item label="Submit a form.">
-            <p>
-              We have a Google form for users to submit issues or suggestions.{" "}
-              <Anchor href="/issues/form">
-                Click here to access the form.
-              </Anchor>
-            </p>
-          </Accordion.Item>
-          <Accordion.Item label="Create a Github issue.">
-            <p>
-              <Anchor href="https://github.com/enstars/makotools/issues">
-                Use our Github repository
-              </Anchor>{" "}
-              to submit an issue or suggestion. Be sure to provide a detailed
-              description on what the issue/suggestion is and label the issue
-              accordingly.
-            </p>
-          </Accordion.Item>
-          <Accordion.Item label="Email us.">
-            <p>
-              <Anchor href="mailto:makotools@ensemble.moe?subject=Issue Report">
-                Send us an email
-              </Anchor>{" "}
-              to let us know about an issue or suggestion. Be sure to provide a
-              detailed description on what the issue/suggestion is.
-            </p>
-          </Accordion.Item>
-        </Accordion>
       </TypographyStylesProvider>
+      <Box
+        sx={(theme) => ({
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+          gap: theme.spacing.xs,
+        })}
+      >
+        {[
+          {
+            icon: IconForms,
+            title: "Google Forms",
+            description: "Submit issues or suggestions by filling a form",
+            link: "/issues/form",
+            color: "violet",
+            prompt: "Open forms",
+          },
+          {
+            icon: IconGitPullRequest,
+            title: "GitHub Issues",
+            description: "Open a new issue on the project's repository",
+            link: "https://github.com/enstars/makotools/issues",
+            color: "lightblue",
+            prompt: "Open new issue",
+          },
+          {
+            icon: IconMail,
+            title: "Direct Contact",
+            description: "Send us an email descibing your issue or suggesion",
+            link: "mailto:makotools@ensemble.moe?subject=Issue Report",
+            color: "teal",
+            prompt: "Send an email",
+          },
+        ].map((method) => (
+          <Card key={method.title} sx={{ overflow: "visible" }} mt="md">
+            <Card.Section>
+              <Center mt={-32}>
+                <ThemeIcon size="xl" radius="xl" color={method.color}>
+                  <method.icon size={20} />
+                </ThemeIcon>
+              </Center>
+            </Card.Section>
+            <Card.Section pt="sm" px="sm">
+              <Title
+                order={2}
+                sx={(theme) => ({
+                  fontSize: theme.fontSizes.md,
+                  fontFamily: theme.fontFamily,
+                })}
+                // ="xs"
+                align="center"
+              >
+                {method.title}
+              </Title>
+              <Divider my="xs" />
+            </Card.Section>
+            <Card.Section px="sm">
+              <Text align="center" size="sm">
+                {method.description}
+              </Text>
+            </Card.Section>
+            <Card.Section px="sm" pt="xs" pb="sm">
+              <Link href={method.link} passHref target="_blank">
+                <Button
+                  component="a"
+                  sx={{ width: "100%" }}
+                  color={method.color}
+                  variant="light"
+                >
+                  {method.prompt}
+                </Button>
+              </Link>
+            </Card.Section>
+          </Card>
+        ))}
+      </Box>
     </>
   );
 }

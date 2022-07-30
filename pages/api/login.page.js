@@ -61,10 +61,10 @@ const handler = async (req, res) => {
         }
       }
     }
-    if (!docGet?.username) {
-      const docSetUsername = await docRef.set(
+    if (!docGet?.joinDate) {
+      const docSetJoinDate = await docRef.set(
         {
-          username: suid,
+          joinDate: FieldValue.serverTimestamp(),
         },
         { merge: true }
       );

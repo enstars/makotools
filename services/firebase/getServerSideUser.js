@@ -5,6 +5,7 @@ export default function getServerSideUser(f, config) {
     // whenUnauthed: AuthAction.REDIRECT_TO_LOGIN,
     ...config,
   })(async ({ AuthUser, ...props }) => {
+    if (!f) return { props: {} };
     console.log(AuthUser);
     const admin = getFirebaseAdmin();
     if (AuthUser.id) {

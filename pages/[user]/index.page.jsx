@@ -5,11 +5,17 @@ import {
   Anchor,
   AspectRatio,
   Badge,
+  Blockquote,
   Box,
+  Divider,
   Grid,
+  Group,
   Indicator,
   Paper,
+  Stack,
   Text,
+  Textarea,
+  ThemeIcon,
   Title,
   TypographyStylesProvider,
 } from "@mantine/core";
@@ -19,30 +25,84 @@ import ImageViewer from "../../components/core/ImageViewer";
 import { getB2File, getLocalizedData } from "../../services/ensquare";
 import { parseStringify } from "../../services/utilities";
 import Link from "next/link";
+import { IconCalendar, IconInfoCircle } from "@tabler/icons";
 function Page({ profile }) {
+  // console.log(profile?.bio);
   return (
     <>
       {profile.name ? (
         <>
-          <PageTitle title={profile.name}></PageTitle>
-          <Text color="dimmed" weight={800} size="lg">
-            @{profile.username}
-          </Text>
+          <PageTitle
+            title={
+              <>
+                {profile.name}{" "}
+                <Text
+                  inline
+                  component="span"
+                  color="dimmed"
+                  weight={800}
+                  size="lg"
+                >
+                  @{profile.username}
+                </Text>
+              </>
+            }
+            mb={0}
+          ></PageTitle>
         </>
       ) : (
-        <PageTitle title={`@${profile.username}`}></PageTitle>
+        <PageTitle title={`@${profile.username}`} mb={0}></PageTitle>
       )}
-      <Title order={2} my="md">
+
+      <Group mt="xs" noWrap align="flex-start">
+        <ThemeIcon variant="light" color="lightblue" sx={{ flexShrink: 0 }}>
+          <IconInfoCircle size={16} />
+        </ThemeIcon>
+        <Box>
+          <Text size="xs" weight={700} color="dimmed">
+            Bio
+          </Text>
+
+          {profile?.profile_bio ? (
+            <Stack spacing={4}>
+              {profile.profile_bio.split("\n").map((l, i) => (
+                <Text key={i}>{l}</Text>
+              ))}
+            </Stack>
+          ) : (
+            <Text>This user has no bio set</Text>
+          )}
+        </Box>
+      </Group>
+      <Group mt="xs" noWrap align="flex-start">
+        <ThemeIcon variant="light" color="yellow" sx={{ flexShrink: 0 }}>
+          <IconCalendar size={16} />
+        </ThemeIcon>
+        <Box>
+          <Text size="xs" weight={700} color="dimmed">
+            Started Playing
+          </Text>
+          {profile?.profile_start_playing
+            ?.replace("-01", "")
+            ?.replace("-", "/") || "Unknown"}
+        </Box>
+      </Group>
+
+      <Divider my="xs" />
+
+      <Title order={2} mt="md" mb="xs">
         Card Collection
       </Title>
       {!profile?.collection?.length ? (
-        <Text color="dimmed">This user has no cards in their collection</Text>
+        <Text color="dimmed" size="sm">
+          This user has no cards in their collection
+        </Text>
       ) : (
         <>
           <Box
             sx={(theme) => ({
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
               gap: theme.spacing.xs,
             })}
           >
@@ -61,7 +121,7 @@ function Page({ profile }) {
                   <Paper component="a" withBorder sx={{ position: "relative" }}>
                     <AspectRatio ratio={4 / 5}>
                       <ImageViewer
-                        radius="sm"
+                        radius="xs"
                         alt={"card image"}
                         withPlaceholder
                         src={getB2File(
@@ -118,6 +178,12 @@ export const getServerSideProps = getServerSideUser(
         props: {
           profile,
           // cards,
+          meta: {
+            title: profile?.name
+              ? `${profile.name} (@${profile.username})`
+              : `(@${profile.username}`,
+            desc: profile?.bio,
+          },
         },
       };
     }
