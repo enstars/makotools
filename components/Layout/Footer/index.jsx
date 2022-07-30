@@ -32,7 +32,7 @@ function PageFooter({ wide, textOnly }) {
         backgroundColor:
           theme.colorScheme === "dark"
             ? theme.colors.dark[9]
-            : theme.fn.lighten(theme.colors.gray[0], 0.3)
+            : theme.fn.lighten(theme.colors.gray[0], 0.3),
       }}
       pt="xl"
       p="md"
@@ -87,21 +87,6 @@ function PageFooter({ wide, textOnly }) {
               </>
             )}
             <SupportBanner mb="xs" sx={{ width: "100%" }} />
-            <Link href="/about/translations" passHref>
-              <Anchor component="a" size="sm">
-                Translations
-              </Anchor>
-            </Link>
-            <Link href="/about/acknowledgements" passHref>
-              <Anchor component="a" size="sm">
-                Acknowledgements
-              </Anchor>
-            </Link>
-            <Link href="/about/privacy" passHref>
-              <Anchor component="a" size="sm">
-                Privacy Policy
-              </Anchor>
-            </Link>
             <Link href="/issues" passHref>
               <Anchor component="a" size="sm">
                 Issues and Suggestions
@@ -110,6 +95,27 @@ function PageFooter({ wide, textOnly }) {
             <Link href={`mailto:${MAKOTOOLS.EMAIL}`} passHref>
               <Anchor component="a" size="sm">
                 Contact Us
+              </Anchor>
+            </Link>
+            <Link href="/about/acknowledgements" passHref>
+              <Anchor component="a" size="sm">
+                Acknowledgements
+              </Anchor>
+            </Link>
+            <Divider my="xs" sx={{ width: "100%" }} />
+            <Link href="/about/translations" passHref>
+              <Anchor component="a" size="sm">
+                About Translations
+              </Anchor>
+            </Link>
+            <Link href="/about/terms" passHref>
+              <Anchor component="a" size="sm">
+                Terms of Service
+              </Anchor>
+            </Link>
+            <Link href="/about/privacy" passHref>
+              <Anchor component="a" size="sm">
+                Privacy Policy
               </Anchor>
             </Link>
           </Stack>

@@ -46,7 +46,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "tunnel": "cloudflared tunnel --url http://localhost:3000"
   },
   "browserslist": {
     "production": [
@@ -66,6 +67,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.7.1",
+    "raw-loader": "^4.0.2",
     "sass": "^1.54.0"
   },
   "eslintConfig": {
