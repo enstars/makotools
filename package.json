@@ -68,7 +68,8 @@
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.7.1",
     "raw-loader": "^4.0.2",
-    "sass": "^1.54.0"
+    "sass": "^1.54.3",
+    "sass-loader": "^13.0.2"
   },
   "eslintConfig": {
     "extends": [

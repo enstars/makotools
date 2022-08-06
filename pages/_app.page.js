@@ -26,6 +26,7 @@ import "@fontsource/noto-sans-jp/700.css";
 // import "@fontsource/inter/variable-full.css";
 
 import "../styles/styles.css";
+import "../styles/wordpress.scss";
 
 import initAuth from "../services/firebase/authentication";
 import FirebaseUserProvider from "../services/firebase/user";
@@ -60,6 +61,12 @@ function MakoTools({ Component, pageProps, ...props }) {
   };
   const toggleAppColorScheme = () => {
     setAppColorScheme(colorScheme === "light" ? "dark" : "light");
+  };
+
+  const getDimmed = (theme) => {
+    return theme.colorScheme === "dark"
+      ? theme.colors.dark[2]
+      : theme.colors.gray[6];
   };
 
   // https://mantine.dev/others/nprogress/
@@ -154,6 +161,7 @@ function MakoTools({ Component, pageProps, ...props }) {
           transition: "0.3s cubic-bezier(.19,.73,.37,.93)",
           setAppColorScheme,
           toggleAppColorScheme,
+          getDimmed,
         },
       }}
     >

@@ -21,7 +21,7 @@ function Announcement({ announcement, i = 2 }) {
         }}
       >
         {i > 0 && <Divider mb="sm" />}
-        <Text inline weight={700} size="xl">
+        <Text inline weight={700} size="lg">
           {announcement.title.rendered}
         </Text>
         <TypographyStylesProvider
