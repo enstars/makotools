@@ -36,3 +36,6 @@ yarn-error.log*
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# https://nextjs.org/docs/basic-features/typescript
+next-env.d.ts

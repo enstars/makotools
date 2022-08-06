@@ -23,6 +23,7 @@
     "cldrjs": "^0.5.5",
     "cookies-next": "^2.1.1",
     "country-flag-icons": "^1.4.26",
+    "dayjs": "^1.11.4",
     "firebase": "^9.9.1",
     "firebase-admin": "^11.0.0",
     "flat": "^5.0.2",
@@ -69,7 +70,8 @@
     "prettier": "^2.7.1",
     "raw-loader": "^4.0.2",
     "sass": "^1.54.3",
-    "sass-loader": "^13.0.2"
+    "sass-loader": "^13.0.2",
+    "typescript": "^4.7.4"
   },
   "eslintConfig": {
     "extends": [

@@ -26,8 +26,11 @@ import { getB2File, getLocalizedData } from "../../services/ensquare";
 import { parseStringify } from "../../services/utilities";
 import Link from "next/link";
 import { IconCalendar, IconInfoCircle } from "@tabler/icons";
+import { useDayjs } from "../../services/dayjs";
+// import dayjs from "dayjs";
 function Page({ profile }) {
-  // console.log(profile?.bio);
+  const dayjs = useDayjs();
+  console.log(dayjs(profile.profile_start_playing).format("MMMM YYYY"));
   return (
     <>
       {profile.name ? (
@@ -82,9 +85,9 @@ function Page({ profile }) {
           <Text size="xs" weight={700} color="dimmed">
             Started Playing
           </Text>
-          {profile?.profile_start_playing
-            ?.replace("-01", "")
-            ?.replace("-", "/") || "Unknown"}
+          {profile.profile_start_playing
+            ? dayjs(profile.profile_start_playing).format("MMMM YYYY")
+            : "Unknown"}
         </Box>
       </Group>
 

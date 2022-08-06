@@ -38,6 +38,7 @@ import {
   resetNavigationProgress,
   NavigationProgress,
 } from "@mantine/nprogress";
+import DayjsProvider from "../services/dayjs";
 
 initAuth();
 
@@ -176,12 +177,14 @@ function MakoTools({ Component, pageProps, ...props }) {
           colorScheme={colorScheme}
         >
           {/*  TODO: Remove this just use the theme povider */}
-          <ColorSchemeProvider
-            colorScheme={colorScheme}
-            setAppColorScheme={setAppColorScheme}
-          >
-            {getLayout(<Component {...pageProps} />, pageProps)}
-          </ColorSchemeProvider>
+          <DayjsProvider>
+            <ColorSchemeProvider
+              colorScheme={colorScheme}
+              setAppColorScheme={setAppColorScheme}
+            >
+              {getLayout(<Component {...pageProps} />, pageProps)}
+            </ColorSchemeProvider>
+          </DayjsProvider>
         </FirebaseUserProvider>
       </NotificationsProvider>
     </MantineProvider>

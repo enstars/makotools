@@ -20,6 +20,7 @@ const appLocales = [
   "ar", // Arabic
   "th", // Thai
 ];
+
 module.exports = {
   webpack(config) {
     config.module.rules.push(
@@ -54,7 +55,7 @@ module.exports = {
     defaultLocale: "en",
   },
 
-  pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
+  pageExtensions: ["page.tsx", "page.ts", "page.jsx", "page.js"],
 
   async redirects() {
     return [
