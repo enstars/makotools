@@ -4,7 +4,6 @@ import { useFirebaseUser } from "../../../services/firebase/user";
 import { Textarea } from "@mantine/core";
 
 function Name() {
-  const { firebaseUser } = useFirebaseUser();
   return (
     <TextSetting
       label="Bio"
@@ -12,6 +11,8 @@ function Name() {
       placeholder="Say something about yourself!"
       charLimit={316}
       Component={Textarea}
+      minRows={2}
+      maxRows={4}
     />
   );
 }

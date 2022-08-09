@@ -62,8 +62,6 @@ function TextSetting({
           )
         }
         autosize
-        minRows={2}
-        maxRows={4}
         {...props}
         error={
           inputValue?.length > charLimit
