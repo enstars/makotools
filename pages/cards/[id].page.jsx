@@ -1,27 +1,37 @@
 import React from "react";
-import {
-  getB2File,
-  getLocalizedData,
-  getPreviewImageURL,
-} from "../../services/ensquare";
-import Layout from "../../components/Layout";
-import PageTitle from "../../components/PageTitle";
+
 import Head from "next/head";
-import ImageViewer from "../../components/core/ImageViewer";
+
 import { Group, AspectRatio, Badge, Title, Table } from "@mantine/core";
+
 import { IconStar } from "@tabler/icons";
-import attributes from "../../data/attributes.json";
-import Reactions from "../../components/core/Reactions";
-import Stats, { sumStats } from "./Card/Stats";
-import NameOrder, { getNameOrder } from "../../components/core/NameOrder";
+
 import {
   withAuthUser,
   AuthAction,
   withAuthUserTokenSSR,
   getFirebaseAdmin,
 } from "next-firebase-auth";
+
+import {
+  getB2File,
+  getLocalizedData,
+  getPreviewImageURL,
+} from "../../services/ensquare";
+import { getLayout } from "../../components/Layout";
+import PageTitle from "../../components/PageTitle";
+import ImageViewer from "../../components/core/ImageViewer";
+
+import attributes from "../../data/attributes.json";
+import Reactions from "../../components/core/Reactions";
+
+import NameOrder, { getNameOrder } from "../../components/core/NameOrder";
+
 import getServerSideUser from "../../services/firebase/getServerSideUser";
+
 import { getLocalizedNumber } from "../../components/core/CardStatsNumber";
+
+import Stats, { sumStats } from "./Card/Stats";
 
 function Page({ character, card, title }) {
   console.log(card);
@@ -116,16 +126,13 @@ function Page({ character, card, title }) {
   );
 }
 
+Page.getLayout = getLayout({
+  hideSidebar: true,
+});
 export default Page;
 
 export const getServerSideProps = getServerSideUser(
   async ({ req, res, locale, params, user, firestore }) => {
-    res.setHeader(
-      "Cache-Control",
-      "public, s-maxage=7200, stale-while-revalidate=172800"
-    );
-    // refresh every 2 hours, stale for 48hrs
-
     const cards = await getLocalizedData("cards", locale);
     const characters = await getLocalizedData("characters", locale);
     // const { data: cardsJP } = await getData("cards", "ja");
@@ -217,7 +224,3 @@ export const getServerSideProps = getServerSideUser(
     };
   }
 );
-
-Page.getLayout = function getLayout(page, pageProps) {
-  return <Layout pageProps={pageProps}>{page}</Layout>;
-};

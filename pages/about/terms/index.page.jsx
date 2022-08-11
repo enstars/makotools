@@ -1,7 +1,9 @@
+import { TypographyStylesProvider } from "@mantine/core";
+
+import TermsHTML from "raw-loader!./terms.html";
+
 import Layout from "../../../components/Layout";
 import PageTitle from "../../../components/PageTitle";
-import { TypographyStylesProvider } from "@mantine/core";
-import TermsHTML from "raw-loader!./terms.html";
 
 function Page() {
   return (

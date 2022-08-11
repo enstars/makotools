@@ -6422,6 +6422,7 @@ __metadata:
     eslint: ^8.20.0
     eslint-config-next: ^12.2.2
     eslint-config-prettier: ^8.5.0
+    eslint-plugin-import: ^2.26.0
     eslint-plugin-prettier: ^4.2.1
     firebase: ^9.9.1
     firebase-admin: ^11.0.0

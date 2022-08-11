@@ -20,13 +20,20 @@ import {
   Accordion,
 } from "@mantine/core";
 
+import Image from "next/image";
+
+import { IconNews } from "@tabler/icons";
+
 import Breadcrumbs from "../components/Layout/Header/Breadcrumbs";
 
 import { useFirebaseUser } from "../services/firebase/user";
 import Banner from "../assets/banner.png";
 import AffiliatesLight from "../assets/Affiliates/affiliates_light.svg?url";
 import AffiliatesDark from "../assets/Affiliates/affiliates_dark.svg?url";
-import Image from "next/image";
+
+import Layout from "../components/Layout";
+import SiteAnnouncements from "../components/core/SiteAnnouncements";
+import Announcement from "../components/core/Announcement";
 
 function Page({ posts }) {
   const { firebaseUser } = useFirebaseUser();
@@ -174,11 +181,6 @@ function Page({ posts }) {
 }
 
 export default Page;
-
-import Layout from "../components/Layout";
-import SiteAnnouncements from "../components/core/SiteAnnouncements";
-import Announcement from "../components/core/Announcement";
-import { IconNews } from "@tabler/icons";
 Page.getLayout = function getLayout(page, pageProps) {
   return (
     <Layout footerTextOnly pageProps={pageProps}>

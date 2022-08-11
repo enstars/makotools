@@ -1,8 +1,10 @@
-import Breadcrumbs from "./Breadcrumbs";
 import { useWindowScroll } from "@mantine/hooks";
 import { Affix, Transition, Header, Drawer } from "@mantine/core";
 import { useState } from "react";
+
 import Sidebar from "../Sidebar";
+
+import Breadcrumbs from "./Breadcrumbs";
 
 function HeaderApp({ getBreadcrumbs, title, breadcrumbs }) {
   const [scroll] = useWindowScroll();
@@ -29,7 +31,7 @@ function HeaderApp({ getBreadcrumbs, title, breadcrumbs }) {
       <Affix
         position={{ top: 0, right: 0 }}
         sx={{
-          width: "calc(100% - var(--mantine-navbar-width))",
+          width: "calc(100% - var(--mantine-navbar-width, 0px))",
           zIndex: 200,
         }}
       >

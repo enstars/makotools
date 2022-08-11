@@ -13,13 +13,18 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
+
+import Image from "next/image";
+
+import { IconChevronDown, IconChevronUp, IconMoodSmile } from "@tabler/icons";
+
+import { Collapse } from "react-collapse";
+
 import emotes from "../../services/emotes";
 import { useFirebaseUser } from "../../services/firebase/user";
-import Image from "next/image";
+
 import EmoteSelector from "./EmoteSelector";
 import Emote from "./Emote";
-import { IconChevronDown, IconChevronUp, IconMoodSmile } from "@tabler/icons";
-import { Collapse } from "react-collapse";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {

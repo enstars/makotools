@@ -1,6 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { useFirebaseUser } from "../../../services/firebase/user";
-import { validateUsernameDb } from "../../../services/firebase/firestore";
+
 import { useDebouncedCallback } from "use-debounce";
 
 import {
@@ -12,6 +11,9 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { IconCheck, IconX, IconAt } from "@tabler/icons";
+
+import { validateUsernameDb } from "../../../services/firebase/firestore";
+import { useFirebaseUser } from "../../../services/firebase/user";
 
 function DebouncedUsernameInput({ dataKey = "username", changedCallback }) {
   const theme = useMantineTheme();

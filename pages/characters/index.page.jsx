@@ -1,8 +1,6 @@
-import { CharacterCard } from "./../../components/characters/CharacterCard";
 import React, { useState, useEffect } from "react";
 import _ from "lodash";
-import { getLocalizedData } from "../../services/ensquare";
-import PageTitle from "../../components/PageTitle";
+
 import {
   Select,
   Box,
@@ -11,6 +9,13 @@ import {
   Text,
   useMantineTheme,
 } from "@mantine/core";
+
+import { getLocalizedData } from "../../services/ensquare";
+import PageTitle from "../../components/PageTitle";
+
+import Layout from "../../components/Layout";
+
+import { CharacterCard } from "./../../components/characters/CharacterCard";
 
 function Page({ characters, unit_to_characters: unitToCharacters, units }) {
   const [listCharacters, setListCharacters] = useState([]);
@@ -134,8 +139,6 @@ export async function getServerSideProps({ res, locale }) {
     props: { characters, unit_to_characters, units },
   };
 }
-
-import Layout from "../../components/Layout";
 Page.getLayout = function getLayout(page, pageProps) {
   return (
     <Layout wide pageProps={pageProps}>

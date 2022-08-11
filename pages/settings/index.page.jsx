@@ -1,18 +1,11 @@
 import { useState, useEffect, forwardRef } from "react";
-import PageTitle from "../../components/PageTitle";
-import { useFirebaseUser } from "../../services/firebase/user";
+
 import { useRouter } from "next/router";
-import SelectSetting from "./shared/SelectSetting";
-import Region from "./content/Region";
-import NameOrder from "./content/NameOrder";
-import DarkMode from "./appearance/DarkMode";
-import ShowTlBadge from "./appearance/ShowTlBadge";
-import Name from "./profile/Name";
-import Username from "./profile/Username";
-import ColorCode from "./account/ColorCode";
+
 import { useViewportSize } from "@mantine/hooks";
+
 import { AuthAction } from "next-firebase-auth";
-import getServerSideUser from "../../services/firebase/getServerSideUser";
+
 import {
   Stack,
   useMantineTheme,
@@ -33,7 +26,27 @@ import {
   IconPalette,
   IconPencil,
 } from "@tabler/icons";
+
+import PageTitle from "../../components/PageTitle";
+import { useFirebaseUser } from "../../services/firebase/user";
+
+import getServerSideUser from "../../services/firebase/getServerSideUser";
+
+import Layout from "../../components/Layout";
+
+import SelectSetting from "./shared/SelectSetting";
+import Region from "./content/Region";
+import NameOrder from "./content/NameOrder";
+import DarkMode from "./appearance/DarkMode";
+import ShowTlBadge from "./appearance/ShowTlBadge";
+import Name from "./profile/Name";
+import Username from "./profile/Username";
+import ColorCode from "./account/ColorCode";
+
 import Bio from "./profile/Bio";
+
+import StartPlaying from "./profile/StartPlaying";
+import Email from "./account/Email";
 
 function Page() {
   const router = useRouter();
@@ -135,10 +148,6 @@ function Page() {
 }
 
 export default Page;
-
-import Layout from "../../components/Layout";
-import StartPlaying from "./profile/StartPlaying";
-import Email from "./account/Email";
 
 Page.getLayout = function getLayout(page, pageProps) {
   return <Layout pageProps={pageProps}>{page}</Layout>;

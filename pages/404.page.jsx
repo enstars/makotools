@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import variant404Image1 from "../assets/404/404_1.png";
-import variant404Image2 from "../assets/404/404_2.png";
-import variant404Image3 from "../assets/404/404_3.png";
+
 import {
   Button,
   Paper,
@@ -13,6 +11,12 @@ import {
   Title,
   Image,
 } from "@mantine/core";
+
+import variant404Image1 from "../assets/404/404_1.png";
+import variant404Image2 from "../assets/404/404_2.png";
+import variant404Image3 from "../assets/404/404_3.png";
+
+import Layout from "../components/Layout";
 // import "./NoMatch.module.scss";
 
 function Page() {
@@ -72,8 +76,10 @@ function Page() {
 }
 
 export default Page;
-
-import Layout from "../components/Layout";
 Page.getLayout = function getLayout(page, pageProps) {
-  return <Layout hideFooter pageProps={pageProps}>{page}</Layout>;
+  return (
+    <Layout hideFooter pageProps={pageProps}>
+      {page}
+    </Layout>
+  );
 };

@@ -1,5 +1,6 @@
 import { Text } from "@mantine/core";
 import { forwardRef } from "react";
+
 import SelectSetting from "../shared/SelectSetting";
 
 const nameOrderOptions = [

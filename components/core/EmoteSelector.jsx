@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Popover, Text, Button, Image, ActionIcon, Group } from "@mantine/core";
+
 import emotes from "../../services/emotes";
+
 import Emote from "./Emote";
 
 function EmoteSelector({ target, callback, ...props }) {

@@ -3,16 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import styled from "styled-components";
 import { useRouter } from "next/router";
-import UserMenu from "./UserMenu";
-import ErrorBoundary from "../../ErrorBoundary";
-import MakotoolsLight from "../../../assets/Logo/mkt_light_icon.svg?url";
-import MakotoolsDark from "../../../assets/Logo/mkt_dark_icon.svg?url";
-import MakotoolsTextLight from "../../../assets/Logo/mkt_light_text.svg?url";
-import MakotoolsTextDark from "../../../assets/Logo/mkt_dark_text.svg?url";
-import MakotoolsLightComponent from "../../../assets/Logo/mkt_light_icon.svg";
-import MakotoolsDarkComponent from "../../../assets/Logo/mkt_dark_icon.svg";
-import MakotoolsTextLightComponent from "../../../assets/Logo/mkt_light_text.svg";
-import MakotoolsTextDarkComponent from "../../../assets/Logo/mkt_dark_text.svg";
+
 import {
   IconUsers,
   IconPlayCard,
@@ -25,6 +16,7 @@ import {
   IconBrandPatreon,
   IconSettings,
 } from "@tabler/icons";
+
 import {
   Navbar,
   ScrollArea,
@@ -39,9 +31,23 @@ import {
   NavLink,
   Stack,
 } from "@mantine/core";
+
 import { useColorScheme, useToggle } from "@mantine/hooks";
+
+import ErrorBoundary from "../../ErrorBoundary";
+import MakotoolsLight from "../../../assets/Logo/mkt_light_icon.svg?url";
+import MakotoolsDark from "../../../assets/Logo/mkt_dark_icon.svg?url";
+import MakotoolsTextLight from "../../../assets/Logo/mkt_light_text.svg?url";
+import MakotoolsTextDark from "../../../assets/Logo/mkt_dark_text.svg?url";
+import MakotoolsLightComponent from "../../../assets/Logo/mkt_light_icon.svg";
+import MakotoolsDarkComponent from "../../../assets/Logo/mkt_dark_icon.svg";
+import MakotoolsTextLightComponent from "../../../assets/Logo/mkt_light_text.svg";
+import MakotoolsTextDarkComponent from "../../../assets/Logo/mkt_dark_text.svg";
+
 import SupportBanner from "../SupportBanner";
 import { useFirebaseUser } from "../../../services/firebase/user";
+
+import UserMenu from "./UserMenu";
 
 const SidebarButton = forwardRef(function button(
   { contents, link, rootStyles, ...props },

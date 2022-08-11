@@ -1,5 +1,6 @@
-import SelectSetting from "../shared/SelectSetting";
 import Flags from "country-flag-icons/react/3x2";
+
+import SelectSetting from "../shared/SelectSetting";
 
 const gameRegions = [
   {

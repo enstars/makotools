@@ -1,4 +1,5 @@
 import { TextInput } from "@mantine/core";
+
 import { useFirebaseUser } from "../../../services/firebase/user";
 
 function Email() {

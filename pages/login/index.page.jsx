@@ -1,9 +1,15 @@
 import { useEffect } from "react";
 
+import { useRouter } from "next/router";
+
+import { AuthAction } from "next-firebase-auth";
+
 import Login from "../../components/Login";
 
 import { useFirebaseUser } from "../../services/firebase/user";
-import { useRouter } from "next/router";
+
+import Layout from "../../components/Layout";
+import getServerSideUser from "../../services/firebase/getServerSideUser";
 
 function Page() {
   const router = useRouter();
@@ -19,10 +25,6 @@ function Page() {
 }
 
 export default Page;
-
-import Layout from "../../components/Layout";
-import getServerSideUser from "../../services/firebase/getServerSideUser";
-import { AuthAction } from "next-firebase-auth";
 
 Page.getLayout = function getLayout(page, pageProps) {
   return (

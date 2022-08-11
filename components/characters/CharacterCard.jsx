@@ -1,10 +1,12 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+
+import { Card, Title, useMantineTheme } from "@mantine/core";
+
 import { getB2File } from "../../services/ensquare";
 import { twoStarIDs } from "../../data/characterIDtoCardID";
 import styles from "../../styles/CharacterCard.module.scss";
-import { Card, Title, useMantineTheme } from "@mantine/core";
 
 export function CharacterCard({ i, doubleface, characters }) {
   const theme = useMantineTheme();

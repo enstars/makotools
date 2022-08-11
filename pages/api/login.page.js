@@ -4,11 +4,13 @@ import {
   verifyIdToken,
   getFirebaseAdmin,
 } from "next-firebase-auth";
+
+import { initializeApp } from "firebase-admin/app";
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
+
 import initAuth, {
   syncFirestoreUserData,
 } from "../../services/firebase/authentication"; // the module you created above
-import { initializeApp } from "firebase-admin/app";
-import { getFirestore, FieldValue } from "firebase-admin/firestore";
 
 initAuth();
 

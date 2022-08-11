@@ -1,5 +1,6 @@
-import Breadcrumbs from "./Layout/Header/Breadcrumbs";
 import { Box, Title } from "@mantine/core";
+
+import Breadcrumbs from "./Layout/Header/Breadcrumbs";
 
 function PageTitle({ title, children, space, mb = 8, getBreadcrumbs }) {
   return (

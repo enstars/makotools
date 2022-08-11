@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+
 import { useFirebaseUser } from "../../services/firebase/user";
 
 // https://en.wikipedia.org/wiki/Personal_name#Eastern_name_order

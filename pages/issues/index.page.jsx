@@ -1,5 +1,3 @@
-import Layout from "../../components/Layout";
-import PageTitle from "../../components/PageTitle";
 import {
   Accordion,
   Anchor,
@@ -15,10 +13,14 @@ import {
   Title,
   TypographyStylesProvider,
 } from "@mantine/core";
-import { MAKOTOOLS } from "../../services/constants";
+
 import { IconForms, IconGitPullRequest, IconMail } from "@tabler/icons";
 import Link from "next/link";
 import { method, methodOf } from "lodash";
+
+import { MAKOTOOLS } from "../../services/constants";
+import PageTitle from "../../components/PageTitle";
+import Layout from "../../components/Layout";
 function Page() {
   return (
     <>

@@ -1,7 +1,9 @@
 import React from "react";
+
+import { Textarea } from "@mantine/core";
+
 import TextSetting from "../shared/TextSetting";
 import { useFirebaseUser } from "../../../services/firebase/user";
-import { Textarea } from "@mantine/core";
 
 function Name() {
   return (

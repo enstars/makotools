@@ -1,4 +1,5 @@
 import Head from "next/head";
+
 import { MAKOTOOLS } from "../services/constants";
 
 function Meta({ title, desc, img }) {

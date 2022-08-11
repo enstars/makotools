@@ -8,11 +8,25 @@ import { useAuthUser } from "next-firebase-auth";
 const FirebaseUserContext = React.createContext();
 export const useFirebaseUser = () => useContext(FirebaseUserContext);
 
-function FirebaseUserProvider({ children, colorScheme, setAppColorScheme }) {
+function FirebaseUserProvider({
+  children,
+  colorScheme,
+  setAppColorScheme,
+  serverData,
+}) {
   const AuthUser = useAuthUser();
-  const [firebaseUser, setFirebaseUser] = useState({
-    loading: true,
-  });
+  const [firebaseUser, setFirebaseUser] = useState(
+    serverData.user
+      ? {
+          loading: false,
+          loggedIn: !!AuthUser.id,
+          user: serverData.user,
+          firestore: serverData?.firestore,
+        }
+      : {
+          loading: true,
+        }
+  );
 
   const setUserDataKey = (data) => {
     setFirebaseUser({
@@ -25,20 +39,21 @@ function FirebaseUserProvider({ children, colorScheme, setAppColorScheme }) {
     setFirestoreUserData(data);
   };
 
-  console.log("firebase user auth ", firebaseUser);
+  // console.log("firebase user auth ", firebaseUser);
   useEffect(() => {
     const userState = {
       loading: false,
       loggedIn: !!AuthUser.id,
       user: AuthUser,
     };
-    setFirebaseUser(userState);
+
+    if (userState.loggedIn) setFirebaseUser((s) => ({ ...s, ...userState }));
 
     if (userState.loggedIn) {
       const setFirestoreData = async () => {
         try {
           const currentUserData = await getFirestoreUserData(AuthUser.id);
-          setFirebaseUser({ ...userState, firestore: currentUserData });
+          setFirebaseUser((s) => ({ ...s, firestore: currentUserData }));
           if (currentUserData?.dark_mode)
             setAppColorScheme(currentUserData.dark_mode ? "dark" : "light");
         } catch (e) {

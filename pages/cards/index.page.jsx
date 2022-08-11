@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
-import PageTitle from "../../components/PageTitle";
-import { getLocalizedData } from "../../services/ensquare";
+
 import {
   useMantineTheme,
   Text,
   Paper,
   Group,
   Select,
-  Chips,
   Chip,
   Input,
   Center,
@@ -17,8 +15,16 @@ import {
   Button,
 } from "@mantine/core";
 import InfiniteScroll from "react-infinite-scroll-component";
-import CardCard from "../../components/cards/CardCard";
+
 import { useLocalStorage } from "@mantine/hooks";
+
+import { IconArrowsSort, IconSearch } from "@tabler/icons";
+import { slice } from "lodash";
+
+import Layout from "../../components/Layout";
+import CardCard from "../../components/cards/CardCard";
+import { getLocalizedData } from "../../services/ensquare";
+import PageTitle from "../../components/PageTitle";
 
 const CARD_LIST_INITIAL_COUNT = 20;
 const CARD_VIEW_OPTIONS_DEFAULT = {
@@ -272,10 +278,6 @@ export async function getServerSideProps({ res, locale }) {
     props: { characters, cards },
   };
 }
-
-import Layout from "../../components/Layout";
-import { IconArrowsSort, IconSearch } from "@tabler/icons";
-import { slice } from "lodash";
 Page.getLayout = function getLayout(page) {
   return <Layout wide>{page}</Layout>;
 };

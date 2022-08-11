@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import CardStatsShort from "../core/CardStatsShort";
-import { getB2File } from "../../services/ensquare";
+
 import {
   Card,
   Paper,
@@ -27,6 +26,9 @@ import {
   IconSum,
 } from "@tabler/icons";
 import { useRouter } from "next/router";
+
+import { getB2File } from "../../services/ensquare";
+import CardStatsShort from "../core/CardStatsShort";
 import attributes from "../../data/attributes.json";
 import ImageViewer from "../../components/core/ImageViewer";
 import OfficialityBadge from "../OfficialityBadge";

@@ -9,6 +9,7 @@ import {
   Title,
 } from "@mantine/core";
 import { useState } from "react";
+
 import CardStatsNumber from "../../../components/core/CardStatsNumber";
 
 function LabelCell({ total, ...props }) {

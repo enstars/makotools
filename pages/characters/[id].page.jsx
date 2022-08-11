@@ -1,9 +1,12 @@
+import Head from "next/head";
+
+import { Text, Box } from "@mantine/core";
+
 import { getData, getB2File, getLocalizedData } from "../../services/ensquare";
 import Layout from "../../components/Layout";
 import PageTitle from "../../components/PageTitle";
-import Head from "next/head";
 import ImageViewer from "../../components/core/ImageViewer";
-import { Text, Box } from "@mantine/core";
+
 import Reactions from "../../components/core/Reactions";
 
 function Page({ character }) {

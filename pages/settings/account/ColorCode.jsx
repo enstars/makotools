@@ -1,4 +1,5 @@
 import { ColorSwatch, TextInput } from "@mantine/core";
+
 import { useFirebaseUser } from "../../../services/firebase/user";
 function ColorCode() {
   const { firebaseUser } = useFirebaseUser();

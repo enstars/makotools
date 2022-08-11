@@ -1,6 +1,7 @@
+import { TypographyStylesProvider } from "@mantine/core";
+
 import Layout from "../../../components/Layout";
 import PageTitle from "../../../components/PageTitle";
-import { TypographyStylesProvider } from "@mantine/core";
 
 function Page() {
   return (

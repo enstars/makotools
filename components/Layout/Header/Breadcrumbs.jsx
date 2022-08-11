@@ -13,6 +13,7 @@ import {
   ScrollArea,
 } from "@mantine/core";
 import { IconMenu2 } from "@tabler/icons";
+
 import Sidebar from "../Sidebar";
 
 const defaultGetBreadcrumbs = (path) => path.split("/").filter((x) => x);

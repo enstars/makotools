@@ -1,8 +1,11 @@
+import Head from "next/head";
+
+import { Text, Box, TypographyStylesProvider } from "@mantine/core";
+
 import Layout from "../../../components/Layout";
 import PageTitle from "../../../components/PageTitle";
-import Head from "next/head";
 import ImageViewer from "../../../components/core/ImageViewer";
-import { Text, Box, TypographyStylesProvider } from "@mantine/core";
+
 import Reactions from "../../../components/core/Reactions";
 
 function Page({ post }) {

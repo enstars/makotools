@@ -7,6 +7,7 @@ import {
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+
 import Announcement from "./Announcement";
 
 const PER_PAGE = 10; //max 100

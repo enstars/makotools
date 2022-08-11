@@ -1,5 +1,3 @@
-import Layout from "../../components/Layout";
-import PageTitle from "../../components/PageTitle";
 import {
   Accordion,
   Anchor,
@@ -19,13 +17,19 @@ import {
   Title,
   TypographyStylesProvider,
 } from "@mantine/core";
+
+import Link from "next/link";
+
+import { IconCalendar, IconInfoCircle } from "@tabler/icons";
+
+import Layout from "../../components/Layout";
+import PageTitle from "../../components/PageTitle";
 import { MAKOTOOLS } from "../../services/constants";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import ImageViewer from "../../components/core/ImageViewer";
 import { getB2File, getLocalizedData } from "../../services/ensquare";
 import { parseStringify } from "../../services/utilities";
-import Link from "next/link";
-import { IconCalendar, IconInfoCircle } from "@tabler/icons";
+
 import { useDayjs } from "../../services/dayjs";
 // import dayjs from "dayjs";
 function Page({ profile }) {

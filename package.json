@@ -66,6 +66,7 @@
     "eslint": "^8.20.0",
     "eslint-config-next": "^12.2.2",
     "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.7.1",
     "raw-loader": "^4.0.2",
@@ -90,6 +91,15 @@
       ],
       "react/jsx-props-no-spreading": [
         "off"
+      ],
+      "import/order": [
+        "warn",
+        {
+          "newlines-between": "always-and-inside-groups"
+        }
+      ],
+      "import/first": [
+        "warn"
       ]
     }
   },

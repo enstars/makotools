@@ -1,15 +1,6 @@
 import { useState } from "react";
 
 import {
-  appSignInWithGoogle,
-  appSignInWithEmailAndPassword,
-  appSignUpWithEmailAndPassword,
-  appSignInWithTwitter,
-} from "../../services/firebase/authentication";
-import { useFirebaseUser } from "../../services/firebase/user";
-
-import Google from "../../assets/google.svg";
-import {
   Alert,
   Center,
   Container,
@@ -37,9 +28,19 @@ import {
   IconBrandTwitter,
 } from "@tabler/icons";
 import Link from "next/link";
-import getServerSideUser from "../../services/firebase/getServerSideUser";
+
 import { AuthAction } from "next-firebase-auth";
 import { showNotification } from "@mantine/notifications";
+
+import Google from "../../assets/google.svg";
+import getServerSideUser from "../../services/firebase/getServerSideUser";
+import { useFirebaseUser } from "../../services/firebase/user";
+import {
+  appSignInWithGoogle,
+  appSignInWithEmailAndPassword,
+  appSignUpWithEmailAndPassword,
+  appSignInWithTwitter,
+} from "../../services/firebase/authentication";
 
 function Login() {
   const [isRegister, setIsRegister] = useState(false);

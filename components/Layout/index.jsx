@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import Sidebar from "./Sidebar";
-import Header from "./Header";
-import Footer from "./Footer";
-import ErrorBoundary from "../ErrorBoundary";
-import Meta from "../Meta";
+
 import {
   AppShell,
   Container,
@@ -13,7 +9,14 @@ import {
   useMantineTheme,
   useMantineColorScheme,
 } from "@mantine/core";
-import BreadcrumbsApp from "./Header/Breadcrumbs";
+
+import ErrorBoundary from "../ErrorBoundary";
+
+import Meta from "../Meta";
+
+import Sidebar from "./Sidebar";
+import Header from "./Header";
+import Footer from "./Footer";
 
 function Layout({
   children: Component,
@@ -21,7 +24,6 @@ function Layout({
   hideSidebar = false,
   hideHeader = false,
   wide = false,
-  title,
   meta,
   footerTextOnly,
   pageProps,
@@ -102,3 +104,13 @@ function Layout({
   );
 }
 export default Layout;
+
+export const getLayout = (layoutProps) => {
+  return function LayoutWrapper(children, pageProps) {
+    return (
+      <Layout pageProps={pageProps} {...layoutProps}>
+        {children}
+      </Layout>
+    );
+  };
+};

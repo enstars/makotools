@@ -28,16 +28,19 @@ import "@fontsource/noto-sans-jp/700.css";
 import "../styles/styles.css";
 import "../styles/wordpress.scss";
 
-import initAuth from "../services/firebase/authentication";
-import FirebaseUserProvider from "../services/firebase/user";
-
 import { withAuthUser } from "next-firebase-auth";
-import RouteChangeLoader from "../components/Layout/RouteChangeLoader";
+
 import {
   startNavigationProgress,
   resetNavigationProgress,
   NavigationProgress,
 } from "@mantine/nprogress";
+
+import initAuth from "../services/firebase/authentication";
+import FirebaseUserProvider from "../services/firebase/user";
+
+import RouteChangeLoader from "../components/Layout/RouteChangeLoader";
+
 import DayjsProvider from "../services/dayjs";
 
 initAuth();
@@ -175,6 +178,10 @@ function MakoTools({ Component, pageProps, ...props }) {
         <FirebaseUserProvider
           setAppColorScheme={setAppColorScheme}
           colorScheme={colorScheme}
+          serverData={{
+            user: JSON.parse(pageProps.__user || "null"),
+            firestore: JSON.parse(pageProps.__firestore || "null"),
+          }}
         >
           {/*  TODO: Remove this just use the theme povider */}
           <DayjsProvider>

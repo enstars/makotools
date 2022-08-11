@@ -7,6 +7,7 @@ import {
   TypographyStylesProvider,
 } from "@mantine/core";
 import Link from "next/link";
+
 import categories from "../../data/about/posts/categories.json";
 
 function Announcement({ announcement, i = 2 }) {

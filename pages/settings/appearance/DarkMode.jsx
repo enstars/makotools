@@ -1,5 +1,6 @@
 import { useMantineTheme } from "@mantine/core";
 import { IconMoonStars, IconSun } from "@tabler/icons";
+
 import SelectSetting from "../shared/SelectSetting";
 
 function DarkMode() {

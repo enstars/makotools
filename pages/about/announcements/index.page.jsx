@@ -1,6 +1,7 @@
+import { Anchor, Text, TypographyStylesProvider } from "@mantine/core";
+
 import Layout from "../../../components/Layout";
 import PageTitle from "../../../components/PageTitle";
-import { Anchor, Text, TypographyStylesProvider } from "@mantine/core";
 import { MAKOTOOLS } from "../../../services/constants";
 import SiteAnnouncements from "../../../components/core/SiteAnnouncements";
 

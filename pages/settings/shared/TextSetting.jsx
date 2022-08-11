@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { useFirebaseUser } from "../../../services/firebase/user";
+
 import { useDebouncedCallback } from "use-debounce";
 
 import {
@@ -11,6 +11,8 @@ import {
   Text,
 } from "@mantine/core";
 import { IconCheck, IconX } from "@tabler/icons";
+
+import { useFirebaseUser } from "../../../services/firebase/user";
 
 function TextSetting({
   label,

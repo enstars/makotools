@@ -1,8 +1,10 @@
 import React from "react";
 import { Anchor, Center, Box, Text, Button, Group, Stack } from "@mantine/core";
 import Router from "next/router";
-import Jun from "../assets/ErrorBoundary/Jun.webp";
+
 import Image from "next/image";
+
+import Jun from "../assets/ErrorBoundary/Jun.webp";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {

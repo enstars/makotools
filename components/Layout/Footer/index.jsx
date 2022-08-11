@@ -1,10 +1,7 @@
 import Link from "next/link";
 import styled from "styled-components";
 import Image from "next/image";
-import { MAKOTOOLS } from "../../../services/constants";
-import MakotoolsLight from "../../../assets/Logo/mkt_light.svg?url";
-import MakotoolsDark from "../../../assets/Logo/mkt_dark.svg?url";
-import Affiliates from "../../../assets/Affiliates/affiliates.svg";
+
 import {
   Footer,
   Text,
@@ -16,6 +13,11 @@ import {
   Box,
   Container,
 } from "@mantine/core";
+
+import { MAKOTOOLS } from "../../../services/constants";
+import MakotoolsLight from "../../../assets/Logo/mkt_light.svg?url";
+import MakotoolsDark from "../../../assets/Logo/mkt_dark.svg?url";
+import Affiliates from "../../../assets/Affiliates/affiliates.svg";
 import SupportBanner from "../SupportBanner";
 
 function PageFooter({ wide, textOnly }) {

@@ -1,5 +1,6 @@
 // ./pages/api/logout
 import { unsetAuthCookies } from "next-firebase-auth";
+
 import initAuth from "../../services/firebase/authentication"; // the module you created above
 
 initAuth();

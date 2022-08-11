@@ -1,5 +1,6 @@
 import { Group, Select, Text } from "@mantine/core";
 import { forwardRef } from "react";
+
 import { useFirebaseUser } from "../../../services/firebase/user";
 
 const SelectItemForwardRef = forwardRef(function SelectItem(
