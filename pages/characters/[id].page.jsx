@@ -94,11 +94,6 @@ function Page({ character }) {
 
 export const getServerSideProps = getServerSideUser(
   async ({ res, locale, params }) => {
-    res.setHeader(
-      "Cache-Control",
-      "public, s-maxage=7200, stale-while-revalidate=172800"
-    );
-    // refresh every 2 hours, stale for 48hrs
     const characters = await getLocalizedData("characters", locale);
     const { data: charactersEN } = await getData("characters", "en");
     const lastSegment = params.id.toLocaleLowerCase();

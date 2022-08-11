@@ -249,11 +249,6 @@ function Page({ cards, characters }) {
 }
 
 export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
-  res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=7200, stale-while-revalidate=172800"
-  );
-  // refresh every 2 hours, stale for 48hrs
   const characters = await getLocalizedData("characters", locale, [
     "character_id",
     "first_name",

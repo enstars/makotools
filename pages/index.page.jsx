@@ -188,12 +188,6 @@ export default Page;
 
 export const getServerSideProps = getServerSideUser(
   async ({ req, res, locale, params }) => {
-    res.setHeader(
-      "Cache-Control",
-      "public, s-maxage=7200, stale-while-revalidate=172800"
-    );
-    // refresh every 2 hours, stale for 48hrs
-
     try {
       const initRespose = await fetch(
         `https://backend-stars.ensemble.moe/wp-main/wp-json/wp/v2/posts?categories=5,6&per_page=5&page=1`

@@ -31,11 +31,6 @@ Page.getLayout = getLayout({});
 export default Page;
 
 export async function getServerSideProps({ res, locale, params }) {
-  res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=7200, stale-while-revalidate=172800"
-  );
-
   try {
     const initRespose = await fetch(
       `https://backend-stars.ensemble.moe/wp-main/wp-json/wp/v2/posts/${params.id}`
