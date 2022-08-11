@@ -20,7 +20,12 @@ import {
 
 import Link from "next/link";
 
-import { IconCalendar, IconInfoCircle } from "@tabler/icons";
+import {
+  IconCalendar,
+  IconInfoCircle,
+  IconMessageCircle,
+  IconUser,
+} from "@tabler/icons";
 
 import Layout, { getLayout } from "../../components/Layout";
 import PageTitle from "../../components/sections/PageTitle";
@@ -50,6 +55,8 @@ function Page({ profile }) {
                   weight={800}
                   size="lg"
                 >
+                  {profile?.profile_pronouns &&
+                    `${profile?.profile_pronouns} · `}
                   @{profile.username}
                 </Text>
               </>
@@ -58,7 +65,25 @@ function Page({ profile }) {
           ></PageTitle>
         </>
       ) : (
-        <PageTitle title={`@${profile.username}`} mb={0}></PageTitle>
+        <PageTitle
+          title={
+            <>
+              @{profile.username}
+              {profile?.profile_pronouns && (
+                <Text
+                  inline
+                  component="span"
+                  color="dimmed"
+                  weight={800}
+                  size="lg"
+                >
+                  {profile?.profile_pronouns}
+                </Text>
+              )}
+            </>
+          }
+          mb={0}
+        ></PageTitle>
       )}
 
       <Group mt="xs" noWrap align="flex-start">
@@ -77,7 +102,7 @@ function Page({ profile }) {
               ))}
             </Stack>
           ) : (
-            <Text>This user has no bio set</Text>
+            <Text color="dimmed">This user has no bio set</Text>
           )}
         </Box>
       </Group>
@@ -89,7 +114,8 @@ function Page({ profile }) {
           <Text size="xs" weight={700} color="dimmed">
             Started Playing
           </Text>
-          {profile.profile_start_playing
+          {profile.profile_start_playing &&
+          profile.profile_start_playing !== "0000-00-00"
             ? dayjs(profile.profile_start_playing).format("MMMM YYYY")
             : "Unknown"}
         </Box>

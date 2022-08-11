@@ -42,6 +42,7 @@ import NameOrder from "./content/NameOrder";
 import DarkMode from "./appearance/DarkMode";
 import ShowTlBadge from "./appearance/ShowTlBadge";
 import Name from "./profile/Name";
+import Pronouns from "./profile/Pronouns";
 import Username from "./profile/Username";
 import ColorCode from "./account/ColorCode";
 
@@ -93,6 +94,7 @@ const tabs = [
             to follow our community guidelines.
           </Alert>
           <Name />
+          <Pronouns />
           <Username />
           <Bio />
           <StartPlaying />
