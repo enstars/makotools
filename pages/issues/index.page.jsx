@@ -21,6 +21,8 @@ import { method, methodOf } from "lodash";
 import { MAKOTOOLS } from "../../services/constants";
 import PageTitle from "../../components/PageTitle";
 import Layout from "../../components/Layout";
+
+import { getLayout } from "../../../components/Layout";
 function Page() {
   return (
     <>
@@ -113,9 +115,5 @@ function Page() {
     </>
   );
 }
-
+Page.getLayout = getLayout({});
 export default Page;
-
-Page.getLayout = function getLayout(page, pageProps) {
-  return <Layout pageProps={pageProps}>{page}</Layout>;
-};

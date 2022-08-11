@@ -11,6 +11,8 @@ import { useFirebaseUser } from "../../services/firebase/user";
 import Layout from "../../components/Layout";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 
+import { getLayout } from "../../../components/Layout";
+
 function Page() {
   const router = useRouter();
   const { firebaseUser } = useFirebaseUser();
@@ -24,16 +26,6 @@ function Page() {
   return <Login />;
 }
 
-export default Page;
-
-Page.getLayout = function getLayout(page, pageProps) {
-  return (
-    <Layout hideHeader hideFooter hideSidebar pageProps={pageProps}>
-      {page}
-    </Layout>
-  );
-};
-
 export const getServerSideProps = getServerSideUser(
   () => {
     return { props: {} };
@@ -42,3 +34,5 @@ export const getServerSideProps = getServerSideUser(
     whenAuthed: AuthAction.REDIRECT_TO_APP,
   }
 );
+Page.getLayout = getLayout({});
+export default Page;

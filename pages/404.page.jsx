@@ -17,6 +17,7 @@ import variant404Image2 from "../assets/404/404_2.png";
 import variant404Image3 from "../assets/404/404_3.png";
 
 import Layout from "../components/Layout";
+import getServerSideUser from "../services/firebase/getServerSideUser";
 // import "./NoMatch.module.scss";
 
 function Page() {
@@ -75,11 +76,9 @@ function Page() {
   );
 }
 
+Page.getLayout = getLayout({
+  hideFooter: true,
+});
 export default Page;
-Page.getLayout = function getLayout(page, pageProps) {
-  return (
-    <Layout hideFooter pageProps={pageProps}>
-      {page}
-    </Layout>
-  );
-};
+
+export const getServerSideProps = getServerSideUser();

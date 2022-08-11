@@ -127,7 +127,7 @@ function Page({ character, card, title }) {
 }
 
 Page.getLayout = getLayout({
-  hideSidebar: true,
+  // hideSidebar: true,
 });
 export default Page;
 

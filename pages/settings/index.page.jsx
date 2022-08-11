@@ -34,6 +34,8 @@ import getServerSideUser from "../../services/firebase/getServerSideUser";
 
 import Layout from "../../components/Layout";
 
+import { getLayout } from "../../../components/Layout";
+
 import SelectSetting from "./shared/SelectSetting";
 import Region from "./content/Region";
 import NameOrder from "./content/NameOrder";
@@ -147,12 +149,6 @@ function Page() {
   );
 }
 
-export default Page;
-
-Page.getLayout = function getLayout(page, pageProps) {
-  return <Layout pageProps={pageProps}>{page}</Layout>;
-};
-
 export const getServerSideProps = getServerSideUser(
   async () => {
     return {
@@ -161,3 +157,5 @@ export const getServerSideProps = getServerSideUser(
   },
   { whenUnauthed: AuthAction.REDIRECT_TO_LOGIN }
 );
+Page.getLayout = getLayout({});
+export default Page;

@@ -2,7 +2,7 @@ import Head from "next/head";
 
 import { Text, Box, TypographyStylesProvider } from "@mantine/core";
 
-import Layout from "../../../components/Layout";
+import Layout, { getLayout } from "../../../components/Layout";
 import PageTitle from "../../../components/PageTitle";
 import ImageViewer from "../../../components/core/ImageViewer";
 
@@ -27,6 +27,7 @@ function Page({ post }) {
   );
 }
 
+Page.getLayout = getLayout({});
 export default Page;
 
 export async function getServerSideProps({ res, locale, params }) {
@@ -51,7 +52,3 @@ export async function getServerSideProps({ res, locale, params }) {
     return { notFound: true };
   }
 }
-
-Page.getLayout = function getLayout(page, pageProps) {
-  return <Layout pageProps={pageProps}>{page}</Layout>;
-};

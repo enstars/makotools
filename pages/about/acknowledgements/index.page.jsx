@@ -1,8 +1,9 @@
 import { Anchor, Text, TypographyStylesProvider } from "@mantine/core";
 
-import Layout from "../../../components/Layout";
+import Layout, { getLayout } from "../../../components/Layout";
 import PageTitle from "../../../components/PageTitle";
 import { MAKOTOOLS } from "../../../services/constants";
+import getServerSideUser from "../../../services/firebase/getServerSideUser";
 
 function Page() {
   return (
@@ -46,8 +47,5 @@ function Page() {
   );
 }
 
+Page.getLayout = getLayout({});
 export default Page;
-
-Page.getLayout = function getLayout(page, pageProps) {
-  return <Layout pageProps={pageProps}>{page}</Layout>;
-};

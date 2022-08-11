@@ -8,6 +8,9 @@ import PageTitle from "../../components/PageTitle";
 import ImageViewer from "../../components/core/ImageViewer";
 
 import Reactions from "../../components/core/Reactions";
+import getServerSideUser from "../../services/firebase/getServerSideUser";
+
+import { getLayout } from "../../../components/Layout";
 
 function Page({ character }) {
   const getBreadcrumbs = (path) => {
@@ -89,43 +92,41 @@ function Page({ character }) {
   );
 }
 
-export default Page;
+export const getServerSideProps = getServerSideUser(
+  async ({ res, locale, params }) => {
+    res.setHeader(
+      "Cache-Control",
+      "public, s-maxage=7200, stale-while-revalidate=172800"
+    );
+    // refresh every 2 hours, stale for 48hrs
+    const characters = await getLocalizedData("characters", locale);
+    const { data: charactersEN } = await getData("characters", "en");
+    const lastSegment = params.id.toLocaleLowerCase();
+    const characterID = parseInt(lastSegment, 10);
+    const isName = isNaN(characterID);
+    const characterIndex = charactersEN.indexOf(
+      charactersEN.find(
+        isName
+          ? (item) =>
+              `${item.last_name} ${item.first_name}`.toLocaleLowerCase() ===
+                lastSegment ||
+              `${item.first_name} ${item.last_name}`.toLocaleLowerCase() ===
+                lastSegment ||
+              `${item.first_name}`.toLocaleLowerCase() === lastSegment
+          : (item) => item.character_id === characterID
+      )
+    );
 
-export async function getServerSideProps({ res, locale, params }) {
-  res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=7200, stale-while-revalidate=172800"
-  );
-  // refresh every 2 hours, stale for 48hrs
-  const characters = await getLocalizedData("characters", locale);
-  const { data: charactersEN } = await getData("characters", "en");
-  const lastSegment = params.id.toLocaleLowerCase();
-  const characterID = parseInt(lastSegment, 10);
-  const isName = isNaN(characterID);
-  const characterIndex = charactersEN.indexOf(
-    charactersEN.find(
-      isName
-        ? (item) =>
-            `${item.last_name} ${item.first_name}`.toLocaleLowerCase() ===
-              lastSegment ||
-            `${item.first_name} ${item.last_name}`.toLocaleLowerCase() ===
-              lastSegment ||
-            `${item.first_name}`.toLocaleLowerCase() === lastSegment
-        : (item) => item.character_id === characterID
-    )
-  );
+    if (characterIndex === -1) {
+      return {
+        notFound: true,
+      };
+    }
 
-  if (characterIndex === -1) {
     return {
-      notFound: true,
+      props: { character: characters.mainLang.data[characterIndex] },
     };
   }
-
-  return {
-    props: { character: characters.mainLang.data[characterIndex] },
-  };
-}
-
-Page.getLayout = function getLayout(page, pageProps) {
-  return <Layout pageProps={pageProps}>{page}</Layout>;
-};
+);
+Page.getLayout = getLayout({});
+export default Page;

@@ -15,6 +15,9 @@ import PageTitle from "../../components/PageTitle";
 
 import Layout from "../../components/Layout";
 
+import { getLayout } from "../../../components/Layout";
+import getServerSideUser from "../../services/firebase/getServerSideUser";
+
 import { CharacterCard } from "./../../components/characters/CharacterCard";
 
 function Page({ characters, unit_to_characters: unitToCharacters, units }) {
@@ -120,9 +123,7 @@ function Page({ characters, unit_to_characters: unitToCharacters, units }) {
   );
 }
 
-export default Page;
-
-export async function getServerSideProps({ res, locale }) {
+export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
   res.setHeader(
     "Cache-Control",
     "public, s-maxage=7200, stale-while-revalidate=172800"
@@ -138,11 +139,6 @@ export async function getServerSideProps({ res, locale }) {
   return {
     props: { characters, unit_to_characters, units },
   };
-}
-Page.getLayout = function getLayout(page, pageProps) {
-  return (
-    <Layout wide pageProps={pageProps}>
-      {page}
-    </Layout>
-  );
-};
+});
+Page.getLayout = getLayout({});
+export default Page;

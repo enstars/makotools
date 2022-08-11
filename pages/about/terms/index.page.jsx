@@ -5,6 +5,8 @@ import TermsHTML from "raw-loader!./terms.html";
 import Layout from "../../../components/Layout";
 import PageTitle from "../../../components/PageTitle";
 
+import { getLayout } from "../../../components/Layout";
+
 function Page() {
   return (
     <>
@@ -15,16 +17,5 @@ function Page() {
     </>
   );
 }
-
+Page.getLayout = getLayout({ meta: { title: "Terms of Service", desc: "" } });
 export default Page;
-
-Page.getLayout = function getLayout(page, pageProps) {
-  return (
-    <Layout
-      pageProps={pageProps}
-      meta={{ title: "Terms of Service", desc: "" }}
-    >
-      {page}
-    </Layout>
-  );
-};

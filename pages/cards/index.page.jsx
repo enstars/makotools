@@ -26,6 +26,9 @@ import CardCard from "../../components/cards/CardCard";
 import { getLocalizedData } from "../../services/ensquare";
 import PageTitle from "../../components/PageTitle";
 
+import { getLayout } from "../../../components/Layout";
+import { getServerSideUser } from "../../services/firebase/getServerSideUser";
+
 const CARD_LIST_INITIAL_COUNT = 20;
 const CARD_VIEW_OPTIONS_DEFAULT = {
   filterRarity: [5],
@@ -245,9 +248,7 @@ function Page({ cards, characters }) {
   );
 }
 
-export default Page;
-
-export async function getServerSideProps({ res, locale }) {
+export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
   res.setHeader(
     "Cache-Control",
     "public, s-maxage=7200, stale-while-revalidate=172800"
@@ -277,7 +278,7 @@ export async function getServerSideProps({ res, locale }) {
   return {
     props: { characters, cards },
   };
-}
-Page.getLayout = function getLayout(page) {
-  return <Layout wide>{page}</Layout>;
-};
+});
+
+Page.getLayout = getLayout({});
+export default Page;
