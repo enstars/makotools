@@ -3,10 +3,10 @@ import Head from "next/head";
 import { Text, Box, TypographyStylesProvider } from "@mantine/core";
 
 import Layout, { getLayout } from "../../../components/Layout";
-import PageTitle from "../../../components/PageTitle";
+import PageTitle from "../../../components/sections/PageTitle";
 import ImageViewer from "../../../components/core/ImageViewer";
 
-import Reactions from "../../../components/core/Reactions";
+import Reactions from "../../../components/sections/Reactions";
 
 function Page({ post }) {
   console.log(post);

@@ -4,14 +4,14 @@ import { useRouter } from "next/router";
 
 import { AuthAction } from "next-firebase-auth";
 
-import Login from "../../components/Login";
-
 import { useFirebaseUser } from "../../services/firebase/user";
 
 import Layout from "../../components/Layout";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 
 import { getLayout } from "../../../components/Layout";
+
+import Login from "./Login";
 
 function Page() {
   const router = useRouter();

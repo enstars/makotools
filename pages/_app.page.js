@@ -72,6 +72,8 @@ function MakoTools({ Component, pageProps, ...props }) {
       ? theme.colors.dark[2]
       : theme.colors.gray[6];
   };
+  const getColor = (theme, color) =>
+    theme.colors[color][theme.colorScheme === "dark" ? 5 : 7];
 
   // https://mantine.dev/others/nprogress/
   useEffect(() => {
@@ -166,6 +168,7 @@ function MakoTools({ Component, pageProps, ...props }) {
           setAppColorScheme,
           toggleAppColorScheme,
           getDimmed,
+          getColor,
         },
       }}
     >
@@ -179,8 +182,8 @@ function MakoTools({ Component, pageProps, ...props }) {
           setAppColorScheme={setAppColorScheme}
           colorScheme={colorScheme}
           serverData={{
-            user: JSON.parse(pageProps.__user || "null"),
-            firestore: JSON.parse(pageProps.__firestore || "null"),
+            user: JSON.parse(pageProps?.__user || "null"),
+            firestore: JSON.parse(pageProps?.__firestore || "null"),
           }}
         >
           {/*  TODO: Remove this just use the theme povider */}

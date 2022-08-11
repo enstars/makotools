@@ -36,7 +36,7 @@ function NameOrder() {
       dataKey="name_order"
       label="Preferred name order"
       data={nameOrderOptions}
-      description="Only applies to names displayed in western languages. East asian languages retain their original name order."
+      description="Japanese, Chinese, and Korean will always be Family name, Given name."
       placeholder={nameOrderOptions[0].label + " (Default)"}
       itemComponent={nameOrderItem}
     />

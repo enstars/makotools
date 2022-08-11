@@ -13,7 +13,7 @@ import Announcement from "./Announcement";
 const PER_PAGE = 10; //max 100
 const CATEGORIES = [5, 6];
 
-function SiteAnnouncements() {
+function AnnouncementsList() {
   const theme = useMantineTheme();
   const [announcements, setAnnouncements] = useState([]);
   const [allPagesCount, setAllPagesCount] = useState(0);
@@ -73,4 +73,4 @@ function SiteAnnouncements() {
   );
 }
 
-export default SiteAnnouncements;
+export default AnnouncementsList;

@@ -15,6 +15,8 @@ import {
   Loader,
   Text,
   Alert,
+  Accordion,
+  ThemeIcon,
 } from "@mantine/core";
 
 import {
@@ -27,14 +29,12 @@ import {
   IconPencil,
 } from "@tabler/icons";
 
-import PageTitle from "../../components/PageTitle";
+import PageTitle from "../../components/sections/PageTitle";
 import { useFirebaseUser } from "../../services/firebase/user";
 
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 
-import Layout from "../../components/Layout";
-
-import { getLayout } from "../../../components/Layout";
+import { getLayout } from "../../components/Layout";
 
 import SelectSetting from "./shared/SelectSetting";
 import Region from "./content/Region";
@@ -50,27 +50,127 @@ import Bio from "./profile/Bio";
 import StartPlaying from "./profile/StartPlaying";
 import Email from "./account/Email";
 
+const tabs = [
+  {
+    label: "Content",
+    value: "content",
+    icon: IconDeviceGamepad2,
+    color: "yellow",
+    contents: (
+      <>
+        <Stack>
+          <Region />
+          <NameOrder />
+        </Stack>
+      </>
+    ),
+  },
+  {
+    label: "Appearance",
+    value: "appearance",
+    icon: IconPalette,
+    color: "violet",
+    contents: (
+      <>
+        <Stack>
+          <DarkMode />
+
+          <ShowTlBadge />
+        </Stack>
+      </>
+    ),
+  },
+  {
+    label: "Profile",
+    value: "profile",
+    icon: IconPencil,
+    color: "lightblue",
+    contents: (
+      <>
+        <Stack>
+          <Alert size="sm" color="yellow">
+            These are publicly accessible from your profile page, so make sure
+            to follow our community guidelines.
+          </Alert>
+          <Name />
+          <Username />
+          <Bio />
+          <StartPlaying />
+        </Stack>
+      </>
+    ),
+  },
+  {
+    label: "Account",
+    value: "account",
+    icon: IconUserCircle,
+    color: "blue",
+    contents: (
+      <>
+        <Stack>
+          <Email />
+          <ColorCode />
+        </Stack>
+      </>
+    ),
+  },
+];
+
 function Page() {
   const router = useRouter();
-  const { firebaseUser } = useFirebaseUser();
-  const [usernameModalOpen, setUsernameModalOpen] = useState(false);
   const theme = useMantineTheme();
-  const { colorScheme } = useMantineColorScheme();
   const { width } = useViewportSize();
 
-  const isNarrowPage = width < theme.breakpoints.sm;
+  const [isNarrowPage, setIsNarrowPage] = useState(true);
+  // const isNarrowPage = width < theme.breakpoints.sm;
+
+  useEffect(() => {
+    setIsNarrowPage(width < theme.breakpoints.sm);
+  });
 
   return (
     <>
       <PageTitle title="Settings" mb={16} />
-      {firebaseUser.loading ? (
-        <Center>
-          <Loader />
-        </Center>
+      {isNarrowPage ? (
+        <Accordion
+          multiple
+          defaultValue={[tabs.map((t) => t.value)]}
+          styles={(theme) => ({
+            control: {
+              padding: theme.spacing.xs,
+            },
+            label: {
+              fontWeight: 500,
+              fontSize: theme.fontSizes.md,
+            },
+            content: {
+              paddingLeft: theme.spacing.xs,
+              paddingRight: theme.spacing.xs,
+            },
+          })}
+        >
+          {tabs.map((t) => (
+            <Accordion.Item key={t.value} value={t.value}>
+              <Accordion.Control
+                icon={
+                  <ThemeIcon color={t.color} variant="light">
+                    <t.icon
+                      size={14}
+                      // color={theme.other.getColor(theme, t.color)}
+                    />
+                  </ThemeIcon>
+                }
+              >
+                {t.label}
+              </Accordion.Control>
+              <Accordion.Panel>{t.contents}</Accordion.Panel>
+            </Accordion.Item>
+          ))}
+        </Accordion>
       ) : (
         <Tabs
           defaultValue="content"
-          orientation={isNarrowPage ? "horizontal" : "vertical"}
+          orientation={"vertical"}
           styles={{
             tabsList: {
               marginRight: !isNarrowPage && 16,
@@ -79,70 +179,23 @@ function Page() {
           }}
         >
           <Tabs.List>
-            <Tabs.Tab
-              value="content"
-              icon={<IconDeviceGamepad2 size={14} />}
-              color="yellow"
-            >
-              Content
-            </Tabs.Tab>
-            <Tabs.Tab
-              value="appearance"
-              icon={<IconPalette size={14} />}
-              color="violet"
-            >
-              Appearance
-            </Tabs.Tab>
-            <Tabs.Tab
-              value="profile"
-              icon={<IconPencil size={14} />}
-              color="lightblue"
-            >
-              Profile
-            </Tabs.Tab>
-            <Tabs.Tab
-              value="account"
-              icon={<IconUserCircle size={14} />}
-              color="blue"
-            >
-              Account
-            </Tabs.Tab>
+            {tabs.map(({ value, color, label, ...props }) => (
+              <Tabs.Tab
+                key={value}
+                value={value}
+                icon={<props.icon size={14} />}
+                color={color}
+              >
+                {label}
+              </Tabs.Tab>
+            ))}
           </Tabs.List>
 
-          <Tabs.Panel value="content">
-            <Stack>
-              <Region />
-              <NameOrder />
-            </Stack>
-          </Tabs.Panel>
-
-          <Tabs.Panel value="appearance">
-            <Stack>
-              <DarkMode />
-
-              <ShowTlBadge />
-            </Stack>
-          </Tabs.Panel>
-
-          <Tabs.Panel value="profile">
-            <Stack>
-              <Alert size="sm" color="yellow">
-                These are publicly accessible from your profile page, so make
-                sure to follow our community guidelines.
-              </Alert>
-              <Name />
-              <Username />
-              <Bio />
-              <StartPlaying />
-            </Stack>
-          </Tabs.Panel>
-
-          <Tabs.Panel value="account">
-            <Stack>
-              <Email />
-              <ColorCode />
-            </Stack>
-          </Tabs.Panel>
+          {tabs.map(({ value, contents }) => (
+            <Tabs.Panel key={value} value={value}>
+              {contents}
+            </Tabs.Panel>
+          ))}
         </Tabs>
       )}
     </>

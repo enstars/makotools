@@ -4,11 +4,11 @@ import Image from "next/image";
 
 import { Card, Title, useMantineTheme } from "@mantine/core";
 
-import { getB2File } from "../../services/ensquare";
-import { twoStarIDs } from "../../data/characterIDtoCardID";
-import styles from "../../styles/CharacterCard.module.scss";
+import { getB2File } from "../../../services/ensquare";
+import { twoStarIDs } from "../../../data/characterIDtoCardID";
+import styles from "../../../styles/CharacterCard.module.scss";
 
-export function CharacterCard({ i, doubleface, characters }) {
+function DisplayCard({ i, doubleface, characters }) {
   const theme = useMantineTheme();
   const character = characters.mainLang.data[i];
   const characterSubLang = characters.subLang.data?.[i] || undefined;
@@ -77,3 +77,5 @@ export function CharacterCard({ i, doubleface, characters }) {
     </Link>
   );
 }
+
+export default DisplayCard;

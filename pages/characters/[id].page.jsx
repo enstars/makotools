@@ -3,14 +3,13 @@ import Head from "next/head";
 import { Text, Box } from "@mantine/core";
 
 import { getData, getB2File, getLocalizedData } from "../../services/ensquare";
-import Layout from "../../components/Layout";
-import PageTitle from "../../components/PageTitle";
+import PageTitle from "../../components/sections/PageTitle";
 import ImageViewer from "../../components/core/ImageViewer";
 
-import Reactions from "../../components/core/Reactions";
+import Reactions from "../../components/sections/Reactions";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 
-import { getLayout } from "../../../components/Layout";
+import { getLayout } from "../../components/Layout";
 
 function Page({ character }) {
   const getBreadcrumbs = (path) => {

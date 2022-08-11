@@ -3,7 +3,7 @@ import { TypographyStylesProvider } from "@mantine/core";
 import TermsHTML from "raw-loader!./terms.html";
 
 import Layout from "../../../components/Layout";
-import PageTitle from "../../../components/PageTitle";
+import PageTitle from "../../../components/sections/PageTitle";
 
 import { getLayout } from "../../../components/Layout";
 

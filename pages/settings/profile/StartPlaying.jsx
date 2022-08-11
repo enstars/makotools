@@ -92,7 +92,9 @@ function StartPlaying() {
       : `${picked.year}-${picked.month}-01`;
     setData(resolvedData);
     if (
-      firebaseUser.firestore &&
+      firebaseUser.loggedIn &&
+      firebaseUser?.firestore &&
+      firebaseUser.firestore?.profile_start_playing &&
       firebaseUser.firestore.profile_start_playing !== resolvedData
     ) {
       setUserDataKey({ profile_start_playing: resolvedData });

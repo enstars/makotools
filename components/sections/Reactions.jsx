@@ -23,8 +23,9 @@ import { Collapse } from "react-collapse";
 import emotes from "../../services/emotes";
 import { useFirebaseUser } from "../../services/firebase/user";
 
-import EmoteSelector from "./EmoteSelector";
-import Emote from "./Emote";
+import EmoteSelector from "../utilities/emotes/EmoteSelector";
+
+import Emote from "../utilities/emotes/Emote";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {

@@ -1,7 +1,7 @@
 import { TypographyStylesProvider } from "@mantine/core";
 
 import Layout from "../../../components/Layout";
-import PageTitle from "../../../components/PageTitle";
+import PageTitle from "../../../components/sections/PageTitle";
 import { MAKOTOOLS } from "../../../services/constants";
 
 import { getLayout } from "../../../components/Layout";

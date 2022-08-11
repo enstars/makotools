@@ -22,12 +22,14 @@ import { IconArrowsSort, IconSearch } from "@tabler/icons";
 import { slice } from "lodash";
 
 import Layout from "../../components/Layout";
-import CardCard from "../../components/cards/CardCard";
-import { getLocalizedData } from "../../services/ensquare";
-import PageTitle from "../../components/PageTitle";
 
-import { getLayout } from "../../../components/Layout";
-import { getServerSideUser } from "../../services/firebase/getServerSideUser";
+import { getLocalizedData } from "../../services/ensquare";
+import PageTitle from "../../components/sections/PageTitle";
+
+import { getLayout } from "../../components/Layout";
+import getServerSideUser from "../../services/firebase/getServerSideUser";
+
+import CardCard from "./components/DisplayCard";
 
 const CARD_LIST_INITIAL_COUNT = 20;
 const CARD_VIEW_OPTIONS_DEFAULT = {

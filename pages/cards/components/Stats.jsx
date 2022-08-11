@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { useState } from "react";
 
-import CardStatsNumber from "../../../components/core/CardStatsNumber";
+import CardStatsNumber from "../../../components/utilities/formatting/CardStatsNumber";
 
 function LabelCell({ total, ...props }) {
   return (

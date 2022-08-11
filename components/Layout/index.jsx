@@ -10,9 +10,9 @@ import {
   useMantineColorScheme,
 } from "@mantine/core";
 
-import ErrorBoundary from "../ErrorBoundary";
+import ErrorBoundary from "./ErrorBoundary";
 
-import Meta from "../Meta";
+import Meta from "./Meta";
 
 import Sidebar from "./Sidebar";
 import Header from "./Header";

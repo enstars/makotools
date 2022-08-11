@@ -27,14 +27,13 @@ import {
 } from "@tabler/icons";
 import { useRouter } from "next/router";
 
-import { getB2File } from "../../services/ensquare";
-import CardStatsShort from "../core/CardStatsShort";
-import attributes from "../../data/attributes.json";
-import ImageViewer from "../../components/core/ImageViewer";
-import OfficialityBadge from "../OfficialityBadge";
-import CardStatsNumber from "../core/CardStatsNumber";
-import { addCard } from "../../services/collection";
-import { useFirebaseUser } from "../../services/firebase/user";
+import { getB2File } from "../../../services/ensquare";
+import attributes from "../../../data/attributes.json";
+import ImageViewer from "../../../components/core/ImageViewer";
+import OfficialityBadge from "../../../components/utilities/formatting/OfficialityBadge";
+import CardStatsNumber from "../../../components/utilities/formatting/CardStatsNumber";
+import { addCard } from "../../../services/collection";
+import { useFirebaseUser } from "../../../services/firebase/user";
 
 function RarityBadge({ card }) {
   const theme = useMantineTheme();

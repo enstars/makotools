@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 
-import { useFirebaseUser } from "../../services/firebase/user";
+import { useFirebaseUser } from "../../../services/firebase/user";
 
 // https://en.wikipedia.org/wiki/Personal_name#Eastern_name_order
 const lastFirstLocales = ["ja", "zh", "zh-TW", "ko"];

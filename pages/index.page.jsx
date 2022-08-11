@@ -32,9 +32,10 @@ import AffiliatesLight from "../assets/Affiliates/affiliates_light.svg?url";
 import AffiliatesDark from "../assets/Affiliates/affiliates_dark.svg?url";
 
 import Layout, { getLayout } from "../components/Layout";
-import SiteAnnouncements from "../components/core/SiteAnnouncements";
-import Announcement from "../components/core/Announcement";
+
 import getServerSideUser from "../services/firebase/getServerSideUser";
+
+import Announcement from "./about/announcements/components/Announcement";
 
 function Page({ posts }) {
   const { firebaseUser } = useFirebaseUser();

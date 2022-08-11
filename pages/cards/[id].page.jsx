@@ -19,19 +19,21 @@ import {
   getPreviewImageURL,
 } from "../../services/ensquare";
 import { getLayout } from "../../components/Layout";
-import PageTitle from "../../components/PageTitle";
+import PageTitle from "../../components/sections/PageTitle";
 import ImageViewer from "../../components/core/ImageViewer";
 
 import attributes from "../../data/attributes.json";
-import Reactions from "../../components/core/Reactions";
+import Reactions from "../../components/sections/Reactions";
 
-import NameOrder, { getNameOrder } from "../../components/core/NameOrder";
+import NameOrder, {
+  getNameOrder,
+} from "../../components/utilities/formatting/NameOrder";
 
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 
-import { getLocalizedNumber } from "../../components/core/CardStatsNumber";
+import { getLocalizedNumber } from "../../components/utilities/formatting/CardStatsNumber";
 
-import Stats, { sumStats } from "./Card/Stats";
+import Stats, { sumStats } from "./components/Stats";
 
 function Page({ character, card, title }) {
   console.log(card);

@@ -19,10 +19,9 @@ import Link from "next/link";
 import { method, methodOf } from "lodash";
 
 import { MAKOTOOLS } from "../../services/constants";
-import PageTitle from "../../components/PageTitle";
-import Layout from "../../components/Layout";
+import PageTitle from "../../components/sections/PageTitle";
 
-import { getLayout } from "../../../components/Layout";
+import { getLayout } from "../../components/Layout";
 function Page() {
   return (
     <>

@@ -1,7 +1,7 @@
 import { IconBadge, IconBadgeOff } from "@tabler/icons";
 import { Text, Tooltip } from "@mantine/core";
 
-import { useFirebaseUser } from "../services/firebase/user";
+import { useFirebaseUser } from "../../../services/firebase/user";
 
 function OfficialityBadge({ langData }) {
   const { firebaseUser } = useFirebaseUser();

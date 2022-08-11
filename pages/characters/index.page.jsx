@@ -11,14 +11,12 @@ import {
 } from "@mantine/core";
 
 import { getLocalizedData } from "../../services/ensquare";
-import PageTitle from "../../components/PageTitle";
+import PageTitle from "../../components/sections/PageTitle";
 
-import Layout from "../../components/Layout";
-
-import { getLayout } from "../../../components/Layout";
+import { getLayout } from "../../components/Layout";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 
-import { CharacterCard } from "./../../components/characters/CharacterCard";
+import CharacterCard from "./components/DisplayCard";
 
 function Page({ characters, unit_to_characters: unitToCharacters, units }) {
   const [listCharacters, setListCharacters] = useState([]);

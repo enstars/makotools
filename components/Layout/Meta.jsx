@@ -1,6 +1,6 @@
 import Head from "next/head";
 
-import { MAKOTOOLS } from "../services/constants";
+import { MAKOTOOLS } from "../../services/constants";
 
 function Meta({ title, desc, img }) {
   console.log("meta", title, desc, img);

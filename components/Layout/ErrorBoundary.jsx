@@ -4,7 +4,7 @@ import Router from "next/router";
 
 import Image from "next/image";
 
-import Jun from "../assets/ErrorBoundary/Jun.webp";
+import Jun from "../../assets/ErrorBoundary/Jun.webp";
 
 class ErrorBoundary extends React.Component {
   constructor(props) {

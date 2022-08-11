@@ -18,7 +18,8 @@ import { MAKOTOOLS } from "../../../services/constants";
 import MakotoolsLight from "../../../assets/Logo/mkt_light.svg?url";
 import MakotoolsDark from "../../../assets/Logo/mkt_dark.svg?url";
 import Affiliates from "../../../assets/Affiliates/affiliates.svg";
-import SupportBanner from "../SupportBanner";
+
+import SupportBanner from "./SupportBanner";
 
 function PageFooter({ wide, textOnly }) {
   const theme = useMantineTheme();
