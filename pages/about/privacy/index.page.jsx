@@ -1,7 +1,8 @@
 import { TypographyStylesProvider } from "@mantine/core";
 
-import Layout from "../../../components/Layout";
 import PageTitle from "../../../components/PageTitle";
+
+import { getLayout } from "../../../components/Layout";
 
 function Page() {
   return (
@@ -125,9 +126,5 @@ function Page() {
     </>
   );
 }
-
+Page.getLayout = getLayout({});
 export default Page;
-
-Page.getLayout = function getLayout(page, pageProps) {
-  return <Layout pageProps={pageProps}>{page}</Layout>;
-};

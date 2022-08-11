@@ -31,9 +31,10 @@ import Banner from "../assets/banner.png";
 import AffiliatesLight from "../assets/Affiliates/affiliates_light.svg?url";
 import AffiliatesDark from "../assets/Affiliates/affiliates_dark.svg?url";
 
-import Layout from "../components/Layout";
+import Layout, { getLayout } from "../components/Layout";
 import SiteAnnouncements from "../components/core/SiteAnnouncements";
 import Announcement from "../components/core/Announcement";
+import getServerSideUser from "../services/firebase/getServerSideUser";
 
 function Page({ posts }) {
   const { firebaseUser } = useFirebaseUser();
@@ -180,40 +181,38 @@ function Page({ posts }) {
   );
 }
 
+Page.getLayout = getLayout({
+  footerTextOnly: true,
+});
 export default Page;
-Page.getLayout = function getLayout(page, pageProps) {
-  return (
-    <Layout footerTextOnly pageProps={pageProps}>
-      {page}
-    </Layout>
-  );
-};
 
-export const getServerSideProps = async ({ req, res, locale, params }) => {
-  res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=7200, stale-while-revalidate=172800"
-  );
-  // refresh every 2 hours, stale for 48hrs
-
-  try {
-    const initRespose = await fetch(
-      `https://backend-stars.ensemble.moe/wp-main/wp-json/wp/v2/posts?categories=5,6&per_page=5&page=1`
+export const getServerSideProps = getServerSideUser(
+  async ({ req, res, locale, params }) => {
+    res.setHeader(
+      "Cache-Control",
+      "public, s-maxage=7200, stale-while-revalidate=172800"
     );
-    const initData = await initRespose.json();
+    // refresh every 2 hours, stale for 48hrs
 
-    return {
-      props: {
-        posts: initData,
-      },
-    };
-  } catch (e) {
-    return {
-      props: {
-        posts: {
-          error: true,
+    try {
+      const initRespose = await fetch(
+        `https://backend-stars.ensemble.moe/wp-main/wp-json/wp/v2/posts?categories=5,6&per_page=5&page=1`
+      );
+      const initData = await initRespose.json();
+
+      return {
+        props: {
+          posts: initData,
         },
-      },
-    };
+      };
+    } catch (e) {
+      return {
+        props: {
+          posts: {
+            error: true,
+          },
+        },
+      };
+    }
   }
-};
+);

@@ -22,7 +22,7 @@ import Link from "next/link";
 
 import { IconCalendar, IconInfoCircle } from "@tabler/icons";
 
-import Layout from "../../components/Layout";
+import Layout, { getLayout } from "../../components/Layout";
 import PageTitle from "../../components/PageTitle";
 import { MAKOTOOLS } from "../../services/constants";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
@@ -163,6 +163,7 @@ function Page({ profile }) {
   );
 }
 
+Page.getLayout = getLayout({});
 export default Page;
 
 export const getServerSideProps = getServerSideUser(
@@ -200,7 +201,3 @@ export const getServerSideProps = getServerSideUser(
     };
   }
 );
-
-Page.getLayout = function getLayout(page, pageProps) {
-  return <Layout pageProps={pageProps}>{page}</Layout>;
-};
