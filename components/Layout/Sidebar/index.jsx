@@ -43,98 +43,6 @@ import { useFirebaseUser } from "../../../services/firebase/user";
 
 import UserMenu from "./UserMenu";
 
-const SidebarButton = forwardRef(function button(
-  { contents, link, rootStyles, ...props },
-  ref
-) {
-  const { collapsed } = props;
-  const Label = (props) =>
-    contents ? (
-      <Text inline weight={500} sx={{ flexGrow: 1 }} {...props}>
-        {contents.name}{" "}
-        {contents.soon && (
-          <Badge size="xs" variant="outline">
-            Soon
-          </Badge>
-        )}
-      </Text>
-    ) : null;
-  const StyledButton = forwardRef(function button(
-    { children, sx, collapsed, active, ...props2 },
-    fref
-  ) {
-    return (
-      <Button
-        variant={active ? "light" : "subtle"}
-        component="a"
-        color={active ? "blue" : "dark"}
-        radius={0}
-        sx={(theme) => [
-          {
-            display: "block",
-            height: "auto",
-            width: "100%",
-            paddingLeft: collapsed ? theme.spacing.xs : theme.spacing.md,
-            paddingRight: collapsed ? theme.spacing.xs : theme.spacing.md,
-            paddingTop: theme.spacing.sm,
-            paddingBottom: theme.spacing.sm,
-            pointerEvents: active ? "none" : "auto",
-            border: 0,
-          },
-          sx,
-        ]}
-        styles={{
-          inner: {
-            display: "block",
-          },
-        }}
-        {...props2}
-        ref={fref}
-      >
-        {contents ? (
-          <Group
-            spacing={0}
-            sx={{ justifyContent: "center", opacity: contents.soon ? 0.5 : 1 }}
-          >
-            <Box sx={{ display: "flex" }}>
-              <contents.icon size={18} />
-            </Box>
-            {!collapsed && <Label ml="sm" />}
-          </Group>
-        ) : (
-          children
-        )}
-      </Button>
-    );
-  });
-
-  const TooltipProps = {
-    opened: contents ? (collapsed ? undefined : false) : false,
-    label: <Label inherit />,
-    position: "right",
-    withArrow: true,
-    styles: rootStyles,
-    ref: ref,
-    sx: {
-      display: "block",
-      width: "100%",
-    },
-  };
-  if (link)
-    return (
-      <Tooltip {...TooltipProps}>
-        <Link href={link} passHref>
-          <StyledButton {...props} />
-        </Link>
-      </Tooltip>
-    );
-  return (
-    <Tooltip {...TooltipProps}>
-      <StyledButton {...props} />
-    </Tooltip>
-  );
-});
-
 function Sidebar(props) {
   const location = useRouter();
 
@@ -283,18 +191,27 @@ function Sidebar(props) {
           ]
             .filter((l) => l.link)
             .map((link) => {
+              const active = `/${location.asPath.split("/")[1]}` === link.link;
               const navLinkComponent = (
                 <NavLink
                   py="xs"
                   label={collapsed ? false : <Text inline>{link.name}</Text>}
                   icon={link?.icon && <link.icon size={16} />}
-                  active={`/${location.asPath.split("/")[1]}` === link.link}
+                  active={active}
                   link={link.soon ? undefined : link.link}
                   disabled={link.soon}
                   sx={{ maxWidth: "100%", minWidth: 0 }}
-                  styles={{
+                  styles={(theme) => ({
                     icon: [collapsed && { margin: 0 }, { paddingTop: 0 }],
-                  }}
+                    root: [
+                      !active &&
+                        theme.colorScheme !== "dark" && {
+                          "&:hover": {
+                            background: theme.colors.gray[1],
+                          },
+                        },
+                    ],
+                  })}
                   {...link?.props}
                 />
               );
