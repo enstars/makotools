@@ -28,17 +28,10 @@ function Layout({
   footerTextOnly,
   pageProps,
 }) {
-  const location = useRouter();
-  const [currentPath, setCurrentPath] = useState(location.pathname);
   const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
 
-  useEffect(() => {
-    setCurrentPath(location.pathname);
-  }, [location]);
-
   const theme = useMantineTheme();
-  const [opened, setOpened] = useState(false);
   return (
     <ErrorBoundary>
       <Meta {...{ ...pageProps?.meta, ...meta }} />
@@ -58,7 +51,7 @@ function Layout({
         navbar={
           !hideSidebar ? (
             <ErrorBoundary>
-              <Sidebar hiddenBreakpoint="xs" hidden={!opened} />
+              <Sidebar hiddenBreakpoint="xs" />
             </ErrorBoundary>
           ) : null
         }

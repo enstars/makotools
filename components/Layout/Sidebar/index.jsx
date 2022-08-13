@@ -52,7 +52,7 @@ function Sidebar(props) {
   const { firebaseUser } = useFirebaseUser();
 
   const [collapsed, toggleCollapsed] = useToggle([false, true]);
-  console.log("collapsed", collapsed);
+  // console.log("collapsed", collapsed);
   if (props.permanentlyExpanded && collapsed) toggleCollapsed();
   return (
     <Navbar
@@ -264,7 +264,7 @@ function Sidebar(props) {
         />
         <NavLink
           onClick={() => {
-            console.log(collapsed);
+            // console.log(collapsed);
             toggleCollapsed();
             if (props?.onCollapse) props.onCollapse();
           }}
