@@ -49,7 +49,6 @@ function BreadcrumbsApp({
           maxWidth: "100%",
         })}
         inline
-        scrollbarSize={5}
       >
         <Breadcrumbs
           // py="xs"
