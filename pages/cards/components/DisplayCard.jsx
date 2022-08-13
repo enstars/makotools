@@ -178,7 +178,7 @@ export default function CardCard({ cards, id, cardOptions }) {
           whiteSpace: "nowrap",
         }}
       >
-        <Group spacing={0}>
+        <Group spacing={0} noWrap>
           {firebaseUser.loggedIn && (
             <Group>
               <Box
@@ -267,7 +267,7 @@ export default function CardCard({ cards, id, cardOptions }) {
             px="sm"
             py="xs"
             spacing={3}
-            sx={{ flex: "1" }}
+            sx={{ flex: "1 1 0", minWidth: 0 }}
             noWrap
             position="apart"
             // mt={3}

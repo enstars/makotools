@@ -133,5 +133,5 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
     props: { characters, unit_to_characters, units },
   };
 });
-Page.getLayout = getLayout({});
+Page.getLayout = getLayout({ wide: true });
 export default Page;

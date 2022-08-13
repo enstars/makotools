@@ -190,7 +190,6 @@ function Page({ cards, characters }) {
           </Button>
         </Group>
       </Paper>
-      {slicedCardsList.length}
       {slicedCardsList.length ? (
         <>
           <Text color="dimmed" mt="xl" mb="sm" size="sm">
@@ -277,5 +276,5 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
   };
 });
 
-Page.getLayout = getLayout({});
+Page.getLayout = getLayout({ wide: true });
 export default Page;
