@@ -76,17 +76,11 @@ function Sidebar(props) {
       }}
       {...props}
     >
-      <Navbar.Section
-        sx={{
-          borderBottom: "solid 1px",
-          borderColor: dark ? theme.colors.dark[5] : theme.colors.gray[2],
-          // marginBottom: false ? 0 : theme.spacing.xs / 2,
-        }}
-      >
+      <Navbar.Section>
         <Link href="/" passHref>
           <NavLink
             component="a"
-            // py="xs"
+            py="xs"
             label={
               !collapsed && (
                 <Text inline>

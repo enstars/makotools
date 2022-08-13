@@ -44,7 +44,6 @@ function HeaderApp({ getBreadcrumbs, title, breadcrumbs }) {
               px="md"
               py={0}
               sx={(theme) => ({
-                boxShadow: theme.shadows.sm,
                 paddingTop: theme.spacing.xs / 1.5,
                 paddingBottom: theme.spacing.xs / 1.5,
                 minHeight: 37,
