@@ -67,14 +67,11 @@ function UserMenu({ trigger, collapsed }) {
       }}
       // middlewares={}
     >
-      <Tooltip label="Settings" position="right" disabled={!collapsed}>
-        <span>
-          <Menu.Target>{trigger}</Menu.Target>
-        </span>
-      </Tooltip>
-      {/* <Menu.Target>
-        <div>a</div>
-      </Menu.Target> */}
+      {/* <Tooltip label="Settings" position="right" disabled={!collapsed}>
+        <span> */}
+      <Menu.Target>{trigger}</Menu.Target>
+      {/* </span>
+      </Tooltip> */}
       <Menu.Dropdown>
         <Menu.Item
           id="sidebar-logged-in"

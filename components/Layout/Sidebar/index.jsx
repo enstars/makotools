@@ -30,6 +30,8 @@ import {
   Tooltip,
   NavLink,
   Stack,
+  ActionIcon,
+  UnstyledButton,
 } from "@mantine/core";
 
 import { useColorScheme, useToggle } from "@mantine/hooks";
@@ -62,14 +64,14 @@ function Sidebar(props) {
         base: 0,
         xs: collapsed ? 40 : 250,
       }}
+      hidden={true}
+      hiddenBreakpoint="xs"
       sx={{
         position: "sticky",
         top: 0,
         height: "100vh",
         backgroundColor:
-          theme.colorScheme === "dark"
-            ? theme.colors.dark[8]
-            : theme.colors.gray[0],
+          theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
         zIndex: 210,
       }}
       {...props}
@@ -84,7 +86,7 @@ function Sidebar(props) {
         <Link href="/" passHref>
           <NavLink
             component="a"
-            py="xs"
+            // py="xs"
             label={
               !collapsed && (
                 <Text inline>
@@ -194,7 +196,7 @@ function Sidebar(props) {
               const active = `/${location.asPath.split("/")[1]}` === link.link;
               const navLinkComponent = (
                 <NavLink
-                  py="xs"
+                  // py="xs"
                   label={collapsed ? false : <Text inline>{link.name}</Text>}
                   icon={link?.icon && <link.icon size={16} />}
                   active={active}
@@ -202,15 +204,11 @@ function Sidebar(props) {
                   disabled={link.soon}
                   sx={{ maxWidth: "100%", minWidth: 0 }}
                   styles={(theme) => ({
-                    icon: [collapsed && { margin: 0 }, { paddingTop: 0 }],
-                    root: [
-                      !active &&
-                        theme.colorScheme !== "dark" && {
-                          "&:hover": {
-                            background: theme.colors.gray[1],
-                          },
-                        },
-                    ],
+                    icon: {
+                      paddingTop: 0,
+                      marginTop: theme.spacing.xs / 8,
+                      marginBottom: theme.spacing.xs / 8,
+                    },
                   })}
                   {...link?.props}
                 />
@@ -252,31 +250,49 @@ function Sidebar(props) {
           borderColor: dark ? theme.colors.dark[5] : theme.colors.gray[2],
         }}
       >
-        <UserMenu
-          collapsed={collapsed}
-          trigger={
-            <NavLink
-              // py="xs"
-              label={"Settings"}
-              icon={<IconSettings size={16} />}
-            />
-          }
-        />
-        <NavLink
-          onClick={() => {
-            // console.log(collapsed);
-            toggleCollapsed();
-            if (props?.onCollapse) props.onCollapse();
-          }}
-          label={!collapsed && <Text inline>Collapse</Text>}
-          icon={
-            collapsed ? (
+        <Group
+          // spacing={0}
+          sx={(theme) => ({
+            padding: theme.spacing.xs / 2,
+            gap: theme.spacing.xs / 2,
+          })}
+          position="center"
+        >
+          {!collapsed && (
+            <>
+              <UserMenu
+                collapsed={collapsed}
+                trigger={
+                  <ActionIcon
+                    color="blue"
+                    variant="subtle"
+                    // py="xs"
+                    sx={{ flexGrow: 1 }}
+                  >
+                    <Text size="xs" color="blue" sx={{ flexGrow: 1 }} ml="xs">
+                      {firebaseUser.loggedIn
+                        ? `@${firebaseUser.firestore.username}`
+                        : "Not logged in"}
+                    </Text>
+                  </ActionIcon>
+                }
+              />
+            </>
+          )}
+          <ActionIcon
+            onClick={() => {
+              // console.log(collapsed);
+              toggleCollapsed();
+              if (props?.onCollapse) props.onCollapse();
+            }}
+          >
+            {collapsed ? (
               <IconChevronRight size={16} />
             ) : (
               <IconChevronLeft size={16} />
-            )
-          }
-        />
+            )}
+          </ActionIcon>
+        </Group>
       </Navbar.Section>
     </Navbar>
   );
