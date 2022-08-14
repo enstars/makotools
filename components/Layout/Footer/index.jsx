@@ -12,12 +12,15 @@ import {
   Group,
   Box,
   Container,
+  BackgroundImage,
 } from "@mantine/core";
 
 import { MAKOTOOLS } from "../../../services/constants";
 import MakotoolsLight from "../../../assets/Logo/mkt_light.svg?url";
 import MakotoolsDark from "../../../assets/Logo/mkt_dark.svg?url";
 import Affiliates from "../../../assets/Affiliates/affiliates.svg";
+
+import SvgBackground from "./mkt_bg.svg";
 
 import SupportBanner from "./SupportBanner";
 
@@ -36,10 +39,33 @@ function PageFooter({ wide, textOnly }) {
           theme.colorScheme === "dark"
             ? theme.colors.dark[9]
             : theme.fn.lighten(theme.colors.gray[0], 0.3),
+        position: "relative",
       }}
       pt="xl"
       p="md"
     >
+      <Text
+        color="dimmed"
+        sx={{
+          svg: {
+            position: "absolute",
+            height: "100%",
+            width: "100%",
+            left: 0,
+            top: 0,
+            strokeWidth: 10,
+            objectPosition: "right",
+            objectFit: "cover",
+            maskImage: "linear-gradient(135deg, transparent 70%, #fff6 100%)",
+            pointerEvents: "none",
+          },
+        }}
+      >
+        <SvgBackground
+          viewBox="0 0 5266 5266"
+          preserveAspectRatio="xMaxYMax meet"
+        />
+      </Text>
       <Container
         size={wide ? "xl" : "sm"}
         px="xl"
@@ -110,12 +136,13 @@ function PageFooter({ wide, textOnly }) {
                 mb="xs"
                 sx={{
                   svg: {
-                    maxWidth: "calc(100% - var(--mantine-navbar-width))",
-                    aspectRatio: "270/72",
+                    maxWidth: 500,
+                    minWidth: 250,
+                    width: "60%",
                   },
                 }}
               >
-                <Affiliates viewBox="0 0 898 239" width={270} height={"auto"} />
+                <Affiliates viewBox="0 0 898 239" height={"auto"} />
               </Text>
             )}
             <Text size="xs" color="dimmed">

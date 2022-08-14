@@ -15,6 +15,7 @@ import {
   IconChevronLeft,
   IconBrandPatreon,
   IconSettings,
+  IconUserCircle,
 } from "@tabler/icons";
 
 import {
@@ -71,7 +72,7 @@ function Sidebar(props) {
         top: 0,
         height: "100vh",
         backgroundColor:
-          theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
+          theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
         zIndex: 210,
       }}
       {...props}
@@ -166,7 +167,7 @@ function Sidebar(props) {
                 ? {
                     link: `/@${firebaseUser?.firestore?.username}`,
                     name: "Profile",
-                    icon: IconUser,
+                    icon: IconUserCircle,
                   }
                 : {},
             ],

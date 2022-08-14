@@ -23,6 +23,7 @@ function Page({ post }) {
           },
         })}
       />
+      <Reactions />
     </>
   );
 }

@@ -182,9 +182,7 @@ function Page({ posts }) {
   );
 }
 
-Page.getLayout = getLayout({
-  footerTextOnly: true,
-});
+Page.getLayout = getLayout({});
 export default Page;
 
 export const getServerSideProps = getServerSideUser(

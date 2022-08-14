@@ -34,7 +34,7 @@ function Announcement({ announcement, i = 2 }) {
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
-              lineHeight: 1,
+              lineHeight: 1.25,
             },
             //dimmed
             // color:
