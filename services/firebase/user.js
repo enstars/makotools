@@ -1,9 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
-import { getFirestoreUserData, setFirestoreUserData } from "./firestore";
+
 import { showNotification } from "@mantine/notifications";
 
 import { IconAlertTriangle, IconArrowLeft } from "@tabler/icons";
 import { useAuthUser } from "next-firebase-auth";
+
+import { getFirestoreUserData, setFirestoreUserData } from "./firestore";
 
 const FirebaseUserContext = React.createContext();
 export const useFirebaseUser = () => useContext(FirebaseUserContext);
@@ -39,7 +41,7 @@ function FirebaseUserProvider({
     setFirestoreUserData(data);
   };
 
-  // console.log("firebase user auth ", firebaseUser);
+  console.log("firebase user auth ", firebaseUser);
   useEffect(() => {
     const userState = {
       loading: false,
@@ -54,6 +56,14 @@ function FirebaseUserProvider({
         try {
           const currentUserData = await getFirestoreUserData(AuthUser.id);
           setFirebaseUser((s) => ({ ...s, firestore: currentUserData }));
+          if (!currentUserData)
+            showNotification({
+              title: "Error",
+              message:
+                "We had trouble fetching your user data. If this is your first time signing up, please refresh the page",
+              color: "red",
+              icon: <IconAlertTriangle size={16} />,
+            });
           if (currentUserData?.dark_mode)
             setAppColorScheme(currentUserData.dark_mode ? "dark" : "light");
         } catch (e) {

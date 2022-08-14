@@ -183,17 +183,16 @@ function Login() {
                 variant="default"
                 leftIcon={<IconBrandTwitter size={16} />}
                 onClick={() => {
-                  // appSignInWithTwitter((e) => {
-                  //   console.log(e.message, JSON.stringify(e));
-                  // });
-                  showNotification({
-                    title: "Twitter sign-on is coming soon!",
+                  appSignInWithTwitter((e) => {
+                    console.log(e.message, JSON.stringify(e));
                   });
+                  // showNotification({
+                  //   title: "Twitter sign-on is coming soon!",
+                  // });
                 }}
                 style={{ width: "100%" }}
               >
-                {isRegister ? "Sign up" : "Sign in"} with Twitter{" "}
-                <Badge ml="xs">Soon</Badge>
+                {isRegister ? "Sign up" : "Sign in"} with Twitter
               </Button>
             </Stack>
 

@@ -11,7 +11,7 @@ import {
   createUserWithEmailAndPassword,
 } from "firebase/auth";
 
-import { setFirestoreUserData } from "./firestore";
+// import { setFirestoreUserData } from "./firestore";
 
 const parseKey = (key) => {
   return key?.replace(/\\n/g, "\n")?.replace(/'/g, "") || undefined;
@@ -119,7 +119,7 @@ export const appSignUpWithEmailAndPassword = (
     const clientAuth = getAuth();
     createUserWithEmailAndPassword(clientAuth, email, password)
       .then((result) => {
-        setFirestoreUserData(userInfo, result.user.uid);
+        // setFirestoreUserData(userInfo, result.user.uid);
       })
       .catch((error) => {
         callback({ status: "error", error });

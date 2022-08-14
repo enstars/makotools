@@ -33,8 +33,9 @@ export default function getServerSideUser(serverSideFunction, firebaseConfig) {
         ? await serverSideFunction({ ...context, ...firebaseContext })
         : { props: {} };
       if (renderData.notFound) return renderData;
-      renderData.props.__user = JSON.stringify(firebaseContext.user);
-      renderData.props.__firestore = JSON.stringify(firebaseContext.firestore);
+      renderData.props.__user = JSON.stringify(firebaseContext.user) || null;
+      renderData.props.__firestore =
+        JSON.stringify(firebaseContext.firestore) || null;
 
       return renderData;
     });

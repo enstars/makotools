@@ -6,10 +6,9 @@ import { AuthAction } from "next-firebase-auth";
 
 import { useFirebaseUser } from "../../services/firebase/user";
 
-import Layout from "../../components/Layout";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 
-import { getLayout } from "../../../components/Layout";
+import { getLayout } from "../../components/Layout";
 
 import Login from "./Login";
 
@@ -34,5 +33,9 @@ export const getServerSideProps = getServerSideUser(
     whenAuthed: AuthAction.REDIRECT_TO_APP,
   }
 );
-Page.getLayout = getLayout({});
+Page.getLayout = getLayout({
+  hideSidebar: true,
+  hideFooter: true,
+  hideHeader: true,
+});
 export default Page;

@@ -5,14 +5,18 @@ import {
   getFirebaseAdmin,
 } from "next-firebase-auth";
 
-import { initializeApp } from "firebase-admin/app";
-import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { FieldValue, getFirestore } from "firebase-admin/firestore";
 
-import initAuth, {
-  syncFirestoreUserData,
-} from "../../services/firebase/authentication"; // the module you created above
+import initAuth from "../../services/firebase/authentication"; // the module you created above
+
+const firestoreSettings = { ignoreUndefinedProperties: true };
+
+// const defaultFirestore = getFirestore();
+// defaultFirestore.settings({ ignoreUndefinedProperties: true });
 
 initAuth();
+
+// getFirebaseAdmin().firestore().settings({ ignoreUndefinedProperties: true });
 
 const genRanHex = (size) =>
   [...Array(size)]
@@ -35,34 +39,24 @@ const handler = async (req, res) => {
     // console.log(defaultFirestore);
     // initAuth();
     const db = getFirebaseAdmin().firestore();
+    // db.settings(firestoreSettings); // no idea why this doesnt work
     const docCollection = db.collection("users");
     const docRef = docCollection.doc(authUser.id);
-    const docSet = await docRef.set(
-      {
-        email: authUser.email,
-        lastLogin: FieldValue.serverTimestamp(),
-      },
-      { merge: true }
-    );
     const docGet = (await docRef.get())?.data();
+
     let suid = docGet?.suid;
     if (!suid) {
       let uniqueSUID = "";
       while (!uniqueSUID) {
         uniqueSUID = genRanHex(6);
         if (validateSUID(docCollection, uniqueSUID)) {
-          const docSetSUID = await docRef.set(
-            {
-              suid: uniqueSUID,
-            },
-            { merge: true }
-          );
           suid = uniqueSUID;
         } else {
           uniqueSUID = "";
         }
       }
     }
+    let username = docGet?.username || suid;
     if (!docGet?.joinDate) {
       const docSetJoinDate = await docRef.set(
         {
@@ -72,7 +66,17 @@ const handler = async (req, res) => {
       );
     }
 
-    console.log(docGet);
+    const docSet = await docRef.set(
+      {
+        email: authUser?.email || null,
+        lastLogin: FieldValue.serverTimestamp(),
+        suid,
+        username,
+      },
+      { merge: true }
+    );
+
+    // console.log(docGet);
 
     return res.status(200).json({ success: true });
   } catch (e) {

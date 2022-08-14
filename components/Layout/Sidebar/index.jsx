@@ -271,7 +271,7 @@ function Sidebar(props) {
                       weight={700}
                     >
                       {firebaseUser.loggedIn
-                        ? `@${firebaseUser.firestore.username}`
+                        ? `@${firebaseUser?.firestore?.username}`
                         : "Not logged in"}
                     </Text>
                   </ActionIcon>

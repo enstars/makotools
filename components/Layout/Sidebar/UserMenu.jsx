@@ -26,6 +26,8 @@ import {
   IconUser,
 } from "@tabler/icons";
 
+import { useRouter } from "next/router";
+
 import { useFirebaseUser } from "../../../services/firebase/user";
 
 function UserMenu({ trigger, collapsed }) {
@@ -34,6 +36,7 @@ function UserMenu({ trigger, collapsed }) {
   const dark = colorScheme === "dark";
   const [opened, handlers] = useDisclosure(false);
   const { firebaseUser } = useFirebaseUser();
+  const { reload } = useRouter();
 
   return (
     <Menu
@@ -102,13 +105,13 @@ function UserMenu({ trigger, collapsed }) {
               }}
             >
               <Text id="sidebar-user-name" size="sm" weight={500}>
-                {firebaseUser.firestore?.name ||
-                  firebaseUser.user.email.split("@")[0]}
+                {firebaseUser?.firestore?.name ||
+                  firebaseUser?.user?.email?.split("@")[0]}
               </Text>
               <Text id="sidebar-user-email" size="xs" color="dimmed" mt={-2}>
-                {firebaseUser.firestore?.username
-                  ? `@${firebaseUser.firestore?.username}`
-                  : firebaseUser.user.email}
+                {firebaseUser?.firestore?.username
+                  ? `@${firebaseUser?.firestore?.username}`
+                  : firebaseUser?.user.email}
               </Text>
             </Box>
           ) : (
@@ -159,13 +162,14 @@ function UserMenu({ trigger, collapsed }) {
               id="sidebar-link-logout"
               onClick={() => {
                 firebaseUser.user.signOut();
-                showNotification({
-                  message: "Successfully signed out",
-                  autoClose: 5000,
-                  icon: <IconCircleCheck />,
-                  className: "signout-notification",
-                  color: "lime",
-                });
+                reload();
+                // showNotification({
+                //   message: "Successfully signed out",
+                //   autoClose: 5000,
+                //   icon: <IconCircleCheck />,
+                //   className: "signout-notification",
+                //   color: "lime",
+                // });
               }}
               icon={<IconLogout size={14} />}
             >
