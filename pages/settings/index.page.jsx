@@ -17,6 +17,7 @@ import {
   Alert,
   Accordion,
   ThemeIcon,
+  Box,
 } from "@mantine/core";
 
 import {
@@ -36,6 +37,8 @@ import getServerSideUser from "../../services/firebase/getServerSideUser";
 
 import { getLayout } from "../../components/Layout";
 
+import { getLocalizedData } from "../../services/ensquare";
+
 import SelectSetting from "./shared/SelectSetting";
 import Region from "./content/Region";
 import NameOrder from "./content/NameOrder";
@@ -50,6 +53,7 @@ import Bio from "./profile/Bio";
 
 import StartPlaying from "./profile/StartPlaying";
 import Email from "./account/Email";
+import Banner from "./profile/Banner";
 
 const tabs = [
   {
@@ -57,7 +61,7 @@ const tabs = [
     value: "content",
     icon: IconDeviceGamepad2,
     color: "yellow",
-    contents: (
+    contents: () => (
       <>
         <Stack>
           <Region />
@@ -71,11 +75,10 @@ const tabs = [
     value: "appearance",
     icon: IconPalette,
     color: "violet",
-    contents: (
+    contents: () => (
       <>
         <Stack>
           <DarkMode />
-
           <ShowTlBadge />
         </Stack>
       </>
@@ -86,7 +89,7 @@ const tabs = [
     value: "profile",
     icon: IconPencil,
     color: "lightblue",
-    contents: (
+    contents: ({ cards }) => (
       <>
         <Stack>
           <Alert size="sm" color="yellow">
@@ -95,6 +98,7 @@ const tabs = [
           </Alert>
           <Name />
           <Pronouns />
+          {cards && <Banner cards={cards} />}
           <Username />
           <Bio />
           <StartPlaying />
@@ -107,7 +111,7 @@ const tabs = [
     value: "account",
     icon: IconUserCircle,
     color: "blue",
-    contents: (
+    contents: () => (
       <>
         <Stack>
           <Email />
@@ -118,7 +122,7 @@ const tabs = [
   },
 ];
 
-function Page() {
+function Page({ cards }) {
   const router = useRouter();
   const theme = useMantineTheme();
   const { width } = useViewportSize();
@@ -165,7 +169,9 @@ function Page() {
               >
                 {t.label}
               </Accordion.Control>
-              <Accordion.Panel>{t.contents}</Accordion.Panel>
+              <Accordion.Panel>
+                <t.contents cards={cards} />
+              </Accordion.Panel>
             </Accordion.Item>
           ))}
         </Accordion>
@@ -193,9 +199,9 @@ function Page() {
             ))}
           </Tabs.List>
 
-          {tabs.map(({ value, contents }) => (
+          {tabs.map(({ value, ...t }) => (
             <Tabs.Panel key={value} value={value}>
-              {contents}
+              <t.contents cards={cards} />
             </Tabs.Panel>
           ))}
         </Tabs>
@@ -205,9 +211,21 @@ function Page() {
 }
 
 export const getServerSideProps = getServerSideUser(
-  async () => {
+  async ({ locale }) => {
+    const cards = await getLocalizedData("cards", locale, [
+      "id",
+      "title",
+      "name",
+      "rarity",
+    ]);
+    const bannerIds = cards.main.data
+      .filter((c) => c.rarity >= 4)
+      .map((c) => c.id);
+
     return {
-      props: {},
+      props: {
+        cards: cards.mainLang.data.filter((c) => bannerIds.includes(c.id)),
+      },
     };
   },
   { whenUnauthed: AuthAction.REDIRECT_TO_LOGIN }

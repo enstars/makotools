@@ -6,7 +6,6 @@ function PageTitle({ title, children, space, mb = 8, getBreadcrumbs }) {
   return (
     <Box sx={{ position: "relative", overflow: "hidden" }}>
       {children}
-      {/* <Breadcrumbs getBreadcrumbs={getBreadcrumbs} /> */}
       <Title
         order={1}
         mt={space || 64}

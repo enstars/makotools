@@ -8,6 +8,7 @@ import {
   Divider,
   Grid,
   Group,
+  Image,
   Indicator,
   Paper,
   Stack,
@@ -18,6 +19,8 @@ import {
   TypographyStylesProvider,
 } from "@mantine/core";
 
+import { Carousel } from "@mantine/carousel";
+
 import Link from "next/link";
 
 import {
@@ -26,6 +29,9 @@ import {
   IconMessageCircle,
   IconUser,
 } from "@tabler/icons";
+
+import { useRef, Fragment } from "react";
+import Autoplay from "embla-carousel-autoplay";
 
 import Layout, { getLayout } from "../../components/Layout";
 import PageTitle from "../../components/sections/PageTitle";
@@ -39,12 +45,62 @@ import { useDayjs } from "../../services/dayjs";
 // import dayjs from "dayjs";
 function Page({ profile }) {
   const dayjs = useDayjs();
+  const autoplay = useRef(Autoplay({ delay: 5000 }));
   console.log(dayjs(profile.profile_start_playing).format("MMMM YYYY"));
   return (
     <>
+      {profile.profile__banner?.length > 0 && (
+        <Box>
+          <Box sx={{ marginLeft: "-100%", marginRight: "-100%" }}>
+            <Carousel
+              slideSize="34%"
+              height={200}
+              slideGap="xs"
+              loop
+              withControls={false}
+              plugins={[autoplay.current]}
+            >
+              {/* // doing this so we can surely have enough slides to loop in embla */}
+              {[0, 1, 2, 3, 4].map((n) => (
+                <Fragment key={n}>
+                  {profile.profile__banner.map((c) => (
+                    <Carousel.Slide key={c}>
+                      <Image
+                        alt={`Card ${c}`}
+                        src={getB2File(
+                          `assets/card_still_full1_${c}_evolution.png`
+                        )}
+                        styles={(theme) => ({
+                          root: {
+                            height: "100%",
+                            overflow: "hidden",
+                            borderRadius: theme.radius.sm,
+                          },
+                          figure: {
+                            height: "100%",
+                          },
+                          imageWrapper: {
+                            height: "100%",
+                          },
+                          image: {
+                            height: "100% !important",
+                            objectFit: "cover",
+                            objectPosition: "top",
+                          },
+                        })}
+                      />
+                    </Carousel.Slide>
+                  ))}
+                </Fragment>
+              ))}
+            </Carousel>
+          </Box>
+        </Box>
+      )}
       {profile.name ? (
         <>
           <PageTitle
+            space={profile.profile__banner?.length > 0 && 18}
             title={
               <>
                 {profile.name}{" "}
@@ -66,6 +122,7 @@ function Page({ profile }) {
         </>
       ) : (
         <PageTitle
+          space={profile.profile__banner?.length > 0 && 18}
           title={
             <>
               @{profile.username}
@@ -189,7 +246,7 @@ function Page({ profile }) {
   );
 }
 
-Page.getLayout = getLayout({});
+Page.getLayout = getLayout({ hideOverflow: true });
 export default Page;
 
 export const getServerSideProps = getServerSideUser(

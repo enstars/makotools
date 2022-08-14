@@ -27,6 +27,7 @@ function Layout({
   meta,
   footerTextOnly,
   pageProps,
+  hideOverflow,
 }) {
   const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
@@ -62,6 +63,7 @@ function Layout({
             zIndex: 1,
             borderBottom: "solid 1px",
             borderColor: dark ? theme.colors.dark[5] : theme.colors.gray[2],
+            overflow: hideOverflow ? "hidden" : null,
           }}
           radius={0}
           shadow="lg"
