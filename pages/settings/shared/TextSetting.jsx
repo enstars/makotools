@@ -55,13 +55,14 @@ function TextSetting({
           }
         }}
         rightSection={
-          inputValue?.length > charLimit ? (
+          inputValue?.length &&
+          (inputValue?.length > charLimit ? (
             <IconX size={18} color={theme.colors.red[5]} />
           ) : inputValue === firebaseUser.firestore?.[dataKey] ? (
             <IconCheck size={18} color={theme.colors.green[5]} />
           ) : (
             <Loader size="xs" />
-          )
+          ))
         }
         autosize
         {...props}

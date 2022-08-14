@@ -230,5 +230,5 @@ export const getServerSideProps = getServerSideUser(
   },
   { whenUnauthed: AuthAction.REDIRECT_TO_LOGIN }
 );
-Page.getLayout = getLayout({});
+Page.getLayout = getLayout({ hideFooter: true });
 export default Page;
