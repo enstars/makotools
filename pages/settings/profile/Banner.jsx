@@ -49,7 +49,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-function DndList({ cards }) {
+function Banner({ cards }) {
   const { firebaseUser, setUserDataKey } = useFirebaseUser();
   const [acValue, setAcValue] = useState("");
 
@@ -145,88 +145,14 @@ function DndList({ cards }) {
         data={
           cards
             ?.filter((c) => c?.title)
+            ?.filter((c) => !state.includes(c.id))
             ?.map((c) => ({ label: `(${c.title}) ${c.name}`, value: c.id })) ||
           []
         }
         mt="xs"
+        disabled={state?.length > 10}
       />
     </Input.Wrapper>
-  );
-}
-
-function Banner({ cards }) {
-  const { firebaseUser, setUserDataKey } = useFirebaseUser();
-
-  //   const [picked, setPicked] = useState({
-  //     month: (thisMonth + 1).toString().padStart(2, "0"),
-  //     year: thisYear.toString().padStart(2, "0"),
-  //     unknown: true,
-  //   });
-
-  //   useEffect(() => {
-  //     if (firebaseUser.loggedIn && firebaseUser.firestore) {
-  //       const startPlaying = firebaseUser.firestore.profile_start_playing;
-  //       // console.log(firebaseUser.profile_start_playing);
-  //       if (startPlaying && startPlaying !== "0000-00-00") {
-  //         setPicked({
-  //           month: dayjs(startPlaying).format("MM"),
-  //           year: dayjs(startPlaying).format("YYYY"),
-  //           unknown: false,
-  //         });
-  //       } else {
-  //         setPicked({
-  //           month: (thisMonth + 1).toString().padStart(2, "0"),
-  //           year: thisYear.toString().padStart(2, "0"),
-  //           unknown: true,
-  //         });
-  //       }
-  //     }
-  //   }, [firebaseUser, dayjs]);
-
-  return (
-    <>
-      <DndList
-        data={[
-          {
-            position: 6,
-            mass: 12.011,
-            symbol: "C",
-            name: "Carbon",
-          },
-          {
-            position: 7,
-            mass: 14.007,
-            symbol: "N",
-            name: "Nitrogen",
-          },
-          {
-            position: 39,
-            mass: 88.906,
-            symbol: "Y",
-            name: "Yttrium",
-          },
-          {
-            position: 56,
-            mass: 137.33,
-            symbol: "Ba",
-            name: "Barium",
-          },
-          {
-            position: 58,
-            mass: 140.12,
-            symbol: "Ce",
-            name: "Cerium",
-          },
-        ]}
-        cards={cards}
-      />
-      <TextSetting
-        label="Name"
-        dataKey="name"
-        placeholder={"Not set"}
-        charLimit={50}
-      />
-    </>
   );
 }
 

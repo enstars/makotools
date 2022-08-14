@@ -42,6 +42,7 @@ function Region() {
       label="Game Region"
       data={gameRegions}
       description="This setting currently does not have an effect on content yet."
+      placeholder="Japan (Default)"
     />
   );
 }
