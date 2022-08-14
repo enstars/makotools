@@ -263,7 +263,13 @@ function Sidebar(props) {
                     // py="xs"
                     sx={{ flexGrow: 1 }}
                   >
-                    <Text size="xs" color="blue" sx={{ flexGrow: 1 }} ml="xs">
+                    <Text
+                      size="xs"
+                      color="blue"
+                      sx={{ flexGrow: 1 }}
+                      ml="xs"
+                      weight={700}
+                    >
                       {firebaseUser.loggedIn
                         ? `@${firebaseUser.firestore.username}`
                         : "Not logged in"}

@@ -2,7 +2,14 @@ import React from "react";
 
 import Head from "next/head";
 
-import { Group, AspectRatio, Badge, Title, Table } from "@mantine/core";
+import {
+  Group,
+  AspectRatio,
+  Badge,
+  Title,
+  Table,
+  Divider,
+} from "@mantine/core";
 
 import { IconStar } from "@tabler/icons";
 
@@ -34,6 +41,7 @@ import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { getLocalizedNumber } from "../../components/utilities/formatting/CardStatsNumber";
 
 import Stats, { sumStats } from "./components/Stats";
+import Skills from "./components/Skills";
 
 function Page({ character, card, title }) {
   console.log(card);
@@ -123,6 +131,8 @@ function Page({ character, card, title }) {
         ))}
       </Group>
       <Stats card={card} />
+      <Divider />
+      <Skills card={card} />
       <Reactions />
     </>
   );
