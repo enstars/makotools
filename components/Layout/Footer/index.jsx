@@ -68,27 +68,6 @@ function PageFooter({ wide, textOnly }) {
             }}
             mb="xl"
           >
-            {!textOnly && (
-              <>
-                <Image
-                  src={
-                    theme.colorScheme === "dark"
-                      ? MakotoolsDark
-                      : MakotoolsLight
-                  }
-                  alt="MakoTools site logo"
-                  width={125}
-                  height={44}
-                  objectFit="contain"
-                />
-                <Divider
-                  my="sm"
-                  mb="xs"
-                  size="xs"
-                  sx={{ alignSelf: "stretch" }}
-                />
-              </>
-            )}
             <SupportBanner mb="xs" sx={{ width: "100%" }} />
             <Link href="/issues" passHref>
               <Anchor component="a" size="sm">
@@ -136,7 +115,7 @@ function PageFooter({ wide, textOnly }) {
                   },
                 }}
               >
-                <Affiliates viewBox="0 0 898 239" width={270} height={72} />
+                <Affiliates viewBox="0 0 898 239" width={270} height={"auto"} />
               </Text>
             )}
             <Text size="xs" color="dimmed">

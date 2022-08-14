@@ -54,7 +54,8 @@ function Page({ profile }) {
           <Box sx={{ marginLeft: "-100%", marginRight: "-100%" }}>
             <Carousel
               slideSize="34%"
-              height={200}
+              // height={200}
+              height="30vh"
               slideGap="xs"
               loop
               withControls={false}
@@ -208,10 +209,15 @@ function Page({ profile }) {
                     label={
                     }
                   > */}
-                  <Paper component="a" withBorder sx={{ position: "relative" }}>
+                  <Paper
+                    radius="sm"
+                    component="a"
+                    withBorder
+                    sx={{ position: "relative" }}
+                  >
                     <AspectRatio ratio={4 / 5}>
-                      <ImageViewer
-                        radius="xs"
+                      <Image
+                        radius="sm"
                         alt={"card image"}
                         withPlaceholder
                         src={getB2File(
@@ -272,8 +278,10 @@ export const getServerSideProps = getServerSideUser(
           meta: {
             title: profile?.name
               ? `${profile.name} (@${profile.username})`
-              : `(@${profile.username}`,
-            desc: profile?.bio,
+              : `@${profile.username}`,
+            desc:
+              profile?.bio ||
+              `View @${profile.username}'s profile on MakoTools`,
           },
         },
       };
