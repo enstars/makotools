@@ -150,12 +150,13 @@ export const getServerSideProps = getServerSideUser(
     // const { data: cardsJP } = await getData("cards", "ja");
     const lastURLSegment = params.id.toLocaleLowerCase();
     const cardID = parseInt(lastURLSegment, 10);
+
+    const findCardFunction = isNaN(cardID)
+      ? (item) => item.title.toLocaleLowerCase() === lastURLSegment
+      : (item) => item.id === cardID;
+
     const cardIndex = cards.main.data.indexOf(
-      cards.main.data.find(
-        isNaN(cardID)
-          ? (item) => item.title.toLocaleLowerCase() === lastURLSegment
-          : (item) => item.id === cardID
-      )
+      cards.main.data.find(findCardFunction)
     );
 
     if (cardIndex === -1) {
@@ -164,23 +165,19 @@ export const getServerSideProps = getServerSideUser(
       };
     }
 
-    const characterIndex = characters.main.data.indexOf(
-      characters.main.data.find(
-        (c) =>
-          c.character_id ===
-          cards.main.data.find((c) => c.id === cardID).character_id
-      )
-    );
+    const findCharacterFunction = (c) =>
+      c.character_id ===
+      cards.main.data.find((c) => c.id === cardID).character_id;
 
     const character = {
-      main: characters.main.data[characterIndex],
-      mainLang: characters.mainLang.data[characterIndex],
-      subLang: characters.subLang.data[characterIndex],
+      main: characters.main.data.find(findCharacterFunction),
+      mainLang: characters.mainLang.data.find(findCharacterFunction),
+      subLang: characters.subLang.data.find(findCharacterFunction),
     };
     const card = {
-      main: cards.main.data[cardIndex],
-      mainLang: cards.mainLang.data[cardIndex],
-      subLang: cards.subLang.data[cardIndex],
+      main: cards.main.data.find(findCardFunction),
+      mainLang: cards.mainLang.data.find(findCardFunction),
+      subLang: cards.subLang.data.find(findCardFunction),
     };
 
     const title = `(${card.mainLang.title}) ${getNameOrder(
