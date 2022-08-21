@@ -98,6 +98,12 @@ function StartPlaying() {
       firebaseUser.firestore.profile_start_playing !== resolvedData
     ) {
       setUserDataKey({ profile_start_playing: resolvedData });
+    } else if (
+      firebaseUser.loggedIn &&
+      firebaseUser?.firestore &&
+      !firebaseUser.firestore?.profile_start_playing
+    ) {
+      setUserDataKey({ profile_start_playing: resolvedData });
     }
   }, [picked, setUserDataKey]);
 

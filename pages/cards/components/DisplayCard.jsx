@@ -35,6 +35,8 @@ import CardStatsNumber from "../../../components/utilities/formatting/CardStatsN
 import { addCard } from "../../../services/collection";
 import { useFirebaseUser } from "../../../services/firebase/user";
 
+import { sumStats } from "./Stats";
+
 function RarityBadge({ card }) {
   const theme = useMantineTheme();
   return (
@@ -86,8 +88,8 @@ export default function CardCard({ cards, id, cardOptions }) {
 
   const { firebaseUser, setUserDataKey } = useFirebaseUser();
 
-  const statsIR = card.stats.ir.da + card.stats.ir.vo + card.stats.ir.pf;
-  const statsIR4 = card.stats.ir4.da + card.stats.ir4.vo + card.stats.ir4.pf;
+  const statsIR = sumStats(card.stats.ir);
+  const statsIR4 = sumStats(card.stats.ir4);
 
   const collection = firebaseUser.firestore?.collection || [];
   const thisColItem = collection?.find((c) => c.id === id);
