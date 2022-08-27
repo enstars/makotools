@@ -2,6 +2,8 @@ import { TypographyStylesProvider } from "@mantine/core";
 
 import TermsHTML from "raw-loader!./terms.html";
 
+import { Fragment } from "react";
+
 import Layout from "../../../components/Layout";
 import PageTitle from "../../../components/sections/PageTitle";
 
@@ -11,9 +13,9 @@ function Page() {
   return (
     <>
       <PageTitle title="Terms of Service"></PageTitle>
-      <TypographyStylesProvider
-        dangerouslySetInnerHTML={{ __html: TermsHTML }}
-      ></TypographyStylesProvider>
+      <TypographyStylesProvider>
+        <div dangerouslySetInnerHTML={{ __html: TermsHTML }}></div>
+      </TypographyStylesProvider>
     </>
   );
 }

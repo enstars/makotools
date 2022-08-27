@@ -16,7 +16,6 @@ import {
 
 import { IconForms, IconGitPullRequest, IconMail } from "@tabler/icons";
 import Link from "next/link";
-import { method, methodOf } from "lodash";
 
 import { MAKOTOOLS } from "../../services/constants";
 import PageTitle from "../../components/sections/PageTitle";

@@ -3167,6 +3167,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash@npm:^4.14.184":
+  version: 4.14.184
+  resolution: "@types/lodash@npm:4.14.184"
+  checksum: 6d9a4d67f7f9d0ec3fd21174f3dd3d00629dc1227eb469450eace53adbc1f7e2330699c28d0fe093e5f0fef0f0e763098be1f779268857213224af082b62be21
+  languageName: node
+  linkType: hard
+
 "@types/long@npm:^4.0.0, @types/long@npm:^4.0.1":
   version: 4.0.2
   resolution: "@types/long@npm:4.0.2"
@@ -6486,6 +6493,7 @@ __metadata:
     "@mantine/spotlight": ^5.0.0
     "@svgr/webpack": ^6.3.1
     "@tabler/icons": ^1.68.0
+    "@types/lodash": ^4.14.184
     cldr-data: ^36.0.1
     cldrjs: ^0.5.5
     cookies-next: ^2.1.1
