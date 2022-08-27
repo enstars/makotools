@@ -1,7 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState, useEffect } from "react";
-
 import { showNotification } from "@mantine/notifications";
-
 import { IconAlertTriangle, IconArrowLeft } from "@tabler/icons";
 import { useAuthUser } from "next-firebase-auth";
 
@@ -18,7 +17,7 @@ function FirebaseUserProvider({
 }) {
   const AuthUser = useAuthUser();
   const [firebaseUser, setFirebaseUser] = useState(
-    serverData.user
+    serverData?.user
       ? {
           loading: false,
           loggedIn: !!AuthUser.id,
