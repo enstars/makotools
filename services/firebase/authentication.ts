@@ -128,9 +128,9 @@ export const appSignInWithTwitter = (errorCallback = console.log) => {
 };
 
 export const appSignInWithEmailAndPassword = (
-  email,
-  password,
-  callback = () => {}
+  email: string,
+  password: string,
+  callback = (a: any) => {}
 ) => {
   const clientAuth = getAuth();
   signInWithEmailAndPassword(clientAuth, email, password)
