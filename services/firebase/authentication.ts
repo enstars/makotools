@@ -1,6 +1,5 @@
 // ./initAuth.js
 import { init } from "next-firebase-auth";
-
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
@@ -9,12 +8,13 @@ import {
   TwitterAuthProvider,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  UserCredential,
 } from "firebase/auth";
 
-// import { setFirestoreUserData } from "./firestore";
+import { setFirestoreUserData } from "./firestore";
 
-const parseKey = (key) => {
-  return key?.replace(/\\n/g, "\n")?.replace(/'/g, "") || undefined;
+const parseKey = (key: string) => {
+  return key?.replace(/\\n/g, "\n")?.replace(/'/g, "");
 };
 
 // Config & Initialization
@@ -32,24 +32,15 @@ const initAuth = () => {
   init({
     authPageURL: "/login",
     appPageURL: "/",
-    loginAPIEndpoint: "/api/login", // required
-    logoutAPIEndpoint: "/api/logout", // required
-    onLoginRequestError: (err) => {
-      console.error(err);
-    },
-    onLogoutRequestError: (err) => {
-      console.error(err);
-    },
     firebaseAdminInitConfig: {
       credential: {
         projectId: "ensemble-square",
         clientEmail:
           "firebase-adminsdk-ftvei@ensemble-square.iam.gserviceaccount.com",
         // The private key must not be accessible on the client side.
-        privateKey: process.env.FIREBASE_PRIVATE_KEY
-          ? parseKey(process.env.FIREBASE_PRIVATE_KEY)
-          : undefined,
+        privateKey: parseKey(process.env.FIREBASE_PRIVATE_KEY || ""),
       },
+      databaseURL: "",
     },
     // Use application default credentials (takes precedence over firebaseAdminInitConfig if set)
     // useFirebaseAdminDefaultCredential: true,
@@ -75,6 +66,47 @@ const initAuth = () => {
     },
     onTokenRefreshError: (err) => {
       console.error(err);
+    },
+    tokenChangedHandler: async (authUser) => {
+      const { loginAPIEndpoint, logoutAPIEndpoint } = {
+        loginAPIEndpoint: "/api/login", // required
+        logoutAPIEndpoint: "/api/logout", // required
+      };
+      let response;
+      // If the user is authed, call login to set a cookie.
+      if (authUser.id) {
+        const userToken = (await authUser.getIdToken()) || "";
+        response = await fetch(loginAPIEndpoint, {
+          method: "POST",
+          headers: [["Authorization", userToken]],
+          credentials: "include",
+        });
+        if (!response.ok) {
+          const responseJSON = await response.json();
+          throw new Error(
+            `Received ${
+              response.status
+            } response from login API endpoint: ${JSON.stringify(responseJSON)}`
+          );
+        }
+      } else {
+        // If the user is not authed, call logout to unset the cookie.
+        response = await fetch(logoutAPIEndpoint, {
+          method: "POST",
+          credentials: "include",
+        });
+        if (!response.ok) {
+          const responseJSON = await response.json();
+          throw new Error(
+            `Received ${
+              response.status
+            } response from logout API endpoint: ${JSON.stringify(
+              responseJSON
+            )}`
+          );
+        }
+      }
+      return response;
     },
   });
 };
@@ -110,16 +142,16 @@ export const appSignInWithEmailAndPassword = (
     });
 };
 export const appSignUpWithEmailAndPassword = (
-  email,
-  password,
-  userInfo,
-  callback = () => {}
+  email: string,
+  password: string,
+  data: null | {},
+  callback: (res: UserCredential | any) => {}
 ) => {
   {
     const clientAuth = getAuth();
     createUserWithEmailAndPassword(clientAuth, email, password)
       .then((result) => {
-        // setFirestoreUserData(userInfo, result.user.uid);
+        callback(result);
       })
       .catch((error) => {
         callback({ status: "error", error });

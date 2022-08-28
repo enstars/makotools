@@ -1,12 +1,8 @@
-import {
-  Center,
-  Loader,
-  Paper,
-  ScrollArea,
-  useMantineTheme,
-} from "@mantine/core";
+import { Center, Loader, useMantineTheme } from "@mantine/core";
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+
+import { MkAnnouncement } from "../../../../types/makotools";
 
 import Announcement from "./Announcement";
 
@@ -15,7 +11,7 @@ const CATEGORIES = [5, 6];
 
 function AnnouncementsList() {
   const theme = useMantineTheme();
-  const [announcements, setAnnouncements] = useState([]);
+  const [announcements, setAnnouncements] = useState<MkAnnouncement[]>([]);
   const [allPagesCount, setAllPagesCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -28,7 +24,10 @@ function AnnouncementsList() {
       );
 
       const initData = await initRespose.json();
-      setAllPagesCount(initRespose.headers.get("X-WP-TotalPages"));
+      const totalPagesString = initRespose.headers.get("X-WP-TotalPages");
+      if (totalPagesString) {
+        setAllPagesCount(parseInt(totalPagesString));
+      }
       setAnnouncements(initData);
       setCurrentPage(2);
     };
@@ -36,7 +35,7 @@ function AnnouncementsList() {
   }, []);
 
   const loadMore = async () => {
-    const newLoad = await (
+    const newLoad: MkAnnouncement[] = await (
       await fetch(
         `https://backend-stars.ensemble.moe/wp-main/wp-json/wp/v2/posts?categories=${CATEGORIES.join(
           ","

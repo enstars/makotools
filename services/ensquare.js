@@ -37,7 +37,10 @@ export function getData(data, lang = "ja", source = false, fields = null) {
 }
 
 export function getB2File(path) {
-  return `https://assets.ensemble.link/${path}`;
+  return `https://f002.backblazeb2.com/file/ensemble-square/${path}`;
+  // return `https://assets.ensemble.moe/file/ensemble-square/${path}`;
+  // https://f002.backblazeb2.com/file/ensemble-square/assets/card_rectangle4_2001_evolution.png
+  // return `https://assets.ensemble.link/${path}`;
 }
 
 export async function getLocalizedData(data, locale = "en", fields = null) {

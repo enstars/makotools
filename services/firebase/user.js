@@ -29,15 +29,19 @@ function FirebaseUserProvider({
         }
   );
 
-  const setUserDataKey = (data) => {
-    setFirebaseUser({
-      ...firebaseUser,
-      firestore: {
-        ...firebaseUser.firestore,
-        ...data,
-      },
+  const setUserDataKey = (data, callback) => {
+    setFirestoreUserData(data, ({ status }) => {
+      if (status === "success") {
+        setFirebaseUser((f) => ({
+          ...f,
+          firestore: {
+            ...f.firestore,
+            ...data,
+          },
+        }));
+        if (callback) callback();
+      }
     });
-    setFirestoreUserData(data);
   };
 
   console.log("firebase user auth ", firebaseUser);
@@ -53,7 +57,13 @@ function FirebaseUserProvider({
     if (userState.loggedIn) {
       const setFirestoreData = async () => {
         try {
-          const currentUserData = await getFirestoreUserData(AuthUser.id);
+          let currentUserData,
+            fetchCount = 5;
+          while (!currentUserData && fetchCount > 0) {
+            currentUserData = await getFirestoreUserData(AuthUser.id);
+            fetchCount--;
+          }
+          console.log("cud", AuthUser.id, currentUserData);
           setFirebaseUser((s) => ({ ...s, firestore: currentUserData }));
           if (!currentUserData)
             showNotification({

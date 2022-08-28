@@ -9,8 +9,15 @@ import {
 import Link from "next/link";
 
 import categories from "../../../../data/about/posts/categories.json";
+import { MkAnnouncement } from "../../../../types/makotools";
 
-function Announcement({ announcement, i = 2 }) {
+function Announcement({
+  announcement,
+  i = 2,
+}: {
+  announcement: MkAnnouncement;
+  i: number;
+}) {
   return (
     <Link href={`/about/announcements/${announcement.id}`} passHref>
       <Paper
@@ -27,7 +34,6 @@ function Announcement({ announcement, i = 2 }) {
         </Text>
         <TypographyStylesProvider
           my="xs"
-          dangerouslySetInnerHTML={{ __html: announcement.excerpt.rendered }}
           sx={(theme) => ({
             "& > p": {
               margin: 0,
@@ -36,15 +42,14 @@ function Announcement({ announcement, i = 2 }) {
               textOverflow: "ellipsis",
               lineHeight: 1.25,
             },
-            //dimmed
-            // color:
-            //   theme.colorScheme === "dark"
-            //     ? theme.colors.dark[2]
-            //     : theme.colors.gray[6],
             fontSize: theme.fontSizes.sm,
           })}
-        />
-        {announcement.categories.map((c) => (
+        >
+          <div
+            dangerouslySetInnerHTML={{ __html: announcement.excerpt.rendered }}
+          />
+        </TypographyStylesProvider>
+        {announcement.categories?.map((c) => (
           <Badge variant="dot" key={c} color={categories[c].color}>
             {categories[c].name}
           </Badge>

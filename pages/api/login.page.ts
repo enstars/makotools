@@ -4,40 +4,38 @@ import {
   verifyIdToken,
   getFirebaseAdmin,
 } from "next-firebase-auth";
-
 import { FieldValue, getFirestore } from "firebase-admin/firestore";
+import { NextApiRequest, NextApiResponse } from "next";
 
 import initAuth from "../../services/firebase/authentication"; // the module you created above
 
-const firestoreSettings = { ignoreUndefinedProperties: true };
-
-// const defaultFirestore = getFirestore();
-// defaultFirestore.settings({ ignoreUndefinedProperties: true });
-
 initAuth();
 
-// getFirebaseAdmin().firestore().settings({ ignoreUndefinedProperties: true });
-
-const genRanHex = (size) =>
+const genRanHex = (size: number) =>
   [...Array(size)]
     .map(() => Math.floor(Math.random() * 16).toString(16))
     .join("")
     .toUpperCase();
 
-async function validateSUID(docCollection, suid) {
+async function validateSUID(
+  docCollection: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>,
+  suid: string
+) {
   const querySnap = await docCollection.where("suid", "==", suid).get();
   const suidValid = !querySnap.size;
   return suidValid;
 }
 
-const handler = async (req, res) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     await setAuthCookies(req, res);
     const authToken = req.headers.authorization;
+    if (!authToken) return;
+
     const authUser = await verifyIdToken(authToken);
     console.log(authUser);
-    // console.log(defaultFirestore);
-    // initAuth();
+    if (!authUser.id) return;
+
     const db = getFirebaseAdmin().firestore();
     // db.settings(firestoreSettings); // no idea why this doesnt work
     const docCollection = db.collection("users");
@@ -49,7 +47,7 @@ const handler = async (req, res) => {
       let uniqueSUID = "";
       while (!uniqueSUID) {
         uniqueSUID = genRanHex(6);
-        if (validateSUID(docCollection, uniqueSUID)) {
+        if (await validateSUID(docCollection, uniqueSUID)) {
           suid = uniqueSUID;
         } else {
           uniqueSUID = "";
@@ -58,7 +56,7 @@ const handler = async (req, res) => {
     }
     let username = docGet?.username || suid;
     if (!docGet?.joinDate) {
-      const docSetJoinDate = await docRef.set(
+      await docRef.set(
         {
           joinDate: FieldValue.serverTimestamp(),
         },
@@ -66,7 +64,7 @@ const handler = async (req, res) => {
       );
     }
 
-    const docSet = await docRef.set(
+    await docRef.set(
       {
         email: authUser?.email || null,
         lastLogin: FieldValue.serverTimestamp(),
@@ -75,8 +73,6 @@ const handler = async (req, res) => {
       },
       { merge: true }
     );
-
-    // console.log(docGet);
 
     return res.status(200).json({ success: true });
   } catch (e) {

@@ -1,5 +1,4 @@
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
 import {
   Alert,
   Center,
@@ -28,9 +27,9 @@ import {
   IconBrandTwitter,
 } from "@tabler/icons";
 import Link from "next/link";
-
 import { AuthAction } from "next-firebase-auth";
 import { showNotification } from "@mantine/notifications";
+import { useRouter } from "next/router";
 
 import Google from "../../assets/google.svg";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
@@ -45,6 +44,22 @@ import {
 function Login() {
   const [isRegister, setIsRegister] = useState(false);
   const [signOnError, setSignOnError] = useState(null);
+
+  const router = useRouter();
+  const { firebaseUser, setUserDataKey } = useFirebaseUser();
+
+  useEffect(() => {
+    if (!firebaseUser.loading && firebaseUser.loggedIn) {
+      router.push("/");
+    }
+
+    return () => {
+      if (isRegister) {
+        console.log("setttttttttttttttttttttt");
+        setUserDataKey({ name: form.values.name }, () => {});
+      }
+    };
+  }, [firebaseUser.loading, firebaseUser.loggedIn, router]);
 
   function signOnAlertMsg(error) {
     console.log(error);
@@ -114,8 +129,6 @@ function Login() {
           : "You must agree to the Terms of Service",
     },
   });
-
-  const { firebaseUser } = useFirebaseUser();
 
   return (
     <Container
@@ -220,6 +233,7 @@ function Login() {
                           code: errorCode,
                         };
                         setSignOnError(errorObj);
+                      } else {
                       }
                     }
                   );

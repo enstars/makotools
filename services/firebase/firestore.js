@@ -1,5 +1,4 @@
 import { getAuth } from "firebase/auth";
-
 import {
   getFirestore,
   doc,
@@ -12,12 +11,19 @@ import {
   getDocs,
 } from "firebase/firestore";
 
-function setFirestoreUserData(data, uid, app) {
+function setFirestoreUserData(data, callback) {
   const clientAuth = getAuth();
-  const db = getFirestore(app);
-  setDoc(doc(db, "users", uid || clientAuth?.currentUser?.uid), data, {
+  const db = getFirestore();
+  setDoc(doc(db, "users", clientAuth?.currentUser?.uid), data, {
     merge: true,
-  });
+  }).then(
+    () => {
+      callback({ status: "success" });
+    },
+    () => {
+      callback({ status: "error" });
+    }
+  );
 }
 
 async function getFirestoreUserData(uid) {
