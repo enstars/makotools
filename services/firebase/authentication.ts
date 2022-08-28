@@ -145,7 +145,7 @@ export const appSignUpWithEmailAndPassword = (
   email: string,
   password: string,
   data: null | {},
-  callback: (res: UserCredential | any) => {}
+  callback: (res: UserCredential | any) => void
 ) => {
   {
     const clientAuth = getAuth();

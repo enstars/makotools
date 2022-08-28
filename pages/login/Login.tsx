@@ -43,7 +43,7 @@ import {
 
 function Login() {
   const [isRegister, setIsRegister] = useState(false);
-  const [signOnError, setSignOnError] = useState(null);
+  const [signOnError, setSignOnError] = useState<{ type: string } | null>(null);
 
   const router = useRouter();
   const { firebaseUser, setUserDataKey } = useFirebaseUser();
@@ -61,7 +61,7 @@ function Login() {
     };
   }, [firebaseUser.loading, firebaseUser.loggedIn, router]);
 
-  function signOnAlertMsg(error) {
+  function signOnAlertMsg(error: { type: string; code?: string }) {
     console.log(error);
     const { code } = error;
     let message;
@@ -121,7 +121,7 @@ function Login() {
       email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
       password: (val) =>
         val.length >= 6 ? null : "Password must be over 6 characters long",
-      terms: (val) =>
+      terms: (val: boolean) =>
         !isRegister
           ? null
           : val
@@ -233,7 +233,6 @@ function Login() {
                           code: errorCode,
                         };
                         setSignOnError(errorObj);
-                      } else {
                       }
                     }
                   );
