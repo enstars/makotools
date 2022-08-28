@@ -1,7 +1,5 @@
 import React from "react";
-
 import Head from "next/head";
-
 import {
   Group,
   AspectRatio,
@@ -10,9 +8,7 @@ import {
   Table,
   Divider,
 } from "@mantine/core";
-
 import { IconStar } from "@tabler/icons";
-
 import {
   withAuthUser,
   AuthAction,
@@ -28,16 +24,12 @@ import {
 import { getLayout } from "../../components/Layout";
 import PageTitle from "../../components/sections/PageTitle";
 import ImageViewer from "../../components/core/ImageViewer";
-
 import attributes from "../../data/attributes.json";
 import Reactions from "../../components/sections/Reactions";
-
 import NameOrder, {
   getNameOrder,
 } from "../../components/utilities/formatting/NameOrder";
-
 import getServerSideUser from "../../services/firebase/getServerSideUser";
-
 import { getLocalizedNumber } from "../../components/utilities/formatting/CardStatsNumber";
 
 import Stats, { sumStats } from "./components/Stats";
@@ -182,7 +174,7 @@ export const getServerSideProps = getServerSideUser(
 
     const title = `(${card.mainLang.title}) ${getNameOrder(
       character.mainLang,
-      firestore.name_order,
+      firestore?.name_order,
       locale
     )}`;
 
@@ -205,7 +197,7 @@ export const getServerSideProps = getServerSideUser(
             title: card.mainLang.title,
             name: getNameOrder(
               character.mainLang,
-              firestore.name_order,
+              firestore?.name_order,
               locale
             ),
             image1: `card_rectangle4_${cardID}_normal.png`,
