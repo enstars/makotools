@@ -56,7 +56,7 @@ const useStyles = createStyles((theme, { radius }, getRef) => ({
   },
 }));
 
-function ImageViewer({ caption, ...props }) {
+function ImageViewer({ caption, styles, ...props }) {
   const [opened, setOpened] = useState(false);
   const theme = useMantineTheme();
   const { classes } = useStyles({ radius: props.radius });
@@ -118,11 +118,14 @@ function ImageViewer({ caption, ...props }) {
           figure: classes.figure,
         }}
         styles={{
+          ...styles,
           caption: {
             margin: 0,
+            ...styles?.caption,
           },
           root: {
             display: "flex",
+            ...styles?.root,
           },
         }}
         caption={

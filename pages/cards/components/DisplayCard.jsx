@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import {
   Card,
   Paper,
@@ -133,6 +132,7 @@ export default function CardCard({ cards, id, cardOptions }) {
                   objectPosition: "top center",
                 },
               }}
+              height={100}
               sx={{
                 position: "relative",
                 height: 100,
@@ -150,7 +150,7 @@ export default function CardCard({ cards, id, cardOptions }) {
               )}
               alt={card.title}
               radius={3}
-              height="100%"
+              // height="100%"
               withPlaceholder
               placeholder={
                 <>
