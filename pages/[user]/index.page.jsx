@@ -46,7 +46,7 @@ import { useDayjs } from "../../services/dayjs";
 function Page({ profile }) {
   const dayjs = useDayjs();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
-  console.log(dayjs(profile.profile_start_playing).format("MMMM YYYY"));
+  console.log(dayjs(profile.profile__start_playing).format("MMMM YYYY"));
   return (
     <>
       {profile.profile__banner?.length > 0 && (
@@ -112,8 +112,8 @@ function Page({ profile }) {
                   weight={800}
                   size="lg"
                 >
-                  {profile?.profile_pronouns &&
-                    `${profile?.profile_pronouns} · `}
+                  {profile?.profile__pronouns &&
+                    `${profile?.profile__pronouns} · `}
                   @{profile.username}
                 </Text>
               </>
@@ -127,7 +127,7 @@ function Page({ profile }) {
           title={
             <>
               @{profile.username}
-              {profile?.profile_pronouns && (
+              {profile?.profile__pronouns && (
                 <Text
                   inline
                   component="span"
@@ -135,7 +135,7 @@ function Page({ profile }) {
                   weight={800}
                   size="lg"
                 >
-                  {profile?.profile_pronouns}
+                  {profile?.profile__pronouns}
                 </Text>
               )}
             </>
@@ -153,9 +153,9 @@ function Page({ profile }) {
             Bio
           </Text>
 
-          {profile?.profile_bio ? (
+          {profile?.profile__bio ? (
             <Stack spacing={4}>
-              {profile.profile_bio.split("\n").map((l, i) => (
+              {profile.profile__bio.split("\n").map((l, i) => (
                 <Text key={i}>{l}</Text>
               ))}
             </Stack>
@@ -172,9 +172,9 @@ function Page({ profile }) {
           <Text size="xs" weight={700} color="dimmed">
             Started Playing
           </Text>
-          {profile.profile_start_playing &&
-          profile.profile_start_playing !== "0000-00-00"
-            ? dayjs(profile.profile_start_playing).format("MMMM YYYY")
+          {profile.profile__start_playing &&
+          profile.profile__start_playing !== "0000-00-00"
+            ? dayjs(profile.profile__start_playing).format("MMMM YYYY")
             : "Unknown"}
         </Box>
       </Group>
