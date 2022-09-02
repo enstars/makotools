@@ -42,8 +42,11 @@ import { getB2File, getLocalizedData } from "../../services/ensquare";
 import { parseStringify } from "../../services/utilities";
 
 import { useDayjs } from "../../services/dayjs";
+
+import { UserData } from "../../types/makotools";
+
 // import dayjs from "dayjs";
-function Page({ profile }) {
+function Page({ profile }: UserData) {
   const dayjs = useDayjs();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   console.log(dayjs(profile.profile__start_playing).format("MMMM YYYY"));
