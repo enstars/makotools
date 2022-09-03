@@ -36,6 +36,7 @@ import Stats, { sumStats } from "./components/Stats";
 import Skills from "./components/Skills";
 
 function Page({ character, card, title }) {
+  console.log(character);
   console.log(card);
   // const { id } = useParams();
   // const router = useRouter();

@@ -18,18 +18,14 @@ import {
   Title,
   TypographyStylesProvider,
 } from "@mantine/core";
-
 import { Carousel } from "@mantine/carousel";
-
 import Link from "next/link";
-
 import {
   IconCalendar,
   IconInfoCircle,
   IconMessageCircle,
   IconUser,
 } from "@tabler/icons";
-
 import { useRef, Fragment } from "react";
 import Autoplay from "embla-carousel-autoplay";
 
@@ -40,19 +36,17 @@ import getServerSideUser from "../../services/firebase/getServerSideUser";
 import ImageViewer from "../../components/core/ImageViewer";
 import { getB2File, getLocalizedData } from "../../services/ensquare";
 import { parseStringify } from "../../services/utilities";
-
 import { useDayjs } from "../../services/dayjs";
-
 import { UserData } from "../../types/makotools";
 
 // import dayjs from "dayjs";
-function Page({ profile }: UserData) {
+function Page({ profile }: { profile: UserData }) {
   const dayjs = useDayjs();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   console.log(dayjs(profile.profile__start_playing).format("MMMM YYYY"));
   return (
     <>
-      {profile.profile__banner?.length > 0 && (
+      {profile?.profile__banner && profile?.profile__banner?.length && (
         <Box>
           <Box sx={{ marginLeft: "-100%", marginRight: "-100%" }}>
             <Carousel
@@ -67,7 +61,7 @@ function Page({ profile }: UserData) {
               {/* // doing this so we can surely have enough slides to loop in embla */}
               {[0, 1, 2, 3, 4].map((n) => (
                 <Fragment key={n}>
-                  {profile.profile__banner.map((c) => (
+                  {profile?.profile__banner?.map((c) => (
                     <Carousel.Slide key={c}>
                       <Image
                         alt={`Card ${c}`}
@@ -104,7 +98,7 @@ function Page({ profile }: UserData) {
       {profile.name ? (
         <>
           <PageTitle
-            space={profile.profile__banner?.length > 0 && 18}
+            space={profile?.profile__banner?.length ? 18 : undefined}
             title={
               <>
                 {profile.name}{" "}
@@ -126,7 +120,7 @@ function Page({ profile }: UserData) {
         </>
       ) : (
         <PageTitle
-          space={profile.profile__banner?.length > 0 && 18}
+          space={profile?.profile__banner?.length ? 18 : undefined}
           title={
             <>
               @{profile.username}
@@ -202,7 +196,7 @@ function Page({ profile }: UserData) {
           >
             {profile.collection
               .filter((c) => c.count)
-              .sort((a, b) => a.count < b.count)
+              .sort((a, b) => b.count - a.count)
               .map((c) => (
                 <Link key={c.id} href={`/cards/${c.id}`} passHref>
                   {/* <Indicator
