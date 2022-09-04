@@ -14,6 +14,7 @@ import {
   CSSObject,
 } from "@mantine/core";
 import { IconArrowUpRightCircle, IconArrowsDiagonal } from "@tabler/icons";
+import { merge } from "lodash";
 
 import { CONSTANTS } from "../../services/constants";
 
@@ -62,15 +63,10 @@ const useStyles = createStyles((theme, { radius }: ImageProps, getRef) => ({
   },
 }));
 
-function ImageViewer({
-  caption = <></>,
-  styles = {},
-  radius,
-  ...props
-}: ImageProps) {
+function ImageViewer({ caption = <></>, styles = {}, ...props }: ImageProps) {
   const [opened, setOpened] = useState(false);
   const theme = useMantineTheme();
-  const { classes } = useStyles({ radius });
+  const { classes } = useStyles({ radius: props?.radius });
   return (
     <>
       <Modal
@@ -128,17 +124,17 @@ function ImageViewer({
         classNames={{
           figure: classes.figure,
         }}
-        styles={{
-          ...styles,
-          caption: {
-            margin: 0,
-            ...styles?.caption,
+        styles={merge(
+          {
+            caption: {
+              margin: 0,
+            },
+            root: {
+              display: "flex",
+            },
           },
-          root: {
-            display: "flex",
-            ...styles?.root,
-          },
-        }}
+          styles
+        )}
         caption={
           <>
             <Box className={classes.backdrop} component="span" />

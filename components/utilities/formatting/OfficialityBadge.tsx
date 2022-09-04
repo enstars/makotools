@@ -2,10 +2,11 @@ import { IconBadge, IconBadgeOff } from "@tabler/icons";
 import { Text, Tooltip } from "@mantine/core";
 
 import { useFirebaseUser } from "../../../services/firebase/user";
+import { LoadedDataRegional } from "../../../types/makotools";
 
-function OfficialityBadge({ langData }) {
+function OfficialityBadge({ langData }: { langData: LoadedDataRegional }) {
   const { firebaseUser } = useFirebaseUser();
-  const showTlBadge = firebaseUser.firestore?.show_tl_badge || "none";
+  const showTlBadge = firebaseUser.firestore?.setting__show_tl_badge || "none";
 
   if (langData.lang !== "en") return null;
   if (showTlBadge === "none") return null;

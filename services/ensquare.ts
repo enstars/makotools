@@ -5,9 +5,11 @@ import {
   LoadedDataRegional,
   LoadedStatus,
   Locale,
+  NameOrder,
 } from "../types/makotools";
 
 import { CONSTANTS } from "./constants";
+import { DEFAULT_LOCALE } from "./locales";
 
 const flatten = require("flat");
 
@@ -67,7 +69,7 @@ export function getB2File(path: string) {
 
 export async function getLocalizedData(
   data: string,
-  locale: Locale = "en",
+  locale: Locale | string = DEFAULT_LOCALE,
   fields?: string[]
 ): Promise<LoadedData<LoadedDataRegional>> {
   const jaData = await getData(data, "ja", true, fields);
@@ -102,4 +104,22 @@ export function getPreviewImageURL(type: string, params: any) {
   return `https://preview.ensemble.link/render/${type}.png?${Object.keys(params)
     .map((key) => `${key}=${encodeURIComponent(params[key])}`)
     .join("&")}`;
+}
+
+// https://en.wikipedia.org/wiki/Personal_name#Eastern_name_order
+const lastFirstLocales = ["ja", "zh", "zh-TW", "ko"];
+
+export function getNameOrder(
+  { first_name, last_name }: { first_name: string; last_name: string },
+  setting: NameOrder = "firstlast",
+  locale: Locale | string = DEFAULT_LOCALE
+) {
+  const firstName = first_name || "";
+  const lastName = last_name || "";
+
+  if (lastFirstLocales.includes(locale)) return `${lastName}${firstName}`;
+
+  if (setting === "lastfirst") return `${lastName} ${firstName}`.trim();
+
+  return `${firstName} ${lastName}`.trim();
 }

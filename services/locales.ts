@@ -23,6 +23,8 @@ const appLocales: Locale[] = [
   "th", // Thai
 ];
 
+const DEFAULT_LOCALE: Locale = appLocales[0];
+
 const dayjsLocales = [
   { lang: "en", import: () => import("dayjs/locale/en") },
   { lang: "ja", import: () => import("dayjs/locale/ja") },
@@ -30,7 +32,7 @@ const dayjsLocales = [
   { lang: "zh-TW", import: () => import("dayjs/locale/zh-TW") },
   { lang: "ko", import: () => import("dayjs/locale/ko") },
   { lang: "id", import: () => import("dayjs/locale/id") },
-  { lang: "fil", import: () => import("dayjs/locale/fil") },
+  { lang: "fil", import: () => import("dayjs/locale/fi") },
   { lang: "vi", import: () => import("dayjs/locale/vi") },
   { lang: "ru", import: () => import("dayjs/locale/ru") },
   { lang: "ms", import: () => import("dayjs/locale/ms") },
@@ -44,4 +46,4 @@ const dayjsLocales = [
   { lang: "th", import: () => import("dayjs/locale/th") },
 ];
 
-export { appLocales, dayjsLocales };
+export { appLocales, dayjsLocales, DEFAULT_LOCALE };

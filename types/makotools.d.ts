@@ -1,5 +1,6 @@
 import { GetServerSidePropsContext } from "next";
 import { AuthUserContext } from "next-firebase-auth";
+import { StaticImageData } from "next/image";
 import { WP_REST_API_Post } from "wp-types";
 
 type Locale =
@@ -30,7 +31,17 @@ interface CollectedCard {
   count: number;
 }
 
+interface Emote {
+  id: ID;
+  emote: StaticImageData;
+  name: string;
+  stringId: string;
+}
+
 // USER
+
+type NameOrder = "firstlast" | "lastfirst";
+type ShowTlBadge = "none" | "unofficial" | "all";
 
 interface UserData {
   collection?: CollectedCard[];
@@ -41,6 +52,8 @@ interface UserData {
   profile__bio?: string;
   profile__pronouns?: string;
   profile__start_playing?: string;
+  setting__name_order?: NameOrder;
+  setting__show_tl_badge?: ShowTlBadge;
 }
 
 interface FirebaseUser {

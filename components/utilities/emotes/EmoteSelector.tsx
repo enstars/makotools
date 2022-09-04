@@ -1,14 +1,30 @@
-import { useState } from "react";
-import { Popover, Text, Button, Image, ActionIcon, Group } from "@mantine/core";
+import { ReactElement, SyntheticEvent, useState } from "react";
+import {
+  Popover,
+  Text,
+  Button,
+  Image,
+  ActionIcon,
+  Group,
+  PopoverProps,
+} from "@mantine/core";
 
 import emotes from "../../../services/emotes";
+import { Emote as EmoteType } from "../../../types/makotools";
 
 import Emote from "./Emote";
 
-function EmoteSelector({ target, callback, ...props }) {
+function EmoteSelector({
+  target,
+  callback,
+  ...props
+}: {
+  target: (e: () => void) => ReactElement;
+  callback: (e: EmoteType) => any;
+} & PopoverProps) {
   const [opened, setOpened] = useState(false);
 
-  const onClickEmote = (e) => {
+  const onClickEmote = (e: EmoteType) => {
     setOpened(false);
     try {
       callback(e);

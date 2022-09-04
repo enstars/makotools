@@ -1,10 +1,16 @@
 import { useRouter } from "next/router";
+import { ReactElement } from "react";
 
-function getLocalizedNumber(number, locale, short = false) {
+import { DEFAULT_LOCALE } from "../../../services/locales";
+import { Locale } from "../../../types/makotools";
+
+function getLocalizedNumber(
+  number: number,
+  locale: Locale | string = DEFAULT_LOCALE,
+  short = false
+) {
   if (!isNaN(number)) {
-    let ReactGlobalize = require("react-globalize");
     let Globalize = require("globalize");
-    let FormatNumber = ReactGlobalize.FormatNumber;
 
     Globalize.load(
       require("cldr-data/supplemental/likelySubtags"),
@@ -29,12 +35,18 @@ function getLocalizedNumber(number, locale, short = false) {
   }
 }
 
-function CardStatsNumber({ children, short = false }) {
-  const { locale } = useRouter();
+function CardStatsNumber({
+  children,
+  short = false,
+}: {
+  children: ReactElement | number;
+  short: boolean;
+}) {
+  const { locale }: { locale?: string } = useRouter();
 
-  if (isNaN(children) || children === 0) return children;
+  if (typeof children !== "number" || children === 0) return children;
 
-  return <>{getLocalizedNumber(children, locale, short)}</>;
+  return <>{getLocalizedNumber(children, locale as Locale, short)}</>;
 }
 
 export default CardStatsNumber;

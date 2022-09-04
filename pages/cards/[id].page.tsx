@@ -19,6 +19,7 @@ import {
 import {
   getB2File,
   getLocalizedData,
+  getNameOrder,
   getPreviewImageURL,
 } from "../../services/ensquare";
 import { getLayout } from "../../components/Layout";
@@ -26,9 +27,7 @@ import PageTitle from "../../components/sections/PageTitle";
 import ImageViewer from "../../components/core/ImageViewer";
 import attributes from "../../data/attributes.json";
 import Reactions from "../../components/sections/Reactions";
-import NameOrder, {
-  getNameOrder,
-} from "../../components/utilities/formatting/NameOrder";
+import NameOrder from "../../components/utilities/formatting/NameOrder";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { getLocalizedNumber } from "../../components/utilities/formatting/CardStatsNumber";
 import { LoadedData } from "../../types/makotools";
@@ -145,12 +144,18 @@ export const getServerSideProps = getServerSideUser(
     const cards = await getLocalizedData("cards", locale);
     const characters = await getLocalizedData("characters", locale);
     // const { data: cardsJP } = await getData("cards", "ja");
+
+    if (!params?.id || typeof params.id !== "string") {
+      return {
+        notFound: true,
+      };
+    }
     const lastURLSegment = params.id.toLocaleLowerCase();
     const cardID = parseInt(lastURLSegment, 10);
 
     const findCardFunction = isNaN(cardID)
-      ? (item) => item.title.toLocaleLowerCase() === lastURLSegment
-      : (item) => item.id === cardID;
+      ? (item: GameCard) => item.title.toLocaleLowerCase() === lastURLSegment
+      : (item: GameCard) => item.id === cardID;
 
     const cardIndex = cards.main.data.indexOf(
       cards.main.data.find(findCardFunction)
@@ -162,9 +167,9 @@ export const getServerSideProps = getServerSideUser(
       };
     }
 
-    const findCharacterFunction = (c) =>
+    const findCharacterFunction = (c: GameCharacter) =>
       c.character_id ===
-      cards.main.data.find((c) => c.id === cardID).character_id;
+      cards.main.data.find((c: GameCard) => c.id === cardID).character_id;
 
     const character = {
       main: characters.main.data.find(findCharacterFunction),
@@ -179,7 +184,7 @@ export const getServerSideProps = getServerSideUser(
 
     const title = `(${card.mainLang.title}) ${getNameOrder(
       character.mainLang,
-      firestore?.name_order,
+      firestore?.setting__name_order,
       locale
     )}`;
 
@@ -202,7 +207,7 @@ export const getServerSideProps = getServerSideUser(
             title: card.mainLang.title,
             name: getNameOrder(
               character.mainLang,
-              firestore?.name_order,
+              firestore?.setting__name_order,
               locale
             ),
             image1: `card_rectangle4_${cardID}_normal.png`,

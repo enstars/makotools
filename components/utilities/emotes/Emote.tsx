@@ -1,23 +1,23 @@
-import { MantineProvider, Text, Tooltip } from "@mantine/core";
+import { MantineSize, Text, Tooltip } from "@mantine/core";
 import Image from "next/image";
+
+import { Emote } from "../../../types/makotools";
 
 const EMOTE_SIZE = 24;
 
-function Emote({ emote, size }) {
+function Emote({ emote, size }: { emote: Emote; size: number | MantineSize }) {
   //   console.log(emote);
   if (!emote?.emote?.src) return null;
   return (
     <Tooltip
-      gutter={2}
+      offset={2}
       transition="pop"
-      styles={(theme) => ({
-        body: {
+      styles={{
+        tooltip: {
           padding: "2px 5px",
-        },
-        root: {
           display: "flex",
         },
-      })}
+      }}
       label={
         <Text size="xs" weight={500}>
           {emote.name.replace(/ /g, "")}

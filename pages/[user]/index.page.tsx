@@ -253,17 +253,18 @@ export default Page;
 
 export const getServerSideProps = getServerSideUser(
   async ({ locale, params, admin }) => {
-    if (!params.user.startsWith("@"))
+    if (typeof params?.user !== "string" || !params.user.startsWith("@")) {
       return {
         notFound: true,
       };
+    }
     const db = admin.firestore();
     const docCollection = db.collection("users");
     const querySnap = await docCollection
       .where("username", "==", params.user.replace("@", ""))
       .get();
     if (!querySnap.empty) {
-      const profile = parseStringify(querySnap.docs[0].data(), undefined, 2);
+      const profile = parseStringify(querySnap.docs[0].data());
       // const cards = await getLocalizedData("cards", locale, [
       //   "id",
       // ]);
