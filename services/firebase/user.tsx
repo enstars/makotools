@@ -1,12 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, ReactElement } from "react";
 import { showNotification } from "@mantine/notifications";
 import { IconAlertTriangle, IconArrowLeft } from "@tabler/icons";
 import { useAuthUser } from "next-firebase-auth";
+import { ColorScheme } from "@mantine/core";
+
+import { FirebaseUser, UserData } from "../../types/makotools";
 
 import { getFirestoreUserData, setFirestoreUserData } from "./firestore";
 
-const FirebaseUserContext = React.createContext();
+const FirebaseUserContext = React.createContext<{
+  firebaseUser: FirebaseUser;
+  setUserDataKey: (data: any, callback?: () => any) => any;
+}>({ firebaseUser: { loading: true }, setUserDataKey: () => {} });
 export const useFirebaseUser = () => useContext(FirebaseUserContext);
 
 function FirebaseUserProvider({
@@ -14,9 +20,14 @@ function FirebaseUserProvider({
   colorScheme,
   setAppColorScheme,
   serverData,
+}: {
+  children: ReactElement;
+  colorScheme: ColorScheme;
+  setAppColorScheme: (c: ColorScheme) => void;
+  serverData: any;
 }) {
   const AuthUser = useAuthUser();
-  const [firebaseUser, setFirebaseUser] = useState(
+  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser>(
     serverData?.user
       ? {
           loading: false,
@@ -29,7 +40,7 @@ function FirebaseUserProvider({
         }
   );
 
-  const setUserDataKey = (data, callback) => {
+  const setUserDataKey = (data: any, callback?: () => void) => {
     setFirestoreUserData(data, ({ status }) => {
       if (status === "success") {
         setFirebaseUser((f) => ({
@@ -57,24 +68,25 @@ function FirebaseUserProvider({
     if (userState.loggedIn) {
       const setFirestoreData = async () => {
         try {
-          let currentUserData,
+          let currentUserData: UserData | undefined = undefined,
             fetchCount = 5;
-          while (!currentUserData && fetchCount > 0) {
+          while (!currentUserData && fetchCount > 0 && AuthUser.id) {
             currentUserData = await getFirestoreUserData(AuthUser.id);
             fetchCount--;
           }
-          console.log("cud", AuthUser.id, currentUserData);
-          setFirebaseUser((s) => ({ ...s, firestore: currentUserData }));
           if (!currentUserData)
             showNotification({
               title: "Error",
               message:
-                "We had trouble fetching your user data. If this is your first time signing up, please refresh the page",
+                "We had trouble fetching your user data. If this is your first time signing up, please refresh the page.",
               color: "red",
               icon: <IconAlertTriangle size={16} />,
             });
-          if (currentUserData?.dark_mode)
-            setAppColorScheme(currentUserData.dark_mode ? "dark" : "light");
+          else {
+            setFirebaseUser((s) => ({ ...s, firestore: currentUserData }));
+            if (currentUserData?.dark_mode)
+              setAppColorScheme(currentUserData.dark_mode ? "dark" : "light");
+          }
         } catch (e) {
           console.log(e);
           showNotification({

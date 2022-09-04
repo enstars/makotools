@@ -60,10 +60,7 @@ function Page({
         title={
           <>
             ({cardLocalizedMain.title}){" "}
-            <NameOrder
-              last={characterLocalizedMain.last_name}
-              first={characterLocalizedMain.first_name}
-            />
+            <NameOrder {...characterLocalizedMain} />
             <Group mt="sm" spacing="xs">
               <Badge size="xl" color="yellow" sx={{ textTransform: "none" }}>
                 {card.main.rarity}

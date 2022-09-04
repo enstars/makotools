@@ -11,6 +11,8 @@ const CONSTANTS = {
   },
   EXTERNAL_URLS: {
     ASSETS: "https://f002.backblazeb2.com/file/ensemble-square/",
+    DATA: "https://data.ensemble.moe/",
+    DATA_TL: "https://tl.data.ensemble.moe/",
   },
 };
 

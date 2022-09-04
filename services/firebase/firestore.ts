@@ -11,9 +11,18 @@ import {
   getDocs,
 } from "firebase/firestore";
 
-function setFirestoreUserData(data, callback) {
+import { LoadedStatus, UserData } from "../../types/makotools";
+
+function setFirestoreUserData(
+  data: any,
+  callback: (s: { status: LoadedStatus }) => void
+) {
   const clientAuth = getAuth();
   const db = getFirestore();
+  if (clientAuth.currentUser === null) {
+    callback({ status: "error" });
+    return;
+  }
   setDoc(doc(db, "users", clientAuth?.currentUser?.uid), data, {
     merge: true,
   }).then(
@@ -26,21 +35,25 @@ function setFirestoreUserData(data, callback) {
   );
 }
 
-async function getFirestoreUserData(uid) {
+async function getFirestoreUserData(uid: string) {
   const clientAuth = getAuth();
   const db = getFirestore();
+
+  if (clientAuth.currentUser === null) {
+    return undefined;
+  }
   const docSnap = await getDoc(
     doc(db, "users", uid || clientAuth?.currentUser?.uid)
   );
 
   if (docSnap.exists()) {
     const data = docSnap.data();
-    return data;
+    return data as UserData;
   }
-  return null;
+  return undefined;
 }
 
-async function validateUsernameDb(username) {
+async function validateUsernameDb(username: string) {
   const db = getFirestore();
   const q = query(collection(db, "users"), where("username", "==", username));
   const querySnap = await getDocs(q);

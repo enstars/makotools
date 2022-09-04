@@ -17,17 +17,22 @@ function getNameOrder({ first_name, last_name }, setting, locale) {
   return name;
 }
 
-function NameOrder({ first, last, string }) {
+function NameOrder({
+  first_name,
+  last_name,
+}: {
+  first_name: string;
+  last_name: string;
+}) {
   const { locale } = useRouter();
   const { firebaseUser } = useFirebaseUser();
 
   const nameOrderSetting = firebaseUser.firestore?.name_order || "firstlast";
   const name = getNameOrder(
-    { first_name: first, last_name: last },
+    { first_name, last_name },
     nameOrderSetting,
     locale
   );
-  if (string) return name;
   return <>{name}</>;
 }
 

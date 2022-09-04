@@ -1,4 +1,6 @@
-const appLocales = [
+import { Locale } from "../types/makotools";
+
+const appLocales: Locale[] = [
   // game languages
   "en", // English
   "ja", // Japanese
