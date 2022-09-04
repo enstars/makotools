@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, ReactElement, SyntheticEvent } from "react";
 import {
   Modal,
   Text,
@@ -9,10 +9,15 @@ import {
   UnstyledButton,
   Box,
   createStyles,
+  ImageStylesParams,
+  ImageProps,
+  CSSObject,
 } from "@mantine/core";
 import { IconArrowUpRightCircle, IconArrowsDiagonal } from "@tabler/icons";
 
-const useStyles = createStyles((theme, { radius }, getRef) => ({
+import { CONSTANTS } from "../../services/constants";
+
+const useStyles = createStyles((theme, { radius }: ImageProps, getRef) => ({
   figure: {
     [`&:hover .${getRef("backdrop")}`]: {
       backgroundPositionY: 70,
@@ -41,7 +46,8 @@ const useStyles = createStyles((theme, { radius }, getRef) => ({
     pointerEvents: "none",
     backgroundPositionY: 140,
     transition: theme.other.transition,
-    borderBottomRightRadius: isNaN(radius) ? theme.radius?.[radius] : radius,
+    borderBottomRightRadius:
+      typeof radius === "string" ? theme.radius?.[radius] : radius,
   },
   button: {
     ref: getRef("button"),
@@ -56,10 +62,15 @@ const useStyles = createStyles((theme, { radius }, getRef) => ({
   },
 }));
 
-function ImageViewer({ caption, styles, ...props }) {
+function ImageViewer({
+  caption = <></>,
+  styles = {},
+  radius,
+  ...props
+}: ImageProps) {
   const [opened, setOpened] = useState(false);
   const theme = useMantineTheme();
-  const { classes } = useStyles({ radius: props.radius });
+  const { classes } = useStyles({ radius });
   return (
     <>
       <Modal
@@ -75,7 +86,7 @@ function ImageViewer({ caption, styles, ...props }) {
         title={
           <>
             <Text weight="500">
-              {props.src.replace("https://assets.ensemble.link/", "") ||
+              {props?.src?.replace(CONSTANTS.EXTERNAL_URLS.ASSETS, "") ||
                 "Save Image"}
             </Text>
             <Text size="sm" color="dimmed">
@@ -130,15 +141,11 @@ function ImageViewer({ caption, styles, ...props }) {
         }}
         caption={
           <>
-            <Box
-              className={classes.backdrop}
-              component="span"
-              radius={props.radius}
-            />
+            <Box className={classes.backdrop} component="span" />
             <UnstyledButton
               className={classes.button}
-              onClick={(e) => {
-                e.stopPropagation();
+              onClick={(event: SyntheticEvent) => {
+                event.stopPropagation();
                 setOpened(true);
               }}
             >

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import styled from "styled-components";
 import Image from "next/image";
-
 import {
   Footer,
   Text,
@@ -15,13 +14,12 @@ import {
   BackgroundImage,
 } from "@mantine/core";
 
-import { MAKOTOOLS } from "../../../services/constants";
+import { CONSTANTS } from "../../../services/constants";
 import MakotoolsLight from "../../../assets/Logo/mkt_light.svg?url";
 import MakotoolsDark from "../../../assets/Logo/mkt_dark.svg?url";
 import Affiliates from "../../../assets/Affiliates/affiliates.svg";
 
 import SvgBackground from "./mkt_bg.svg";
-
 import SupportBanner from "./SupportBanner";
 
 function PageFooter({ wide, textOnly }) {
@@ -100,7 +98,7 @@ function PageFooter({ wide, textOnly }) {
                 Issues and Suggestions
               </Anchor>
             </Link>
-            <Link href={`mailto:${MAKOTOOLS.EMAIL}`} passHref>
+            <Link href={`mailto:${CONSTANTS.MAKOTOOLS.EMAIL}`} passHref>
               <Anchor component="a" size="sm">
                 Contact Us
               </Anchor>

@@ -1,5 +1,11 @@
-function addCard(originalCollection, id, count) {
-  const collection = originalCollection || [];
+import { CollectedCard } from "../types/makotools";
+
+function addCard(
+  originalCollection: CollectedCard[],
+  id: ID,
+  count: number = 0
+): CollectedCard[] {
+  const collection = originalCollection;
   let collectionItem = collection.find((c) => c.id === id);
   if (!collectionItem) {
     collection.push({ id, count });

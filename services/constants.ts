@@ -1,4 +1,4 @@
-module.exports = {
+const CONSTANTS = {
   MAKOTOOLS: {
     EMAIL: "makotools@ensemble.moe",
     LINKS: {},
@@ -9,4 +9,9 @@ module.exports = {
     META_DESC:
       "MakoTools is a website containing information, tools, and a lot more to aid you in playing Ensemble Stars!! Music English Version, created in collaboration between EN:Link, Daydream Guides, and The Ensemble Stars EN/CN Wiki.",
   },
+  EXTERNAL_URLS: {
+    ASSETS: "https://f002.backblazeb2.com/file/ensemble-square/",
+  },
 };
+
+export { CONSTANTS };

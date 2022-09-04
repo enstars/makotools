@@ -13,13 +13,10 @@ import {
   Title,
   TypographyStylesProvider,
 } from "@mantine/core";
-
 import { IconForms, IconGitPullRequest, IconMail } from "@tabler/icons";
 import Link from "next/link";
 
-import { MAKOTOOLS } from "../../services/constants";
 import PageTitle from "../../components/sections/PageTitle";
-
 import { getLayout } from "../../components/Layout";
 function Page() {
   return (

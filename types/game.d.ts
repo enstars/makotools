@@ -4,7 +4,7 @@ type HexColorWithTag = string;
 // CHARACTERS
 
 type CharacterID = number;
-interface CharacterStrings {
+interface GameCharacterStrings {
   last_name: string;
   first_name: string;
   last_nameRuby?: string;
@@ -19,7 +19,7 @@ interface CharacterStrings {
   introduction: string;
 }
 
-interface Character extends CharacterStrings {
+interface GameCharacter extends GameCharacterStrings {
   character_id: CharacterID;
   unit?: string[]; // TBA: Switch to using unit IDs
   image_color?: HexColorWithTag;

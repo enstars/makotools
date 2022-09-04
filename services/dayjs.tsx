@@ -1,18 +1,18 @@
 import { useRouter } from "next/router";
-import React, { useContext, useEffect } from "react";
-
-import { dayjsLocales } from "./locales";
+import { createContext, ReactElement, useContext, useEffect } from "react";
 import dayjs from "dayjs";
 import LocalizedFormat from "dayjs/plugin/localizedFormat";
 import localeData from "dayjs/plugin/localeData";
 
-const DayjsContext = React.createContext();
+import { dayjsLocales } from "./locales";
+
+const DayjsContext = createContext(dayjs);
 export const useDayjs = () => useContext(DayjsContext);
 
-function DayjsProvider({ children }) {
+function DayjsProvider({ children }: { children: ReactElement }) {
   const router = useRouter();
   const locale = router.locale || "en";
-  dayjsLocales[locale]();
+  dayjsLocales.find(({ lang }) => lang === locale)?.import();
   dayjs.locale(locale);
   dayjs.extend(LocalizedFormat);
   dayjs.extend(localeData);

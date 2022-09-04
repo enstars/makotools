@@ -31,11 +31,18 @@ import NameOrder, {
 } from "../../components/utilities/formatting/NameOrder";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { getLocalizedNumber } from "../../components/utilities/formatting/CardStatsNumber";
+import { LoadedData } from "../../types/makotools";
 
 import Stats, { sumStats } from "./components/Stats";
 import Skills from "./components/Skills";
 
-function Page({ character, card, title }) {
+function Page({
+  character,
+  card,
+}: {
+  character: LoadedData<GameCharacter>;
+  card: LoadedData<GameCard>;
+}) {
   console.log(character);
   console.log(card);
   // const { id } = useParams();

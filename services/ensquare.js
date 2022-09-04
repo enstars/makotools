@@ -1,5 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 
+import { CONSTANTS } from "./constants";
+
 const flatten = require("flat");
 
 export function getData(data, lang = "ja", source = false, fields = null) {
@@ -37,7 +39,7 @@ export function getData(data, lang = "ja", source = false, fields = null) {
 }
 
 export function getB2File(path) {
-  return `https://f002.backblazeb2.com/file/ensemble-square/${path}`;
+  return `${CONSTANTS.EXTERNAL_URLS.ASSETS}${path}`;
   // return `https://assets.ensemble.moe/file/ensemble-square/${path}`;
   // https://f002.backblazeb2.com/file/ensemble-square/assets/card_rectangle4_2001_evolution.png
   // return `https://assets.ensemble.link/${path}`;
@@ -52,14 +54,14 @@ export async function getLocalizedData(data, locale = "en", fields = null) {
   if (locale === "ja") {
     localized = [jaData, enFanData, enData];
   }
-  localized = localized.filter((l) => l.status === "success");
+  // localized = localized.filter((l) => l.status === "success");
 
   return {
     main: jaData,
     mainLang: localized[0],
     subLang: localized[1] || null,
-    localized,
-    localized_full: localized,
+    // localized,
+    // localized_full: localized,
   };
 }
 
