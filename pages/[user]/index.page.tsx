@@ -31,7 +31,6 @@ import Autoplay from "embla-carousel-autoplay";
 
 import Layout, { getLayout } from "../../components/Layout";
 import PageTitle from "../../components/sections/PageTitle";
-import { MAKOTOOLS } from "../../services/constants";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import ImageViewer from "../../components/core/ImageViewer";
 import { getB2File, getLocalizedData } from "../../services/ensquare";
