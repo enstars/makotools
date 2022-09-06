@@ -15,7 +15,6 @@ import {
 import { NextLink } from "@mantine/next";
 import { useDisclosure } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
-
 import {
   IconCircleCheck,
   IconUserCircle,
@@ -25,12 +24,17 @@ import {
   IconMoonStars,
   IconUser,
 } from "@tabler/icons";
-
 import { useRouter } from "next/router";
 
 import { useFirebaseUser } from "../../../services/firebase/user";
 
-function UserMenu({ trigger, collapsed }) {
+function UserMenu({
+  trigger,
+  collapsed,
+}: {
+  trigger: any;
+  collapsed: boolean;
+}) {
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
@@ -52,16 +56,11 @@ function UserMenu({ trigger, collapsed }) {
       //   width: "100%",
       // }}
       closeOnItemClick={true}
-      gutter={10}
       opened={opened}
       onOpen={handlers.open}
       onClose={handlers.close}
       // withinPortal={true}
       styles={{
-        itemBody: {
-          maxWidth: "100%",
-          minWidth: 0,
-        },
         itemLabel: {
           maxWidth: "100%",
           minWidth: 0,
@@ -111,7 +110,7 @@ function UserMenu({ trigger, collapsed }) {
               <Text id="sidebar-user-email" size="xs" color="dimmed" mt={-2}>
                 {firebaseUser?.firestore?.username
                   ? `@${firebaseUser?.firestore?.username}`
-                  : firebaseUser?.user.email}
+                  : firebaseUser?.user?.email}
               </Text>
             </Box>
           ) : (
@@ -161,7 +160,7 @@ function UserMenu({ trigger, collapsed }) {
             <Menu.Item
               id="sidebar-link-logout"
               onClick={() => {
-                firebaseUser.user.signOut();
+                firebaseUser?.user?.signOut();
                 reload();
                 // showNotification({
                 //   message: "Successfully signed out",

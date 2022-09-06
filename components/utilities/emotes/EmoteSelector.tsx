@@ -17,10 +17,12 @@ import Emote from "./Emote";
 function EmoteSelector({
   target,
   callback,
+  disabled,
   ...props
 }: {
   target: (e: () => void) => ReactElement;
   callback: (e: EmoteType) => any;
+  disabled: boolean;
 } & PopoverProps) {
   const [opened, setOpened] = useState(false);
 

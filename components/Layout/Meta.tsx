@@ -2,7 +2,7 @@ import Head from "next/head";
 
 import { CONSTANTS } from "../../services/constants";
 
-function Meta({ title, desc, img }) {
+function Meta({ title, desc, img }: { title: string; desc: string; img: any }) {
   console.log("meta", title, desc, img);
   const pageTitle = title
     ? `${title} - ${CONSTANTS.MAKOTOOLS.SITE_TITLE}`

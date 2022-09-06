@@ -1,13 +1,20 @@
 import React from "react";
 import { Anchor, Center, Box, Text, Button, Group, Stack } from "@mantine/core";
 import Router from "next/router";
-
 import Image from "next/image";
 
 import Jun from "../../assets/ErrorBoundary/Jun.webp";
 
-class ErrorBoundary extends React.Component {
-  constructor(props) {
+interface ErrorState {
+  hasError: boolean;
+}
+
+interface ErrorProps {
+  children: any;
+}
+
+class ErrorBoundary extends React.Component<ErrorProps, ErrorState> {
+  constructor(props: any) {
     super(props);
     this.state = { hasError: false };
   }
@@ -35,9 +42,7 @@ class ErrorBoundary extends React.Component {
             </Text>
             <Stack align="end" mt="sm">
               <Stack align="center" spacing={0}>
-                <Button onClick={() => Router.reload(window.location.pathname)}>
-                  GODDAMN!
-                </Button>
+                <Button onClick={() => Router.reload()}>GODDAMN!</Button>
                 <Text size="xs" color="dimmed" mt={5}>
                   (Refresh the page)
                 </Text>

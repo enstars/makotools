@@ -2,7 +2,7 @@ import { TypographyStylesProvider } from "@mantine/core";
 
 import Layout from "../../../components/Layout";
 import PageTitle from "../../../components/sections/PageTitle";
-import { MAKOTOOLS } from "../../../services/constants";
+import { CONSTANTS } from "../../../services/constants";
 import { getLayout } from "../../../components/Layout";
 
 function Page() {
@@ -24,7 +24,7 @@ function Page() {
         <p>
           If you believe any of the unofficial translations on this website are
           incorrect, feel free to contact us at{" "}
-          <a href={MAKOTOOLS.EMAIL}>{MAKOTOOLS.EMAIL}</a>.
+          <a href={CONSTANTS.MAKOTOOLS.EMAIL}>{CONSTANTS.MAKOTOOLS.EMAIL}</a>.
         </p>
         <p>
           We cannot provide help for incorrect official translations. In those

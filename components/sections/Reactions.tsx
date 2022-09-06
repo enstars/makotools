@@ -35,8 +35,8 @@ function Reactions() {
   const { classes } = useStyles();
   const { asPath } = useRouter();
   console.log(asPath);
-  const [reactions, setReactions] = useState([]);
-  const [collapsed, setCollapsed] = useState(true);
+  const [reactions, setReactions] = useState<any>([]);
+  const [collapsed, setCollapsed] = useState<boolean>(true);
   useEffect(() => {
     fetchReactions();
   }, [asPath]);
@@ -44,9 +44,9 @@ function Reactions() {
 
   const currentPageId = asPath.replace(/\//g, "_");
   // const currentPageId = 1;
-  const addReaction = (id) => {
+  const addReaction = (id: number) => {
     fetch(
-      `https://backend-stars.ensemble.moe/reactions.php?page_id=${currentPageId}&content=${id}&name=${firebaseUser.user.id}`,
+      `https://backend-stars.ensemble.moe/reactions.php?page_id=${currentPageId}&content=${id}&name=${firebaseUser?.user?.id}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -70,7 +70,7 @@ function Reactions() {
         console.log("Request complete! response:", data);
         // return data;
         setReactions(
-          data.map((r) => {
+          data.map((r: any) => {
             const emote = emotes.find((e) => e.id === r.content);
             if (emote) return { emote, alt: emote.name, id: r.submit_date };
           })
@@ -99,7 +99,7 @@ function Reactions() {
                   size="xs"
                   color="blue"
                   onClick={onClick}
-                  leftIcon={<IconMoodSmile size={16} />}
+                  leftIcon={<IconMoodSmile size={24} />}
                   px="xs"
                 >
                   Reactions
@@ -111,7 +111,9 @@ function Reactions() {
               addReaction(emote.id);
             }}
             disabled={!firebaseUser.loggedIn}
-          />
+          >
+            <></>
+          </EmoteSelector>
         </Tooltip>
         {reactions.length ? (
           <>
@@ -137,12 +139,12 @@ function Reactions() {
                 <Group
                   spacing="xs"
                   sx={{
-                    maxHeight: collapsed ? 24 : null,
+                    maxHeight: collapsed ? 24 : undefined,
                     // marginRight: collapsed ? -30 : 0,
                   }}
                 >
-                  {reactions?.map((r) => (
-                    <Emote key={r.id} emote={r.emote} />
+                  {reactions?.map((r: any) => (
+                    <Emote key={r.id} emote={r.emote} size={16} />
                   ))}
                 </Group>
               </Collapse>

@@ -16,13 +16,18 @@ import { IconMenu2 } from "@tabler/icons";
 
 import Sidebar from "../Sidebar";
 
-const defaultGetBreadcrumbs = (path) => path.split("/").filter((x) => x);
+const defaultGetBreadcrumbs = (path: string) =>
+  path.split("/").filter((x) => x);
 
 function BreadcrumbsApp({
   getBreadcrumbs = defaultGetBreadcrumbs,
   breadcrumbs,
   setOpened,
   ...props
+}: {
+  getBreadcrumbs: (path: string) => string[];
+  breadcrumbs: string[];
+  setOpened: any;
 }) {
   const location = useRouter();
   let pageBreadcrumbs = breadcrumbs || getBreadcrumbs(location.asPath);
@@ -31,7 +36,7 @@ function BreadcrumbsApp({
     <Group noWrap align="center" {...props}>
       <MediaQuery largerThan="xs" styles={{ display: "none" }}>
         <Box sx={{ alignSelf: "stretch" }}>
-          <ActionIcon onClick={() => setOpened((o) => !o)}>
+          <ActionIcon onClick={() => setOpened((o: boolean) => !o)}>
             <IconMenu2 size={18} />
           </ActionIcon>
         </Box>
@@ -75,7 +80,7 @@ function BreadcrumbsApp({
           <Link href="/" passHref>
             <Anchor inherit>Makotools</Anchor>
           </Link>
-          {pageBreadcrumbs.map((crumb, index) => {
+          {pageBreadcrumbs.map((crumb: string, index: number) => {
             const to = `/${pageBreadcrumbs.slice(0, index + 1).join("/")}`;
 
             return (

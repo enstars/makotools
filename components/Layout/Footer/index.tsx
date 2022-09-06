@@ -12,6 +12,7 @@ import {
   Box,
   Container,
   BackgroundImage,
+  Autocomplete,
 } from "@mantine/core";
 
 import { CONSTANTS } from "../../../services/constants";
@@ -22,7 +23,7 @@ import Affiliates from "../../../assets/Affiliates/affiliates.svg";
 import SvgBackground from "./mkt_bg.svg";
 import SupportBanner from "./SupportBanner";
 
-function PageFooter({ wide, textOnly }) {
+function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
   const theme = useMantineTheme();
   return (
     <Footer
@@ -41,6 +42,7 @@ function PageFooter({ wide, textOnly }) {
       }}
       pt="xl"
       p="md"
+      height="auto"
     >
       <Text
         color="dimmed"

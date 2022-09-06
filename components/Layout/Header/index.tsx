@@ -6,7 +6,15 @@ import Sidebar from "../Sidebar";
 
 import Breadcrumbs from "./Breadcrumbs";
 
-function HeaderApp({ getBreadcrumbs, title, breadcrumbs }) {
+function HeaderApp({
+  getBreadcrumbs,
+  title,
+  breadcrumbs,
+}: {
+  getBreadcrumbs: (path: string) => string[];
+  title: string;
+  breadcrumbs: string[];
+}) {
   const [scroll] = useWindowScroll();
   const [opened, setOpened] = useState(false);
 
@@ -41,6 +49,7 @@ function HeaderApp({ getBreadcrumbs, title, breadcrumbs }) {
               style={{
                 ...transitionStyles,
               }}
+              height="auto"
               px="md"
               py={0}
               sx={(theme) => ({
@@ -55,11 +64,6 @@ function HeaderApp({ getBreadcrumbs, title, breadcrumbs }) {
                 getBreadcrumbs={getBreadcrumbs}
                 breadcrumbs={breadcrumbs}
                 setOpened={setOpened}
-                sx={(theme) => ({
-                  minWidth: 0,
-                  paddingTop: theme.spacing.xs / 1.5,
-                  paddingBottom: theme.spacing.xs / 1.5,
-                })}
               />
             </Header>
           )}
@@ -70,7 +74,6 @@ function HeaderApp({ getBreadcrumbs, title, breadcrumbs }) {
         getBreadcrumbs={getBreadcrumbs}
         breadcrumbs={breadcrumbs}
         setOpened={setOpened}
-        mb="sm"
       />
     </>
   );

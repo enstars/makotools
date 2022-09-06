@@ -3,7 +3,7 @@ import { IconBrandPatreon } from "@tabler/icons";
 import Link from "next/link";
 import React from "react";
 
-function SupportBanner(props) {
+function SupportBanner(props: any) {
   return (
     <>
       <Paper withBorder radius="sm" p="xs" {...props}>

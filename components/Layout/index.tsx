@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-
 import {
   AppShell,
   Container,
@@ -11,9 +10,7 @@ import {
 } from "@mantine/core";
 
 import ErrorBoundary from "./ErrorBoundary";
-
 import Meta from "./Meta";
-
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -28,6 +25,16 @@ function Layout({
   footerTextOnly,
   pageProps,
   hideOverflow,
+}: {
+  children: any;
+  hideFooter: boolean;
+  hideSidebar: boolean;
+  hideHeader: boolean;
+  wide: boolean;
+  meta: any;
+  footerTextOnly: boolean;
+  pageProps: any;
+  hideOverflow: boolean;
 }) {
   const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
@@ -54,7 +61,9 @@ function Layout({
             <ErrorBoundary>
               <Sidebar hiddenBreakpoint="xs" />
             </ErrorBoundary>
-          ) : null
+          ) : (
+            <></>
+          )
         }
       >
         <Paper
@@ -63,7 +72,7 @@ function Layout({
             zIndex: 1,
             borderBottom: "solid 1px",
             borderColor: dark ? theme.colors.dark[5] : theme.colors.gray[2],
-            overflow: hideOverflow ? "hidden" : null,
+            overflow: hideOverflow ? "hidden" : undefined,
           }}
           radius={0}
           shadow="lg"
@@ -100,8 +109,8 @@ function Layout({
 }
 export default Layout;
 
-export const getLayout = (layoutProps) => {
-  return function LayoutWrapper(children, pageProps) {
+export const getLayout = (layoutProps: any) => {
+  return function LayoutWrapper(children: any, pageProps: any) {
     return (
       <Layout pageProps={pageProps} {...layoutProps}>
         {children}

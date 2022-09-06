@@ -17,6 +17,8 @@ function RichText() {
         ["h1", "h2", "h3"],
         ["alignLeft", "alignCenter", "alignRight"],
       ]}
+      onChange={() => null}
+      value=""
     />
   );
 }

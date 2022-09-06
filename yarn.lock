@@ -3177,7 +3177,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/hoist-non-react-statics@npm:^3.3.0, @types/hoist-non-react-statics@npm:^3.3.1":
+"@types/hoist-non-react-statics@npm:*, @types/hoist-non-react-statics@npm:^3.3.0, @types/hoist-non-react-statics@npm:^3.3.1":
   version: 3.3.1
   resolution: "@types/hoist-non-react-statics@npm:3.3.1"
   dependencies:
@@ -3282,6 +3282,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-collapse@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "@types/react-collapse@npm:5.0.1"
+  dependencies:
+    "@types/react": "*"
+  checksum: 8fb28c98ba49710fdd95601786ec4a5e1fca043de470446081152f8681128a12bc2db1544dfbb3cc38fe434e47922ee660e5a9e21f24fa7913e729730b8bc03d
+  languageName: node
+  linkType: hard
+
 "@types/react-redux@npm:^7.1.20":
   version: 7.1.24
   resolution: "@types/react-redux@npm:7.1.24"
@@ -3319,6 +3328,17 @@ __metadata:
     "@types/mime": ^1
     "@types/node": "*"
   checksum: eaca858739483e3ded254cad7d7a679dc2c8b3f52c8bb0cd845b3b7eb1984bde0371fdcb0a5c83aa12e6daf61b6beb762545021f520f08a1fe882a3fa4ea5554
+  languageName: node
+  linkType: hard
+
+"@types/styled-components@npm:^5.1.26":
+  version: 5.1.26
+  resolution: "@types/styled-components@npm:5.1.26"
+  dependencies:
+    "@types/hoist-non-react-statics": "*"
+    "@types/react": "*"
+    csstype: ^3.0.2
+  checksum: 84f53b3101739b20d1731554fb7735bc2f3f5d050a8b392e9845403c8c8bbd729737d033978649f9195a97b557875b010d46e35a4538564a2d0dbcce661dbf76
   languageName: node
   linkType: hard
 
@@ -6559,6 +6579,8 @@ __metadata:
     "@svgr/webpack": ^6.3.1
     "@tabler/icons": ^1.90.0
     "@types/lodash": ^4.14.184
+    "@types/react-collapse": ^5.0.1
+    "@types/styled-components": ^5.1.26
     cldr-data: ^36.0.1
     cldrjs: ^0.5.5
     cookies-next: ^2.1.1

@@ -1,9 +1,10 @@
+import { UrlObject } from "url";
+
 import React, { forwardRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styled from "styled-components";
 import { useRouter } from "next/router";
-
 import {
   IconUsers,
   IconPlayCard,
@@ -16,8 +17,8 @@ import {
   IconBrandPatreon,
   IconSettings,
   IconUserCircle,
+  TablerIcon,
 } from "@tabler/icons";
-
 import {
   Navbar,
   ScrollArea,
@@ -34,19 +35,26 @@ import {
   ActionIcon,
   UnstyledButton,
 } from "@mantine/core";
-
 import { useColorScheme, useToggle } from "@mantine/hooks";
+import { StringNullableChain } from "lodash";
 
 import MakotoolsLightComponent from "../../../assets/Logo/mkt_light_icon.svg";
 import MakotoolsDarkComponent from "../../../assets/Logo/mkt_dark_icon.svg";
 import MakotoolsTextLightComponent from "../../../assets/Logo/mkt_light_text.svg";
 import MakotoolsTextDarkComponent from "../../../assets/Logo/mkt_dark_text.svg";
-
 import { useFirebaseUser } from "../../../services/firebase/user";
 
 import UserMenu from "./UserMenu";
 
-function Sidebar(props) {
+type LinkObject = {
+  link: string;
+  name?: string;
+  icon?: TablerIcon;
+  soon?: boolean;
+  props?: any;
+};
+
+function Sidebar(props: any) {
   const location = useRouter();
 
   const theme = useMantineTheme();
@@ -57,6 +65,54 @@ function Sidebar(props) {
   const [collapsed, toggleCollapsed] = useToggle([false, true]);
   // console.log("collapsed", collapsed);
   if (props.permanentlyExpanded && collapsed) toggleCollapsed();
+
+  const linkList: LinkObject[] = [
+    {
+      link: "/characters",
+      name: "Characters",
+      icon: IconUsers,
+    },
+    {
+      link: "/cards",
+      name: "Cards",
+      icon: IconPlayCard,
+    },
+    {
+      link: "/events",
+      name: "Events",
+      icon: IconAward,
+      soon: true,
+    },
+    {
+      link: "/stories",
+      name: "Stories",
+      icon: IconBooks,
+      soon: true,
+    },
+    ...[
+      firebaseUser.loggedIn
+        ? {
+            link: `/@${firebaseUser?.firestore?.username}`,
+            name: "Profile",
+            icon: IconUserCircle,
+          }
+        : {
+            link: "",
+          },
+    ],
+    {
+      link: "https://www.patreon.com/makotools",
+      name: "Patreon",
+      // icon: IconBrandPatreon,
+      props: {
+        // active: true,
+        color: "orange",
+        variant: "subtle",
+        icon: <IconBrandPatreon size={16} color={theme.colors.orange[5]} />,
+        description: collapsed ? null : "Support us!",
+      },
+    },
+  ];
   return (
     <Navbar
       // fixed
@@ -139,55 +195,9 @@ function Sidebar(props) {
           // direction="column"
           sx={{ maxWidth: "100%", minWidth: 0 }}
         >
-          {[
-            {
-              link: "/characters",
-              name: "Characters",
-              icon: IconUsers,
-            },
-            {
-              link: "/cards",
-              name: "Cards",
-              icon: IconPlayCard,
-            },
-            {
-              link: "/events",
-              name: "Events",
-              icon: IconAward,
-              soon: true,
-            },
-            {
-              link: "/stories",
-              name: "Stories",
-              icon: IconBooks,
-              soon: true,
-            },
-            ...[
-              firebaseUser.loggedIn
-                ? {
-                    link: `/@${firebaseUser?.firestore?.username}`,
-                    name: "Profile",
-                    icon: IconUserCircle,
-                  }
-                : {},
-            ],
-            {
-              link: "https://www.patreon.com/makotools",
-              name: "Patreon",
-              // icon: IconBrandPatreon,
-              props: {
-                // active: true,
-                color: "orange",
-                variant: "subtle",
-                icon: (
-                  <IconBrandPatreon size={16} color={theme.colors.orange[5]} />
-                ),
-                description: collapsed ? null : "Support us!",
-              },
-            },
-          ]
-            .filter((l) => l.link)
-            .map((link) => {
+          {linkList
+            .filter((l: LinkObject) => l.link)
+            .map((link: LinkObject) => {
               const active = `/${location.asPath.split("/")[1]}` === link.link;
               const navLinkComponent = (
                 <NavLink
@@ -195,7 +205,6 @@ function Sidebar(props) {
                   label={collapsed ? false : <Text inline>{link.name}</Text>}
                   icon={link?.icon && <link.icon size={16} />}
                   active={active}
-                  link={link.soon ? undefined : link.link}
                   disabled={link.soon}
                   sx={{ maxWidth: "100%", minWidth: 0 }}
                   styles={(theme) => ({
