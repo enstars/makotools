@@ -39,7 +39,14 @@ initAuth();
 
 const emotionCache = createEmotionCache({ key: "mktl" });
 
-function MakoTools({ Component, pageProps, ...props }: { Component: any; pageProps: any; }) {
+function MakoTools({
+  Component,
+  pageProps,
+  ...props
+}: {
+  Component: any;
+  pageProps: any;
+}) {
   const router = useRouter();
   const [colorScheme, setStateColorScheme] = useState(
     props.colorScheme || "dark"
