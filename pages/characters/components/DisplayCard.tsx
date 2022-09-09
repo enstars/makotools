@@ -1,16 +1,26 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-
 import { Card, Title, useMantineTheme } from "@mantine/core";
 
 import { getB2File } from "../../../services/ensquare";
-import { twoStarIDs } from "../../../data/characterIDtoCardID";
+import {
+  twoStarIDs,
+  twoStarIDsDoubleface,
+} from "../../../data/characterIDtoCardID";
 import styles from "../../../styles/CharacterCard.module.scss";
 
-function DisplayCard({ i, doubleface, characters }) {
+function DisplayCard({
+  i,
+  doubleface,
+  characters,
+}: {
+  i: number;
+  doubleface: boolean;
+  characters: any;
+}) {
   const theme = useMantineTheme();
-  const character = characters.mainLang.data[i];
+  const character: GameCharacter = characters.mainLang.data[i];
   const characterSubLang = characters.subLang.data?.[i] || undefined;
   return (
     <Link href={`/characters/${character.character_id}`} passHref>
@@ -19,8 +29,8 @@ function DisplayCard({ i, doubleface, characters }) {
         component="a"
         className={styles.wrapper}
         style={{
-          "--characterColor": character.image_color,
-          "--characterColor--light": character.image_color + "33",
+          ["--characterColor" as string]: character.image_color,
+          ["--characterColor--light" as string]: character.image_color + "33",
         }}
       >
         <div className={styles.content}>
@@ -30,7 +40,7 @@ function DisplayCard({ i, doubleface, characters }) {
                 doubleface
                   ? getB2File(
                       `cards/card_full1_${
-                        twoStarIDs.doubleface[character.character_id]
+                        (twoStarIDsDoubleface as any)[character.character_id]
                       }_normal.png`
                     )
                   : getB2File(
@@ -50,7 +60,7 @@ function DisplayCard({ i, doubleface, characters }) {
                 doubleface
                   ? getB2File(
                       `cards/card_full1_${
-                        twoStarIDs.doubleface[character.character_id]
+                        (twoStarIDsDoubleface as any)[character.character_id]
                       }_evolution.png`
                     )
                   : getB2File(

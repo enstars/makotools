@@ -4,6 +4,7 @@ type HexColorWithTag = string;
 // CHARACTERS
 
 type CharacterID = number;
+type UnitID = string | number;
 interface GameCharacterStrings {
   last_name: string;
   first_name: string;
@@ -21,6 +22,7 @@ interface GameCharacterStrings {
 
 interface GameCharacter extends GameCharacterStrings {
   character_id: CharacterID;
+  unit_id?: UnitID;
   unit?: string[]; // TBA: Switch to using unit IDs
   image_color?: HexColorWithTag;
   height: string;
@@ -29,6 +31,11 @@ interface GameCharacter extends GameCharacterStrings {
   age?: number;
   blood_type: "A" | "B" | "O" | "AB";
   circle?: string[];
+}
+
+interface GameUnit {
+  unit_id: UnitID;
+  order: number;
 }
 
 // CARDS

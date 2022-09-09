@@ -16,6 +16,13 @@ import getServerSideUser from "../../services/firebase/getServerSideUser";
 
 import CharacterCard from "./components/DisplayCard";
 
+interface CharacterCardProps {
+  i: number;
+  doubleface: boolean;
+  characters?: any;
+  unique_id?: string;
+}
+
 function Page({
   characters,
   unit_to_characters: unitToCharacters,
@@ -25,23 +32,26 @@ function Page({
   unit_to_characters: any;
   units: any;
 }) {
-  const [listCharacters, setListCharacters] = useState([]);
-  const [filterOptions, setfilterOptions] = useState([]);
-  const [chosenUnit, setChosenUnit] = useState(null);
+  const [listCharacters, setListCharacters] = useState<CharacterCardProps[]>(
+    []
+  );
+  const [filterOptions, setfilterOptions] = useState<string[]>([]);
+  const [chosenUnit, setChosenUnit] = useState<string | null>(null);
   const theme = useMantineTheme();
   useEffect(() => {
-    let charactersWithUnits = unitToCharacters.main.data;
+    let charactersWithUnits: GameCharacter[] = unitToCharacters.main.data;
 
     if (chosenUnit) {
-      const filterOptionsChosenID = chosenUnit.unit_id;
+      console.log(chosenUnit);
+      const filterOptionsChosenID = chosenUnit;
       charactersWithUnits = charactersWithUnits.filter(
         (character) => filterOptionsChosenID === character.unit_id
       );
     }
     const charactersWithUnitsSorted = _.sortBy(charactersWithUnits, [
       function findUnitOrder(charactersWithUnit) {
-        const thisUnit = units.main.data.filter(
-          (unit) => unit.unit_id === charactersWithUnit.unit_id
+        const thisUnit: GameUnit = units.main.data.filter(
+          (unit: GameUnit) => unit.unit_id === charactersWithUnit.unit_id
         )[0] || {
           name: "MaM",
           order: 14,
@@ -55,7 +65,8 @@ function Page({
     const charactersFiltered = charactersWithUnitsSorted.map((charaUnit) => {
       const charIndex = characters.main.data.indexOf(
         characters.main.data.filter(
-          (chara) => chara.character_id === charaUnit.character_id
+          (chara: GameCharacter) =>
+            chara.character_id === charaUnit.character_id
         )[0]
       );
 
@@ -67,7 +78,9 @@ function Page({
     });
 
     setListCharacters(charactersFiltered);
-    setfilterOptions(units.main.data.sort((a, b) => !!(a?.order > b?.order)));
+    setfilterOptions(
+      units.main.data.sort((a: any, b: any) => !!(a?.order > b?.order))
+    );
   }, [
     characters.main.data,
     chosenUnit,
@@ -75,7 +88,7 @@ function Page({
     units.main.data,
   ]);
 
-  const handleNewUnit = (e) => {
+  const handleNewUnit = (e: string) => {
     setChosenUnit(e);
   };
 
@@ -98,7 +111,7 @@ function Page({
             data={filterOptions.map((o) => {
               return {
                 value: o,
-                label: o.unit_name,
+                label: o,
               };
             })}
             onChange={handleNewUnit}
