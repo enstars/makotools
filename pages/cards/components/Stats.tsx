@@ -12,7 +12,7 @@ import { useState } from "react";
 
 import CardStatsNumber from "../../../components/utilities/formatting/CardStatsNumber";
 
-function LabelCell({ total, ...props }) {
+function LabelCell({ total, ...props }: { total?: any }) {
   return (
     <Box
       component={"td"}
@@ -33,7 +33,16 @@ function LabelCell({ total, ...props }) {
     />
   );
 }
-function StatCell({ header, total, children, ...props }) {
+function StatCell({
+  header,
+  total,
+  children,
+  ...props
+}: {
+  header?: boolean;
+  total?: any;
+  children?: any;
+}) {
   return (
     <Box
       component={header ? "th" : "td"}
@@ -58,7 +67,7 @@ function StatCell({ header, total, children, ...props }) {
     </Box>
   );
 }
-function BigData({ data, label }) {
+function BigData({ data, label }: { data: any; label: string }) {
   return (
     <Box sx={{ flexGrow: 1, flexBasis: 150 }}>
       <Text size="sm" color="dimmed" weight={700}>
@@ -77,14 +86,14 @@ function BigData({ data, label }) {
   );
 }
 
-function sumStats(stats, fallback = "?") {
+function sumStats(stats: Stats, fallback = "?"): number | string {
   const sum = stats?.da + stats?.vo + stats?.pf;
   if (!stats?.da) return fallback;
   return sum;
 }
 export { sumStats };
 
-function Stats({ card }) {
+function Stats({ card }: { card: any }) {
   const [opened, setOpened] = useState(false);
   return (
     <>

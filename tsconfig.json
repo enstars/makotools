@@ -22,7 +22,6 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "pages/characters/index.page.jsx"
   ],
   "exclude": ["node_modules"]
 }

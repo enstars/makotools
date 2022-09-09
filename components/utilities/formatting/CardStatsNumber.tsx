@@ -39,8 +39,8 @@ function CardStatsNumber({
   children,
   short = false,
 }: {
-  children: ReactElement | number;
-  short: boolean;
+  children: ReactElement | number | string;
+  short?: boolean;
 }) {
   const { locale }: { locale?: string } = useRouter();
 

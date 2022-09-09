@@ -20,17 +20,16 @@ import { IconAdjustments } from "@tabler/icons";
 import { useState } from "react";
 
 import CardStatsNumber from "../../../components/utilities/formatting/CardStatsNumber";
-
 import attributes from "../../../data/attributes.json";
 import centerSkill from "../../../data/centerSkill.json";
 
-function centerSkillParse(skill) {
-  const { substat, attr } = centerSkill[skill.type_id];
+function centerSkillParse(skill: SkillData) {
+  const { substat, attr } = (centerSkill as any)[skill.type_id];
   return `Increases ${substat} of all ${attributes[attr].fullname} cards by ${
     substat === "All" ? 50 : 120
   }%`;
 }
-function liveSkillParse(skill, level) {
+function liveSkillParse(skill: SkillData, level: number) {
   return `Increases the score by ${skill.effect_values[level - 1][0]}% for ${
     skill.effect_values[level - 1][1]
   } seconds.`;
@@ -51,7 +50,7 @@ const supportSkillDropRates = {
   16: "all yellow",
   28: "all",
 };
-function supportSkillParse(skill, level) {
+function supportSkillParse(skill: SkillData, level: number) {
   switch (skill.type_id) {
     case 1:
       return `Decreases the amount that Voltage lowers after a Bad/Miss.`;
@@ -76,7 +75,7 @@ function supportSkillParse(skill, level) {
   }
 }
 
-function Skills({ card }) {
+function Skills({ card }: { card: any }) {
   const [liveSkillLevel, setLiveSkillLevel] = useState(5);
   const [supportSkillLevel, setSupportSkillLevel] = useState(3);
 
@@ -143,11 +142,17 @@ function Skills({ card }) {
             type: "live",
             color: "lightblue",
             description: (
-              <Box spacing="xs" noWrap align="start">
+              <Box
+                sx={(theme) => ({
+                  padding: theme.spacing.xs,
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                })}
+              >
                 <Text>
                   <Badge
                     mr="xs"
-                    variant="default"
+                    variant="outline"
                     sx={{
                       verticalAlign: 1,
                       fontVariantNumeric: "tabular-nums",
@@ -164,11 +169,17 @@ function Skills({ card }) {
             type: "support",
             color: "green",
             description: (
-              <Box spacing="xs" noWrap align="start">
+              <Box
+                sx={(theme) => ({
+                  padding: theme.spacing.xs,
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                })}
+              >
                 <Text>
                   <Badge
                     mr="xs"
-                    variant="default"
+                    variant="outline"
                     sx={{
                       verticalAlign: 1,
                       fontVariantNumeric: "tabular-nums",

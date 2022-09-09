@@ -80,7 +80,7 @@ interface SkillStringsSupport extends SkillStrings {
 }
 interface SkillData {
   type_id: ID;
-  effect_value: SkillEffect;
+  effect_values: SkillEffect[];
 }
 
 interface CenterSkill extends SkillData, SkillStrings {}
