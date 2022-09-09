@@ -35,7 +35,7 @@ function Page({
   const [listCharacters, setListCharacters] = useState<CharacterCardProps[]>(
     []
   );
-  const [filterOptions, setfilterOptions] = useState<string[]>([]);
+  const [filterOptions, setfilterOptions] = useState<GameUnit[]>([]);
   const [chosenUnit, setChosenUnit] = useState<string | null>(null);
   const theme = useMantineTheme();
   useEffect(() => {
@@ -43,9 +43,10 @@ function Page({
 
     if (chosenUnit) {
       console.log(chosenUnit);
-      const filterOptionsChosenID = chosenUnit;
+      const filterOptionsChosenID = parseInt(chosenUnit);
       charactersWithUnits = charactersWithUnits.filter(
-        (character) => filterOptionsChosenID === character.unit_id
+        (character: GameCharacter) =>
+          filterOptionsChosenID === character.unit_id
       );
     }
     const charactersWithUnitsSorted = _.sortBy(charactersWithUnits, [
@@ -108,11 +109,8 @@ function Page({
           <Select
             label="Unit"
             placeholder="Pick a unit..."
-            data={filterOptions.map((o) => {
-              return {
-                value: o,
-                label: o,
-              };
+            data={filterOptions.map((o: GameUnit) => {
+              return o.unit_id + "";
             })}
             onChange={handleNewUnit}
             searchable

@@ -21,6 +21,7 @@ function DisplayCard({
 }) {
   const theme = useMantineTheme();
   const character: GameCharacter = characters.mainLang.data[i];
+  console.log(character);
   const characterSubLang = characters.subLang.data?.[i] || undefined;
   return (
     <Link href={`/characters/${character.character_id}`} passHref>
@@ -45,7 +46,7 @@ function DisplayCard({
                     )
                   : getB2File(
                       `cards/card_full1_${
-                        twoStarIDs[character.character_id]
+                        (twoStarIDs as any)[character.character_id]
                       }_normal.png`
                     )
               }
@@ -65,7 +66,7 @@ function DisplayCard({
                     )
                   : getB2File(
                       `cards/card_full1_${
-                        twoStarIDs[character.character_id]
+                        (twoStarIDs as any)[character.character_id]
                       }_evolution.png`
                     )
               }

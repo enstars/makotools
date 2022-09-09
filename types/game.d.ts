@@ -4,7 +4,7 @@ type HexColorWithTag = string;
 // CHARACTERS
 
 type CharacterID = number;
-type UnitID = string | number;
+type UnitID = number;
 interface GameCharacterStrings {
   last_name: string;
   first_name: string;
@@ -35,6 +35,12 @@ interface GameCharacter extends GameCharacterStrings {
 
 interface GameUnit {
   unit_id: UnitID;
+  unit?: string;
+  unit_name?: string;
+  tagline?: string;
+  unit_desc?: string;
+  agency?: string;
+  image_color?: HexColorWithTag;
   order: number;
 }
 
