@@ -33,6 +33,7 @@ import OfficialityBadge from "../../../components/utilities/formatting/Officiali
 import CardStatsNumber from "../../../components/utilities/formatting/CardStatsNumber";
 import { addCard } from "../../../services/collection";
 import { useFirebaseUser } from "../../../services/firebase/user";
+import Picture from "../../../components/core/Picture";
 
 import { sumStats } from "./Stats";
 
@@ -113,35 +114,36 @@ export default function CardCard({
     >
       <Card.Section sx={{ position: "relative" }} px={3} pt={3}>
         <Group
-          grow
+          // grow
           sx={{
             "&:hover .mantine-Image-imageWrapper": { opacity: 0.25 },
           }}
           spacing={3}
         >
           {["normal", "evolution"].map((type) => (
-            <ImageViewer
+            <Picture
               key={type}
-              styles={{
-                figure: {
-                  width: "100%",
-                  height: "100%",
-                  "&:hover > figcaption > div": {
-                    left: -12.5 - 30,
-                  },
-                  "&&&:hover > div": { opacity: 0.9 },
-                },
-                imageWrapper: {
-                  height: "100%",
-                  width: "100%",
-                  transition: theme.other.transition,
-                },
-                image: {
-                  objectFit: "cover",
-                  objectPosition: "center center",
-                },
-              }}
-              height={100}
+              // styles={{
+              //   figure: {
+              //     width: "100%",
+              //     height: "100%",
+              //     "&:hover > figcaption > div": {
+              //       left: -12.5 - 30,
+              //     },
+              //     "&&&:hover > div": { opacity: 0.9 },
+              //   },
+              //   imageWrapper: {
+              //     height: "100%",
+              //     width: "100%",
+              //     transition: theme.other.transition,
+              //   },
+              //   image: {
+              //     objectFit: "cover",
+              //     objectPosition: "center center",
+              //   },
+              // }}
+              // // width={100}
+              // // height={100}
               sx={{
                 position: "relative",
                 height: 100,
@@ -151,6 +153,9 @@ export default function CardCard({
                 maxWidth: "100%",
                 "&:hover": { flexGrow: card.rarity >= 4 ? 2.5 : 1.1 },
                 transition: theme.other.transition,
+                img: {
+                  width: "100%",
+                },
               }}
               src={getB2File(
                 card.rarity >= 4
@@ -159,14 +164,14 @@ export default function CardCard({
               )}
               alt={card.title}
               radius={3}
-              // height="100%"
-              withPlaceholder
-              placeholder={
-                <>
-                  <Skeleton width="100%" height="100%" />
-                </>
-              }
-              caption={type === "normal" && <RarityBadge card={card} />}
+              // // height="100%"
+              // withPlaceholder
+              // placeholder={
+              //   <>
+              //     <Skeleton width="100%" height="100%" />
+              //   </>
+              // }
+              // caption={type === "normal" && <RarityBadge card={card} />}
             />
           ))}
         </Group>
