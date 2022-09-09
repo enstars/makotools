@@ -42,7 +42,7 @@ module.exports = {
     return config;
   },
   images: {
-    domains: ["uchuu.ensemble.moe", "assets.ensemble.link"],
+    domains: ["uchuu.ensemble.moe", "assets.enstars.link"],
   },
 
   compiler: {

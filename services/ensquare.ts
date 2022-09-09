@@ -10,6 +10,7 @@ import {
 
 import { CONSTANTS } from "./constants";
 import { DEFAULT_LOCALE } from "./locales";
+import { parseStringify } from "./utilities";
 
 const flatten = require("flat");
 
@@ -47,7 +48,7 @@ export function getData(
       return {
         lang,
         source,
-        status: "success" as LoadedStatus,
+        status: "success" as "success",
         data: responseData,
       };
     })
@@ -55,8 +56,8 @@ export function getData(
       return {
         lang,
         source,
-        status: "error" as LoadedStatus,
-        error: error,
+        status: "error",
+        error: parseStringify(error),
       };
     });
 }
@@ -67,11 +68,11 @@ export function getB2File(path: string) {
   // return `https://assets.ensemble.link/${path}`;
 }
 
-export async function getLocalizedData(
+export async function getLocalizedData<T>(
   data: string,
   locale: Locale | string = DEFAULT_LOCALE,
   fields?: string[]
-): Promise<LoadedData<LoadedDataRegional>> {
+): Promise<LoadedData<LoadedDataRegional<T>> | undefined> {
   const jaData = await getData(data, "ja", true, fields);
   const enFanData = await getData(data, "en", false, fields);
   const enData = await getData(data, "en", true, fields);
@@ -81,6 +82,8 @@ export async function getLocalizedData(
     localized = [jaData, enFanData, enData];
   }
   // localized = localized.filter((l) => l.status === "success");
+
+  if (jaData.status === "error") return Promise.resolve(undefined);
 
   return Promise.resolve({
     main: jaData,
@@ -122,4 +125,28 @@ export function getNameOrder(
   if (setting === "lastfirst") return `${lastName} ${firstName}`.trim();
 
   return `${firstName} ${lastName}`.trim();
+}
+
+export function getItemFromLocalized<L>(
+  data: LoadedData<LoadedDataRegional<L[]>>,
+  id: ID
+) {
+  const matchId = (o: any) => o.id === id;
+
+  const item =
+    data.main.status === "success" ? data.main.data.find(matchId) : undefined;
+  const itemMainLang =
+    data.mainLang.status === "success"
+      ? data.mainLang.data.find(matchId)
+      : undefined;
+  const itemSubLang =
+    data.subLang.status === "success"
+      ? data.subLang.data.find(matchId)
+      : undefined;
+
+  return {
+    item,
+    itemMainLang,
+    itemSubLang,
+  };
 }

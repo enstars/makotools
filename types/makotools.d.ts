@@ -24,25 +24,23 @@ type Locale =
   | "ar" // Arabic
   | "th"; // Thai
 
+interface PageMeta {
+  title: string;
+  desc: string;
+  img: string;
+}
+
 interface MkAnnouncement extends WP_REST_API_Post {}
 
 interface CollectedCard {
   id: ID;
   count: number;
 }
-
-interface Emote {
-  id: ID;
-  emote: StaticImageData;
-  name: string;
-  stringId: string;
-}
-
 // USER
 
 type NameOrder = "firstlast" | "lastfirst";
 type ShowTlBadge = "none" | "unofficial" | "all";
-
+type UID = ID;
 interface UserData {
   collection?: CollectedCard[];
   username: string;
@@ -56,12 +54,25 @@ interface UserData {
   setting__show_tl_badge?: ShowTlBadge;
 }
 
-interface FirebaseUser {
-  loading: boolean;
-  loggedIn?: boolean;
-  user?: AuthUserContext;
+interface FirebaseUserLoading {
+  loading: true;
+}
+interface FirebaseUserLoggedOut {
+  loading: false;
+  loggedIn: false;
+}
+
+interface FirebaseUserLoggedIn {
+  loading: false;
+  loggedIn: true;
+  user: AuthUserContext;
   firestore?: UserData;
 }
+
+type FirebaseUser =
+  | FirebaseUserLoading
+  | FirebaseUserLoggedOut
+  | FirebaseUserLoggedIn;
 
 interface GetServerSideUserContext extends GetServerSidePropsContext {}
 
@@ -69,16 +80,46 @@ interface GetServerSideUserContext extends GetServerSidePropsContext {}
 
 type LoadedStatus = "success" | "error";
 
-interface LoadedDataRegional {
+interface LoadedDataRegionalLang {
   lang: Locale;
   source: boolean;
-  status: LoadedStatus;
-  data?: any;
-  error?: any;
+}
+interface LoadedDataRegionalSuccess<D> extends LoadedDataRegionalLang {
+  status: "success";
+  data: D;
+}
+interface LoadedDataRegionalError extends LoadedDataRegionalLang {
+  status: "error";
+  error: any;
 }
 
-interface LoadedData<DataType> {
-  main: DataType;
-  mainLang: DataType;
-  subLang: DataType;
+type LoadedDataRegional<D = any> =
+  | LoadedDataRegionalSuccess<D>
+  | LoadedDataRegionalError;
+
+interface LoadedData<D> {
+  main: LoadedDataRegionalSuccess<D>;
+  mainLang: LoadedDataRegional<D>;
+  subLang: LoadedDataRegional<D>;
+}
+
+interface Emote {
+  id: ID;
+  emote: StaticImageData;
+  name: string;
+  stringId: string;
+}
+
+interface DbReaction {
+  content: string;
+  id: ID;
+  name: UID;
+  page_id: string;
+  submit_date: string;
+}
+
+interface Reaction {
+  emote: Emote;
+  id: string;
+  alt: string;
 }

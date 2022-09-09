@@ -11,8 +11,6 @@ import {
   Group,
   Box,
   Container,
-  BackgroundImage,
-  Autocomplete,
 } from "@mantine/core";
 
 import { CONSTANTS } from "../../../services/constants";

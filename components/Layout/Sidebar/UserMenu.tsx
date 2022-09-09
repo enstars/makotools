@@ -94,25 +94,30 @@ function UserMenu({
               Loading
             </Text>
           ) : firebaseUser.loggedIn ? (
-            <Box
-              sx={{
-                "*": {
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                },
-              }}
-            >
-              <Text id="sidebar-user-name" size="sm" weight={500}>
-                {firebaseUser?.firestore?.name ||
-                  firebaseUser?.user?.email?.split("@")[0]}
+            firebaseUser.firestore ? (
+              <Box
+                sx={{
+                  "*": {
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                  },
+                }}
+              >
+                {firebaseUser.firestore?.name && (
+                  <Text id="sidebar-user-name" size="sm" weight={500}>
+                    {firebaseUser.firestore.name}
+                  </Text>
+                )}
+                <Text id="sidebar-user-email" size="xs" color="dimmed" mt={-2}>
+                  @{firebaseUser?.firestore?.username}
+                </Text>
+              </Box>
+            ) : (
+              <Text size="sm" color="dimmed">
+                Unable to load user data
               </Text>
-              <Text id="sidebar-user-email" size="xs" color="dimmed" mt={-2}>
-                {firebaseUser?.firestore?.username
-                  ? `@${firebaseUser?.firestore?.username}`
-                  : firebaseUser?.user?.email}
-              </Text>
-            </Box>
+            )
           ) : (
             <Text size="sm" color="dimmed">
               Not Logged In
@@ -160,7 +165,7 @@ function UserMenu({
             <Menu.Item
               id="sidebar-link-logout"
               onClick={() => {
-                firebaseUser?.user?.signOut();
+                firebaseUser.user.signOut();
                 reload();
                 // showNotification({
                 //   message: "Successfully signed out",

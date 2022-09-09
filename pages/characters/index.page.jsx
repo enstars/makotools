@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import _ from "lodash";
-
 import {
   Select,
   Box,
@@ -12,7 +11,6 @@ import {
 
 import { getLocalizedData } from "../../services/ensquare";
 import PageTitle from "../../components/sections/PageTitle";
-
 import { getLayout } from "../../components/Layout";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 

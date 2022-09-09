@@ -1,5 +1,5 @@
 [
-  {},
+  { "name": "-", "color": "-", "fullname": "-", "id": 0 },
   { "name": "Sp", "color": "red", "fullname": "Sparkle", "id": 1 },
   { "name": "Br", "color": "lightblue", "fullname": "Brilliant", "id": 2 },
   { "name": "Gl", "color": "green", "fullname": "Glitter", "id": 3 },

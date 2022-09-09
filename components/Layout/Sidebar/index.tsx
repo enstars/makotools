@@ -90,7 +90,7 @@ function Sidebar(props: any) {
       soon: true,
     },
     ...[
-      firebaseUser.loggedIn
+      !firebaseUser.loading && firebaseUser.loggedIn
         ? {
             link: `/@${firebaseUser?.firestore?.username}`,
             name: "Profile",
@@ -280,7 +280,9 @@ function Sidebar(props: any) {
                       ml="xs"
                       weight={700}
                     >
-                      {firebaseUser.loggedIn
+                      {firebaseUser.loading
+                        ? "Loading"
+                        : firebaseUser.loggedIn
                         ? `@${firebaseUser?.firestore?.username}`
                         : "Not logged in"}
                     </Text>

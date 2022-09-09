@@ -29,7 +29,6 @@ import "../styles/styles.css";
 import "../styles/wordpress.scss";
 
 import { withAuthUser } from "next-firebase-auth";
-
 import {
   startNavigationProgress,
   resetNavigationProgress,
@@ -38,9 +37,6 @@ import {
 
 import initAuth from "../services/firebase/authentication";
 import FirebaseUserProvider from "../services/firebase/user";
-
-import RouteChangeLoader from "../components/Layout/RouteChangeLoader";
-
 import DayjsProvider from "../services/dayjs";
 
 initAuth();
@@ -176,7 +172,6 @@ function MakoTools({ Component, pageProps, ...props }) {
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
-      <RouteChangeLoader />
       <NotificationsProvider position="top-center">
         <FirebaseUserProvider
           setAppColorScheme={setAppColorScheme}
