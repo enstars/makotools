@@ -1,9 +1,9 @@
-import { Box, Button, Divider, Paper, Text } from "@mantine/core";
+import { Box, Button, Divider, Paper, PaperProps, Text } from "@mantine/core";
 import { IconBrandPatreon } from "@tabler/icons";
 import Link from "next/link";
 import React from "react";
 
-function SupportBanner(props: any) {
+function SupportBanner(props: PaperProps) {
   return (
     <>
       <Paper withBorder radius="sm" p="xs" {...props}>

@@ -9,6 +9,8 @@ import {
   useMantineColorScheme,
 } from "@mantine/core";
 
+import { PageMeta } from "../../types/makotools";
+
 import ErrorBoundary from "./ErrorBoundary";
 import Meta from "./Meta";
 import Sidebar from "./Sidebar";
@@ -21,20 +23,20 @@ function Layout({
   hideSidebar = false,
   hideHeader = false,
   wide = false,
-  meta,
-  footerTextOnly,
+  footerTextOnly = false,
+  hideOverflow = false,
   pageProps,
-  hideOverflow,
+  meta,
 }: {
   children: any;
   hideFooter: boolean;
   hideSidebar: boolean;
   hideHeader: boolean;
   wide: boolean;
-  meta: any;
   footerTextOnly: boolean;
-  pageProps: any;
   hideOverflow: boolean;
+  pageProps?: any;
+  meta?: PageMeta;
 }) {
   const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";

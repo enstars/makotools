@@ -1453,14 +1453,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/react@npm:^11.10.0":
-  version: 11.10.0
-  resolution: "@emotion/react@npm:11.10.0"
+"@emotion/react@npm:^11.10.4":
+  version: 11.10.4
+  resolution: "@emotion/react@npm:11.10.4"
   dependencies:
     "@babel/runtime": ^7.18.3
     "@emotion/babel-plugin": ^11.10.0
     "@emotion/cache": ^11.10.0
     "@emotion/serialize": ^1.1.0
+    "@emotion/use-insertion-effect-with-fallbacks": ^1.0.0
     "@emotion/utils": ^1.2.0
     "@emotion/weak-memoize": ^0.3.0
     hoist-non-react-statics: ^3.3.1
@@ -1472,7 +1473,7 @@ __metadata:
       optional: true
     "@types/react":
       optional: true
-  checksum: 6d692e43ff53fd3b87d4a000a9aec2ef080d66a0ebb7d0b9529c46d1e6bc1ac8a27c7dd74c27a8274ec1df1e3c960b78c035fca5d8a901a48eda445c6163b33b
+  checksum: 7555f6a1840c71d841386be2ec98ebfd6399923bd6a61247c7b07283f9a056f57e83c4fdd9ea7a7fcc3d88e5e04bb03168b4f0557934bcd501c88af4db16e1e0
   languageName: node
   linkType: hard
 
@@ -1513,14 +1514,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/styled@npm:^11.10.0":
-  version: 11.10.0
-  resolution: "@emotion/styled@npm:11.10.0"
+"@emotion/styled@npm:^11.10.4":
+  version: 11.10.4
+  resolution: "@emotion/styled@npm:11.10.4"
   dependencies:
     "@babel/runtime": ^7.18.3
     "@emotion/babel-plugin": ^11.10.0
     "@emotion/is-prop-valid": ^1.2.0
     "@emotion/serialize": ^1.1.0
+    "@emotion/use-insertion-effect-with-fallbacks": ^1.0.0
     "@emotion/utils": ^1.2.0
   peerDependencies:
     "@babel/core": ^7.0.0
@@ -1531,7 +1533,7 @@ __metadata:
       optional: true
     "@types/react":
       optional: true
-  checksum: f2a3e9798f807713d12771320cde9c2fa17ea6f008da605055496bd3522d81c120321240c8a1dae49c7272fea11361e1f47938ee069f678038b6836820c01243
+  checksum: d56cbf48f30c5a36d618adf2c4d7d9440b5059373a96964fa2a6e832ce9b9ae8cee11b5292b444264b3acbfdd6a8f6c9050e197a35c8dea7e9b9cc78f55ac31c
   languageName: node
   linkType: hard
 
@@ -1553,6 +1555,15 @@ __metadata:
   version: 0.8.0
   resolution: "@emotion/unitless@npm:0.8.0"
   checksum: 176141117ed23c0eb6e53a054a69c63e17ae532ec4210907a20b2208f91771821835f1c63dd2ec63e30e22fcc984026d7f933773ee6526dd038e0850919fae7a
+  languageName: node
+  linkType: hard
+
+"@emotion/use-insertion-effect-with-fallbacks@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@emotion/use-insertion-effect-with-fallbacks@npm:1.0.0"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: 4f06a3b48258c832aa8022a262572061a31ff078d377e9164cccc99951309d70f4466e774fe704461b2f8715007a82ed625a54a5c7a127c89017d3ce3187d4f1
   languageName: node
   linkType: hard
 
@@ -1677,16 +1688,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@firebase/app-compat@npm:0.1.32":
-  version: 0.1.32
-  resolution: "@firebase/app-compat@npm:0.1.32"
+"@firebase/app-compat@npm:0.1.33":
+  version: 0.1.33
+  resolution: "@firebase/app-compat@npm:0.1.33"
   dependencies:
-    "@firebase/app": 0.7.31
+    "@firebase/app": 0.7.32
     "@firebase/component": 0.5.17
     "@firebase/logger": 0.3.3
     "@firebase/util": 1.6.3
     tslib: ^2.1.0
-  checksum: c4afdafedc5194b615375f41fdf5e9de9afaa9fdb0fb483b5522c73f08add74f08c867e3246af86aeed7048a324cda7cb0eaf44aa1cd32fce70e4963c9583c1a
+  checksum: 24c6b5b5a674eeaf326e9d883378b36725ae09ceb1fea53d885ba0fef6297de6e759281a0935b0e4f08bdaaf85974c006740f2948d3d6eb59a06d195d7e3af5a
   languageName: node
   linkType: hard
 
@@ -1697,24 +1708,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@firebase/app@npm:0.7.31":
-  version: 0.7.31
-  resolution: "@firebase/app@npm:0.7.31"
+"@firebase/app@npm:0.7.32":
+  version: 0.7.32
+  resolution: "@firebase/app@npm:0.7.32"
   dependencies:
     "@firebase/component": 0.5.17
     "@firebase/logger": 0.3.3
     "@firebase/util": 1.6.3
     idb: 7.0.1
     tslib: ^2.1.0
-  checksum: e9dfd2cee750b43bf18e8d55b147dc438d76d7f9d9a4bd5739d50b60f0e152a6934ec77fee2f67de237dd234228c6aa6de038c20c55441dcae064490fbcdb69e
+  checksum: 005b1fea853bb2cd63ad531a7f34f866482684226d2f6d7a7a5bbc7be9d67f83f954f197a0ad29ad6178aa3e566dace10d5842ecdfd464ff900b41ad2dc9c7b9
   languageName: node
   linkType: hard
 
-"@firebase/auth-compat@npm:0.2.18":
-  version: 0.2.18
-  resolution: "@firebase/auth-compat@npm:0.2.18"
+"@firebase/auth-compat@npm:0.2.19":
+  version: 0.2.19
+  resolution: "@firebase/auth-compat@npm:0.2.19"
   dependencies:
-    "@firebase/auth": 0.20.5
+    "@firebase/auth": 0.20.6
     "@firebase/auth-types": 0.11.0
     "@firebase/component": 0.5.17
     "@firebase/util": 1.6.3
@@ -1723,7 +1734,7 @@ __metadata:
     tslib: ^2.1.0
   peerDependencies:
     "@firebase/app-compat": 0.x
-  checksum: ed6a202271e55f3aa9226d74dea75134d696725995655b4ccf022eb17b1b2e9b6e95f789eb335ea6eec49d63a76bea20d25b55bba20aff4bf0a1086e2ce2bced
+  checksum: f32bcfff7c3e95987ede8a414ef9150dd10e686fcb2ff0442f615f831097b7cf0cbda0acc1d025f646ee4e32d560fa6ca7fc89378770562ad9f1cb5fb98d742f
   languageName: node
   linkType: hard
 
@@ -1747,9 +1758,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@firebase/auth@npm:0.20.5":
-  version: 0.20.5
-  resolution: "@firebase/auth@npm:0.20.5"
+"@firebase/auth@npm:0.20.6":
+  version: 0.20.6
+  resolution: "@firebase/auth@npm:0.20.6"
   dependencies:
     "@firebase/component": 0.5.17
     "@firebase/logger": 0.3.3
@@ -1759,7 +1770,7 @@ __metadata:
     tslib: ^2.1.0
   peerDependencies:
     "@firebase/app": 0.x
-  checksum: d931fb8f5161f39a0983992b4b01da362b36384bd629bb1918ee7cf679f0aaf8d3003e82bb6e4858351ca58358e504472018933fe0413c95c9ba14bd63f7a712
+  checksum: bb401e199e4be8998abac99d22f255b8892eb75487042e8eb535369644f6addb0710c0ea41b7ea853182e8292f38d0e268a99858e82e2de76fbeb6547db8e66b
   languageName: node
   linkType: hard
 
@@ -1773,7 +1784,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@firebase/database-compat@npm:0.2.5, @firebase/database-compat@npm:^0.2.3":
+"@firebase/database-compat@npm:0.2.6":
+  version: 0.2.6
+  resolution: "@firebase/database-compat@npm:0.2.6"
+  dependencies:
+    "@firebase/component": 0.5.17
+    "@firebase/database": 0.13.6
+    "@firebase/database-types": 0.9.13
+    "@firebase/logger": 0.3.3
+    "@firebase/util": 1.6.3
+    tslib: ^2.1.0
+  checksum: 217aa9b058a8156f1536bca73d9f0bc165dccbe41a04f04b1fd02f729578f54414ae324cb77c9beda657aedd0d54ff08987892ef2923e6c355aab82510c0dab3
+  languageName: node
+  linkType: hard
+
+"@firebase/database-compat@npm:^0.2.3":
   version: 0.2.5
   resolution: "@firebase/database-compat@npm:0.2.5"
   dependencies:
@@ -1821,18 +1846,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@firebase/firestore-compat@npm:0.1.23":
-  version: 0.1.23
-  resolution: "@firebase/firestore-compat@npm:0.1.23"
+"@firebase/database@npm:0.13.6":
+  version: 0.13.6
+  resolution: "@firebase/database@npm:0.13.6"
+  dependencies:
+    "@firebase/auth-interop-types": 0.1.6
+    "@firebase/component": 0.5.17
+    "@firebase/logger": 0.3.3
+    "@firebase/util": 1.6.3
+    faye-websocket: 0.11.4
+    tslib: ^2.1.0
+  checksum: f918d35c197931bc5adc6481c8c212c85917046b931f85270f8bfef44208586840da3a0e5671f66abc36a20f238b56988d60c5a5700fb64f1889ae2da58bbe33
+  languageName: node
+  linkType: hard
+
+"@firebase/firestore-compat@npm:0.1.24":
+  version: 0.1.24
+  resolution: "@firebase/firestore-compat@npm:0.1.24"
   dependencies:
     "@firebase/component": 0.5.17
-    "@firebase/firestore": 3.4.14
+    "@firebase/firestore": 3.4.15
     "@firebase/firestore-types": 2.5.0
     "@firebase/util": 1.6.3
     tslib: ^2.1.0
   peerDependencies:
     "@firebase/app-compat": 0.x
-  checksum: dcdd56e10330e54652116b6568bb7195769039f1f798f6586cfa3257e26f6809d5cf0f12395b2e46bc4979b27c96ef8a618e840f9d09cc217453de534a7d500e
+  checksum: 61c98dbea956347f715386b2041c7af56b9991d7adfe5d379432958a84b3571069795aaf4cb0733bbc6608c9aee89fe33ed53c8b576af6688e4f8c86e559efbf
   languageName: node
   linkType: hard
 
@@ -1846,9 +1885,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@firebase/firestore@npm:3.4.14":
-  version: 3.4.14
-  resolution: "@firebase/firestore@npm:3.4.14"
+"@firebase/firestore@npm:3.4.15":
+  version: 3.4.15
+  resolution: "@firebase/firestore@npm:3.4.15"
   dependencies:
     "@firebase/component": 0.5.17
     "@firebase/logger": 0.3.3
@@ -1860,7 +1899,7 @@ __metadata:
     tslib: ^2.1.0
   peerDependencies:
     "@firebase/app": 0.x
-  checksum: 127b80ba35af3ae565b452a154ef2d233a42daf06cce475fdcf51d8d80de491fe90b1c4a5735f5835384b4e204aeecf142b4937bb47693fdee953f184ea5c0c8
+  checksum: abf921b2f9ed741f9a604586f4d63c96b8bd1a8890ce2cb77dd8d2fc877242bb9e7cfab7051c6bc59988e2002e9b3835d50f83ba19b8478501bf8d55996967be
   languageName: node
   linkType: hard
 
@@ -2168,10 +2207,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fontsource/sora@npm:^4.5.9":
-  version: 4.5.9
-  resolution: "@fontsource/sora@npm:4.5.9"
-  checksum: 7072dbb0e426e685f7f5fe129a0333d0974c471a3ddeb096227a169823fb74d8fb1c2bbc29b98f4f7120cc8c9a836f514caba8ff821445dfbb4cc8e58862f3af
+"@fontsource/sora@npm:^4.5.10":
+  version: 4.5.10
+  resolution: "@fontsource/sora@npm:4.5.10"
+  checksum: bda0f9932985321254119da0d30a14eca22d7bb0cf3d806350860c6b3d1d3e6fcf1d3874815f219dd105512b4aa1fa94da37659193392776f89ef9e16db362ac
   languageName: node
   linkType: hard
 
@@ -2370,163 +2409,163 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mantine/carousel@npm:^5.2.3":
-  version: 5.2.3
-  resolution: "@mantine/carousel@npm:5.2.3"
+"@mantine/carousel@npm:^5.2.7":
+  version: 5.2.7
+  resolution: "@mantine/carousel@npm:5.2.7"
   dependencies:
-    "@mantine/utils": 5.2.3
+    "@mantine/utils": 5.2.7
   peerDependencies:
-    "@mantine/core": 5.2.3
-    "@mantine/hooks": 5.2.3
+    "@mantine/core": 5.2.7
+    "@mantine/hooks": 5.2.7
     embla-carousel-react: ^7.0.0
     react: ">=16.8.0"
-  checksum: a6ad56212fbe087fa57f93d34d9842ee97bb25b54e29736caed08025b9ced29cfab31037ca8788847f1d5b8e8769206ee6b473b8b91ca0c4ea7209dc07ed7db4
+  checksum: 2841f9b0b5bc8355143131ce0fbcaac03e7b87f5ed0e2b899226cbedaff633e2dab932c63dba9aef6b95d0a3a9467eaf0183a86e0dfce8afc4e254283d4d0e04
   languageName: node
   linkType: hard
 
-"@mantine/core@npm:^5.2.3":
-  version: 5.2.3
-  resolution: "@mantine/core@npm:5.2.3"
+"@mantine/core@npm:^5.2.7":
+  version: 5.2.7
+  resolution: "@mantine/core@npm:5.2.7"
   dependencies:
     "@floating-ui/react-dom-interactions": 0.6.6
-    "@mantine/styles": 5.2.3
-    "@mantine/utils": 5.2.3
+    "@mantine/styles": 5.2.7
+    "@mantine/utils": 5.2.7
     "@radix-ui/react-scroll-area": 1.0.0
     react-textarea-autosize: 8.3.4
   peerDependencies:
-    "@mantine/hooks": 5.2.3
+    "@mantine/hooks": 5.2.7
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: 39c3328335a9de3d1f72a8e7d043005f0920039e37ff4ff8029d1955ec5b4fad9f5fb2a112490862061e0ecf1803d0fdaeb532c0b716394681d17abd6b410cc8
+  checksum: 6aa4dbddaa9b52b587a1c53ca0ca42e938a2c7d5bc296028c6bd8c4d6d9e532d61e823d51b698b4e22a8706966167ea01d9e0671c406dadf690b98426574e977
   languageName: node
   linkType: hard
 
-"@mantine/form@npm:^5.2.3":
-  version: 5.2.3
-  resolution: "@mantine/form@npm:5.2.3"
+"@mantine/form@npm:^5.2.7":
+  version: 5.2.7
+  resolution: "@mantine/form@npm:5.2.7"
   dependencies:
     fast-deep-equal: ^3.1.3
     klona: ^2.0.5
   peerDependencies:
     react: ">=16.8.0"
-  checksum: e7285c99700d85657860dce516af29366d42fdc621f479069d648e6228e953513e19aa1bceab8f439990f9934c8cd74cd6468e608152c618808a434488796fa4
+  checksum: 10704d93f9f3071953313567fd82f79d19bb8d9ef992e98308545d2c0e1b889a00a90f0f149cf755b5ac9c2349b71350ffbcb518df27c6bad5f33b11704442af
   languageName: node
   linkType: hard
 
-"@mantine/hooks@npm:^5.2.3":
-  version: 5.2.3
-  resolution: "@mantine/hooks@npm:5.2.3"
+"@mantine/hooks@npm:^5.2.7":
+  version: 5.2.7
+  resolution: "@mantine/hooks@npm:5.2.7"
   peerDependencies:
     react: ">=16.8.0"
-  checksum: da49a092cd5401366609bb3def6c37df61a9d8cf86b1c1491f17483b1b31475ba50b4330edfe7ada712e37fc1bc9af1dd116ed0d411b2b143eadf30ec53e89d6
+  checksum: 6de7e545d222cad9c27b9322c7ffdbf84d527090aceefa96a52aeba42a762b179fd64129ca21725a607701b885faec6386137a494593955c11138ed832deda09
   languageName: node
   linkType: hard
 
-"@mantine/modals@npm:^5.2.3":
-  version: 5.2.3
-  resolution: "@mantine/modals@npm:5.2.3"
+"@mantine/modals@npm:^5.2.7":
+  version: 5.2.7
+  resolution: "@mantine/modals@npm:5.2.7"
   dependencies:
-    "@mantine/utils": 5.2.3
+    "@mantine/utils": 5.2.7
   peerDependencies:
-    "@mantine/core": 5.2.3
-    "@mantine/hooks": 5.2.3
+    "@mantine/core": 5.2.7
+    "@mantine/hooks": 5.2.7
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: 37742fd4f4c740b3a7ff7b5ced1855391ccf8279be7dfe6d24410762fe39168e6eb715fb37b39b3dca7b213e013721939993932cd205836dd694812f86c39761
+  checksum: 41b39e12cd63592ca76482e5ecdeb308b47988ab3e81ea0a73f2736799d214109f64ed086e275ffc96bf5aad740a5ac1b0aba573ab4424ff0feb61c9030d0be6
   languageName: node
   linkType: hard
 
-"@mantine/next@npm:^5.2.3":
-  version: 5.2.3
-  resolution: "@mantine/next@npm:5.2.3"
+"@mantine/next@npm:^5.2.7":
+  version: 5.2.7
+  resolution: "@mantine/next@npm:5.2.7"
   dependencies:
-    "@mantine/ssr": 5.2.3
-    "@mantine/styles": 5.2.3
+    "@mantine/ssr": 5.2.7
+    "@mantine/styles": 5.2.7
   peerDependencies:
     next: "*"
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: bd77c1f8c4a2605ab3a16436b33685b93fb5c91bd82984868fbce43c4566b3a28c00e80adc5f9a454ada6614e5f1c8aa948f64871eab534468881ff47d86bbd7
+  checksum: 43b201dc8b3663db53cce1c22b477cfc5f9857e1c7c76be42b79ccf86f4eaebaccd4bcdcd2b21d10c2e04be526b6fc6b376944f60278b8cab55e1adc9edb4143
   languageName: node
   linkType: hard
 
-"@mantine/notifications@npm:^5.2.3":
-  version: 5.2.3
-  resolution: "@mantine/notifications@npm:5.2.3"
+"@mantine/notifications@npm:^5.2.7":
+  version: 5.2.7
+  resolution: "@mantine/notifications@npm:5.2.7"
   dependencies:
-    "@mantine/utils": 5.2.3
+    "@mantine/utils": 5.2.7
     react-transition-group: 4.4.2
   peerDependencies:
-    "@mantine/core": 5.2.3
-    "@mantine/hooks": 5.2.3
+    "@mantine/core": 5.2.7
+    "@mantine/hooks": 5.2.7
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: fd98213e6ec3dd952c8740a8f1f80df29f55978245141f96fb263f8eea28021bc98e09470af069fd63914cfaa551a25bc018ce5700d4887e2d30d3702948e004
+  checksum: 548983b4ce27ed60655efce16dc2733172d02816034afbb04b850a3370d0392a4200ce385fed68ed4967600e34c2207fff920c80472b20902eb29eb4331f462f
   languageName: node
   linkType: hard
 
-"@mantine/nprogress@npm:^5.2.3":
-  version: 5.2.3
-  resolution: "@mantine/nprogress@npm:5.2.3"
+"@mantine/nprogress@npm:^5.2.7":
+  version: 5.2.7
+  resolution: "@mantine/nprogress@npm:5.2.7"
   dependencies:
-    "@mantine/utils": 5.2.3
+    "@mantine/utils": 5.2.7
   peerDependencies:
-    "@mantine/core": 5.2.3
-    "@mantine/hooks": 5.2.3
+    "@mantine/core": 5.2.7
+    "@mantine/hooks": 5.2.7
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: c921a3d94e12f26945da5afb10b693705535a25d356b33be73e16fe0f01ac55b91ed0777ad5e14187ae87f107c33932e9ea81bb571ca044044638d145c08d7b2
+  checksum: 2713cd00d9c7a63ea3bd39cec13338720e563118337bd34ccdf8d009b9395f40887acb3168727112e5b74a7c6a87a1080f0e8c37fb1d557ba64352dde3370d04
   languageName: node
   linkType: hard
 
-"@mantine/rte@npm:^5.2.3":
-  version: 5.2.3
-  resolution: "@mantine/rte@npm:5.2.3"
+"@mantine/rte@npm:^5.2.7":
+  version: 5.2.7
+  resolution: "@mantine/rte@npm:5.2.7"
   dependencies:
     "@tabler/icons": ^1.68.0
     quill-mention: ^3.0.8
     react-quill: 2.0.0-beta.4
   peerDependencies:
-    "@mantine/core": 5.2.3
-    "@mantine/hooks": 5.2.3
+    "@mantine/core": 5.2.7
+    "@mantine/hooks": 5.2.7
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: d3dc7ec334aeda4efa76cc94936da3f709ac346b15422f523006b6d30f78336b244200425594a5184abd072f68026815bf1471bdd60d8b410be4769f01aa91d6
+  checksum: 468997cfa09790198ba195f79d43de839cc6d8190b48196371871fcb50533dece06b9a346d1be90e4227760bdc1b5bfb7c648f69614b63c1c1309c2befb7bdef
   languageName: node
   linkType: hard
 
-"@mantine/spotlight@npm:^5.2.3":
-  version: 5.2.3
-  resolution: "@mantine/spotlight@npm:5.2.3"
+"@mantine/spotlight@npm:^5.2.7":
+  version: 5.2.7
+  resolution: "@mantine/spotlight@npm:5.2.7"
   dependencies:
-    "@mantine/utils": 5.2.3
+    "@mantine/utils": 5.2.7
   peerDependencies:
-    "@mantine/core": 5.2.3
-    "@mantine/hooks": 5.2.3
+    "@mantine/core": 5.2.7
+    "@mantine/hooks": 5.2.7
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: fabf35c0416579fae7c0bce1bd1b93862a9fdfb451851c225a9d484825cc8df3e11bd4d0395cc455f6518071e2434b9f37479c0ea16c7fb87df76d443c0eddeb
+  checksum: a6b5524e644d38b8f26f9952cde0de9c619b37ba527017f14efaeea4e5105cc8894a9361f34ded08c9a6115cf74d87b4d136468e169cb4d42afc1edee4d1a012
   languageName: node
   linkType: hard
 
-"@mantine/ssr@npm:5.2.3":
-  version: 5.2.3
-  resolution: "@mantine/ssr@npm:5.2.3"
+"@mantine/ssr@npm:5.2.7":
+  version: 5.2.7
+  resolution: "@mantine/ssr@npm:5.2.7"
   dependencies:
-    "@mantine/styles": 5.2.3
+    "@mantine/styles": 5.2.7
     html-react-parser: 1.4.12
   peerDependencies:
     "@emotion/react": ">=11.9.0"
     "@emotion/server": ">=11.4.0"
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: f9212233489b3d88198756646db6013fe1e9dce62619254431c5f029a3ff61da057993daecf10ffafe55f14f75ac78f85d0efbdacfff50f34df492bb13e81413
+  checksum: a4c9a79b1702c1b86e9288d092fc87fafb80373b179c21da228b559f27fa046e668d1048c77534136a5a37a679ec832f5194b72a9451822a3e73bd40d78a02b5
   languageName: node
   linkType: hard
 
-"@mantine/styles@npm:5.2.3":
-  version: 5.2.3
-  resolution: "@mantine/styles@npm:5.2.3"
+"@mantine/styles@npm:5.2.7":
+  version: 5.2.7
+  resolution: "@mantine/styles@npm:5.2.7"
   dependencies:
     clsx: 1.1.1
     csstype: 3.0.9
@@ -2534,122 +2573,122 @@ __metadata:
     "@emotion/react": ">=11.9.0"
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: 39e9e3c7462386da8106260787e0537b767e54b8b01b5077b3e371c9026ad78228e8bea801d4d3968faca6254e509bdd3ca783eba8a62be0d011f585bdf6019e
+  checksum: 72afdda8130b78692843a48a5858013d690d13b734d6b85c989e34a9d2b9b9dca56d78577b2654afa379be762a3eb21723ef977dee306a4f5682d08b62c6b9c7
   languageName: node
   linkType: hard
 
-"@mantine/utils@npm:5.2.3":
-  version: 5.2.3
-  resolution: "@mantine/utils@npm:5.2.3"
+"@mantine/utils@npm:5.2.7":
+  version: 5.2.7
+  resolution: "@mantine/utils@npm:5.2.7"
   peerDependencies:
     react: ">=16.8.0"
-  checksum: bac3a5637efc2163b8308d42bbb4bc828b0cbeecfcbcb81dfb4b252afd728197b5a96abd37b0f0c7a432be2ab30e0525bbdefbe3f89f35bf321c168464af4a01
+  checksum: f86d2141490803d9e51ce7276fc1a8bc976a2642c560f212ac71626fc3bef79671e6eeb4c02dce6e246e68b8d952ea2be2d629d0ed66c6b165266131958c5a72
   languageName: node
   linkType: hard
 
-"@next/env@npm:12.2.5":
-  version: 12.2.5
-  resolution: "@next/env@npm:12.2.5"
-  checksum: a44939e59b46d5951831529a43dba9daa2e4e467e8680ea96e21ae127d1bf7f11757aaf3a6cff8a51273abfe7af782903e1304405a481361c7ba3e66d47e3238
+"@next/env@npm:12.3.0":
+  version: 12.3.0
+  resolution: "@next/env@npm:12.3.0"
+  checksum: 9f5d0894de00f8827f887dc737b0beebc1f268cc6809dc0f49acbcc035f4398f2af1dccb2c2f470f2ac31ef450ff5214a1a63ddd5c906b3ea52960824a2552be
   languageName: node
   linkType: hard
 
-"@next/eslint-plugin-next@npm:12.2.5":
-  version: 12.2.5
-  resolution: "@next/eslint-plugin-next@npm:12.2.5"
+"@next/eslint-plugin-next@npm:12.3.0":
+  version: 12.3.0
+  resolution: "@next/eslint-plugin-next@npm:12.3.0"
   dependencies:
     glob: 7.1.7
-  checksum: 0d6faf895d4952fc2a5da3f2e86a9e1903f37b44201e7fabfcc994f6989dfceb974f354a7abb1779b318f14ada57925d82eb6c22628265c7f6b36f232edc93ee
+  checksum: f08582b36ff01a776183b3c33d6d81be3a110c1c3c39c81a33aff91277ea822aa4a952d4f2271a08ce56692ca5c58c9e958aaf4e08348c10cc45a85213b208f0
   languageName: node
   linkType: hard
 
-"@next/swc-android-arm-eabi@npm:12.2.5":
-  version: 12.2.5
-  resolution: "@next/swc-android-arm-eabi@npm:12.2.5"
+"@next/swc-android-arm-eabi@npm:12.3.0":
+  version: 12.3.0
+  resolution: "@next/swc-android-arm-eabi@npm:12.3.0"
   conditions: os=android & cpu=arm
   languageName: node
   linkType: hard
 
-"@next/swc-android-arm64@npm:12.2.5":
-  version: 12.2.5
-  resolution: "@next/swc-android-arm64@npm:12.2.5"
+"@next/swc-android-arm64@npm:12.3.0":
+  version: 12.3.0
+  resolution: "@next/swc-android-arm64@npm:12.3.0"
   conditions: os=android & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-darwin-arm64@npm:12.2.5":
-  version: 12.2.5
-  resolution: "@next/swc-darwin-arm64@npm:12.2.5"
+"@next/swc-darwin-arm64@npm:12.3.0":
+  version: 12.3.0
+  resolution: "@next/swc-darwin-arm64@npm:12.3.0"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-darwin-x64@npm:12.2.5":
-  version: 12.2.5
-  resolution: "@next/swc-darwin-x64@npm:12.2.5"
+"@next/swc-darwin-x64@npm:12.3.0":
+  version: 12.3.0
+  resolution: "@next/swc-darwin-x64@npm:12.3.0"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@next/swc-freebsd-x64@npm:12.2.5":
-  version: 12.2.5
-  resolution: "@next/swc-freebsd-x64@npm:12.2.5"
+"@next/swc-freebsd-x64@npm:12.3.0":
+  version: 12.3.0
+  resolution: "@next/swc-freebsd-x64@npm:12.3.0"
   conditions: os=freebsd & cpu=x64
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm-gnueabihf@npm:12.2.5":
-  version: 12.2.5
-  resolution: "@next/swc-linux-arm-gnueabihf@npm:12.2.5"
+"@next/swc-linux-arm-gnueabihf@npm:12.3.0":
+  version: 12.3.0
+  resolution: "@next/swc-linux-arm-gnueabihf@npm:12.3.0"
   conditions: os=linux & cpu=arm
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm64-gnu@npm:12.2.5":
-  version: 12.2.5
-  resolution: "@next/swc-linux-arm64-gnu@npm:12.2.5"
+"@next/swc-linux-arm64-gnu@npm:12.3.0":
+  version: 12.3.0
+  resolution: "@next/swc-linux-arm64-gnu@npm:12.3.0"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm64-musl@npm:12.2.5":
-  version: 12.2.5
-  resolution: "@next/swc-linux-arm64-musl@npm:12.2.5"
+"@next/swc-linux-arm64-musl@npm:12.3.0":
+  version: 12.3.0
+  resolution: "@next/swc-linux-arm64-musl@npm:12.3.0"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@next/swc-linux-x64-gnu@npm:12.2.5":
-  version: 12.2.5
-  resolution: "@next/swc-linux-x64-gnu@npm:12.2.5"
+"@next/swc-linux-x64-gnu@npm:12.3.0":
+  version: 12.3.0
+  resolution: "@next/swc-linux-x64-gnu@npm:12.3.0"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@next/swc-linux-x64-musl@npm:12.2.5":
-  version: 12.2.5
-  resolution: "@next/swc-linux-x64-musl@npm:12.2.5"
+"@next/swc-linux-x64-musl@npm:12.3.0":
+  version: 12.3.0
+  resolution: "@next/swc-linux-x64-musl@npm:12.3.0"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@next/swc-win32-arm64-msvc@npm:12.2.5":
-  version: 12.2.5
-  resolution: "@next/swc-win32-arm64-msvc@npm:12.2.5"
+"@next/swc-win32-arm64-msvc@npm:12.3.0":
+  version: 12.3.0
+  resolution: "@next/swc-win32-arm64-msvc@npm:12.3.0"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-win32-ia32-msvc@npm:12.2.5":
-  version: 12.2.5
-  resolution: "@next/swc-win32-ia32-msvc@npm:12.2.5"
+"@next/swc-win32-ia32-msvc@npm:12.3.0":
+  version: 12.3.0
+  resolution: "@next/swc-win32-ia32-msvc@npm:12.3.0"
   conditions: os=win32 & cpu=ia32
   languageName: node
   linkType: hard
 
-"@next/swc-win32-x64-msvc@npm:12.2.5":
-  version: 12.2.5
-  resolution: "@next/swc-win32-x64-msvc@npm:12.2.5"
+"@next/swc-win32-x64-msvc@npm:12.3.0":
+  version: 12.3.0
+  resolution: "@next/swc-win32-x64-msvc@npm:12.3.0"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -3075,12 +3114,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@swc/helpers@npm:0.4.3":
-  version: 0.4.3
-  resolution: "@swc/helpers@npm:0.4.3"
+"@swc/helpers@npm:0.4.11":
+  version: 0.4.11
+  resolution: "@swc/helpers@npm:0.4.11"
   dependencies:
     tslib: ^2.4.0
-  checksum: 5c2f173e950dd3929d84ae48b3586a274d5a874e7cf2013b3d8081e4f8c723fa3a4d4e63b263e84bb7f06431f87b640e91a12655410463c81a3dc2bbc15eceda
+  checksum: 736857d524b41a8a4db81094e9b027f554004e0fa3e86325d85bdb38f7e6459ce022db079edb6c61ba0f46fe8583b3e663e95f7acbd13e51b8da6c34e45bba2e
   languageName: node
   linkType: hard
 
@@ -3099,9 +3138,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tabler/icons@npm:^1.90.0":
-  version: 1.90.0
-  resolution: "@tabler/icons@npm:1.90.0"
+"@tabler/icons@npm:^1.95.0":
+  version: 1.95.0
+  resolution: "@tabler/icons@npm:1.95.0"
   peerDependencies:
     react: ^16.x || 17.x || 18.x
     react-dom: ^16.x || 17.x || 18.x
@@ -3110,7 +3149,7 @@ __metadata:
       optional: true
     react-dom:
       optional: true
-  checksum: e0aa989ab1d1454fa88775bd70b00d4c339e721c75836a387ffd82628732655d17500f5aa331e1cd1213246087f683d47a3a188ae53fd28643984ab69514ec98
+  checksum: 051c42cac82009949167ab4b745a844bb203a4e951a86bb7983e4aa11ea474c8a04a132782b133042626e535834210bd0027bb60968b3d4b2dd7a05c2aedfeb0
   languageName: node
   linkType: hard
 
@@ -4480,30 +4519,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"embla-carousel-autoplay@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "embla-carousel-autoplay@npm:7.0.1"
+"embla-carousel-autoplay@npm:^7.0.2":
+  version: 7.0.2
+  resolution: "embla-carousel-autoplay@npm:7.0.2"
   peerDependencies:
-    embla-carousel: 7.0.1
-  checksum: d060e8fa2004fbaeacbbae08896c12f7bc1a0b793efd975d587387c192f13a4ad141846248519f70fdacb7d1fd1267d6b0809392aa9318fc3d6a38d58a4b81fe
+    embla-carousel: 7.0.2
+  checksum: f07812a2b54ae2f351e403ba10acd94a6fc696a1fdf01ea0f6d6ecc6f99756ddb916070ee26143249c2ab289a51c39534ef57b04281eb615a511728c813e690f
   languageName: node
   linkType: hard
 
-"embla-carousel-react@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "embla-carousel-react@npm:7.0.1"
+"embla-carousel-react@npm:^7.0.2":
+  version: 7.0.2
+  resolution: "embla-carousel-react@npm:7.0.2"
   dependencies:
-    embla-carousel: 7.0.1
+    embla-carousel: 7.0.2
   peerDependencies:
     react: ^18.1.0
-  checksum: c58a3d2d195a2d1f0797f43222dba73f771f2cd8d4ffe178af941376c8e82a8c77a30868280b59c90c48542ef4eea399c8e1e332de2405854a0a624d619b98d9
+  checksum: a4bc33ab56fa022ca5a41afa29143d9b28372cc49303f04a353495444dbffc3040297917ab059c92ee24f1b58bf8dacfb2b5b410a3ed1fef404984ea13a104bd
   languageName: node
   linkType: hard
 
-"embla-carousel@npm:7.0.1":
-  version: 7.0.1
-  resolution: "embla-carousel@npm:7.0.1"
-  checksum: d2cdf98aa12599aa013cebf850cb5dab66af1e6e48a5bbb80448709fa34487a53953560db2fbd7832f5df650886c3e36e65d39fca3e4ef54eb22a977392407a0
+"embla-carousel@npm:7.0.2":
+  version: 7.0.2
+  resolution: "embla-carousel@npm:7.0.2"
+  checksum: 30f1334a54a453d4a08e3e1916578c35dd91c459afbfd570da4006685fff9f49f708c19a29ddf00960dbaae8db52c52396e85fb1169e7d370ddda08fec21c711
   languageName: node
   linkType: hard
 
@@ -4669,11 +4708,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-next@npm:^12.2.5":
-  version: 12.2.5
-  resolution: "eslint-config-next@npm:12.2.5"
+"eslint-config-next@npm:^12.3.0":
+  version: 12.3.0
+  resolution: "eslint-config-next@npm:12.3.0"
   dependencies:
-    "@next/eslint-plugin-next": 12.2.5
+    "@next/eslint-plugin-next": 12.3.0
     "@rushstack/eslint-patch": ^1.1.3
     "@typescript-eslint/parser": ^5.21.0
     eslint-import-resolver-node: ^0.3.6
@@ -4688,7 +4727,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 21f14cda6c28670e09267c9fc28fe17f9480487c85a322928507bbf61f072c62401bb7d8e79992b176d6a0d64a86419cbd69e475098b083aa5089bb6b572b8e0
+  checksum: 50a2e43c515350c689cd848973b953c1d058303b84e05ecba5b5bf0f8feffe3935011de3b574ba35d48de8a5d7d5c42567d21d1a17f02189a701edeb6d76a8e0
   languageName: node
   linkType: hard
 
@@ -5130,23 +5169,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"firebase@npm:^9.9.3":
-  version: 9.9.3
-  resolution: "firebase@npm:9.9.3"
+"firebase@npm:^9.9.4":
+  version: 9.9.4
+  resolution: "firebase@npm:9.9.4"
   dependencies:
     "@firebase/analytics": 0.8.0
     "@firebase/analytics-compat": 0.1.13
-    "@firebase/app": 0.7.31
+    "@firebase/app": 0.7.32
     "@firebase/app-check": 0.5.12
     "@firebase/app-check-compat": 0.2.12
-    "@firebase/app-compat": 0.1.32
+    "@firebase/app-compat": 0.1.33
     "@firebase/app-types": 0.7.0
-    "@firebase/auth": 0.20.5
-    "@firebase/auth-compat": 0.2.18
-    "@firebase/database": 0.13.5
-    "@firebase/database-compat": 0.2.5
-    "@firebase/firestore": 3.4.14
-    "@firebase/firestore-compat": 0.1.23
+    "@firebase/auth": 0.20.6
+    "@firebase/auth-compat": 0.2.19
+    "@firebase/database": 0.13.6
+    "@firebase/database-compat": 0.2.6
+    "@firebase/firestore": 3.4.15
+    "@firebase/firestore-compat": 0.1.24
     "@firebase/functions": 0.8.4
     "@firebase/functions-compat": 0.2.4
     "@firebase/installations": 0.5.12
@@ -5160,7 +5199,7 @@ __metadata:
     "@firebase/storage": 0.9.9
     "@firebase/storage-compat": 0.1.17
     "@firebase/util": 1.6.3
-  checksum: 546d4392080221dc9737d8560fa7f809722190cdd8825f65d75616004fb75d395ac7d0983e1d93f768299b04b1002f8868da5b28dda960f6490e5856849103fe
+  checksum: 7904947cc8bddb3f5b1cd5299fd523ffa28a0c654157d6a9816e90bfd06a28dea031b3ac6f34a04ffad59685c5bfe0366bd5e416f29cdbe283d1028d8d8fddee
   languageName: node
   linkType: hard
 
@@ -6561,23 +6600,23 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "makotools@workspace:."
   dependencies:
-    "@emotion/react": ^11.10.0
+    "@emotion/react": ^11.10.4
     "@emotion/server": ^11.10.0
-    "@emotion/styled": ^11.10.0
+    "@emotion/styled": ^11.10.4
     "@fontsource/noto-sans-jp": ^4.5.11
-    "@fontsource/sora": ^4.5.9
-    "@mantine/carousel": ^5.2.3
-    "@mantine/core": ^5.2.3
-    "@mantine/form": ^5.2.3
-    "@mantine/hooks": ^5.2.3
-    "@mantine/modals": ^5.2.3
-    "@mantine/next": ^5.2.3
-    "@mantine/notifications": ^5.2.3
-    "@mantine/nprogress": ^5.2.3
-    "@mantine/rte": ^5.2.3
-    "@mantine/spotlight": ^5.2.3
+    "@fontsource/sora": ^4.5.10
+    "@mantine/carousel": ^5.2.7
+    "@mantine/core": ^5.2.7
+    "@mantine/form": ^5.2.7
+    "@mantine/hooks": ^5.2.7
+    "@mantine/modals": ^5.2.7
+    "@mantine/next": ^5.2.7
+    "@mantine/notifications": ^5.2.7
+    "@mantine/nprogress": ^5.2.7
+    "@mantine/rte": ^5.2.7
+    "@mantine/spotlight": ^5.2.7
     "@svgr/webpack": ^6.3.1
-    "@tabler/icons": ^1.90.0
+    "@tabler/icons": ^1.95.0
     "@types/lodash": ^4.14.184
     "@types/react-collapse": ^5.0.1
     "@types/styled-components": ^5.1.26
@@ -6586,38 +6625,38 @@ __metadata:
     cookies-next: ^2.1.1
     country-flag-icons: ^1.5.5
     dayjs: ^1.11.5
-    embla-carousel-autoplay: ^7.0.1
-    embla-carousel-react: ^7.0.1
+    embla-carousel-autoplay: ^7.0.2
+    embla-carousel-react: ^7.0.2
     eslint: ^8.23.0
-    eslint-config-next: ^12.2.5
+    eslint-config-next: ^12.3.0
     eslint-config-prettier: ^8.5.0
     eslint-plugin-import: ^2.26.0
     eslint-plugin-prettier: ^4.2.1
-    firebase: ^9.9.3
+    firebase: ^9.9.4
     firebase-admin: ^11.0.1
     flat: ^5.0.2
     globalize: ^1.7.0
     iana-tz-data: ^2019.1.0
     lodash: ^4.17.21
     lodash.merge: ^4.6.2
-    next: ^12.2.5
+    next: ^12.3.0
     next-firebase-auth: ^1.0.0-canary.9
-    next-i18next: ^12.0.0
+    next-i18next: ^12.0.1
     normalize.css: ^8.0.1
     prettier: ^2.7.1
     raw-loader: ^4.0.2
     react: ^18.2.0
-    react-beautiful-dnd: ^13.1.0
+    react-beautiful-dnd: ^13.1.1
     react-collapse: ^5.1.1
     react-dom: ^18.2.0
     react-globalize: ^1.0.0
     react-infinite-scroll-component: ^6.1.0
-    sass: ^1.54.5
+    sass: ^1.54.9
     sass-loader: ^13.0.2
     styled-components: ^5.3.5
     twitter_cldr: ^2.2.0
-    typescript: ^4.8.2
-    use-debounce: ^8.0.3
+    typescript: ^4.8.3
+    use-debounce: ^8.0.4
     wp-types: ^3.60.0
   languageName: unknown
   linkType: soft
@@ -6880,9 +6919,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next-i18next@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "next-i18next@npm:12.0.0"
+"next-i18next@npm:^12.0.1":
+  version: 12.0.1
+  resolution: "next-i18next@npm:12.0.1"
   dependencies:
     "@babel/runtime": ^7.18.9
     "@types/hoist-non-react-statics": ^3.3.1
@@ -6894,32 +6933,32 @@ __metadata:
   peerDependencies:
     next: ">= 10.0.0"
     react: ">= 16.8.0"
-  checksum: 8e9d7ce335b215ed50910eb2d377ff2025161879c3c413045e22646c39f266dc1b4d62c09d0ebc01858f1d2cad4a314dadd2c8cc829399bb0547a3f27120187b
+  checksum: 9f8e86748abeac49caeca03d48d632b66ea0765792acdbcb18abe80d6e886252208a8e0ada818ccbe2cd09e2925ce240534eb587027dcb8392e5e157a4579933
   languageName: node
   linkType: hard
 
-"next@npm:^12.2.5":
-  version: 12.2.5
-  resolution: "next@npm:12.2.5"
+"next@npm:^12.3.0":
+  version: 12.3.0
+  resolution: "next@npm:12.3.0"
   dependencies:
-    "@next/env": 12.2.5
-    "@next/swc-android-arm-eabi": 12.2.5
-    "@next/swc-android-arm64": 12.2.5
-    "@next/swc-darwin-arm64": 12.2.5
-    "@next/swc-darwin-x64": 12.2.5
-    "@next/swc-freebsd-x64": 12.2.5
-    "@next/swc-linux-arm-gnueabihf": 12.2.5
-    "@next/swc-linux-arm64-gnu": 12.2.5
-    "@next/swc-linux-arm64-musl": 12.2.5
-    "@next/swc-linux-x64-gnu": 12.2.5
-    "@next/swc-linux-x64-musl": 12.2.5
-    "@next/swc-win32-arm64-msvc": 12.2.5
-    "@next/swc-win32-ia32-msvc": 12.2.5
-    "@next/swc-win32-x64-msvc": 12.2.5
-    "@swc/helpers": 0.4.3
+    "@next/env": 12.3.0
+    "@next/swc-android-arm-eabi": 12.3.0
+    "@next/swc-android-arm64": 12.3.0
+    "@next/swc-darwin-arm64": 12.3.0
+    "@next/swc-darwin-x64": 12.3.0
+    "@next/swc-freebsd-x64": 12.3.0
+    "@next/swc-linux-arm-gnueabihf": 12.3.0
+    "@next/swc-linux-arm64-gnu": 12.3.0
+    "@next/swc-linux-arm64-musl": 12.3.0
+    "@next/swc-linux-x64-gnu": 12.3.0
+    "@next/swc-linux-x64-musl": 12.3.0
+    "@next/swc-win32-arm64-msvc": 12.3.0
+    "@next/swc-win32-ia32-msvc": 12.3.0
+    "@next/swc-win32-x64-msvc": 12.3.0
+    "@swc/helpers": 0.4.11
     caniuse-lite: ^1.0.30001332
     postcss: 8.4.14
-    styled-jsx: 5.0.4
+    styled-jsx: 5.0.6
     use-sync-external-store: 1.2.0
   peerDependencies:
     fibers: ">= 3.1.0"
@@ -6963,7 +7002,7 @@ __metadata:
       optional: true
   bin:
     next: dist/bin/next
-  checksum: e8fcbd93d74fda81640fd174a9d380f22db404d3ce0893730db3db806317ae18c86d1dbb502e63e47c92fb21a93812de62639c2f1204330cb569fdac4d3d0573
+  checksum: eafed4732d1d3cfdc4ccfdd6e1047d24b29f0d19587a03d46581e77988e4a081d206ad373de98858dfbc7109308fe1ad39d0b8443ea19276fb11fa5634080841
   languageName: node
   linkType: hard
 
@@ -7579,9 +7618,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-beautiful-dnd@npm:^13.1.0":
-  version: 13.1.0
-  resolution: "react-beautiful-dnd@npm:13.1.0"
+"react-beautiful-dnd@npm:^13.1.1":
+  version: 13.1.1
+  resolution: "react-beautiful-dnd@npm:13.1.1"
   dependencies:
     "@babel/runtime": ^7.9.2
     css-box-model: ^1.2.0
@@ -7591,9 +7630,9 @@ __metadata:
     redux: ^4.0.4
     use-memo-one: ^1.1.1
   peerDependencies:
-    react: ^16.8.5 || ^17.0.0
-    react-dom: ^16.8.5 || ^17.0.0
-  checksum: 12b7e9fbe872783e0f899e03f2e80deee085aa1e2cec3d556c1d06bdbafbda7a3c9cf7a3a6b26544617eb2e50d0e3518001bd8300370704bf5a8c9c21f54ec90
+    react: ^16.8.5 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.8.5 || ^17.0.0 || ^18.0.0
+  checksum: 5f90f7c0ab77a14dfcd496cbd94bbde457612f380c6fc815f3bba7b52effd75132948fcaa661a902a184bb1e6ae5896dcf5b0c77c4ddf809a2c65288f3eed5a7
   languageName: node
   linkType: hard
 
@@ -8072,16 +8111,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass@npm:^1.54.5":
-  version: 1.54.5
-  resolution: "sass@npm:1.54.5"
+"sass@npm:^1.54.9":
+  version: 1.54.9
+  resolution: "sass@npm:1.54.9"
   dependencies:
     chokidar: ">=3.0.0 <4.0.0"
     immutable: ^4.0.0
     source-map-js: ">=0.6.2 <2.0.0"
   bin:
     sass: sass.js
-  checksum: ba7a65aa7508419468547c8de4d59e537bec874f52823f501663dc98d80dfd2d374e8ea73a31200db7f510b8816c925edf89728c9b36889f4e6673d3e94ec100
+  checksum: 90182b566072b48e2263c5a87229ab85164e13b71b24847ba76a8e68eb952cb69a7dcef815f4ccc0189dd2d0c254311acff6972166603338d33bbc96f6d500c6
   languageName: node
   linkType: hard
 
@@ -8441,9 +8480,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"styled-jsx@npm:5.0.4":
-  version: 5.0.4
-  resolution: "styled-jsx@npm:5.0.4"
+"styled-jsx@npm:5.0.6":
+  version: 5.0.6
+  resolution: "styled-jsx@npm:5.0.6"
   peerDependencies:
     react: ">= 16.8.0 || 17.x.x || ^18.0.0-0"
   peerDependenciesMeta:
@@ -8451,7 +8490,7 @@ __metadata:
       optional: true
     babel-plugin-macros:
       optional: true
-  checksum: db7530155626e5eebc9d80ca117ea5aed6219b0a65469196b0b5727550fbe743117d7eea1499d80511ccb312d31f4a1027a58d1f94a83f0986c9acfdcce8bdd1
+  checksum: 9e41cb6958fcb980dbfcfee2fb133de61cc0873df9304d2476ab35930679fc3b3c1d968a503c9b0afa459f243c288119e35d0fd31cf3066c2ba0e130c4d2f87e
   languageName: node
   linkType: hard
 
@@ -8682,7 +8721,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:>=3, typescript@npm:^4.8.2":
+"typescript@npm:>=3":
   version: 4.8.2
   resolution: "typescript@npm:4.8.2"
   bin:
@@ -8692,13 +8731,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@>=3#~builtin<compat/typescript>, typescript@patch:typescript@^4.8.2#~builtin<compat/typescript>":
+"typescript@npm:^4.8.3":
+  version: 4.8.3
+  resolution: "typescript@npm:4.8.3"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 8286a5edcaf3d68e65c451aa1e7150ad1cf53ee0813c07ec35b7abdfdb10f355ecaa13c6a226a694ae7a67785fd7eeebf89f845da0b4f7e4a35561ddc459aba0
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@>=3#~builtin<compat/typescript>":
   version: 4.8.2
   resolution: "typescript@patch:typescript@npm%3A4.8.2#~builtin<compat/typescript>::version=4.8.2&hash=f456af"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 6f49363af8af2fe480da1d5fa68712644438785208b06690a3cbe5e7365fd652c3a0f1e587bc8684d78fb69de3dde4de185c0bad7bb4f3664ddfc813ce8caad6
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@^4.8.3#~builtin<compat/typescript>":
+  version: 4.8.3
+  resolution: "typescript@patch:typescript@npm%3A4.8.3#~builtin<compat/typescript>::version=4.8.3&hash=f456af"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 0404a09c625df01934ef774b45ce1ca57ccae41cd625fcdbb82056715320d9329e70d9d75c2c732ec6ef947444ca978c189a332b71fa21f5c1437d5a83e24906
   languageName: node
   linkType: hard
 
@@ -8795,12 +8854,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-debounce@npm:^8.0.3":
-  version: 8.0.3
-  resolution: "use-debounce@npm:8.0.3"
+"use-debounce@npm:^8.0.4":
+  version: 8.0.4
+  resolution: "use-debounce@npm:8.0.4"
   peerDependencies:
     react: ">=16.8.0"
-  checksum: 1790e540b53298e9abcf34d4a9bd4fc89a747644dcb65b42b02568a7c28cfa57d7756fae87c0b37b73261d2935b0c46ea5b53dfcbaf22e30f20728e36c703f9c
+  checksum: 0f8b9e571f68a4694033ec00690bf73d781ac890140ae9ed4b330f71f7adb3f7d7df5cdaa32923c4d03fdc9de8a11be0f84301175ae4f66208af52ad03c55504
   languageName: node
   linkType: hard
 

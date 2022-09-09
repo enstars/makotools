@@ -21,6 +21,7 @@ import emotes from "../../services/emotes";
 import { useFirebaseUser } from "../../services/firebase/user";
 import EmoteSelector from "../utilities/emotes/EmoteSelector";
 import Emote from "../utilities/emotes/Emote";
+import { DbReaction, Reaction } from "../../types/makotools";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -35,7 +36,7 @@ function Reactions() {
   const { classes } = useStyles();
   const { asPath } = useRouter();
   console.log(asPath);
-  const [reactions, setReactions] = useState<any>([]);
+  const [reactions, setReactions] = useState<Reaction[]>([]);
   const [collapsed, setCollapsed] = useState<boolean>(true);
   useEffect(() => {
     fetchReactions();
@@ -44,9 +45,10 @@ function Reactions() {
 
   const currentPageId = asPath.replace(/\//g, "_");
   // const currentPageId = 1;
-  const addReaction = (id: number) => {
+  const addReaction = (id: string) => {
+    if (firebaseUser.loading || !firebaseUser.loggedIn) return;
     fetch(
-      `https://backend-stars.ensemble.moe/reactions.php?page_id=${currentPageId}&content=${id}&name=${firebaseUser?.user?.id}`,
+      `https://backend-stars.ensemble.moe/reactions.php?page_id=${currentPageId}&content=${id}&name=${firebaseUser.user.id}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -66,15 +68,23 @@ function Reactions() {
       `https://backend-stars.ensemble.moe/reactions.php?page_id=${currentPageId}`
     )
       .then((res) => res.json())
-      .then((data) => {
+      .then((data: DbReaction[]) => {
         console.log("Request complete! response:", data);
         // return data;
-        setReactions(
-          data.map((r: any) => {
-            const emote = emotes.find((e) => e.id === r.content);
-            if (emote) return { emote, alt: emote.name, id: r.submit_date };
+        const reactions = data
+          .map((r) => {
+            const emote = emotes.find((e) => e.stringId === r.content);
+            if (emote) {
+              const reaction: Reaction = {
+                emote,
+                alt: emote.name,
+                id: r.submit_date,
+              };
+              return reaction;
+            }
           })
-        );
+          .filter((e) => typeof e !== "undefined");
+        setReactions(reactions as Reaction[]);
       })
       .catch((e) => {
         console.error(e);
@@ -87,34 +97,34 @@ function Reactions() {
   return (
     <Paper my="sm" withBorder p={3} radius="md">
       <Group spacing="xs" sx={{ flexWrap: "nowrap", alignItems: "flex-start" }}>
-        <Tooltip
-          label={<Text size="xs">Sign in to react!</Text>}
-          disabled={firebaseUser.loggedIn}
-        >
-          <EmoteSelector
-            target={(onClick) => {
-              return (
+        <EmoteSelector
+          target={(onClick) => {
+            return (
+              <Tooltip
+                label={<Text size="xs">Sign in to react!</Text>}
+                disabled={!firebaseUser.loading && firebaseUser.loggedIn}
+              >
                 <Button
                   variant="light"
                   size="xs"
                   color="blue"
                   onClick={onClick}
-                  leftIcon={<IconMoodSmile size={24} />}
+                  leftIcon={<IconMoodSmile size={16} />}
                   px="xs"
                 >
                   Reactions
                 </Button>
-              );
-            }}
-            callback={(emote) => {
-              console.log(emote);
-              addReaction(emote.id);
-            }}
-            disabled={!firebaseUser.loggedIn}
-          >
-            <></>
-          </EmoteSelector>
-        </Tooltip>
+              </Tooltip>
+            );
+          }}
+          callback={(emote) => {
+            console.log(emote);
+            addReaction(emote.stringId);
+          }}
+          disabled={firebaseUser.loading || !firebaseUser.loggedIn}
+        >
+          <></>
+        </EmoteSelector>
         {reactions.length ? (
           <>
             <Box
@@ -144,7 +154,7 @@ function Reactions() {
                   }}
                 >
                   {reactions?.map((r: any) => (
-                    <Emote key={r.id} emote={r.emote} size={16} />
+                    <Emote key={r.id} emote={r.emote} size={24} />
                   ))}
                 </Group>
               </Collapse>

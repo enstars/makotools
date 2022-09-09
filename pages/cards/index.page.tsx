@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-
 import {
   useMantineTheme,
   Text,
@@ -15,19 +14,19 @@ import {
   Button,
 } from "@mantine/core";
 import InfiniteScroll from "react-infinite-scroll-component";
-
 import { useLocalStorage } from "@mantine/hooks";
-
 import { IconArrowsSort, IconSearch } from "@tabler/icons";
 import { slice } from "lodash";
 
 import Layout from "../../components/Layout";
-
-import { getLocalizedData } from "../../services/ensquare";
+import {
+  getItemFromLocalized,
+  getLocalizedData,
+} from "../../services/ensquare";
 import PageTitle from "../../components/sections/PageTitle";
-
 import { getLayout } from "../../components/Layout";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
+import { LoadedData, LoadedDataRegional } from "../../types/makotools";
 
 import CardCard from "./components/DisplayCard";
 
@@ -38,11 +37,17 @@ const CARD_VIEW_OPTIONS_DEFAULT = {
   sortOption: "id",
 };
 
-function Page({ cards, characters }) {
+function Page({
+  cards,
+  characters,
+}: {
+  cards: LoadedData<GameCard[]>;
+  characters: LoadedData<GameCharacter[]>;
+}) {
   // console.log(characters);
 
   const theme = useMantineTheme();
-  const [count, setCount] = useState(CARD_LIST_INITIAL_COUNT);
+  const [count, setCount] = useState<number>(CARD_LIST_INITIAL_COUNT);
   const [cardsList, setCardsList] = useState([]);
   const [slicedCardsList, setSlicedCardsList] = useState([]);
   const [viewOptions, setViewOptions] = useLocalStorage({
@@ -56,7 +61,7 @@ function Page({ cards, characters }) {
     },
   });
 
-  let characterIDtoSort = {};
+  let characterIDtoSort: { [key: number]: number } = {};
   characters.main.data.forEach((c) => {
     characterIDtoSort[c.character_id] = c.sort_id || c.character_id;
   });
@@ -151,7 +156,7 @@ function Page({ cards, characters }) {
               }}
               spacing={3}
             >
-              {[4, 5].map((r) => (
+              {[1, 4, 5].map((r) => (
                 <Chip
                   key={r}
                   value={r.toString()}
@@ -217,27 +222,29 @@ function Page({ cards, characters }) {
               alignItems: "flex-start",
             }}
           >
-            {slicedCardsList.map((e, i) => (
-              <CardCard
-                key={e.id}
-                cards={cards}
-                i={i}
-                id={e.id}
-                characters={characters.main.data}
-                cardOptions={cardOptions}
-              />
+            {slicedCardsList.map((e, i) => {
+              const {} = getItemFromLocalized(cards, e.id);
+              return (
+                <CardCard
+                  key={e.id}
+                  cards={cards}
+                  id={e.id}
+                  cardOptions={cardOptions}
+                  // card  =
+                />
 
-              // <div
-              //   key={e.id}
-              //   cards={cards}
-              //   i={i}
-              //   id={e.id}
-              //   characters={characters.main.data}
-              //   cardOptions={cardOptions}
-              // >
-              //   {e.id}
-              // </div>
-            ))}
+                // <div
+                //   key={e.id}
+                //   cards={cards}
+                //   i={i}
+                //   id={e.id}
+                //   characters={characters.main.data}
+                //   cardOptions={cardOptions}
+                // >
+                //   {e.id}
+                // </div>
+              );
+            })}
           </InfiniteScroll>
         </>
       ) : (
@@ -250,13 +257,14 @@ function Page({ cards, characters }) {
 }
 
 export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
-  const characters = await getLocalizedData("characters", locale, [
-    "character_id",
-    "first_name",
-  ]);
+  const characters = await getLocalizedData<GameCharacter[]>(
+    "characters",
+    locale,
+    ["character_id", "first_name"]
+  );
   // const unit_to_characters = await getLocalizedData("unit_to_characters");
   // const units = await getLocalizedData("units");
-  const cards = await getLocalizedData("cards", locale, [
+  const cards = await getLocalizedData<GameCard[]>("cards", locale, [
     "id",
     "name",
     "title",
@@ -271,6 +279,10 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
     "character_id",
   ]);
 
+  if (!characters || !cards)
+    return {
+      notFound: true,
+    };
   return {
     props: { characters, cards },
   };

@@ -36,12 +36,11 @@ import { useFirebaseUser } from "../../../services/firebase/user";
 
 import { sumStats } from "./Stats";
 
-function RarityBadge({ card }) {
+function RarityBadge({ card }: { card: GameCard }) {
   const theme = useMantineTheme();
   return (
     <Paper
       component={Box}
-      variant="filled"
       sx={{
         position: "absolute",
         top: 9,
@@ -51,8 +50,8 @@ function RarityBadge({ card }) {
         transform: "skew(-15deg)",
         pointerEvents: "none",
         background: card.type
-          ? theme.colors[attributes[card.type]?.color][7]
-          : null,
+          ? theme.colors[attributes[card.type].color][7]
+          : undefined,
         zIndex: 12,
         transition: "0.3s cubic-bezier(.19,.73,.37,.93)",
       }}
@@ -77,7 +76,15 @@ function RarityBadge({ card }) {
   );
 }
 
-export default function CardCard({ cards, id, cardOptions }) {
+export default function CardCard({
+  cards,
+  id,
+  cardOptions,
+}: {
+  cards: GameCard[];
+  id: ID;
+  cardOptions: any;
+}) {
   const router = useRouter();
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
@@ -87,8 +94,8 @@ export default function CardCard({ cards, id, cardOptions }) {
 
   const { firebaseUser, setUserDataKey } = useFirebaseUser();
 
-  const statsIR = sumStats(card.stats.ir);
-  const statsIR4 = sumStats(card.stats.ir4);
+  const statsIR = sumStats(card.stats?.ir);
+  const statsIR4 = sumStats(card.stats?.ir4);
 
   const collection = firebaseUser.firestore?.collection || [];
   const thisColItem = collection?.find((c) => c.id === id);
@@ -117,6 +124,7 @@ export default function CardCard({ cards, id, cardOptions }) {
               key={type}
               styles={{
                 figure: {
+                  width: "100%",
                   height: "100%",
                   "&:hover > figcaption > div": {
                     left: -12.5 - 30,
@@ -125,11 +133,12 @@ export default function CardCard({ cards, id, cardOptions }) {
                 },
                 imageWrapper: {
                   height: "100%",
+                  width: "100%",
                   transition: theme.other.transition,
                 },
                 image: {
                   objectFit: "cover",
-                  objectPosition: "top center",
+                  objectPosition: "center center",
                 },
               }}
               height={100}
