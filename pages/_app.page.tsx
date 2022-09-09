@@ -39,15 +39,15 @@ initAuth();
 
 const emotionCache = createEmotionCache({ key: "mktl" });
 
-function MakoTools({ Component, pageProps, ...props }) {
+function MakoTools({ Component, pageProps, ...props }: { Component: any; pageProps: any; }) {
   const router = useRouter();
   const [colorScheme, setStateColorScheme] = useState(
     props.colorScheme || "dark"
   );
 
-  const getLayout = Component.getLayout || ((page) => page);
+  const getLayout = Component.getLayout || ((page: any) => page);
 
-  const setAppColorScheme = (value) => {
+  const setAppColorScheme = (value: any) => {
     setStateColorScheme(value);
 
     // when color scheme is updated save it to cookie
@@ -59,17 +59,17 @@ function MakoTools({ Component, pageProps, ...props }) {
     setAppColorScheme(colorScheme === "light" ? "dark" : "light");
   };
 
-  const getDimmed = (theme) => {
+  const getDimmed = (theme: any) => {
     return theme.colorScheme === "dark"
       ? theme.colors.dark[2]
       : theme.colors.gray[6];
   };
-  const getColor = (theme, color) =>
+  const getColor = (theme: any, color: any) =>
     theme.colors[color][theme.colorScheme === "dark" ? 5 : 7];
 
   // https://mantine.dev/others/nprogress/
   useEffect(() => {
-    const handleStart = (url) =>
+    const handleStart = (url: any) =>
       url !== router.asPath && startNavigationProgress();
     const handleComplete = () => resetNavigationProgress();
 

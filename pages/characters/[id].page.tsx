@@ -1,18 +1,15 @@
 import Head from "next/head";
-
 import { Text, Box } from "@mantine/core";
 
 import { getData, getB2File, getLocalizedData } from "../../services/ensquare";
 import PageTitle from "../../components/sections/PageTitle";
 import ImageViewer from "../../components/core/ImageViewer";
-
 import Reactions from "../../components/sections/Reactions";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
-
 import { getLayout } from "../../components/Layout";
 
-function Page({ character }) {
-  const getBreadcrumbs = (path) => {
+function Page({ character }: { character: any }) {
+  const getBreadcrumbs = (path: string) => {
     const pathNames = path.split("/");
     pathNames[
       pathNames.length - 1
@@ -95,7 +92,7 @@ export const getServerSideProps = getServerSideUser(
   async ({ res, locale, params }) => {
     const characters = await getLocalizedData("characters", locale);
     const { data: charactersEN } = await getData("characters", "en");
-    const lastSegment = params.id.toLocaleLowerCase();
+    const lastSegment = params?.id?.toLocaleLowerCase();
     const characterID = parseInt(lastSegment, 10);
     const isName = isNaN(characterID);
     const characterIndex = charactersEN.indexOf(

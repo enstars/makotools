@@ -32,7 +32,7 @@ import getServerSideUser from "../services/firebase/getServerSideUser";
 
 import Announcement from "./about/announcements/components/Announcement";
 
-function Page({ posts }) {
+function Page({ posts }: { posts: any }) {
   const { firebaseUser } = useFirebaseUser();
   const theme = useMantineTheme();
 
@@ -156,7 +156,7 @@ function Page({ posts }) {
               ) : (
                 <>
                   <Stack spacing="sm">
-                    {posts.map((p, i) => (
+                    {posts.map((p: any, i: number) => (
                       <Announcement key={p.id} announcement={p} i={i} />
                     ))}
                   </Stack>
