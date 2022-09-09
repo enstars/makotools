@@ -4,7 +4,6 @@ import Router, { useRouter } from "next/router";
 import Head from "next/head";
 import { getCookie, setCookie } from "cookies-next";
 // import NProgress from "nprogress";
-
 import {
   MantineProvider,
   ColorSchemeProvider,
@@ -13,7 +12,6 @@ import {
   createEmotionCache,
 } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
-
 import "@fontsource/sora/400.css";
 import "@fontsource/sora/500.css";
 import "@fontsource/sora/700.css";
@@ -24,12 +22,9 @@ import "@fontsource/noto-sans-jp/500.css";
 import "@fontsource/noto-sans-jp/700.css";
 // import "@fontsource/inter";
 // import "@fontsource/inter/variable-full.css";
-
 import "../styles/styles.css";
 import "../styles/wordpress.scss";
-
 import { withAuthUser } from "next-firebase-auth";
-
 import {
   startNavigationProgress,
   resetNavigationProgress,
@@ -38,9 +33,7 @@ import {
 
 import initAuth from "../services/firebase/authentication";
 import FirebaseUserProvider from "../services/firebase/user";
-
 import RouteChangeLoader from "../components/Layout/RouteChangeLoader";
-
 import DayjsProvider from "../services/dayjs";
 
 initAuth();
@@ -90,7 +83,7 @@ function MakoTools({ Component, pageProps, ...props }) {
       router.events.off("routeChangeComplete", handleComplete);
       router.events.off("routeChangeError", handleComplete);
     };
-  }, [router.asPath]);
+  }, [router.asPath, router.events]);
 
   return (
     <MantineProvider

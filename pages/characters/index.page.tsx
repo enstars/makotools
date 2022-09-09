@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import _ from "lodash";
-
 import {
   Select,
   Box,
@@ -12,13 +11,20 @@ import {
 
 import { getLocalizedData } from "../../services/ensquare";
 import PageTitle from "../../components/sections/PageTitle";
-
 import { getLayout } from "../../components/Layout";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 
 import CharacterCard from "./components/DisplayCard";
 
-function Page({ characters, unit_to_characters: unitToCharacters, units }) {
+function Page({
+  characters,
+  unit_to_characters: unitToCharacters,
+  units,
+}: {
+  characters: any;
+  unit_to_characters: any;
+  units: any;
+}) {
   const [listCharacters, setListCharacters] = useState([]);
   const [filterOptions, setfilterOptions] = useState([]);
   const [chosenUnit, setChosenUnit] = useState(null);
@@ -62,7 +68,12 @@ function Page({ characters, unit_to_characters: unitToCharacters, units }) {
 
     setListCharacters(charactersFiltered);
     setfilterOptions(units.main.data.sort((a, b) => !!(a?.order > b?.order)));
-  }, [chosenUnit]);
+  }, [
+    characters.main.data,
+    chosenUnit,
+    unitToCharacters.main.data,
+    units.main.data,
+  ]);
 
   const handleNewUnit = (e) => {
     setChosenUnit(e);
@@ -128,6 +139,8 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
     locale
   );
   const units = await getLocalizedData("units", locale);
+
+  console.log(unit_to_characters);
 
   return {
     props: { characters, unit_to_characters, units },

@@ -19,20 +19,15 @@ import {
   Title,
   Accordion,
 } from "@mantine/core";
-
 import Image from "next/image";
-
 import { IconNews } from "@tabler/icons";
 
 import Breadcrumbs from "../components/Layout/Header/Breadcrumbs";
-
 import { useFirebaseUser } from "../services/firebase/user";
 import Banner from "../assets/banner.png";
 import AffiliatesLight from "../assets/Affiliates/affiliates_light.svg?url";
 import AffiliatesDark from "../assets/Affiliates/affiliates_dark.svg?url";
-
 import Layout, { getLayout } from "../components/Layout";
-
 import getServerSideUser from "../services/firebase/getServerSideUser";
 
 import Announcement from "./about/announcements/components/Announcement";
@@ -43,7 +38,7 @@ function Page({ posts }) {
 
   return (
     <>
-      <Image src={Banner} style={{ borderRadius: 0 }} />
+      <Image src={Banner} style={{ borderRadius: 0 }} alt="banner" />
       <MantineTitle order={1} mt="sm">
         Welcome to{" "}
         <Text

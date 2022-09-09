@@ -252,7 +252,7 @@ Page.getLayout = getLayout({ hideOverflow: true });
 export default Page;
 
 export const getServerSideProps = getServerSideUser(
-  async ({ locale, params, admin }) => {
+  async ({ params, admin }) => {
     if (typeof params?.user !== "string" || !params.user.startsWith("@")) {
       return {
         notFound: true,

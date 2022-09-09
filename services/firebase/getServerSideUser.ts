@@ -17,7 +17,7 @@ export type GetServerSidePropsWithUser<
     admin: FirebaseAdminType;
     firestore: UserData;
   }
-) => Promise<GetServerSidePropsResult<P>>;
+) => Promise<GetServerSidePropsResult<P>> | GetServerSidePropsResult<P>;
 
 export default function getServerSideUser(
   serverSideFunction: GetServerSidePropsWithUser,
@@ -63,10 +63,11 @@ export default function getServerSideUser(
         if ("redirect" in renderData) return renderData;
 
         try {
+          console.log("__user: ", firebaseContext.user);
           renderData.props = {
             ...renderData.props,
-            __user: JSON.stringify(firebaseContext.user),
-            __firestore: JSON.stringify(firebaseContext.firestore),
+            __user: JSON.stringify(firebaseContext.user || null),
+            __firestore: JSON.stringify(firebaseContext.firestore || null),
           };
         } catch {}
 
