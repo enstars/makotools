@@ -11,6 +11,7 @@ import {
   Group,
   Stack,
   BackgroundImage,
+  keyframes,
 } from "@mantine/core";
 import Image, { ImageProps, StaticImageData } from "next/future/image";
 import { ImageProps as MantineImageProps } from "@mantine/core";
@@ -39,11 +40,20 @@ function loader({ src }) {
   return src;
 }
 
+const flash = keyframes({
+  "from, to": { opacity: 0.75 },
+  "50%": { opacity: 1 },
+});
+
 const useStyles = createStyles(
   (theme, { radius, placeholderURL }: MantineImageProps, getRef) => ({
     picture: {
       position: "relative",
       display: "block",
+      "&, source, img": {
+        color: "transparent",
+        background: "transparent",
+      },
     },
     placeholder: {
       display: "block",
@@ -54,8 +64,9 @@ const useStyles = createStyles(
       height: "100%",
       borderRadius: radius,
       overflow: "hidden",
-      zIndex: -1,
+      zIndex: 0,
       pointerEvents: "none",
+      transition: theme.other.transition,
       "::after": {
         content: "''",
         background: `no-repeat center/100% 100% url(${placeholderURL})`,
@@ -65,8 +76,12 @@ const useStyles = createStyles(
         left: 0,
         width: "100%",
         height: "100%",
-        filter: "blur(20px)",
+        filter: "saturate(160%) blur(20px)",
+        // animation: `${flash} 16s ease-in-out infinite`,
       },
+    },
+    placeholderLoaded: {
+      opacity: 0,
     },
     img: {
       borderRadius: radius,
@@ -94,6 +109,13 @@ const useStyles = createStyles(
     },
     tcWrapper: { width: "100%" },
     tcContent: { width: "100%" },
+    actionIconRoot: {
+      background: theme.colors.dark[9] + "99",
+      color: theme.white,
+      ":hover": {
+        background: theme.colors.dark[9] + "DD",
+      },
+    },
   })
 );
 interface PictureProps extends NextMantineImageProps {
@@ -103,7 +125,7 @@ interface PictureProps extends NextMantineImageProps {
   transparent?: boolean;
 }
 
-function Picture(props: PictureProps) {
+function Picture({ children, ...props }: PictureProps) {
   const {
     src: originalSrc,
     srcB2,
@@ -111,7 +133,6 @@ function Picture(props: PictureProps) {
     sx,
     styles,
     className,
-    children,
     action = "none",
     transparent = false,
   } = props;
@@ -126,7 +147,8 @@ function Picture(props: PictureProps) {
   const webpSrc = src?.replace("png", "webp");
   const downloadLink = src + "?download";
 
-  const downloadFile = () => {
+  const downloadFile = (event) => {
+    event.stopPropagation();
     downloadFromURL(downloadLink);
   };
 
@@ -153,10 +175,15 @@ function Picture(props: PictureProps) {
         component="picture"
         sx={sx}
         styles={styles}
-        className={cx(classes.picture)}
+        className={cx(classes.picture, className)}
         radius={props.radius}
       >
-        <div className={classes.placeholder} />
+        <div
+          className={cx(
+            classes.placeholder,
+            loaded && classes.placeholderLoaded
+          )}
+        />
         <source srcSet={webpSrc} />
         {/* eslint-disable-next-line jsx-a11y/alt-text */}
         <Image
@@ -164,8 +191,8 @@ function Picture(props: PictureProps) {
           fill
           // width={10}
           // height={10}
+          placeholder="empty"
           src={src}
-          className={cx(classes.img, className, loaded && classes.loadedImg)}
           onContextMenu={() => {
             if (isB2Optimized || webpSrc)
               notify("info", {
@@ -176,25 +203,35 @@ function Picture(props: PictureProps) {
           }}
           onLoadingComplete={() => setLoaded(true)}
           {...props}
+          className={cx(
+            classes.img,
+            className,
+            loaded ? classes.loadedImg : ""
+          )}
         />
         {action === "download" && (
           <ActionIcon
+            size="sm"
             sx={{ position: "absolute", right: 4, bottom: 4 }}
             onClick={downloadFile}
             component="a"
+            className={classes.actionIconRoot}
           >
-            <IconDownload size={16} />
+            <IconDownload size={14} />
           </ActionIcon>
         )}
         {action === "view" && (
           <>
             <ActionIcon
-              variant="light"
-              color="dark"
-              sx={{ position: "absolute", right: 4, bottom: 4, color: "white" }}
-              onClick={() => setOpened((o) => !o)}
+              size="sm"
+              sx={{ position: "absolute", right: 4, bottom: 4 }}
+              onClick={(event) => {
+                event.stopPropagation();
+                setOpened((o) => !o);
+              }}
+              className={classes.actionIconRoot}
             >
-              <IconArrowsDiagonal size={16} />
+              <IconArrowsDiagonal size={14} />
             </ActionIcon>
             <Modal
               size="lg"

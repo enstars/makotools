@@ -116,45 +116,38 @@ export default function CardCard({
         <Group
           // grow
           sx={{
-            "&:hover .mantine-Image-imageWrapper": { opacity: 0.25 },
+            "&:hover picture": { opacity: 0.25 },
           }}
           spacing={3}
         >
           {["normal", "evolution"].map((type) => (
             <Picture
               key={type}
-              // styles={{
-              //   figure: {
-              //     width: "100%",
-              //     height: "100%",
-              //     "&:hover > figcaption > div": {
-              //       left: -12.5 - 30,
-              //     },
-              //     "&&&:hover > div": { opacity: 0.9 },
-              //   },
-              //   imageWrapper: {
-              //     height: "100%",
-              //     width: "100%",
-              //     transition: theme.other.transition,
-              //   },
-              //   image: {
-              //     objectFit: "cover",
-              //     objectPosition: "center center",
-              //   },
-              // }}
-              // // width={100}
-              // // height={100}
               sx={{
-                position: "relative",
                 height: 100,
                 flexBasis: 0,
                 flexShrink: 1,
                 flexGrow: 1,
                 maxWidth: "100%",
-                "&:hover": { flexGrow: card.rarity >= 4 ? 2.5 : 1.1 },
                 transition: theme.other.transition,
                 img: {
                   width: "100%",
+                  objectPosition: "top center",
+                },
+                ".mantine-ActionIcon-root": {
+                  opacity: 0,
+                  transition: theme.other.transition,
+                },
+                "&&:hover": {
+                  flexGrow: card.rarity >= 4 ? 2.5 : 1.1,
+                  opacity: 1,
+                  ".mantine-ActionIcon-root": {
+                    opacity: 1,
+                  },
+
+                  ".mantine-Paper-root": {
+                    left: -12.5 - 30,
+                  },
                 },
               }}
               srcB2={
@@ -164,15 +157,10 @@ export default function CardCard({
               }
               alt={card.title}
               radius={3}
-              // // height="100%"
-              // withPlaceholder
-              // placeholder={
-              //   <>
-              //     <Skeleton width="100%" height="100%" />
-              //   </>
-              // }
-              // caption={type === "normal" && <RarityBadge card={card} />}
-            />
+              action="download"
+            >
+              {type === "normal" && <RarityBadge card={card} />}
+            </Picture>
           ))}
         </Group>
       </Card.Section>
