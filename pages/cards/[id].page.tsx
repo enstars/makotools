@@ -31,6 +31,7 @@ import NameOrder from "../../components/utilities/formatting/NameOrder";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { getLocalizedNumber } from "../../components/utilities/formatting/CardStatsNumber";
 import { LoadedData } from "../../types/makotools";
+import Picture from "../../components/core/Picture";
 
 import Stats, { sumStats } from "./components/Stats";
 import Skills from "./components/Skills";
@@ -115,14 +116,15 @@ function Page({
             key={type}
             sx={{ minHeight: 10, flexGrow: 1 }}
           >
-            <ImageViewer
+            <Picture
               radius="md"
               alt={card.main.title}
               withPlaceholder
               src={getB2File(
                 `assets/card_rectangle4_${card.main.id}_${type}.png`
               )}
-            ></ImageViewer>
+              action="view"
+            ></Picture>
           </AspectRatio>
         ))}
       </Group>

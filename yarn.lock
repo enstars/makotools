@@ -2747,6 +2747,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@pronestor/react-zoom-pan-pinch@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "@pronestor/react-zoom-pan-pinch@npm:2.3.0"
+  peerDependencies:
+    react: ^17.0.2 || ^18.0.0
+    react-dom: ^17.0.2 || ^18.0.0
+  checksum: 9d6511b96fb77fcb87b11d30a1f6cef531f40b4aaa59eb9f3f9a3cf6f86b9d131516b6db8ea0e3a373c8db23581b7d20b985d160ad4f3226b8f65dfd073193ff
+  languageName: node
+  linkType: hard
+
 "@protobufjs/aspromise@npm:^1.1.1, @protobufjs/aspromise@npm:^1.1.2":
   version: 1.1.2
   resolution: "@protobufjs/aspromise@npm:1.1.2"
@@ -6615,6 +6625,7 @@ __metadata:
     "@mantine/nprogress": ^5.2.7
     "@mantine/rte": ^5.2.7
     "@mantine/spotlight": ^5.2.7
+    "@pronestor/react-zoom-pan-pinch": ^2.3.0
     "@svgr/webpack": ^6.3.1
     "@tabler/icons": ^1.95.0
     "@types/lodash": ^4.14.184
@@ -6651,6 +6662,7 @@ __metadata:
     react-dom: ^18.2.0
     react-globalize: ^1.0.0
     react-infinite-scroll-component: ^6.1.0
+    react-zoom-pan-pinch: ^2.1.3
     sass: ^1.54.9
     sass-loader: ^13.0.2
     styled-components: ^5.3.5
@@ -7777,6 +7789,16 @@ __metadata:
     react: ">=16.6.0"
     react-dom: ">=16.6.0"
   checksum: b67bf5b3e86dbab72d658b9a52a3589e5960583ab28c7c66272427d8fe30d4c7de422d5046ae96bd2683cdf80cc3264b2516f5ce80cae1dbe6cf3ca6dda392c5
+  languageName: node
+  linkType: hard
+
+"react-zoom-pan-pinch@npm:^2.1.3":
+  version: 2.1.3
+  resolution: "react-zoom-pan-pinch@npm:2.1.3"
+  peerDependencies:
+    react: ^17.0.2
+    react-dom: ^17.0.2
+  checksum: 4694c63f32b7b9fbd71860b98e6ad5502617c66520bec747d88ef4c1db33cc2810b52ebb799f07128f128a0902d821ea1039b291fffb20f71530113ecd2f7c02
   languageName: node
   linkType: hard
 

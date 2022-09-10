@@ -7,6 +7,7 @@ import ImageViewer from "../../components/core/ImageViewer";
 import Reactions from "../../components/sections/Reactions";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { getLayout } from "../../components/Layout";
+import Picture from "../../components/core/Picture";
 
 function Page({ character }: { character: any }) {
   const getBreadcrumbs = (path: string) => {
@@ -84,6 +85,17 @@ function Page({ character }: { character: any }) {
 
       Age
       {character.age} */}
+
+      <Picture
+        srcB2={`render/character_full1_${character.character_id}.png`}
+        alt={character.first_name}
+        sx={{
+          width: 300,
+          height: 600,
+        }}
+        action="view"
+        transparent
+      />
     </>
   );
 }
