@@ -10,6 +10,7 @@ import {
   ActionIcon,
   Group,
   Stack,
+  BackgroundImage,
 } from "@mantine/core";
 import Image, { ImageProps, StaticImageData } from "next/future/image";
 import { ImageProps as MantineImageProps } from "@mantine/core";
@@ -39,15 +40,43 @@ function loader({ src }) {
 }
 
 const useStyles = createStyles(
-  (theme, { radius }: MantineImageProps, getRef) => ({
+  (theme, { radius, placeholderURL }: MantineImageProps, getRef) => ({
     picture: {
       position: "relative",
       display: "block",
+    },
+    placeholder: {
+      display: "block",
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      borderRadius: radius,
+      overflow: "hidden",
+      zIndex: -1,
+      pointerEvents: "none",
+      "::after": {
+        content: "''",
+        background: `no-repeat center/100% 100% url(${placeholderURL})`,
+        display: "block",
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        filter: "blur(20px)",
+      },
     },
     img: {
       borderRadius: radius,
       objectFit: "cover",
       maxWidth: "100%",
+      opacity: 0,
+      transition: theme.other.transition,
+    },
+    loadedImg: {
+      opacity: 1,
     },
     radius: {
       borderRadius: radius,
@@ -71,24 +100,10 @@ interface PictureProps extends NextMantineImageProps {
   action?: "none" | "view" | "download";
   srcB2?: string;
   src?: string | StaticImageData;
+  transparent?: boolean;
 }
 
 function Picture(props: PictureProps) {
-  const theme = useMantineTheme();
-  const { classes, cx } = useStyles({
-    radius:
-      typeof props.radius === "string"
-        ? theme.radius[props.radius]
-        : props.radius,
-  });
-
-  const [opened, setOpened] = useState<boolean>(false);
-
-  if (typeof props.src !== "undefined" && typeof props.src !== "string") {
-    // eslint-disable-next-line jsx-a11y/alt-text
-    return <Image {...(props as ImageProps)} />;
-  }
-
   const {
     src: originalSrc,
     srcB2,
@@ -98,7 +113,12 @@ function Picture(props: PictureProps) {
     className,
     children,
     action = "none",
+    transparent = false,
   } = props;
+  const theme = useMantineTheme();
+
+  const [loaded, setLoaded] = useState<boolean>(false);
+  const [opened, setOpened] = useState<boolean>(false);
 
   const src = originalSrc || getB2File(srcB2 as string);
   const isB2Optimized = !!srcB2;
@@ -110,6 +130,23 @@ function Picture(props: PictureProps) {
     downloadFromURL(downloadLink);
   };
 
+  const hasPlaceholder = isB2Optimized && !transparent;
+  const placeholderURL = hasPlaceholder
+    ? src?.replace(".png", "-placeholder.jpg")
+    : undefined;
+
+  const { classes, cx } = useStyles({
+    radius:
+      typeof props.radius === "string"
+        ? theme.radius[props.radius]
+        : props.radius,
+    placeholderURL,
+  });
+
+  if (typeof props.src !== "undefined" && typeof props.src !== "string") {
+    // eslint-disable-next-line jsx-a11y/alt-text
+    return <Image {...(props as ImageProps)} />;
+  }
   return (
     <>
       <Box
@@ -117,7 +154,9 @@ function Picture(props: PictureProps) {
         sx={sx}
         styles={styles}
         className={cx(classes.picture)}
+        radius={props.radius}
       >
+        <div className={classes.placeholder} />
         <source srcSet={webpSrc} />
         {/* eslint-disable-next-line jsx-a11y/alt-text */}
         <Image
@@ -126,7 +165,7 @@ function Picture(props: PictureProps) {
           // width={10}
           // height={10}
           src={src}
-          className={cx(classes.img, className)}
+          className={cx(classes.img, className, loaded && classes.loadedImg)}
           onContextMenu={() => {
             if (isB2Optimized || webpSrc)
               notify("info", {
@@ -135,6 +174,7 @@ function Picture(props: PictureProps) {
                   "We recommend you use the download / view file button on the bottom right to get an uncompressed PNG file. Alternatively, you can also disable WEBPs entirely in Settings.",
               });
           }}
+          onLoadingComplete={() => setLoaded(true)}
           {...props}
         />
         {action === "download" && (

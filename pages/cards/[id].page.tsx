@@ -120,9 +120,7 @@ function Page({
               radius="md"
               alt={card.main.title}
               withPlaceholder
-              src={getB2File(
-                `assets/card_rectangle4_${card.main.id}_${type}.png`
-              )}
+              srcB2={`assets/card_rectangle4_${card.main.id}_${type}.png`}
               action="view"
             ></Picture>
           </AspectRatio>

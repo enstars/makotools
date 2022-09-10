@@ -157,11 +157,11 @@ export default function CardCard({
                   width: "100%",
                 },
               }}
-              src={getB2File(
+              srcB2={
                 card.rarity >= 4
                   ? `assets/card_still_full1_${card.id}_${type}.png` // 4-5 -> full cg
                   : `assets/card_rectangle4_${card.id}_${type}.png` // 1-3 -> frameless
-              )}
+              }
               alt={card.title}
               radius={3}
               // // height="100%"
