@@ -36,7 +36,7 @@ function FirebaseUserProvider({
           firestore: serverData?.firestore,
         }
       : {
-          loading: true,
+          loggedIn: false,
         }
   );
 
@@ -88,7 +88,7 @@ function FirebaseUserProvider({
               setAppColorScheme(currentUserData.dark_mode ? "dark" : "light");
           }
         } catch (e) {
-          console.log(e);
+          console.log("error: ", e);
           showNotification({
             title: "Problem with Firestore",
             message: JSON.stringify(e),

@@ -180,15 +180,15 @@ function MakoTools({
           setAppColorScheme={setAppColorScheme}
           colorScheme={colorScheme}
           serverData={{
-            user: JSON.parse(pageProps?.__user || "null"),
-            firestore: JSON.parse(pageProps?.__firestore || "null"),
+            user: JSON.parse(pageProps.__user),
+            firestore: JSON.parse(pageProps.__firestore),
           }}
         >
           {/*  TODO: Remove this just use the theme povider */}
           <DayjsProvider>
             <ColorSchemeProvider
               colorScheme={colorScheme}
-              setAppColorScheme={setAppColorScheme}
+              toggleColorScheme={setAppColorScheme}
             >
               {getLayout(<Component {...pageProps} />, pageProps)}
             </ColorSchemeProvider>
@@ -199,7 +199,7 @@ function MakoTools({
   );
 }
 
-MakoTools.getInitialProps = ({ ctx }) => {
+MakoTools.getInitialProps = ({ ctx }: { ctx: any }) => {
   return {
     colorScheme: getCookie("color-scheme", ctx) || "light",
   };
