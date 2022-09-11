@@ -45,7 +45,7 @@ function Page({ profile }: { profile: UserData }) {
   console.log(dayjs(profile.profile__start_playing).format("MMMM YYYY"));
   return (
     <>
-      {profile?.profile__banner && profile?.profile__banner?.length && (
+      {profile?.profile__banner && profile?.profile__banner?.length ? (
         <Box>
           <Box sx={{ marginLeft: "-100%", marginRight: "-100%" }}>
             <Carousel
@@ -93,7 +93,7 @@ function Page({ profile }: { profile: UserData }) {
             </Carousel>
           </Box>
         </Box>
-      )}
+      ) : null}
       {profile.name ? (
         <>
           <PageTitle
