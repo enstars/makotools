@@ -2,6 +2,7 @@ const CONSTANTS = {
   MAKOTOOLS: {
     EMAIL: "makotools@ensemble.moe",
     LINKS: {},
+    COLOR: "#3C59D1",
     TWITTER_UN: "enstars_link",
     SITE_URL: "https://stars.ensemble.moe/",
     SITE_META_BANNER: "meta.jpg",

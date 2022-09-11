@@ -4,18 +4,21 @@ import { CONSTANTS } from "../../services/constants";
 import { PageMeta } from "../../types/makotools";
 
 function Meta({ title, desc, img }: PageMeta) {
-  console.log("meta", title, desc, img);
+  // console.log("meta", title, desc, img);
+
   const pageTitle = title
     ? `${title} - ${CONSTANTS.MAKOTOOLS.SITE_TITLE}`
     : CONSTANTS.MAKOTOOLS.SITE_TITLE;
   const pageDesc = desc || CONSTANTS.MAKOTOOLS.META_DESC;
   const pageImg =
     img || CONSTANTS.MAKOTOOLS.SITE_URL + CONSTANTS.MAKOTOOLS.SITE_META_BANNER;
+
   return (
     <Head>
       <title>{pageTitle}</title>
       <meta name="title" content={pageTitle} />
       <meta name="description" content={pageDesc} />
+      <meta name="theme-color" content={CONSTANTS.MAKOTOOLS.COLOR}></meta>
 
       <meta property="og:url" content={CONSTANTS.MAKOTOOLS.SITE_URL} />
       <meta property="og:title" content={pageTitle} />
