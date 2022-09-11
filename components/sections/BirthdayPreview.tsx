@@ -22,8 +22,6 @@ function retrieveClosestBirthdays(
     birthday: todaysDate,
   };
 
-  console.log(characters);
-
   // today's date
   let charIDsBirthdays: CharIDAndBirthday[] = [todaysDateObj];
 
@@ -51,15 +49,13 @@ function retrieveClosestBirthdays(
     }
   });
 
-  console.log(charIDsBirthdays);
-
   // find today's date in array and retrieve the next 5 dates
   let todayIndex = charIDsBirthdays.indexOf(todaysDateObj);
   todayIndex++;
 
   let newArray: CharIDAndBirthday[] = [];
 
-  while (newArray.length < 5) {
+  while (newArray.length < 3) {
     newArray.push(charIDsBirthdays[todayIndex]);
     if (todayIndex === charIDsBirthdays.length - 1) {
       todayIndex = -1;
@@ -75,21 +71,33 @@ function retrieveClosestBirthdays(
 function BirthdayCard({ ...props }) {
   const dayjs = useDayjs();
   const formattedDate = dayjs(props.character.birthday).format("MMM D");
-  console.log(props.character);
   return (
     <Accordion.Panel>
       <Link href={`/characters/${props.character.character_id}`} passHref>
-        <Card withBorder component="a" className={styles.wrapper}>
+        <Card
+          withBorder
+          component="a"
+          className={styles.wrapper}
+          sx={{
+            background: `linear-gradient(to right, transparent , ${props.character.image_color}4f)`,
+          }}
+        >
           <Image
-            className={styles.alignImage}
+            className={`${styles.alignImage} ${
+              props.character.character_id === 25
+                ? styles.CHIAKI
+                : props.character.character_id === 30
+                ? styles.NAZUNYAN
+                : ""
+            }`}
             src={getB2File(
               `render/character_full1_${props.character.character_id}.png`
             )}
             alt={`${props.character.first_name} ${props.character.last_name}`}
-            width={500}
+            width={props.character.character_id === 25 ? 600 : 500}
           />
           <Text>{formattedDate}</Text>
-          <Text size="lg" weight={600}>
+          <Text size="lg" weight={700}>
             {props.character.first_name} {props.character.last_name}
           </Text>
         </Card>

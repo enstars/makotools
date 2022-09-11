@@ -1,9 +1,21 @@
 .wrapper {
     display: block;
     width: 300px;
-    height: 200px;
+    height: 100px;
 }
 
 .alignImage {
-    left: 0;
+    margin: 0;
+    position: absolute;
+    left: -10%;
+    top: 0;
+}
+
+.CHIAKI {
+    left: -30%;
+    top: -90%;
+}
+
+.NAZUNYAN {
+    top: -50%;
 }
