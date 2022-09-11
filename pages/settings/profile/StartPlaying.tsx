@@ -124,22 +124,24 @@ function StartPlaying() {
           searchable
           value={picked.unknown ? null : picked.year}
           onChange={(value) => {
-            setPicked((p) => {
-              let currentMonth = p.month;
-              const newMonths = months[value];
-              if (
-                moreThanString(currentMonth, newMonths[newMonths.length - 1])
-              ) {
-                currentMonth = newMonths[newMonths.length - 1];
-              } else if (!moreThanString(currentMonth, newMonths[0])) {
-                currentMonth = newMonths[0];
-              }
-              return {
-                ...p,
-                month: currentMonth,
-                year: value,
-              };
-            });
+            if (value) {
+              setPicked((p) => {
+                let currentMonth = p.month;
+                const newMonths = months[value];
+                if (
+                  moreThanString(currentMonth, newMonths[newMonths.length - 1])
+                ) {
+                  currentMonth = newMonths[newMonths.length - 1];
+                } else if (!moreThanString(currentMonth, newMonths[0])) {
+                  currentMonth = newMonths[0];
+                }
+                return {
+                  ...p,
+                  month: currentMonth,
+                  year: value,
+                };
+              });
+            }
           }}
         />
         <Select
@@ -156,10 +158,12 @@ function StartPlaying() {
           searchable
           value={picked.unknown ? null : picked.month}
           onChange={(value) => {
-            setPicked((p) => ({
-              ...p,
-              month: value,
-            }));
+            if (value) {
+              setPicked((p) => ({
+                ...p,
+                month: value,
+              }));
+            }
           }}
         />
         {/* <Box sx={{ flexGrow: 1 }} /> */}

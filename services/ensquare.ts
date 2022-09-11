@@ -31,7 +31,13 @@ export function getData<T = any>(
     .then((responseJson) => {
       let responseData = responseJson;
       if (responseData[0]) {
-        if (data !== "units" && data !== "unit_to_characters")
+        const dataRegion =
+          (source ? "data" : "data-tl") + "/" + lang + "/" + data;
+        if (
+          dataRegion !== "data/ja/units" &&
+          dataRegion !== "data/ja/unit_to_characters" &&
+          dataRegion !== "data-tl/en/characters"
+        )
           responseData = responseData.filter(
             (d: any) => d.compliant === "TRUE"
           );

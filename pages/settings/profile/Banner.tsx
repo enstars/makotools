@@ -47,14 +47,32 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-function Banner({ cards }) {
+function Banner({ cards }: { cards: GameCard[] | undefined }) {
   const { firebaseUser, setUserDataKey } = useFirebaseUser();
   const [acValue, setAcValue] = useState("");
 
   const { classes, cx } = useStyles();
   const [state, handlers] = useListState(
-    firebaseUser?.firestore?.profile__banner || []
+    (firebaseUser.loggedIn && firebaseUser.firestore?.profile__banner) || []
   );
+
+  useEffect(() => {
+    if (
+      firebaseUser.loggedIn &&
+      firebaseUser.firestore?.profile__banner &&
+      JSON.stringify(firebaseUser.firestore.profile__banner) !==
+        JSON.stringify(state)
+    ) {
+      setUserDataKey({ profile__banner: state });
+    }
+  }, [state, firebaseUser, setUserDataKey]);
+
+  if (!cards)
+    return (
+      <Text color="dimmed" size="sm">
+        Error fetching card data.
+      </Text>
+    );
 
   const items = state.map((item, index) => (
     <Draggable key={item} index={index} draggableId={item.toString()}>
@@ -101,18 +119,6 @@ function Banner({ cards }) {
   ));
   console.log(state, cards);
 
-  useEffect(() => {
-    if (
-      firebaseUser.loggedIn &&
-      firebaseUser?.firestore &&
-      firebaseUser.firestore?.profile__banner &&
-      JSON.stringify(firebaseUser.firestore.profile__banner) !==
-        JSON.stringify(state)
-    ) {
-      setUserDataKey({ profile__banner: state });
-    }
-  }, [state]);
-
   return (
     <Input.Wrapper label="Banner Cards">
       <DragDropContext
@@ -137,7 +143,7 @@ function Banner({ cards }) {
         value={acValue}
         onChange={(value) => {
           console.log(value);
-          handlers.append(value);
+          if (value) handlers.append(parseInt(value));
           //   setUserDataKey({ profile__banner: [...state, value] });
         }}
         searchable
@@ -146,8 +152,10 @@ function Banner({ cards }) {
           cards
             ?.filter((c) => c?.title)
             ?.filter((c) => !state.includes(c.id))
-            ?.map((c) => ({ label: `(${c.title}) ${c.name}`, value: c.id })) ||
-          []
+            ?.map((c) => ({
+              label: `(${c.title}) ${c.name}`,
+              value: c.id.toString(),
+            })) || []
         }
         mt="xs"
         disabled={state?.length > 10}

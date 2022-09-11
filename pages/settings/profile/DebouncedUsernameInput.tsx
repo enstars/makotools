@@ -1,7 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-
 import { useDebouncedCallback } from "use-debounce";
-
 import {
   TextInput,
   Button,
@@ -15,15 +13,15 @@ import { IconCheck, IconX, IconAt } from "@tabler/icons";
 import { validateUsernameDb } from "../../../services/firebase/firestore";
 import { useFirebaseUser } from "../../../services/firebase/user";
 
-function DebouncedUsernameInput({ dataKey = "username", changedCallback }) {
+function DebouncedUsernameInput({ changedCallback = () => {} }) {
   const theme = useMantineTheme();
   const { firebaseUser, setUserDataKey } = useFirebaseUser();
   const [inputValue, setInputValue] = useState(
-    firebaseUser.firestore?.[dataKey]
+    firebaseUser.loggedIn ? firebaseUser.firestore.username : ""
   );
 
   const [newUsername, setNewUsername] = useState(
-    firebaseUser.firestore?.[dataKey]
+    firebaseUser.loggedIn ? firebaseUser.firestore.username : ""
   );
   const [usernameMsg, setUsernameMsg] = useState("");
   const [usernameJudgement, setUsernameJudgement] = useState(true);
@@ -38,47 +36,49 @@ function DebouncedUsernameInput({ dataKey = "username", changedCallback }) {
   );
 
   useEffect(() => {
-    setInputValue(firebaseUser.firestore?.[dataKey]);
-  }, [firebaseUser, dataKey]);
+    if (firebaseUser.loggedIn) setInputValue(firebaseUser.firestore.username);
+  }, [firebaseUser]);
 
-  const validateUsername = async (value) => {
-    setUsernameJudgement(false);
-    setNewUsername(null);
+  const validateUsername = async (value: string) => {
+    if (firebaseUser.loggedIn) {
+      setUsernameJudgement(false);
+      setNewUsername("");
 
-    // TODO : move this validation server side
-    if (value === firebaseUser.firestore.username) {
-      setUsernameMsg("");
-      setUsernameJudgement(true);
-    } else if (value.replace(/[a-z0-9_]/g, "").length > 0) {
-      setUsernameMsg(
-        "Username must only contain lowercase alphanumeric characters!"
-      );
-      setUsernameJudgement(true);
-    } else if (value.length === 0) {
-      setUsernameMsg("Username cannot be empty!");
-      setUsernameJudgement(true);
-    } else if (value.length < 4) {
-      setUsernameMsg("Username too short!");
-      setUsernameJudgement(true);
-    } else if (value.length > 15) {
-      setUsernameMsg("Username too long!");
-      setUsernameJudgement(true);
-    } else {
-      const usernameValid = await validateUsernameDb(value);
-      if (!usernameValid) {
-        setUsernameMsg("Username is taken!");
+      // TODO : move this validation server side
+      if (value === firebaseUser.firestore.username) {
+        setUsernameMsg("");
+        setUsernameJudgement(true);
+      } else if (value.replace(/[a-z0-9_]/g, "").length > 0) {
+        setUsernameMsg(
+          "Username must only contain lowercase alphanumeric characters!"
+        );
+        setUsernameJudgement(true);
+      } else if (value.length === 0) {
+        setUsernameMsg("Username cannot be empty!");
+        setUsernameJudgement(true);
+      } else if (value.length < 4) {
+        setUsernameMsg("Username too short!");
+        setUsernameJudgement(true);
+      } else if (value.length > 15) {
+        setUsernameMsg("Username too long!");
         setUsernameJudgement(true);
       } else {
-        setNewUsername(value);
-        setUsernameMsg("Username is available!");
-        setUsernameJudgement(true);
+        const usernameValid = await validateUsernameDb(value);
+        if (!usernameValid) {
+          setUsernameMsg("Username is taken!");
+          setUsernameJudgement(true);
+        } else {
+          setNewUsername(value);
+          setUsernameMsg("Username is available!");
+          setUsernameJudgement(true);
+        }
       }
     }
   };
 
   const validateAndSaveUsername = () => {
-    setUserDataKey({ [dataKey]: newUsername });
-    setNewUsername(null);
+    setUserDataKey({ username: newUsername });
+    setNewUsername("");
     changedCallback();
   };
 
@@ -93,7 +93,8 @@ function DebouncedUsernameInput({ dataKey = "username", changedCallback }) {
             setInputValue(e.target.value);
             memoizedHandleValueChange(e.target.value);
           }}
-          {...(inputValue === firebaseUser.firestore?.[dataKey]
+          {...(firebaseUser.loggedIn &&
+          inputValue === firebaseUser.firestore.username
             ? null
             : !usernameJudgement
             ? { rightSection: <Loader size="xs" /> }
@@ -111,7 +112,8 @@ function DebouncedUsernameInput({ dataKey = "username", changedCallback }) {
         />
         <Button
           onClick={validateAndSaveUsername}
-          {...(inputValue !== firebaseUser?.[dataKey] &&
+          {...(firebaseUser.loggedIn &&
+          inputValue !== firebaseUser.firestore.username &&
           (usernameJudgement || newUsername)
             ? null
             : { disabled: true })}
@@ -120,7 +122,9 @@ function DebouncedUsernameInput({ dataKey = "username", changedCallback }) {
         </Button>
       </Group>
       <Text mt="xs" color="dimmed" size="xs">
-        {inputValue !== firebaseUser?.[dataKey] && usernameJudgement
+        {firebaseUser.loggedIn &&
+        inputValue !== firebaseUser.firestore.username &&
+        usernameJudgement
           ? usernameMsg
           : "Pick a new username..."}
       </Text>
