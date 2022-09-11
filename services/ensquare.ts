@@ -24,11 +24,23 @@ export function getData<T = any>(
     ? `${CONSTANTS.EXTERNAL_URLS.DATA}${lang}/${data}.json`
     : `${CONSTANTS.EXTERNAL_URLS.DATA_TL}${lang}/${data}.json`;
   return fetch(databaseURL)
-    .then((response) => response.json())
+    .then((response) => {
+      console.log(response.url, response.status);
+      return response.json();
+    })
     .then((responseJson) => {
       let responseData = responseJson;
       if (responseData[0]) {
-        responseData = responseData.filter((d: any) => d.compliant === "TRUE");
+        const dataRegion =
+          (source ? "data" : "data-tl") + "/" + lang + "/" + data;
+        if (
+          dataRegion !== "data/ja/units" &&
+          dataRegion !== "data/ja/unit_to_characters" &&
+          dataRegion !== "data-tl/en/characters"
+        )
+          responseData = responseData.filter(
+            (d: any) => d.compliant === "TRUE"
+          );
         if (fields) {
           let filteredData: any = [];
           const flattenedDataArray = responseData.map(flatten);

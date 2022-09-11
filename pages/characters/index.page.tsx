@@ -9,7 +9,7 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 
-import { getLocalizedData } from "../../services/ensquare";
+import { getData, getLocalizedData } from "../../services/ensquare";
 import PageTitle from "../../components/sections/PageTitle";
 import { getLayout } from "../../components/Layout";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
@@ -32,6 +32,8 @@ function Page({
   unit_to_characters: any;
   units: any;
 }) {
+  console.log(characters, unitToCharacters, units);
+
   const [listCharacters, setListCharacters] = useState<CharacterCardProps[]>(
     []
   );
@@ -39,7 +41,7 @@ function Page({
   const [chosenUnit, setChosenUnit] = useState<string | null>(null);
   const theme = useMantineTheme();
   useEffect(() => {
-    let charactersWithUnits: GameCharacter[] = unitToCharacters.main.data;
+    let charactersWithUnits: GameCharacter[] = unitToCharacters.data;
 
     if (chosenUnit) {
       console.log(chosenUnit);
@@ -51,7 +53,7 @@ function Page({
     }
     const charactersWithUnitsSorted = _.sortBy(charactersWithUnits, [
       function findUnitOrder(charactersWithUnit) {
-        const thisUnit: GameUnit = units.main.data.filter(
+        const thisUnit: GameUnit = units.data.filter(
           (unit: GameUnit) => unit.unit_id === charactersWithUnit.unit_id
         )[0] || {
           name: "MaM",
@@ -80,14 +82,9 @@ function Page({
 
     setListCharacters(charactersFiltered);
     setfilterOptions(
-      units.main.data.sort((a: any, b: any) => !!(a?.order > b?.order))
+      units.data.sort((a: any, b: any) => !!(a?.order > b?.order))
     );
-  }, [
-    characters.main.data,
-    chosenUnit,
-    unitToCharacters.main.data,
-    units.main.data,
-  ]);
+  }, [characters.main.data, chosenUnit, unitToCharacters.data, units.data]);
 
   const handleNewUnit = (e: string) => {
     setChosenUnit(e);
@@ -145,13 +142,10 @@ function Page({
 
 export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
   const characters = await getLocalizedData("characters", locale);
-  const unit_to_characters = await getLocalizedData(
-    "unit_to_characters",
-    locale
-  );
-  const units = await getLocalizedData("units", locale);
+  const unit_to_characters = await getData("unit_to_characters", "ja", true);
+  const units = await getData("units", "ja", true);
 
-  console.log(unit_to_characters);
+  console.log("units", units);
 
   return {
     props: { characters, unit_to_characters, units },

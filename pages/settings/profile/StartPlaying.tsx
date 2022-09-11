@@ -20,7 +20,7 @@ const START_MONTH = 4;
 const thisYear = new Date().getFullYear();
 const thisMonth = new Date().getMonth();
 
-function moreThanString(a, b) {
+function moreThanString(a: string, b: string) {
   return parseInt(a) > parseInt(b);
 }
 
@@ -29,11 +29,10 @@ const years = [...Array(thisYear - START_YEAR + 1).keys()]
   .map((v) => v + START_YEAR)
   .map((y) => y.toString());
 
-const months = {
-  all: [...Array(12).keys()]
-    .map((v) => v + 1)
-    .map((v) => String(v).padStart(2, "0")),
-};
+const allMonths = [...Array(12).keys()]
+  .map((v) => v + 1)
+  .map((v) => String(v).padStart(2, "0"));
+const months: { [year: string]: string[] } = {};
 
 years.forEach((year) => {
   months[year] = [];
@@ -57,17 +56,24 @@ years.forEach((year) => {
 function StartPlaying() {
   const dayjs = useDayjs();
   const { firebaseUser, setUserDataKey } = useFirebaseUser();
+  const isFirestoreAccessible =
+    !firebaseUser.loading &&
+    firebaseUser.loggedIn &&
+    typeof firebaseUser.firestore !== undefined;
+
   const [picked, setPicked] = useState({
     month: (thisMonth + 1).toString().padStart(2, "0"),
     year: thisYear.toString().padStart(2, "0"),
     unknown: true,
   });
   const [data, setData] = useState(
-    firebaseUser.profile__start_playing || "0000-00-00"
+    (isFirestoreAccessible &&
+      firebaseUser?.firestore?.profile__start_playing) ||
+      "0000-00-00"
   );
 
   useEffect(() => {
-    if (firebaseUser.loggedIn && firebaseUser.firestore) {
+    if (isFirestoreAccessible && firebaseUser.firestore) {
       const startPlaying = firebaseUser.firestore.profile__start_playing;
       // console.log(firebaseUser.profile_start_playing);
       if (startPlaying && startPlaying !== "0000-00-00") {
@@ -118,27 +124,29 @@ function StartPlaying() {
           searchable
           value={picked.unknown ? null : picked.year}
           onChange={(value) => {
-            setPicked((p) => {
-              let currentMonth = p.month;
-              const newMonths = months[value];
-              if (
-                moreThanString(currentMonth, newMonths[newMonths.length - 1])
-              ) {
-                currentMonth = newMonths[newMonths.length - 1];
-              } else if (!moreThanString(currentMonth, newMonths[0])) {
-                currentMonth = newMonths[0];
-              }
-              return {
-                ...p,
-                month: currentMonth,
-                year: value,
-              };
-            });
+            if (value) {
+              setPicked((p) => {
+                let currentMonth = p.month;
+                const newMonths = months[value];
+                if (
+                  moreThanString(currentMonth, newMonths[newMonths.length - 1])
+                ) {
+                  currentMonth = newMonths[newMonths.length - 1];
+                } else if (!moreThanString(currentMonth, newMonths[0])) {
+                  currentMonth = newMonths[0];
+                }
+                return {
+                  ...p,
+                  month: currentMonth,
+                  year: value,
+                };
+              });
+            }
           }}
         />
         <Select
           data={
-            months.all.map((m) => ({
+            allMonths.map((m) => ({
               label: dayjs.months()[parseInt(m) - 1],
               value: m,
               disabled: !months?.[picked.year].includes(m),
@@ -150,10 +158,12 @@ function StartPlaying() {
           searchable
           value={picked.unknown ? null : picked.month}
           onChange={(value) => {
-            setPicked((p) => ({
-              ...p,
-              month: value,
-            }));
+            if (value) {
+              setPicked((p) => ({
+                ...p,
+                month: value,
+              }));
+            }
           }}
         />
         {/* <Box sx={{ flexGrow: 1 }} /> */}

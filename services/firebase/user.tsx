@@ -12,7 +12,10 @@ import { getFirestoreUserData, setFirestoreUserData } from "./firestore";
 const FirebaseUserContext = React.createContext<{
   firebaseUser: FirebaseUser;
   setUserDataKey: (data: any, callback?: () => any) => any;
-}>({ firebaseUser: { loading: true }, setUserDataKey: () => {} });
+}>({
+  firebaseUser: { loading: true, loggedIn: undefined },
+  setUserDataKey: () => {},
+});
 export const useFirebaseUser = () => useContext(FirebaseUserContext);
 
 function FirebaseUserProvider({
@@ -37,6 +40,7 @@ function FirebaseUserProvider({
         }
       : {
           loading: true,
+          loggedIn: undefined,
         }
   );
 
@@ -61,15 +65,14 @@ function FirebaseUserProvider({
 
   console.log("firebase user auth ", firebaseUser);
   useEffect(() => {
-    const userState = {
-      loading: false as const,
-      loggedIn: !!AuthUser.id,
-      user: AuthUser,
-    };
+    // if (userState.loggedIn) setFirebaseUser((s) => ({ ...s, ...userState }));
 
-    if (userState.loggedIn) setFirebaseUser((s) => ({ ...s, ...userState }));
-
-    if (userState.loggedIn) {
+    if (AuthUser.id) {
+      const userState = {
+        loading: false as const,
+        loggedIn: true as const,
+        user: AuthUser,
+      };
       const setFirestoreData = async () => {
         try {
           let currentUserData: UserData | undefined = undefined,
@@ -78,16 +81,21 @@ function FirebaseUserProvider({
             currentUserData = await getFirestoreUserData(AuthUser.id);
             fetchCount--;
           }
-          if (!currentUserData)
+          if (typeof currentUserData === "undefined") {
             showNotification({
               title: "Error",
               message:
-                "We had trouble fetching your user data. If this is your first time signing up, please refresh the page.",
+                "We had trouble fetching your user data. If this is your first time signing up, please try signing in again. If this error persists, please report at the Issues and Suggestions page.",
               color: "red",
               icon: <IconAlertTriangle size={16} />,
             });
-          else {
-            setFirebaseUser((s) => ({ ...s, firestore: currentUserData }));
+            AuthUser.signOut();
+          } else {
+            setFirebaseUser((s) => ({
+              ...s,
+              ...userState,
+              firestore: currentUserData as UserData,
+            }));
             if (currentUserData?.dark_mode)
               setAppColorScheme(currentUserData.dark_mode ? "dark" : "light");
           }
@@ -102,6 +110,12 @@ function FirebaseUserProvider({
         }
       };
       setFirestoreData();
+    } else {
+      const userState = {
+        loading: false as const,
+        loggedIn: false as const,
+      };
+      setFirebaseUser((s) => ({ ...s, ...userState }));
     }
   }, [AuthUser]);
 

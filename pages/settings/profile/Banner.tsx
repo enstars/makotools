@@ -18,9 +18,7 @@ import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 import { getB2File } from "../../../services/ensquare";
-
 import { useFirebaseUser } from "../../../services/firebase/user";
-
 import TextSetting from "../shared/TextSetting";
 
 const useStyles = createStyles((theme) => ({
@@ -49,21 +47,38 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-function Banner({ cards }) {
+function Banner({ cards }: { cards: GameCard[] | undefined }) {
   const { firebaseUser, setUserDataKey } = useFirebaseUser();
   const [acValue, setAcValue] = useState("");
 
   const { classes, cx } = useStyles();
   const [state, handlers] = useListState(
-    firebaseUser?.firestore?.profile__banner || []
+    (firebaseUser.loggedIn && firebaseUser.firestore?.profile__banner) || []
   );
+
+  useEffect(() => {
+    if (
+      firebaseUser.loggedIn &&
+      firebaseUser.firestore?.profile__banner &&
+      JSON.stringify(firebaseUser.firestore.profile__banner) !==
+        JSON.stringify(state)
+    ) {
+      setUserDataKey({ profile__banner: state });
+    }
+  }, [state, firebaseUser, setUserDataKey]);
+
+  if (!cards)
+    return (
+      <Text color="dimmed" size="sm">
+        Error fetching card data.
+      </Text>
+    );
 
   const items = state.map((item, index) => (
     <Draggable key={item} index={index} draggableId={item.toString()}>
       {(provided, snapshot) => (
         <Card
           radius="sm"
-          //   withBorder
           p={0}
           //   className={cx(classes.item, {
           //     [classes.itemDragging]: snapshot.isDragging,
@@ -73,18 +88,21 @@ function Banner({ cards }) {
           ref={provided.innerRef}
           sx={{ overflow: "hidden" }}
           mt="xs"
+          shadow="sm"
         >
           <Group>
             <Image
-              alt={cards.find((c) => c.id === item).title}
+              alt={cards.find((c) => c.id === item)?.title}
               src={getB2File(`assets/card_still_full1_${item}_evolution.png`)}
               width={64}
               height={64}
             />
             <Box sx={{ flexGrow: 1 }}>
-              <Text weight={700}>{cards.find((c) => c.id === item).title}</Text>
+              <Text weight={700}>
+                {cards.find((c) => c.id === item)?.title}
+              </Text>
               <Text size="sm" color="dimmed">
-                {cards.find((c) => c.id === item).name}
+                {cards.find((c) => c.id === item)?.name}
               </Text>
             </Box>
             <ActionIcon
@@ -100,18 +118,6 @@ function Banner({ cards }) {
     </Draggable>
   ));
   console.log(state, cards);
-
-  useEffect(() => {
-    if (
-      firebaseUser.loggedIn &&
-      firebaseUser?.firestore &&
-      firebaseUser.firestore?.profile__banner &&
-      JSON.stringify(firebaseUser.firestore.profile__banner) !==
-        JSON.stringify(state)
-    ) {
-      setUserDataKey({ profile__banner: state });
-    }
-  }, [state]);
 
   return (
     <Input.Wrapper label="Banner Cards">
@@ -137,7 +143,7 @@ function Banner({ cards }) {
         value={acValue}
         onChange={(value) => {
           console.log(value);
-          handlers.append(value);
+          if (value) handlers.append(parseInt(value));
           //   setUserDataKey({ profile__banner: [...state, value] });
         }}
         searchable
@@ -146,8 +152,10 @@ function Banner({ cards }) {
           cards
             ?.filter((c) => c?.title)
             ?.filter((c) => !state.includes(c.id))
-            ?.map((c) => ({ label: `(${c.title}) ${c.name}`, value: c.id })) ||
-          []
+            ?.map((c) => ({
+              label: `(${c.title}) ${c.name}`,
+              value: c.id.toString(),
+            })) || []
         }
         mt="xs"
         disabled={state?.length > 10}

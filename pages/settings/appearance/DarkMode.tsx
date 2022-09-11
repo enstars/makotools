@@ -7,6 +7,7 @@ function DarkMode() {
   const { colorScheme, other } = useMantineTheme();
   return (
     <SelectSetting
+      dataKey="dark_mode"
       value={colorScheme || "dark"}
       label={"Mode"}
       onChange={(value) => {

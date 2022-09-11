@@ -16,8 +16,8 @@ const nameOrderOptions = [
   },
 ];
 
-const nameOrderItem = forwardRef(function SelectItem(
-  { label, example, ...others },
+const nameOrderItem = forwardRef<HTMLDivElement>(function SelectItem(
+  { label, example, ...others }: { label: string; example: string },
   ref
 ) {
   return (
