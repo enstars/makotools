@@ -56,7 +56,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next lint && yarn run check-types",
+    "check-types": "tsc --noEmit",
     "tunnel": "cloudflared tunnel --url http://localhost:3000",
     "upgrade": "yarn upgrade-interactive"
   },

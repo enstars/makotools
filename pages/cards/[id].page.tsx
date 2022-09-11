@@ -162,12 +162,19 @@ export const getServerSideProps = getServerSideUser(
 
     const card = getItemFromLocalized<GameCard>(cards, cardID);
 
+    if (!card) {
+      return {
+        notFound: true,
+      };
+    }
+
     if (
       typeof card.mainLang.data === "undefined" &&
       card.subLang.status === "success" &&
       typeof card.subLang.data !== "undefined"
     ) {
       const prevMainLang = card.mainLang;
+      // @ts-ignore
       card.mainLang = card.subLang;
       card.subLang = prevMainLang;
     }
@@ -190,6 +197,7 @@ export const getServerSideProps = getServerSideUser(
     );
 
     if (
+      !character ||
       typeof character.main.data === "undefined" ||
       typeof character.mainLang.data === "undefined"
     ) {

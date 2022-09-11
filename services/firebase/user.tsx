@@ -36,20 +36,24 @@ function FirebaseUserProvider({
           firestore: serverData?.firestore,
         }
       : {
-          loggedIn: false,
+          loading: true,
         }
   );
 
   const setUserDataKey = (data: any, callback?: () => void) => {
     setFirestoreUserData(data, ({ status }) => {
       if (status === "success") {
-        setFirebaseUser((f) => ({
-          ...f,
-          firestore: {
-            ...f.firestore,
-            ...data,
-          },
-        }));
+        setFirebaseUser((f) =>
+          !f.loading && f.loggedIn
+            ? {
+                ...f,
+                firestore: {
+                  ...f.firestore,
+                  ...data,
+                },
+              }
+            : f
+        );
         if (callback) callback();
       }
     });
@@ -58,7 +62,7 @@ function FirebaseUserProvider({
   console.log("firebase user auth ", firebaseUser);
   useEffect(() => {
     const userState = {
-      loading: false,
+      loading: false as const,
       loggedIn: !!AuthUser.id,
       user: AuthUser,
     };
@@ -102,7 +106,7 @@ function FirebaseUserProvider({
   }, [AuthUser]);
 
   useEffect(() => {
-    if (firebaseUser.loggedIn)
+    if (!firebaseUser.loading && firebaseUser.loggedIn)
       setUserDataKey({ dark_mode: colorScheme === "dark" });
   }, [colorScheme]);
   // useEffect(() => {

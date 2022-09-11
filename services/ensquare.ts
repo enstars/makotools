@@ -14,12 +14,12 @@ import { parseStringify } from "./utilities";
 
 const flatten = require("flat");
 
-export function getData(
+export function getData<T = any>(
   data: string,
   lang: Locale = "ja",
   source: boolean = false,
   fields?: string[]
-): Promise<LoadedDataRegional> {
+): Promise<LoadedDataRegional<T>> {
   const databaseURL = source
     ? `${CONSTANTS.EXTERNAL_URLS.DATA}${lang}/${data}.json`
     : `${CONSTANTS.EXTERNAL_URLS.DATA_TL}${lang}/${data}.json`;
@@ -142,10 +142,10 @@ export function getItemFromLocalized<L>(
   data: LoadedData<L[]>,
   id: ID,
   field: string = "id"
-): LoadedData<L | undefined> {
+): LoadedData<L, L | undefined> | undefined {
   const matchId = (o: any) => o[field] === id;
 
-  return {
+  const matchedData = {
     main: {
       ...data.main,
       ...(data.main.status === "success"
@@ -165,4 +165,12 @@ export function getItemFromLocalized<L>(
         : { data: undefined }),
     },
   };
+
+  if (
+    typeof matchedData.main.data === "undefined" ||
+    typeof matchedData.mainLang.data === "undefined"
+  ) {
+    return undefined;
+  }
+  return matchedData as LoadedData<L, L | undefined>;
 }

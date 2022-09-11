@@ -1,7 +1,12 @@
 import Head from "next/head";
 import { Text, Box } from "@mantine/core";
 
-import { getData, getB2File, getLocalizedData } from "../../services/ensquare";
+import {
+  getData,
+  getB2File,
+  getLocalizedData,
+  getItemFromLocalized,
+} from "../../services/ensquare";
 import PageTitle from "../../components/sections/PageTitle";
 import ImageViewer from "../../components/core/ImageViewer";
 import Reactions from "../../components/sections/Reactions";
@@ -10,14 +15,6 @@ import { getLayout } from "../../components/Layout";
 import Picture from "../../components/core/Picture";
 
 function Page({ character }: { character: any }) {
-  const getBreadcrumbs = (path: string) => {
-    const pathNames = path.split("/");
-    pathNames[
-      pathNames.length - 1
-    ] = `${character.first_name} ${character.last_name}`;
-    return pathNames.filter((x) => x);
-  };
-
   return (
     <>
       <Head>
@@ -52,7 +49,6 @@ function Page({ character }: { character: any }) {
           </>
         }
         space={192}
-        getBreadcrumbs={getBreadcrumbs}
       >
         <Box
           sx={{
@@ -74,7 +70,7 @@ function Page({ character }: { character: any }) {
             alt={character.first_name}
             width={300}
             height={600}
-            objectfit="cover"
+            // objectfit="cover"
           />
         </Box>
       </PageTitle>
@@ -102,32 +98,45 @@ function Page({ character }: { character: any }) {
 
 export const getServerSideProps = getServerSideUser(
   async ({ res, locale, params }) => {
-    const characters = await getLocalizedData("characters", locale);
-    const { data: charactersEN } = await getData("characters", "en");
+    const characters = await getLocalizedData<GameCharacter[]>(
+      "characters",
+      locale
+    );
+    const charsEN = await getData<GameCharacter[]>("characters", "en");
+    if (!characters || charsEN.status === "error") return { notFound: true };
+    const { data: charactersEN } = charsEN;
+
+    if (!params?.id || Array.isArray(params?.id)) return { notFound: true };
+
     const lastSegment = params?.id?.toLocaleLowerCase();
     const characterID = parseInt(lastSegment, 10);
     const isName = isNaN(characterID);
-    const characterIndex = charactersEN.indexOf(
-      charactersEN.find(
-        isName
-          ? (item) =>
-              `${item.last_name} ${item.first_name}`.toLocaleLowerCase() ===
-                lastSegment ||
-              `${item.first_name} ${item.last_name}`.toLocaleLowerCase() ===
-                lastSegment ||
-              `${item.first_name}`.toLocaleLowerCase() === lastSegment
-          : (item) => item.character_id === characterID
-      )
+
+    const characterEN = charactersEN.find(
+      isName
+        ? (item) =>
+            `${item.last_name} ${item.first_name}`.toLocaleLowerCase() ===
+              lastSegment ||
+            `${item.first_name} ${item.last_name}`.toLocaleLowerCase() ===
+              lastSegment ||
+            `${item.first_name}`.toLocaleLowerCase() === lastSegment
+        : (item) => item.character_id === characterID
     );
 
-    if (characterIndex === -1) {
+    if (typeof characterEN === "undefined") {
       return {
         notFound: true,
       };
     }
 
     return {
-      props: { character: characters.mainLang.data[characterIndex] },
+      props: {
+        character: getItemFromLocalized(
+          characters,
+          characterEN.character_id,
+          "character_id"
+        ),
+      },
     };
   }
 );

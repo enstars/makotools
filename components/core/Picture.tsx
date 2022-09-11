@@ -15,7 +15,7 @@ import {
 } from "@mantine/core";
 import Image, { ImageProps, StaticImageData } from "next/future/image";
 import { ImageProps as MantineImageProps } from "@mantine/core";
-import { useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import {
   IconArrowsDiagonal,
   IconArrowUpRightCircle,
@@ -36,7 +36,7 @@ import { downloadFromURL } from "../../services/utilities";
 import notify from "../../services/notify";
 import { CONSTANTS } from "../../services/constants";
 
-function loader({ src }) {
+function loader({ src }: { src: string }) {
   return src;
 }
 
@@ -46,7 +46,11 @@ const flash = keyframes({
 });
 
 const useStyles = createStyles(
-  (theme, { radius, placeholderURL }: MantineImageProps, getRef) => ({
+  (
+    theme,
+    { radius, placeholderURL }: MantineImageProps & { placeholderURL?: string },
+    getRef
+  ) => ({
     picture: {
       position: "relative",
       display: "block",
@@ -126,7 +130,10 @@ interface PictureProps extends NextMantineImageProps {
   transparent?: boolean;
 }
 
-function Picture({ children, ...props }: PictureProps) {
+function PictureStringSrc({
+  children,
+  ...props
+}: Omit<PictureProps, "src"> & { src?: string }) {
   const {
     src: originalSrc,
     srcB2,
@@ -148,7 +155,7 @@ function Picture({ children, ...props }: PictureProps) {
   const webpSrc = src?.replace("png", "webp");
   const downloadLink = src + "?download";
 
-  const downloadFile = (event) => {
+  const downloadFile = (event: SyntheticEvent) => {
     event.stopPropagation();
     downloadFromURL(downloadLink);
   };
@@ -166,10 +173,6 @@ function Picture({ children, ...props }: PictureProps) {
     placeholderURL,
   });
 
-  if (typeof props.src !== "undefined" && typeof props.src !== "string") {
-    // eslint-disable-next-line jsx-a11y/alt-text
-    return <Image {...(props as ImageProps)} />;
-  }
   return (
     <>
       <Box
@@ -177,7 +180,6 @@ function Picture({ children, ...props }: PictureProps) {
         sx={sx}
         styles={styles}
         className={cx(classes.picture, className)}
-        radius={props.radius}
       >
         <div
           className={cx(
@@ -226,7 +228,7 @@ function Picture({ children, ...props }: PictureProps) {
             <ActionIcon
               size="sm"
               sx={{ position: "absolute", right: 4, bottom: 4 }}
-              onClick={(event) => {
+              onClick={(event: SyntheticEvent) => {
                 event.stopPropagation();
                 setOpened((o) => !o);
               }}
@@ -296,7 +298,6 @@ function Picture({ children, ...props }: PictureProps) {
                       }}
                     >
                       <Stack
-                        position="center"
                         spacing={2}
                         sx={{
                           position: "absolute",
@@ -397,6 +398,18 @@ function Picture({ children, ...props }: PictureProps) {
         {children}
       </Box>
     </>
+  );
+}
+
+function Picture(props: PictureProps) {
+  if (typeof props.src !== "undefined" && typeof props.src !== "string") {
+    // eslint-disable-next-line jsx-a11y/alt-text
+    return <Image {...(props as ImageProps)} />;
+  }
+  return (
+    <PictureStringSrc
+      {...(props as Omit<PictureProps, "src"> & { src?: string })}
+    />
   );
 }
 

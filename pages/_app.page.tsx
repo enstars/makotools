@@ -10,6 +10,7 @@ import {
   Tooltip,
   NavLink,
   createEmotionCache,
+  ColorScheme,
 } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
 import "@fontsource/sora/400.css";
@@ -42,14 +43,15 @@ const emotionCache = createEmotionCache({ key: "mktl" });
 function MakoTools({
   Component,
   pageProps,
-  ...props
+  initColorScheme,
 }: {
   Component: any;
   pageProps: any;
+  initColorScheme: ColorScheme;
 }) {
   const router = useRouter();
   const [colorScheme, setStateColorScheme] = useState(
-    props.colorScheme || "dark"
+    initColorScheme || "dark"
   );
 
   const getLayout = Component.getLayout || ((page: any) => page);
@@ -107,12 +109,6 @@ function MakoTools({
                 },
               },
             }),
-          },
-          Image: {
-            image: {
-              position: "relative",
-              zIndex: 10,
-            },
           },
         },
         colors: {
@@ -201,7 +197,7 @@ function MakoTools({
 
 MakoTools.getInitialProps = ({ ctx }: { ctx: any }) => {
   return {
-    colorScheme: getCookie("color-scheme", ctx) || "light",
+    initColorScheme: getCookie("color-scheme", ctx) || "light",
   };
 };
 

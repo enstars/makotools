@@ -12,6 +12,7 @@ import {
   Switch,
   MultiSelect,
   Button,
+  Card,
 } from "@mantine/core";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useLocalStorage } from "@mantine/hooks";
@@ -234,6 +235,7 @@ function Page({
             {slicedCardsList.map((e, i) => {
               const localizedCard = getItemFromLocalized(cards, e.id);
               if (
+                localizedCard &&
                 typeof localizedCard.main.data !== "undefined" &&
                 typeof localizedCard.mainLang.data !== "undefined"
               )
@@ -261,6 +263,11 @@ function Page({
                   //   {e.id}
                   // </div>
                 );
+              return (
+                <Card key={e.id} withBorder p={0}>
+                  An error occured
+                </Card>
+              );
             })}
           </InfiniteScroll>
         </>
