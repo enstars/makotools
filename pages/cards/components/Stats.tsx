@@ -1,5 +1,6 @@
 import {
   Box,
+  BoxProps,
   Button,
   Drawer,
   Group,
@@ -11,8 +12,9 @@ import {
 import { useState } from "react";
 
 import CardStatsNumber from "../../../components/utilities/formatting/CardStatsNumber";
+import { LoadedData } from "../../../types/makotools";
 
-function LabelCell({ total, ...props }: { total?: any }) {
+function LabelCell({ total, ...props }: BoxProps & { total?: any }) {
   return (
     <Box
       component={"td"}
@@ -38,7 +40,7 @@ function StatCell({
   total,
   children,
   ...props
-}: {
+}: BoxProps & {
   header?: boolean;
   total?: any;
   children?: any;
@@ -86,14 +88,14 @@ function BigData({ data, label }: { data: any; label: string }) {
   );
 }
 
-function sumStats(stats: Stats, fallback = "?"): number | string {
-  const sum = stats?.da + stats?.vo + stats?.pf;
-  if (!stats?.da) return fallback;
+function sumStats(stats: Stats | any, fallback = "?"): number | string {
+  if (!stats?.da || !stats?.vo || !stats?.pf) return fallback;
+  const sum = stats.da + stats.vo + stats.pf;
   return sum;
 }
 export { sumStats };
 
-function Stats({ card }: { card: any }) {
+function Stats({ card }: { card: LoadedData<GameCard> }) {
   const [opened, setOpened] = useState(false);
   return (
     <>
@@ -149,30 +151,32 @@ function Stats({ card }: { card: any }) {
               </tr>
             </thead>
             <tbody>
-              {["min", "max", "ir", "ir1", "ir2", "ir3", "ir4"].map((p) => {
-                if (card.main.stats?.[p]?.da) {
-                  const { da, vo, pf } = card.main.stats?.[p];
-                  const sum = da + vo + pf;
+              {["min", "max", "ir", "ir1", "ir2", "ir3", "ir4"].map(
+                (p: StatLevel) => {
+                  if (card.main.data?.stats?.[p]?.da) {
+                    const { da, vo, pf } = card.main.data?.stats?.[p];
+                    const sum = da + vo + pf;
+                    return (
+                      <tr key={p}>
+                        <LabelCell>{p}</LabelCell>
+                        <StatCell>{da || "?"}</StatCell>
+                        <StatCell>{vo || "?"}</StatCell>
+                        <StatCell>{pf || "?"}</StatCell>
+                        <StatCell total>{sum || "?"}</StatCell>
+                      </tr>
+                    );
+                  }
                   return (
                     <tr key={p}>
                       <LabelCell>{p}</LabelCell>
-                      <StatCell>{da || "?"}</StatCell>
-                      <StatCell>{vo || "?"}</StatCell>
-                      <StatCell>{pf || "?"}</StatCell>
-                      <StatCell total>{sum || "?"}</StatCell>
+                      <StatCell>?</StatCell>
+                      <StatCell>?</StatCell>
+                      <StatCell>?</StatCell>
+                      <StatCell>?</StatCell>
                     </tr>
                   );
                 }
-                return (
-                  <tr key={p}>
-                    <LabelCell>{p}</LabelCell>
-                    <StatCell>?</StatCell>
-                    <StatCell>?</StatCell>
-                    <StatCell>?</StatCell>
-                    <StatCell>?</StatCell>
-                  </tr>
-                );
-              })}
+              )}
             </tbody>
           </Table>
         </ScrollArea>
@@ -181,19 +185,25 @@ function Stats({ card }: { card: any }) {
         <BigData
           label="Max stats (1 copy)"
           data={
-            <CardStatsNumber>{sumStats(card.main.stats?.ir)}</CardStatsNumber>
+            <CardStatsNumber>
+              {sumStats(card.main.data.stats?.ir)}
+            </CardStatsNumber>
           }
         />
         <BigData
           label="Max stats (3 copies)"
           data={
-            <CardStatsNumber>{sumStats(card.main.stats?.ir2)}</CardStatsNumber>
+            <CardStatsNumber>
+              {sumStats(card.main.data.stats?.ir2)}
+            </CardStatsNumber>
           }
         />
         <BigData
           label="Max stats (5 copies)"
           data={
-            <CardStatsNumber>{sumStats(card.main.stats?.ir4)}</CardStatsNumber>
+            <CardStatsNumber>
+              {sumStats(card.main.data.stats?.ir4)}
+            </CardStatsNumber>
           }
         />
       </Group>

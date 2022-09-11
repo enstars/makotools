@@ -6,7 +6,11 @@ import { LoadedDataRegional } from "../../../types/makotools";
 
 function OfficialityBadge({ langData }: { langData: LoadedDataRegional }) {
   const { firebaseUser } = useFirebaseUser();
-  const showTlBadge = firebaseUser.firestore?.setting__show_tl_badge || "none";
+  const showTlBadge =
+    (!firebaseUser.loading &&
+      firebaseUser.loggedIn &&
+      firebaseUser?.firestore?.setting__show_tl_badge) ||
+    "none";
 
   if (langData.lang !== "en") return null;
   if (showTlBadge === "none") return null;

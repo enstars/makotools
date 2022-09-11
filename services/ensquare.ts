@@ -28,6 +28,7 @@ export function getData(
     .then((responseJson) => {
       let responseData = responseJson;
       if (responseData[0]) {
+        responseData = responseData.filter((d: any) => d.compliant === "TRUE");
         if (fields) {
           let filteredData: any = [];
           const flattenedDataArray = responseData.map(flatten);
@@ -72,7 +73,7 @@ export async function getLocalizedData<T>(
   data: string,
   locale: Locale | string = DEFAULT_LOCALE,
   fields?: string[]
-): Promise<LoadedData<LoadedDataRegional<T>> | undefined> {
+): Promise<LoadedData<T> | undefined> {
   const jaData = await getData(data, "ja", true, fields);
   const enFanData = await getData(data, "en", false, fields);
   const enData = await getData(data, "en", true, fields);
@@ -83,7 +84,8 @@ export async function getLocalizedData<T>(
   }
   // localized = localized.filter((l) => l.status === "success");
 
-  if (jaData.status === "error") return Promise.resolve(undefined);
+  if (jaData.status === "error" || localized[0].status === "error")
+    return Promise.resolve(undefined);
 
   return Promise.resolve({
     main: jaData,
@@ -104,8 +106,17 @@ English [Fan]
 */
 
 export function getPreviewImageURL(type: string, params: any) {
-  return `https://preview.ensemble.link/render/${type}.png?${Object.keys(params)
-    .map((key) => `${key}=${encodeURIComponent(params[key])}`)
+  const urlParams = {
+    ...params,
+    __end: ";",
+  };
+  return `${CONSTANTS.EXTERNAL_URLS.PREVIEW}render/${type}.png?${Object.keys(
+    urlParams
+  )
+    .map(
+      (key) =>
+        `${encodeURIComponent(key)}=${encodeURIComponent(urlParams[key])}`
+    )
     .join("&")}`;
 }
 
@@ -128,25 +139,30 @@ export function getNameOrder(
 }
 
 export function getItemFromLocalized<L>(
-  data: LoadedData<LoadedDataRegional<L[]>>,
-  id: ID
-) {
-  const matchId = (o: any) => o.id === id;
-
-  const item =
-    data.main.status === "success" ? data.main.data.find(matchId) : undefined;
-  const itemMainLang =
-    data.mainLang.status === "success"
-      ? data.mainLang.data.find(matchId)
-      : undefined;
-  const itemSubLang =
-    data.subLang.status === "success"
-      ? data.subLang.data.find(matchId)
-      : undefined;
+  data: LoadedData<L[]>,
+  id: ID,
+  field: string = "id"
+): LoadedData<L | undefined> {
+  const matchId = (o: any) => o[field] === id;
 
   return {
-    item,
-    itemMainLang,
-    itemSubLang,
+    main: {
+      ...data.main,
+      ...(data.main.status === "success"
+        ? { data: data.main.data.find(matchId) }
+        : { data: undefined }),
+    },
+    mainLang: {
+      ...data.mainLang,
+      ...(data.mainLang.status === "success"
+        ? { data: data.mainLang.data.find(matchId) }
+        : { data: undefined }),
+    },
+    subLang: {
+      ...data.subLang,
+      ...(data.subLang.status === "success"
+        ? { data: data.subLang.data.find(matchId) }
+        : { data: undefined }),
+    },
   };
 }

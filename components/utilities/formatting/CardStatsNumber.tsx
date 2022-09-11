@@ -5,34 +5,33 @@ import { DEFAULT_LOCALE } from "../../../services/locales";
 import { Locale } from "../../../types/makotools";
 
 function getLocalizedNumber(
-  number: number,
+  number: any,
   locale: Locale | string = DEFAULT_LOCALE,
   short = false
 ) {
-  if (!isNaN(number)) {
-    let Globalize = require("globalize");
-
-    Globalize.load(
-      require("cldr-data/supplemental/likelySubtags"),
-      require("cldr-data/supplemental/numberingSystems"),
-      require("cldr-data/supplemental/plurals"),
-      require("cldr-data/supplemental/ordinals"),
-      require(`cldr-data/main/${locale}/numbers`),
-      require(`cldr-data/main/${locale}/units`)
-    );
-
-    return Globalize(locale).numberFormatter(
-      short
-        ? {
-            compact: "short",
-            minimumSignificantDigits: number > 99999 ? 3 : 2,
-            maximumSignificantDigits: number > 99999 ? 3 : 2,
-          }
-        : {}
-    )(number);
-  } else {
+  if (typeof number !== "number") {
     return number;
   }
+  let Globalize = require("globalize");
+
+  Globalize.load(
+    require("cldr-data/supplemental/likelySubtags"),
+    require("cldr-data/supplemental/numberingSystems"),
+    require("cldr-data/supplemental/plurals"),
+    require("cldr-data/supplemental/ordinals"),
+    require(`cldr-data/main/${locale}/numbers`),
+    require(`cldr-data/main/${locale}/units`)
+  );
+
+  return Globalize(locale).numberFormatter(
+    short
+      ? {
+          compact: "short",
+          minimumSignificantDigits: number > 99999 ? 3 : 2,
+          maximumSignificantDigits: number > 99999 ? 3 : 2,
+        }
+      : {}
+  )(number);
 }
 
 function CardStatsNumber({
@@ -44,7 +43,7 @@ function CardStatsNumber({
 }) {
   const { locale }: { locale?: string } = useRouter();
 
-  if (typeof children !== "number" || children === 0) return children;
+  if (typeof children !== "number") return <>{children}</>;
 
   return <>{getLocalizedNumber(children, locale as Locale, short)}</>;
 }

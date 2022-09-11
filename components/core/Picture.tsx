@@ -110,11 +110,12 @@ const useStyles = createStyles(
     tcWrapper: { width: "100%" },
     tcContent: { width: "100%" },
     actionIconRoot: {
-      background: theme.colors.dark[9] + "99",
+      background: theme.colors.dark[9] + "77",
       color: theme.white,
       ":hover": {
-        background: theme.colors.dark[9] + "DD",
+        background: theme.colors.dark[9] + "BB",
       },
+      backdropFilter: "blur(5px)",
     },
   })
 );
@@ -304,13 +305,22 @@ function Picture({ children, ...props }: PictureProps) {
                           right: 4,
                         }}
                       >
-                        <ActionIcon onClick={() => zoomIn()}>
+                        <ActionIcon
+                          className={classes.actionIconRoot}
+                          onClick={() => zoomIn()}
+                        >
                           <IconZoomIn size={16} />
                         </ActionIcon>
-                        <ActionIcon onClick={() => zoomOut()}>
+                        <ActionIcon
+                          className={classes.actionIconRoot}
+                          onClick={() => zoomOut()}
+                        >
                           <IconZoomOut size={16} />
                         </ActionIcon>
-                        <ActionIcon onClick={() => centerView(0.95)}>
+                        <ActionIcon
+                          className={classes.actionIconRoot}
+                          onClick={() => centerView(0.95)}
+                        >
                           <IconFocusCentered size={16} />
                         </ActionIcon>
                       </Stack>

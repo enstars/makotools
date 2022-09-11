@@ -14,6 +14,7 @@ const CONSTANTS = {
     ASSETS: "https://assets.enstars.link/",
     DATA: "https://data.ensemble.moe/",
     DATA_TL: "https://tl.data.ensemble.moe/",
+    PREVIEW: "https://preview.ensemble.moe/",
   },
 };
 

@@ -55,11 +55,10 @@ function Login() {
 
     return () => {
       if (isRegister) {
-        console.log("setttttttttttttttttttttt");
         setUserDataKey({ name: form.values.name }, () => {});
       }
     };
-  }, [firebaseUser.loading, firebaseUser.loggedIn, router]);
+  }, [firebaseUser.loading, router]);
 
   function signOnAlertMsg(error: { type: string; code?: string }) {
     console.log(error);

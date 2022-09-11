@@ -31,6 +31,7 @@ interface GameCharacter extends GameCharacterStrings {
   age?: number;
   blood_type: "A" | "B" | "O" | "AB";
   circle?: string[];
+  sort_id: number;
 }
 
 interface GameUnit {
@@ -66,6 +67,7 @@ interface Stats {
   vo: Stat;
   pf: Stat;
 }
+type StatLevel = "min" | "max" | "ir" | "ir1" | "ir2" | "ir3" | "ir4";
 
 type SkillEffect = any[];
 interface SkillStrings {
@@ -82,6 +84,7 @@ interface SkillData {
   type_id: ID;
   effect_values: SkillEffect[];
 }
+type SkillType = "center" | "live" | "support";
 
 interface CenterSkill extends SkillData, SkillStrings {}
 interface LiveSkill extends SkillData, SkillStringsLive {
@@ -113,18 +116,12 @@ interface GameCard extends GameCardRegional {
     id?: ID;
   };
   stats?: {
-    min?: Stats;
-    max?: Stats;
-    ir?: Stats;
-    ir1?: Stats;
-    ir2?: Stats;
-    ir3?: Stats;
-    ir4?: Stats;
+    [Level in StatLevel]: Stats;
   };
   skills?: {
-    center?: CenterSkill;
-    live?: LiveSkill;
-    support?: SupportSkill;
+    ["center"]?: CenterSkill;
+    ["live"]?: LiveSkill;
+    ["support"]?: SupportSkill;
   };
   spp?: {
     song_id: ID;

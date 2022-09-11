@@ -29,9 +29,16 @@ import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { LoadedData, LoadedDataRegional } from "../../types/makotools";
 
 import CardCard from "./components/DisplayCard";
+type SortOption = "id" | "character";
+
+interface CardViewOptions {
+  filterRarity: CardRarity[];
+  filterCharacters: string[];
+  sortOption: SortOption;
+}
 
 const CARD_LIST_INITIAL_COUNT = 20;
-const CARD_VIEW_OPTIONS_DEFAULT = {
+const CARD_VIEW_OPTIONS_DEFAULT: CardViewOptions = {
   filterRarity: [5],
   filterCharacters: [],
   sortOption: "id",
@@ -48,9 +55,9 @@ function Page({
 
   const theme = useMantineTheme();
   const [count, setCount] = useState<number>(CARD_LIST_INITIAL_COUNT);
-  const [cardsList, setCardsList] = useState([]);
-  const [slicedCardsList, setSlicedCardsList] = useState([]);
-  const [viewOptions, setViewOptions] = useLocalStorage({
+  const [cardsList, setCardsList] = useState<GameCard[]>([]);
+  const [slicedCardsList, setSlicedCardsList] = useState<GameCard[]>([]);
+  const [viewOptions, setViewOptions] = useLocalStorage<CardViewOptions>({
     key: "cardFilters",
     defaultValue: CARD_VIEW_OPTIONS_DEFAULT,
   });
@@ -66,7 +73,7 @@ function Page({
     characterIDtoSort[c.character_id] = c.sort_id || c.character_id;
   });
 
-  const SORT_OPTIONS = [
+  const SORT_OPTIONS: { value: SortOption; label: string }[] = [
     { value: "id", label: "Card ID" },
     {
       value: "character",
@@ -75,9 +82,9 @@ function Page({
   ];
 
   const SORT_FUNCTIONS = {
-    id: (a, b) => a.id > b.id,
-    character: (a, b) =>
-      characterIDtoSort[a.character_id] > characterIDtoSort[b.character_id],
+    id: (a: any, b: any) => b.id - a.id,
+    character: (a: any, b: any) =>
+      characterIDtoSort[b.character_id] - characterIDtoSort[a.character_id],
   };
 
   useEffect(() => {
@@ -124,8 +131,8 @@ function Page({
             placeholder="Pick a unit..."
             data={SORT_OPTIONS}
             value={viewOptions.sortOption}
-            onChange={(val) => {
-              setViewOptions({ ...viewOptions, sortOption: val });
+            onChange={(val: SortOption) => {
+              if (val) setViewOptions({ ...viewOptions, sortOption: val });
             }}
             sx={{ maxWidth: 200 }}
             variant="default"
@@ -150,13 +157,15 @@ function Page({
               multiple
               value={viewOptions.filterRarity.map((v) => v.toString())}
               onChange={(value) => {
-                const filterRarity = value.map((v) => parseInt(v, 10));
+                const filterRarity = value.map(
+                  (v) => parseInt(v, 10) as CardRarity
+                );
                 console.log(filterRarity);
                 setViewOptions({ ...viewOptions, filterRarity });
               }}
               spacing={3}
             >
-              {[1, 4, 5].map((r) => (
+              {[1, 2, 3, 4, 5].map((r) => (
                 <Chip
                   key={r}
                   value={r.toString()}
@@ -223,27 +232,35 @@ function Page({
             }}
           >
             {slicedCardsList.map((e, i) => {
-              const {} = getItemFromLocalized(cards, e.id);
-              return (
-                <CardCard
-                  key={e.id}
-                  cards={cards}
-                  id={e.id}
-                  cardOptions={cardOptions}
-                  // card  =
-                />
+              const localizedCard = getItemFromLocalized(cards, e.id);
+              if (
+                typeof localizedCard.main.data !== "undefined" &&
+                typeof localizedCard.mainLang.data !== "undefined"
+              )
+                return (
+                  <CardCard
+                    key={e.id}
+                    cardOptions={cardOptions}
+                    // card  =
+                    localizedCard={
+                      localizedCard as LoadedData<
+                        GameCard,
+                        GameCard | undefined
+                      >
+                    }
+                  />
 
-                // <div
-                //   key={e.id}
-                //   cards={cards}
-                //   i={i}
-                //   id={e.id}
-                //   characters={characters.main.data}
-                //   cardOptions={cardOptions}
-                // >
-                //   {e.id}
-                // </div>
-              );
+                  // <div
+                  //   key={e.id}
+                  //   cards={cards}
+                  //   i={i}
+                  //   id={e.id}
+                  //   characters={characters.main.data}
+                  //   cardOptions={cardOptions}
+                  // >
+                  //   {e.id}
+                  // </div>
+                );
             })}
           </InfiniteScroll>
         </>

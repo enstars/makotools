@@ -6,6 +6,7 @@ import {
   Button,
   Drawer,
   Group,
+  Indicator,
   Input,
   Popover,
   ScrollArea,
@@ -17,25 +18,33 @@ import {
   UnstyledButton,
 } from "@mantine/core";
 import { IconAdjustments } from "@tabler/icons";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 
 import CardStatsNumber from "../../../components/utilities/formatting/CardStatsNumber";
 import attributes from "../../../data/attributes.json";
 import centerSkill from "../../../data/centerSkill.json";
+import { LoadedData } from "../../../types/makotools";
 
-function centerSkillParse(skill: SkillData) {
-  const { substat, attr } = (centerSkill as any)[skill.type_id];
+export function centerSkillParse(skill?: SkillData, fallback = "Unknown") {
+  if (typeof skill === "undefined" || !centerSkill[skill.type_id])
+    return fallback;
+  const { substat, attr } = centerSkill[skill.type_id];
   return `Increases ${substat} of all ${attributes[attr].fullname} cards by ${
     substat === "All" ? 50 : 120
   }%`;
 }
-function liveSkillParse(skill: SkillData, level: number) {
+export function liveSkillParse(
+  skill?: SkillData,
+  level: number = 5,
+  fallback = "Unknown"
+) {
+  if (typeof skill === "undefined") return fallback;
   return `Increases the score by ${skill.effect_values[level - 1][0]}% for ${
     skill.effect_values[level - 1][1]
   } seconds.`;
 }
 
-const supportSkillDropRates = {
+const supportSkillDropRates: { [k: number]: string } = {
   5: "small red",
   6: "medium red",
   7: "large red",
@@ -50,7 +59,12 @@ const supportSkillDropRates = {
   16: "all yellow",
   28: "all",
 };
-function supportSkillParse(skill: SkillData, level: number) {
+export function supportSkillParse(
+  skill?: SkillData,
+  level: number = 3,
+  fallback = "Unknown"
+) {
+  if (typeof skill === "undefined") return fallback;
   switch (skill.type_id) {
     case 1:
       return `Decreases the amount that Voltage lowers after a Bad/Miss.`;
@@ -68,14 +82,16 @@ function supportSkillParse(skill: SkillData, level: number) {
       } Great/Good into a Perfect.`;
     case 4:
       return `Increases the amount that the Ensemble Time Gauge rises after a Good/Great/Perfect.`;
-    default:
+    case 5:
       return `Increases the drop rate of ${
         supportSkillDropRates[skill.type_id]
       } stat pieces by ${skill.effect_values[level - 1][0]}%.`;
+    default:
+      return fallback;
   }
 }
 
-function Skills({ card }: { card: any }) {
+function Skills({ card }: { card: LoadedData<GameCard> }) {
   const [liveSkillLevel, setLiveSkillLevel] = useState(5);
   const [supportSkillLevel, setSupportSkillLevel] = useState(3);
 
@@ -135,91 +151,84 @@ function Skills({ card }: { card: any }) {
             type: "center",
             color: "blue",
             description: (
-              <Text>{centerSkillParse(card.main.skills.center)}</Text>
+              <Text>{centerSkillParse(card.main.data.skills?.center)}</Text>
             ),
           },
           {
             type: "live",
             color: "lightblue",
             description: (
-              <Box
-                sx={(theme) => ({
-                  padding: theme.spacing.xs,
-                  overflow: "hidden",
-                  whiteSpace: "nowrap",
-                })}
-              >
-                <Text>
-                  <Badge
-                    mr="xs"
-                    variant="outline"
-                    sx={{
-                      verticalAlign: 1,
-                      fontVariantNumeric: "tabular-nums",
-                    }}
-                  >
-                    Lvl {liveSkillLevel}
-                  </Badge>
-                  {liveSkillParse(card.main.skills.live, liveSkillLevel)}
-                </Text>
-              </Box>
+              <Text>
+                <Badge
+                  mr="xs"
+                  variant="dot"
+                  color="gray"
+                  sx={{
+                    verticalAlign: 1,
+                    fontVariantNumeric: "tabular-nums",
+                  }}
+                >
+                  Lvl {liveSkillLevel}
+                </Badge>
+                {liveSkillParse(card.main.data.skills?.live, liveSkillLevel)}
+              </Text>
             ),
           },
           {
             type: "support",
             color: "green",
             description: (
-              <Box
-                sx={(theme) => ({
-                  padding: theme.spacing.xs,
-                  overflow: "hidden",
-                  whiteSpace: "nowrap",
-                })}
-              >
-                <Text>
-                  <Badge
-                    mr="xs"
-                    variant="outline"
-                    sx={{
-                      verticalAlign: 1,
-                      fontVariantNumeric: "tabular-nums",
-                    }}
-                  >
-                    Lvl {supportSkillLevel}
-                  </Badge>
-                  {supportSkillParse(
-                    card.main.skills.support,
-                    supportSkillLevel
-                  )}
-                </Text>
-              </Box>
+              <Text>
+                <Badge
+                  mr="xs"
+                  variant="dot"
+                  color="gray"
+                  sx={{
+                    verticalAlign: 1,
+                    fontVariantNumeric: "tabular-nums",
+                  }}
+                >
+                  Lvl {supportSkillLevel}
+                </Badge>
+                {supportSkillParse(
+                  card.main.data.skills?.support,
+                  supportSkillLevel
+                )}
+              </Text>
             ),
           },
-        ].map((s) => (
-          <Group key={s.type} align="start" spacing="xs">
-            <Box sx={{ width: 80 }}>
-              <Badge sx={{ width: "100%" }} variant="filled" color={s.color}>
-                {s.type}
-              </Badge>
-            </Box>
-            <Box sx={{ flex: "1 1 0", minWidth: 200 }}>
-              <Text weight={700}>
-                {card.mainLang.skills[s.type].name}{" "}
-                <Text
-                  component="span"
-                  inline
-                  weight={700}
-                  size="sm"
-                  color="dimmed"
-                >
-                  {card.subLang.skills[s.type].name}
+        ].map(
+          (s: {
+            type: SkillType;
+            color: string;
+            description: ReactElement;
+          }) => (
+            <Group key={s.type} align="start" spacing="xs">
+              <Box sx={{ width: 80 }}>
+                <Badge sx={{ width: "100%" }} variant="filled" color={s.color}>
+                  {s.type}
+                </Badge>
+              </Box>
+              <Box sx={{ flex: "1 1 0", minWidth: 200 }}>
+                <Text weight={700}>
+                  {card.mainLang.data?.skills?.[s.type]?.name}{" "}
+                  <Text
+                    component="span"
+                    inline
+                    weight={700}
+                    size="sm"
+                    color="dimmed"
+                  >
+                    {card.subLang.status === "success" &&
+                      card.subLang.data?.skills?.[s.type]?.name}
+                  </Text>
                 </Text>
-              </Text>
 
-              {s.description}
-            </Box>
-          </Group>
-        ))}
+                {s.description}
+              </Box>
+            </Group>
+          )
+        )}
       </Stack>
     </>
   );

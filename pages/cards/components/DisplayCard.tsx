@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { SyntheticEvent, useState } from "react";
 import {
   Card,
   Paper,
@@ -34,6 +34,7 @@ import CardStatsNumber from "../../../components/utilities/formatting/CardStatsN
 import { addCard } from "../../../services/collection";
 import { useFirebaseUser } from "../../../services/firebase/user";
 import Picture from "../../../components/core/Picture";
+import { LoadedData, LoadedDataLocalized } from "../../../types/makotools";
 
 import { sumStats } from "./Stats";
 
@@ -78,28 +79,34 @@ function RarityBadge({ card }: { card: GameCard }) {
 }
 
 export default function CardCard({
-  cards,
-  id,
+  localizedCard,
   cardOptions,
 }: {
-  cards: GameCard[];
-  id: ID;
+  localizedCard: LoadedData<GameCard, GameCard | undefined>;
   cardOptions: any;
 }) {
   const router = useRouter();
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
-  const card = cards.main.data.find((c) => c.id === id);
-  const cardMainLang = cards.mainLang.data.find((c) => c.id === id);
-  const cardSubLang = cards.subLang.data?.find((c) => c.id === id) || undefined;
+
+  const card = localizedCard.main.data;
+  const cardMainLang = localizedCard.mainLang.data;
+  const cardSubLang =
+    localizedCard.subLang.status === "success"
+      ? localizedCard.subLang?.data
+      : undefined;
 
   const { firebaseUser, setUserDataKey } = useFirebaseUser();
 
   const statsIR = sumStats(card.stats?.ir);
   const statsIR4 = sumStats(card.stats?.ir4);
 
-  const collection = firebaseUser.firestore?.collection || [];
-  const thisColItem = collection?.find((c) => c.id === id);
+  const collection =
+    (!firebaseUser.loading &&
+      firebaseUser.loggedIn &&
+      firebaseUser.firestore?.collection) ||
+    [];
+  const thisColItem = collection?.find((c) => c.id === card.id);
   const [collectionOpened, setCollectionOpened] = useState(false);
 
   // if (thisColItem?.count === 0) setCollectionOpened(false);
@@ -108,7 +115,7 @@ export default function CardCard({
       withBorder
       p={0}
       onClick={() => {
-        router.push(`cards/${id}`);
+        router.push(`cards/${card.id}`);
       }}
       sx={{ "&:hover": { cursor: "pointer" } }}
     >
@@ -167,12 +174,12 @@ export default function CardCard({
       <Card.Section px="sm" pt="xs">
         <Text size="sm" weight="700">
           {`${cardMainLang?.title}`}&nbsp;
-          <OfficialityBadge langData={cards.mainLang} />
+          <OfficialityBadge langData={localizedCard.mainLang} />
         </Text>
         {cardSubLang && (
           <Text size="xs" color="dimmed" weight="500">
             {`${cardSubLang.title}`}&nbsp;
-            <OfficialityBadge langData={cards.subLang} />
+            <OfficialityBadge langData={localizedCard.subLang} />
           </Text>
         )}
       </Card.Section>
@@ -183,14 +190,14 @@ export default function CardCard({
         }}
       >
         <Group spacing={0} noWrap>
-          {firebaseUser.loggedIn && (
+          {!firebaseUser.loading && firebaseUser.loggedIn && (
             <Group>
               <Box
                 // ml="xs"
                 sx={(theme) => ({
                   marginLeft: theme.spacing.xs / 2,
                 })}
-                onClick={(e) => {
+                onClick={(e: SyntheticEvent) => {
                   e.stopPropagation();
                   if (!thisColItem) {
                     const newCollection = addCard(collection, card.id, 1);
@@ -205,16 +212,18 @@ export default function CardCard({
                   opened={collectionOpened}
                   onChange={setCollectionOpened}
                   styles={{ dropdown: { padding: 0 } }}
-                  position="right-center"
+                  position="right"
                   withinPortal
                 >
                   <Popover.Target>
                     <ActionIcon
                       variant="light"
-                      {...(thisColItem?.count > 0 ? { color: "orange" } : {})}
+                      {...(thisColItem && thisColItem?.count > 0
+                        ? { color: "orange" }
+                        : {})}
                       // color="red"
                     >
-                      {thisColItem?.count > 0 ? (
+                      {thisColItem && thisColItem?.count > 0 ? (
                         <Text inline size="xs" weight="700">
                           {thisColItem.count}
                           <Text
@@ -234,20 +243,20 @@ export default function CardCard({
                       <ActionIcon
                         variant="subtle"
                         color="green"
-                        onClick={(e) => {
+                        onClick={(e: SyntheticEvent) => {
                           e.stopPropagation();
 
                           const newCollection = addCard(collection, card.id, 1);
                           setUserDataKey({ collection: newCollection });
                         }}
-                        disabled={thisColItem?.count >= 5}
+                        disabled={thisColItem && thisColItem?.count >= 5}
                       >
                         <IconPlus size={16} />
                       </ActionIcon>
                       <ActionIcon
                         variant="subtle"
                         color="red"
-                        onClick={(e) => {
+                        onClick={(e: SyntheticEvent) => {
                           e.stopPropagation();
 
                           const newCollection = addCard(
@@ -257,7 +266,7 @@ export default function CardCard({
                           );
                           setUserDataKey({ collection: newCollection });
                         }}
-                        disabled={thisColItem?.count <= 0}
+                        disabled={!thisColItem || thisColItem?.count <= 0}
                       >
                         <IconMinus size={16} />
                       </ActionIcon>

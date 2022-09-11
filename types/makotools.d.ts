@@ -97,11 +97,16 @@ type LoadedDataRegional<D = any> =
   | LoadedDataRegionalSuccess<D>
   | LoadedDataRegionalError;
 
-interface LoadedData<D> {
-  main: LoadedDataRegionalSuccess<D>;
-  mainLang: LoadedDataRegional<D>;
-  subLang: LoadedDataRegional<D>;
+interface LoadedDataLocalized<D, S = D> {
+  main: D;
+  mainLang: D;
+  subLang: S;
 }
+interface LoadedData<D, S = D>
+  extends LoadedDataLocalized<
+    LoadedDataRegionalSuccess<D>,
+    LoadedDataRegional<S>
+  > {}
 
 interface Emote {
   id: ID;
