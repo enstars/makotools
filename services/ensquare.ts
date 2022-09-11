@@ -24,11 +24,17 @@ export function getData<T = any>(
     ? `${CONSTANTS.EXTERNAL_URLS.DATA}${lang}/${data}.json`
     : `${CONSTANTS.EXTERNAL_URLS.DATA_TL}${lang}/${data}.json`;
   return fetch(databaseURL)
-    .then((response) => response.json())
+    .then((response) => {
+      console.log(response.url, response.status);
+      return response.json();
+    })
     .then((responseJson) => {
       let responseData = responseJson;
       if (responseData[0]) {
-        responseData = responseData.filter((d: any) => d.compliant === "TRUE");
+        if (data !== "units" && data !== "unit_to_characters")
+          responseData = responseData.filter(
+            (d: any) => d.compliant === "TRUE"
+          );
         if (fields) {
           let filteredData: any = [];
           const flattenedDataArray = responseData.map(flatten);

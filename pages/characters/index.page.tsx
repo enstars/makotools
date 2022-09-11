@@ -32,6 +32,8 @@ function Page({
   unit_to_characters: any;
   units: any;
 }) {
+  console.log(characters, unitToCharacters, units);
+
   const [listCharacters, setListCharacters] = useState<CharacterCardProps[]>(
     []
   );
@@ -140,8 +142,8 @@ function Page({
 
 export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
   const characters = await getLocalizedData("characters", locale);
-  const unit_to_characters = await getData("unit_to_characters");
-  const units = await getData("units");
+  const unit_to_characters = await getData("unit_to_characters", "ja", true);
+  const units = await getData("units", "ja", true);
 
   console.log("units", units);
 
