@@ -1,11 +1,7 @@
 import { useState, useEffect, forwardRef } from "react";
-
 import { useRouter } from "next/router";
-
 import { useViewportSize } from "@mantine/hooks";
-
 import { AuthAction } from "next-firebase-auth";
-
 import {
   Stack,
   useMantineTheme,
@@ -19,7 +15,6 @@ import {
   ThemeIcon,
   Box,
 } from "@mantine/core";
-
 import {
   IconUserCircle,
   IconBrush,
@@ -32,11 +27,8 @@ import {
 
 import PageTitle from "../../components/sections/PageTitle";
 import { useFirebaseUser } from "../../services/firebase/user";
-
 import getServerSideUser from "../../services/firebase/getServerSideUser";
-
 import { getLayout } from "../../components/Layout";
-
 import { getLocalizedData } from "../../services/ensquare";
 
 import SelectSetting from "./shared/SelectSetting";
@@ -48,9 +40,7 @@ import Name from "./profile/Name";
 import Pronouns from "./profile/Pronouns";
 import Username from "./profile/Username";
 import ColorCode from "./account/ColorCode";
-
 import Bio from "./profile/Bio";
-
 import StartPlaying from "./profile/StartPlaying";
 import Email from "./account/Email";
 import Banner from "./profile/Banner";
@@ -89,10 +79,10 @@ const tabs = [
     value: "profile",
     icon: IconPencil,
     color: "lightblue",
-    contents: ({ cards }) => (
+    contents: ({ cards }: { cards: GameCard[] | undefined }) => (
       <>
         <Stack>
-          <Alert size="sm" color="yellow">
+          <Alert color="yellow">
             These are publicly accessible from your profile page, so make sure
             to follow our community guidelines.
           </Alert>
@@ -122,7 +112,7 @@ const tabs = [
   },
 ];
 
-function Page({ cards }) {
+function Page({ cards }: { cards: GameCard[] | undefined }) {
   const router = useRouter();
   const theme = useMantineTheme();
   const { width } = useViewportSize();
@@ -132,7 +122,7 @@ function Page({ cards }) {
 
   useEffect(() => {
     setIsNarrowPage(width < theme.breakpoints.sm);
-  });
+  }, [width, theme.breakpoints.sm]);
 
   return (
     <>
@@ -140,7 +130,7 @@ function Page({ cards }) {
       {isNarrowPage ? (
         <Accordion
           multiple
-          defaultValue={[tabs.map((t) => t.value)]}
+          defaultValue={tabs.map((t) => t.value)}
           styles={(theme) => ({
             control: {
               padding: theme.spacing.xs,
@@ -181,8 +171,8 @@ function Page({ cards }) {
           orientation={"vertical"}
           styles={{
             tabsList: {
-              marginRight: !isNarrowPage && 16,
-              marginBottom: isNarrowPage && 8,
+              marginRight: !isNarrowPage ? 16 : undefined,
+              marginBottom: isNarrowPage ? 8 : undefined,
             },
           }}
         >
@@ -212,12 +202,13 @@ function Page({ cards }) {
 
 export const getServerSideProps = getServerSideUser(
   async ({ locale }) => {
-    const cards = await getLocalizedData("cards", locale, [
+    const cards = await getLocalizedData<GameCard[]>("cards", locale, [
       "id",
       "title",
       "name",
       "rarity",
     ]);
+    if (!cards) return { props: { cards: undefined } };
     const bannerIds = cards.main.data
       .filter((c) => c.rarity >= 4)
       .map((c) => c.id);

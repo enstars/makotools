@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Textarea } from "@mantine/core";
 
 import TextSetting from "../shared/TextSetting";

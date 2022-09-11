@@ -38,7 +38,7 @@ const gameRegions = [
 function Region() {
   return (
     <SelectSetting
-      dataKey="content_region"
+      dataKey="setting__game_region"
       label="Game Region"
       data={gameRegions}
       description="This setting currently does not have an effect on content yet."

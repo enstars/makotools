@@ -40,9 +40,11 @@ interface CollectedCard {
 
 type NameOrder = "firstlast" | "lastfirst";
 type ShowTlBadge = "none" | "unofficial" | "all";
+type GameRegion = "jp" | "cn" | "kr" | "tw" | "en";
 type UID = ID;
 interface UserData {
   collection?: CollectedCard[];
+  suid: string;
   username: string;
   name?: string;
   dark_mode: boolean;
@@ -52,6 +54,8 @@ interface UserData {
   profile__start_playing?: string;
   setting__name_order?: NameOrder;
   setting__show_tl_badge?: ShowTlBadge;
+  setting__game_region: GameRegion;
+  readonly admin: any;
 }
 
 interface FirebaseUserLoading {

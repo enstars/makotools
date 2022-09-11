@@ -18,9 +18,7 @@ import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 import { getB2File } from "../../../services/ensquare";
-
 import { useFirebaseUser } from "../../../services/firebase/user";
-
 import TextSetting from "../shared/TextSetting";
 
 const useStyles = createStyles((theme) => ({
@@ -63,7 +61,6 @@ function Banner({ cards }) {
       {(provided, snapshot) => (
         <Card
           radius="sm"
-          //   withBorder
           p={0}
           //   className={cx(classes.item, {
           //     [classes.itemDragging]: snapshot.isDragging,
@@ -73,18 +70,21 @@ function Banner({ cards }) {
           ref={provided.innerRef}
           sx={{ overflow: "hidden" }}
           mt="xs"
+          shadow="sm"
         >
           <Group>
             <Image
-              alt={cards.find((c) => c.id === item).title}
+              alt={cards.find((c) => c.id === item)?.title}
               src={getB2File(`assets/card_still_full1_${item}_evolution.png`)}
               width={64}
               height={64}
             />
             <Box sx={{ flexGrow: 1 }}>
-              <Text weight={700}>{cards.find((c) => c.id === item).title}</Text>
+              <Text weight={700}>
+                {cards.find((c) => c.id === item)?.title}
+              </Text>
               <Text size="sm" color="dimmed">
-                {cards.find((c) => c.id === item).name}
+                {cards.find((c) => c.id === item)?.name}
               </Text>
             </Box>
             <ActionIcon
