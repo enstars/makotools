@@ -78,15 +78,16 @@ function FirebaseUserProvider({
             currentUserData = await getFirestoreUserData(AuthUser.id);
             fetchCount--;
           }
-          if (!currentUserData)
+          if (!currentUserData) {
             showNotification({
               title: "Error",
               message:
-                "We had trouble fetching your user data. If this is your first time signing up, please refresh the page.",
+                "We had trouble fetching your user data. If this is your first time signing up, please try signing in again. If this error persists, please report at the Issues and Suggestions page.",
               color: "red",
               icon: <IconAlertTriangle size={16} />,
             });
-          else {
+            AuthUser.signOut();
+          } else {
             setFirebaseUser((s) => ({ ...s, firestore: currentUserData }));
             if (currentUserData?.dark_mode)
               setAppColorScheme(currentUserData.dark_mode ? "dark" : "light");
