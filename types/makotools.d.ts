@@ -60,6 +60,7 @@ interface UserData {
 
 interface FirebaseUserLoading {
   loading: true;
+  loggedIn: undefined;
 }
 interface FirebaseUserLoggedOut {
   loading: false;
@@ -70,7 +71,7 @@ interface FirebaseUserLoggedIn {
   loading: false;
   loggedIn: true;
   user: AuthUserContext;
-  firestore?: UserData;
+  firestore: UserData;
 }
 
 type FirebaseUser =
