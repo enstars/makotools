@@ -88,11 +88,6 @@
     "typescript": "^4.8.3",
     "wp-types": "^3.60.0"
   },
-  "config": {
-    "commitizen": {
-      "path": "cz-emoji"
-    }
-  },
   "eslintConfig": {
     "extends": [
       "next/core-web-vitals",
