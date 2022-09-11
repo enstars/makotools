@@ -37,6 +37,7 @@ function FirebaseUserProvider({
         }
       : {
           loading: true,
+          loggedIn: undefined,
         }
   );
 
