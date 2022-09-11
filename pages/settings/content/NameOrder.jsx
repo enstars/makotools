@@ -33,7 +33,7 @@ const nameOrderItem = forwardRef(function SelectItem(
 function NameOrder() {
   return (
     <SelectSetting
-      dataKey="name_order"
+      dataKey="setting__name_order"
       label="Preferred name order"
       data={nameOrderOptions}
       description="Japanese, Chinese, and Korean will always be Family name, Given name."

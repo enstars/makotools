@@ -9,7 +9,7 @@ function Name() {
   return (
     <TextSetting
       label="Bio"
-      dataKey="profile_bio"
+      dataKey="profile__bio"
       placeholder="Say something about yourself!"
       charLimit={316}
       Component={Textarea}

@@ -18,7 +18,7 @@ const tlBadgeOptions = [
 function ShowTlBadge() {
   return (
     <SelectSetting
-      dataKey="show_tl_badge"
+      dataKey="setting__show_tl_badge"
       label="Show officialty badges for translations"
       data={tlBadgeOptions}
       description="This setting may not be applied site-wide at this time."

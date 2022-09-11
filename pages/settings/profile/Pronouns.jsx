@@ -6,7 +6,7 @@ function Pronouns() {
   return (
     <TextSetting
       label="Pronouns"
-      dataKey="profile_pronouns"
+      dataKey="profile__pronouns"
       placeholder={"Not set"}
       charLimit={30}
     />

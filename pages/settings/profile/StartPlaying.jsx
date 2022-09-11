@@ -63,12 +63,12 @@ function StartPlaying() {
     unknown: true,
   });
   const [data, setData] = useState(
-    firebaseUser.profile_start_playing || "0000-00-00"
+    firebaseUser.profile__start_playing || "0000-00-00"
   );
 
   useEffect(() => {
     if (firebaseUser.loggedIn && firebaseUser.firestore) {
-      const startPlaying = firebaseUser.firestore.profile_start_playing;
+      const startPlaying = firebaseUser.firestore.profile__start_playing;
       // console.log(firebaseUser.profile_start_playing);
       if (startPlaying && startPlaying !== "0000-00-00") {
         setPicked({
@@ -94,16 +94,16 @@ function StartPlaying() {
     if (
       firebaseUser.loggedIn &&
       firebaseUser?.firestore &&
-      firebaseUser.firestore?.profile_start_playing &&
-      firebaseUser.firestore.profile_start_playing !== resolvedData
+      firebaseUser.firestore?.profile__start_playing &&
+      firebaseUser.firestore.profile__start_playing !== resolvedData
     ) {
-      setUserDataKey({ profile_start_playing: resolvedData });
+      setUserDataKey({ profile__start_playing: resolvedData });
     } else if (
       firebaseUser.loggedIn &&
       firebaseUser?.firestore &&
-      !firebaseUser.firestore?.profile_start_playing
+      !firebaseUser.firestore?.profile__start_playing
     ) {
-      setUserDataKey({ profile_start_playing: resolvedData });
+      setUserDataKey({ profile__start_playing: resolvedData });
     }
   }, [picked, setUserDataKey]);
 
