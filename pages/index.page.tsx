@@ -29,10 +29,22 @@ import AffiliatesLight from "../assets/Affiliates/affiliates_light.svg?url";
 import AffiliatesDark from "../assets/Affiliates/affiliates_dark.svg?url";
 import Layout, { getLayout } from "../components/Layout";
 import getServerSideUser from "../services/firebase/getServerSideUser";
+import BirthdayPreview from "../components/sections/BirthdayPreview";
+import {
+  getData,
+  getItemFromLocalized,
+  getLocalizedData,
+} from "../services/ensquare";
 
 import Announcement from "./about/announcements/components/Announcement";
 
-function Page({ posts }: { posts: any }) {
+function Page({
+  posts,
+  characters,
+}: {
+  posts: any;
+  characters: GameCharacter[];
+}) {
   const { firebaseUser } = useFirebaseUser();
   const theme = useMantineTheme();
 
@@ -172,6 +184,7 @@ function Page({ posts }: { posts: any }) {
             </Accordion.Panel>
           </Accordion.Item>
         </Accordion>
+        <BirthdayPreview characters={characters} />
       </Group>
     </>
   );
@@ -182,6 +195,11 @@ export default Page;
 
 export const getServerSideProps = getServerSideUser(
   async ({ req, res, locale, params }) => {
+    const characters = await getLocalizedData<GameCharacter[]>(
+      "characters",
+      locale
+    );
+
     try {
       const initRespose = await fetch(
         `https://backend-stars.ensemble.moe/wp-main/wp-json/wp/v2/posts?categories=5,6&per_page=5&page=1`
@@ -191,6 +209,7 @@ export const getServerSideProps = getServerSideUser(
       return {
         props: {
           posts: initData,
+          characters: characters?.main.data,
         },
       };
     } catch (e) {
@@ -199,6 +218,7 @@ export const getServerSideProps = getServerSideUser(
           posts: {
             error: true,
           },
+          characters: characters?.main.data,
         },
       };
     }
