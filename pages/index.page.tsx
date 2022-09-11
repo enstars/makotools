@@ -206,10 +206,23 @@ export const getServerSideProps = getServerSideUser(
       );
       const initData = await initRespose.json();
 
+      //TODO: remove once birthdays are added to eng data
+      if (characters?.mainLang.lang === "en") {
+        characters?.mainLang.data.sort((a, b) => {
+          return a.character_id - b.character_id;
+        });
+        characters?.main.data.sort((a, b) => {
+          return a.character_id - b.character_id;
+        });
+        characters?.mainLang.data.forEach((character, i) => {
+          character.birthday = characters?.main.data[i].birthday;
+        });
+      }
+
       return {
         props: {
           posts: initData,
-          characters: characters?.main.data,
+          characters: characters?.mainLang.data,
         },
       };
     } catch (e) {
@@ -218,7 +231,7 @@ export const getServerSideProps = getServerSideUser(
           posts: {
             error: true,
           },
-          characters: characters?.main.data,
+          characters: characters?.mainLang.data,
         },
       };
     }

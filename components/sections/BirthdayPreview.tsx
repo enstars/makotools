@@ -1,8 +1,10 @@
-import { Text, Image, Accordion, Box } from "@mantine/core";
+import { Text, Image, Accordion, Box, Card } from "@mantine/core";
 import { IconCake } from "@tabler/icons";
+import Link from "next/link";
 
 import { useDayjs } from "../../services/dayjs";
 import { getB2File } from "../../services/ensquare";
+import styles from "../../styles/BirthdayPreview.module.scss";
 
 interface CharIDAndBirthday {
   id: number;
@@ -19,6 +21,8 @@ function retrieveClosestBirthdays(
     id: 0,
     birthday: todaysDate,
   };
+
+  console.log(characters);
 
   // today's date
   let charIDsBirthdays: CharIDAndBirthday[] = [todaysDateObj];
@@ -74,29 +78,22 @@ function BirthdayCard({ ...props }) {
   console.log(props.character);
   return (
     <Accordion.Panel>
-      <Box
-        sx={(theme) => ({
-          borderColor:
-            theme.colorScheme === "dark"
-              ? theme.colors.gray[8]
-              : theme.colors.gray[4],
-          borderRadius: theme.radius.md,
-          borderWidth: theme.spacing.xs,
-        })}
-      >
-        <Image
-          src={getB2File(
-            `render/character_full1_${props.character.character_id}.png`
-          )}
-          alt={`${props.character.first_name} ${props.character.last_name}`}
-          width={200}
-          height={200}
-        />
-        <Text>{formattedDate}</Text>
-        <Text>
-          {props.character.first_name} {props.character.last_name}
-        </Text>
-      </Box>
+      <Link href={`/characters/${props.character.character_id}`} passHref>
+        <Card withBorder component="a" className={styles.wrapper}>
+          <Image
+            className={styles.alignImage}
+            src={getB2File(
+              `render/character_full1_${props.character.character_id}.png`
+            )}
+            alt={`${props.character.first_name} ${props.character.last_name}`}
+            width={500}
+          />
+          <Text>{formattedDate}</Text>
+          <Text size="lg" weight={600}>
+            {props.character.first_name} {props.character.last_name}
+          </Text>
+        </Card>
+      </Link>
     </Accordion.Panel>
   );
 }
