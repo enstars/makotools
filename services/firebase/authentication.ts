@@ -95,7 +95,9 @@ const initAuth = () => {
           method: "POST",
           credentials: "include",
         });
-        if (!response.ok) {
+        if (response.ok) {
+          // window.location.reload();
+        } else {
           const responseJSON = await response.json();
           throw new Error(
             `Received ${
