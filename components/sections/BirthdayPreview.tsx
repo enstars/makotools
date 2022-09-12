@@ -1,4 +1,4 @@
-import { Text, Image, Accordion, Box, Card } from "@mantine/core";
+import { Text, Image, Accordion, Box, Card, createStyles } from "@mantine/core";
 import {
   IconCake,
   IconZodiacAquarius,
@@ -127,14 +127,40 @@ function HoroscopeSymbol({ ...props }) {
   }
 }
 
+const useStyles = createStyles((theme, _params, getRef) => ({
+  wrapper: {
+    display: "block",
+    width: "300px",
+    height: "100px",
+    backgroundColor: "transparent",
+  },
+  alignImage: {
+    margin: 0,
+    position: "absolute",
+    left: "-14%",
+    top: "-4%",
+  },
+  horoscope: {
+    position: "absolute",
+    top: "2%",
+    right: 0,
+    zIndex: 2,
+    color:
+      theme.colorScheme === "dark"
+        ? theme.colors.gray[2]
+        : theme.colors.gray[1],
+  },
+}));
+
 // create individual birthday card
 function BirthdayCard({ ...props }) {
+  const { classes } = useStyles();
   const dayjs = useDayjs();
   const formattedDate = dayjs(props.character.birthday).format("MMM D");
   return (
     <Accordion.Panel>
       <Link href={`/birthdays`} passHref>
-        <Card withBorder component="a" className={styles.wrapper}>
+        <Card withBorder component="a" className={classes.wrapper}>
           <Box
             sx={{
               position: "absolute",
@@ -148,11 +174,11 @@ function BirthdayCard({ ...props }) {
             }}
           ></Box>
           <HoroscopeSymbol
-            className={styles.horoscope}
+            className={classes.horoscope}
             horoscope={props.character.horoscope}
           />
           <Image
-            className={`${styles.alignImage}`}
+            className={`${classes.alignImage}`}
             src={getB2File(
               `cards/card_full1_${
                 (twoStarIDs as any)[props.character.character_id]
