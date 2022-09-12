@@ -35,7 +35,8 @@ function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
         backgroundColor:
           theme.colorScheme === "dark"
             ? theme.colors.dark[9]
-            : theme.fn.lighten(theme.colors.gray[0], 0.3),
+            : // : theme.fn.lighten(theme.colors.gray[0], 0),
+              theme.fn.lighten(theme.colors.gray[0], 0.3),
         position: "relative",
       }}
       pt="xl"

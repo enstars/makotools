@@ -75,9 +75,12 @@ function Layout({
             borderBottom: "solid 1px",
             borderColor: dark ? theme.colors.dark[5] : theme.colors.gray[2],
             overflow: hideOverflow ? "hidden" : undefined,
+            background: dark
+              ? theme.colors.dark[8]
+              : theme.fn.lighten(theme.colors.gray[0], 0.5),
           }}
           radius={0}
-          shadow="lg"
+          shadow="sm"
         >
           <Container
             size={wide ? "xl" : "sm"}
