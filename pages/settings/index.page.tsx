@@ -24,6 +24,7 @@ import {
   IconPalette,
   IconPencil,
 } from "@tabler/icons";
+import dynamic from "next/dynamic";
 
 import PageTitle from "../../components/sections/PageTitle";
 import { useFirebaseUser } from "../../services/firebase/user";
@@ -40,11 +41,14 @@ import Name from "./profile/Name";
 import Pronouns from "./profile/Pronouns";
 import Username from "./profile/Username";
 import ColorCode from "./account/ColorCode";
-import Bio from "./profile/Bio";
+// import Bio from "./profile/Bio";
 import StartPlaying from "./profile/StartPlaying";
 import Email from "./account/Email";
 import Banner from "./profile/Banner";
 
+const Bio = dynamic(() => import("./profile/Bio"), {
+  ssr: false,
+});
 const tabs = [
   {
     label: "Content",
