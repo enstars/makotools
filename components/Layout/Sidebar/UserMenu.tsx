@@ -166,7 +166,7 @@ function UserMenu({
               id="sidebar-link-logout"
               onClick={() => {
                 firebaseUser.user.signOut();
-                // reload();
+                reload();
                 // showNotification({
                 //   message: "Successfully signed out",
                 //   autoClose: 5000,

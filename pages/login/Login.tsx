@@ -58,7 +58,7 @@ function Login() {
         setUserDataKey({ name: form.values.name }, () => {});
       }
     };
-  }, [firebaseUser.loading, router]);
+  }, [firebaseUser, router]);
 
   function signOnAlertMsg(error: { type: string; code?: string }) {
     console.log(error);
