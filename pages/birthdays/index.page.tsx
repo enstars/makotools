@@ -30,7 +30,7 @@ function Page({ characters }: { characters: GameCharacter[] }) {
                     `cards/card_full1_${
                       (twoStarIDs as any)[character.character_id]
                     }_normal.png`
-                  )}) no-repeat -170px -25px`,
+                  )}) no-repeat -160px -25px`,
                   backgroundSize: "600px",
                 };
               }
@@ -47,9 +47,13 @@ function Page({ characters }: { characters: GameCharacter[] }) {
             }`,
           },
           day: {
+            paddingLeft: "5px",
             textAlign: "left",
             height: "110px",
             borderRadius: 0,
+            display: "flex",
+            flexFlow: "column nowrap",
+            justifyContent: "space-between",
           },
         })}
       />

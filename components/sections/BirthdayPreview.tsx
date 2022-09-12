@@ -80,7 +80,7 @@ function BirthdayCard({ ...props }) {
           component="a"
           className={styles.wrapper}
           sx={{
-            background: `linear-gradient(to right, transparent , ${props.character.image_color}4f)`,
+            background: `linear-gradient(135deg, transparent 70%, ${props.character.image_color}4f 71%)`,
           }}
         >
           <Image
