@@ -31,10 +31,10 @@ export default function getServerSideUser(
         AuthUser,
         ...context
       }: GetServerSidePropsContext & { AuthUser: AuthUser }) => {
-        context.res.setHeader(
-          "Cache-Control",
-          "public, s-maxage=7200, stale-while-revalidate=172800"
-        );
+        // context.res.setHeader(
+        //   "Cache-Control",
+        //   "public, s-maxage=7200, stale-while-revalidate=172800"
+        // );
         // refresh every 2 hours, stale for 48hrs
 
         const user = AuthUser;
