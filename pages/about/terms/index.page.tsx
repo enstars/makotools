@@ -1,12 +1,9 @@
 import { TypographyStylesProvider } from "@mantine/core";
-
 import TermsHTML from "raw-loader!./terms.html";
-
 import { Fragment } from "react";
 
 import Layout from "../../../components/Layout";
 import PageTitle from "../../../components/sections/PageTitle";
-
 import { getLayout } from "../../../components/Layout";
 
 function Page() {

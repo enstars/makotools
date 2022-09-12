@@ -137,7 +137,14 @@ function UserMenu({
             theme.other.toggleAppColorScheme();
           }}
           icon={<IconMoonStars size={14} />}
-          rightSection={<Switch checked={dark} size="xs" readOnly />}
+          rightSection={
+            <Switch
+              sx={{ pointerEvents: "none" }}
+              checked={dark}
+              size="xs"
+              readOnly
+            />
+          }
           closeMenuOnClick={false}
         >
           Dark Mode

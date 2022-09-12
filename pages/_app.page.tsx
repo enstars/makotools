@@ -176,9 +176,10 @@ function MakoTools({
           setAppColorScheme={setAppColorScheme}
           colorScheme={colorScheme}
           serverData={{
-            user: pageProps.__user && JSON.parse(pageProps.__user),
-            firestore:
-              pageProps.__firestore && JSON.parse(pageProps.__firestore),
+            user: pageProps?.__user ? JSON.parse(pageProps.__user) : undefined,
+            firestore: pageProps?.__firestore
+              ? JSON.parse(pageProps.__firestore)
+              : undefined,
           }}
         >
           {/*  TODO: Remove this just use the theme povider */}

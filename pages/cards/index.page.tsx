@@ -13,11 +13,20 @@ import {
   MultiSelect,
   Button,
   Card,
+  TextInput,
+  ActionIcon,
+  Tooltip,
 } from "@mantine/core";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useLocalStorage } from "@mantine/hooks";
-import { IconArrowsSort, IconSearch } from "@tabler/icons";
+import { useDebouncedValue, useLocalStorage } from "@mantine/hooks";
+import {
+  IconArrowsSort,
+  IconSearch,
+  IconSortAscending,
+  IconSortDescending,
+} from "@tabler/icons";
 import { slice } from "lodash";
+import fuzzysort from "fuzzysort";
 
 import Layout from "../../components/Layout";
 import {
@@ -36,6 +45,8 @@ interface CardViewOptions {
   filterRarity: CardRarity[];
   filterCharacters: string[];
   sortOption: SortOption;
+  searchQuery: string;
+  sortDescending: boolean;
 }
 
 const CARD_LIST_INITIAL_COUNT = 20;
@@ -43,6 +54,8 @@ const CARD_VIEW_OPTIONS_DEFAULT: CardViewOptions = {
   filterRarity: [5],
   filterCharacters: [],
   sortOption: "id",
+  searchQuery: "",
+  sortDescending: false,
 };
 
 function Page({
@@ -68,12 +81,15 @@ function Page({
       showFullInfo: false,
     },
   });
+  const [search, setSearch] = useState("");
+  const [debouncedSearch] = useDebouncedValue(search, 200);
 
   let characterIDtoSort: { [key: number]: number } = {};
   characters.main.data.forEach((c) => {
-    characterIDtoSort[c.character_id] = c.sort_id || c.character_id;
+    characterIDtoSort[c.character_id] = c.sort_id;
   });
 
+  // console.log(characterIDtoSort);
   const SORT_OPTIONS: { value: SortOption; label: string }[] = [
     { value: "id", label: "Card ID" },
     {
@@ -82,14 +98,16 @@ function Page({
     },
   ];
 
+  const descendingNum = viewOptions.sortDescending ? -1 : 1;
   const SORT_FUNCTIONS = {
-    id: (a: any, b: any) => b.id - a.id,
+    id: (a: any, b: any) => (a.id - b.id) * descendingNum,
     character: (a: any, b: any) =>
-      characterIDtoSort[b.character_id] - characterIDtoSort[a.character_id],
+      (characterIDtoSort[a.character_id] - characterIDtoSort[b.character_id]) *
+      descendingNum,
   };
 
   useEffect(() => {
-    const filteredList = cards.main.data
+    let filteredList: GameCard[] = cards.main.data
       .filter((c) => {
         return c.id <= 9999;
       })
@@ -102,12 +120,35 @@ function Page({
             c.character_id.toString()
           );
         return true;
+      });
+    // console.log(
+    //   fuzzysort.go(viewOptions.searchQuery, filteredList, {
+    //     key: "title",
+    //     all: true,
+    //   })
+    // );
+
+    const searchableList = filteredList.map((c) => ({
+      data: c,
+      localized: getItemFromLocalized(cards, c.id),
+    }));
+    const searchedList = fuzzysort
+      .go(debouncedSearch, searchableList, {
+        keys: [
+          "data.title",
+          "localized.main.data.title",
+          "localized.mainLang.data.title",
+          "localized.subLang.data.title",
+        ],
+        all: true,
       })
+      .sort((a: any, b: any) => b.score - a.score)
+      .map((cr) => cr.obj.data)
       .sort(SORT_FUNCTIONS["id"])
       .sort(SORT_FUNCTIONS[viewOptions.sortOption]);
-    setCardsList(filteredList);
+    setCardsList(searchedList);
     setCount(CARD_LIST_INITIAL_COUNT);
-  }, [viewOptions]);
+  }, [viewOptions, debouncedSearch]);
 
   useEffect(() => {
     setSlicedCardsList(cardsList.slice(0, count));
@@ -119,7 +160,7 @@ function Page({
   };
 
   return (
-    <div className="content-text">
+    <>
       <PageTitle title="Cards" />
 
       <Paper mb="sm" p="md" withBorder>
@@ -127,6 +168,17 @@ function Page({
           <IconSearch size="1em" /> Search Options
         </Text>
         <Group sx={{ alignItems: "flex-start" }}>
+          <TextInput
+            label="Search"
+            placeholder="Type a card name..."
+            value={search}
+            onChange={(event) => {
+              setSearch(event.target.value);
+            }}
+            sx={{ maxWidth: 200 }}
+            variant="default"
+            icon={<IconSearch size="1em" />}
+          />
           <Select
             label="Sort by"
             placeholder="Pick a unit..."
@@ -138,13 +190,42 @@ function Page({
             sx={{ maxWidth: 200 }}
             variant="default"
             icon={<IconArrowsSort size="1em" />}
+            rightSection={
+              <Tooltip label="Toggle ascending/descending">
+                <ActionIcon
+                  onClick={() => {
+                    setViewOptions((v) => ({
+                      ...viewOptions,
+                      sortDescending: !v.sortDescending,
+                    }));
+                  }}
+                  variant="light"
+                  color="blue"
+                >
+                  {viewOptions.sortDescending ? (
+                    <IconSortAscending size={16} />
+                  ) : (
+                    <IconSortDescending size={16} />
+                  )}
+                </ActionIcon>
+              </Tooltip>
+            }
           />
           <MultiSelect
             label="Characters"
             placeholder="Pick a character..."
-            data={characters.mainLang.data.map((c) => {
-              return { value: c.character_id.toString(), label: c.first_name };
-            })}
+            data={characters.mainLang.data
+              .sort(
+                (a: any, b: any) =>
+                  characterIDtoSort[a.character_id] -
+                  characterIDtoSort[b.character_id]
+              )
+              .map((c) => {
+                return {
+                  value: c.character_id.toString(),
+                  label: c.first_name,
+                };
+              })}
             value={viewOptions.filterCharacters}
             onChange={(val) => {
               setViewOptions({ ...viewOptions, filterCharacters: val });
@@ -234,11 +315,7 @@ function Page({
           >
             {slicedCardsList.map((e, i) => {
               const localizedCard = getItemFromLocalized(cards, e.id);
-              if (
-                localizedCard &&
-                typeof localizedCard.main.data !== "undefined" &&
-                typeof localizedCard.mainLang.data !== "undefined"
-              )
+              if (localizedCard)
                 return (
                   <CardCard
                     key={e.id}
@@ -264,8 +341,10 @@ function Page({
                   // </div>
                 );
               return (
-                <Card key={e.id} withBorder p={0}>
-                  An error occured
+                <Card key={e.id} withBorder p="md">
+                  <Text size="sm" color="dimmed" align="center">
+                    An error occured
+                  </Text>
                 </Card>
               );
             })}
@@ -276,7 +355,7 @@ function Page({
           No cards found.
         </Text>
       )}
-    </div>
+    </>
   );
 }
 
@@ -284,7 +363,7 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
   const characters = await getLocalizedData<GameCharacter[]>(
     "characters",
     locale,
-    ["character_id", "first_name"]
+    ["character_id", "first_name", "sort_id"]
   );
   // const unit_to_characters = await getLocalizedData("unit_to_characters");
   // const units = await getLocalizedData("units");

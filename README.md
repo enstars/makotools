@@ -9,47 +9,16 @@ MakoTools is a website containing information, tools, and a lot more to aid you 
 
 ## Data Sources
 
-### Game Assets
-- Curated at [gradualcolors' Google Drive folder](https://drive.google.com/drive/folders/1wTEb46GrGIlAK0lhhN6Ihm4l40GJPkDj)
-  - Contains data from @gradualcolors, Daydream
-- Accessible at https://assets.ensemble.link/{path/to/file} (Hosted on Backblaze B2)
+<!-- disable word wrap to view this table properly; use obsidian or some md text editor to edit so the format stays -->
 
-### Source Game Data
-- Curated at [enstars/data](https://github.com/enstars/data)
-  - Contains data from @gradualcolors, @watatomo, Daydream
-- Accessible at https://data.ensemble.moe/{lang}/{data}.json (Hosted on GitHub sites)
-
-### Unofficially Translated Data
-- Curated at [enstars/enstars-tl](https://github.com/enstars/enstars-tl)
-  - Contains data from The English Ensemble Stars Wiki
-- Accessible at https://tl.data.ensemble.moe/{lang}/{data}.json (Hosted on Cloudflare Pages)
+| Data Type                             | Hosting                                                                                                                                                                                                                                                                                              |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Assets**                            | [Drive](https://drive.google.com/drive/folders/1wTEb46GrGIlAK0lhhN6Ihm4l40GJPkDj) → Backblaze B2<br> `https://assets.enstars.link/{path/to/file}`                                                                                                                                                    |
+| **Official Game Data**                | [Sheets](https://docs.google.com/spreadsheets/d/e/2PACX-1vRGZenbM3ubI9hYJPhg5zdLgWGuuYjUKWQqZtj81B3hgDKPKvmhOQN06ykdxXzSESeA79NlVH6vXc3P/pubhtml?gid=1894224770&single=true) → [GitHub](https://github.com/enstars/data) → Cloudflare Pages<br> `https://data.ensemble.moe/{lang}/{data}.json`       |
+| **Unofficially Translated Game Data** | [Sheets](https://docs.google.com/spreadsheets/d/e/2PACX-1vRGZenbM3ubI9hYJPhg5zdLgWGuuYjUKWQqZtj81B3hgDKPKvmhOQN06ykdxXzSESeA79NlVH6vXc3P/pubhtml?gid=1894224770&single=true) → [GitHub](https://github.com/enstars/data-tl) → Cloudflare Pages<br> `https://tl.data.ensemble.moe/{lang}/{data}.json` |
 
 ## Development
+
 <img src="https://img.shields.io/github/checks-status/enstars/makotools/development?color=8bd5ca&label=dev&logo=github&style=for-the-badge&labelColor=302D41"> <img src="https://img.shields.io/website?down_color=ed8796&down_message=offline&label=dev%20status&logo=vercel&style=for-the-badge&up_color=8aadf4&up_message=online&url=https%3A%2F%2Fstars.ensemble.moe&labelColor=302D41">
 
-### How to Set Up Locally
-1. Install node.js and NPM. Follow the instructions [here](https://docs.npmjs.com/cli/v8/configuring-npm/install) depending on your operating system.
-2. Install yarn. In the terminal, run `npm install --global yarn`.
-3. Run `yarn install` to install the required packages to your repository.
-4. These next few steps will vary depending on how you want to run the project. Running in **development** mode will allow you to update the project as you update the code. Meanwhile, running in **production** mode will create a build by validating the code of the project and run that build.
-
-#### Running in Production mode
-1. By default, the run environment will be set to production. First, run `yarn run build` to create a build for the project. If the build process returns any errors, submit an issue.
-2. Run `yarn run start` to launch the program.
-
-#### Running in Development mode
-1. Since development mode is not the default for the run environment, set the environment to development.<br />
-In a Unix terminal (MacOS, LinuxOS, etc.), run `export NODE_ENV=development` . <br />
-In Windows Command Prompt or PowerShell, run `set NODE_ENV=development`.
-2. To verify this updated `NODE_ENV`, run `echo $NODE_ENV` (Unix), or `set NODE_ENV` (Windows CMD/PowerShell). Either `development` (Unix) or `NODE_ENV=development` (Windows CMD) should be returned.
-3. Run `yarn run dev`. If any errors occur, please submit an issue.
-
-
-### Repository Structure
-The repository is currently organized by file type.
-- Image files (.png, .svg, etc) are located in `/assets`
-- JSON files and other data files are located in `/data`
-- Stylesheets (.css, .scss) are located in `/styles`
-Due to Next.js formatting requirements, .jsx files are organized based on whether they contain components or webpages. Components are located in `/components` and webpages are located in `/pages`.
-
-If new volunteers have any questions, message us on Discord! This README will be updated as development continues.
+See the [Wiki](https://github.com/enstars/makotools/wiki) for more information on MakoTools' development.

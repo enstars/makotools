@@ -130,6 +130,7 @@ function Sidebar(props: any) {
         backgroundColor:
           theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
         zIndex: 210,
+        boxShadow: theme.shadows.xl,
       }}
       {...props}
     >

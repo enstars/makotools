@@ -7,6 +7,7 @@ import {
   TypographyStylesProvider,
 } from "@mantine/core";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import categories from "../../../../data/about/posts/categories.json";
 import { MkAnnouncement } from "../../../../types/makotools";
@@ -18,21 +19,22 @@ function Announcement({
   announcement: MkAnnouncement;
   i: number;
 }) {
+  const router = useRouter();
   return (
-    <Link href={`/about/announcements/${announcement.id}`} passHref>
-      <Paper
-        component="a"
-        sx={{
-          minWidth: 0,
-          maxWidth: "100%",
-          background: "none",
-        }}
-      >
-        {i > 0 && <Divider mb="sm" />}
-        <Text inline weight={700} size="lg">
-          {announcement.title.rendered}
-        </Text>
-        <TypographyStylesProvider
+    <Paper
+      sx={{
+        minWidth: 0,
+        maxWidth: "100%",
+        background: "none",
+        cursor: "pointer",
+      }}
+      onClick={() => router.push(`/about/announcements/${announcement.id}`)}
+    >
+      {i > 0 && <Divider mb="sm" />}
+      <Text inline weight={700} size="lg">
+        {announcement.title.rendered}
+      </Text>
+      {/* <TypographyStylesProvider
           my="xs"
           sx={(theme) => ({
             "& > p": {
@@ -48,14 +50,13 @@ function Announcement({
           <div
             dangerouslySetInnerHTML={{ __html: announcement.excerpt.rendered }}
           />
-        </TypographyStylesProvider>
-        {announcement.categories?.map((c) => (
-          <Badge variant="dot" key={c} color={categories[c].color}>
-            {categories[c].name}
-          </Badge>
-        ))}
-      </Paper>
-    </Link>
+        </TypographyStylesProvider> */}
+      {announcement.categories?.map((c) => (
+        <Badge variant="dot" key={c} color={categories[c].color}>
+          {categories[c].name}
+        </Badge>
+      ))}
+    </Paper>
   );
 }
 
