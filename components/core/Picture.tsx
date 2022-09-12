@@ -40,10 +40,10 @@ function loader({ src }: { src: string }) {
   return src;
 }
 
-const flash = keyframes({
-  "from, to": { opacity: 0.75 },
-  "50%": { opacity: 1 },
-});
+// const flash = keyframes({
+//   "from, to": { opacity: 0.75 },
+//   "50%": { opacity: 1 },
+// });
 
 const useStyles = createStyles(
   (
@@ -71,17 +71,22 @@ const useStyles = createStyles(
       zIndex: 0,
       pointerEvents: "none",
       transition: theme.other.transition,
-      "::after": {
+      "::before, ::after": {
         content: "''",
-        background: `no-repeat center/100% 100% url(${placeholderURL})`,
         display: "block",
         position: "absolute",
         top: 0,
         left: 0,
         width: "100%",
         height: "100%",
-        filter: "saturate(160%) blur(20px)",
-        // animation: `${flash} 16s ease-in-out infinite`,
+      },
+      "::before": {
+        background: `no-repeat center/cover url(${placeholderURL})`,
+        filter: "saturate(160%) blur(0px)",
+        // animation: `${flash} 1s ease-in-out infinite`,
+      },
+      "::after": {
+        backdropFilter: "blur(15px)",
       },
     },
     placeholderLoaded: {
@@ -183,8 +188,8 @@ function PictureStringSrc({
       >
         <div
           className={cx(
-            classes.placeholder,
-            loaded && classes.placeholderLoaded
+            classes.placeholder
+            // loaded && classes.placeholderLoaded
           )}
         />
         <source srcSet={webpSrc} />
