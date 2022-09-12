@@ -2,6 +2,7 @@ import { Text, Image, Accordion, Box, Card } from "@mantine/core";
 import { IconCake } from "@tabler/icons";
 import Link from "next/link";
 
+import { twoStarIDs } from "../../data/characterIDtoCardID";
 import { useDayjs } from "../../services/dayjs";
 import { getB2File } from "../../services/ensquare";
 import styles from "../../styles/BirthdayPreview.module.scss";
@@ -73,7 +74,7 @@ function BirthdayCard({ ...props }) {
   const formattedDate = dayjs(props.character.birthday).format("MMM D");
   return (
     <Accordion.Panel>
-      <Link href={`/characters/${props.character.character_id}`} passHref>
+      <Link href={`/birthdays`} passHref>
         <Card
           withBorder
           component="a"
@@ -83,18 +84,14 @@ function BirthdayCard({ ...props }) {
           }}
         >
           <Image
-            className={`${styles.alignImage} ${
-              props.character.character_id === 25
-                ? styles.CHIAKI
-                : props.character.character_id === 30
-                ? styles.NAZUNYAN
-                : ""
-            }`}
+            className={`${styles.alignImage}`}
             src={getB2File(
-              `render/character_full1_${props.character.character_id}.png`
+              `cards/card_full1_${
+                (twoStarIDs as any)[props.character.character_id]
+              }_normal.png`
             )}
             alt={`${props.character.first_name} ${props.character.last_name}`}
-            width={props.character.character_id === 25 ? 600 : 500}
+            width={500}
           />
           <Text>{formattedDate}</Text>
           <Text size="lg" weight={700}>

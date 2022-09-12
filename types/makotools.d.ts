@@ -133,3 +133,23 @@ interface Reaction {
   id: string;
   alt: string;
 }
+
+type MonthName =
+  | "January"
+  | "February"
+  | "March"
+  | "April"
+  | "May"
+  | "June"
+  | "July"
+  | "August"
+  | "September"
+  | "October"
+  | "November"
+  | "December";
+type MonthLength = 28 | 29 | 30 | 31;
+
+interface CalendarMonth {
+  name: MonthName;
+  amount_of_days: MonthLength;
+}
