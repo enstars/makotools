@@ -1,5 +1,19 @@
 import { Text, Image, Accordion, Box, Card } from "@mantine/core";
-import { IconCake } from "@tabler/icons";
+import {
+  IconCake,
+  IconZodiacAquarius,
+  IconZodiacAries,
+  IconZodiacCancer,
+  IconZodiacCapricorn,
+  IconZodiacGemini,
+  IconZodiacLeo,
+  IconZodiacLibra,
+  IconZodiacPisces,
+  IconZodiacSagittarius,
+  IconZodiacScorpio,
+  IconZodiacTaurus,
+  IconZodiacVirgo,
+} from "@tabler/icons";
 import Link from "next/link";
 
 import { twoStarIDs } from "../../data/characterIDtoCardID";
@@ -68,6 +82,51 @@ function retrieveClosestBirthdays(
 }
 /* END FUNCTION */
 
+// choose horoscope from value
+function HoroscopeSymbol({ ...props }) {
+  switch (props.horoscope) {
+    case 0:
+      return <IconZodiacAries className={props.className} size={48} />;
+      break;
+    case 1:
+      return <IconZodiacTaurus className={props.className} size={48} />;
+      break;
+    case 2:
+      return <IconZodiacGemini className={props.className} size={48} />;
+      break;
+    case 3:
+      return <IconZodiacCancer className={props.className} size={48} />;
+      break;
+    case 4:
+      return <IconZodiacLeo className={props.className} size={48} />;
+      break;
+    case 5:
+      return <IconZodiacVirgo className={props.className} size={48} />;
+      break;
+    case 6:
+      return <IconZodiacLibra className={props.className} size={48} />;
+      break;
+    case 7:
+      return <IconZodiacScorpio className={props.className} size={48} />;
+      break;
+    case 8:
+      return <IconZodiacSagittarius className={props.className} size={48} />;
+      break;
+    case 9:
+      return <IconZodiacCapricorn className={props.className} size={48} />;
+      break;
+    case 10:
+      return <IconZodiacAquarius className={props.className} size={48} />;
+      break;
+    case 11:
+      return <IconZodiacPisces className={props.className} size={48} />;
+      break;
+    default:
+      return null;
+      break;
+  }
+}
+
 // create individual birthday card
 function BirthdayCard({ ...props }) {
   const dayjs = useDayjs();
@@ -75,14 +134,23 @@ function BirthdayCard({ ...props }) {
   return (
     <Accordion.Panel>
       <Link href={`/birthdays`} passHref>
-        <Card
-          withBorder
-          component="a"
-          className={styles.wrapper}
-          sx={{
-            background: `linear-gradient(135deg, transparent 70%, ${props.character.image_color}4f 71%)`,
-          }}
-        >
+        <Card withBorder component="a" className={styles.wrapper}>
+          <Box
+            sx={{
+              position: "absolute",
+              right: 0,
+              top: 0,
+              width: "100%",
+              height: "100%",
+              padding: "16px",
+              background: `linear-gradient(45deg, transparent 73%, ${props.character.image_color}99 83%)`,
+              zIndex: 2,
+            }}
+          ></Box>
+          <HoroscopeSymbol
+            className={styles.horoscope}
+            horoscope={props.character.horoscope}
+          />
           <Image
             className={`${styles.alignImage}`}
             src={getB2File(

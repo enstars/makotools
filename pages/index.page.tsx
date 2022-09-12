@@ -216,6 +216,7 @@ export const getServerSideProps = getServerSideUser(
         });
         characters?.mainLang.data.forEach((character, i) => {
           character.birthday = characters?.main.data[i].birthday;
+          character.horoscope = characters?.main.data[i].horoscope;
         });
       }
 

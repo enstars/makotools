@@ -32,6 +32,7 @@ interface GameCharacter extends GameCharacterStrings {
   blood_type: "A" | "B" | "O" | "AB";
   circle?: string[];
   sort_id: number;
+  horoscope: number;
 }
 
 interface GameUnit {
