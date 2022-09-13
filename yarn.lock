@@ -2440,6 +2440,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mantine/dates@npm:^5.3.0":
+  version: 5.3.0
+  resolution: "@mantine/dates@npm:5.3.0"
+  dependencies:
+    "@mantine/utils": 5.3.0
+  peerDependencies:
+    "@mantine/core": 5.3.0
+    "@mantine/hooks": 5.3.0
+    dayjs: ">=1.0.0"
+    react: ">=16.8.0"
+  checksum: e927204525bb2efb9457a7cb0856dec3005a612c12625e193de94e23b617038e397422f90f5a4300c5da2802f8b08e08d9ac87502ce1f952c0f9a47da5dfebc2
+  languageName: node
+  linkType: hard
+
 "@mantine/form@npm:^5.3.0":
   version: 5.3.0
   resolution: "@mantine/form@npm:5.3.0"
@@ -7200,6 +7214,7 @@ __metadata:
     "@fontsource/sora": ^4.5.10
     "@mantine/carousel": ^5.3.0
     "@mantine/core": ^5.3.0
+    "@mantine/dates": ^5.3.0
     "@mantine/form": ^5.3.0
     "@mantine/hooks": ^5.3.0
     "@mantine/modals": ^5.3.0

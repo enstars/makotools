@@ -133,3 +133,42 @@ interface Reaction {
   id: string;
   alt: string;
 }
+
+type MonthName =
+  | "January"
+  | "February"
+  | "March"
+  | "April"
+  | "May"
+  | "June"
+  | "July"
+  | "August"
+  | "September"
+  | "October"
+  | "November"
+  | "December";
+type MonthLength = 28 | 29 | 30 | 31;
+
+interface CalendarMonth {
+  name: MonthName;
+  amount_of_days: MonthLength;
+}
+
+type EventType = "birthday" | "scout" | "gameEvent";
+
+interface EventDate {
+  month: number;
+  date: number;
+  year?: number | undefined;
+}
+
+interface CalendarEvent {
+  type: EventType;
+  startDate: EventDate;
+  endDate?: string | Date;
+}
+
+interface BirthdayEvent extends CalendarEvent {
+  character_id: number;
+  character_name: string;
+}
