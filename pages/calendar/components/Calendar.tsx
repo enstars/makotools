@@ -6,8 +6,9 @@ import {
   Grid,
   Text,
   Title,
+  Stack,
 } from "@mantine/core";
-import { getMonthDays, getMonthsNames } from "@mantine/dates";
+import { getMonthDays, getMonthsNames, getWeekdaysNames } from "@mantine/dates";
 import { MonthNames, weekdays } from "dayjs";
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons";
 import { useState } from "react";
@@ -20,26 +21,34 @@ import CalendarEventCard from "./CalendarEventCard";
 const useStyles = createStyles((theme, _params, getRef) => ({
   calendar: {
     maxWidth: "100%",
-    padding: 0,
+    padding: "5px",
     marginTop: "3%",
+    background: theme.colorScheme === "dark" ? theme.colors.dark[6] : "inherit",
+    borderRadius: theme.radius.sm,
   },
   calendarBody: {
-    margin: 0,
+    margin: "auto",
+    padding: 0,
     maxWidth: "100%",
   },
   header: {
     maxWidth: "100%",
     flexFlow: "row nowrap",
+    margin: "auto",
+    marginBottom: "2vh",
+    padding: "2vh 0vw",
   },
   calTitle: {
     textAlign: "center",
   },
   nav: {
     display: "inline",
-    height: "80px",
+    height: "40px",
+    width: "100%",
   },
   week: {
-    width: "100%",
+    maxWidth: "100%",
+    margin: "auto",
     marginTop: "2vh",
     alignItems: "center",
   },
@@ -75,11 +84,11 @@ function CalendarHeader({ ...props }) {
             props.changeYear(prevYear);
           }}
         >
-          {prevMonth} {prevYear}
+          {prevMonth.substring(0, 3)} {prevYear}
         </Button>
       </Grid.Col>
       <Grid.Col span={5} className={classes.calTitle}>
-        <Title order={3}>
+        <Title order={2}>
           {props.month} {props.year}
         </Title>
       </Grid.Col>
@@ -92,9 +101,23 @@ function CalendarHeader({ ...props }) {
             props.changeYear(nextYear);
           }}
         >
-          {nextMonth} {nextYear}
+          {nextMonth.substring(0, 3)} {nextYear}
         </Button>
       </Grid.Col>
+    </Grid>
+  );
+}
+
+function CalendarDotW({ ...props }) {
+  let dotw: String[] = getWeekdaysNames(props.lang);
+
+  return (
+    <Grid columns={7} grow sx={{ marginBottom: "2vh", maxWidth: "100%" }}>
+      {dotw.map((day, i) => (
+        <Grid.Col key={i} span={1} sx={{ textAlign: "center" }}>
+          <Title order={5}>{day.substring(0, 1)}</Title>
+        </Grid.Col>
+      ))}
     </Grid>
   );
 }
@@ -105,23 +128,39 @@ function CalendarDay({ ...props }): React.ReactElement {
     <Grid.Col
       span={1}
       sx={(theme) => ({
-        display: "flex",
-        flexFlow: "column nowrap",
         textAlign: "left",
         color: props.active
           ? "inherit"
           : theme.colorScheme === "dark"
-          ? theme.colors.gray[7]
-          : theme.colors.gray[4],
+          ? theme.colors.dark[3]
+          : theme.colors.gray[5],
         width: "5vw",
-        height: "12vh",
+        height: "15vh",
+        overflowY: "scroll",
       })}
     >
-      <Text>{props.day}</Text>
-      {props.active &&
-        props.events.map((event: CalendarEvent, i: number) => (
-          <CalendarEventCard key={i} event={event} />
-        ))}
+      <Stack
+        justify={"flex-start"}
+        spacing="xs"
+        sx={(theme) => ({
+          background: !props.active
+            ? "inherit"
+            : theme.colorScheme === "light"
+            ? theme.colors.gray[1]
+            : theme.colors.dark[9],
+          height: "100%",
+          padding: "0px 4px",
+          borderRadius: theme.radius.sm,
+        })}
+      >
+        <Text size="lg" sx={{ paddingLeft: "5px", paddingTop: "3px" }}>
+          {props.day}
+        </Text>
+        {props.active &&
+          props.events.map((event: CalendarEvent, i: number) => (
+            <CalendarEventCard key={i} event={event} />
+          ))}
+      </Stack>
     </Grid.Col>
   );
 }
@@ -130,7 +169,7 @@ function CalendarWeek({ ...props }) {
   const dayjs = useDayjs();
   const { classes } = useStyles();
   return (
-    <Grid columns={7} className={classes.week}>
+    <Grid columns={7} className={classes.week} gutter="xs">
       {props.week.map((day: Date, i: number) => {
         const filteredEvents = props.events.filter((event: CalendarEvent) => {
           if (event.startDate.year) {
@@ -182,6 +221,7 @@ function Calendar({ ...props }) {
         lang={props.lang}
       />
       <Container className={classes.calendarBody}>
+        <CalendarDotW lang={props.lang} />
         {getMonthDays(displayDate).map((week, i) => (
           <CalendarWeek
             month={displayDate.getMonth()}
