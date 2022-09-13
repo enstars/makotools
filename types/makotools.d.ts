@@ -153,3 +153,22 @@ interface CalendarMonth {
   name: MonthName;
   amount_of_days: MonthLength;
 }
+
+type EventType = "birthday" | "scout" | "gameEvent";
+
+interface EventDate {
+  month: number;
+  date: number;
+  year?: number | undefined;
+}
+
+interface CalendarEvent {
+  type: EventType;
+  startDate: EventDate;
+  endDate?: string | Date;
+}
+
+interface BirthdayEvent extends CalendarEvent {
+  character_id: number;
+  character_name: string;
+}

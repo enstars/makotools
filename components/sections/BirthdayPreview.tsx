@@ -159,7 +159,7 @@ function BirthdayCard({ ...props }) {
   const formattedDate = dayjs(props.character.birthday).format("MMM D");
   return (
     <Accordion.Panel>
-      <Link href={`/birthdays`} passHref>
+      <Link href={`/calendar`} passHref>
         <Card withBorder component="a" className={classes.wrapper}>
           <Box
             sx={{
