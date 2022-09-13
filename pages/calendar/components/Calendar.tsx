@@ -23,8 +23,14 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     maxWidth: "100%",
     padding: "5px",
     marginTop: "3%",
-    background: theme.colorScheme === "dark" ? theme.colors.dark[6] : "inherit",
-    borderRadius: theme.radius.sm,
+    background:
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[6]
+        : theme.colors.gray[2],
+    border: `2px solid ${
+      theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[4]
+    }`,
+    borderRadius: theme.radius.md,
   },
   calendarBody: {
     margin: "auto",
@@ -45,6 +51,10 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     display: "inline",
     height: "40px",
     width: "100%",
+    background:
+      theme.colorScheme === "dark"
+        ? theme.colors.blue[7]
+        : theme.colors.blue[4],
   },
   week: {
     maxWidth: "100%",
@@ -147,18 +157,25 @@ function CalendarDay({ ...props }): React.ReactElement {
             ? "inherit"
             : theme.colorScheme === "light"
             ? theme.colors.gray[1]
-            : theme.colors.dark[9],
+            : theme.colors.dark[8],
           height: "100%",
-          padding: "0px 4px",
-          borderRadius: theme.radius.sm,
+          borderRadius: theme.radius.md,
+          "&:hover": {
+            background: !props.active
+              ? "inherit"
+              : theme.colorScheme === "light"
+              ? theme.colors.gray[0]
+              : theme.colors.dark[9],
+          },
         })}
+        className={props.day}
       >
         <Text size="lg" sx={{ paddingLeft: "5px", paddingTop: "3px" }}>
           {props.day}
         </Text>
         {props.active &&
           props.events.map((event: CalendarEvent, i: number) => (
-            <CalendarEventCard key={i} event={event} />
+            <CalendarEventCard key={i} event={event} day={props.day} />
           ))}
       </Stack>
     </Grid.Col>
