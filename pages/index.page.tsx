@@ -200,25 +200,25 @@ export const getServerSideProps = getServerSideUser(
       locale
     );
 
+    //TODO: remove once birthdays are added to eng data
+    if (characters?.mainLang.lang === "en") {
+      characters?.mainLang.data.sort((a: GameCharacter, b: GameCharacter) => {
+        return a.character_id - b.character_id;
+      });
+      characters?.main.data.sort((a, b) => {
+        return a.character_id - b.character_id;
+      });
+      characters?.mainLang.data.forEach((character) => {
+        let birthdayVals = character.birthday.split(" ");
+        character.birthday = `0000 ${birthdayVals[0]} ${birthdayVals[1]}`;
+      });
+    }
+
     try {
       const initRespose = await fetch(
         `https://backend-stars.ensemble.moe/wp-main/wp-json/wp/v2/posts?categories=5,6&per_page=5&page=1`
       );
       const initData = await initRespose.json();
-
-      //TODO: remove once birthdays are added to eng data
-      if (characters?.mainLang.lang === "en") {
-        characters?.mainLang.data.sort((a, b) => {
-          return a.character_id - b.character_id;
-        });
-        characters?.main.data.sort((a, b) => {
-          return a.character_id - b.character_id;
-        });
-        characters?.mainLang.data.forEach((character, i) => {
-          character.birthday = characters?.main.data[i].birthday;
-          character.horoscope = characters?.main.data[i].horoscope;
-        });
-      }
 
       return {
         props: {
@@ -227,6 +227,7 @@ export const getServerSideProps = getServerSideUser(
         },
       };
     } catch (e) {
+      console.error(e);
       return {
         props: {
           posts: {

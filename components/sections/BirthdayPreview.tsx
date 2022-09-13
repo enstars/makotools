@@ -84,7 +84,9 @@ function retrieveClosestBirthdays(
 
 // choose horoscope from value
 function HoroscopeSymbol({ ...props }) {
+  console.log(props.horoscope);
   switch (props.horoscope) {
+    // ^ stream knockin' fantasy
     case 0:
       return <IconZodiacAries className={props.className} size={48} />;
       break;
@@ -152,6 +154,102 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 }));
 
+// TODO: remove once horoscope data is added to en
+function calculateHoroscope(date: Date) {
+  let month = date.getMonth() + 1;
+  let day = date.getDate();
+  switch (month) {
+    // ^ once again stream knockin' fantasy
+    case 3:
+      if (day >= 21) {
+        return 0;
+      } else {
+        return 11;
+      }
+      break;
+    case 4:
+      if (day <= 19) {
+        return 0;
+      } else {
+        return 1;
+      }
+      break;
+    case 5:
+      if (day <= 20) {
+        return 1;
+      } else {
+        return 2;
+      }
+      break;
+    case 6:
+      if (day <= 20) {
+        return 2;
+      } else {
+        return 3;
+      }
+      break;
+    case 7:
+      if (day <= 22) {
+        return 3;
+      } else {
+        return 4;
+      }
+      break;
+    case 8:
+      if (day <= 22) {
+        return 4;
+      } else {
+        return 5;
+      }
+      break;
+    case 9:
+      if (day <= 22) {
+        return 5;
+      } else {
+        return 6;
+      }
+      break;
+    case 10:
+      if (day <= 22) {
+        return 6;
+      } else {
+        return 7;
+      }
+      break;
+    case 11:
+      if (day <= 21) {
+        return 7;
+      } else {
+        return 8;
+      }
+      break;
+    case 12:
+      if (day <= 21) {
+        return 8;
+      } else {
+        return 9;
+      }
+      break;
+    case 1:
+      if (day <= 19) {
+        return 9;
+      } else {
+        return 10;
+      }
+      break;
+    case 2:
+      if (day <= 18) {
+        return 10;
+      } else {
+        return 11;
+      }
+      break;
+    default:
+      return null;
+      break;
+  }
+}
+
 // create individual birthday card
 function BirthdayCard({ ...props }) {
   const { classes } = useStyles();
@@ -162,6 +260,7 @@ function BirthdayCard({ ...props }) {
       <Link href={`/calendar`} passHref>
         <Card withBorder component="a" className={classes.wrapper}>
           <Box
+            className="gradient"
             sx={{
               position: "absolute",
               right: 0,
@@ -175,7 +274,7 @@ function BirthdayCard({ ...props }) {
           ></Box>
           <HoroscopeSymbol
             className={classes.horoscope}
-            horoscope={props.character.horoscope}
+            horoscope={calculateHoroscope(new Date(props.character.birthday))}
           />
           <Image
             className={`${classes.alignImage}`}
@@ -198,6 +297,7 @@ function BirthdayCard({ ...props }) {
 }
 
 function BirthdayPreview({ ...props }) {
+  console.log(props.characters);
   return (
     <Accordion variant="contained" defaultValue="birthday">
       <Accordion.Item value="birthday">
