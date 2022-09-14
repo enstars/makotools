@@ -3,12 +3,9 @@ import { ColorSwatch, TextInput } from "@mantine/core";
 import { useFirebaseUser } from "../../../services/firebase/user";
 function ColorCode() {
   const { user } = useFirebaseUser();
-  const isFirestoreAccessible =
-    !user.loading && user.loggedIn && user?.firestore;
+  const isFirestoreAccessible = !user.loading && user.loggedIn && user?.db;
   const cc =
-    !user.loading && user.loggedIn && user?.firestore
-      ? "#" + user?.firestore?.suid
-      : "";
+    !user.loading && user.loggedIn && user?.db ? "#" + user?.db?.suid : "";
   return (
     <TextInput
       label="Color Code"

@@ -92,7 +92,7 @@ function Sidebar(props: any) {
     ...[
       !user.loading && user.loggedIn
         ? {
-            link: `/@${user?.firestore?.username}`,
+            link: `/@${user?.db?.username}`,
             name: "Profile",
             icon: IconUserCircle,
           }
@@ -284,7 +284,7 @@ function Sidebar(props: any) {
                       {user.loading
                         ? "Loading"
                         : user.loggedIn
-                        ? `@${user?.firestore?.username}`
+                        ? `@${user?.db?.username}`
                         : "Not logged in"}
                     </Text>
                   </ActionIcon>

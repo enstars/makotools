@@ -71,7 +71,7 @@ interface FirebaseUserLoggedIn {
   loading: false;
   loggedIn: true;
   user: AuthUserContext;
-  firestore: UserData;
+  db: UserData;
 }
 
 type FirebaseUser =

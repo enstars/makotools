@@ -36,7 +36,7 @@ function FirebaseUserProvider({
           loading: false,
           loggedIn: !!AuthUser.id,
           user: serverData.user,
-          firestore: serverData?.firestore,
+          db: serverData?.db,
         }
       : {
           loading: true,
@@ -51,8 +51,8 @@ function FirebaseUserProvider({
           !f.loading && f.loggedIn
             ? {
                 ...f,
-                firestore: {
-                  ...f.firestore,
+                db: {
+                  ...f.db,
                   ...data,
                 },
               }
@@ -94,7 +94,7 @@ function FirebaseUserProvider({
             setFirebaseUser((s) => ({
               ...s,
               ...userState,
-              firestore: currentUserData as UserData,
+              db: currentUserData as UserData,
             }));
             if (currentUserData?.dark_mode)
               setAppColorScheme(currentUserData.dark_mode ? "dark" : "light");
@@ -124,8 +124,8 @@ function FirebaseUserProvider({
       setUserDataKey({ dark_mode: colorScheme === "dark" });
   }, [colorScheme]);
   // useEffect(() => {
-  //   if (typeof user.firestore.dark_mode !== "undefined") {
-  //     setAppColorScheme(user.firestore.dark_mode ? "dark" : "light");
+  //   if (typeof user.db.dark_mode !== "undefined") {
+  //     setAppColorScheme(user.db.dark_mode ? "dark" : "light");
   //   }
   // }, [user]);
 

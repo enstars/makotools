@@ -57,7 +57,7 @@ function StartPlaying() {
   const dayjs = useDayjs();
   const { user, setUserDataKey } = useFirebaseUser();
   const isFirestoreAccessible =
-    !user.loading && user.loggedIn && typeof user.firestore !== undefined;
+    !user.loading && user.loggedIn && typeof user.db !== undefined;
 
   const [picked, setPicked] = useState({
     month: (thisMonth + 1).toString().padStart(2, "0"),
@@ -65,13 +65,12 @@ function StartPlaying() {
     unknown: true,
   });
   const [data, setData] = useState(
-    (isFirestoreAccessible && user?.firestore?.profile__start_playing) ||
-      "0000-00-00"
+    (isFirestoreAccessible && user?.db?.profile__start_playing) || "0000-00-00"
   );
 
   useEffect(() => {
-    if (isFirestoreAccessible && user.firestore) {
-      const startPlaying = user.firestore.profile__start_playing;
+    if (isFirestoreAccessible && user.db) {
+      const startPlaying = user.db.profile__start_playing;
       // console.log(user.profile_start_playing);
       if (startPlaying && startPlaying !== "0000-00-00") {
         setPicked({
@@ -87,7 +86,7 @@ function StartPlaying() {
         });
       }
     }
-  }, [user, dayjs]);
+  }, [user, dayjs, isFirestoreAccessible]);
 
   useEffect(() => {
     const resolvedData = picked.unknown
@@ -96,19 +95,15 @@ function StartPlaying() {
     setData(resolvedData);
     if (
       user.loggedIn &&
-      user?.firestore &&
-      user.firestore?.profile__start_playing &&
-      user.firestore.profile__start_playing !== resolvedData
+      user?.db &&
+      user.db?.profile__start_playing &&
+      user.db.profile__start_playing !== resolvedData
     ) {
       setUserDataKey({ profile__start_playing: resolvedData });
-    } else if (
-      user.loggedIn &&
-      user?.firestore &&
-      !user.firestore?.profile__start_playing
-    ) {
+    } else if (user.loggedIn && user?.db && !user.db?.profile__start_playing) {
       setUserDataKey({ profile__start_playing: resolvedData });
     }
-  }, [picked, setUserDataKey]);
+  }, [picked, setUserDataKey, user.loggedIn]);
 
   return (
     <Input.Wrapper label="Started Playing">

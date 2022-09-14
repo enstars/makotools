@@ -16,7 +16,7 @@ function NameOrder({
   const { user } = useFirebaseUser();
 
   const nameOrderSetting =
-    (!user.loading && user.loggedIn && user?.firestore?.setting__name_order) ||
+    (!user.loading && user.loggedIn && user?.db?.setting__name_order) ||
     "firstlast";
   const name = getNameOrder(
     { first_name, last_name },

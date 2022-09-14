@@ -94,7 +94,7 @@ function UserMenu({
               Loading
             </Text>
           ) : user.loggedIn ? (
-            user.firestore ? (
+            user.db ? (
               <Box
                 sx={{
                   "*": {
@@ -104,13 +104,13 @@ function UserMenu({
                   },
                 }}
               >
-                {user.firestore?.name && (
+                {user.db?.name && (
                   <Text id="sidebar-user-name" size="sm" weight={500}>
-                    {user.firestore.name}
+                    {user.db.name}
                   </Text>
                 )}
                 <Text id="sidebar-user-email" size="xs" color="dimmed" mt={-2}>
-                  @{user?.firestore?.username}
+                  @{user?.db?.username}
                 </Text>
               </Box>
             ) : (

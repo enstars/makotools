@@ -28,15 +28,12 @@ function SelectSetting({
   dataKey: keyof UserData;
   data: any[];
 }) {
-  const { firebaseUser, setUserDataKey } = useFirebaseUser();
+  const { user, setUserDataKey } = useFirebaseUser();
 
-  const isFirestoreAccessible =
-    !firebaseUser.loading && firebaseUser.loggedIn && firebaseUser?.firestore;
+  const isFirestoreAccessible = !user.loading && user.loggedIn && user?.db;
   return (
     <Select
-      value={
-        isFirestoreAccessible ? firebaseUser.firestore?.[dataKey] : undefined
-      }
+      value={isFirestoreAccessible ? user.db?.[dataKey] : undefined}
       label={label}
       onChange={(value) => {
         setUserDataKey({ [dataKey]: value });
@@ -44,8 +41,7 @@ function SelectSetting({
       itemComponent={SelectItemForwardRef}
       icon={
         (isFirestoreAccessible &&
-          data.filter((r) => r.value === firebaseUser.firestore?.[dataKey])[0]
-            ?.icon) ||
+          data.filter((r) => r.value === user.db?.[dataKey])[0]?.icon) ||
         null
       }
       data={data}

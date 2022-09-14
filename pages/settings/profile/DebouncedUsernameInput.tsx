@@ -17,11 +17,11 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
   const theme = useMantineTheme();
   const { user, setUserDataKey } = useFirebaseUser();
   const [inputValue, setInputValue] = useState(
-    user.loggedIn ? user.firestore.username : ""
+    user.loggedIn ? user.db.username : ""
   );
 
   const [newUsername, setNewUsername] = useState(
-    user.loggedIn ? user.firestore.username : ""
+    user.loggedIn ? user.db.username : ""
   );
   const [usernameMsg, setUsernameMsg] = useState("");
   const [usernameJudgement, setUsernameJudgement] = useState(true);
@@ -36,7 +36,7 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
   );
 
   useEffect(() => {
-    if (user.loggedIn) setInputValue(user.firestore.username);
+    if (user.loggedIn) setInputValue(user.db.username);
   }, [user]);
 
   const validateUsername = async (value: string) => {
@@ -45,7 +45,7 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
       setNewUsername("");
 
       // TODO : move this validation server side
-      if (value === user.firestore.username) {
+      if (value === user.db.username) {
         setUsernameMsg("");
         setUsernameJudgement(true);
       } else if (value.replace(/[a-z0-9_]/g, "").length > 0) {
@@ -93,7 +93,7 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
             setInputValue(e.target.value);
             memoizedHandleValueChange(e.target.value);
           }}
-          {...(user.loggedIn && inputValue === user.firestore.username
+          {...(user.loggedIn && inputValue === user.db.username
             ? null
             : !usernameJudgement
             ? { rightSection: <Loader size="xs" /> }
@@ -112,7 +112,7 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
         <Button
           onClick={validateAndSaveUsername}
           {...(user.loggedIn &&
-          inputValue !== user.firestore.username &&
+          inputValue !== user.db.username &&
           (usernameJudgement || newUsername)
             ? null
             : { disabled: true })}
@@ -121,9 +121,7 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
         </Button>
       </Group>
       <Text mt="xs" color="dimmed" size="xs">
-        {user.loggedIn &&
-        inputValue !== user.firestore.username &&
-        usernameJudgement
+        {user.loggedIn && inputValue !== user.db.username && usernameJudgement
           ? usernameMsg
           : "Pick a new username..."}
       </Text>

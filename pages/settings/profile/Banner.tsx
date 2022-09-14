@@ -53,14 +53,14 @@ function Banner({ cards }: { cards: GameCard[] | undefined }) {
 
   const { classes, cx } = useStyles();
   const [state, handlers] = useListState(
-    (user.loggedIn && user.firestore?.profile__banner) || []
+    (user.loggedIn && user.db?.profile__banner) || []
   );
 
   useEffect(() => {
     if (
       user.loggedIn &&
-      user.firestore?.profile__banner &&
-      JSON.stringify(user.firestore.profile__banner) !== JSON.stringify(state)
+      user.db?.profile__banner &&
+      JSON.stringify(user.db.profile__banner) !== JSON.stringify(state)
     ) {
       setUserDataKey({ profile__banner: state });
     }

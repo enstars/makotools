@@ -37,20 +37,16 @@ function TextSetting<T = {}>({
   charLimit: number;
 } & T) {
   const theme = useMantineTheme();
-  const { firebaseUser, setUserDataKey } = useFirebaseUser();
+  const { user, setUserDataKey } = useFirebaseUser();
 
-  const isFirestoreAccessible =
-    !firebaseUser.loading && firebaseUser.loggedIn && !!firebaseUser.firestore;
+  const isFirestoreAccessible = !user.loading && user.loggedIn && !!user.db;
 
   const [inputValue, setInputValue] = useState(
-    isFirestoreAccessible ? firebaseUser.firestore?.[dataKey] : undefined
+    isFirestoreAccessible ? user.db?.[dataKey] : undefined
   );
 
   const handleValueChange = useDebouncedCallback((value) => {
-    if (
-      isFirestoreAccessible &&
-      !firebaseUser?.firestore?.admin?.disabledTextFields
-    )
+    if (isFirestoreAccessible && !user?.db?.admin?.disabledTextFields)
       setUserDataKey({ [dataKey]: value });
   }, 2000);
 
@@ -60,8 +56,8 @@ function TextSetting<T = {}>({
   );
 
   useEffect(() => {
-    if (isFirestoreAccessible) setInputValue(firebaseUser.firestore?.[dataKey]);
-  }, [isFirestoreAccessible, firebaseUser, dataKey]);
+    if (isFirestoreAccessible) setInputValue(user.db?.[dataKey]);
+  }, [isFirestoreAccessible, user, dataKey]);
 
   return (
     <Box>
@@ -80,7 +76,7 @@ function TextSetting<T = {}>({
           inputValue?.length &&
           (inputValue?.length > charLimit ? (
             <IconX size={18} color={theme.colors.red[5]} />
-          ) : inputValue === firebaseUser.firestore?.[dataKey] ? (
+          ) : inputValue === user.db?.[dataKey] ? (
             <IconCheck size={18} color={theme.colors.green[5]} />
           ) : (
             <Loader size="xs" />
@@ -93,10 +89,7 @@ function TextSetting<T = {}>({
             ? `${label} must be under ${charLimit} characters`
             : null
         }
-        disabled={
-          isFirestoreAccessible &&
-          firebaseUser?.firestore?.admin?.disabledTextFields
-        }
+        disabled={isFirestoreAccessible && user?.db?.admin?.disabledTextFields}
       />
       {showCharCount && (
         <Text align="right" color="dimmed" size="xs" mt="xs">

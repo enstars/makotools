@@ -89,7 +89,7 @@ function BioDisplay() {
 
   if (!user.loggedIn) return null;
 
-  const UNSAFEhtml = marked.parse(user.firestore?.profile__bio || "");
+  const UNSAFEhtml = marked.parse(user.db?.profile__bio || "");
   const safeHtml = DOMPurify.sanitize(UNSAFEhtml);
 
   return (

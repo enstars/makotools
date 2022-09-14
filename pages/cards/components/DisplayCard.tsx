@@ -102,7 +102,7 @@ export default function CardCard({
   const statsIR4 = sumStats(card.stats?.ir4);
 
   const collection =
-    (!user.loading && user.loggedIn && user.firestore?.collection) || [];
+    (!user.loading && user.loggedIn && user.db?.collection) || [];
   const thisColItem = collection?.find((c) => c.id === card.id);
   const [collectionOpened, setCollectionOpened] = useState(false);
 

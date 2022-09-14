@@ -13,15 +13,12 @@ function MultiSelectSetting({
   dataKey: keyof UserData;
   data: any[];
 }) {
-  const { firebaseUser, setUserDataKey } = useFirebaseUser();
-  const isFirestoreAccessible =
-    !firebaseUser.loading && firebaseUser.loggedIn && firebaseUser?.firestore;
+  const { user, setUserDataKey } = useFirebaseUser();
+  const isFirestoreAccessible = !user.loading && user.loggedIn && user.db;
 
   return (
     <MultiSelect
-      value={
-        (isFirestoreAccessible && firebaseUser.firestore?.[dataKey]) || null
-      }
+      value={(isFirestoreAccessible && user.db?.[dataKey]) || null}
       label={label}
       onChange={(value) => {
         setUserDataKey({ [dataKey]: value });

@@ -209,8 +209,10 @@ export const getServerSideProps = getServerSideUser(
         return a.character_id - b.character_id;
       });
       characters?.mainLang.data.forEach((character) => {
-        let birthdayVals = character.birthday.split(" ");
-        character.birthday = `0000 ${birthdayVals[0]} ${birthdayVals[1]}`;
+        if (character.birthday) {
+          let birthdayVals = character.birthday.split(" ");
+          character.birthday = `0000 ${birthdayVals[0]} ${birthdayVals[1]}`;
+        }
       });
     }
 

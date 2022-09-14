@@ -14,7 +14,7 @@ function Username() {
     <>
       <TextInput
         label="Username"
-        value={user.loggedIn ? user.firestore?.username : ""}
+        value={user.loggedIn ? user.db?.username : ""}
         disabled
         description="Username changes are unavailable during the beta."
         placeholder={"Username not set"}
