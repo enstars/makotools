@@ -74,7 +74,7 @@ const useStyles = createStyles(() => ({
 }));
 
 function BioDisplay() {
-  const { firebaseUser } = useFirebaseUser();
+  const { user } = useFirebaseUser();
   const iframeRef = useRef();
   const [height, setHeight] = useState(500);
   const { classes } = useStyles();
@@ -87,9 +87,9 @@ function BioDisplay() {
     }
   }, []);
 
-  if (!firebaseUser.loggedIn) return null;
+  if (!user.loggedIn) return null;
 
-  const UNSAFEhtml = marked.parse(firebaseUser.firestore?.profile__bio || "");
+  const UNSAFEhtml = marked.parse(user.firestore?.profile__bio || "");
   const safeHtml = DOMPurify.sanitize(UNSAFEhtml);
 
   return (

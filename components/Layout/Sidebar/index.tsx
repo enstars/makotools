@@ -60,7 +60,7 @@ function Sidebar(props: any) {
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
-  const { firebaseUser } = useFirebaseUser();
+  const { user } = useFirebaseUser();
 
   const [collapsed, toggleCollapsed] = useToggle([false, true]);
   // console.log("collapsed", collapsed);
@@ -90,9 +90,9 @@ function Sidebar(props: any) {
       soon: true,
     },
     ...[
-      !firebaseUser.loading && firebaseUser.loggedIn
+      !user.loading && user.loggedIn
         ? {
-            link: `/@${firebaseUser?.firestore?.username}`,
+            link: `/@${user?.firestore?.username}`,
             name: "Profile",
             icon: IconUserCircle,
           }
@@ -281,10 +281,10 @@ function Sidebar(props: any) {
                       ml="xs"
                       weight={700}
                     >
-                      {firebaseUser.loading
+                      {user.loading
                         ? "Loading"
-                        : firebaseUser.loggedIn
-                        ? `@${firebaseUser?.firestore?.username}`
+                        : user.loggedIn
+                        ? `@${user?.firestore?.username}`
                         : "Not logged in"}
                     </Text>
                   </ActionIcon>

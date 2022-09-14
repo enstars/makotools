@@ -7,14 +7,14 @@ import { useFirebaseUser } from "../../../services/firebase/user";
 import DebouncedUsernameInput from "./DebouncedUsernameInput";
 
 function Username() {
-  const { firebaseUser } = useFirebaseUser();
+  const { user } = useFirebaseUser();
   const [usernameModalOpen, setUsernameModalOpen] = useState(false);
 
   return (
     <>
       <TextInput
         label="Username"
-        value={firebaseUser.loggedIn ? firebaseUser.firestore?.username : ""}
+        value={user.loggedIn ? user.firestore?.username : ""}
         disabled
         description="Username changes are unavailable during the beta."
         placeholder={"Username not set"}

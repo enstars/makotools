@@ -45,7 +45,7 @@ function Page({
   posts: any;
   characters: GameCharacter[];
 }) {
-  const { firebaseUser } = useFirebaseUser();
+  const { user } = useFirebaseUser();
   const theme = useMantineTheme();
 
   return (

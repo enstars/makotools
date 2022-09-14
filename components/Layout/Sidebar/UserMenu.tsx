@@ -39,7 +39,7 @@ function UserMenu({
   const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
   const [opened, handlers] = useDisclosure(false);
-  const { firebaseUser } = useFirebaseUser();
+  const { user } = useFirebaseUser();
   const { reload } = useRouter();
 
   return (
@@ -89,12 +89,12 @@ function UserMenu({
             pointerEvents: "none",
           }}
         >
-          {firebaseUser.loading ? (
+          {user.loading ? (
             <Text size="sm" color="dimmed">
               Loading
             </Text>
-          ) : firebaseUser.loggedIn ? (
-            firebaseUser.firestore ? (
+          ) : user.loggedIn ? (
+            user.firestore ? (
               <Box
                 sx={{
                   "*": {
@@ -104,13 +104,13 @@ function UserMenu({
                   },
                 }}
               >
-                {firebaseUser.firestore?.name && (
+                {user.firestore?.name && (
                   <Text id="sidebar-user-name" size="sm" weight={500}>
-                    {firebaseUser.firestore.name}
+                    {user.firestore.name}
                   </Text>
                 )}
                 <Text id="sidebar-user-email" size="xs" color="dimmed" mt={-2}>
-                  @{firebaseUser?.firestore?.username}
+                  @{user?.firestore?.username}
                 </Text>
               </Box>
             ) : (
@@ -151,7 +151,7 @@ function UserMenu({
         </Menu.Item>
         <Menu.Label id="sidebar-label-account">Account</Menu.Label>
 
-        {firebaseUser.loading ? (
+        {user.loading ? (
           <Menu.Item
             className="sidebar-link-login"
             icon={<IconLogin size={14} />}
@@ -159,7 +159,7 @@ function UserMenu({
           >
             Log In
           </Menu.Item>
-        ) : firebaseUser.loggedIn ? (
+        ) : user.loggedIn ? (
           <>
             <Menu.Item
               id="sidebar-link-settings"
@@ -172,7 +172,7 @@ function UserMenu({
             <Menu.Item
               id="sidebar-link-logout"
               onClick={() => {
-                firebaseUser.user.signOut();
+                user.user.signOut();
                 reload();
                 // showNotification({
                 //   message: "Successfully signed out",

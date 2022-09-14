@@ -26,8 +26,8 @@ import { CONSTANTS } from "../../../services/constants";
 import BioDisplay from "../../../components/sections/BioDisplay";
 
 function Name() {
-  const { firebaseUser } = useFirebaseUser();
-  if (!firebaseUser.loggedIn) return null;
+  const { user } = useFirebaseUser();
+  if (!user.loggedIn) return null;
 
   return (
     <>

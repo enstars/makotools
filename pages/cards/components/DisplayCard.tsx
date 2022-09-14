@@ -96,16 +96,13 @@ export default function CardCard({
       ? localizedCard.subLang?.data
       : undefined;
 
-  const { firebaseUser, setUserDataKey } = useFirebaseUser();
+  const { user, setUserDataKey } = useFirebaseUser();
 
   const statsIR = sumStats(card.stats?.ir);
   const statsIR4 = sumStats(card.stats?.ir4);
 
   const collection =
-    (!firebaseUser.loading &&
-      firebaseUser.loggedIn &&
-      firebaseUser.firestore?.collection) ||
-    [];
+    (!user.loading && user.loggedIn && user.firestore?.collection) || [];
   const thisColItem = collection?.find((c) => c.id === card.id);
   const [collectionOpened, setCollectionOpened] = useState(false);
 
@@ -190,7 +187,7 @@ export default function CardCard({
         }}
       >
         <Group spacing={0} noWrap>
-          {!firebaseUser.loading && firebaseUser.loggedIn && (
+          {!user.loading && user.loggedIn && (
             <Group>
               <Box
                 // ml="xs"

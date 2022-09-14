@@ -13,12 +13,10 @@ function NameOrder({
   last_name: string;
 }) {
   const { locale } = useRouter();
-  const { firebaseUser } = useFirebaseUser();
+  const { user } = useFirebaseUser();
 
   const nameOrderSetting =
-    (!firebaseUser.loading &&
-      firebaseUser.loggedIn &&
-      firebaseUser?.firestore?.setting__name_order) ||
+    (!user.loading && user.loggedIn && user?.firestore?.setting__name_order) ||
     "firstlast";
   const name = getNameOrder(
     { first_name, last_name },

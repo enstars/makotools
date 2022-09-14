@@ -10,10 +10,10 @@ import { FirebaseUser, UserData } from "../../types/makotools";
 import { getFirestoreUserData, setFirestoreUserData } from "./firestore";
 
 const FirebaseUserContext = React.createContext<{
-  firebaseUser: FirebaseUser;
+  user: FirebaseUser;
   setUserDataKey: (data: any, callback?: () => any) => any;
 }>({
-  firebaseUser: { loading: true, loggedIn: undefined },
+  user: { loading: true, loggedIn: undefined },
   setUserDataKey: () => {},
 });
 export const useFirebaseUser = () => useContext(FirebaseUserContext);
@@ -30,7 +30,7 @@ function FirebaseUserProvider({
   serverData: any;
 }) {
   const AuthUser = useAuthUser();
-  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser>(
+  const [user, setFirebaseUser] = useState<FirebaseUser>(
     serverData?.user
       ? {
           loading: false,
@@ -63,7 +63,7 @@ function FirebaseUserProvider({
     });
   };
 
-  console.log("firebase user auth ", firebaseUser);
+  console.log("firebase user auth ", user);
   useEffect(() => {
     // if (userState.loggedIn) setFirebaseUser((s) => ({ ...s, ...userState }));
 
@@ -120,17 +120,17 @@ function FirebaseUserProvider({
   }, [AuthUser]);
 
   useEffect(() => {
-    if (!firebaseUser.loading && firebaseUser.loggedIn)
+    if (!user.loading && user.loggedIn)
       setUserDataKey({ dark_mode: colorScheme === "dark" });
   }, [colorScheme]);
   // useEffect(() => {
-  //   if (typeof firebaseUser.firestore.dark_mode !== "undefined") {
-  //     setAppColorScheme(firebaseUser.firestore.dark_mode ? "dark" : "light");
+  //   if (typeof user.firestore.dark_mode !== "undefined") {
+  //     setAppColorScheme(user.firestore.dark_mode ? "dark" : "light");
   //   }
-  // }, [firebaseUser]);
+  // }, [user]);
 
   return (
-    <FirebaseUserContext.Provider value={{ firebaseUser, setUserDataKey }}>
+    <FirebaseUserContext.Provider value={{ user, setUserDataKey }}>
       {children}
     </FirebaseUserContext.Provider>
   );

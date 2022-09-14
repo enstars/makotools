@@ -46,10 +46,10 @@ function Login() {
   const [signOnError, setSignOnError] = useState<{ type: string } | null>(null);
 
   const router = useRouter();
-  const { firebaseUser, setUserDataKey } = useFirebaseUser();
+  const { user, setUserDataKey } = useFirebaseUser();
 
   useEffect(() => {
-    if (!firebaseUser.loading && firebaseUser.loggedIn) {
+    if (!user.loading && user.loggedIn) {
       router.push("/");
     }
 
@@ -58,7 +58,7 @@ function Login() {
         setUserDataKey({ name: form.values.name }, () => {});
       }
     };
-  }, [firebaseUser, router]);
+  }, [user, router]);
 
   function signOnAlertMsg(error: { type: string; code?: string }) {
     console.log(error);
@@ -135,7 +135,7 @@ function Login() {
       pt="lg"
       style={{ height: "100%", maxWidth: 400 }}
     >
-      {!firebaseUser.loading && firebaseUser.loggedIn ? (
+      {!user.loading && user.loggedIn ? (
         <Text id="signin-redirect" align="center" color="dimmed" size="sm">
           Redirecting you to MakoTools
         </Text>
@@ -176,7 +176,7 @@ function Login() {
             withBorder
             sx={{ width: "100%" }}
           >
-            <LoadingOverlay visible={firebaseUser.loading} />
+            <LoadingOverlay visible={user.loading} />
             <Title id="signin-title" order={2} size="lg" mb="sm">
               {isRegister ? "Sign up" : "Sign in"}
             </Title>
