@@ -1,7 +1,7 @@
 import { Box, Group, Select, SelectProps, Text } from "@mantine/core";
 import { forwardRef, ReactElement } from "react";
 
-import { useFirebaseUser } from "../../../services/firebase/user";
+import { useUser } from "../../../services/firebase/user";
 import { UserData } from "../../../types/makotools";
 
 const SelectItemForwardRef = forwardRef<HTMLDivElement>(function SelectItem(
@@ -28,24 +28,20 @@ function SelectSetting({
   dataKey: keyof UserData;
   data: any[];
 }) {
-  const { firebaseUser, setUserDataKey } = useFirebaseUser();
+  const user = useUser();
 
-  const isFirestoreAccessible =
-    !firebaseUser.loading && firebaseUser.loggedIn && firebaseUser?.firestore;
+  const isFirestoreAccessible = !user.loading && user.loggedIn && user?.db;
   return (
     <Select
-      value={
-        isFirestoreAccessible ? firebaseUser.firestore?.[dataKey] : undefined
-      }
+      value={isFirestoreAccessible ? user.db?.[dataKey] : undefined}
       label={label}
       onChange={(value) => {
-        setUserDataKey({ [dataKey]: value });
+        if (user.loggedIn) user.db.set({ [dataKey]: value });
       }}
       itemComponent={SelectItemForwardRef}
       icon={
         (isFirestoreAccessible &&
-          data.filter((r) => r.value === firebaseUser.firestore?.[dataKey])[0]
-            ?.icon) ||
+          data.filter((r) => r.value === user.db?.[dataKey])[0]?.icon) ||
         null
       }
       data={data}

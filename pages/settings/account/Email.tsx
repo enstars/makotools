@@ -1,18 +1,13 @@
 import { TextInput } from "@mantine/core";
 
-import { useFirebaseUser } from "../../../services/firebase/user";
+import { useUser } from "../../../services/firebase/user";
 
 function Email() {
-  const { firebaseUser } = useFirebaseUser();
+  const user = useUser();
   return (
     <TextInput
       label="Email"
-      value={
-        (!firebaseUser.loading &&
-          firebaseUser.loggedIn &&
-          firebaseUser.user.email) ||
-        " "
-      }
+      value={(!user.loading && user.loggedIn && user.user.email) || " "}
       readOnly
     />
   );

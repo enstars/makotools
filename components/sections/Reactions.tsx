@@ -18,7 +18,7 @@ import { IconChevronDown, IconChevronUp, IconMoodSmile } from "@tabler/icons";
 import { Collapse } from "react-collapse";
 
 import emotes from "../../services/emotes";
-import { useFirebaseUser } from "../../services/firebase/user";
+import { useUser } from "../../services/firebase/user";
 import EmoteSelector from "../utilities/emotes/EmoteSelector";
 import Emote from "../utilities/emotes/Emote";
 import { DbReaction, Reaction } from "../../types/makotools";
@@ -41,14 +41,14 @@ function Reactions() {
   useEffect(() => {
     fetchReactions();
   }, [asPath]);
-  const { firebaseUser } = useFirebaseUser();
+  const user = useUser();
 
   const currentPageId = asPath.replace(/\//g, "_");
   // const currentPageId = 1;
   const addReaction = (id: string) => {
-    if (firebaseUser.loading || !firebaseUser.loggedIn) return;
+    if (user.loading || !user.loggedIn) return;
     fetch(
-      `https://backend-stars.ensemble.moe/reactions.php?page_id=${currentPageId}&content=${id}&name=${firebaseUser.user.id}`,
+      `https://backend-stars.ensemble.moe/reactions.php?page_id=${currentPageId}&content=${id}&name=${user.user.id}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -92,7 +92,7 @@ function Reactions() {
       });
   };
 
-  // if (!firebaseUser.loggedIn) return null;
+  // if (!user.loggedIn) return null;
 
   return (
     <Paper my="sm" withBorder p={3} radius="md">
@@ -102,7 +102,7 @@ function Reactions() {
             return (
               <Tooltip
                 label={<Text size="xs">Sign in to react!</Text>}
-                disabled={!firebaseUser.loading && firebaseUser.loggedIn}
+                disabled={!user.loading && user.loggedIn}
               >
                 <Button
                   variant="light"
@@ -121,7 +121,7 @@ function Reactions() {
             console.log(emote);
             addReaction(emote.stringId);
           }}
-          disabled={firebaseUser.loading || !firebaseUser.loggedIn}
+          disabled={user.loading || !user.loggedIn}
         >
           <></>
         </EmoteSelector>

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { AuthAction } from "next-firebase-auth";
 
-import { useFirebaseUser } from "../../services/firebase/user";
+import { useUser } from "../../services/firebase/user";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { getLayout } from "../../components/Layout";
 

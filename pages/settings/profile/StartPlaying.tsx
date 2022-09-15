@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { forwardRef, useEffect, useState } from "react";
 
-import { useFirebaseUser } from "../../../services/firebase/user";
+import { useUser } from "../../../services/firebase/user";
 import SelectSetting from "../shared/SelectSetting";
 import { useDayjs } from "../../../services/dayjs";
 
@@ -55,11 +55,9 @@ years.forEach((year) => {
 
 function StartPlaying() {
   const dayjs = useDayjs();
-  const { firebaseUser, setUserDataKey } = useFirebaseUser();
+  const user = useUser();
   const isFirestoreAccessible =
-    !firebaseUser.loading &&
-    firebaseUser.loggedIn &&
-    typeof firebaseUser.firestore !== undefined;
+    !user.loading && user.loggedIn && typeof user.db !== undefined;
 
   const [picked, setPicked] = useState({
     month: (thisMonth + 1).toString().padStart(2, "0"),
@@ -67,15 +65,13 @@ function StartPlaying() {
     unknown: true,
   });
   const [data, setData] = useState(
-    (isFirestoreAccessible &&
-      firebaseUser?.firestore?.profile__start_playing) ||
-      "0000-00-00"
+    (isFirestoreAccessible && user?.db?.profile__start_playing) || "0000-00-00"
   );
 
   useEffect(() => {
-    if (isFirestoreAccessible && firebaseUser.firestore) {
-      const startPlaying = firebaseUser.firestore.profile__start_playing;
-      // console.log(firebaseUser.profile_start_playing);
+    if (isFirestoreAccessible && user.db) {
+      const startPlaying = user.db.profile__start_playing;
+      // console.log(user.profile_start_playing);
       if (startPlaying && startPlaying !== "0000-00-00") {
         setPicked({
           month: dayjs(startPlaying).format("MM"),
@@ -90,7 +86,7 @@ function StartPlaying() {
         });
       }
     }
-  }, [firebaseUser, dayjs]);
+  }, [user, dayjs, isFirestoreAccessible]);
 
   useEffect(() => {
     const resolvedData = picked.unknown
@@ -98,20 +94,15 @@ function StartPlaying() {
       : `${picked.year}-${picked.month}-01`;
     setData(resolvedData);
     if (
-      firebaseUser.loggedIn &&
-      firebaseUser?.firestore &&
-      firebaseUser.firestore?.profile__start_playing &&
-      firebaseUser.firestore.profile__start_playing !== resolvedData
+      user.loggedIn &&
+      user.db?.profile__start_playing &&
+      user.db.profile__start_playing !== resolvedData
     ) {
-      setUserDataKey({ profile__start_playing: resolvedData });
-    } else if (
-      firebaseUser.loggedIn &&
-      firebaseUser?.firestore &&
-      !firebaseUser.firestore?.profile__start_playing
-    ) {
-      setUserDataKey({ profile__start_playing: resolvedData });
+      user.db.set({ profile__start_playing: resolvedData });
+    } else if (user.loggedIn && !user.db?.profile__start_playing) {
+      user.db.set({ profile__start_playing: resolvedData });
     }
-  }, [picked, setUserDataKey]);
+  }, [picked, user]);
 
   return (
     <Input.Wrapper label="Started Playing">

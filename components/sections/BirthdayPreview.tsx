@@ -84,7 +84,6 @@ function retrieveClosestBirthdays(
 
 // choose horoscope from value
 function HoroscopeSymbol({ ...props }) {
-  console.log(props.horoscope);
   switch (props.horoscope) {
     // ^ stream knockin' fantasy
     case 0:
@@ -297,7 +296,6 @@ function BirthdayCard({ ...props }) {
 }
 
 function BirthdayPreview({ ...props }) {
-  console.log(props.characters);
   return (
     <Accordion variant="contained" defaultValue="birthday">
       <Accordion.Item value="birthday">

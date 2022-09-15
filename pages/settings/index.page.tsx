@@ -27,7 +27,7 @@ import {
 import dynamic from "next/dynamic";
 
 import PageTitle from "../../components/sections/PageTitle";
-import { useFirebaseUser } from "../../services/firebase/user";
+import { useUser } from "../../services/firebase/user";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { getLayout } from "../../components/Layout";
 import { getLocalizedData } from "../../services/ensquare";

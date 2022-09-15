@@ -2,19 +2,19 @@ import { ActionIcon, Modal, TextInput } from "@mantine/core";
 import { IconAt, IconPencil } from "@tabler/icons";
 import { useState } from "react";
 
-import { useFirebaseUser } from "../../../services/firebase/user";
+import { useUser } from "../../../services/firebase/user";
 
 import DebouncedUsernameInput from "./DebouncedUsernameInput";
 
 function Username() {
-  const { firebaseUser } = useFirebaseUser();
+  const user = useUser();
   const [usernameModalOpen, setUsernameModalOpen] = useState(false);
 
   return (
     <>
       <TextInput
         label="Username"
-        value={firebaseUser.loggedIn ? firebaseUser.firestore?.username : ""}
+        value={user.loggedIn ? user.db?.username : ""}
         disabled
         description="Username changes are unavailable during the beta."
         placeholder={"Username not set"}
