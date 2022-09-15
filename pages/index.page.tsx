@@ -147,44 +147,45 @@ function Page({
             </List.Item>
           </List>
         </Box>
-
-        <Accordion
-          mt="xs"
-          variant="contained"
-          defaultValue="announcement"
-          sx={{ flexBasis: 300, flexGrow: 0.01, minWidth: 0 }}
-        >
-          <Accordion.Item value="announcement">
-            <Accordion.Control icon={<IconNews size={18} />}>
-              <Text inline weight={500}>
-                Site Announcements
-              </Text>
-            </Accordion.Control>
-            <Accordion.Panel>
-              {posts?.error ? (
-                <Text size="sm" align="center" color="dimmed">
-                  Error fetching latest announcements
+        <Stack>
+          <Accordion
+            mt="xs"
+            variant="contained"
+            defaultValue="announcement"
+            sx={{ flexBasis: 300, flexGrow: 0.01, minWidth: 0 }}
+          >
+            <Accordion.Item value="announcement">
+              <Accordion.Control icon={<IconNews size={18} />}>
+                <Text inline weight={500}>
+                  Site Announcements
                 </Text>
-              ) : (
-                <>
-                  <Stack spacing="sm">
-                    {posts.map((p: any, i: number) => (
-                      <Announcement key={p.id} announcement={p} i={i} />
-                    ))}
-                  </Stack>
-                  <Box mt="xs">
-                    <Link href="/about/announcements" passHref>
-                      <Anchor component="a" size="xs">
-                        See all announcements
-                      </Anchor>
-                    </Link>
-                  </Box>
-                </>
-              )}
-            </Accordion.Panel>
-          </Accordion.Item>
-        </Accordion>
-        <BirthdayPreview characters={characters} />
+              </Accordion.Control>
+              <Accordion.Panel>
+                {posts?.error ? (
+                  <Text size="sm" align="center" color="dimmed">
+                    Error fetching latest announcements
+                  </Text>
+                ) : (
+                  <>
+                    <Stack spacing="sm">
+                      {posts.map((p: any, i: number) => (
+                        <Announcement key={p.id} announcement={p} i={i} />
+                      ))}
+                    </Stack>
+                    <Box mt="xs">
+                      <Link href="/about/announcements" passHref>
+                        <Anchor component="a" size="xs">
+                          See all announcements
+                        </Anchor>
+                      </Link>
+                    </Box>
+                  </>
+                )}
+              </Accordion.Panel>
+            </Accordion.Item>
+          </Accordion>
+          <BirthdayPreview characters={characters} />
+        </Stack>
       </Group>
     </>
   );
