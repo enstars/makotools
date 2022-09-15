@@ -23,7 +23,7 @@ import Frame, { FrameContextConsumer, useFrame } from "react-frame-component";
 import NormalizeCSS from "raw-loader!../../styles/normalize.notcss";
 
 import { CONSTANTS } from "../../services/constants";
-import { useFirebaseUser } from "../../services/firebase/user";
+import { useUser } from "../../services/firebase/user";
 import emotes from "../../services/emotes";
 const emoji = {
   name: "emoji",
@@ -74,7 +74,7 @@ const useStyles = createStyles(() => ({
 }));
 
 function BioDisplay() {
-  const { user } = useFirebaseUser();
+  const user = useUser();
   const iframeRef = useRef();
   const [height, setHeight] = useState(500);
   const { classes } = useStyles();

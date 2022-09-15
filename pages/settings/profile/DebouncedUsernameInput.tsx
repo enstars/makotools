@@ -11,11 +11,11 @@ import {
 import { IconCheck, IconX, IconAt } from "@tabler/icons";
 
 import { validateUsernameDb } from "../../../services/firebase/firestore";
-import { useFirebaseUser } from "../../../services/firebase/user";
+import { useUser } from "../../../services/firebase/user";
 
 function DebouncedUsernameInput({ changedCallback = () => {} }) {
   const theme = useMantineTheme();
-  const { user, setUserDataKey } = useFirebaseUser();
+  const user = useUser();
   const [inputValue, setInputValue] = useState(
     user.loggedIn ? user.db.username : ""
   );
@@ -77,9 +77,11 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
   };
 
   const validateAndSaveUsername = () => {
-    setUserDataKey({ username: newUsername });
-    setNewUsername("");
-    changedCallback();
+    if (user.loggedIn) {
+      user.db.set({ username: newUsername });
+      setNewUsername("");
+      changedCallback();
+    }
   };
 
   return (

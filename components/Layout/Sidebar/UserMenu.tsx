@@ -26,7 +26,7 @@ import {
 } from "@tabler/icons";
 import { useRouter } from "next/router";
 
-import { useFirebaseUser } from "../../../services/firebase/user";
+import { useUser } from "../../../services/firebase/user";
 
 function UserMenu({
   trigger,
@@ -39,7 +39,7 @@ function UserMenu({
   const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
   const [opened, handlers] = useDisclosure(false);
-  const { user } = useFirebaseUser();
+  const user = useUser();
   const { reload } = useRouter();
 
   return (

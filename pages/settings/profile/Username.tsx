@@ -2,12 +2,12 @@ import { ActionIcon, Modal, TextInput } from "@mantine/core";
 import { IconAt, IconPencil } from "@tabler/icons";
 import { useState } from "react";
 
-import { useFirebaseUser } from "../../../services/firebase/user";
+import { useUser } from "../../../services/firebase/user";
 
 import DebouncedUsernameInput from "./DebouncedUsernameInput";
 
 function Username() {
-  const { user } = useFirebaseUser();
+  const user = useUser();
   const [usernameModalOpen, setUsernameModalOpen] = useState(false);
 
   return (

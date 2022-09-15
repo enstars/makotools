@@ -23,7 +23,7 @@ import Image from "next/image";
 import { IconNews } from "@tabler/icons";
 
 import Breadcrumbs from "../components/Layout/Header/Breadcrumbs";
-import { useFirebaseUser } from "../services/firebase/user";
+import { useUser } from "../services/firebase/user";
 import Banner from "../assets/banner.png";
 import AffiliatesLight from "../assets/Affiliates/affiliates_light.svg?url";
 import AffiliatesDark from "../assets/Affiliates/affiliates_dark.svg?url";
@@ -45,7 +45,7 @@ function Page({
   posts: any;
   characters: GameCharacter[];
 }) {
-  const { user } = useFirebaseUser();
+  const user = useUser();
   const theme = useMantineTheme();
 
   return (

@@ -1,24 +1,34 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext, useState, useEffect, ReactElement } from "react";
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  ReactElement,
+  useCallback,
+} from "react";
 import { showNotification } from "@mantine/notifications";
 import { IconAlertTriangle, IconArrowLeft } from "@tabler/icons";
 import { useAuthUser } from "next-firebase-auth";
 import { ColorScheme } from "@mantine/core";
 
-import { FirebaseUser, UserData } from "../../types/makotools";
+import {
+  User,
+  UserData,
+  UserLoading,
+  UserLoggedIn,
+} from "../../types/makotools";
 
 import { getFirestoreUserData, setFirestoreUserData } from "./firestore";
 
-const FirebaseUserContext = React.createContext<{
-  user: FirebaseUser;
-  setUserDataKey: (data: any, callback?: () => any) => any;
-}>({
-  user: { loading: true, loggedIn: undefined },
-  setUserDataKey: () => {},
-});
-export const useFirebaseUser = () => useContext(FirebaseUserContext);
+const loadingUser: UserLoading = {
+  loading: true,
+  loggedIn: undefined,
+};
 
-function FirebaseUserProvider({
+const UserContext = React.createContext<User>(loadingUser);
+export const useUser = () => useContext(UserContext);
+
+function UserProvider({
   children,
   colorScheme,
   setAppColorScheme,
@@ -30,7 +40,7 @@ function FirebaseUserProvider({
   serverData: any;
 }) {
   const AuthUser = useAuthUser();
-  const [user, setFirebaseUser] = useState<FirebaseUser>(
+  const [user, setUser] = useState<User>(
     serverData?.user
       ? {
           loading: false,
@@ -38,34 +48,31 @@ function FirebaseUserProvider({
           user: serverData.user,
           db: serverData?.db,
         }
-      : {
-          loading: true,
-          loggedIn: undefined,
-        }
+      : loadingUser
   );
 
-  const setUserDataKey = (data: any, callback?: () => void) => {
-    setFirestoreUserData(data, ({ status }) => {
-      if (status === "success") {
-        setFirebaseUser((f) =>
-          !f.loading && f.loggedIn
-            ? {
-                ...f,
-                db: {
-                  ...f.db,
-                  ...data,
-                },
-              }
-            : f
-        );
-        if (callback) callback();
-      }
-    });
-  };
+  const setDb = useCallback(
+    (data: any, callback?: () => void) => {
+      if (user.loggedIn)
+        setFirestoreUserData(data, ({ status }) => {
+          if (status === "success") {
+            setUser((f: UserLoggedIn) => ({
+              ...f,
+              db: {
+                ...f.db,
+                ...data,
+              },
+            }));
+            if (callback) callback();
+          }
+        });
+    },
+    [user, setUser]
+  );
 
   console.log("firebase user auth ", user);
   useEffect(() => {
-    // if (userState.loggedIn) setFirebaseUser((s) => ({ ...s, ...userState }));
+    // if (userState.loggedIn) setUser((s) => ({ ...s, ...userState }));
 
     if (AuthUser.id) {
       const userState = {
@@ -91,10 +98,14 @@ function FirebaseUserProvider({
             });
             AuthUser.signOut();
           } else {
-            setFirebaseUser((s) => ({
+            const db = {
+              ...currentUserData,
+              set: setDb,
+            };
+            setUser((s) => ({
               ...s,
               ...userState,
-              db: currentUserData as UserData,
+              db,
             }));
             if (currentUserData?.dark_mode)
               setAppColorScheme(currentUserData.dark_mode ? "dark" : "light");
@@ -115,13 +126,13 @@ function FirebaseUserProvider({
         loading: false as const,
         loggedIn: false as const,
       };
-      setFirebaseUser((s) => ({ ...s, ...userState }));
+      setUser((s) => ({ ...s, ...userState }));
     }
   }, [AuthUser]);
 
   useEffect(() => {
     if (!user.loading && user.loggedIn)
-      setUserDataKey({ dark_mode: colorScheme === "dark" });
+      setDb({ dark_mode: colorScheme === "dark" });
   }, [colorScheme]);
   // useEffect(() => {
   //   if (typeof user.db.dark_mode !== "undefined") {
@@ -129,11 +140,7 @@ function FirebaseUserProvider({
   //   }
   // }, [user]);
 
-  return (
-    <FirebaseUserContext.Provider value={{ user, setUserDataKey }}>
-      {children}
-    </FirebaseUserContext.Provider>
-  );
+  return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
 }
 
-export default FirebaseUserProvider;
+export default UserProvider;

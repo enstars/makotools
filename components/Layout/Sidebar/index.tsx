@@ -42,7 +42,7 @@ import MakotoolsLightComponent from "../../../assets/Logo/mkt_light_icon.svg";
 import MakotoolsDarkComponent from "../../../assets/Logo/mkt_dark_icon.svg";
 import MakotoolsTextLightComponent from "../../../assets/Logo/mkt_light_text.svg";
 import MakotoolsTextDarkComponent from "../../../assets/Logo/mkt_dark_text.svg";
-import { useFirebaseUser } from "../../../services/firebase/user";
+import { useUser } from "../../../services/firebase/user";
 
 import UserMenu from "./UserMenu";
 
@@ -60,7 +60,7 @@ function Sidebar(props: any) {
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
-  const { user } = useFirebaseUser();
+  const user = useUser();
 
   const [collapsed, toggleCollapsed] = useToggle([false, true]);
   // console.log("collapsed", collapsed);

@@ -18,7 +18,7 @@ import { IconChevronDown, IconChevronUp, IconMoodSmile } from "@tabler/icons";
 import { Collapse } from "react-collapse";
 
 import emotes from "../../services/emotes";
-import { useFirebaseUser } from "../../services/firebase/user";
+import { useUser } from "../../services/firebase/user";
 import EmoteSelector from "../utilities/emotes/EmoteSelector";
 import Emote from "../utilities/emotes/Emote";
 import { DbReaction, Reaction } from "../../types/makotools";
@@ -41,7 +41,7 @@ function Reactions() {
   useEffect(() => {
     fetchReactions();
   }, [asPath]);
-  const { user } = useFirebaseUser();
+  const user = useUser();
 
   const currentPageId = asPath.replace(/\//g, "_");
   // const currentPageId = 1;

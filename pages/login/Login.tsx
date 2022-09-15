@@ -33,7 +33,7 @@ import { useRouter } from "next/router";
 
 import Google from "../../assets/google.svg";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
-import { useFirebaseUser } from "../../services/firebase/user";
+import { useUser } from "../../services/firebase/user";
 import {
   appSignInWithGoogle,
   appSignInWithEmailAndPassword,
@@ -46,7 +46,7 @@ function Login() {
   const [signOnError, setSignOnError] = useState<{ type: string } | null>(null);
 
   const router = useRouter();
-  const { user, setUserDataKey } = useFirebaseUser();
+  const user = useUser();
 
   useEffect(() => {
     if (!user.loading && user.loggedIn) {
@@ -54,8 +54,8 @@ function Login() {
     }
 
     return () => {
-      if (isRegister) {
-        setUserDataKey({ name: form.values.name }, () => {});
+      if (isRegister && user.loggedIn) {
+        user.db.set({ name: form.values.name }, () => {});
       }
     };
   }, [user, router]);

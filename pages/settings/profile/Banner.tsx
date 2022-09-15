@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 import { getB2File } from "../../../services/ensquare";
-import { useFirebaseUser } from "../../../services/firebase/user";
+import { useUser } from "../../../services/firebase/user";
 import TextSetting from "../shared/TextSetting";
 
 const useStyles = createStyles((theme) => ({
@@ -48,7 +48,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 function Banner({ cards }: { cards: GameCard[] | undefined }) {
-  const { user, setUserDataKey } = useFirebaseUser();
+  const user = useUser();
   const [acValue, setAcValue] = useState("");
 
   const { classes, cx } = useStyles();
@@ -62,9 +62,9 @@ function Banner({ cards }: { cards: GameCard[] | undefined }) {
       user.db?.profile__banner &&
       JSON.stringify(user.db.profile__banner) !== JSON.stringify(state)
     ) {
-      setUserDataKey({ profile__banner: state });
+      user.db.set({ profile__banner: state });
     }
-  }, [state, user, setUserDataKey]);
+  }, [state, user]);
 
   if (!cards)
     return (
@@ -143,7 +143,7 @@ function Banner({ cards }: { cards: GameCard[] | undefined }) {
         onChange={(value) => {
           console.log(value);
           if (value) handlers.append(parseInt(value));
-          //   setUserDataKey({ profile__banner: [...state, value] });
+          //   user.db.set({ profile__banner: [...state, value] });
         }}
         searchable
         limit={25}
