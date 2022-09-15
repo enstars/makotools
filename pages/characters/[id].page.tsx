@@ -13,8 +13,15 @@ import Reactions from "../../components/sections/Reactions";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { getLayout } from "../../components/Layout";
 import Picture from "../../components/core/Picture";
+import { LoadedData } from "../../types/makotools";
 
-function Page({ character }: { character: any }) {
+function Page({
+  character: localizedCharacter,
+}: {
+  character: LoadedData<GameCharacter>;
+}) {
+  const character = localizedCharacter.main.data;
+  console.log(character);
   return (
     <>
       <Head>
@@ -129,13 +136,20 @@ export const getServerSideProps = getServerSideUser(
       };
     }
 
+    const character = getItemFromLocalized(
+      characters,
+      characterEN.character_id,
+      "character_id"
+    );
+    if (typeof character === "undefined") {
+      return {
+        notFound: true,
+      };
+    }
+
     return {
       props: {
-        character: getItemFromLocalized(
-          characters,
-          characterEN.character_id,
-          "character_id"
-        ),
+        character,
       },
     };
   }

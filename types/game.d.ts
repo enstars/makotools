@@ -22,8 +22,7 @@ interface GameCharacterStrings {
 
 interface GameCharacter extends GameCharacterStrings {
   character_id: CharacterID;
-  unit_id?: UnitID;
-  unit?: string[]; // TBA: Switch to using unit IDs
+  unit: ID[];
   image_color?: HexColorWithTag;
   height: string;
   weight: string; // TBA: Remove units from these fields

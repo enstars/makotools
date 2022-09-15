@@ -8,11 +8,13 @@ import {
   Text,
   useMantineTheme,
 } from "@mantine/core";
+import { useLocalStorage } from "@mantine/hooks";
 
 import { getData, getLocalizedData } from "../../services/ensquare";
 import PageTitle from "../../components/sections/PageTitle";
 import { getLayout } from "../../components/Layout";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
+import { LoadedData } from "../../types/makotools";
 
 import CharacterCard from "./components/DisplayCard";
 
@@ -23,68 +25,66 @@ interface CharacterCardProps {
   unique_id?: string;
 }
 
+type SortOption = "default" | "id" | "birthday";
+interface CharacterViewOptions {
+  filterUnits: number[];
+  sortOption: SortOption;
+  searchQuery: string;
+  sortDescending: boolean;
+}
+
+const CHARACTER_VIEW_OPTIONS_DEFAULT: CharacterViewOptions = {
+  filterUnits: [],
+  sortOption: "default",
+  searchQuery: "",
+  sortDescending: false,
+};
+
 function Page({
   characters,
   unit_to_characters: unitToCharacters,
   units,
 }: {
-  characters: any;
+  characters: LoadedData<GameCharacter[]>;
   unit_to_characters: any;
   units: any;
 }) {
   console.log(characters, unitToCharacters, units);
 
-  const [listCharacters, setListCharacters] = useState<CharacterCardProps[]>(
-    []
+  const [listCharacters, setListCharacters] = useState<GameCharacter[]>(
+    characters.main.data
   );
   const [filterOptions, setfilterOptions] = useState<GameUnit[]>([]);
   const [chosenUnit, setChosenUnit] = useState<string | null>(null);
+  const [viewOptions, setViewOptions] = useLocalStorage<CharacterViewOptions>({
+    key: "characterFilters",
+    defaultValue: CHARACTER_VIEW_OPTIONS_DEFAULT,
+  });
   const theme = useMantineTheme();
+
+  const descendingNum = viewOptions.sortDescending ? -1 : 1;
+  const SORT_FUNCTIONS: { [key in SortOption]: any } = {
+    default: (a: any, b: any) => (a.sort_id - b.sort_id) * descendingNum,
+    id: (a: any, b: any) => (a.id - b.id) * descendingNum,
+    birthday: (a: any, b: any) =>
+      a.birthday.localeCompare(b.birthday) * descendingNum,
+  };
+
   useEffect(() => {
-    let charactersWithUnits: GameCharacter[] = unitToCharacters.data;
-
-    if (chosenUnit) {
-      console.log(chosenUnit);
-      const filterOptionsChosenID = parseInt(chosenUnit);
-      charactersWithUnits = charactersWithUnits.filter(
-        (character: GameCharacter) =>
-          filterOptionsChosenID === character.unit_id
-      );
-    }
-    const charactersWithUnitsSorted = _.sortBy(charactersWithUnits, [
-      function findUnitOrder(charactersWithUnit) {
-        const thisUnit: GameUnit = units.data.filter(
-          (unit: GameUnit) => unit.unit_id === charactersWithUnit.unit_id
-        )[0] || {
-          name: "MaM",
-          order: 14,
-        }; // MaM *sobs* mama... cries
-        // eslint-disable-next-line dot-notation
-        return thisUnit.order;
-      },
-      "order_num_in_unit_as_list",
-    ]);
-
-    const charactersFiltered = charactersWithUnitsSorted.map((charaUnit) => {
-      const charIndex = characters.main.data.indexOf(
-        characters.main.data.filter(
-          (chara: GameCharacter) =>
-            chara.character_id === charaUnit.character_id
-        )[0]
-      );
-
-      return {
-        i: charIndex,
-        doubleface: charaUnit.unit_id === 17,
-        unique_id: `${characters.main.data?.[charIndex]?.character_id}-${charaUnit.unit_id}`,
-      };
-    });
-
-    setListCharacters(charactersFiltered);
-    setfilterOptions(
-      units.data.sort((a: any, b: any) => !!(a?.order > b?.order))
-    );
-  }, [characters.main.data, chosenUnit, unitToCharacters.data, units.data]);
+    let filteredList: GameCharacter[] = characters.main.data
+      .filter((c) => {
+        return c.character_id <= 9999;
+      })
+      .filter((c) => {
+        if (viewOptions.filterUnits.length)
+          return viewOptions.filterUnits.filter((u) => c.unit.includes(u))
+            .length;
+        return true;
+      })
+      .sort(SORT_FUNCTIONS["id"])
+      .sort(SORT_FUNCTIONS[viewOptions.sortOption]);
+    setListCharacters(filteredList);
+  }, [viewOptions, debouncedSearch]);
 
   const handleNewUnit = (e: string) => {
     setChosenUnit(e);
