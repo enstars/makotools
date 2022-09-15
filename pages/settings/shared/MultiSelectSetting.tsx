@@ -1,6 +1,6 @@
 import { MultiSelect, MultiSelectProps } from "@mantine/core";
 
-import { useFirebaseUser } from "../../../services/firebase/user";
+import { useUser } from "../../../services/firebase/user";
 import { UserData } from "../../../types/makotools";
 
 function MultiSelectSetting({
@@ -13,15 +13,15 @@ function MultiSelectSetting({
   dataKey: keyof UserData;
   data: any[];
 }) {
-  const { user, setUserDataKey } = useFirebaseUser();
-  const isFirestoreAccessible = !user.loading && user.loggedIn && user.db;
+  const user = useUser();
+  const isFirestoreAccessible = user.loggedIn;
 
   return (
     <MultiSelect
       value={(isFirestoreAccessible && user.db?.[dataKey]) || null}
       label={label}
       onChange={(value) => {
-        setUserDataKey({ [dataKey]: value });
+        if (user.loggedIn) user.db.set({ [dataKey]: value });
       }}
       data={data}
       {...props}

@@ -1,9 +1,9 @@
 import { TextInput } from "@mantine/core";
 
-import { useFirebaseUser } from "../../../services/firebase/user";
+import { useUser } from "../../../services/firebase/user";
 
 function Email() {
-  const { user } = useFirebaseUser();
+  const user = useUser();
   return (
     <TextInput
       label="Email"

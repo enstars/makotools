@@ -43,6 +43,7 @@ type ShowTlBadge = "none" | "unofficial" | "all";
 type GameRegion = "jp" | "cn" | "kr" | "tw" | "en";
 type UID = ID;
 interface UserData {
+  set(data: any, callback?: () => any): any;
   collection?: CollectedCard[];
   suid: string;
   username: string;
@@ -58,26 +59,23 @@ interface UserData {
   readonly admin: any;
 }
 
-interface FirebaseUserLoading {
+interface UserLoading {
   loading: true;
   loggedIn: undefined;
 }
-interface FirebaseUserLoggedOut {
+interface UserLoggedOut {
   loading: false;
   loggedIn: false;
 }
 
-interface FirebaseUserLoggedIn {
+interface UserLoggedIn {
   loading: false;
   loggedIn: true;
   user: AuthUserContext;
   db: UserData;
 }
 
-type FirebaseUser =
-  | FirebaseUserLoading
-  | FirebaseUserLoggedOut
-  | FirebaseUserLoggedIn;
+type User = UserLoading | UserLoggedOut | UserLoggedIn;
 
 interface GetServerSideUserContext extends GetServerSidePropsContext {}
 

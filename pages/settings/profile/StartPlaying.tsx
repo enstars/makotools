@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { forwardRef, useEffect, useState } from "react";
 
-import { useFirebaseUser } from "../../../services/firebase/user";
+import { useUser } from "../../../services/firebase/user";
 import SelectSetting from "../shared/SelectSetting";
 import { useDayjs } from "../../../services/dayjs";
 
@@ -55,7 +55,7 @@ years.forEach((year) => {
 
 function StartPlaying() {
   const dayjs = useDayjs();
-  const { user, setUserDataKey } = useFirebaseUser();
+  const user = useUser();
   const isFirestoreAccessible =
     !user.loading && user.loggedIn && typeof user.db !== undefined;
 
@@ -95,15 +95,14 @@ function StartPlaying() {
     setData(resolvedData);
     if (
       user.loggedIn &&
-      user?.db &&
       user.db?.profile__start_playing &&
       user.db.profile__start_playing !== resolvedData
     ) {
-      setUserDataKey({ profile__start_playing: resolvedData });
-    } else if (user.loggedIn && user?.db && !user.db?.profile__start_playing) {
-      setUserDataKey({ profile__start_playing: resolvedData });
+      user.db.set({ profile__start_playing: resolvedData });
+    } else if (user.loggedIn && !user.db?.profile__start_playing) {
+      user.db.set({ profile__start_playing: resolvedData });
     }
-  }, [picked, setUserDataKey, user.loggedIn]);
+  }, [picked, user]);
 
   return (
     <Input.Wrapper label="Started Playing">

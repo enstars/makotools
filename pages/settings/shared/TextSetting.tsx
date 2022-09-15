@@ -19,7 +19,7 @@ import {
 } from "@mantine/core";
 import { IconCheck, IconX } from "@tabler/icons";
 
-import { useFirebaseUser } from "../../../services/firebase/user";
+import { useUser } from "../../../services/firebase/user";
 import { UserData } from "../../../types/makotools";
 
 function TextSetting<T = {}>({
@@ -37,7 +37,7 @@ function TextSetting<T = {}>({
   charLimit: number;
 } & T) {
   const theme = useMantineTheme();
-  const { user, setUserDataKey } = useFirebaseUser();
+  const user = useUser();
 
   const isFirestoreAccessible = !user.loading && user.loggedIn && !!user.db;
 
@@ -47,7 +47,7 @@ function TextSetting<T = {}>({
 
   const handleValueChange = useDebouncedCallback((value) => {
     if (isFirestoreAccessible && !user?.db?.admin?.disabledTextFields)
-      setUserDataKey({ [dataKey]: value });
+      user.db.set({ [dataKey]: value });
   }, 2000);
 
   const memoizedHandleValueChange = useMemo(

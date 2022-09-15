@@ -21,12 +21,12 @@ import Head from "next/head";
 import Frame, { FrameContextConsumer, useFrame } from "react-frame-component";
 
 import TextSetting from "../shared/TextSetting";
-import { useFirebaseUser } from "../../../services/firebase/user";
+import { useUser } from "../../../services/firebase/user";
 import { CONSTANTS } from "../../../services/constants";
 import BioDisplay from "../../../components/sections/BioDisplay";
 
 function Name() {
-  const { user } = useFirebaseUser();
+  const user = useUser();
   if (!user.loggedIn) return null;
 
   return (

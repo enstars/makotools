@@ -32,7 +32,7 @@ import ImageViewer from "../../../components/core/ImageViewer";
 import OfficialityBadge from "../../../components/utilities/formatting/OfficialityBadge";
 import CardStatsNumber from "../../../components/utilities/formatting/CardStatsNumber";
 import { addCard } from "../../../services/collection";
-import { useFirebaseUser } from "../../../services/firebase/user";
+import { useUser } from "../../../services/firebase/user";
 import Picture from "../../../components/core/Picture";
 import { LoadedData, LoadedDataLocalized } from "../../../types/makotools";
 
@@ -96,7 +96,7 @@ export default function CardCard({
       ? localizedCard.subLang?.data
       : undefined;
 
-  const { user, setUserDataKey } = useFirebaseUser();
+  const user = useUser();
 
   const statsIR = sumStats(card.stats?.ir);
   const statsIR4 = sumStats(card.stats?.ir4);
@@ -198,7 +198,7 @@ export default function CardCard({
                   e.stopPropagation();
                   if (!thisColItem) {
                     const newCollection = addCard(collection, card.id, 1);
-                    setUserDataKey({ collection: newCollection });
+                    user.db.set({ collection: newCollection });
                   } else {
                     setCollectionOpened((o) => !o);
                   }
@@ -244,7 +244,7 @@ export default function CardCard({
                           e.stopPropagation();
 
                           const newCollection = addCard(collection, card.id, 1);
-                          setUserDataKey({ collection: newCollection });
+                          user.db.set({ collection: newCollection });
                         }}
                         disabled={thisColItem && thisColItem?.count >= 5}
                       >
@@ -261,7 +261,7 @@ export default function CardCard({
                             card.id,
                             -1
                           );
-                          setUserDataKey({ collection: newCollection });
+                          user.db.set({ collection: newCollection });
                         }}
                         disabled={!thisColItem || thisColItem?.count <= 0}
                       >

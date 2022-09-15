@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 
 import { getNameOrder } from "../../../services/ensquare";
-import { useFirebaseUser } from "../../../services/firebase/user";
+import { useUser } from "../../../services/firebase/user";
 import { DEFAULT_LOCALE } from "../../../services/locales";
 import { Locale } from "../../../types/makotools";
 
@@ -13,7 +13,7 @@ function NameOrder({
   last_name: string;
 }) {
   const { locale } = useRouter();
-  const { user } = useFirebaseUser();
+  const user = useUser();
 
   const nameOrderSetting =
     (!user.loading && user.loggedIn && user?.db?.setting__name_order) ||
