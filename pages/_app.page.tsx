@@ -33,7 +33,7 @@ import {
 } from "@mantine/nprogress";
 
 import initAuth from "../services/firebase/authentication";
-import FirebaseUserProvider from "../services/firebase/user";
+import UserProvider from "../services/firebase/user";
 import DayjsProvider from "../services/dayjs";
 
 initAuth();
@@ -172,14 +172,12 @@ function MakoTools({
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <NotificationsProvider position="top-center">
-        <FirebaseUserProvider
+        <UserProvider
           setAppColorScheme={setAppColorScheme}
           colorScheme={colorScheme}
           serverData={{
             user: pageProps?.__user ? JSON.parse(pageProps.__user) : undefined,
-            firestore: pageProps?.__firestore
-              ? JSON.parse(pageProps.__firestore)
-              : undefined,
+            db: pageProps?.__db ? JSON.parse(pageProps.__db) : undefined,
           }}
         >
           {/*  TODO: Remove this just use the theme povider */}
@@ -191,7 +189,7 @@ function MakoTools({
               {getLayout(<Component {...pageProps} />, pageProps)}
             </ColorSchemeProvider>
           </DayjsProvider>
-        </FirebaseUserProvider>
+        </UserProvider>
       </NotificationsProvider>
     </MantineProvider>
   );

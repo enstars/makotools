@@ -15,7 +15,7 @@ export type GetServerSidePropsWithUser<
   context: GetServerSidePropsContext & {
     user: AuthUser;
     admin: FirebaseAdminType;
-    firestore: UserData;
+    db: UserData;
   }
 ) => Promise<GetServerSidePropsResult<P>> | GetServerSidePropsResult<P>;
 
@@ -49,7 +49,7 @@ export default function getServerSideUser(
           const firestore = await (await docRef.get()).data();
 
           firebaseContext = {
-            firestore,
+            db: firestore,
             user,
             admin,
           };
@@ -63,11 +63,11 @@ export default function getServerSideUser(
         if ("redirect" in renderData) return renderData;
 
         try {
-          console.log("__user: ", firebaseContext.user);
+          // console.log("__user: ", firebaseContext.user);
           renderData.props = {
             ...renderData.props,
             __user: JSON.stringify(firebaseContext.user || null),
-            __firestore: JSON.stringify(firebaseContext.firestore || null),
+            __db: JSON.stringify(firebaseContext.db || null),
           };
         } catch {}
 
