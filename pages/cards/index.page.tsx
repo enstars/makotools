@@ -65,7 +65,7 @@ function Page({
   cards: LoadedData<GameCard[]>;
   characters: LoadedData<GameCharacter[]>;
 }) {
-  // console.log(characters);
+  console.log(cards, characters);
 
   const theme = useMantineTheme();
   const [count, setCount] = useState<number>(CARD_LIST_INITIAL_COUNT);

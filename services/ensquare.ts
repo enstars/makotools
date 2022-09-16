@@ -90,24 +90,34 @@ export async function getLocalizedData<T>(
   if (jaData.status === "error" || localized.length === 0)
     return Promise.resolve(undefined);
 
-  let combined = flatten(jaData);
-  localized.map(flatten).forEach((l) => {
-    Object.keys(l).forEach((k) => {
-      if (!combined?.[k]) {
-        combined[k] = [l[k]];
-      } else if (Array.isArray(combined[k]) || jaData[k] !== l[k]) {
-        // jaData;
-      }
+  const combinedArray = jaData.data;
+  let combined = {
+    ...flatten(jaData),
+    locales: [{ locale: "ja", source: true }],
+  };
+  localized
+    .reverse()
+    .map(flatten)
+    .forEach((l: any) => {
+      combined.locales.unshift(l.lang);
+      Object.keys(l).forEach((k: keyof typeof jaData) => {
+        if (!combined?.[k] || !Array.isArray(combined[k])) {
+          const originalData = combined[k];
+          combined[k] = [l[k], originalData];
+        } else {
+          combined[k].unshift(l[k]);
+        }
+      });
     });
-  });
 
-  return Promise.resolve({
-    main: jaData,
-    mainLang: localized[0],
-    subLang: localized[1] || null,
-    // localized,
-    // localized_full: localized,
-  });
+  if (data === "characters.json") return Promise.resolve(combined);
+  // return Promise.resolve({
+  //   main: jaData,
+  //   mainLang: localized[0],
+  //   subLang: localized[1] || null,
+  //   // localized,
+  //   // localized_full: localized,
+  // });
 }
 
 /*

@@ -84,9 +84,9 @@ interface GetServerSideUserContext extends GetServerSidePropsContext {}
 type LoadedStatus = "success" | "error";
 
 /** Language data */
-interface DataLang {
+interface Lang {
   /** Language of data */
-  lang: Locale;
+  locale: Locale;
   /** If data is directly collected from the game (mainly for translations) */
   source: boolean;
 }
@@ -98,18 +98,20 @@ interface DataLang {
 
 /** Extends type with localized array */
 type WithLocalized<Type, TranslatedPropertiesType> = {
-  [Property in keyof Type & { locale: Locale[] }]: {
+  [Property in keyof Type & { locale: Lang[] }]: {
     [Property]: Type[Property];
   } extends TranslatedPropertiesType
     ? string[]
     : Type[Property];
 };
 
-interface DataSuccess<D> extends DataLang, D {
+interface DataSuccess<D> extends D {
+  lang: Lang;
   status: "success";
 }
 
-interface DataError extends DataLang {
+interface DataError extends Lang {
+  lang: Lang;
   status: "error";
   error: any;
 }
