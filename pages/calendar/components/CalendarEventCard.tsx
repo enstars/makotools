@@ -35,7 +35,7 @@ function CalendarEventCard({ ...props }) {
       padding: "3px 0px 6px 0px !important",
       marginTop: "3px",
       textAlign: "left",
-      color: theme.colorScheme === "light" ? theme.colors.gray[0] : "inherit",
+      color: theme.colors.gray[0],
       background:
         theme.colorScheme === "dark"
           ? theme.colors.blue[7]
