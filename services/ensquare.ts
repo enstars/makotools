@@ -1,12 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 
-import {
-  LoadedData,
-  LoadedDataRegional,
-  LoadedStatus,
-  Locale,
-  NameOrder,
-} from "../types/makotools";
+import { Data, Locale, LocalizedData, NameOrder } from "../types/makotools";
 
 import { CONSTANTS } from "./constants";
 import { DEFAULT_LOCALE } from "./locales";
@@ -14,12 +8,12 @@ import { parseStringify } from "./utilities";
 
 const flatten = require("flat");
 
-export function getData<T = any>(
+export async function getData<T = any>(
   data: string,
   lang: Locale = "ja",
   source: boolean = false,
   fields?: string[]
-): Promise<LoadedDataRegional<T>> {
+): Promise<Data<T>> {
   const databaseURL = source
     ? `${CONSTANTS.EXTERNAL_URLS.DATA}${lang}/${data}.json`
     : `${CONSTANTS.EXTERNAL_URLS.DATA_TL}${lang}/${data}.json`;
@@ -41,22 +35,20 @@ export function getData<T = any>(
           responseData = responseData.filter(
             (d: any) => d.compliant === "TRUE"
           );
-        if (fields) {
-          let filteredData: any = [];
-          const flattenedDataArray = responseData.map(flatten);
+        let filteredData: any = [];
+        const flattenedDataArray = responseData.map(flatten);
 
-          flattenedDataArray.forEach((originalEntry: any) => {
-            let filteredEntry: any = {};
-            Object.keys(originalEntry)
-              .filter((key) => fields.includes(key))
-              .forEach((key) => {
-                filteredEntry[key] = originalEntry[key];
-              });
-            filteredData.push(filteredEntry);
-          });
+        flattenedDataArray.forEach((originalEntry: any) => {
+          let filteredEntry: any = {};
+          Object.keys(originalEntry)
+            .filter((key) => !fields || fields.includes(key))
+            .forEach((key) => {
+              if (key !== "compliant") filteredEntry[key] = originalEntry[key];
+            });
+          filteredData.push(filteredEntry);
+        });
 
-          responseData = filteredData.map(flatten.unflatten);
-        }
+        responseData = filteredData.map(flatten.unflatten);
       }
       return {
         lang,
@@ -77,15 +69,13 @@ export function getData<T = any>(
 
 export function getB2File(path: string) {
   return `${CONSTANTS.EXTERNAL_URLS.ASSETS}${path}`;
-  // return `https://assets.ensemble.moe/file/ensemble-square/${path}`;
-  // return `https://assets.ensemble.link/${path}`;
 }
 
 export async function getLocalizedData<T>(
   data: string,
   locale: Locale | string = DEFAULT_LOCALE,
   fields?: string[]
-): Promise<LoadedData<T> | undefined> {
+): Promise<LocalizedData<T> | undefined> {
   const jaData = await getData(data, "ja", true, fields);
   const enFanData = await getData(data, "en", false, fields);
   const enData = await getData(data, "en", true, fields);
@@ -94,10 +84,22 @@ export async function getLocalizedData<T>(
   if (locale === "ja") {
     localized = [jaData, enFanData, enData];
   }
-  // localized = localized.filter((l) => l.status === "success");
 
-  if (jaData.status === "error" || localized[0].status === "error")
+  localized = localized.filter((l) => l.status === "success");
+
+  if (jaData.status === "error" || localized.length === 0)
     return Promise.resolve(undefined);
+
+  let combined = flatten(jaData);
+  localized.map(flatten).forEach((l) => {
+    Object.keys(l).forEach((k) => {
+      if (!combined?.[k]) {
+        combined[k] = [l[k]];
+      } else if (Array.isArray(combined[k]) || jaData[k] !== l[k]) {
+        // jaData;
+      }
+    });
+  });
 
   return Promise.resolve({
     main: jaData,
@@ -151,10 +153,10 @@ export function getNameOrder(
 }
 
 export function getItemFromLocalized<L>(
-  data: LoadedData<L[]>,
+  data: LocalizedData<L[]>,
   id: ID,
   field: string = "id"
-): LoadedData<L, L | undefined> | undefined {
+): LocalizedData<L, L | undefined> | undefined {
   const matchId = (o: any) => o[field] === id;
 
   const matchedData = {
@@ -184,5 +186,5 @@ export function getItemFromLocalized<L>(
   ) {
     return undefined;
   }
-  return matchedData as LoadedData<L, L | undefined>;
+  return matchedData as LocalizedData<L, L | undefined>;
 }

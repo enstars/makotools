@@ -5,19 +5,23 @@ type HexColorWithTag = string;
 
 type CharacterID = number;
 type UnitID = number;
-interface GameCharacterStrings {
-  last_name: string;
-  first_name: string;
-  last_nameRuby?: string;
-  first_nameRuby?: string;
-  character_voice: string;
-  hobby: string;
-  specialty: string;
-  school?: string;
-  class?: string;
-  quote: string;
-  tagline: string;
-  introduction: string;
+
+/** Strings extracted from the game, or translated strings  */
+type Text = string;
+
+interface GameCharacterStrings<Type = string> {
+  last_name: Type;
+  first_name: Type;
+  last_nameRuby?: Type;
+  first_nameRuby?: Type;
+  character_voice: Type;
+  hobby: Type;
+  specialty: Type;
+  school?: Type;
+  class?: Type;
+  quote: Type;
+  tagline: Type;
+  introduction: Type;
 }
 
 interface GameCharacter extends GameCharacterStrings {
