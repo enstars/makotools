@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   useMantineTheme,
   Text,
@@ -65,8 +65,9 @@ function Page({
   charactersQuery: QuerySuccess<GameCharacter[]>;
   cardsQuery: QuerySuccess<GameCard[]>;
 }) {
-  const { data: cards } = cardsQuery;
-  const { data: characters } = charactersQuery;
+  const cards = useMemo(() => cardsQuery.data, []);
+  const characters = useMemo(() => charactersQuery.data, []);
+
   // console.log(cards, characters);
 
   const theme = useMantineTheme();

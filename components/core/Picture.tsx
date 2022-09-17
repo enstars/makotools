@@ -197,6 +197,7 @@ function PictureStringSrc({
         <Image
           unoptimized
           fill
+          sizes="100vw"
           // width={10}
           // height={10}
           placeholder="empty"
