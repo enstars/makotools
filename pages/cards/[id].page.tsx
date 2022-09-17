@@ -18,8 +18,8 @@ import {
 
 import {
   getB2File,
-  getItemFromLocalized,
-  getLocalizedData,
+  getItemFromLocalizedDataArray,
+  getLocalizedDataArray,
   getNameOrder,
   getPreviewImageURL,
 } from "../../services/ensquare";
@@ -31,7 +31,7 @@ import Reactions from "../../components/sections/Reactions";
 import NameOrder from "../../components/utilities/formatting/NameOrder";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { getLocalizedNumber } from "../../components/utilities/formatting/CardStatsNumber";
-import { LoadedData, LoadedDataLocalized } from "../../types/makotools";
+import { QuerySuccess } from "../../types/makotools";
 import Picture from "../../components/core/Picture";
 
 import Stats, { sumStats } from "./components/Stats";
@@ -42,33 +42,24 @@ import Skills, {
 } from "./components/Skills";
 
 function Page({
-  character,
-  card,
+  characterQuery,
+  cardQuery,
 }: {
-  character: LoadedData<GameCharacter>;
-  card: LoadedData<GameCard>;
+  characterQuery: QuerySuccess<GameCharacter>;
+  cardQuery: QuerySuccess<GameCard>;
 }) {
-  console.log(character);
-  console.log(card);
-  // const { id } = useParams();
-  // const router = useRouter();
-  // const { id } = router.query;
-  const cardMain = card.main.data;
-  const cardLocalizedMain = card.mainLang.data;
-  // const character = characters.main.data[characterID];
-  const characterLocalizedMain = character.mainLang.data;
-  // console.log(cardsJP);
+  const { data: card } = cardQuery;
+  const { data: character } = characterQuery;
 
   return (
     <>
       <PageTitle
         title={
           <>
-            ({cardLocalizedMain.title}){" "}
-            <NameOrder {...characterLocalizedMain} />
+            ({card.title[0]}) <NameOrder {...character} />
             <Group mt="sm" spacing="xs">
               <Badge size="xl" color="yellow" sx={{ textTransform: "none" }}>
-                {cardMain.rarity}
+                {card.rarity}
                 <IconStar
                   size={13}
                   strokeWidth={3}
@@ -77,10 +68,10 @@ function Page({
               </Badge>
               <Badge
                 size="xl"
-                color={attributes[cardMain.type].color}
+                color={attributes[card.type].color}
                 sx={{ textTransform: "none" }}
               >
-                {attributes[cardMain.type].fullname}
+                {attributes[card.type].fullname}
               </Badge>
             </Group>
             {/* <Paper
@@ -123,17 +114,17 @@ function Page({
           >
             <Picture
               radius="md"
-              alt={cardMain.title}
+              alt={card.title[0]}
               withPlaceholder
-              srcB2={`assets/card_rectangle4_${cardMain.id}_${type}.png`}
+              srcB2={`assets/card_rectangle4_${card.id}_${type}.png`}
               action="view"
             ></Picture>
           </AspectRatio>
         ))}
       </Group>
-      <Stats card={card} />
+      {/* <Stats card={card} /> */}
       <Divider />
-      <Skills card={card} />
+      {/* <Skills card={card} /> */}
       <Reactions />
     </>
   );
@@ -145,14 +136,20 @@ Page.getLayout = getLayout({
 export default Page;
 
 export const getServerSideProps = getServerSideUser(
-  async ({ locale, params, firestore }) => {
-    const characters = await getLocalizedData<GameCharacter[]>(
+  async ({ locale, params, db }) => {
+    const characters = await getLocalizedDataArray<GameCharacter>(
       "characters",
-      locale
+      locale,
+      "character_id"
     );
-    const cards = await getLocalizedData<GameCard[]>("cards", locale);
+    const cards = await getLocalizedDataArray<GameCard>("cards", locale);
 
-    if (!params?.id || typeof params.id !== "string" || !cards || !characters) {
+    if (
+      !params?.id ||
+      typeof params.id !== "string" ||
+      cards.status === "error" ||
+      characters.status === "error"
+    ) {
       return {
         notFound: true,
       };
@@ -160,57 +157,35 @@ export const getServerSideProps = getServerSideUser(
     const lastURLSegment = params.id.toLocaleLowerCase();
     const cardID = parseInt(lastURLSegment, 10);
 
-    const card = getItemFromLocalized<GameCard>(cards, cardID);
+    const card = getItemFromLocalizedDataArray<GameCard>(cards, cardID);
+    // console.log(card);
 
-    if (!card) {
+    if (card.status === "error") {
       return {
         notFound: true,
       };
     }
 
-    if (
-      typeof card.mainLang.data === "undefined" &&
-      card.subLang.status === "success" &&
-      typeof card.subLang.data !== "undefined"
-    ) {
-      const prevMainLang = card.mainLang;
-      // @ts-ignore
-      card.mainLang = card.subLang;
-      card.subLang = prevMainLang;
-    }
+    const cardCharacterId = card.data.character_id;
 
-    if (
-      typeof card.main.data === "undefined" ||
-      typeof card.mainLang.data === "undefined"
-    ) {
-      return {
-        notFound: true,
-      };
-    }
-
-    const cardCharacterId = card.main.data.character_id;
-
-    const character = getItemFromLocalized(
+    const character = getItemFromLocalizedDataArray<GameCharacter>(
       characters,
       cardCharacterId,
       "character_id"
     );
 
-    if (
-      !character ||
-      typeof character.main.data === "undefined" ||
-      typeof character.mainLang.data === "undefined"
-    ) {
+    if (character.status === "error") {
       return {
         notFound: true,
       };
     }
 
-    const title = `(${card.mainLang.data?.title}) ${getNameOrder(
-      character.mainLang.data,
-      firestore?.setting__name_order,
+    const cardCharacterName = getNameOrder(
+      character.data,
+      db?.setting__name_order,
       locale
-    )}`;
+    );
+    const title = `(${card.data.title[0]}) ${cardCharacterName}`;
 
     // const breadcrumbs = req.url.split("/").filter((e) => e);
     // breadcrumbs[breadcrumbs.length - 1] = title;
@@ -219,22 +194,18 @@ export const getServerSideProps = getServerSideUser(
 
     // getLocalizedNumber
     const breadcrumbs = ["cards", title];
-    const cardData = card.main.data;
+    const cardData = card.data;
     return {
       props: {
-        character,
-        card,
+        characterQuery: character,
+        cardQuery: card,
         title,
         breadcrumbs,
         meta: {
           title,
           img: getPreviewImageURL("card", {
-            title: card.mainLang.data.title,
-            name: getNameOrder(
-              character.mainLang.data,
-              firestore?.setting__name_order,
-              locale
-            ),
+            title: card.data.title[0],
+            name: cardCharacterName,
             image1: `card_rectangle4_${cardID}_normal.png`,
             image2: `card_rectangle4_${cardID}_evolution.png`,
             stats1: getLocalizedNumber(
@@ -263,7 +234,7 @@ export const getServerSideProps = getServerSideUser(
               ? supportSkillParse(cardData.skills.support)
               : "",
           }),
-          desc: `View ${card.mainLang.data.title}'s stats, skills, and more!`,
+          desc: `View ${title}'s stats, skills, and more on MakoTools!`,
         },
       },
     };

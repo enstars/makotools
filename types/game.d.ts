@@ -9,7 +9,7 @@ type UnitID = number;
 /** Strings extracted from the game, or translated strings  */
 type Text = string;
 
-interface GameCharacterStrings<Type = string> {
+interface GameCharacterStrings<Type> {
   last_name: Type;
   first_name: Type;
   last_nameRuby?: Type;
@@ -24,7 +24,7 @@ interface GameCharacterStrings<Type = string> {
   introduction: Type;
 }
 
-interface GameCharacter extends GameCharacterStrings {
+interface GameCharacter<T = string[]> extends GameCharacterStrings<T> {
   character_id: CharacterID;
   unit: ID[];
   image_color?: HexColorWithTag;
@@ -74,15 +74,15 @@ interface Stats {
 type StatLevel = "min" | "max" | "ir" | "ir1" | "ir2" | "ir3" | "ir4";
 
 type SkillEffect = any[];
-interface SkillStrings {
-  name?: string;
-  description?: string;
+interface SkillStrings<T> {
+  name?: T;
+  description?: T;
 }
-interface SkillStringsLive extends SkillStrings {
-  live_skill_type_name?: string;
+interface SkillStringsLive<T> extends SkillStrings<T> {
+  live_skill_type_name?: T;
 }
-interface SkillStringsSupport extends SkillStrings {
-  support_skill_type_name?: string;
+interface SkillStringsSupport<T> extends SkillStrings<T> {
+  support_skill_type_name?: T;
 }
 interface SkillData {
   type_id: ID;
@@ -90,25 +90,25 @@ interface SkillData {
 }
 type SkillType = "center" | "live" | "support";
 
-interface CenterSkill extends SkillData, SkillStrings {}
-interface LiveSkill extends SkillData, SkillStringsLive {
+interface CenterSkill<T> extends SkillData, SkillStrings<T> {}
+interface LiveSkill<T> extends SkillData, SkillStringsLive<T> {
   duration: number;
 }
-interface SupportSkill extends SkillData, SkillStringsSupport {}
+interface SupportSkill<T> extends SkillData, SkillStringsSupport<T> {}
 
-interface GameCardStrings {
-  title: string;
-  name?: string;
+interface GameCardStrings<T> {
+  title: T;
+  name?: T;
   obtain?: {
-    name?: string;
+    name?: T;
   };
 }
 
-interface GameCardRegional extends GameCardStrings {
-  releaseDate: string;
+interface GameCardRegional<T> extends GameCardStrings<T> {
+  releaseDate: T;
 }
 
-interface GameCard extends GameCardRegional {
+interface GameCard<T = string[]> extends GameCardRegional<T> {
   id: CardID;
   rarity: CardRarity;
   character_id: CharacterID;
@@ -123,9 +123,9 @@ interface GameCard extends GameCardRegional {
     [Level in StatLevel]: Stats;
   };
   skills?: {
-    ["center"]?: CenterSkill;
-    ["live"]?: LiveSkill;
-    ["support"]?: SupportSkill;
+    ["center"]?: CenterSkill<T>;
+    ["live"]?: LiveSkill<T>;
+    ["support"]?: SupportSkill<T>;
   };
   spp?: {
     song_id: ID;

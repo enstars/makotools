@@ -81,8 +81,6 @@ interface GetServerSideUserContext extends GetServerSidePropsContext {}
 
 // DATA
 
-type LoadedStatus = "success" | "error";
-
 /** Language data */
 interface Lang {
   /** Language of data */
@@ -91,47 +89,29 @@ interface Lang {
   source: boolean;
 }
 
-// interface WithLocalized<D> extends D {
-//   /** Array of localized versions of data's strings. Ordered by user preference. */
-//   localized: DataSuccess<D>[];
-// }
-
-/** Extends type with localized array */
-type WithLocalized<Type, TranslatedPropertiesType> = {
-  [Property in keyof Type & { locale: Lang[] }]: {
-    [Property]: Type[Property];
-  } extends TranslatedPropertiesType
-    ? string[]
-    : Type[Property];
-};
-
-interface DataSuccess<D> extends D {
-  lang: Lang;
+/** A succesful query from the data repos */
+interface QuerySuccess<D> {
+  lang: Lang[];
   status: "success";
+  data: D;
 }
 
-interface DataError extends Lang {
-  lang: Lang;
+/** A failed query from the data repos */
+interface QueryError {
+  lang: Lang[];
   status: "error";
   error: any;
+  data: undefined;
 }
 
-/** Data loaded of type D */
-type Data<D = any> = DataSuccess<D> | DataError;
+/** A query from the data repos */
+type Query<D> = QuerySuccess<D> | QueryError;
 
-/** Data loaded of type D with translations */
-type LocalizedData<D = any> = WithLocalized<DataSuccess<D>> | DataError;
+/** Returns a version of the type without localization */
+type Unlocalized<T> = T<string>;
 
-interface LoadedDataLocalized<D, S = D> {
-  main: D;
-  mainLang: D;
-  subLang: S;
-}
-interface LoadedData<D, S = D>
-  extends LoadedDataLocalized<
-    LoadedDataRegionalSuccess<D>,
-    LoadedDataRegional<S>
-  > {}
+/** Shorthand for Unlocalized; Returns a version of the type without localization */
+type UL<T> = T<string>;
 
 interface Emote {
   id: ID;

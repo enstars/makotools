@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 
-import { Data, Locale, LocalizedData, NameOrder } from "../types/makotools";
+import { Lang, Locale, NameOrder, Query, UL } from "../types/makotools";
 
 import { CONSTANTS } from "./constants";
 import { DEFAULT_LOCALE } from "./locales";
@@ -10,31 +10,26 @@ const flatten = require("flat");
 
 export async function getData<T = any>(
   data: string,
-  lang: Locale = "ja",
+  locale: Locale = "ja",
   source: boolean = false,
   fields?: string[]
-): Promise<Data<T>> {
+): Promise<Query<T>> {
+  const lang = {
+    locale,
+    source,
+  };
   const databaseURL = source
-    ? `${CONSTANTS.EXTERNAL_URLS.DATA}${lang}/${data}.json`
-    : `${CONSTANTS.EXTERNAL_URLS.DATA_TL}${lang}/${data}.json`;
+    ? `${CONSTANTS.EXTERNAL_URLS.DATA}${locale}/${data}.json`
+    : `${CONSTANTS.EXTERNAL_URLS.DATA_TL}${locale}/${data}.json`;
   return fetch(databaseURL)
     .then((response) => {
-      console.log(response.url, response.status);
+      // console.log(response.url, response.status);
       return response.json();
     })
     .then((responseJson) => {
       let responseData = responseJson;
       if (responseData[0]) {
-        const dataRegion =
-          (source ? "data" : "data-tl") + "/" + lang + "/" + data;
-        if (
-          dataRegion !== "data/ja/units" &&
-          dataRegion !== "data/ja/unit_to_characters" &&
-          dataRegion !== "data-tl/en/characters"
-        )
-          responseData = responseData.filter(
-            (d: any) => d.compliant === "TRUE"
-          );
+        responseData = responseData.filter((d: any) => d.compliant === "TRUE");
         let filteredData: any = [];
         const flattenedDataArray = responseData.map(flatten);
 
@@ -51,18 +46,17 @@ export async function getData<T = any>(
         responseData = filteredData.map(flatten.unflatten);
       }
       return {
-        lang,
-        source,
+        lang: [lang],
         status: "success" as "success",
         data: responseData,
       };
     })
     .catch((error) => {
       return {
-        lang,
-        source,
+        lang: [lang],
         status: "error",
         error: parseStringify(error),
+        data: undefined,
       };
     });
 }
@@ -71,53 +65,83 @@ export function getB2File(path: string) {
   return `${CONSTANTS.EXTERNAL_URLS.ASSETS}${path}`;
 }
 
-export async function getLocalizedData<T>(
+export async function getLocalizedDataArray<
+  LocalizedType,
+  Type = UL<LocalizedType>
+>(
   data: string,
   locale: Locale | string = DEFAULT_LOCALE,
+  idField: keyof Type = "id" as keyof Type,
   fields?: string[]
-): Promise<LocalizedData<T> | undefined> {
-  const jaData = await getData(data, "ja", true, fields);
-  const enFanData = await getData(data, "en", false, fields);
-  const enData = await getData(data, "en", true, fields);
+): Promise<Query<LocalizedType[]>> {
+  const jaData = await getData<Type[]>(data, "ja", true, fields);
+  const enFanData = await getData<Type[]>(data, "en", false, fields);
+  const enData = await getData<Type[]>(data, "en", true, fields);
 
   let localized = [enFanData, jaData, enData];
   if (locale === "ja") {
     localized = [jaData, enFanData, enData];
   }
 
-  localized = localized.filter((l) => l.status === "success");
+  // TODO: Always keep the user's main language as the first one, without filterinf out;
+  //       This way it can be show mainlang is missing and not immediately replaced with sublang
+  const filteredLocalized = localized
+    .filter((l) => l.status === "success")
+    // .filter((l) => !(l.lang.locale === "ja" && l.lang.source === true))
+    .reverse();
 
-  if (jaData.status === "error" || localized.length === 0)
-    return Promise.resolve(undefined);
+  if (jaData.status === "error") {
+    return Promise.resolve(jaData);
+  }
 
-  const combinedArray = jaData.data;
-  let combined = {
-    ...flatten(jaData),
-    locales: [{ locale: "ja", source: true }],
-  };
-  localized
-    .reverse()
-    .map(flatten)
-    .forEach((l: any) => {
-      combined.locales.unshift(l.lang);
-      Object.keys(l).forEach((k: keyof typeof jaData) => {
-        if (!combined?.[k] || !Array.isArray(combined[k])) {
-          const originalData = combined[k];
-          combined[k] = [l[k], originalData];
+  const propertiesToLocalize = new Set();
+  let mergedLocales: Lang[] = [];
+  filteredLocalized.forEach((l) => {
+    mergedLocales.unshift(l.lang[0]);
+
+    if (
+      !(l.lang[0].locale === "ja" && l.lang[0].source === true) &&
+      l.status === "success"
+    )
+      l.data?.forEach((ld) => {
+        Object.keys(
+          flatten(ld, {
+            safe: true,
+          })
+        ).forEach((key) => propertiesToLocalize.add(key));
+      });
+  });
+
+  propertiesToLocalize.delete(idField);
+
+  // console.log(propertiesToLocalize);
+
+  const combinedArray: LocalizedType[] = jaData.data.map((jaItem) => {
+    let combined = flatten(jaItem, { safe: true });
+    filteredLocalized.forEach((l) => {
+      const thisd =
+        l.data?.find((d: any) => d[idField] === jaItem[idField]) || {};
+      const thisLocalizedData = flatten(thisd, { safe: true });
+      Array.from(propertiesToLocalize).forEach((k: any) => {
+        const thisLanguageFieldData = thisLocalizedData?.[k] || null;
+        if (!combined?.[k] || combined[k].constructor !== Array) {
+          combined[k] = [thisLanguageFieldData];
         } else {
-          combined[k].unshift(l[k]);
+          combined[k].unshift(thisLanguageFieldData);
         }
       });
     });
+    // console.log(combined);
+    return flatten.unflatten(parseStringify(combined));
+  });
 
-  if (data === "characters.json") return Promise.resolve(combined);
-  // return Promise.resolve({
-  //   main: jaData,
-  //   mainLang: localized[0],
-  //   subLang: localized[1] || null,
-  //   // localized,
-  //   // localized_full: localized,
-  // });
+  // console.log(combinedArray);
+
+  return Promise.resolve({
+    status: "success",
+    lang: mergedLocales,
+    data: combinedArray,
+  });
 }
 
 /*
@@ -145,56 +169,54 @@ export function getPreviewImageURL(type: string, params: any) {
 }
 
 // https://en.wikipedia.org/wiki/Personal_name#Eastern_name_order
-const lastFirstLocales = ["ja", "zh", "zh-TW", "ko"];
+const lastFirstLocales: Locale[] = ["ja", "zh", "zh-TW", "ko"];
 
 export function getNameOrder(
   { first_name, last_name }: { first_name: string; last_name: string },
-  setting: NameOrder = "firstlast",
+  setting?: NameOrder,
+  locale?: Locale | string
+): string;
+export function getNameOrder(
+  { first_name, last_name }: { first_name: string[]; last_name: string[] },
+  setting?: NameOrder,
+  locale?: Locale | string
+): string;
+export function getNameOrder(
+  {
+    first_name,
+    last_name,
+  }:
+    | { first_name: string; last_name: string }
+    | { first_name: string[]; last_name: string[] },
+  setting: NameOrder = "lastfirst",
   locale: Locale | string = DEFAULT_LOCALE
-) {
-  const firstName = first_name || "";
-  const lastName = last_name || "";
+  //   string accepted bc nextjs always returns locale as string
+): string {
+  const firstName = Array.isArray(first_name)
+    ? first_name[0]
+    : first_name || "";
+  const lastName = Array.isArray(last_name) ? last_name[0] : last_name || "";
 
-  if (lastFirstLocales.includes(locale)) return `${lastName}${firstName}`;
+  if (lastFirstLocales.includes(locale as Locale))
+    return `${lastName}${firstName}`;
 
   if (setting === "lastfirst") return `${lastName} ${firstName}`.trim();
 
   return `${firstName} ${lastName}`.trim();
 }
 
-export function getItemFromLocalized<L>(
-  data: LocalizedData<L[]>,
+export function getItemFromLocalizedDataArray<Type>(
+  data: Query<Type[]>,
   id: ID,
-  field: string = "id"
-): LocalizedData<L, L | undefined> | undefined {
-  const matchId = (o: any) => o[field] === id;
+  idField: string = "id"
+): Query<Type> {
+  if (data.status === "error") return data;
+  const matchId = (o: any) => o[idField] === id;
 
-  const matchedData = {
-    main: {
-      ...data.main,
-      ...(data.main.status === "success"
-        ? { data: data.main.data.find(matchId) }
-        : { data: undefined }),
-    },
-    mainLang: {
-      ...data.mainLang,
-      ...(data.mainLang.status === "success"
-        ? { data: data.mainLang.data.find(matchId) }
-        : { data: undefined }),
-    },
-    subLang: {
-      ...data.subLang,
-      ...(data.subLang.status === "success"
-        ? { data: data.subLang.data.find(matchId) }
-        : { data: undefined }),
-    },
-  };
+  const matchedData = data.data?.find(matchId);
 
-  if (
-    typeof matchedData.main.data === "undefined" ||
-    typeof matchedData.mainLang.data === "undefined"
-  ) {
-    return undefined;
+  if (typeof matchedData === "undefined") {
+    return { ...data, status: "error", error: "Not found", data: undefined };
   }
-  return matchedData as LocalizedData<L, L | undefined>;
+  return { ...data, data: matchedData };
 }
