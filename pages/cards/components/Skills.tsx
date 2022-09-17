@@ -23,7 +23,6 @@ import { ReactElement, useState } from "react";
 import CardStatsNumber from "../../../components/utilities/formatting/CardStatsNumber";
 import attributes from "../../../data/attributes.json";
 import centerSkill from "../../../data/centerSkill.json";
-import { LoadedData } from "../../../types/makotools";
 
 export function centerSkillParse(skill?: SkillData, fallback = "Unknown") {
   if (typeof skill === "undefined" || !centerSkill[skill.type_id])
@@ -91,7 +90,7 @@ export function supportSkillParse(
   }
 }
 
-function Skills({ card }: { card: LoadedData<GameCard> }) {
+function Skills({ card }: { card: GameCard }) {
   const [liveSkillLevel, setLiveSkillLevel] = useState(5);
   const [supportSkillLevel, setSupportSkillLevel] = useState(3);
 
@@ -150,9 +149,7 @@ function Skills({ card }: { card: LoadedData<GameCard> }) {
           {
             type: "center",
             color: "blue",
-            description: (
-              <Text>{centerSkillParse(card.main.data.skills?.center)}</Text>
-            ),
+            description: <Text>{centerSkillParse(card.skills?.center)}</Text>,
           },
           {
             type: "live",
@@ -170,7 +167,7 @@ function Skills({ card }: { card: LoadedData<GameCard> }) {
                 >
                   Lvl {liveSkillLevel}
                 </Badge>
-                {liveSkillParse(card.main.data.skills?.live, liveSkillLevel)}
+                {liveSkillParse(card.skills?.live, liveSkillLevel)}
               </Text>
             ),
           },
@@ -190,10 +187,7 @@ function Skills({ card }: { card: LoadedData<GameCard> }) {
                 >
                   Lvl {supportSkillLevel}
                 </Badge>
-                {supportSkillParse(
-                  card.main.data.skills?.support,
-                  supportSkillLevel
-                )}
+                {supportSkillParse(card.skills?.support, supportSkillLevel)}
               </Text>
             ),
           },
@@ -211,7 +205,7 @@ function Skills({ card }: { card: LoadedData<GameCard> }) {
               </Box>
               <Box sx={{ flex: "1 1 0", minWidth: 200 }}>
                 <Text weight={700}>
-                  {card.mainLang.data?.skills?.[s.type]?.name}{" "}
+                  {card?.skills?.[s.type]?.name?.[0]}{" "}
                   <Text
                     component="span"
                     inline
@@ -219,8 +213,7 @@ function Skills({ card }: { card: LoadedData<GameCard> }) {
                     size="sm"
                     color="dimmed"
                   >
-                    {card.subLang.status === "success" &&
-                      card.subLang.data?.skills?.[s.type]?.name}
+                    {card?.skills?.[s.type]?.name?.[1] || ""}
                   </Text>
                 </Text>
 

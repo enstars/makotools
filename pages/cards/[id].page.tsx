@@ -122,9 +122,9 @@ function Page({
           </AspectRatio>
         ))}
       </Group>
-      {/* <Stats card={card} /> */}
+      <Stats card={card} />
       <Divider />
-      {/* <Skills card={card} /> */}
+      <Skills card={card} />
       <Reactions />
     </>
   );

@@ -12,7 +12,6 @@ import {
 import { useState } from "react";
 
 import CardStatsNumber from "../../../components/utilities/formatting/CardStatsNumber";
-import { LoadedData } from "../../../types/makotools";
 
 function LabelCell({ total, ...props }: BoxProps & { total?: any }) {
   return (
@@ -95,7 +94,7 @@ function sumStats(stats: Stats | any, fallback = "?"): number | string {
 }
 export { sumStats };
 
-function Stats({ card }: { card: LoadedData<GameCard> }) {
+function Stats({ card }: { card: GameCard }) {
   const [opened, setOpened] = useState(false);
   return (
     <>
@@ -153,8 +152,8 @@ function Stats({ card }: { card: LoadedData<GameCard> }) {
             <tbody>
               {["min", "max", "ir", "ir1", "ir2", "ir3", "ir4"].map(
                 (p: StatLevel) => {
-                  if (card.main.data?.stats?.[p]?.da) {
-                    const { da, vo, pf } = card.main.data?.stats?.[p];
+                  if (card?.stats?.[p]?.da) {
+                    const { da, vo, pf } = card?.stats?.[p];
                     const sum = da + vo + pf;
                     return (
                       <tr key={p}>
@@ -184,27 +183,15 @@ function Stats({ card }: { card: LoadedData<GameCard> }) {
       <Group mb="md">
         <BigData
           label="Max stats (1 copy)"
-          data={
-            <CardStatsNumber>
-              {sumStats(card.main.data.stats?.ir)}
-            </CardStatsNumber>
-          }
+          data={<CardStatsNumber>{sumStats(card.stats?.ir)}</CardStatsNumber>}
         />
         <BigData
           label="Max stats (3 copies)"
-          data={
-            <CardStatsNumber>
-              {sumStats(card.main.data.stats?.ir2)}
-            </CardStatsNumber>
-          }
+          data={<CardStatsNumber>{sumStats(card.stats?.ir2)}</CardStatsNumber>}
         />
         <BigData
           label="Max stats (5 copies)"
-          data={
-            <CardStatsNumber>
-              {sumStats(card.main.data.stats?.ir4)}
-            </CardStatsNumber>
-          }
+          data={<CardStatsNumber>{sumStats(card.stats?.ir4)}</CardStatsNumber>}
         />
       </Group>
     </>
