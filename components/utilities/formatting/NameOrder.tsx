@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { ReactElement } from "react";
 
 import { getNameOrder } from "../../../services/ensquare";
 import { useUser } from "../../../services/firebase/user";
@@ -8,11 +9,12 @@ import { Locale } from "../../../types/makotools";
 function NameOrder({
   first_name,
   last_name,
+  locale,
 }: {
-  first_name: string;
-  last_name: string;
-}) {
-  const { locale } = useRouter();
+  first_name: string[];
+  last_name: string[];
+  locale: Locale;
+}): ReactElement {
   const user = useUser();
 
   const nameOrderSetting =
@@ -21,7 +23,7 @@ function NameOrder({
   const name = getNameOrder(
     { first_name, last_name },
     nameOrderSetting,
-    (locale as Locale) || DEFAULT_LOCALE
+    locale
   );
   return <>{name}</>;
 }

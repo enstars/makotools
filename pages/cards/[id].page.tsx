@@ -56,7 +56,8 @@ function Page({
       <PageTitle
         title={
           <>
-            ({card.title[0]}) <NameOrder {...character} />
+            ({card.title[0]}){" "}
+            <NameOrder {...character} locale={characterQuery.lang[0].locale} />
             <Group mt="sm" spacing="xs">
               <Badge size="xl" color="yellow" sx={{ textTransform: "none" }}>
                 {card.rarity}
