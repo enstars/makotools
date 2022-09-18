@@ -195,8 +195,9 @@ function PictureStringSrc({
         <source srcSet={webpSrc} />
         {/* eslint-disable-next-line jsx-a11y/alt-text */}
         <Image
-          loader={loader}
+          unoptimized
           fill
+          sizes="100vw"
           // width={10}
           // height={10}
           placeholder="empty"

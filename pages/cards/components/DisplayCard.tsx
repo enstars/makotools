@@ -34,7 +34,7 @@ import CardStatsNumber from "../../../components/utilities/formatting/CardStatsN
 import { addCard } from "../../../services/collection";
 import { useUser } from "../../../services/firebase/user";
 import Picture from "../../../components/core/Picture";
-import { LoadedData, LoadedDataLocalized } from "../../../types/makotools";
+import { Lang } from "../../../types/makotools";
 
 import { sumStats } from "./Stats";
 
@@ -79,22 +79,17 @@ function RarityBadge({ card }: { card: GameCard }) {
 }
 
 export default function CardCard({
-  localizedCard,
+  card,
   cardOptions,
+  lang,
 }: {
-  localizedCard: LoadedData<GameCard, GameCard | undefined>;
+  card: GameCard;
   cardOptions: any;
+  lang: Lang[];
 }) {
   const router = useRouter();
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
-
-  const card = localizedCard.main.data;
-  const cardMainLang = localizedCard.mainLang.data;
-  const cardSubLang =
-    localizedCard.subLang.status === "success"
-      ? localizedCard.subLang?.data
-      : undefined;
 
   const user = useUser();
 
@@ -159,7 +154,7 @@ export default function CardCard({
                   ? `assets/card_still_full1_${card.id}_${type}.png` // 4-5 -> full cg
                   : `assets/card_rectangle4_${card.id}_${type}.png` // 1-3 -> frameless
               }
-              alt={card.title}
+              alt={card.title[0]}
               radius={3}
               action="download"
             >
@@ -170,13 +165,13 @@ export default function CardCard({
       </Card.Section>
       <Card.Section px="sm" pt="xs">
         <Text size="sm" weight="700">
-          {`${cardMainLang?.title}`}&nbsp;
-          <OfficialityBadge langData={localizedCard.mainLang} />
+          {`${card.title[0]}`}&nbsp;
+          <OfficialityBadge langData={lang[0]} />
         </Text>
-        {cardSubLang && (
+        {card.title[1] && (
           <Text size="xs" color="dimmed" weight="500">
-            {`${cardSubLang.title}`}&nbsp;
-            <OfficialityBadge langData={localizedCard.subLang} />
+            {`${card.title[1]}`}&nbsp;
+            <OfficialityBadge langData={lang[1]} />
           </Text>
         )}
       </Card.Section>
@@ -329,7 +324,7 @@ export default function CardCard({
                   inherit
                   color="dimmed"
                   sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
-                >{`${cardMainLang?.name?.split(" ")?.[0]}`}</Text>
+                >{`${card?.name?.[0]?.split(" ")?.[0]}`}</Text>
               </Text>
             ) : (
               <Box />

@@ -81,35 +81,37 @@ interface GetServerSideUserContext extends GetServerSidePropsContext {}
 
 // DATA
 
-type LoadedStatus = "success" | "error";
-
-interface LoadedDataRegionalLang {
-  lang: Locale;
+/** Language data */
+interface Lang {
+  /** Language of data */
+  locale: Locale;
+  /** If data is directly collected from the game (mainly for translations) */
   source: boolean;
 }
-interface LoadedDataRegionalSuccess<D> extends LoadedDataRegionalLang {
+
+/** A succesful query from the data repos */
+interface QuerySuccess<D> {
+  lang: Lang[];
   status: "success";
   data: D;
 }
-interface LoadedDataRegionalError extends LoadedDataRegionalLang {
+
+/** A failed query from the data repos */
+interface QueryError {
+  lang: Lang[];
   status: "error";
   error: any;
+  data: undefined;
 }
 
-type LoadedDataRegional<D = any> =
-  | LoadedDataRegionalSuccess<D>
-  | LoadedDataRegionalError;
+/** A query from the data repos */
+type Query<D> = QuerySuccess<D> | QueryError;
 
-interface LoadedDataLocalized<D, S = D> {
-  main: D;
-  mainLang: D;
-  subLang: S;
-}
-interface LoadedData<D, S = D>
-  extends LoadedDataLocalized<
-    LoadedDataRegionalSuccess<D>,
-    LoadedDataRegional<S>
-  > {}
+/** Returns a version of the type without localization */
+type Unlocalized<T> = T<string>;
+
+/** Shorthand for Unlocalized; Returns a version of the type without localization */
+type UL<T> = T<string>;
 
 interface Emote {
   id: ID;

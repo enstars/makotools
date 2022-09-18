@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   useMantineTheme,
   Text,
@@ -30,13 +30,13 @@ import fuzzysort from "fuzzysort";
 
 import Layout from "../../components/Layout";
 import {
-  getItemFromLocalized,
-  getLocalizedData,
+  getItemFromLocalizedDataArray,
+  getLocalizedDataArray,
 } from "../../services/ensquare";
 import PageTitle from "../../components/sections/PageTitle";
 import { getLayout } from "../../components/Layout";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
-import { LoadedData, LoadedDataRegional } from "../../types/makotools";
+import { QuerySuccess } from "../../types/makotools";
 
 import CardCard from "./components/DisplayCard";
 type SortOption = "id" | "character";
@@ -59,13 +59,16 @@ const CARD_VIEW_OPTIONS_DEFAULT: CardViewOptions = {
 };
 
 function Page({
-  cards,
-  characters,
+  charactersQuery,
+  cardsQuery,
 }: {
-  cards: LoadedData<GameCard[]>;
-  characters: LoadedData<GameCharacter[]>;
+  charactersQuery: QuerySuccess<GameCharacter[]>;
+  cardsQuery: QuerySuccess<GameCard[]>;
 }) {
-  // console.log(characters);
+  const cards = useMemo(() => cardsQuery.data, []);
+  const characters = useMemo(() => charactersQuery.data, []);
+
+  // console.log(cards, characters);
 
   const theme = useMantineTheme();
   const [count, setCount] = useState<number>(CARD_LIST_INITIAL_COUNT);
@@ -85,7 +88,7 @@ function Page({
   const [debouncedSearch] = useDebouncedValue(search, 200);
 
   let characterIDtoSort: { [key: number]: number } = {};
-  characters.main.data.forEach((c) => {
+  characters.forEach((c) => {
     characterIDtoSort[c.character_id] = c.sort_id;
   });
 
@@ -107,7 +110,7 @@ function Page({
   };
 
   useEffect(() => {
-    let filteredList: GameCard[] = cards.main.data
+    let filteredList: GameCard[] = cards
       .filter((c) => {
         return c.id <= 9999;
       })
@@ -130,23 +133,17 @@ function Page({
 
     const searchableList = filteredList.map((c) => ({
       data: c,
-      localized: getItemFromLocalized(cards, c.id),
     }));
-    const searchedList = fuzzysort
-      .go(debouncedSearch, searchableList, {
-        keys: [
-          "data.title",
-          "localized.main.data.title",
-          "localized.mainLang.data.title",
-          "localized.subLang.data.title",
-        ],
-        all: true,
-      })
+    const searchedList = fuzzysort.go(debouncedSearch, filteredList, {
+      keys: ["title.0", "title.1", "title.2"],
+      all: true,
+    });
+    const sortedList = [...searchedList]
       .sort((a: any, b: any) => b.score - a.score)
-      .map((cr) => cr.obj.data)
+      .map((cr) => cr.obj)
       .sort(SORT_FUNCTIONS["id"])
       .sort(SORT_FUNCTIONS[viewOptions.sortOption]);
-    setCardsList(searchedList);
+    setCardsList(sortedList);
     setCount(CARD_LIST_INITIAL_COUNT);
   }, [viewOptions, debouncedSearch]);
 
@@ -214,7 +211,7 @@ function Page({
           <MultiSelect
             label="Characters"
             placeholder="Pick a character..."
-            data={characters.mainLang.data
+            data={characters
               .sort(
                 (a: any, b: any) =>
                   characterIDtoSort[a.character_id] -
@@ -223,7 +220,7 @@ function Page({
               .map((c) => {
                 return {
                   value: c.character_id.toString(),
-                  label: c.first_name,
+                  label: c.first_name[0],
                 };
               })}
             value={viewOptions.filterCharacters}
@@ -242,7 +239,7 @@ function Page({
                 const filterRarity = value.map(
                   (v) => parseInt(v, 10) as CardRarity
                 );
-                console.log(filterRarity);
+                // console.log(filterRarity);
                 setViewOptions({ ...viewOptions, filterRarity });
               }}
               spacing={3}
@@ -300,11 +297,6 @@ function Page({
                 <Loader variant="bars" />
               </Center>
             }
-            // endMessage={
-            //   // <p style={{ textAlign: "center" }}>
-            //   //   <b>You reached the end!</b>
-            //   // </p>
-            // }
             style={{
               display: "grid",
               gridTemplateColumns:
@@ -313,41 +305,14 @@ function Page({
               alignItems: "flex-start",
             }}
           >
-            {slicedCardsList.map((e, i) => {
-              const localizedCard = getItemFromLocalized(cards, e.id);
-              if (localizedCard)
-                return (
-                  <CardCard
-                    key={e.id}
-                    cardOptions={cardOptions}
-                    // card  =
-                    localizedCard={
-                      localizedCard as LoadedData<
-                        GameCard,
-                        GameCard | undefined
-                      >
-                    }
-                  />
-
-                  // <div
-                  //   key={e.id}
-                  //   cards={cards}
-                  //   i={i}
-                  //   id={e.id}
-                  //   characters={characters.main.data}
-                  //   cardOptions={cardOptions}
-                  // >
-                  //   {e.id}
-                  // </div>
-                );
-              return (
-                <Card key={e.id} withBorder p="md">
-                  <Text size="sm" color="dimmed" align="center">
-                    An error occured
-                  </Text>
-                </Card>
-              );
-            })}
+            {slicedCardsList.map((e, i) => (
+              <CardCard
+                key={e.id}
+                cardOptions={cardOptions}
+                card={e}
+                lang={cardsQuery.lang}
+              />
+            ))}
           </InfiniteScroll>
         </>
       ) : (
@@ -360,14 +325,15 @@ function Page({
 }
 
 export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
-  const characters = await getLocalizedData<GameCharacter[]>(
+  const characters = await getLocalizedDataArray<GameCharacter>(
     "characters",
     locale,
+    "character_id",
     ["character_id", "first_name", "sort_id"]
   );
   // const unit_to_characters = await getLocalizedData("unit_to_characters");
   // const units = await getLocalizedData("units");
-  const cards = await getLocalizedData<GameCard[]>("cards", locale, [
+  const cards = await getLocalizedDataArray<GameCard>("cards", locale, "id", [
     "id",
     "name",
     "title",
@@ -382,12 +348,12 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
     "character_id",
   ]);
 
-  if (!characters || !cards)
+  if (characters.status === "error" || cards.status === "error")
     return {
       notFound: true,
     };
   return {
-    props: { characters, cards },
+    props: { charactersQuery: characters, cardsQuery: cards },
   };
 });
 
