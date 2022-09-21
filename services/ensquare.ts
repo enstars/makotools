@@ -193,9 +193,11 @@ export function getNameOrder(
   //   string accepted bc nextjs always returns locale as string
 ): string {
   const firstName = Array.isArray(first_name)
-    ? first_name[0]
+    ? first_name[0] || ""
     : first_name || "";
-  const lastName = Array.isArray(last_name) ? last_name[0] : last_name || "";
+  const lastName = Array.isArray(last_name)
+    ? last_name[0] || ""
+    : last_name || "";
 
   if (lastFirstLocales.includes(locale as Locale))
     return `${lastName}${firstName}`;

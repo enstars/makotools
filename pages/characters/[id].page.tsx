@@ -6,6 +6,8 @@ import {
   getB2File,
   getLocalizedData,
   getItemFromLocalized,
+  getLocalizedDataArray,
+  getItemFromLocalizedDataArray,
 } from "../../services/ensquare";
 import PageTitle from "../../components/sections/PageTitle";
 import ImageViewer from "../../components/core/ImageViewer";
@@ -13,42 +15,37 @@ import Reactions from "../../components/sections/Reactions";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { getLayout } from "../../components/Layout";
 import Picture from "../../components/core/Picture";
-import { LoadedData } from "../../types/makotools";
+import { LoadedData, Query, QuerySuccess } from "../../types/makotools";
 
 function Page({
   character: localizedCharacter,
 }: {
-  character: LoadedData<GameCharacter>;
+  character: QuerySuccess<GameCharacter>;
 }) {
-  const character = localizedCharacter.main.data;
+  const character = localizedCharacter.data;
   console.log(character);
   return (
     <>
-      <Head>
-        <title>{`${character.first_name} ${character.last_name} - EnSquare`}</title>
-        <meta name="description" content={character.introduction} />
-      </Head>
-
       <PageTitle
         title={
           <>
             <ruby>
-              {character.first_name}
-              {character.first_nameRuby && (
+              {character.first_name[0]}
+              {character.first_nameRuby?.[0] && (
                 <>
                   <rp> (</rp>
-                  <Text component="rt">{character.first_nameRuby}</Text>
+                  <Text component="rt">{character.first_nameRuby[0]}</Text>
                   <rp>)</rp>
                 </>
               )}
             </ruby>{" "}
             <ruby>
-              {character.last_name}
+              {character.last_name[0]}
 
-              {character.last_nameRuby && (
+              {character.last_nameRuby?.[0] && (
                 <>
                   <rp> (</rp>
-                  <Text component="rt">{character.last_nameRuby}</Text>
+                  <Text component="rt">{character.last_nameRuby[0]}</Text>
                   <rp>)</rp>
                 </>
               )}
@@ -74,14 +71,14 @@ function Page({
             src={getB2File(
               `render/character_full1_${character.character_id}.png`
             )}
-            alt={character.first_name}
+            alt={character.first_name[0]}
             width={300}
             height={600}
             // objectfit="cover"
           />
         </Box>
       </PageTitle>
-      <Text>{character.introduction}</Text>
+      <Text>{character.introduction[0]}</Text>
       <Reactions />
       {/* Birthday
       {character.birthday}
@@ -91,7 +88,7 @@ function Page({
 
       <Picture
         srcB2={`render/character_full1_${character.character_id}.png`}
-        alt={character.first_name}
+        alt={character.first_name[0]}
         sx={{
           width: 300,
           height: 600,
@@ -105,11 +102,12 @@ function Page({
 
 export const getServerSideProps = getServerSideUser(
   async ({ res, locale, params }) => {
-    const characters = await getLocalizedData<GameCharacter[]>(
+    const characters = await getLocalizedDataArray<GameCharacter>(
       "characters",
-      locale
+      locale,
+      "character_id"
     );
-    const charsEN = await getData<GameCharacter[]>("characters", "en");
+    const charsEN = await getData<GameCharacter<string>[]>("characters", "en");
     if (!characters || charsEN.status === "error") return { notFound: true };
     const { data: charactersEN } = charsEN;
 
@@ -136,12 +134,14 @@ export const getServerSideProps = getServerSideUser(
       };
     }
 
-    const character = getItemFromLocalized(
+    const character = getItemFromLocalizedDataArray<GameCharacter>(
       characters,
       characterEN.character_id,
       "character_id"
     );
-    if (typeof character === "undefined") {
+
+    console.log(characterEN.character_id, characters);
+    if (character.status === "error") {
       return {
         notFound: true,
       };

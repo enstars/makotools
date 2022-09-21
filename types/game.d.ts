@@ -3,8 +3,8 @@ type HexColorWithTag = string;
 
 // CHARACTERS
 
-type CharacterID = number;
-type UnitID = number;
+type CharacterID = ID;
+type UnitID = ID;
 
 /** Strings extracted from the game, or translated strings  */
 type Text = string;
@@ -38,13 +38,25 @@ interface GameCharacter<T = string[]> extends GameCharacterStrings<T> {
   horoscope: number;
 }
 
-interface GameUnit {
-  unit_id: UnitID;
-  unit?: string;
-  unit_name?: string;
-  tagline?: string;
-  unit_desc?: string;
-  agency?: string;
+interface GameAgencyString<T> {
+  name: T;
+  description: T;
+}
+
+interface GameAgency<T = string[]> extends GameAgencyString<T> {
+  id: ID;
+  order: number;
+}
+
+interface GameUnitString<T> {
+  name: T;
+  tagline: T;
+  description: T;
+}
+
+interface GameUnit<T = string[]> extends GameUnitString<T> {
+  id: ID;
+  agency: ID;
   image_color?: HexColorWithTag;
   order: number;
 }

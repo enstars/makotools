@@ -148,6 +148,7 @@ function PictureStringSrc({
     className,
     action = "none",
     transparent = false,
+    ...otherProps
   } = props;
   const theme = useMantineTheme();
 
@@ -186,12 +187,14 @@ function PictureStringSrc({
         styles={styles}
         className={cx(classes.picture, className)}
       >
-        <div
-          className={cx(
-            classes.placeholder
-            // loaded && classes.placeholderLoaded
-          )}
-        />
+        {hasPlaceholder && (
+          <div
+            className={cx(
+              classes.placeholder
+              // loaded && classes.placeholderLoaded
+            )}
+          />
+        )}
         <source srcSet={webpSrc} />
         {/* eslint-disable-next-line jsx-a11y/alt-text */}
         <Image
@@ -202,6 +205,7 @@ function PictureStringSrc({
           // height={10}
           placeholder="empty"
           src={src}
+          alt={alt}
           onContextMenu={() => {
             if (isB2Optimized || webpSrc)
               notify("info", {
@@ -211,7 +215,7 @@ function PictureStringSrc({
               });
           }}
           onLoadingComplete={() => setLoaded(true)}
-          {...props}
+          {...otherProps}
           className={cx(
             classes.img,
             className,

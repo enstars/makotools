@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import _ from "lodash";
 import {
   Select,
@@ -7,14 +7,19 @@ import {
   Group,
   Text,
   useMantineTheme,
+  MultiSelect,
 } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
 
-import { getData, getLocalizedData } from "../../services/ensquare";
+import {
+  getData,
+  getLocalizedData,
+  getLocalizedDataArray,
+} from "../../services/ensquare";
 import PageTitle from "../../components/sections/PageTitle";
 import { getLayout } from "../../components/Layout";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
-import { LoadedData } from "../../types/makotools";
+import { LoadedData, Query, QuerySuccess } from "../../types/makotools";
 
 import CharacterCard from "./components/DisplayCard";
 
@@ -41,21 +46,19 @@ const CHARACTER_VIEW_OPTIONS_DEFAULT: CharacterViewOptions = {
 };
 
 function Page({
-  characters,
-  unit_to_characters: unitToCharacters,
-  units,
+  charactersQuery,
+  unitsQuery,
 }: {
-  characters: LoadedData<GameCharacter[]>;
-  unit_to_characters: any;
-  units: any;
+  charactersQuery: QuerySuccess<GameCharacter[]>;
+  unitsQuery: QuerySuccess<GameUnit[]>;
 }) {
-  console.log(characters, unitToCharacters, units);
+  const characters = useMemo(() => charactersQuery.data, []);
+  const units = useMemo(() => unitsQuery.data, []);
 
-  const [listCharacters, setListCharacters] = useState<GameCharacter[]>(
-    characters.main.data
-  );
-  const [filterOptions, setfilterOptions] = useState<GameUnit[]>([]);
-  const [chosenUnit, setChosenUnit] = useState<string | null>(null);
+  // console.log(characters, units);
+
+  const [listCharacters, setListCharacters] =
+    useState<GameCharacter[]>(characters);
   const [viewOptions, setViewOptions] = useLocalStorage<CharacterViewOptions>({
     key: "characterFilters",
     defaultValue: CHARACTER_VIEW_OPTIONS_DEFAULT,
@@ -71,7 +74,7 @@ function Page({
   };
 
   useEffect(() => {
-    let filteredList: GameCharacter[] = characters.main.data
+    let filteredList: GameCharacter[] = characters
       .filter((c) => {
         return c.character_id <= 9999;
       })
@@ -84,10 +87,11 @@ function Page({
       .sort(SORT_FUNCTIONS["id"])
       .sort(SORT_FUNCTIONS[viewOptions.sortOption]);
     setListCharacters(filteredList);
-  }, [viewOptions, debouncedSearch]);
+  }, [viewOptions]);
 
-  const handleNewUnit = (e: string) => {
-    setChosenUnit(e);
+  const handleNewUnit = (e: string[]) => {
+    // console.log(e);
+    setViewOptions((v) => ({ ...v, filterUnits: e.map((u) => parseInt(u)) }));
   };
 
   // if (!hasAllData) {
@@ -103,18 +107,21 @@ function Page({
           Search Options
         </Text>
         <Group>
-          <Select
+          <MultiSelect
             label="Unit"
             placeholder="Pick a unit..."
-            data={filterOptions.map((o: GameUnit) => {
-              return o.unit_id + "";
-            })}
+            data={units
+              .sort((a, b) => a.order - b.order)
+              .map((o) => ({
+                label: o.name[0],
+                value: o.id.toString(),
+              }))}
             onChange={handleNewUnit}
             searchable
             clearable
-            allowDeselect
             size="sm"
             variant="default"
+            value={viewOptions.filterUnits.map((u) => u.toString())}
           />
         </Group>
       </Paper>
@@ -122,16 +129,16 @@ function Page({
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(90px, 1fr));",
+          gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr));",
           gap: theme.spacing.xs,
         }}
       >
         {listCharacters.map((character) => {
           return (
             <CharacterCard
-              key={character.unique_id}
-              {...character}
-              characters={characters}
+              key={character.character_id}
+              character={character}
+              locale={charactersQuery.lang}
             />
           );
         })}
@@ -141,15 +148,17 @@ function Page({
 }
 
 export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
-  const characters = await getLocalizedData("characters", locale);
-  const unit_to_characters = await getData("unit_to_characters", "ja", true);
-  const units = await getData("units", "ja", true);
-
-  console.log("units", units);
+  const charactersQuery = await getLocalizedDataArray(
+    "characters",
+    locale,
+    "character_id"
+  );
+  const unitsQuery = await getLocalizedDataArray("units", locale);
 
   return {
-    props: { characters, unit_to_characters, units },
+    props: { charactersQuery, unitsQuery },
   };
 });
+
 Page.getLayout = getLayout({ wide: true });
 export default Page;

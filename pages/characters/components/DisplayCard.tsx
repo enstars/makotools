@@ -1,7 +1,14 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Card, Title, useMantineTheme } from "@mantine/core";
+import {
+  Box,
+  Card,
+  createStyles,
+  Text,
+  Title,
+  useMantineTheme,
+} from "@mantine/core";
 
 import { getB2File } from "../../../services/ensquare";
 import {
@@ -10,80 +17,119 @@ import {
 } from "../../../data/characterIDtoCardID";
 import styles from "../../../styles/CharacterCard.module.scss";
 
+import NameOrder from "components/utilities/formatting/NameOrder";
+import { Lang } from "types/makotools";
+import Picture from "components/core/Picture";
+
+const useStyles = createStyles((theme, params: any, getRef) => ({
+  card: {
+    ref: getRef("card"),
+    height: 180,
+    display: "flex",
+    justifyContent: "center",
+    [`&:hover .${getRef("background")}`]: {
+      backgroundPosition: "right",
+    },
+    [`&:hover .${getRef("picture")}`]: {
+      // left: "-5%",
+      flexBasis: 600,
+      height: 200,
+    },
+    [`&:hover .${getRef("pictureBloomed")}`]: {
+      display: "block",
+    },
+  },
+  background: {
+    ref: getRef("background"),
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    left: 0,
+    top: 0,
+    background: `left / 250% 100% no-repeat
+    linear-gradient(
+      -45deg,
+      ${params.color} 30%,
+      ${params.color}33 30%,
+      ${params.color}33 50%,
+      transparent 50%
+    )`,
+    transition: theme.other.transition,
+  },
+  pictureWrapper: {
+    ref: getRef("picture"),
+    flexBasis: 400,
+    height: 180,
+    position: "relative",
+    flexShrink: 0,
+    transition: theme.other.transition,
+    left: 0,
+  },
+  picture: {
+    height: "100%",
+    objectFit: "contain",
+  },
+  pictureBloomed: {
+    ref: getRef("pictureBloomed"),
+    top: "-100%",
+    display: "none",
+  },
+  title: {
+    fontSize: theme.fontSizes.sm,
+    position: "absolute",
+    width: "100%",
+    right: 0,
+    bottom: 0,
+    // writingMode: "vertical-lr",
+    // textOrientation: "mixed",
+    background: theme.colors.dark[7] + "A0",
+    padding: theme.spacing.xs / 1.25,
+    textAlign: "end",
+    lineHeight: 1,
+    // backdropFilter: "blur(2px)",
+  },
+}));
+
 function DisplayCard({
-  i,
-  doubleface,
-  characters,
+  character,
+  locale,
 }: {
-  i: number;
-  doubleface: boolean;
-  characters: any;
+  character: GameCharacter;
+  locale: Lang[];
 }) {
   const theme = useMantineTheme();
-  const character: GameCharacter = characters.mainLang.data[i];
-  console.log(character);
-  const characterSubLang = characters.subLang.data?.[i] || undefined;
+
+  const { classes, cx } = useStyles({ color: character.image_color });
+
   return (
     <Link href={`/characters/${character.character_id}`} passHref>
-      <Card
-        withBorder
-        component="a"
-        className={styles.wrapper}
-        style={{
-          ["--characterColor" as string]: character.image_color,
-          ["--characterColor--light" as string]: character.image_color + "33",
-        }}
-      >
-        <div className={styles.content}>
-          <div className={styles.image}>
-            <Image
-              src={
-                doubleface
-                  ? getB2File(
-                      `cards/card_full1_${
-                        (twoStarIDsDoubleface as any)[character.character_id]
-                      }_normal.png`
-                    )
-                  : getB2File(
-                      `cards/card_full1_${
-                        (twoStarIDs as any)[character.character_id]
-                      }_normal.png`
-                    )
-              }
-              alt={character.first_name}
-              layout="fill"
-              objectFit="contain"
-            />
-          </div>
-          <div className={[styles.image, styles.bloomed].join(" ")}>
-            <Image
-              src={
-                doubleface
-                  ? getB2File(
-                      `cards/card_full1_${
-                        (twoStarIDsDoubleface as any)[character.character_id]
-                      }_evolution.png`
-                    )
-                  : getB2File(
-                      `cards/card_full1_${
-                        (twoStarIDs as any)[character.character_id]
-                      }_evolution.png`
-                    )
-              }
-              alt={character.first_name}
-              layout="fill"
-              objectFit="contain"
-            />
-          </div>
-          <div className={styles.info}>
-            <Title order={2} sx={{ fontSize: theme.fontSizes.sm }}>
-              {character.last_name}
-              {characters.mainLang.lang === "en" && " "}
-              {character.first_name}
-              {doubleface ? " (DF)" : ""}
-            </Title>
-          </div>
-        </div>
+      <Card withBorder component="a" p={0} className={classes.card}>
+        <Box className={classes.background} />
+        <Box className={classes.pictureWrapper}>
+          <Picture
+            transparent
+            src={getB2File(
+              `assets/card_full1_${
+                (twoStarIDs as any)[character.character_id]
+              }_normal.png`
+            )}
+            alt={character.first_name[0]}
+            className={classes.picture}
+          />
+          <Picture
+            transparent
+            src={getB2File(
+              `assets/card_full1_${
+                (twoStarIDs as any)[character.character_id]
+              }_subtracted.png`
+            )}
+            alt={character.first_name[0]}
+            className={cx(classes.picture, classes.pictureBloomed)}
+          />
+        </Box>
+        <Title order={2} className={classes.title}>
+          <NameOrder {...character} locale={locale[0].locale} />
+        </Title>
       </Card>
     </Link>
   );
