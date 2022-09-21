@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Container, createStyles, Text } from "@mantine/core";
 
-import { getData, getLocalizedData } from "../../services/ensquare";
+import { getData, getLocalizedDataArray } from "../../services/ensquare";
 import PageTitle from "../../components/sections/PageTitle";
 import { getLayout } from "../../components/Layout";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
@@ -22,21 +22,34 @@ function Page({ events, lang }: { events: CalendarEvent[]; lang: string }) {
 }
 
 export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
-  const characters = await getLocalizedData("characters", locale);
-  const characterData = characters?.mainLang.data;
+  const characters = await getLocalizedDataArray<GameCharacter>(
+    "characters",
+    locale,
+    "character_id",
+    [
+      "character_id",
+      "first_name",
+      "last_name",
+      "birthday",
+      "image_color",
+      "sort_id",
+    ]
+  );
+
+  const characterData = characters?.data;
 
   let events: CalendarEvent[] = [];
 
   for (const character of characterData) {
-    let birthDateObj = new Date(character.birthday);
+    let birthDateObj = character.birthday.split("-");
     let birthdayEvent: BirthdayEvent = {
       type: "birthday",
       startDate: {
-        month: birthDateObj.getMonth(),
-        date: birthDateObj.getDate(),
+        month: parseInt(birthDateObj[1]) - 1,
+        date: parseInt(birthDateObj[2]),
       },
       character_id: character.character_id,
-      character_name: `${character.first_name} ${character.last_name}`,
+      character_name: `${character.first_name[0]} ${character.last_name[0]}`,
     };
 
     events.push(birthdayEvent);
@@ -45,7 +58,8 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
   return {
     props: {
       events: events,
-      lang: characters?.mainLang.lang,
+      characters: characters,
+      lang: characters?.lang[0].locale,
     },
   };
 });

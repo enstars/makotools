@@ -282,12 +282,12 @@ function BirthdayCard({ ...props }) {
                 (twoStarIDs as any)[props.character.character_id]
               }_normal.png`
             )}
-            alt={`${props.character.first_name} ${props.character.last_name}`}
+            alt={`${props.character.first_name[0]} ${props.character.last_name[0]}`}
             width={500}
           />
           <Text>{formattedDate}</Text>
           <Text size="lg" weight={700}>
-            {props.character.first_name} {props.character.last_name}
+            {props.character.first_name[0]} {props.character.last_name[0]}
           </Text>
         </Card>
       </Link>
@@ -296,6 +296,7 @@ function BirthdayCard({ ...props }) {
 }
 
 function BirthdayPreview({ ...props }) {
+  console.log(props.characters);
   return (
     <Accordion variant="contained" defaultValue="birthday">
       <Accordion.Item value="birthday">
