@@ -9,10 +9,12 @@ import {
   Text,
   Badge,
   Grid,
+  Button,
 } from "@mantine/core";
 import { useState } from "react";
 import { getMonthDays } from "@mantine/dates";
 import { IconCake } from "@tabler/icons";
+import Link from "next/link";
 
 import { getB2File } from "../../../services/ensquare";
 import { twoStarIDs } from "../../../data/characterIDtoCardID";
@@ -64,6 +66,10 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   listEventCardText: {
     padding: "1vh 1vw",
   },
+  listEventCardButton: {
+    margin: "auto",
+    marginTop: "1vh",
+  },
 }));
 
 function CalendarListEvent({ ...props }) {
@@ -83,7 +89,7 @@ function CalendarListEvent({ ...props }) {
             sx={{ marginRight: "100px" }}
           />
         </Card.Section>
-        <Card.Section className={classes.listEventCardText}>
+        <Card.Section component="a" className={classes.listEventCardText}>
           <Group position="left" spacing="md">
             <Badge color="lime" leftSection={<IconCake size={16} />}>
               Birth
@@ -92,6 +98,17 @@ function CalendarListEvent({ ...props }) {
               {props.event.character_name}
             </Text>
           </Group>
+          <Link href={`/characters/${props.event.character_id}`}>
+            <Button
+              component="a"
+              className={classes.listEventCardButton}
+              color="indigo"
+              variant="subtle"
+              compact
+            >
+              Visit character page
+            </Button>
+          </Link>
         </Card.Section>
       </Card>
     );
