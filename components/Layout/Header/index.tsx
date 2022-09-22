@@ -6,6 +6,8 @@ import Sidebar from "../Sidebar";
 
 import Breadcrumbs from "./Breadcrumbs";
 
+const cornerSize = 8;
+
 function HeaderApp({
   getBreadcrumbs,
   title,
@@ -41,6 +43,7 @@ function HeaderApp({
         sx={{
           width: "calc(100% - var(--mantine-navbar-width, 0px))",
           zIndex: 200,
+          boxSizing: "content-box",
         }}
       >
         <Transition transition="slide-down" mounted={scroll.y > 40 && !opened}>
@@ -58,6 +61,31 @@ function HeaderApp({
                 minHeight: 37,
                 display: "flex",
                 alignItems: "center",
+                [theme.fn.largerThan("xs")]: {
+                  ":before": {
+                    content: "''",
+                    position: "absolute",
+                    left: 0,
+                    top: "100%",
+                    width: cornerSize,
+                    height: cornerSize,
+                    background: `top left/200% 200% radial-gradient(transparent ${
+                      cornerSize - 1
+                    }px,  ${
+                      theme.colorScheme === "dark"
+                        ? theme.colors.dark[5]
+                        : theme.colors.gray[2]
+                    } ${cornerSize - 1}px, ${
+                      theme.colorScheme === "dark"
+                        ? theme.colors.dark[5]
+                        : theme.colors.gray[2]
+                    } ${cornerSize}px, ${
+                      theme.colorScheme === "dark"
+                        ? theme.colors.dark[7]
+                        : theme.white
+                    } ${cornerSize}px)`,
+                  },
+                },
               })}
             >
               <Breadcrumbs
