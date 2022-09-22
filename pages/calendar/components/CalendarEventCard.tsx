@@ -18,10 +18,10 @@ function CalendarEventCard({ ...props }) {
 
     birthdayCardImageOverlay: {
       position: "absolute",
-      width: "100%",
+      width: "105%",
       height: "15vh",
       margin: "auto",
-      marginLeft: "1vw",
+      marginLeft: "0.5vw",
       marginTop: "-7vh",
       background: `linear-gradient(${
         theme.colorScheme === "dark"
@@ -85,9 +85,7 @@ function CalendarEventCard({ ...props }) {
           <div className={classes.birthdayCardImageOverlay}></div>
           <Image
             src={getB2File(
-              `cards/card_full1_${
-                (twoStarIDs as any)[event.character_id]
-              }_normal.png`
+              `assets/card_still_full1_${event.character_render}_evolution.webp`
             )}
             alt={event.character_name}
             width={500}
