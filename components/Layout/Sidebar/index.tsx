@@ -1,6 +1,11 @@
 import { UrlObject } from "url";
 
-import React, { forwardRef } from "react";
+import React, {
+  ComponentProps,
+  ComponentPropsWithRef,
+  forwardRef,
+  ReactElement,
+} from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styled from "styled-components";
@@ -36,6 +41,7 @@ import {
   ActionIcon,
   UnstyledButton,
   ThemeIcon,
+  NavLinkProps,
 } from "@mantine/core";
 import { useColorScheme, useToggle } from "@mantine/hooks";
 import { StringNullableChain } from "lodash";
@@ -51,7 +57,7 @@ import UserMenu from "./UserMenu";
 type LinkObject = {
   link: string;
   name: string;
-  Icon?: TablerIcon;
+  Icon?: TablerIcon | ReactElement;
   disabled?: boolean;
   props?: any;
 };
@@ -66,11 +72,13 @@ const SidebarLink = forwardRef(function SbL(
     props,
     sx,
     ...rest
-  }: LinkObject & {
-    active: boolean;
-    collapsed: boolean;
-    sx: any;
-  },
+  }: Omit<LinkObject, "link" | "name"> &
+    NavLinkProps & {
+      name?: any;
+      active?: boolean;
+      collapsed: boolean;
+      component?: string;
+    },
   ref
 ) {
   const theme = useMantineTheme();
@@ -177,6 +185,7 @@ function Sidebar(props: any) {
           }
         : {
             link: "",
+            name: "",
           },
     ],
     {
@@ -293,52 +302,6 @@ function Sidebar(props: any) {
             .filter((l: LinkObject) => l.link)
             .map((link: LinkObject) => {
               const active = `/${location.asPath.split("/")[1]}` === link.link;
-              const navLinkComponent = (
-                <NavLink
-                  // py="xs"
-                  label={
-                    collapsed ? (
-                      false
-                    ) : (
-                      <Text weight={500} inline>
-                        {link.name}
-                      </Text>
-                    )
-                  }
-                  icon={
-                    link?.icon && (
-                      <Box
-                        sx={(theme) => ({
-                          width: 32,
-                          height: 32,
-                          display: "grid",
-                          placeItems: "center",
-                        })}
-                      >
-                        <link.icon size={16} />
-                      </Box>
-                    )
-                  }
-                  active={active}
-                  disabled={link.soon}
-                  sx={(theme) => ({
-                    maxWidth: "100%",
-                    minWidth: 0,
-                    padding: 0,
-                    lineHeight: 1,
-                    borderRadius: theme.radius.sm,
-                  })}
-                  styles={(theme) => ({
-                    icon: {
-                      paddingTop: 0,
-                      marginRight: theme.spacing.xs / 2,
-                      // marginTop: theme.spacing.xs / 8,
-                      // marginBottom: theme.spacing.xs / 8,
-                    },
-                  })}
-                  {...link?.props}
-                />
-              );
               return (
                 <Tooltip
                   key={link.link}
@@ -348,7 +311,7 @@ function Sidebar(props: any) {
                   withinPortal
                 >
                   <div>
-                    {link.soon ? (
+                    {link.disabled ? (
                       <SidebarLink
                         collapsed={collapsed}
                         active={active}
@@ -399,7 +362,6 @@ function Sidebar(props: any) {
                         ? user?.db?.username
                         : "Not logged in"
                     }
-                    link=""
                     Icon={IconAt}
                     sx={{ "&&": { flex: "1 1 0" } }}
                     props={{ variant: "subtle" }}
