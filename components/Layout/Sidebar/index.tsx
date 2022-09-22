@@ -123,16 +123,9 @@ const SidebarLink = forwardRef(function SbL(
       styles={(theme) => ({
         icon: {
           paddingTop: 0,
-          marginRight: xxs,
+          marginRight: theme.spacing.xs,
           // marginTop: theme.spacing.xs / 8,
           // marginBottom: theme.spacing.xs / 8,
-        },
-        body: {
-          paddingTop: 2.5,
-          paddingBottom: 2.5,
-        },
-        root: {
-          alignItems: "start",
         },
       })}
       {...props}
@@ -192,13 +185,6 @@ function Sidebar(props: any) {
       link: "https://www.patreon.com/makotools",
       name: "Patreon",
       Icon: IconBrandPatreon,
-      props: {
-        // active: true,
-        color: "orange",
-        // variant: "subtle",
-        // icon: IconBrandPatreon,
-        description: collapsed ? null : "Support us!",
-      },
     },
   ];
   return (
@@ -372,7 +358,8 @@ function Sidebar(props: any) {
             </>
           )}
           <ActionIcon
-            size="lg"
+            size={32}
+            radius="sm"
             onClick={() => {
               // console.log(collapsed);
               toggleCollapsed();
