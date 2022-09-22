@@ -42,7 +42,7 @@ function Page({
         <>
           <Confetti
             width={1200}
-            height={800}
+            height={1000}
             recycle={false}
             style={{ marginLeft: "15%" }}
           />
