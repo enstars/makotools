@@ -18,6 +18,7 @@ import {
   IconSettings,
   IconUserCircle,
   TablerIcon,
+  IconAt,
 } from "@tabler/icons";
 import {
   Navbar,
@@ -34,6 +35,7 @@ import {
   Stack,
   ActionIcon,
   UnstyledButton,
+  ThemeIcon,
 } from "@mantine/core";
 import { useColorScheme, useToggle } from "@mantine/hooks";
 import { StringNullableChain } from "lodash";
@@ -48,11 +50,88 @@ import UserMenu from "./UserMenu";
 
 type LinkObject = {
   link: string;
-  name?: string;
-  icon?: TablerIcon;
-  soon?: boolean;
+  name: string;
+  Icon?: TablerIcon;
+  disabled?: boolean;
   props?: any;
 };
+
+const SidebarLink = forwardRef(function SbL(
+  {
+    collapsed,
+    name,
+    Icon,
+    disabled,
+    active,
+    props,
+    sx,
+    ...rest
+  }: LinkObject & {
+    active: boolean;
+    collapsed: boolean;
+    sx: any;
+  },
+  ref
+) {
+  const theme = useMantineTheme();
+  const xxs = theme.spacing.xs / 1.5;
+  return (
+    <NavLink
+      // py="xs"
+      ref={ref}
+      label={
+        collapsed ? (
+          false
+        ) : (
+          <Text weight={500} inline>
+            {name}
+          </Text>
+        )
+      }
+      icon={
+        Icon && (
+          <Box
+            sx={(theme) => ({
+              width: 32 - xxs * 2,
+              height: 32 - xxs * 2,
+              display: "grid",
+              placeItems: "center",
+            })}
+          >
+            {typeof Icon === "function" ? <Icon size={16} /> : Icon}
+          </Box>
+        )
+      }
+      active={active}
+      disabled={disabled}
+      sx={(theme) => ({
+        maxWidth: "100%",
+        minWidth: 0,
+        padding: xxs,
+        lineHeight: 1,
+        borderRadius: theme.radius.sm,
+        ...sx,
+      })}
+      styles={(theme) => ({
+        icon: {
+          paddingTop: 0,
+          marginRight: xxs,
+          // marginTop: theme.spacing.xs / 8,
+          // marginBottom: theme.spacing.xs / 8,
+        },
+        body: {
+          paddingTop: 2.5,
+          paddingBottom: 2.5,
+        },
+        root: {
+          alignItems: "start",
+        },
+      })}
+      {...props}
+      {...rest}
+    />
+  );
+});
 
 function Sidebar(props: any) {
   const location = useRouter();
@@ -70,31 +149,31 @@ function Sidebar(props: any) {
     {
       link: "/characters",
       name: "Characters",
-      icon: IconUsers,
+      Icon: IconUsers,
     },
     {
       link: "/cards",
       name: "Cards",
-      icon: IconPlayCard,
+      Icon: IconPlayCard,
     },
     {
       link: "/events",
       name: "Events",
-      icon: IconAward,
-      soon: true,
+      Icon: IconAward,
+      disabled: true,
     },
     {
       link: "/stories",
       name: "Stories",
-      icon: IconBooks,
-      soon: true,
+      Icon: IconBooks,
+      disabled: true,
     },
     ...[
       !user.loading && user.loggedIn
         ? {
             link: `/@${user?.db?.username}`,
             name: "Profile",
-            icon: IconUserCircle,
+            Icon: IconUserCircle,
           }
         : {
             link: "",
@@ -103,12 +182,12 @@ function Sidebar(props: any) {
     {
       link: "https://www.patreon.com/makotools",
       name: "Patreon",
-      // icon: IconBrandPatreon,
+      Icon: IconBrandPatreon,
       props: {
         // active: true,
         color: "orange",
-        variant: "subtle",
-        icon: <IconBrandPatreon size={16} color={theme.colors.orange[5]} />,
+        // variant: "subtle",
+        // icon: IconBrandPatreon,
         description: collapsed ? null : "Support us!",
       },
     },
@@ -119,7 +198,7 @@ function Sidebar(props: any) {
       position={{ top: 0, left: 0 }}
       width={{
         base: 0,
-        xs: collapsed ? 40 : 250,
+        xs: collapsed ? 42 : 250,
       }}
       hidden={true}
       hiddenBreakpoint="xs"
@@ -131,17 +210,26 @@ function Sidebar(props: any) {
           theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
         zIndex: 210,
         boxShadow: theme.shadows.xl,
+        boxSizing: "content-box",
       }}
       {...props}
     >
-      <Navbar.Section>
+      <Navbar.Section
+        // direction="column"
+        sx={(theme) => ({
+          padding: theme.spacing.xs / 2,
+          maxWidth: "100%",
+          minWidth: 0,
+        })}
+      >
         <Link href="/" passHref>
-          <NavLink
+          <SidebarLink
+            collapsed={collapsed}
             component="a"
-            py="xs"
+            // py="xs"
             label={
               !collapsed && (
-                <Text inline>
+                <Box sx={{ height: 14, display: "flex" }}>
                   {theme.colorScheme === "light" ? (
                     <MakotoolsTextLightComponent
                       viewBox="0 0 1753 281"
@@ -155,10 +243,10 @@ function Sidebar(props: any) {
                       height={14}
                     />
                   )}
-                </Text>
+                </Box>
               )
             }
-            icon={
+            Icon={
               theme.colorScheme === "light" ? (
                 <MakotoolsLightComponent
                   viewBox="0 0 281 281"
@@ -194,7 +282,12 @@ function Sidebar(props: any) {
         <Stack
           spacing={0}
           // direction="column"
-          sx={{ maxWidth: "100%", minWidth: 0 }}
+          sx={(theme) => ({
+            padding: theme.spacing.xs / 2,
+            paddingTop: 0,
+            maxWidth: "100%",
+            minWidth: 0,
+          })}
         >
           {linkList
             .filter((l: LinkObject) => l.link)
@@ -203,33 +296,49 @@ function Sidebar(props: any) {
               const navLinkComponent = (
                 <NavLink
                   // py="xs"
-                  label={collapsed ? false : <Text inline>{link.name}</Text>}
-                  icon={link?.icon && <link.icon size={16} />}
+                  label={
+                    collapsed ? (
+                      false
+                    ) : (
+                      <Text weight={500} inline>
+                        {link.name}
+                      </Text>
+                    )
+                  }
+                  icon={
+                    link?.icon && (
+                      <Box
+                        sx={(theme) => ({
+                          width: 32,
+                          height: 32,
+                          display: "grid",
+                          placeItems: "center",
+                        })}
+                      >
+                        <link.icon size={16} />
+                      </Box>
+                    )
+                  }
                   active={active}
                   disabled={link.soon}
-                  sx={{ maxWidth: "100%", minWidth: 0 }}
+                  sx={(theme) => ({
+                    maxWidth: "100%",
+                    minWidth: 0,
+                    padding: 0,
+                    lineHeight: 1,
+                    borderRadius: theme.radius.sm,
+                  })}
                   styles={(theme) => ({
                     icon: {
                       paddingTop: 0,
-                      marginTop: theme.spacing.xs / 8,
-                      marginBottom: theme.spacing.xs / 8,
+                      marginRight: theme.spacing.xs / 2,
+                      // marginTop: theme.spacing.xs / 8,
+                      // marginBottom: theme.spacing.xs / 8,
                     },
                   })}
                   {...link?.props}
                 />
               );
-              if (link.soon)
-                return (
-                  <Tooltip
-                    key={link.link}
-                    label={link.name}
-                    position="right"
-                    disabled={!collapsed}
-                    withinPortal
-                  >
-                    <div>{navLinkComponent}</div>
-                  </Tooltip>
-                );
               return (
                 <Tooltip
                   key={link.link}
@@ -239,9 +348,21 @@ function Sidebar(props: any) {
                   withinPortal
                 >
                   <div>
-                    <Link key={link.link} href={link.link}>
-                      {navLinkComponent}
-                    </Link>
+                    {link.soon ? (
+                      <SidebarLink
+                        collapsed={collapsed}
+                        active={active}
+                        {...link}
+                      />
+                    ) : (
+                      <Link key={link.link} href={link.link}>
+                        <SidebarLink
+                          collapsed={collapsed}
+                          active={active}
+                          {...link}
+                        />
+                      </Link>
+                    )}
                   </div>
                 </Tooltip>
               );
@@ -259,7 +380,7 @@ function Sidebar(props: any) {
           // spacing={0}
           sx={(theme) => ({
             padding: theme.spacing.xs / 2,
-            gap: theme.spacing.xs / 2,
+            gap: 0,
           })}
           position="center"
         >
@@ -268,31 +389,27 @@ function Sidebar(props: any) {
               <UserMenu
                 collapsed={collapsed}
                 trigger={
-                  <ActionIcon
-                    color="blue"
-                    variant="subtle"
-                    // py="xs"
-                    sx={{ flexGrow: 1 }}
-                  >
-                    <Text
-                      size="xs"
-                      color="blue"
-                      sx={{ flexGrow: 1 }}
-                      ml="xs"
-                      weight={700}
-                    >
-                      {user.loading
+                  <SidebarLink
+                    collapsed={collapsed}
+                    active={true}
+                    name={
+                      user.loading
                         ? "Loading"
                         : user.loggedIn
-                        ? `@${user?.db?.username}`
-                        : "Not logged in"}
-                    </Text>
-                  </ActionIcon>
+                        ? user?.db?.username
+                        : "Not logged in"
+                    }
+                    link=""
+                    Icon={IconAt}
+                    sx={{ "&&": { flex: "1 1 0" } }}
+                    props={{ variant: "subtle" }}
+                  />
                 }
               />
             </>
           )}
           <ActionIcon
+            size="lg"
             onClick={() => {
               // console.log(collapsed);
               toggleCollapsed();
