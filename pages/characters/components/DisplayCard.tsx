@@ -82,7 +82,10 @@ const useStyles = createStyles((theme, params: any, getRef) => ({
     bottom: 0,
     // writingMode: "vertical-lr",
     // textOrientation: "mixed",
-    background: theme.colors.dark[7] + "A0",
+    background:
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[7] + "A0"
+        : theme.white + "A",
     padding: theme.spacing.xs / 1.25,
     textAlign: "end",
     lineHeight: 1,
