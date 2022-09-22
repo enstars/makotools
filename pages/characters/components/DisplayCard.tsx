@@ -86,6 +86,7 @@ const useStyles = createStyles((theme, params: any, getRef) => ({
     padding: theme.spacing.xs / 1.25,
     textAlign: "end",
     lineHeight: 1,
+    wordSpacing: 999,
     // backdropFilter: "blur(2px)",
   },
 }));
