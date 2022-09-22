@@ -4,37 +4,25 @@ import {
   Title as MantineTitle,
   Text,
   List,
-  Button,
-  Paper,
-  Card,
   Group,
   Box,
-  Divider,
-  createStyles,
   AspectRatio,
   Anchor,
   Image as MantineImage,
   Stack,
-  ScrollArea,
-  Title,
   Accordion,
 } from "@mantine/core";
 import Image from "next/image";
 import { IconNews } from "@tabler/icons";
 
-import Breadcrumbs from "../components/Layout/Header/Breadcrumbs";
 import { useUser } from "../services/firebase/user";
 import Banner from "../assets/banner.png";
 import AffiliatesLight from "../assets/Affiliates/affiliates_light.svg?url";
 import AffiliatesDark from "../assets/Affiliates/affiliates_dark.svg?url";
-import Layout, { getLayout } from "../components/Layout";
+import { getLayout } from "../components/Layout";
 import getServerSideUser from "../services/firebase/getServerSideUser";
 import BirthdayPreview from "../components/sections/BirthdayPreview";
-import {
-  getData,
-  getItemFromLocalized,
-  getLocalizedData,
-} from "../services/ensquare";
+import { getLocalizedDataArray } from "../services/ensquare";
 
 import Announcement from "./about/announcements/components/Announcement";
 
@@ -196,26 +184,19 @@ export default Page;
 
 export const getServerSideProps = getServerSideUser(
   async ({ req, res, locale, params }) => {
-    const characters = await getLocalizedData<GameCharacter[]>(
+    const characters = await getLocalizedDataArray<GameCharacter>(
       "characters",
-      locale
+      locale,
+      "character_id",
+      [
+        "character_id",
+        "first_name",
+        "last_name",
+        "birthday",
+        "image_color",
+        "sort_id",
+      ]
     );
-
-    //TODO: remove once birthdays are added to eng data
-    if (characters?.mainLang.lang === "en") {
-      characters?.mainLang.data.sort((a: GameCharacter, b: GameCharacter) => {
-        return a.character_id - b.character_id;
-      });
-      characters?.main.data.sort((a, b) => {
-        return a.character_id - b.character_id;
-      });
-      characters?.mainLang.data.forEach((character) => {
-        if (character.birthday) {
-          let birthdayVals = character.birthday.split(" ");
-          character.birthday = `0000 ${birthdayVals[0]} ${birthdayVals[1]}`;
-        }
-      });
-    }
 
     try {
       const initRespose = await fetch(
@@ -226,7 +207,7 @@ export const getServerSideProps = getServerSideUser(
       return {
         props: {
           posts: initData,
-          characters: characters?.mainLang.data,
+          characters: characters?.data,
         },
       };
     } catch (e) {
@@ -236,7 +217,7 @@ export const getServerSideProps = getServerSideUser(
           posts: {
             error: true,
           },
-          characters: characters?.mainLang.data,
+          characters: characters?.data,
         },
       };
     }

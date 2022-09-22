@@ -1,11 +1,10 @@
-import Head from "next/head";
-import { Text, Box } from "@mantine/core";
+import { Text, Box, Alert } from "@mantine/core";
+import Confetti from "react-confetti";
+import { IconCake } from "@tabler/icons";
 
 import {
   getData,
   getB2File,
-  getLocalizedData,
-  getItemFromLocalized,
   getLocalizedDataArray,
   getItemFromLocalizedDataArray,
 } from "../../services/ensquare";
@@ -15,7 +14,20 @@ import Reactions from "../../components/sections/Reactions";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { getLayout } from "../../components/Layout";
 import Picture from "../../components/core/Picture";
-import { LoadedData, Query, QuerySuccess } from "../../types/makotools";
+import { QuerySuccess } from "../../types/makotools";
+
+function isBirthdayToday(birthday: string) {
+  let charBirthday = birthday.split("-");
+  let today = new Date();
+  if (
+    parseInt(charBirthday[1]) === today.getMonth() + 1 &&
+    parseInt(charBirthday[2]) === today.getDate()
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 function Page({
   character: localizedCharacter,
@@ -26,6 +38,23 @@ function Page({
   console.log(character);
   return (
     <>
+      {isBirthdayToday(character.birthday) && (
+        <>
+          <Confetti
+            width={1200}
+            height={800}
+            recycle={false}
+            style={{ marginLeft: "15%" }}
+          />
+          <Alert
+            icon={<IconCake />}
+            color="indigo"
+            sx={{ margin: "10px 0px", fontSize: "12pt" }}
+          >
+            Today is {character.first_name[0]}&apos;s birthday!
+          </Alert>
+        </>
+      )}
       <PageTitle
         title={
           <>
