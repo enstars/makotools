@@ -287,6 +287,7 @@ function Sidebar(props: any) {
             },
           },
         }}
+        scrollbarSize={4}
       >
         <Stack
           spacing={0}
