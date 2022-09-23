@@ -54,7 +54,7 @@ function HeaderApp({
               }}
               height="auto"
               px="md"
-              py={0}
+              // py={0}
               sx={(theme) => ({
                 paddingTop: theme.spacing.xs / 1.5,
                 paddingBottom: theme.spacing.xs / 1.5,
