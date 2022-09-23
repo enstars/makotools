@@ -137,16 +137,16 @@ function CalendarWeek({ ...props }) {
     <Grid columns={7} className={classes.week} gutter="xs">
       {props.week.map((day: Date, i: number) => {
         const filteredEvents = props.events.filter((event: CalendarEvent) => {
-          if (event.startDate.year) {
+          if (event.type !== "birthday") {
             return (
-              event.startDate.year === day.getFullYear() &&
-              event.startDate.month === day.getMonth() &&
-              event.startDate.date === day.getDate()
+              event.date.year === day.getFullYear() &&
+              event.date.month === day.getMonth() &&
+              event.date.date === day.getDate()
             );
           } else {
             return (
-              event.startDate.month === day.getMonth() &&
-              event.startDate.date === day.getDate()
+              event.date.month === day.getMonth() &&
+              event.date.date === day.getDate()
             );
           }
         });
@@ -175,6 +175,8 @@ function Calendar({ ...props }) {
 
   const displayMonth = `${month} 1, ${year}`;
   const displayDate = new Date(displayMonth);
+
+  console.log(props.events);
 
   return (
     <Container className={classes.calendar}>

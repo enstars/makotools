@@ -1,6 +1,14 @@
 import Link from "next/link";
-import { Card, Container, createStyles, Image, Text } from "@mantine/core";
-import { IconCake } from "@tabler/icons";
+import {
+  Badge,
+  Card,
+  Container,
+  createStyles,
+  Group,
+  Image,
+  Text,
+} from "@mantine/core";
+import { IconCake, IconPlayerPlay, IconPlayerStop } from "@tabler/icons";
 import { useState } from "react";
 
 import { getB2File } from "../../../services/ensquare";
@@ -16,9 +24,9 @@ function CalendarEventCard({ ...props }) {
       transition: "height 0.5s, visibility 0.5s ease-in",
     },
 
-    birthdayCardImageOverlay: {
+    cardImageOverlay: {
       position: "absolute",
-      width: "105%",
+      width: "110%",
       height: "15vh",
       margin: "auto",
       marginLeft: "0.5vw",
@@ -36,10 +44,6 @@ function CalendarEventCard({ ...props }) {
       marginTop: "3px",
       textAlign: "left",
       color: theme.colors.gray[0],
-      background:
-        theme.colorScheme === "dark"
-          ? theme.colors.blue[7]
-          : theme.colors.blue[4],
       borderRadius: 0,
       transition: "border-radius 0.5s",
       "&:hover": {
@@ -50,15 +54,18 @@ function CalendarEventCard({ ...props }) {
         visibility: "visible",
         height: "10vh",
       },
+      background:
+        theme.colorScheme === "dark"
+          ? theme.colors.blue[7]
+          : theme.colors.blue[4],
     },
 
     eventCardText: {
-      padding: 0,
+      padding: "0px 3px",
       display: "flex",
-      flexFlow: "row nowrap",
+      flexFlow: "row wrap",
       alignItems: "flex-start",
-      justifyContent: "space-around",
-      height: "16px",
+      justifyContent: "space-evenly",
       maxWidth: "100%",
       margin: "auto",
       zIndex: 3,
@@ -67,40 +74,44 @@ function CalendarEventCard({ ...props }) {
 
   const { event } = props;
   const { classes } = useStyles();
-
-  if (event.type === "birthday") {
-    return (
-      <Card className={classes.eventCard}>
-        <Link href={`/characters/${event.character_id}`}>
-          <Card.Section component="a" className={classes.eventCardText}>
-            <IconCake size={16} style={{ zIndex: 5 }} />
-            <Text
-              sx={{ maxHeight: "100%", verticalAlign: "center", zIndex: 5 }}
-            >
-              {event.character_name}
-            </Text>
-          </Card.Section>
-        </Link>
-        <Card.Section className={classes.birthdayCardImage}>
-          <div className={classes.birthdayCardImageOverlay}></div>
-          <Image
-            src={getB2File(
-              `assets/card_still_full1_${event.character_render}_evolution.webp`
-            )}
-            alt={event.character_name}
-            width={500}
-            sx={{
-              position: "absolute",
-              left: "-85%",
-              top: "5%",
-            }}
-          />
+  return (
+    <Card className={classes.eventCard}>
+      <Link
+        href={
+          event.type === "birthday" || event.type === "feature scout"
+            ? `/characters/${event.character_id}`
+            : `/events/${event.event_id}`
+        }
+      >
+        <Card.Section component="a" className={classes.eventCardText}>
+          <Text sx={{ verticalAlign: "center", zIndex: 5 }}>
+            {event.type === "birthday"
+              ? event.character_name.split(" ")[0] + "'s birthday"
+              : event.short_name + " " + event.status.toUpperCase()}
+          </Text>
         </Card.Section>
-      </Card>
-    );
-  } else {
-    <></>;
-  }
+      </Link>
+      <Card.Section className={classes.birthdayCardImage}>
+        <div className={classes.cardImageOverlay}></div>
+        <Image
+          src={getB2File(
+            `assets/card_still_full1_${
+              event.type === "birthday"
+                ? event.character_render + "_normal"
+                : event.five_star_id + "_evolution"
+            }.webp`
+          )}
+          alt={event.character_name}
+          width={500}
+          sx={{
+            position: "absolute",
+            left: "-85%",
+            top: "5%",
+          }}
+        />
+      </Card.Section>
+    </Card>
+  );
 }
 
 export default CalendarEventCard;

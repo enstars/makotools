@@ -13,7 +13,7 @@ import {
 } from "@mantine/core";
 import { useState } from "react";
 import { getMonthDays } from "@mantine/dates";
-import { IconCake } from "@tabler/icons";
+import { IconCake, IconPlayerPause, IconPlayerPlay } from "@tabler/icons";
 import Link from "next/link";
 
 import { getB2File } from "../../../services/ensquare";
@@ -61,7 +61,10 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     marginTop: "1vh",
   },
   listEventCardImage: {
+    width: "320px",
+    minHeight: "125px",
     maxHeight: "150px",
+    overflow: "clip",
   },
   listEventCardText: {
     padding: "1vh 1vw",
@@ -75,44 +78,78 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 function CalendarListEvent({ ...props }) {
   const { classes } = useStyles();
 
-  if (props.event.type === "birthday") {
-    console.log(props.event.character_render);
-    return (
-      <Card withBorder className={classes.listEventCard}>
-        <Card.Section className={classes.listEventCardImage}>
-          <Image
-            src={getB2File(
-              `assets/card_still_full1_${props.event.character_render}_evolution.webp`
-            )}
-            alt={props.event.character_name}
-            height={150}
-            sx={{ marginRight: "100px" }}
-          />
-        </Card.Section>
-        <Card.Section component="a" className={classes.listEventCardText}>
-          <Group position="left" spacing="md">
-            <Badge color="lime" leftSection={<IconCake size={16} />}>
-              Birth
-            </Badge>
-            <Text size="lg" weight={500}>
-              {props.event.character_name}
-            </Text>
-          </Group>
-          <Link href={`/characters/${props.event.character_id}`}>
-            <Button
-              component="a"
-              className={classes.listEventCardButton}
-              color="indigo"
-              variant="subtle"
-              compact
-            >
-              Visit character page
-            </Button>
-          </Link>
-        </Card.Section>
-      </Card>
-    );
-  }
+  return (
+    <Card withBorder className={classes.listEventCard}>
+      <Card.Section className={classes.listEventCardImage}>
+        <Image
+          src={getB2File(
+            `assets/card_still_full1_${
+              props.event.type === "birthday"
+                ? props.event.character_render + "_normal"
+                : props.event.five_star_id + "_evolution"
+            }.webp`
+          )}
+          alt={props.event.character_name}
+          height={280}
+          sx={{ marginTop: "-50px" }}
+        />
+      </Card.Section>
+      <Card.Section component="a" className={classes.listEventCardText}>
+        <Group position="left" spacing="md">
+          <Badge
+            color={
+              props.event.type === "birthday"
+                ? "yellow"
+                : props.event.status === "start"
+                ? "lime"
+                : "pink"
+            }
+            leftSection={
+              props.event.type === "birthday" ? (
+                <IconCake size={16} />
+              ) : props.event.status === "start" ? (
+                <IconPlayerPlay size={16} />
+              ) : (
+                <IconPlayerPause size={16} />
+              )
+            }
+          >
+            {props.event.type === "birthday"
+              ? "Birth"
+              : props.event.status === "start"
+              ? "Start"
+              : "End"}
+          </Badge>
+          <Text size="lg" weight={500}>
+            {props.event.type === "birthday"
+              ? props.event.character_name.split(" ")[0] + "'s birthday"
+              : props.event.event_name}
+          </Text>
+        </Group>
+        <Link
+          href={
+            props.event.type === "birthday" ||
+            props.event.type === "feature scout"
+              ? `/characters/${props.event.character_id}`
+              : `/events/${props.event.event_id}`
+          }
+        >
+          <Button
+            component="a"
+            className={classes.listEventCardButton}
+            color="indigo"
+            variant="subtle"
+            compact
+          >
+            {props.event.type === "birthday" ||
+            props.event.type === "feature scout"
+              ? "Visit character page"
+              : "Visit event page"}
+          </Button>
+        </Link>
+      </Card.Section>
+    </Card>
+  );
 }
 
 function CalendarListDay({ ...props }) {
@@ -152,21 +189,21 @@ function CalendarListView({ ...props }) {
   const displayDate = new Date(displayMonth);
 
   const filteredEvents = props.events.filter((event: CalendarEvent) => {
-    if (event.startDate.year) {
+    if (event.date.year) {
       return (
-        event.startDate.year === displayDate.getFullYear() &&
-        event.startDate.month === displayDate.getMonth()
+        event.date.year === displayDate.getFullYear() &&
+        event.date.month === displayDate.getMonth()
       );
     } else {
-      return event.startDate.month === displayDate.getMonth();
+      return event.date.month === displayDate.getMonth();
     }
   });
 
   console.log(filteredEvents);
   let calendarDates: number[] = [];
   for (const event of filteredEvents) {
-    if (!calendarDates.includes(event.startDate.date)) {
-      calendarDates.push(event.startDate.date);
+    if (!calendarDates.includes(event.date.date)) {
+      calendarDates.push(event.date.date);
     }
   }
 
@@ -189,7 +226,7 @@ function CalendarListView({ ...props }) {
               key={date}
               date={date}
               events={filteredEvents.filter(
-                (event) => event.startDate.date === date
+                (event) => event.date.date === date
               )}
             />
           );

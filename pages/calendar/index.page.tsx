@@ -19,15 +19,15 @@ import CalendarListView from "./components/CalendarListView";
 
 function Page({
   events,
-  characters,
+  gameEvents,
   lang,
 }: {
   events: CalendarEvent[];
-  characters: any;
+  gameEvents: any;
   lang: string;
 }) {
   const [view, setView] = useState("cal");
-  console.log(characters);
+  console.log(gameEvents);
   return (
     <>
       <PageTitle title="Calendar" />
@@ -51,15 +51,22 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
     "character_id"
   );
 
-  const characterData = characters?.data;
+  const gameEvents = await getLocalizedDataArray<GameEvent>(
+    "events",
+    locale,
+    "event_id"
+  );
 
-  let events: CalendarEvent[] = [];
+  const characterData = characters?.data;
+  const gameEventData = gameEvents.data;
+
+  let events = [];
 
   for (const character of characterData) {
     let birthDateObj = character.birthday.split("-");
     let birthdayEvent: BirthdayEvent = {
       type: "birthday",
-      startDate: {
+      date: {
         month: parseInt(birthDateObj[1]) - 1,
         date: parseInt(birthDateObj[2]),
       },
@@ -73,10 +80,45 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
     events.push(birthdayEvent);
   }
 
+  for (const event of gameEventData) {
+    let startDateObj = event.start_date[0].split("-");
+    let endDateObj = event.end_date[0].split("-");
+    let gameEventStart = {
+      type: event.type[0],
+      status: "start",
+      event_name: event.name[0],
+      short_name: event.story_name[0],
+      date: {
+        month: parseInt(startDateObj[1]) - 1,
+        date: parseInt(startDateObj[2]),
+        year: parseInt(startDateObj[0]),
+      },
+      event_id: event.event_id,
+      five_star_id: event.five_star_id[0],
+    };
+
+    let gameEventEnd = {
+      type: event.type[0],
+      status: "end",
+      event_name: event.name[0],
+      short_name: event.story_name[0],
+      date: {
+        month: parseInt(endDateObj[1]) - 1,
+        date: parseInt(endDateObj[2]),
+        year: parseInt(endDateObj[0]),
+      },
+      event_id: event.event_id,
+      five_star_id: event.five_star_id[0],
+    };
+
+    events.push(gameEventStart);
+    events.push(gameEventEnd);
+  }
+
   return {
     props: {
       events: events,
-      characters: characters,
+      gameEvents: gameEventData,
       lang: characters?.lang[0].locale,
     },
   };

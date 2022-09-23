@@ -150,3 +150,20 @@ interface GameCard<T = string[]> extends GameCardRegional<T> {
     name?: string;
   };
 }
+
+interface GameEvent<T = string[]> {
+  event_id: ID;
+  name: string;
+  start_date: string;
+  end_date: string;
+  type: string;
+  event_gacha?: string;
+  event_gacha_id?: ID;
+  intro_lines?: string;
+  song_name?: string;
+  story_name?: string;
+  story_author?: string;
+  story_season?: string;
+  units?: ID[];
+  five_star_id: ID;
+}
