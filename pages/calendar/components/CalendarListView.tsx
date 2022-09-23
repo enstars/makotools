@@ -39,6 +39,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     margin: "auto",
     display: "grid",
     gridTemplateColumns: "auto auto auto",
+    gridAutoFlow: "row dense",
     gap: "15px",
     alignContent: "start",
 
@@ -172,7 +173,10 @@ function CalendarListEvent({ ...props }) {
 function CalendarListDay({ ...props }) {
   const { classes } = useStyles();
   return (
-    <Container className={classes.listDay}>
+    <Container
+      className={classes.listDay}
+      sx={{ gridRowEnd: `span ${props.events.length}` }}
+    >
       <Title order={2} className={classes.listDayTitle}>
         {props.date}
         {props.date % 10 === 1 && props.date !== 11
