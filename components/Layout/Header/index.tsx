@@ -61,6 +61,11 @@ function HeaderApp({
                 minHeight: 37,
                 display: "flex",
                 alignItems: "center",
+                boxShadow: theme.shadows.sm,
+                maskRepeat: "repeat-y",
+                maskSize: "200% 30%",
+                maskClip: "no-clip",
+                maskImage: "linear-gradient(black, black)",
                 [theme.fn.largerThan("xs")]: {
                   ":before": {
                     content: "''",
