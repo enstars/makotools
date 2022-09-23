@@ -171,4 +171,5 @@ interface CalendarEvent {
 interface BirthdayEvent extends CalendarEvent {
   character_id: number;
   character_name: string;
+  character_render: any;
 }

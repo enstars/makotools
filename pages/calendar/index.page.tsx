@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Container, createStyles, Text } from "@mantine/core";
+import { Chip, Container, createStyles, Text } from "@mantine/core";
 
 import { getData, getLocalizedDataArray } from "../../services/ensquare";
 import PageTitle from "../../components/sections/PageTitle";
@@ -11,12 +11,35 @@ import { BirthdayEvent, CalendarEvent } from "../../types/makotools";
 import { useDayjs } from "../../services/dayjs";
 
 import Calendar from "./components/Calendar";
+import CalendarListView from "./components/CalendarListView";
 
-function Page({ events, lang }: { events: CalendarEvent[]; lang: string }) {
+/**
+ * If the user is viewing from a mobile phone, the default view should be the list view. Otherwise, it should be the traditional calendar.
+ */
+
+function Page({
+  events,
+  characters,
+  lang,
+}: {
+  events: CalendarEvent[];
+  characters: any;
+  lang: string;
+}) {
+  const [view, setView] = useState("cal");
+  console.log(characters);
   return (
     <>
       <PageTitle title="Calendar" />
-      <Calendar events={events} lang={lang} />
+      <Chip.Group value={view} onChange={setView}>
+        <Chip value="cal">Calendar view</Chip>
+        <Chip value="list">List view</Chip>
+      </Chip.Group>
+      {view === "cal" ? (
+        <Calendar events={events} lang={lang} />
+      ) : (
+        <CalendarListView events={events} lang={lang} />
+      )}
     </>
   );
 }
@@ -25,15 +48,7 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
   const characters = await getLocalizedDataArray<GameCharacter>(
     "characters",
     locale,
-    "character_id",
-    [
-      "character_id",
-      "first_name",
-      "last_name",
-      "birthday",
-      "image_color",
-      "sort_id",
-    ]
+    "character_id"
   );
 
   const characterData = characters?.data;
@@ -49,7 +64,10 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
         date: parseInt(birthDateObj[2]),
       },
       character_id: character.character_id,
-      character_name: `${character.first_name[0]} ${character.last_name[0]}`,
+      character_name: `${character.first_name[0]}${
+        character.last_name[0] ? " " + character.last_name[0] : ""
+      }`,
+      character_render: character.renders?.fs1_5 || null,
     };
 
     events.push(birthdayEvent);

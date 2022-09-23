@@ -36,6 +36,11 @@ interface GameCharacter<T = string[]> extends GameCharacterStrings<T> {
   circle?: string[];
   sort_id: number;
   horoscope: number;
+  renders: {
+    fs1_5: number;
+    fs1_4: number;
+    unit: number;
+  };
 }
 
 interface GameAgencyString<T> {
