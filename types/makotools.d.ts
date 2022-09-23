@@ -154,7 +154,13 @@ interface CalendarMonth {
   amount_of_days: MonthLength;
 }
 
-type EventType = "birthday" | "scout" | "feature scout" | "song" | "tour";
+type EventType =
+  | "birthday"
+  | "scout"
+  | "feature scout"
+  | "song"
+  | "tour"
+  | "anniversary";
 type GameEventStatus = "start" | "end";
 
 interface EventDate {
@@ -166,18 +172,12 @@ interface EventDate {
 interface CalendarEvent {
   type: EventType;
   date: EventDate;
-}
-
-interface BirthdayEvent extends CalendarEvent {
-  character_id: number;
-  character_name: string;
-  character_render: any;
+  name: string;
+  render_id: ID[] | ID | null;
+  id: ID;
 }
 
 interface InGameEvent extends CalendarEvent {
   status: GameEventStatus;
-  event_name: string;
   short_name: string;
-  event_id: number;
-  five_star_id: number;
 }

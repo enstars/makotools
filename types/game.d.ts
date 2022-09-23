@@ -165,5 +165,5 @@ interface GameEvent<T = string[]> {
   story_author?: string;
   story_season?: string;
   units?: ID[];
-  five_star_id: ID;
+  five_star_id: ID[];
 }

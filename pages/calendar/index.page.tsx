@@ -7,7 +7,7 @@ import { getLayout } from "../../components/Layout";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { getB2File } from "../../services/ensquare";
 import { twoStarIDs } from "../../data/characterIDtoCardID";
-import { BirthdayEvent, CalendarEvent } from "../../types/makotools";
+import { CalendarEvent, EventType, InGameEvent } from "../../types/makotools";
 import { useDayjs } from "../../services/dayjs";
 
 import Calendar from "./components/Calendar";
@@ -60,21 +60,32 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
   const characterData = characters?.data;
   const gameEventData = gameEvents.data;
 
-  let events = [];
+  let events: CalendarEvent[] = [
+    {
+      id: 100,
+      type: "anniversary",
+      name: "ENGStars Anniversary",
+      date: {
+        month: 5,
+        date: 16,
+      },
+      render_id: 2627,
+    },
+  ];
 
   for (const character of characterData) {
     let birthDateObj = character.birthday.split("-");
-    let birthdayEvent: BirthdayEvent = {
+    let birthdayEvent: CalendarEvent = {
       type: "birthday",
       date: {
         month: parseInt(birthDateObj[1]) - 1,
         date: parseInt(birthDateObj[2]),
       },
-      character_id: character.character_id,
-      character_name: `${character.first_name[0]}${
+      id: character.character_id,
+      name: `${character.first_name[0]}${
         character.last_name[0] ? " " + character.last_name[0] : ""
       }`,
-      character_render: character.renders?.fs1_5 || null,
+      render_id: character.renders?.fs1_5 || null,
     };
 
     events.push(birthdayEvent);
@@ -83,32 +94,32 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
   for (const event of gameEventData) {
     let startDateObj = event.start_date[0].split("-");
     let endDateObj = event.end_date[0].split("-");
-    let gameEventStart = {
-      type: event.type[0],
+    let gameEventStart: InGameEvent = {
+      type: event.type[0] as EventType,
       status: "start",
-      event_name: event.name[0],
+      name: event.name[0],
       short_name: event.story_name[0],
       date: {
         month: parseInt(startDateObj[1]) - 1,
         date: parseInt(startDateObj[2]),
         year: parseInt(startDateObj[0]),
       },
-      event_id: event.event_id,
-      five_star_id: event.five_star_id[0],
+      id: event.event_id,
+      render_id: event.five_star_id[0],
     };
 
-    let gameEventEnd = {
-      type: event.type[0],
+    let gameEventEnd: InGameEvent = {
+      type: event.type[0] as EventType,
       status: "end",
-      event_name: event.name[0],
+      name: event.name[0],
       short_name: event.story_name[0],
       date: {
         month: parseInt(endDateObj[1]) - 1,
         date: parseInt(endDateObj[2]),
         year: parseInt(endDateObj[0]),
       },
-      event_id: event.event_id,
-      five_star_id: event.five_star_id[0],
+      id: event.event_id,
+      render_id: event.five_star_id[0],
     };
 
     events.push(gameEventStart);

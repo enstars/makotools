@@ -21,7 +21,7 @@ function CalendarEventCard({ ...props }) {
       visibility: "hidden",
       height: "0vh",
       marginTop: "10%",
-      transition: "height 0.5s, visibility 0.5s ease-in",
+      transition: "height 0.5s, visibility 0.5s ease-in, border-radius 0.5s",
     },
 
     cardImageOverlay: {
@@ -53,6 +53,7 @@ function CalendarEventCard({ ...props }) {
       [`&:hover .${getRef("image")}`]: {
         visibility: "visible",
         height: "10vh",
+        borderRadius: theme.radius.md,
       },
       background:
         theme.colorScheme === "dark"
@@ -66,6 +67,7 @@ function CalendarEventCard({ ...props }) {
       flexFlow: "row wrap",
       alignItems: "flex-start",
       justifyContent: "space-evenly",
+      textAlign: "center",
       maxWidth: "100%",
       margin: "auto",
       zIndex: 3,
@@ -79,15 +81,17 @@ function CalendarEventCard({ ...props }) {
       <Link
         href={
           event.type === "birthday" || event.type === "feature scout"
-            ? `/characters/${event.character_id}`
-            : `/events/${event.event_id}`
+            ? `/characters/${event.id}`
+            : `/events/${event.id}`
         }
       >
         <Card.Section component="a" className={classes.eventCardText}>
           <Text sx={{ verticalAlign: "center", zIndex: 5 }}>
             {event.type === "birthday"
-              ? event.character_name.split(" ")[0] + "'s birthday"
-              : event.short_name + " " + event.status.toUpperCase()}
+              ? event.name.split(" ")[0] + "'s birthday"
+              : event.type === "anniversary"
+              ? event.name
+              : event.status.toUpperCase() + ": " + event.short_name}
           </Text>
         </Card.Section>
       </Link>
@@ -97,11 +101,11 @@ function CalendarEventCard({ ...props }) {
           src={getB2File(
             `assets/card_still_full1_${
               event.type === "birthday"
-                ? event.character_render + "_normal"
-                : event.five_star_id + "_evolution"
+                ? event.render_id + "_normal"
+                : event.render_id + "_evolution"
             }.webp`
           )}
-          alt={event.character_name}
+          alt={event.name}
           width={500}
           sx={{
             position: "absolute",

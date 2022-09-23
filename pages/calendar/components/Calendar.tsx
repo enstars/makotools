@@ -137,7 +137,7 @@ function CalendarWeek({ ...props }) {
     <Grid columns={7} className={classes.week} gutter="xs">
       {props.week.map((day: Date, i: number) => {
         const filteredEvents = props.events.filter((event: CalendarEvent) => {
-          if (event.type !== "birthday") {
+          if (event.type !== "birthday" && event.type !== "anniversary") {
             return (
               event.date.year === day.getFullYear() &&
               event.date.month === day.getMonth() &&
