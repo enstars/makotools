@@ -1,8 +1,11 @@
 import {
+  Center,
   createEmotionCache,
   createStyles,
+  Loader,
   MantineProvider,
   Paper,
+  PaperProps,
   Textarea,
   TypographyStylesProvider,
 } from "@mantine/core";
@@ -21,9 +24,9 @@ import {
 import Head from "next/head";
 import Frame, { FrameContextConsumer, useFrame } from "react-frame-component";
 import NormalizeCSS from "raw-loader!../../styles/normalize.notcss";
+import { useViewportSize } from "@mantine/hooks";
 
 import { CONSTANTS } from "../../services/constants";
-import { useUser } from "../../services/firebase/user";
 import emotes from "../../services/emotes";
 const emoji = {
   name: "emoji",
@@ -71,67 +74,113 @@ const useStyles = createStyles(() => ({
     outline: "none",
     width: "100%",
   },
+  paper: {
+    display: "flex",
+  },
 }));
 
-function BioDisplay() {
-  const user = useUser();
+function BioDisplay({
+  rawBio = "",
+  ...props
+}: PaperProps & { rawBio?: string }) {
   const iframeRef = useRef();
-  const [height, setHeight] = useState(500);
+  const [height, setHeight] = useState(0);
   const { classes } = useStyles();
+  const [ready, setReady] = useState(false);
+  const { width } = useViewportSize();
 
-  const handleResize = useCallback((iframe) => {
-    const contentHeight =
-      iframe.current?.contentDocument?.body.offsetHeight ?? 0;
-    if (contentHeight !== 0 && height !== contentHeight) {
-      setHeight(contentHeight);
+  const handleResize = useCallback(
+    (iframe) => {
+      const contentHeight =
+        iframe.current?.contentDocument?.body.offsetHeight ?? 0;
+      if (contentHeight !== 0 && height !== contentHeight) {
+        setHeight(contentHeight);
+      }
+    },
+    [height]
+  );
+  useEffect(() => {
+    setReady(true);
+  });
+
+  useEffect(() => {
+    let timeout: any;
+    function updateHeight() {
+      const iframe = iframeRef;
+      const contentHeight =
+        iframe.current?.contentDocument?.body.offsetHeight ?? 0;
+      // console.log("sdjlkfjsd", contentHeight, iframe);
+      if (
+        typeof contentHeight === "number" &&
+        contentHeight !== 0 &&
+        height !== contentHeight
+      ) {
+        setHeight(contentHeight);
+      }
+      timeout = setTimeout(updateHeight, 1000);
     }
-  }, []);
+    updateHeight();
 
-  if (!user.loggedIn) return null;
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [iframeRef, rawBio, height, width]);
+  // if (!rawBio) return null;
 
-  const UNSAFEhtml = marked.parse(user.db?.profile__bio || "");
+  const UNSAFEhtml = marked.parse(rawBio || "");
   const safeHtml = DOMPurify.sanitize(UNSAFEhtml);
+  // console.table({ rawBio, UNSAFEhtml, safeHtml });
 
   return (
-    <Paper withBorder p="sm">
-      <Frame
-        style={{ height }}
-        className={classes.frame}
-        ref={iframeRef}
-        scrolling="no"
-        loading="eager"
-        contentDidMount={() => {
-          // i literally cannot find a way to run a function once
-          // all images and stuff are loaded in an iframe so this
-          // will have to do. if anyone has a better rewrite please PR
-          function setHeight() {
-            handleResize(iframeRef);
-            setTimeout(setHeight, 1000);
-          }
-          setHeight();
-        }}
-      >
-        <FrameContextConsumer>
-          {({ document }) => {
-            const emotionCache = createEmotionCache({
-              key: "mantine",
-              container: document?.head, // with this line, emotion renders styles inside the shadow dom element created before
-            });
-            return (
-              <MantineProvider
-                inherit
-                emotionCache={emotionCache}
-                withNormalizeCSS
-              >
-                <style>{NormalizeCSS}</style>
-                <TypographyStylesProvider sx={{ display: "flow-root" }}>
-                  <div dangerouslySetInnerHTML={{ __html: safeHtml }} />
-                </TypographyStylesProvider>
-              </MantineProvider>
-            );
+    <Paper withBorder p="sm" className={classes.paper} {...props}>
+      {ready ? (
+        <Frame
+          style={{ height }}
+          className={classes.frame}
+          ref={iframeRef}
+          scrolling="no"
+          // loading="eager"
+          contentDidMount={() => {
+            // i literally cannot find a way to run a function once
+            // all images and stuff are loaded in an iframe so this
+            // will have to do. if anyone has a better rewrite please PR
           }}
-        </FrameContextConsumer>
-      </Frame>
+        >
+          <FrameContextConsumer>
+            {({ document }) => {
+              // console.log("aaaaajsklfjdlskfjdsl");
+              const emotionCache = createEmotionCache({
+                key: "mantine",
+                container: document?.head, // with this line, emotion renders styles inside the shadow dom element created before
+              });
+              return (
+                <>
+                  <MantineProvider
+                    inherit
+                    emotionCache={emotionCache}
+                    withNormalizeCSS
+                  >
+                    <TypographyStylesProvider
+                      sx={{ display: "flow-root" }}
+                      className="bio"
+                    >
+                      <div dangerouslySetInnerHTML={{ __html: safeHtml }} />
+                    </TypographyStylesProvider>
+                    {/* {safeHtml} */}
+                  </MantineProvider>
+                  <style>{NormalizeCSS}</style>
+                </>
+              );
+            }}
+          </FrameContextConsumer>
+        </Frame>
+      ) : (
+        <>
+          <Center sx={{ flexGrow: 1 }}>
+            <Loader />
+          </Center>
+        </>
+      )}
     </Paper>
   );
 }

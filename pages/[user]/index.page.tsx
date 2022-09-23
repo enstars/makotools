@@ -38,6 +38,8 @@ import { parseStringify } from "../../services/utilities";
 import { useDayjs } from "../../services/dayjs";
 import { UserData } from "../../types/makotools";
 
+import BioDisplay from "components/sections/BioDisplay";
+
 // import dayjs from "dayjs";
 function Page({ profile }: { profile: UserData }) {
   const dayjs = useDayjs();
@@ -144,17 +146,13 @@ function Page({ profile }: { profile: UserData }) {
         <ThemeIcon variant="light" color="lightblue" sx={{ flexShrink: 0 }}>
           <IconInfoCircle size={16} />
         </ThemeIcon>
-        <Box>
+        <Box sx={{ width: "100%" }}>
           <Text size="xs" weight={700} color="dimmed">
             Bio
           </Text>
 
           {profile?.profile__bio ? (
-            <Stack spacing={4}>
-              {profile.profile__bio.split("\n").map((l, i) => (
-                <Text key={i}>{l}</Text>
-              ))}
-            </Stack>
+            <BioDisplay rawBio={profile.profile__bio} />
           ) : (
             <Text color="dimmed">This user has no bio set</Text>
           )}

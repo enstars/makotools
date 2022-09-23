@@ -9,6 +9,33 @@ html {
   }
 }
 
+/* NOT NORMALIZE: Makotools - Remove margin from first-last elements */
+
+.bio > *:first-child,
+.bio > *:first-child > *:first-child,
+.bio > *:first-child > *:first-child > *:first-child,
+.bio > *:first-child > *:first-child > *:first-child > *:first-child,
+.bio
+  > *:first-child
+  > *:first-child
+  > *:first-child
+  > *:first-child
+  > *:first-child {
+  margin-top: 0;
+}
+
+.bio > *:last-child,
+.bio > *:last-child > *:last-child,
+.bio > *:last-child > *:last-child > *:last-child,
+.bio > *:last-child > *:last-child > *:last-child > *:last-child,
+.bio
+  > *:last-child
+  > *:last-child
+  > *:last-child
+  > *:last-child
+  > *:last-child {
+  margin-bottom: 0;
+}
 
 /* NOT NORMALIZE: Makotools - Emotes */
 
@@ -19,7 +46,6 @@ html {
   margin: 0;
   vertical-align: -0.125em;
 }
-
 
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
 

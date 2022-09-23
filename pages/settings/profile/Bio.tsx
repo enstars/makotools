@@ -1,6 +1,8 @@
 import {
   createEmotionCache,
+  Input,
   MantineProvider,
+  Tabs,
   Textarea,
   TypographyStylesProvider,
 } from "@mantine/core";
@@ -19,6 +21,7 @@ import {
 import { createPortal } from "react-dom";
 import Head from "next/head";
 import Frame, { FrameContextConsumer, useFrame } from "react-frame-component";
+import { IconPencil, IconTextCaption } from "@tabler/icons";
 
 import TextSetting from "../shared/TextSetting";
 import { useUser } from "../../../services/firebase/user";
@@ -31,18 +34,38 @@ function Name() {
 
   return (
     <>
-      <TextSetting
-        label=""
+      <Input.Wrapper
+        label="Bio"
         description="You can use markdown in your bio (GFM)"
-        dataKey="profile__bio"
-        placeholder="Say something about yourself!"
-        charLimit={3640}
-        Component={Textarea}
-        minRows={2}
-        maxRows={50}
-        showCharCount
-      />
-      <BioDisplay />
+      >
+        <Tabs variant="pills" defaultValue="edit" mt="xs">
+          <Tabs.List>
+            <Tabs.Tab value="edit" icon={<IconPencil size={14} />}>
+              Edit
+            </Tabs.Tab>
+            <Tabs.Tab value="preview" icon={<IconTextCaption size={14} />}>
+              Preview
+            </Tabs.Tab>
+          </Tabs.List>
+
+          <Tabs.Panel value="edit" pt="xs">
+            <TextSetting
+              label=""
+              dataKey="profile__bio"
+              placeholder="Say something about yourself!"
+              charLimit={3640}
+              Component={Textarea}
+              minRows={2}
+              maxRows={50}
+              showCharCount
+            />
+          </Tabs.Panel>
+
+          <Tabs.Panel value="preview" pt="xs">
+            <BioDisplay rawBio={user.db?.profile__bio} />
+          </Tabs.Panel>
+        </Tabs>
+      </Input.Wrapper>
     </>
   );
 }
