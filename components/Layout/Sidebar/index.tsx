@@ -92,7 +92,7 @@ const SidebarLink = forwardRef(function SbL(
         collapsed ? (
           false
         ) : (
-          <Text weight={500} inline>
+          <Text size="md" weight={500} inline>
             {name}
           </Text>
         )
@@ -101,13 +101,13 @@ const SidebarLink = forwardRef(function SbL(
         Icon && (
           <Box
             sx={(theme) => ({
-              width: 32 - xxs * 2,
-              height: 32 - xxs * 2,
+              width: 40 - theme.spacing.xs * 2,
+              height: 40 - theme.spacing.xs * 2,
               display: "grid",
               placeItems: "center",
             })}
           >
-            {typeof Icon === "function" ? <Icon size={16} /> : Icon}
+            {typeof Icon === "function" ? <Icon size={18} /> : Icon}
           </Box>
         )
       }
@@ -116,7 +116,7 @@ const SidebarLink = forwardRef(function SbL(
       sx={(theme) => ({
         maxWidth: "100%",
         minWidth: 0,
-        padding: xxs,
+        padding: theme.spacing.xs,
         lineHeight: 1,
         borderRadius: theme.radius.sm,
         ...sx,
@@ -199,7 +199,7 @@ function Sidebar(props: any) {
       position={{ top: 0, left: 0 }}
       width={{
         base: 0,
-        xs: collapsed ? 42 : 250,
+        xs: collapsed ? 50 : 250,
       }}
       hidden={true}
       hiddenBreakpoint="xs"
@@ -230,18 +230,18 @@ function Sidebar(props: any) {
             // py="xs"
             label={
               !collapsed && (
-                <Box sx={{ height: 14, display: "flex" }}>
+                <Box sx={{ height: 18, display: "flex" }}>
                   {theme.colorScheme === "light" ? (
                     <MakotoolsTextLightComponent
                       viewBox="0 0 1753 281"
-                      width={90}
-                      height={14}
+                      width={100}
+                      height={18}
                     />
                   ) : (
                     <MakotoolsTextDarkComponent
                       viewBox="0 0 1753 281"
-                      width={90}
-                      height={14}
+                      width={100}
+                      height={18}
                     />
                   )}
                 </Box>
@@ -251,14 +251,14 @@ function Sidebar(props: any) {
               theme.colorScheme === "light" ? (
                 <MakotoolsLightComponent
                   viewBox="0 0 281 281"
-                  width={16}
-                  height={16}
+                  width={18}
+                  height={18}
                 />
               ) : (
                 <MakotoolsDarkComponent
                   viewBox="0 0 281 281"
-                  width={16}
-                  height={16}
+                  width={18}
+                  height={18}
                 />
               )
             }
@@ -364,7 +364,7 @@ function Sidebar(props: any) {
             </>
           )}
           <ActionIcon
-            size={32}
+            size={40}
             radius="sm"
             onClick={() => {
               // console.log(collapsed);
@@ -373,9 +373,9 @@ function Sidebar(props: any) {
             }}
           >
             {collapsed ? (
-              <IconChevronRight size={16} />
+              <IconChevronRight size={20} />
             ) : (
-              <IconChevronLeft size={16} />
+              <IconChevronLeft size={20} />
             )}
           </ActionIcon>
         </Group>
