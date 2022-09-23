@@ -14,6 +14,7 @@ import {
   Accordion,
   ThemeIcon,
   Box,
+  Group,
 } from "@mantine/core";
 import {
   IconUserCircle,
@@ -30,7 +31,10 @@ import PageTitle from "../../components/sections/PageTitle";
 import { useUser } from "../../services/firebase/user";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { getLayout } from "../../components/Layout";
-import { getLocalizedData } from "../../services/ensquare";
+import {
+  getLocalizedData,
+  getLocalizedDataArray,
+} from "../../services/ensquare";
 
 import SelectSetting from "./shared/SelectSetting";
 import Region from "./content/Region";
@@ -90,11 +94,12 @@ const tabs = [
             These are publicly accessible from your profile page, so make sure
             to follow our community guidelines.
           </Alert>
-          <Name />
-          <Pronouns />
-          {cards && <Banner cards={cards} />}
-          <Username />
+          <Group>
+            <Name />
+            <Pronouns />
+          </Group>
           <Bio />
+          {cards && <Banner cards={cards} />}
           <StartPlaying />
         </Stack>
       </>
@@ -108,6 +113,7 @@ const tabs = [
     contents: () => (
       <>
         <Stack>
+          <Username />
           <Email />
           <ColorCode />
         </Stack>
@@ -206,20 +212,18 @@ function Page({ cards }: { cards: GameCard[] | undefined }) {
 
 export const getServerSideProps = getServerSideUser(
   async ({ locale }) => {
-    const cards = await getLocalizedData<GameCard[]>("cards", locale, [
+    const cards = await getLocalizedDataArray<GameCard>("cards", locale, "id", [
       "id",
       "title",
       "name",
       "rarity",
     ]);
-    if (!cards) return { props: { cards: undefined } };
-    const bannerIds = cards.main.data
-      .filter((c) => c.rarity >= 4)
-      .map((c) => c.id);
+    if (cards.status === "error") return { props: { cards: undefined } };
+    const bannerIds = cards.data.filter((c) => c.rarity >= 4).map((c) => c.id);
 
     return {
       props: {
-        cards: cards.mainLang.data.filter((c) => bannerIds.includes(c.id)),
+        cards: cards.data.filter((c) => bannerIds.includes(c.id)),
       },
     };
   },

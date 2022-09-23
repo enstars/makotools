@@ -9,6 +9,7 @@ function Name() {
       dataKey="name"
       placeholder={"Not set"}
       charLimit={50}
+      sx={{ flexGrow: 2 }}
     />
   );
 }

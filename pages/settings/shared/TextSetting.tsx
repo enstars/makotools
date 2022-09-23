@@ -60,7 +60,7 @@ function TextSetting<T = {}>({
   }, [isFirestoreAccessible, user, dataKey]);
 
   return (
-    <Box>
+    <>
       <Component
         value={inputValue}
         label={label}
@@ -96,7 +96,7 @@ function TextSetting<T = {}>({
           Characters: {inputValue?.length}/{charLimit}
         </Text>
       )}
-    </Box>
+    </>
   );
 }
 

@@ -9,6 +9,7 @@ function Pronouns() {
       dataKey="profile__pronouns"
       placeholder={"Not set"}
       charLimit={30}
+      sx={{ "&&": { flexGrow: 1 } }}
     />
   );
 }
