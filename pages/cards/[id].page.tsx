@@ -25,7 +25,6 @@ import {
 } from "../../services/ensquare";
 import { getLayout } from "../../components/Layout";
 import PageTitle from "../../components/sections/PageTitle";
-import ImageViewer from "../../components/core/ImageViewer";
 import attributes from "../../data/attributes.json";
 import Reactions from "../../components/sections/Reactions";
 import NameOrder from "../../components/utilities/formatting/NameOrder";

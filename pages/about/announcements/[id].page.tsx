@@ -4,7 +4,6 @@ import type { WP_REST_API_Post } from "wp-types";
 
 import Layout, { getLayout } from "../../../components/Layout";
 import PageTitle from "../../../components/sections/PageTitle";
-import ImageViewer from "../../../components/core/ImageViewer";
 import Reactions from "../../../components/sections/Reactions";
 import { MkAnnouncement } from "../../../types/makotools";
 

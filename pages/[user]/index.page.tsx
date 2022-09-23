@@ -32,7 +32,6 @@ import Autoplay from "embla-carousel-autoplay";
 import Layout, { getLayout } from "../../components/Layout";
 import PageTitle from "../../components/sections/PageTitle";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
-import ImageViewer from "../../components/core/ImageViewer";
 import { getB2File, getLocalizedData } from "../../services/ensquare";
 import { parseStringify } from "../../services/utilities";
 import { useDayjs } from "../../services/dayjs";

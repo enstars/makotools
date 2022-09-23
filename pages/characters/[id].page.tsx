@@ -9,7 +9,6 @@ import {
   getItemFromLocalizedDataArray,
 } from "../../services/ensquare";
 import PageTitle from "../../components/sections/PageTitle";
-import ImageViewer from "../../components/core/ImageViewer";
 import Reactions from "../../components/sections/Reactions";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { getLayout } from "../../components/Layout";
@@ -96,11 +95,11 @@ function Page({
             borderRadius: 16,
           }}
         >
-          <ImageViewer
-            src={getB2File(
-              `render/character_full1_${character.character_id}.png`
-            )}
+          <Picture
+            srcB2={`render/character_full1_${character.character_id}.png`}
+            transparent
             alt={character.first_name[0]}
+            fill={false}
             width={300}
             height={600}
             // objectfit="cover"

@@ -28,7 +28,6 @@ import { useRouter } from "next/router";
 
 import { getB2File } from "../../../services/ensquare";
 import attributes from "../../../data/attributes.json";
-import ImageViewer from "../../../components/core/ImageViewer";
 import OfficialityBadge from "../../../components/utilities/formatting/OfficialityBadge";
 import CardStatsNumber from "../../../components/utilities/formatting/CardStatsNumber";
 import { addCard } from "../../../services/collection";
