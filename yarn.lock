@@ -3162,9 +3162,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tabler/icons@npm:^1.96.0":
-  version: 1.96.0
-  resolution: "@tabler/icons@npm:1.96.0"
+"@tabler/icons@npm:^1.97.0":
+  version: 1.97.0
+  resolution: "@tabler/icons@npm:1.97.0"
   peerDependencies:
     react: ^16.x || 17.x || 18.x
     react-dom: ^16.x || 17.x || 18.x
@@ -3173,7 +3173,7 @@ __metadata:
       optional: true
     react-dom:
       optional: true
-  checksum: 92b1cb3a5b694983053011dde0ba2981100c43f05a5e60ecfc478e48af6b4794a39eaa3a036f83d49fa06b05894cffb1ce8e0d5e391325c1dc14b483f3c9b997
+  checksum: 2c5a2be50deb94fd7816c93b48b5ece44dfd6785dabae52b0c83e405e1a8d721482e38cdc5455d38eb88a2d22348b2b039f91f02ecf947690ebec6c58366c6bd
   languageName: node
   linkType: hard
 
@@ -7239,7 +7239,7 @@ __metadata:
     "@mantine/spotlight": ^5.4.0
     "@pronestor/react-zoom-pan-pinch": ^2.3.0
     "@svgr/webpack": ^6.3.1
-    "@tabler/icons": ^1.96.0
+    "@tabler/icons": ^1.97.0
     "@types/dompurify": ^2.3.4
     "@types/jsdom": ^20.0.0
     "@types/lodash": ^4.14.185
@@ -7284,7 +7284,7 @@ __metadata:
     react-collapse: ^5.1.1
     react-confetti: ^6.1.0
     react-dom: ^18.2.0
-    react-frame-component: ^5.2.3
+    react-frame-component: v5.2.3
     react-globalize: ^1.0.0
     react-infinite-scroll-component: ^6.1.0
     react-zoom-pan-pinch: ^2.1.3
@@ -8462,7 +8462,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-frame-component@npm:^5.2.3":
+"react-frame-component@npm:v5.2.3":
   version: 5.2.3
   resolution: "react-frame-component@npm:5.2.3"
   peerDependencies:
