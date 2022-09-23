@@ -24,6 +24,7 @@ import {
   IconUserCircle,
   TablerIcon,
   IconAt,
+  IconCalendar,
 } from "@tabler/icons";
 import {
   Navbar,
@@ -168,6 +169,11 @@ function Sidebar(props: any) {
       name: "Stories",
       Icon: IconBooks,
       disabled: true,
+    },
+    {
+      link: "/calendar",
+      name: "Calendar",
+      Icon: IconCalendar,
     },
     ...[
       !user.loading && user.loggedIn
