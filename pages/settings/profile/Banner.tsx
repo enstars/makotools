@@ -152,7 +152,7 @@ function Banner({ cards }: { cards: GameCard[] | undefined }) {
             ?.filter((c) => c?.title)
             ?.filter((c) => !state.includes(c.id))
             ?.map((c) => ({
-              label: `(${c.title}) ${c.name}`,
+              label: `(${c.title[0]}) ${c.name[0]}`,
               value: c.id.toString(),
             })) || []
         }
