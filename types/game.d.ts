@@ -151,19 +151,39 @@ interface GameCard<T = string[]> extends GameCardRegional<T> {
   };
 }
 
-interface GameEvent<T = string[]> {
-  event_id: ID;
+interface Event<T = string[]> {
   name: string;
   start_date: string;
   end_date: string;
   type: string;
+  story_author?: string;
+  story_season?: string;
+  five_star?: {
+    chara_id: ID | ID[];
+    card_id: ID | ID[];
+  };
+  four_star?: {
+    chara_id: ID | ID[];
+    card_id: ID | ID[];
+  };
+  three_star?: {
+    chara_id: ID | ID[];
+    card_id: ID | ID[];
+  };
+}
+
+interface GameEvent<T = string[]> extends Event {
+  event_id: ID;
   event_gacha?: string;
   event_gacha_id?: ID;
   intro_lines?: string;
   song_name?: string;
-  story_name?: string;
-  story_author?: string;
-  story_season?: string;
   units?: ID[];
-  five_star_id: ID[];
+  banner_id: ID[];
+  story_name: string;
+}
+
+interface ScoutEvent<T = string[]> extends Event {
+  gacha_id: ID;
+  story_name?: string;
 }

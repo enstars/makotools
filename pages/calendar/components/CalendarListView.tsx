@@ -106,6 +106,10 @@ function CalendarListEvent({ ...props }) {
           <Text size="lg" weight={600}>
             {props.event.type === "birthday"
               ? props.event.name.split(" ")[0] + "'s birthday"
+              : props.event.type === "scout"
+              ? "SCOUT! " + props.event.name
+              : props.event.type === "feature scout"
+              ? "Featured Scout: " + props.event.name.split(" ")[0]
               : props.event.name}
           </Text>
           <Group position="center" align="center">

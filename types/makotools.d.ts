@@ -179,5 +179,5 @@ interface CalendarEvent {
 
 interface InGameEvent extends CalendarEvent {
   status: GameEventStatus;
-  short_name: string;
+  short_name?: string;
 }
