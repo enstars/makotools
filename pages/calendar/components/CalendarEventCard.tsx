@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Badge, createStyles } from "@mantine/core";
+import { Badge, createStyles, Tooltip } from "@mantine/core";
 import { IconCake, IconPlayerPlay, IconPlayerStop } from "@tabler/icons";
 import { useState } from "react";
+import { NextLink } from "@mantine/next";
 
 import { getB2File } from "../../../services/ensquare";
 import { twoStarIDs } from "../../../data/characterIDtoCardID";
@@ -19,13 +20,13 @@ function CalendarEventCard({ ...props }) {
   const { event } = props;
   const { classes } = useStyles();
   return (
-    <Link
-      href={
-        event.type === "birthday" || event.type === "feature scout"
-          ? `/characters/${event.id}`
-          : `/events/${event.id}`
+    <Tooltip
+      label={
+        event.type === "song" || event.type === "tour"
+          ? event.type + " event"
+          : event.type
       }
-      passHref
+      sx={{ fontVariant: "small-caps", fontWeight: "bold" }}
     >
       <Badge
         fullWidth
@@ -40,6 +41,12 @@ function CalendarEventCard({ ...props }) {
             : "pink"
         }
         className={classes.eventCard}
+        component={NextLink}
+        href={
+          event.type === "birthday" || event.type === "feature scout"
+            ? `/characters/${event.id}`
+            : `/events/${event.id}`
+        }
       >
         {event.type === "birthday"
           ? event.name.split(" ")[0] + "'s birthday"
@@ -47,7 +54,7 @@ function CalendarEventCard({ ...props }) {
           ? event.name
           : event.status + ": " + event.short_name}
       </Badge>
-    </Link>
+    </Tooltip>
   );
 }
 
