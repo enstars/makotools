@@ -128,9 +128,15 @@ function CalendarDay({ ...props }): React.ReactElement {
         <Text
           size="lg"
           sx={{ paddingLeft: "5px", paddingTop: "3px" }}
-          className={props.day === today.getDate() ? classes.today : undefined}
+          className={
+            props.day.getDate() === today.getDate() &&
+            props.day.getMonth() === today.getMonth() &&
+            props.day.getFullYear() === today.getFullYear()
+              ? classes.today
+              : undefined
+          }
         >
-          {props.day}
+          {props.day.getDate()}
         </Text>
         {props.active &&
           props.events.map((event: CalendarEvent, i: number) => (
@@ -163,7 +169,7 @@ function CalendarWeek({ ...props }) {
         });
         return (
           <CalendarDay
-            day={day.getDate()}
+            day={day}
             key={i}
             active={day.getMonth() === props.month}
             events={filteredEvents}
