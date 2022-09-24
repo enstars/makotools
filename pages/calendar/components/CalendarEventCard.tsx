@@ -1,13 +1,5 @@
 import Link from "next/link";
-import {
-  Badge,
-  Card,
-  Container,
-  createStyles,
-  Group,
-  Image,
-  Text,
-} from "@mantine/core";
+import { Badge, createStyles } from "@mantine/core";
 import { IconCake, IconPlayerPlay, IconPlayerStop } from "@tabler/icons";
 import { useState } from "react";
 
