@@ -64,6 +64,12 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     marginTop: "2vh",
     alignItems: "center",
   },
+  today: {
+    color:
+      theme.colorScheme === "dark"
+        ? theme.colors.blue[3]
+        : theme.colors.blue[7],
+  },
 }));
 
 function CalendarDotW({ ...props }) {
@@ -82,6 +88,7 @@ function CalendarDotW({ ...props }) {
 
 function CalendarDay({ ...props }): React.ReactElement {
   const { classes } = useStyles();
+  let today = new Date();
   return (
     <Grid.Col
       span={1}
@@ -118,7 +125,11 @@ function CalendarDay({ ...props }): React.ReactElement {
         })}
         className={props.day}
       >
-        <Text size="lg" sx={{ paddingLeft: "5px", paddingTop: "3px" }}>
+        <Text
+          size="lg"
+          sx={{ paddingLeft: "5px", paddingTop: "3px" }}
+          className={props.day === today.getDate() ? classes.today : undefined}
+        >
           {props.day}
         </Text>
         {props.active &&

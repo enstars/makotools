@@ -50,9 +50,13 @@ function CalendarEventCard({ ...props }) {
       >
         {event.type === "birthday"
           ? event.name.split(" ")[0] + "'s birthday"
-          : event.type === "anniversary"
-          ? event.name
-          : event.status + ": " + event.short_name}
+          : event.type === "feature scout"
+          ? event.status + ": " + event.name.split(" ")[0] + " FS"
+          : event.type === "scout"
+          ? event.status + ": " + event.name
+          : event.type === "song" || event.type === "tour"
+          ? event.status + ": " + event.short_name
+          : event.name}
       </Badge>
     </Tooltip>
   );
