@@ -21,12 +21,22 @@ function CalendarEventCard({ ...props }) {
   const { classes } = useStyles();
   return (
     <Tooltip
+      multiline
+      width={150}
       label={
         event.type === "song" || event.type === "tour"
-          ? event.type + " event"
+          ? event.type + " event: " + event.name.toLowerCase()
+          : event.type === "scout"
+          ? event.type + "! " + event.name.toLowerCase()
+          : event.type === "feature scout"
+          ? event.type + ": " + event.name.toLowerCase()
           : event.type
       }
-      sx={{ fontVariant: "small-caps", fontWeight: "bold" }}
+      sx={{
+        fontVariant: "small-caps",
+        fontWeight: "bold",
+        textAlign: "center",
+      }}
     >
       <Badge
         fullWidth
@@ -53,7 +63,7 @@ function CalendarEventCard({ ...props }) {
           : event.type === "feature scout"
           ? event.status + ": " + event.name.split(" ")[0] + " FS"
           : event.type === "scout"
-          ? event.status + ": " + event.name
+          ? event.status + ": SCOUT! " + event.name
           : event.type === "song" || event.type === "tour"
           ? event.status + ": " + event.short_name
           : event.name}
