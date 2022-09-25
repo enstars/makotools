@@ -12,10 +12,17 @@ import { useDayjs } from "../../services/dayjs";
 
 import Calendar from "./components/Calendar";
 import CalendarListView from "./components/CalendarListView";
+import CalendarHeader from "./components/CalendarHeader";
 
 /**
  * If the user is viewing from a mobile phone, the default view should be the list view. Otherwise, it should be the traditional calendar.
  */
+
+const useStyles = createStyles((theme, _params, getRef) => ({
+  calendar: {
+    maxWidth: "100%",
+  },
+}));
 
 function Page({
   events,
@@ -26,7 +33,19 @@ function Page({
   gameEvents: any;
   lang: string;
 }) {
+  const { classes } = useStyles();
+  const dayjs = useDayjs();
+  const currentDate = new Date();
+  const currMonth = dayjs(currentDate).format("MMMM");
+  const currYear = dayjs(currentDate).format("YYYY");
+
   const [view, setView] = useState("cal");
+  const [month, changeMonth] = useState<string>(currMonth);
+  const [year, changeYear] = useState<string>(currYear);
+
+  const displayMonth = `${month} 1, ${year}`;
+  const displayDate = new Date(displayMonth);
+
   console.log(gameEvents);
   return (
     <>
@@ -35,11 +54,20 @@ function Page({
         <Chip value="cal">Calendar view</Chip>
         <Chip value="list">List view</Chip>
       </Chip.Group>
-      {view === "cal" ? (
-        <Calendar events={events} lang={lang} />
-      ) : (
-        <CalendarListView events={events} lang={lang} />
-      )}
+      <Container className={classes.calendar}>
+        <CalendarHeader
+          month={month}
+          changeMonth={changeMonth}
+          changeYear={changeYear}
+          year={year}
+          lang={lang}
+        />
+        {view === "cal" ? (
+          <Calendar events={events} lang={lang} date={displayDate} />
+        ) : (
+          <CalendarListView events={events} lang={lang} date={displayDate} />
+        )}
+      </Container>
     </>
   );
 }

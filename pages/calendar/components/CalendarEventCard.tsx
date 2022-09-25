@@ -30,7 +30,7 @@ function CalendarEventCard({ ...props }) {
           ? event.type + "! " + event.name.toLowerCase()
           : event.type === "feature scout"
           ? event.type + ": " + event.name.toLowerCase()
-          : event.type
+          : event.name + "'s " + event.type
       }
       sx={{
         fontVariant: "small-caps",
@@ -57,6 +57,13 @@ function CalendarEventCard({ ...props }) {
             ? `/characters/${event.id}`
             : `/events/${event.id}`
         }
+        sx={(theme) => ({
+          borderRadius: theme.radius.sm,
+          borderColor:
+            theme.colorScheme === "dark"
+              ? theme.colors.dark[4]
+              : theme.colors.gray[3],
+        })}
       >
         {event.type === "birthday"
           ? event.name.split(" ")[0] + "'s birthday"
