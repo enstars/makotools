@@ -1,56 +1,58 @@
-import { createStyles, Container, Title } from "@mantine/core";
+import { createStyles, Container, Title, Box } from "@mantine/core";
 
 import CalendarListEventCard from "./CalendarListEventCard";
 
-import { CalendarEvent } from "types/makotools";
+import { CalendarEvent, EventDate } from "types/makotools";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   listBody: {
     maxWidth: "100%",
     margin: "auto",
-    display: "grid",
-    gridTemplateColumns: "auto auto auto",
-    gridAutoFlow: "row dense",
-    gap: "15px",
-    alignContent: "start",
-
-    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
-      display: "block",
-    },
   },
   listDay: {
-    breakInside: "avoid",
+    height: "100%",
+    width: "55%",
+    display: "flex",
+    flexFlow: "row wrap",
+    alignItems: "flex-start",
+    justifyContent: "center",
   },
   listDayTitle: {
-    marginBottom: "1vh",
+    width: "auto",
   },
   listDayEvents: {
-    backgroundColor:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[5]
-        : theme.colors.gray[2],
-    padding: "1vh 1vw",
-    border: `1px solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[3]
-    }`,
-    borderRadius: theme.radius.md,
+    width: "auto",
+    marginBottom: "10%",
   },
 }));
 
 function CalendarListDay({ ...props }) {
   const { classes } = useStyles();
+  let today = new Date();
   return (
-    <Container
-      className={classes.listDay}
-      sx={{ gridRowEnd: `span ${props.events.length}` }}
-    >
+    <Container className={classes.listDay}>
+      {props.date.date === today.getDate() &&
+        props.date.month === today.getMonth() &&
+        props.date.year === today.getFullYear() && (
+          <Box
+            sx={(theme) => ({
+              width: "10px",
+              height: "75px",
+              background:
+                theme.colorScheme === "dark"
+                  ? theme.colors.blue[7]
+                  : theme.colors.blue[4],
+              marginRight: "10px",
+            })}
+          />
+        )}
       <Title order={2} className={classes.listDayTitle}>
-        {props.date}
-        {props.date % 10 === 1 && props.date !== 11
+        {props.date.date}
+        {props.date.date % 10 === 1 && props.date.date !== 11
           ? "st"
-          : props.date % 10 === 2 && props.date !== 12
+          : props.date.date % 10 === 2 && props.date.date !== 12
           ? "nd"
-          : props.date % 10 === 3 && props.date !== 13
+          : props.date.date % 10 === 3 && props.date.date !== 13
           ? "rd"
           : "th"}
       </Title>
@@ -84,15 +86,17 @@ function CalendarListView({ ...props }) {
     }
   });
 
-  console.log(filteredEvents);
-  let calendarDates: number[] = [];
+  let calendarDates: EventDate[] = [];
+
   for (const event of filteredEvents) {
-    if (!calendarDates.includes(event.date.date)) {
-      calendarDates.push(event.date.date);
-    }
+    console.log(event);
+    const found = calendarDates.some(
+      (calDate) => calDate.date === event.date.date
+    );
+    if (!found) calendarDates.push(event.date);
   }
 
-  calendarDates.sort((a, b) => a - b);
+  calendarDates.sort((a, b) => a.date - b.date);
   console.log(calendarDates);
 
   return (
@@ -100,10 +104,10 @@ function CalendarListView({ ...props }) {
       {calendarDates.map((date) => {
         return (
           <CalendarListDay
-            key={date}
+            key={date.date}
             date={date}
             events={filteredEvents.filter(
-              (event: CalendarEvent) => event.date.date === date
+              (event: CalendarEvent) => event.date.date === date.date
             )}
           />
         );

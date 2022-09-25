@@ -2,12 +2,14 @@ import {
   Badge,
   Button,
   Card,
+  Container,
   createStyles,
   Group,
   Image,
   Stack,
   Text,
 } from "@mantine/core";
+import { NextLink } from "@mantine/next";
 import {
   IconAlertCircle,
   IconCake,
@@ -20,16 +22,27 @@ import { getB2File } from "services/ensquare";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   listEventCard: {
+    display: "flex",
+    flexFlow: "row no-wrap",
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
     marginTop: "1vh",
+    width: "450px",
+    maxHeight: "120px",
+    padding: "3px",
   },
   listEventCardImage: {
-    width: "320px",
     minHeight: "125px",
     maxHeight: "150px",
+    minWidth: "125px",
+    maxWidth: "150px",
     overflow: "clip",
   },
   listEventCardText: {
-    padding: "1vh 1vw",
+    margin: 0,
+    marginLeft: "25px",
+    width: "350px",
+    padding: "3px 3px",
   },
   listEventCardButton: {
     margin: "auto",
@@ -42,15 +55,14 @@ function CalendarListEventCard({ ...props }) {
 
   return (
     <Card
+      component={NextLink}
+      href={
+        props.event.type === "birthday" || props.event.type === "feature scout"
+          ? `/characters/${props.event.id}`
+          : `/events/${props.event.id}`
+      }
       withBorder
       className={classes.listEventCard}
-      sx={{
-        marginBottom: `${
-          props.eventsAmt > 1 && props.index < props.eventsAmt - 1
-            ? "9.5vh"
-            : "0px"
-        }`,
-      }}
     >
       <Card.Section className={classes.listEventCardImage}>
         <Image
@@ -62,78 +74,59 @@ function CalendarListEventCard({ ...props }) {
             }.webp`
           )}
           alt={props.event.name}
+          width={280}
           height={280}
-          sx={{ marginTop: "-50px" }}
+          sx={{ marginLeft: "-65px", marginTop: "-15px" }}
         />
       </Card.Section>
-      <Card.Section component="a" className={classes.listEventCardText}>
+      <Card.Section className={classes.listEventCardText}>
         <Stack justify="space-around" spacing="md">
-          <Text size="lg" weight={600}>
+          <Badge
+            fullWidth
+            color={
+              props.event.type === "birthday"
+                ? "cyan"
+                : props.event.type === "anniversary"
+                ? "yellow"
+                : props.event.status === "start"
+                ? "lime"
+                : "pink"
+            }
+            leftSection={
+              props.event.type === "birthday" ? (
+                <IconCake size={16} style={{ marginTop: "3px" }} />
+              ) : props.event.type === "anniversary" ? (
+                <IconStar size={16} style={{ marginTop: "3px" }} />
+              ) : props.event.status === "start" ? (
+                <IconPlayerPlay size={16} style={{ marginTop: "3px" }} />
+              ) : (
+                <IconAlertCircle size={17} style={{ marginTop: "4px" }} />
+              )
+            }
+            sx={{
+              display: "flex inline",
+              alignItems: "center",
+              minWidth: "75px",
+              maxWidth: "90px",
+            }}
+          >
             {props.event.type === "birthday"
-              ? props.event.name.split(" ")[0] + "'s birthday"
+              ? "Birth"
+              : props.event.type === "anniversary"
+              ? "Anni"
+              : props.event.status === "start"
+              ? "Start"
+              : "End"}
+          </Badge>
+          <Text size="lg" weight={600} lineClamp={4}>
+            {props.event.type === "birthday"
+              ? props.event.name.split(" ")[0] + "'s Birthday"
               : props.event.type === "scout"
               ? "SCOUT! " + props.event.name
               : props.event.type === "feature scout"
               ? "Featured Scout: " + props.event.name.split(" ")[0]
               : props.event.name}
           </Text>
-          <Group position="center" align="center">
-            <Badge
-              color={
-                props.event.type === "birthday"
-                  ? "cyan"
-                  : props.event.type === "anniversary"
-                  ? "yellow"
-                  : props.event.status === "start"
-                  ? "lime"
-                  : "pink"
-              }
-              leftSection={
-                props.event.type === "birthday" ? (
-                  <IconCake size={16} style={{ marginTop: "3px" }} />
-                ) : props.event.type === "anniversary" ? (
-                  <IconStar size={16} style={{ marginTop: "3px" }} />
-                ) : props.event.status === "start" ? (
-                  <IconPlayerPlay size={16} style={{ marginTop: "3px" }} />
-                ) : (
-                  <IconAlertCircle size={17} style={{ marginTop: "4px" }} />
-                )
-              }
-              sx={{ alignItems: "center", minWidth: "75px", maxWidth: "90px" }}
-            >
-              {props.event.type === "birthday"
-                ? "Birth"
-                : props.event.type === "anniversary"
-                ? "Anni"
-                : props.event.status === "start"
-                ? "Start"
-                : "End"}
-            </Badge>
-            {props.event.type !== "anniversary" && (
-              <Link
-                href={
-                  props.event.type === "birthday" ||
-                  props.event.type === "feature scout"
-                    ? `/characters/${props.event.id}`
-                    : `/events/${props.event.id}`
-                }
-                passHref
-              >
-                <Button
-                  component="a"
-                  className={classes.listEventCardButton}
-                  color="indigo"
-                  variant="subtle"
-                  compact
-                >
-                  {props.event.type === "birthday" ||
-                  props.event.type === "feature scout"
-                    ? "Visit character page"
-                    : "Visit event page"}
-                </Button>
-              </Link>
-            )}
-          </Group>
         </Stack>
       </Card.Section>
     </Card>

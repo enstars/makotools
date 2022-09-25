@@ -172,8 +172,6 @@ function CalendarWeek({ ...props }) {
 function Calendar({ ...props }) {
   const { classes } = useStyles();
 
-  console.log(props.events);
-
   return (
     <Container className={classes.calendar}>
       <CalendarDotW lang={props.lang} />

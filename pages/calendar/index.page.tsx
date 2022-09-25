@@ -46,7 +46,6 @@ function Page({
   const displayMonth = `${month} 1, ${year}`;
   const displayDate = new Date(displayMonth);
 
-  console.log(gameEvents);
   return (
     <>
       <PageTitle title="Calendar" />
@@ -66,6 +65,15 @@ function Page({
           <Calendar events={events} lang={lang} date={displayDate} />
         ) : (
           <CalendarListView events={events} lang={lang} date={displayDate} />
+        )}
+        {view === "list" && (
+          <CalendarHeader
+            month={month}
+            changeMonth={changeMonth}
+            changeYear={changeYear}
+            year={year}
+            lang={lang}
+          />
         )}
       </Container>
     </>
