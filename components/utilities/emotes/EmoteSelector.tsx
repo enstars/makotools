@@ -9,7 +9,7 @@ import {
   PopoverProps,
 } from "@mantine/core";
 
-import emotes from "../../../services/emotes";
+import emotes from "../../../services/makotools/emotes";
 import { Emote as EmoteType } from "../../../types/makotools";
 
 import Emote from "./Emote";

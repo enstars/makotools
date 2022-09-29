@@ -11,7 +11,7 @@ import {
 import { IconCheck, IconX, IconAt } from "@tabler/icons";
 
 import { validateUsernameDb } from "../../../services/firebase/firestore";
-import { useUser } from "../../../services/firebase/user";
+import useUser from "../../../services/firebase/user";
 
 function DebouncedUsernameInput({ changedCallback = () => {} }) {
   const theme = useMantineTheme();

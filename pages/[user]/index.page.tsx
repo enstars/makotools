@@ -32,9 +32,9 @@ import Autoplay from "embla-carousel-autoplay";
 import Layout, { getLayout } from "../../components/Layout";
 import PageTitle from "../../components/sections/PageTitle";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
-import { getB2File, getLocalizedData } from "../../services/ensquare";
+import { getAssetURL, getLocalizedData } from "../../services/data";
 import { parseStringify } from "../../services/utilities";
-import { useDayjs } from "../../services/dayjs";
+import { useDayjs } from "../../services/libraries/dayjs";
 import { UserData } from "../../types/makotools";
 
 import BioDisplay from "components/sections/BioDisplay";
@@ -65,7 +65,7 @@ function Page({ profile }: { profile: UserData }) {
                     <Carousel.Slide key={c}>
                       <Image
                         alt={`Card ${c}`}
-                        src={getB2File(
+                        src={getAssetURL(
                           `assets/card_still_full1_${c}_evolution.png`
                         )}
                         styles={(theme) => ({
@@ -213,7 +213,7 @@ function Page({ profile }: { profile: UserData }) {
                         radius="sm"
                         alt={"card image"}
                         withPlaceholder
-                        src={getB2File(
+                        src={getAssetURL(
                           `assets/card_rectangle4_${c.id}_evolution.png`
                         )}
                       />

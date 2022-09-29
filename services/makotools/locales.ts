@@ -1,4 +1,4 @@
-import { Locale } from "../types/makotools";
+import { Locale } from "../../types/makotools";
 
 const appLocales: Locale[] = [
   // game languages

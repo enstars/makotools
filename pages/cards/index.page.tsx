@@ -32,7 +32,7 @@ import Layout from "../../components/Layout";
 import {
   getItemFromLocalizedDataArray,
   getLocalizedDataArray,
-} from "../../services/ensquare";
+} from "../../services/data";
 import PageTitle from "../../components/sections/PageTitle";
 import { getLayout } from "../../components/Layout";
 import getServerSideUser from "../../services/firebase/getServerSideUser";

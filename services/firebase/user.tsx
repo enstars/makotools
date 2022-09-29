@@ -26,9 +26,11 @@ const loadingUser: UserLoading = {
 };
 
 const UserContext = React.createContext<User>(loadingUser);
-export const useUser = () => useContext(UserContext);
+const useUser = () => useContext(UserContext);
 
-function UserProvider({
+export default useUser;
+
+export function UserProvider({
   children,
   colorScheme,
   setAppColorScheme,
@@ -142,5 +144,3 @@ function UserProvider({
 
   return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
 }
-
-export default UserProvider;

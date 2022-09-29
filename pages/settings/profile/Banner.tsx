@@ -17,8 +17,8 @@ import { IconTrash } from "@tabler/icons";
 import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
-import { getB2File } from "../../../services/ensquare";
-import { useUser } from "../../../services/firebase/user";
+import { getAssetURL } from "../../../services/data";
+import useUser from "../../../services/firebase/user";
 import TextSetting from "../shared/TextSetting";
 
 const useStyles = createStyles((theme) => ({
@@ -92,7 +92,7 @@ function Banner({ cards }: { cards: GameCard[] | undefined }) {
           <Group>
             <Image
               alt={cards.find((c) => c.id === item)?.title}
-              src={getB2File(`assets/card_still_full1_${item}_evolution.png`)}
+              src={getAssetURL(`assets/card_still_full1_${item}_evolution.png`)}
               width={64}
               height={64}
             />

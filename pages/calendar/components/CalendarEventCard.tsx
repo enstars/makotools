@@ -3,7 +3,7 @@ import { Card, Container, createStyles, Image, Text } from "@mantine/core";
 import { IconCake } from "@tabler/icons";
 import { useState } from "react";
 
-import { getB2File } from "../../../services/ensquare";
+import { getAssetURL } from "../../../services/data";
 import { twoStarIDs } from "../../../data/characterIDtoCardID";
 
 function CalendarEventCard({ ...props }) {
@@ -84,7 +84,7 @@ function CalendarEventCard({ ...props }) {
         <Card.Section className={classes.birthdayCardImage}>
           <div className={classes.birthdayCardImageOverlay}></div>
           <Image
-            src={getB2File(
+            src={getAssetURL(
               `assets/card_still_full1_${event.character_render}_evolution.webp`
             )}
             alt={event.character_name}

@@ -16,12 +16,12 @@ import { getMonthDays } from "@mantine/dates";
 import { IconCake } from "@tabler/icons";
 import Link from "next/link";
 
-import { getB2File } from "../../../services/ensquare";
+import { getAssetURL } from "../../../services/data";
 import { twoStarIDs } from "../../../data/characterIDtoCardID";
 
 import CalendarHeader from "./CalendarHeader";
 
-import { useDayjs } from "services/dayjs";
+import { useDayjs } from "services/libraries/dayjs";
 import { CalendarEvent } from "types/makotools";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
@@ -81,7 +81,7 @@ function CalendarListEvent({ ...props }) {
       <Card withBorder className={classes.listEventCard}>
         <Card.Section className={classes.listEventCardImage}>
           <Image
-            src={getB2File(
+            src={getAssetURL(
               `assets/card_still_full1_${props.event.character_render}_evolution.webp`
             )}
             alt={props.event.character_name}

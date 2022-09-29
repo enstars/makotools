@@ -13,7 +13,7 @@ import {
 
 import { LoadedStatus, UserData } from "../../types/makotools";
 
-function setFirestoreUserData(
+export function setFirestoreUserData(
   data: any,
   callback: (s: { status: LoadedStatus }) => void
 ) {
@@ -35,7 +35,7 @@ function setFirestoreUserData(
   );
 }
 
-async function getFirestoreUserData(uid: string) {
+export async function getFirestoreUserData(uid: string) {
   const clientAuth = getAuth();
   const db = getFirestore();
 
@@ -53,12 +53,10 @@ async function getFirestoreUserData(uid: string) {
   return undefined;
 }
 
-async function validateUsernameDb(username: string) {
+export async function validateUsernameDb(username: string) {
   const db = getFirestore();
   const q = query(collection(db, "users"), where("username", "==", username));
   const querySnap = await getDocs(q);
   const usernameValid = !!!querySnap.size;
   return usernameValid;
 }
-
-export { setFirestoreUserData, getFirestoreUserData, validateUsernameDb };

@@ -23,11 +23,11 @@ import {
 } from "react";
 import Head from "next/head";
 import Frame, { FrameContextConsumer, useFrame } from "react-frame-component";
-import NormalizeCSS from "raw-loader!../../styles/normalize.notcss";
+import NormalizeCSS from "raw-loader!../../styles/iFrameCSS.txt";
 import { useViewportSize } from "@mantine/hooks";
 
-import { CONSTANTS } from "../../services/constants";
-import emotes from "../../services/emotes";
+import { CONSTANTS } from "../../services/makotools/constants";
+import emotes from "../../services/makotools/emotes";
 const emoji = {
   name: "emoji",
   level: "inline", // This is an inline-level tokenizer

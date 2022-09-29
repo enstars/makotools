@@ -1,6 +1,6 @@
 import { MultiSelect, MultiSelectProps } from "@mantine/core";
 
-import { useUser } from "../../../services/firebase/user";
+import useUser from "../../../services/firebase/user";
 import { UserData } from "../../../types/makotools";
 
 function MultiSelectSetting({

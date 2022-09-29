@@ -4,10 +4,10 @@ import { IconCake } from "@tabler/icons";
 
 import {
   getData,
-  getB2File,
+  getAssetURL,
   getLocalizedDataArray,
   getItemFromLocalizedDataArray,
-} from "../../services/ensquare";
+} from "../../services/data";
 import PageTitle from "../../components/sections/PageTitle";
 import Reactions from "../../components/sections/Reactions";
 import getServerSideUser from "../../services/firebase/getServerSideUser";

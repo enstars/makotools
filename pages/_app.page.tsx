@@ -18,9 +18,9 @@ import "@fontsource/sora/500.css";
 import "@fontsource/sora/700.css";
 import "@fontsource/sora/800.css";
 import "@fontsource/sora/variable.css";
-import "@fontsource/noto-sans-jp/400.css";
-import "@fontsource/noto-sans-jp/500.css";
-import "@fontsource/noto-sans-jp/700.css";
+import "@fontsource/noto-sans-jp/japanese-400.css";
+import "@fontsource/noto-sans-jp/japanese-500.css";
+import "@fontsource/noto-sans-jp/japanese-700.css";
 // import "@fontsource/inter";
 // import "@fontsource/inter/variable-full.css";
 import "../styles/styles.css";
@@ -33,8 +33,8 @@ import {
 } from "@mantine/nprogress";
 
 import { initAuthentication } from "../services/firebase/authentication";
-import UserProvider from "../services/firebase/user";
-import DayjsProvider from "../services/dayjs";
+import { UserProvider } from "../services/firebase/user";
+import DayjsProvider from "../services/libraries/dayjs";
 
 initAuthentication();
 

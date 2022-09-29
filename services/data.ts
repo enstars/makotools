@@ -1,12 +1,14 @@
-/* eslint-disable import/prefer-default-export */
-
 import { Lang, Locale, NameOrder, Query, UL } from "../types/makotools";
 
-import { CONSTANTS } from "./constants";
-import { DEFAULT_LOCALE } from "./locales";
+import { CONSTANTS } from "./makotools/constants";
+import { DEFAULT_LOCALE } from "./makotools/locales";
 import { parseStringify } from "./utilities";
 
 const flatten = require("flat");
+
+export function getAssetURL(path: string) {
+  return `${CONSTANTS.EXTERNAL_URLS.ASSETS}${path}`;
+}
 
 export async function getData<T = any>(
   data: string,
@@ -59,10 +61,6 @@ export async function getData<T = any>(
         data: undefined,
       };
     });
-}
-
-export function getB2File(path: string) {
-  return `${CONSTANTS.EXTERNAL_URLS.ASSETS}${path}`;
 }
 
 export async function getLocalizedDataArray<
@@ -142,69 +140,6 @@ export async function getLocalizedDataArray<
     lang: mergedLocales,
     data: combinedArray,
   });
-}
-
-/*
-
-Lang [Fan]
-Lang [Official]
-Source [Official] => JP -> CN
-English [Fan]
-
-*/
-
-export function getPreviewImageURL(type: string, params: any) {
-  const urlParams = {
-    ...params,
-    __end: ";",
-  };
-  return `${CONSTANTS.EXTERNAL_URLS.PREVIEW}render/${type}.png?${Object.keys(
-    urlParams
-  )
-    .map(
-      (key) =>
-        `${encodeURIComponent(key)}=${encodeURIComponent(urlParams[key])}`
-    )
-    .join("&")}`;
-}
-
-// https://en.wikipedia.org/wiki/Personal_name#Eastern_name_order
-const lastFirstLocales: Locale[] = ["ja", "zh", "zh-TW", "ko"];
-
-export function getNameOrder(
-  { first_name, last_name }: { first_name: string; last_name: string },
-  setting?: NameOrder,
-  locale?: Locale | string
-): string;
-export function getNameOrder(
-  { first_name, last_name }: { first_name: string[]; last_name: string[] },
-  setting?: NameOrder,
-  locale?: Locale | string
-): string;
-export function getNameOrder(
-  {
-    first_name,
-    last_name,
-  }:
-    | { first_name: string; last_name: string }
-    | { first_name: string[]; last_name: string[] },
-  setting: NameOrder = "lastfirst",
-  locale: Locale | string = DEFAULT_LOCALE
-  //   string accepted bc nextjs always returns locale as string
-): string {
-  const firstName = Array.isArray(first_name)
-    ? first_name[0] || ""
-    : first_name || "";
-  const lastName = Array.isArray(last_name)
-    ? last_name[0] || ""
-    : last_name || "";
-
-  if (lastFirstLocales.includes(locale as Locale))
-    return `${lastName}${firstName}`;
-
-  if (setting === "lastfirst") return `${lastName} ${firstName}`.trim();
-
-  return `${firstName} ${lastName}`.trim();
 }
 
 export function getItemFromLocalizedDataArray<Type>(

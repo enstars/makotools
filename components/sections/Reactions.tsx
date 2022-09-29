@@ -17,8 +17,8 @@ import Image from "next/image";
 import { IconChevronDown, IconChevronUp, IconMoodSmile } from "@tabler/icons";
 import { Collapse } from "react-collapse";
 
-import emotes from "../../services/emotes";
-import { useUser } from "../../services/firebase/user";
+import emotes from "../../services/makotools/emotes";
+import useUser from "../../services/firebase/user";
 import EmoteSelector from "../utilities/emotes/EmoteSelector";
 import Emote from "../utilities/emotes/Emote";
 import { DbReaction, Reaction } from "../../types/makotools";

@@ -18,7 +18,7 @@ import { CalendarEvent } from "../../../types/makotools";
 import CalendarEventCard from "./CalendarEventCard";
 import CalendarHeader from "./CalendarHeader";
 
-import { useDayjs } from "services/dayjs";
+import { useDayjs } from "services/libraries/dayjs";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   calendar: {

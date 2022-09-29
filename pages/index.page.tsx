@@ -15,14 +15,14 @@ import {
 import Image from "next/image";
 import { IconNews } from "@tabler/icons";
 
-import { useUser } from "../services/firebase/user";
+import useUser from "../services/firebase/user";
 import Banner from "../assets/banner.png";
 import AffiliatesLight from "../assets/Affiliates/affiliates_light.svg?url";
 import AffiliatesDark from "../assets/Affiliates/affiliates_dark.svg?url";
 import { getLayout } from "../components/Layout";
 import getServerSideUser from "../services/firebase/getServerSideUser";
 import BirthdayPreview from "../components/sections/BirthdayPreview";
-import { getLocalizedDataArray } from "../services/ensquare";
+import { getLocalizedDataArray } from "../services/data";
 
 import Announcement from "./about/announcements/components/Announcement";
 

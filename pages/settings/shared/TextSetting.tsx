@@ -19,7 +19,7 @@ import {
 } from "@mantine/core";
 import { IconCheck, IconX } from "@tabler/icons";
 
-import { useUser } from "../../../services/firebase/user";
+import useUser from "../../../services/firebase/user";
 import { UserData } from "../../../types/makotools";
 
 function TextSetting<T = {}>({

@@ -1,6 +1,6 @@
 import { TextInput } from "@mantine/core";
 
-import { useUser } from "../../../services/firebase/user";
+import useUser from "../../../services/firebase/user";
 
 function Email() {
   const user = useUser();

@@ -10,12 +10,11 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 
-import { getB2File } from "../../../services/ensquare";
+import { getAssetURL } from "../../../services/data";
 import {
   twoStarIDs,
   twoStarIDsDoubleface,
 } from "../../../data/characterIDtoCardID";
-import styles from "../../../styles/CharacterCard.module.scss";
 
 import NameOrder from "components/utilities/formatting/NameOrder";
 import { Lang } from "types/makotools";
@@ -112,7 +111,7 @@ function DisplayCard({
         <Box className={classes.pictureWrapper}>
           <Picture
             transparent
-            src={getB2File(
+            src={getAssetURL(
               `assets/card_full1_${
                 (twoStarIDs as any)[character.character_id]
               }_normal.png`
@@ -122,7 +121,7 @@ function DisplayCard({
           />
           <Picture
             transparent
-            src={getB2File(
+            src={getAssetURL(
               `assets/card_full1_${
                 (twoStarIDs as any)[character.character_id]
               }_subtracted.png`

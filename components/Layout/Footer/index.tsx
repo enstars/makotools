@@ -13,7 +13,7 @@ import {
   Container,
 } from "@mantine/core";
 
-import { CONSTANTS } from "../../../services/constants";
+import { CONSTANTS } from "../../../services/makotools/constants";
 import MakotoolsLight from "../../../assets/Logo/mkt_light.svg?url";
 import MakotoolsDark from "../../../assets/Logo/mkt_dark.svg?url";
 import Affiliates from "../../../assets/Affiliates/affiliates.svg";

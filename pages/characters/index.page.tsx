@@ -15,7 +15,7 @@ import {
   getData,
   getLocalizedData,
   getLocalizedDataArray,
-} from "../../services/ensquare";
+} from "../../services/data";
 import PageTitle from "../../components/sections/PageTitle";
 import { getLayout } from "../../components/Layout";
 import getServerSideUser from "../../services/firebase/getServerSideUser";

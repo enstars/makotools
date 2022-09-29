@@ -17,8 +17,8 @@ import {
 import Link from "next/link";
 
 import { twoStarIDs } from "../../data/characterIDtoCardID";
-import { useDayjs } from "../../services/dayjs";
-import { getB2File } from "../../services/ensquare";
+import { useDayjs } from "../../services/libraries/dayjs";
+import { getAssetURL } from "../../services/data";
 import styles from "../../styles/BirthdayPreview.module.scss";
 
 interface CharIDAndBirthday {
@@ -277,7 +277,7 @@ function BirthdayCard({ ...props }) {
           />
           <Image
             className={`${classes.alignImage}`}
-            src={getB2File(
+            src={getAssetURL(
               `cards/card_full1_${
                 (twoStarIDs as any)[props.character.character_id]
               }_normal.png`

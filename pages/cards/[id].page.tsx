@@ -17,12 +17,10 @@ import {
 } from "next-firebase-auth";
 
 import {
-  getB2File,
+  getAssetURL,
   getItemFromLocalizedDataArray,
   getLocalizedDataArray,
-  getNameOrder,
-  getPreviewImageURL,
-} from "../../services/ensquare";
+} from "../../services/data";
 import { getLayout } from "../../components/Layout";
 import PageTitle from "../../components/sections/PageTitle";
 import attributes from "../../data/attributes.json";
@@ -39,6 +37,9 @@ import Skills, {
   liveSkillParse,
   supportSkillParse,
 } from "./components/Skills";
+
+import { getNameOrder } from "services/game";
+import { getPreviewImageURL } from "services/makotools/preview";
 
 function Page({
   characterQuery,

@@ -31,10 +31,10 @@ import {
 } from "@pronestor/react-zoom-pan-pinch";
 // } from "@pronestor/react-zoom-pan-pinch";
 
-import { getB2File } from "../../services/ensquare";
+import { getAssetURL } from "../../services/data";
 import { downloadFromURL } from "../../services/utilities";
-import notify from "../../services/notify";
-import { CONSTANTS } from "../../services/constants";
+import notify from "../../services/libraries/notify";
+import { CONSTANTS } from "../../services/makotools/constants";
 
 function loader({ src }: { src: string }) {
   return src;
@@ -155,7 +155,7 @@ function PictureStringSrc({
   const [loaded, setLoaded] = useState<boolean>(false);
   const [opened, setOpened] = useState<boolean>(false);
 
-  const src = originalSrc || getB2File(srcB2 as string);
+  const src = originalSrc || getAssetURL(srcB2 as string);
   const isB2Optimized = !!srcB2;
 
   const webpSrc = src?.replace("png", "webp");

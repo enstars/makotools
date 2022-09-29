@@ -33,7 +33,7 @@ import { useRouter } from "next/router";
 
 import Google from "../../assets/google.svg";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
-import { useUser } from "../../services/firebase/user";
+import useUser from "../../services/firebase/user";
 import {
   signInWithGoogle,
   signInWithTwitter,

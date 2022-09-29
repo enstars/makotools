@@ -26,7 +26,7 @@ import {
 } from "@tabler/icons";
 import { useRouter } from "next/router";
 
-import { useUser } from "../../../services/firebase/user";
+import useUser from "../../../services/firebase/user";
 
 function UserMenu({
   trigger,

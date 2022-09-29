@@ -26,12 +26,12 @@ import {
 } from "@tabler/icons";
 import { useRouter } from "next/router";
 
-import { getB2File } from "../../../services/ensquare";
+import { getAssetURL } from "../../../services/data";
 import attributes from "../../../data/attributes.json";
 import OfficialityBadge from "../../../components/utilities/formatting/OfficialityBadge";
 import CardStatsNumber from "../../../components/utilities/formatting/CardStatsNumber";
-import { addCard } from "../../../services/collection";
-import { useUser } from "../../../services/firebase/user";
+import { addCard } from "../../../services/makotools/collection";
+import useUser from "../../../services/firebase/user";
 import Picture from "../../../components/core/Picture";
 import { Lang } from "../../../types/makotools";
 

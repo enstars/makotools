@@ -24,8 +24,8 @@ import Frame, { FrameContextConsumer, useFrame } from "react-frame-component";
 import { IconPencil, IconTextCaption } from "@tabler/icons";
 
 import TextSetting from "../shared/TextSetting";
-import { useUser } from "../../../services/firebase/user";
-import { CONSTANTS } from "../../../services/constants";
+import useUser from "../../../services/firebase/user";
+import { CONSTANTS } from "../../../services/makotools/constants";
 import BioDisplay from "../../../components/sections/BioDisplay";
 
 function Name() {
