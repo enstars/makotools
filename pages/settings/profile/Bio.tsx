@@ -18,7 +18,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { createPortal } from "react-dom";
 import Head from "next/head";
 import Frame, { FrameContextConsumer, useFrame } from "react-frame-component";
 import { IconPencil, IconTextCaption } from "@tabler/icons";

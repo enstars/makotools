@@ -91,7 +91,7 @@ function Banner({ cards }: { cards: GameCard[] | undefined }) {
         >
           <Group>
             <Image
-              alt={cards.find((c) => c.id === item)?.title}
+              alt={cards.find((c) => c.id === item)?.title[0]}
               src={getAssetURL(`assets/card_still_full1_${item}_evolution.png`)}
               width={64}
               height={64}
@@ -152,7 +152,7 @@ function Banner({ cards }: { cards: GameCard[] | undefined }) {
             ?.filter((c) => c?.title)
             ?.filter((c) => !state.includes(c.id))
             ?.map((c) => ({
-              label: `(${c.title[0]}) ${c.name[0]}`,
+              label: `(${c.title[0]}) ${c?.name?.[0]}`,
               value: c.id.toString(),
             })) || []
         }

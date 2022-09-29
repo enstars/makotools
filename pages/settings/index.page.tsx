@@ -31,7 +31,7 @@ import PageTitle from "../../components/sections/PageTitle";
 import useUser from "../../services/firebase/user";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { getLayout } from "../../components/Layout";
-import { getLocalizedData, getLocalizedDataArray } from "../../services/data";
+import { getLocalizedDataArray } from "../../services/data";
 
 import SelectSetting from "./shared/SelectSetting";
 import Region from "./content/Region";

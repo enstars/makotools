@@ -11,11 +11,11 @@ import {
   getDocs,
 } from "firebase/firestore";
 
-import { LoadedStatus, UserData } from "../../types/makotools";
+import { UserData, LoadingStatus } from "../../types/makotools";
 
 export function setFirestoreUserData(
   data: any,
-  callback: (s: { status: LoadedStatus }) => void
+  callback: (s: { status: LoadingStatus }) => void
 ) {
   const clientAuth = getAuth();
   const db = getFirestore();

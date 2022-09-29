@@ -11,15 +11,11 @@ import {
 } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
 
-import {
-  getData,
-  getLocalizedData,
-  getLocalizedDataArray,
-} from "../../services/data";
+import { getLocalizedDataArray } from "../../services/data";
 import PageTitle from "../../components/sections/PageTitle";
 import { getLayout } from "../../components/Layout";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
-import { LoadedData, Query, QuerySuccess } from "../../types/makotools";
+import { Query, QuerySuccess } from "../../types/makotools";
 
 import CharacterCard from "./components/DisplayCard";
 
