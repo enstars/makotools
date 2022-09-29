@@ -23,7 +23,7 @@ import "@fontsource/noto-sans-jp/japanese-500.css";
 import "@fontsource/noto-sans-jp/japanese-700.css";
 // import "@fontsource/inter";
 // import "@fontsource/inter/variable-full.css";
-import "../styles/styles.css";
+import "../styles/inter.scss";
 import "../styles/wordpress.scss";
 import { withAuthUser } from "next-firebase-auth";
 import {
