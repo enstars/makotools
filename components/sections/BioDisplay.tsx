@@ -31,10 +31,10 @@ import emotes from "../../services/emotes";
 const emoji = {
   name: "emoji",
   level: "inline", // This is an inline-level tokenizer
-  start(src) {
+  start(src: string) {
     return src.indexOf(":");
   }, // Hint to Marked.js to stop and check for a match
-  tokenizer(src, tokens) {
+  tokenizer(src: any) {
     const rule = /^:(\w+):/; // Regex for the complete token, anchor to string start
     const match = rule.exec(src);
     if (match) {
@@ -46,7 +46,7 @@ const emoji = {
       };
     }
   },
-  renderer(token) {
+  renderer(token: any) {
     const emote = emotes.find(
       (e) => e.name.replace(/ /g, "").toLocaleLowerCase() === token.emoji
     );
@@ -83,25 +83,15 @@ function BioDisplay({
   rawBio = "",
   ...props
 }: PaperProps & { rawBio?: string }) {
-  const iframeRef = useRef();
+  const iframeRef = useRef<HTMLIFrameElement>();
   const [height, setHeight] = useState(0);
   const { classes } = useStyles();
   const [ready, setReady] = useState(false);
   const { width } = useViewportSize();
 
-  const handleResize = useCallback(
-    (iframe) => {
-      const contentHeight =
-        iframe.current?.contentDocument?.body.offsetHeight ?? 0;
-      if (contentHeight !== 0 && height !== contentHeight) {
-        setHeight(contentHeight);
-      }
-    },
-    [height]
-  );
   useEffect(() => {
     setReady(true);
-  });
+  }, []);
 
   useEffect(() => {
     let timeout: any;
@@ -137,6 +127,7 @@ function BioDisplay({
         <Frame
           style={{ height }}
           className={classes.frame}
+          // @ts-ignore
           ref={iframeRef}
           scrolling="no"
           // loading="eager"
