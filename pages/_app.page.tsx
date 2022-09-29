@@ -32,11 +32,11 @@ import {
   NavigationProgress,
 } from "@mantine/nprogress";
 
-import initAuth from "../services/firebase/authentication";
+import { initAuthentication } from "../services/firebase/authentication";
 import UserProvider from "../services/firebase/user";
 import DayjsProvider from "../services/dayjs";
 
-initAuth();
+initAuthentication();
 
 const emotionCache = createEmotionCache({ key: "mktl" });
 

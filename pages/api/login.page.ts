@@ -7,9 +7,9 @@ import {
 import { FieldValue, getFirestore } from "firebase-admin/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import initAuth from "../../services/firebase/authentication"; // the module you created above
+import { initAuthentication } from "../../services/firebase/authentication"; // the module you created above
 
-initAuth();
+initAuthentication();
 
 const genRanHex = (size: number) =>
   [...Array(size)]
