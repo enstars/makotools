@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Paper, PaperProps, Text } from "@mantine/core";
+import { Button, Paper, PaperProps, Text } from "@mantine/core";
 import { IconBrandPatreon } from "@tabler/icons";
 import Link from "next/link";
 import React from "react";

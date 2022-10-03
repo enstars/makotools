@@ -4,8 +4,6 @@ import { CONSTANTS } from "../../services/makotools/constants";
 import { PageMeta } from "../../types/makotools";
 
 function Meta({ title, desc, img }: PageMeta) {
-  // console.log("meta", title, desc, img);
-
   const pageTitle = title
     ? `${title} - ${CONSTANTS.MAKOTOOLS.SITE_TITLE}`
     : CONSTANTS.MAKOTOOLS.SITE_TITLE;

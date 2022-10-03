@@ -1,40 +1,25 @@
 import {
   Menu,
-  Group,
   Text,
   Avatar,
-  Divider,
   Switch,
   useMantineTheme,
   useMantineColorScheme,
-  MediaQuery,
   Box,
-  Tooltip,
-  ActionIcon,
 } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import { useDisclosure } from "@mantine/hooks";
-import { showNotification } from "@mantine/notifications";
 import {
-  IconCircleCheck,
-  IconUserCircle,
   IconSettings,
   IconLogin,
   IconLogout,
   IconMoonStars,
-  IconUser,
 } from "@tabler/icons";
 import { useRouter } from "next/router";
 
 import useUser from "../../../services/firebase/user";
 
-function UserMenu({
-  trigger,
-  collapsed,
-}: {
-  trigger: any;
-  collapsed: boolean;
-}) {
+function UserMenu({ trigger }: { trigger: any }) {
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
@@ -45,21 +30,13 @@ function UserMenu({
   return (
     <Menu
       id="sidebar-menu"
-      // width="target"
       width={200}
-      // position="top-right"
       position="top-start"
       transition="pop"
-      // control={trigger}
-      // sx={{
-      //   display: "block",
-      //   width: "100%",
-      // }}
       closeOnItemClick={true}
       opened={opened}
       onOpen={handlers.open}
       onClose={handlers.close}
-      // withinPortal={true}
       styles={{
         itemLabel: {
           maxWidth: "100%",
@@ -67,16 +44,10 @@ function UserMenu({
           lineHeight: 1.15,
         },
       }}
-      // middlewares={}
     >
-      {/* <Tooltip label="Settings" position="right" disabled={!collapsed}>
-        <span> */}
       <Menu.Target>{trigger}</Menu.Target>
-      {/* </span>
-      </Tooltip> */}
       <Menu.Dropdown>
         <Menu.Item
-          id="sidebar-logged-in"
           icon={
             <Avatar
               color="blue"
@@ -128,9 +99,6 @@ function UserMenu({
         <Menu.Label id="sidebar-label-quick-settings">
           Quick Settings
         </Menu.Label>
-        {/* <Menu.Item disabled icon={<IconUserCircle size={14} />}>
-        Profile
-      </Menu.Item> */}
         <Menu.Item
           id="sidebar-dark-mode"
           onClick={() => {
@@ -174,13 +142,6 @@ function UserMenu({
               onClick={() => {
                 user.user.signOut();
                 reload();
-                // showNotification({
-                //   message: "Successfully signed out",
-                //   autoClose: 5000,
-                //   icon: <IconCircleCheck />,
-                //   className: "signout-notification",
-                //   color: "lime",
-                // });
               }}
               icon={<IconLogout size={14} />}
             >

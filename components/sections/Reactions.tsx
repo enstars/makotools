@@ -4,16 +4,12 @@ import {
   Box,
   Button,
   createStyles,
-  Divider,
   Group,
   Paper,
-  Spoiler,
   Text,
-  Title,
   Tooltip,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { IconChevronDown, IconChevronUp, IconMoodSmile } from "@tabler/icons";
 import { Collapse } from "react-collapse";
 
@@ -25,7 +21,6 @@ import { DbReaction, Reaction } from "../../types/makotools";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
-    // transition: "height 0.2s",
     transition: theme.other.transition,
     overflow: "hidden",
   },
@@ -35,16 +30,11 @@ const useStyles = createStyles((theme) => ({
 function Reactions() {
   const { classes } = useStyles();
   const { asPath } = useRouter();
-  console.log(asPath);
   const [reactions, setReactions] = useState<Reaction[]>([]);
   const [collapsed, setCollapsed] = useState<boolean>(true);
-  useEffect(() => {
-    fetchReactions();
-  }, [asPath]);
   const user = useUser();
 
   const currentPageId = asPath.replace(/\//g, "_");
-  // const currentPageId = 1;
   const addReaction = (id: string) => {
     if (user.loading || !user.loggedIn) return;
     fetch(
@@ -52,7 +42,6 @@ function Reactions() {
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // body: { content: "a", name: "b", parent_id: -1 },
       }
     )
       .then((res) => {
@@ -69,8 +58,6 @@ function Reactions() {
     )
       .then((res) => res.json())
       .then((data: DbReaction[]) => {
-        console.log("Request complete! response:", data);
-        // return data;
         const reactions = data
           .map((r) => {
             const emote = emotes.find((e) => e.stringId === r.content);
@@ -88,11 +75,12 @@ function Reactions() {
       })
       .catch((e) => {
         console.error(e);
-        // return null;
       });
   };
 
-  // if (!user.loggedIn) return null;
+  useEffect(() => {
+    fetchReactions();
+  }, [asPath]);
 
   return (
     <Paper my="sm" withBorder p={3} radius="md">
@@ -135,8 +123,6 @@ function Reactions() {
                 maskImage: collapsed
                   ? "linear-gradient(to left, transparent, black 28px)"
                   : "",
-
-                // marginRight: collapsed ? -30 : 0,
               }}
             >
               <Collapse
@@ -150,7 +136,6 @@ function Reactions() {
                   spacing="xs"
                   sx={{
                     maxHeight: collapsed ? 24 : undefined,
-                    // marginRight: collapsed ? -30 : 0,
                   }}
                 >
                   {reactions?.map((r: any) => (

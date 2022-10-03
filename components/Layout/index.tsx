@@ -1,6 +1,3 @@
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import styled from "styled-components";
 import {
   AppShell,
   Container,
@@ -98,7 +95,6 @@ function Layout({
             <ErrorBoundary>
               {!hideHeader && (
                 <Header
-                  title={pageProps?.title}
                   getBreadcrumbs={pageProps?.getBreadcrumbs}
                   breadcrumbs={pageProps?.breadcrumbs}
                 />

@@ -83,10 +83,8 @@ const SidebarLink = forwardRef(function SbL(
   ref
 ) {
   const theme = useMantineTheme();
-  const xxs = theme.spacing.xs / 1.5;
   return (
     <NavLink
-      // py="xs"
       ref={ref}
       label={
         collapsed ? (
@@ -125,8 +123,6 @@ const SidebarLink = forwardRef(function SbL(
         icon: {
           paddingTop: 0,
           marginRight: theme.spacing.xs,
-          // marginTop: theme.spacing.xs / 8,
-          // marginBottom: theme.spacing.xs / 8,
         },
       })}
       {...props}
@@ -144,7 +140,6 @@ function Sidebar(props: any) {
   const user = useUser();
 
   const [collapsed, toggleCollapsed] = useToggle([false, true]);
-  // console.log("collapsed", collapsed);
   if (props.permanentlyExpanded && collapsed) toggleCollapsed();
 
   const linkList: LinkObject[] = [
@@ -195,7 +190,6 @@ function Sidebar(props: any) {
   ];
   return (
     <Navbar
-      // fixed
       position={{ top: 0, left: 0 }}
       width={{
         base: 0,
@@ -216,7 +210,6 @@ function Sidebar(props: any) {
       {...props}
     >
       <Navbar.Section
-        // direction="column"
         sx={(theme) => ({
           padding: theme.spacing.xs / 2,
           maxWidth: "100%",
@@ -227,7 +220,6 @@ function Sidebar(props: any) {
           <SidebarLink
             collapsed={collapsed}
             component="a"
-            // py="xs"
             label={
               !collapsed && (
                 <Box sx={{ height: 18, display: "flex" }}>
@@ -283,7 +275,6 @@ function Sidebar(props: any) {
       >
         <Stack
           spacing={0}
-          // direction="column"
           sx={(theme) => ({
             padding: theme.spacing.xs / 2,
             paddingTop: 0,
@@ -333,7 +324,6 @@ function Sidebar(props: any) {
         }}
       >
         <Group
-          // spacing={0}
           sx={(theme) => ({
             padding: theme.spacing.xs / 2,
             gap: 0,
@@ -343,7 +333,6 @@ function Sidebar(props: any) {
           {!collapsed && (
             <>
               <UserMenu
-                collapsed={collapsed}
                 trigger={
                   <SidebarLink
                     collapsed={collapsed}
@@ -367,7 +356,6 @@ function Sidebar(props: any) {
             size={40}
             radius="sm"
             onClick={() => {
-              // console.log(collapsed);
               toggleCollapsed();
               if (props?.onCollapse) props.onCollapse();
             }}

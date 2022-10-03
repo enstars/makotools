@@ -1,8 +1,6 @@
 import { Box, Title } from "@mantine/core";
 import { ReactElement } from "react";
 
-import Breadcrumbs from "../Layout/Header/Breadcrumbs";
-
 function PageTitle({
   title = "",
   children = <></>,
