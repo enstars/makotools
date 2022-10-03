@@ -7286,6 +7286,7 @@ __metadata:
     react-dom: ^18.2.0
     react-frame-component: v5.2.3
     react-globalize: ^1.0.0
+    react-google-recaptcha-v3: ^1.10.0
     react-infinite-scroll-component: ^6.1.0
     react-zoom-pan-pinch: ^2.1.3
     sass: ^1.54.9
@@ -8480,6 +8481,18 @@ __metadata:
     globalize: ^1.0.0
     react: ^16.0.0
   checksum: 01a7a6a76c77e0d172219e9d543c4b0c7c9e935e759f1d3cb1bdce2770c183c88d0d5a819c2bffa42bd4cb0ffb3fd90cb2223c4d5765f4658b402275c53b3218
+  languageName: node
+  linkType: hard
+
+"react-google-recaptcha-v3@npm:^1.10.0":
+  version: 1.10.0
+  resolution: "react-google-recaptcha-v3@npm:1.10.0"
+  dependencies:
+    hoist-non-react-statics: ^3.3.2
+  peerDependencies:
+    react: ^17.0 || ^18.0
+    react-dom: ^17.0 || ^18.0
+  checksum: 43b19eba4e4ebf96f6d9256fcb5a93aabe69878ce9fe4a6c73a3175d0ec9990abb39302c361ca99d7f20b2401353dce69236f299e64ee23a61fc71633b9107f3
   languageName: node
   linkType: hard
 

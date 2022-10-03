@@ -31,11 +31,16 @@ import {
   resetNavigationProgress,
   NavigationProgress,
 } from "@mantine/nprogress";
+import {
+  GoogleReCaptchaProvider,
+  useGoogleReCaptcha,
+} from "react-google-recaptcha-v3";
 
 import { initAuthentication } from "../services/firebase/authentication";
 import { UserProvider } from "../services/firebase/user";
 import DayjsProvider from "../services/libraries/dayjs";
 
+import { CONSTANTS } from "services/makotools/constants";
 initAuthentication();
 
 const emotionCache = createEmotionCache({ key: "mktl" });
@@ -94,104 +99,108 @@ function MakoTools({
   }, [router.asPath, router.events]);
 
   return (
-    <MantineProvider
-      emotionCache={emotionCache}
-      withGlobalStyles
-      withNormalizeCSS
-      theme={{
-        colorScheme,
-        components: {
-          NavLink: {
-            styles: (theme) => ({
-              root: {
-                "& > *:last-child": {
-                  margin: 0,
+    <GoogleReCaptchaProvider reCaptchaKey={CONSTANTS.KEYS.CAPTCHA}>
+      <MantineProvider
+        emotionCache={emotionCache}
+        withGlobalStyles
+        withNormalizeCSS
+        theme={{
+          colorScheme,
+          components: {
+            NavLink: {
+              styles: (theme) => ({
+                root: {
+                  "& > *:last-child": {
+                    margin: 0,
+                  },
                 },
-              },
-            }),
+              }),
+            },
           },
-        },
-        colors: {
-          // override dark colors to change them for all components
-          dark: [
-            "#D3D6E0",
-            "#AAB1C2",
-            "#8E97AD",
-            "#5F6982",
-            "#3A4259",
-            "#2C3347",
-            "#212736",
-            "#191C27",
-            "#171921",
-            "#12141C",
-          ],
-          blue: [
-            "#edf2ff",
-            "#dbe4ff",
-            "#bac8ff",
-            "#91a7ff",
-            "#748ffc",
-            "#5c7cfa",
-            "#4c6ef5",
-            "#4263eb",
-            "#3b5bdb",
-            "#364fc7",
-          ],
-          lightblue: [
-            "#e7f5ff",
-            "#d0ebff",
-            "#a5d8ff",
-            "#74c0fc",
-            "#4dabf7",
-            "#339af0",
-            "#228be6",
-            "#1c7ed6",
-            "#1971c2",
-            "#1864ab",
-          ],
-        },
-        primaryShade: { light: 6, dark: 5 },
-        lineHeight: 1.5,
-        // fontFamily: "InterVariable, Inter, Noto Sans JP, sans-serif",
-        fontFamily: "Inter var, Inter, Noto Sans JP, sans-serif",
-        headings: {
-          fontFamily: "SoraVariable, Sora, InterVariable, Inter, sans-serif",
-          fontWeight: 800,
-        },
-        other: {
-          transition: "0.3s cubic-bezier(.19,.73,.37,.93)",
-          setAppColorScheme,
-          toggleAppColorScheme,
-          getDimmed,
-          getColor,
-        },
-      }}
-    >
-      <NavigationProgress />
-      <Head>
-        <meta name="viewport" content="initial-scale=1, width=device-width" />
-      </Head>
-      <NotificationsProvider position="top-center">
-        <UserProvider
-          setAppColorScheme={setAppColorScheme}
-          colorScheme={colorScheme}
-          serverData={{
-            user: pageProps?.__user ? JSON.parse(pageProps.__user) : undefined,
-            db: pageProps?.__db ? JSON.parse(pageProps.__db) : undefined,
-          }}
-        >
-          {/*  TODO: Remove this just use the theme povider */}
-          <DayjsProvider>
-            <ColorSchemeProvider
-              colorScheme={colorScheme}
-              toggleColorScheme={setAppColorScheme}
-            >
-              {getLayout(<Component {...pageProps} />, pageProps)}
-            </ColorSchemeProvider>
-          </DayjsProvider>
-        </UserProvider>
-      </NotificationsProvider>
-    </MantineProvider>
+          colors: {
+            // override dark colors to change them for all components
+            dark: [
+              "#D3D6E0",
+              "#AAB1C2",
+              "#8E97AD",
+              "#5F6982",
+              "#3A4259",
+              "#2C3347",
+              "#212736",
+              "#191C27",
+              "#171921",
+              "#12141C",
+            ],
+            blue: [
+              "#edf2ff",
+              "#dbe4ff",
+              "#bac8ff",
+              "#91a7ff",
+              "#748ffc",
+              "#5c7cfa",
+              "#4c6ef5",
+              "#4263eb",
+              "#3b5bdb",
+              "#364fc7",
+            ],
+            lightblue: [
+              "#e7f5ff",
+              "#d0ebff",
+              "#a5d8ff",
+              "#74c0fc",
+              "#4dabf7",
+              "#339af0",
+              "#228be6",
+              "#1c7ed6",
+              "#1971c2",
+              "#1864ab",
+            ],
+          },
+          primaryShade: { light: 6, dark: 5 },
+          lineHeight: 1.5,
+          // fontFamily: "InterVariable, Inter, Noto Sans JP, sans-serif",
+          fontFamily: "Inter var, Inter, Noto Sans JP, sans-serif",
+          headings: {
+            fontFamily: "SoraVariable, Sora, InterVariable, Inter, sans-serif",
+            fontWeight: 800,
+          },
+          other: {
+            transition: "0.3s cubic-bezier(.19,.73,.37,.93)",
+            setAppColorScheme,
+            toggleAppColorScheme,
+            getDimmed,
+            getColor,
+          },
+        }}
+      >
+        <NavigationProgress />
+        <Head>
+          <meta name="viewport" content="initial-scale=1, width=device-width" />
+        </Head>
+        <NotificationsProvider position="top-center">
+          <UserProvider
+            setAppColorScheme={setAppColorScheme}
+            colorScheme={colorScheme}
+            serverData={{
+              user: pageProps?.__user
+                ? JSON.parse(pageProps.__user)
+                : undefined,
+              db: pageProps?.__db ? JSON.parse(pageProps.__db) : undefined,
+            }}
+          >
+            {/*  TODO: Remove this just use the theme povider */}
+            <DayjsProvider>
+              <ColorSchemeProvider
+                colorScheme={colorScheme}
+                toggleColorScheme={setAppColorScheme}
+              >
+                {getLayout(<Component {...pageProps} />, pageProps)}
+              </ColorSchemeProvider>
+            </DayjsProvider>
+          </UserProvider>
+        </NotificationsProvider>
+      </MantineProvider>
+    </GoogleReCaptchaProvider>
   );
 }
 

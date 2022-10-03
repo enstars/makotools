@@ -9,9 +9,10 @@ import {
   Text,
   Tooltip,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IconChevronDown, IconChevronUp, IconMoodSmile } from "@tabler/icons";
 import { Collapse } from "react-collapse";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 import emotes from "../../services/makotools/emotes";
 import useUser from "../../services/firebase/user";
@@ -28,20 +29,40 @@ const useStyles = createStyles((theme) => ({
 }));
 
 function Reactions() {
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const { classes } = useStyles();
   const { asPath } = useRouter();
   const [reactions, setReactions] = useState<Reaction[]>([]);
   const [collapsed, setCollapsed] = useState<boolean>(true);
   const user = useUser();
 
+  const handleReCaptchaVerify = useCallback(async () => {
+    if (!executeRecaptcha) {
+      console.log("Execute recaptcha not yet available");
+      return;
+    }
+
+    const token = await executeRecaptcha();
+    console.log(token);
+    return token;
+  }, [executeRecaptcha]);
+
+  useEffect(() => {
+    handleReCaptchaVerify();
+  }, [handleReCaptchaVerify]);
+
   const currentPageId = asPath.replace(/\//g, "_");
-  const addReaction = (id: string) => {
+  const addReaction = async (id: string) => {
     if (user.loading || !user.loggedIn) return;
+    const captcha: any = await handleReCaptchaVerify();
     fetch(
-      `https://backend-stars.ensemble.moe/reactions.php?page_id=${currentPageId}&content=${id}&name=${user.user.id}`,
+      `https://backend-stars.ensemble.moe/db/reactions.php?page_id=${currentPageId}&content=${id}&name=${user.user.id}`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "g-recaptcha-response": captcha,
+        },
       }
     )
       .then((res) => {
@@ -52,9 +73,15 @@ function Reactions() {
         console.error(e);
       });
   };
-  const fetchReactions = () => {
+  const fetchReactions = async () => {
+    const captcha: any = await handleReCaptchaVerify();
     fetch(
-      `https://backend-stars.ensemble.moe/reactions.php?page_id=${currentPageId}`
+      `https://backend-stars.ensemble.moe/db/reactions.php?page_id=${currentPageId}`,
+      {
+        headers: {
+          "g-recaptcha-response": captcha,
+        },
+      }
     )
       .then((res) => res.json())
       .then((data: DbReaction[]) => {
@@ -80,7 +107,7 @@ function Reactions() {
 
   useEffect(() => {
     fetchReactions();
-  }, [asPath]);
+  }, [asPath, handleReCaptchaVerify]);
 
   return (
     <Paper my="sm" withBorder p={3} radius="md">
