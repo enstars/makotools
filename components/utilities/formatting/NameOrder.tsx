@@ -1,8 +1,6 @@
-import { useRouter } from "next/router";
 import { ReactElement } from "react";
 
 import useUser from "../../../services/firebase/user";
-import { DEFAULT_LOCALE } from "../../../services/makotools/locales";
 import { Locale } from "../../../types/makotools";
 
 import { getNameOrder } from "services/game";

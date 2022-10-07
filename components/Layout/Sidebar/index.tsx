@@ -1,26 +1,14 @@
-import { UrlObject } from "url";
-
-import React, {
-  ComponentProps,
-  ComponentPropsWithRef,
-  forwardRef,
-  ReactElement,
-} from "react";
+import React, { forwardRef, ReactElement } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import styled from "styled-components";
 import { useRouter } from "next/router";
 import {
   IconUsers,
   IconPlayCard,
   IconAward,
   IconBooks,
-  IconUser,
-  IconDotsCircleHorizontal,
   IconChevronRight,
   IconChevronLeft,
   IconBrandPatreon,
-  IconSettings,
   IconUserCircle,
   TablerIcon,
   IconAt,
@@ -34,18 +22,13 @@ import {
   Box,
   useMantineTheme,
   useMantineColorScheme,
-  Badge,
-  Button,
   Tooltip,
   NavLink,
   Stack,
   ActionIcon,
-  UnstyledButton,
-  ThemeIcon,
   NavLinkProps,
 } from "@mantine/core";
-import { useColorScheme, useToggle } from "@mantine/hooks";
-import { StringNullableChain } from "lodash";
+import { useToggle } from "@mantine/hooks";
 
 import MakotoolsLightComponent from "../../../assets/Logo/mkt_light_icon.svg";
 import MakotoolsDarkComponent from "../../../assets/Logo/mkt_dark_icon.svg";
