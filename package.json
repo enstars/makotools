@@ -132,8 +132,7 @@
         "warn"
       ],
       "@typescript-eslint/no-unused-vars": "off",
-      "unused-imports/no-unused-imports": "warn",
-      "unused-imports/no-unused-vars": "warn"
+      "unused-imports/no-unused-imports": "warn"
     }
   },
   "_comment": "Add empty prettier key in order to override code editor settings while applying all Prettier defaults",
