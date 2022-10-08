@@ -61,7 +61,7 @@ export function initAuthentication() {
       path: "/",
       sameSite: "strict",
       secure: process.env.NODE_ENV === "development" ? false : true, // set this to false in local (non-HTTPS) development
-      signed: false,
+      signed: true,
     },
     onVerifyTokenError: (err) => {
       console.error(err);
