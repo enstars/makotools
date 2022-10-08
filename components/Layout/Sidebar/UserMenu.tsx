@@ -4,7 +4,6 @@ import {
   Avatar,
   Switch,
   useMantineTheme,
-  useMantineColorScheme,
   Box,
 } from "@mantine/core";
 import { NextLink } from "@mantine/next";
@@ -21,8 +20,7 @@ import useUser from "../../../services/firebase/user";
 
 function UserMenu({ trigger }: { trigger: any }) {
   const theme = useMantineTheme();
-  const { colorScheme } = useMantineColorScheme();
-  const dark = colorScheme === "dark";
+  const dark = theme.colorScheme === "dark";
   const [opened, handlers] = useDisclosure(false);
   const user = useUser();
   const { reload } = useRouter();
@@ -54,7 +52,7 @@ function UserMenu({ trigger }: { trigger: any }) {
               size="sm"
               radius="xl"
               sx={{ "*": { display: "flex" } }}
-            ></Avatar>
+            />
           }
           sx={{
             pointerEvents: "none",

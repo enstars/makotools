@@ -21,7 +21,6 @@ import {
   Text,
   Box,
   useMantineTheme,
-  useMantineColorScheme,
   Tooltip,
   NavLink,
   Stack,
@@ -118,8 +117,7 @@ function Sidebar(props: any) {
   const location = useRouter();
 
   const theme = useMantineTheme();
-  const { colorScheme } = useMantineColorScheme();
-  const dark = colorScheme === "dark";
+  const dark = theme.colorScheme === "dark";
   const user = useUser();
 
   const [collapsed, toggleCollapsed] = useToggle([false, true]);

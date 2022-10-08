@@ -8,7 +8,6 @@ import {
   Divider,
   Tooltip,
   useMantineTheme,
-  useMantineColorScheme,
   ActionIcon,
   Popover,
   Stack,
@@ -83,7 +82,6 @@ export default function CardCard({
 }) {
   const router = useRouter();
   const theme = useMantineTheme();
-  const { colorScheme } = useMantineColorScheme();
 
   const user = useUser();
 
@@ -284,7 +282,7 @@ export default function CardCard({
                   inline
                   inherit
                   color={
-                    colorScheme === "dark"
+                    theme.colorScheme === "dark"
                       ? theme.colors.yellow[2]
                       : theme.colors.yellow[7]
                   }

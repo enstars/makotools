@@ -4,7 +4,6 @@ import Head from "next/head";
 import { getCookie, setCookie } from "cookies-next";
 import {
   MantineProvider,
-  ColorSchemeProvider,
   createEmotionCache,
   ColorScheme,
 } from "@mantine/core";
@@ -178,12 +177,7 @@ function MakoTools({
           >
             {/*  TODO: Remove this just use the theme povider */}
             <DayjsProvider>
-              <ColorSchemeProvider
-                colorScheme={colorScheme}
-                toggleColorScheme={setAppColorScheme}
-              >
-                {getLayout(<Component {...pageProps} />, pageProps)}
-              </ColorSchemeProvider>
+              {getLayout(<Component {...pageProps} />, pageProps)}
             </DayjsProvider>
           </UserProvider>
         </NotificationsProvider>
