@@ -120,7 +120,7 @@ function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
             </Link>
           </Stack>
 
-          <Box sx={{ flexGrow: 0.1 }}></Box>
+          <Box sx={{ flexGrow: 0.1 }} />
           <Box sx={{ flex: "1 1 350px", maxWidth: 560 }}>
             {!textOnly && (
               <Text

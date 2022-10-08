@@ -16,7 +16,7 @@ function Meta({ title, desc, img }: PageMeta) {
       <title>{pageTitle}</title>
       <meta name="title" content={pageTitle} />
       <meta name="description" content={pageDesc} />
-      <meta name="theme-color" content={CONSTANTS.MAKOTOOLS.COLOR}></meta>
+      <meta name="theme-color" content={CONSTANTS.MAKOTOOLS.COLOR} />
 
       <meta property="og:url" content={CONSTANTS.MAKOTOOLS.SITE_URL} />
       <meta property="og:title" content={pageTitle} />

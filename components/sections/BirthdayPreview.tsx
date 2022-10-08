@@ -244,7 +244,7 @@ function BirthdayCard({ ...props }) {
               background: `linear-gradient(45deg, transparent 73%, ${props.character.image_color}99 83%)`,
               zIndex: 2,
             }}
-          ></Box>
+          />
           <HoroscopeSymbol
             className={classes.horoscope}
             horoscope={calculateHoroscope(new Date(props.character.birthday))}
