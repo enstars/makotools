@@ -1,14 +1,4 @@
-import {
-  Badge,
-  Button,
-  Card,
-  Container,
-  createStyles,
-  Group,
-  Image,
-  Stack,
-  Text,
-} from "@mantine/core";
+import { Badge, Card, createStyles, Image, Stack, Text } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import {
   IconAlertCircle,
@@ -16,9 +6,8 @@ import {
   IconPlayerPlay,
   IconStar,
 } from "@tabler/icons";
-import Link from "next/link";
 
-import { getB2File } from "services/ensquare";
+import { getAssetURL } from "../../../services/data";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   listEventCard: {
@@ -66,7 +55,7 @@ function CalendarListEventCard({ ...props }) {
     >
       <Card.Section className={classes.listEventCardImage}>
         <Image
-          src={getB2File(
+          src={getAssetURL(
             `assets/card_still_full1_${
               props.event.type === "birthday"
                 ? props.event.render_id + "_normal"
