@@ -23,8 +23,13 @@ import { useDayjs } from "services/libraries/dayjs";
 const useStyles = createStyles((theme, _params, getRef) => ({
   calendar: {
     maxWidth: "100%",
-    padding: "5px",
-    marginTop: "3%",
+    padding: 0,
+  },
+  calendarBody: {
+    margin: "auto",
+    maxWidth: "100%",
+    padding: "1%",
+    marginTop: "1%",
     background:
       theme.colorScheme === "dark"
         ? theme.colors.dark[6]
@@ -34,11 +39,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     }`,
     borderRadius: theme.radius.md,
   },
-  calendarBody: {
-    margin: "auto",
-    padding: 0,
-    maxWidth: "100%",
-  },
   header: {
     maxWidth: "100%",
     flexFlow: "row nowrap",
@@ -46,23 +46,18 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     marginBottom: "2vh",
     padding: "2vh 0vw",
   },
-  calTitle: {
-    textAlign: "center",
-  },
-  nav: {
-    display: "inline",
-    height: "40px",
-    width: "100%",
-    background:
-      theme.colorScheme === "dark"
-        ? theme.colors.blue[7]
-        : theme.colors.blue[4],
-  },
   week: {
     maxWidth: "100%",
     margin: "auto",
-    marginTop: "2vh",
+    marginTop: "1vh",
+    marginBottom: "1vh",
     alignItems: "center",
+  },
+  today: {
+    color:
+      theme.colorScheme === "dark"
+        ? theme.colors.blue[3]
+        : theme.colors.blue[7],
   },
 }));
 
@@ -82,6 +77,7 @@ function CalendarDotW({ ...props }) {
 
 function CalendarDay({ ...props }): React.ReactElement {
   const { classes } = useStyles();
+  let today = new Date();
   return (
     <Grid.Col
       span={1}
@@ -118,8 +114,18 @@ function CalendarDay({ ...props }): React.ReactElement {
         })}
         className={props.day}
       >
-        <Text size="lg" sx={{ paddingLeft: "5px", paddingTop: "3px" }}>
-          {props.day}
+        <Text
+          size="lg"
+          sx={{ paddingLeft: "5px", paddingTop: "3px" }}
+          className={
+            props.day.getDate() === today.getDate() &&
+            props.day.getMonth() === today.getMonth() &&
+            props.day.getFullYear() === today.getFullYear()
+              ? classes.today
+              : undefined
+          }
+        >
+          {props.day.getDate()}
         </Text>
         {props.active &&
           props.events.map((event: CalendarEvent, i: number) => (
@@ -137,22 +143,22 @@ function CalendarWeek({ ...props }) {
     <Grid columns={7} className={classes.week} gutter="xs">
       {props.week.map((day: Date, i: number) => {
         const filteredEvents = props.events.filter((event: CalendarEvent) => {
-          if (event.startDate.year) {
+          if (event.type !== "birthday" && event.type !== "anniversary") {
             return (
-              event.startDate.year === day.getFullYear() &&
-              event.startDate.month === day.getMonth() &&
-              event.startDate.date === day.getDate()
+              event.date.year === day.getFullYear() &&
+              event.date.month === day.getMonth() &&
+              event.date.date === day.getDate()
             );
           } else {
             return (
-              event.startDate.month === day.getMonth() &&
-              event.startDate.date === day.getDate()
+              event.date.month === day.getMonth() &&
+              event.date.date === day.getDate()
             );
           }
         });
         return (
           <CalendarDay
-            day={day.getDate()}
+            day={day}
             key={i}
             active={day.getMonth() === props.month}
             events={filteredEvents}
@@ -165,31 +171,14 @@ function CalendarWeek({ ...props }) {
 
 function Calendar({ ...props }) {
   const { classes } = useStyles();
-  const dayjs = useDayjs();
-  const currentDate = new Date();
-  const currMonth = dayjs(currentDate).format("MMMM");
-  const currYear = dayjs(currentDate).format("YYYY");
-
-  const [month, changeMonth] = useState<string>(currMonth);
-  const [year, changeYear] = useState<string>(currYear);
-
-  const displayMonth = `${month} 1, ${year}`;
-  const displayDate = new Date(displayMonth);
 
   return (
     <Container className={classes.calendar}>
-      <CalendarHeader
-        month={month}
-        changeMonth={changeMonth}
-        changeYear={changeYear}
-        year={year}
-        lang={props.lang}
-      />
+      <CalendarDotW lang={props.lang} />
       <Container className={classes.calendarBody}>
-        <CalendarDotW lang={props.lang} />
-        {getMonthDays(displayDate).map((week, i) => (
+        {getMonthDays(props.date).map((week, i) => (
           <CalendarWeek
-            month={displayDate.getMonth()}
+            month={props.date.getMonth()}
             week={week}
             key={i}
             events={props.events}

@@ -1,106 +1,82 @@
 import Link from "next/link";
-import { Card, Container, createStyles, Image, Text } from "@mantine/core";
-import { IconCake } from "@tabler/icons";
+import { Badge, createStyles, Tooltip } from "@mantine/core";
+import { IconCake, IconPlayerPlay, IconPlayerStop } from "@tabler/icons";
 import { useState } from "react";
+import { NextLink } from "@mantine/next";
 
 import { getAssetURL } from "../../../services/data";
 import { twoStarIDs } from "../../../data/characterIDtoCardID";
 
 function CalendarEventCard({ ...props }) {
   const useStyles = createStyles((theme, _params, getRef) => ({
-    birthdayCardImage: {
-      ref: getRef("image"),
-      visibility: "hidden",
-      height: "0vh",
-      marginTop: "10%",
-      transition: "height 0.5s, visibility 0.5s ease-in",
-    },
-
-    birthdayCardImageOverlay: {
-      position: "absolute",
-      width: "105%",
-      height: "15vh",
-      margin: "auto",
-      marginLeft: "0.5vw",
-      marginTop: "-7vh",
-      background: `linear-gradient(${
-        theme.colorScheme === "dark"
-          ? theme.colors.blue[7]
-          : theme.colors.blue[4]
-      } 25%, transparent)`,
-      zIndex: 1,
-    },
-
     eventCard: {
-      padding: "3px 0px 6px 0px !important",
-      marginTop: "3px",
-      textAlign: "left",
-      color: theme.colors.gray[0],
-      background:
-        theme.colorScheme === "dark"
-          ? theme.colors.blue[7]
-          : theme.colors.blue[4],
-      borderRadius: 0,
-      transition: "border-radius 0.5s",
+      fontSize: "12px",
       "&:hover": {
-        borderRadius: theme.radius.md,
         cursor: "pointer",
       },
-      [`&:hover .${getRef("image")}`]: {
-        visibility: "visible",
-        height: "10vh",
-      },
-    },
-
-    eventCardText: {
-      padding: 0,
-      display: "flex",
-      flexFlow: "row nowrap",
-      alignItems: "flex-start",
-      justifyContent: "space-around",
-      height: "16px",
-      maxWidth: "100%",
-      margin: "auto",
-      zIndex: 3,
     },
   }));
 
   const { event } = props;
   const { classes } = useStyles();
-
-  if (event.type === "birthday") {
-    return (
-      <Card className={classes.eventCard}>
-        <Link href={`/characters/${event.character_id}`}>
-          <Card.Section component="a" className={classes.eventCardText}>
-            <IconCake size={16} style={{ zIndex: 5 }} />
-            <Text
-              sx={{ maxHeight: "100%", verticalAlign: "center", zIndex: 5 }}
-            >
-              {event.character_name}
-            </Text>
-          </Card.Section>
-        </Link>
-        <Card.Section className={classes.birthdayCardImage}>
-          <div className={classes.birthdayCardImageOverlay}></div>
-          <Image
-            src={getAssetURL(
-              `assets/card_still_full1_${event.character_render}_evolution.webp`
-            )}
-            alt={event.character_name}
-            width={500}
-            sx={{
-              position: "absolute",
-              left: "-85%",
-              top: "5%",
-            }}
-          />
-        </Card.Section>
-      </Card>
-    );
-  } else {
-    <></>;
-  }
+  return (
+    <Tooltip
+      multiline
+      width={150}
+      label={
+        event.type === "song" || event.type === "tour"
+          ? event.type + " event: " + event.name.toLowerCase()
+          : event.type === "scout"
+          ? event.type + "! " + event.name.toLowerCase()
+          : event.type === "feature scout"
+          ? event.type + ": " + event.name.toLowerCase()
+          : event.name + "'s " + event.type
+      }
+      sx={{
+        fontVariant: "small-caps",
+        fontWeight: "bold",
+        textAlign: "center",
+      }}
+    >
+      <Badge
+        fullWidth
+        variant="dot"
+        color={
+          event.type === "anniversary"
+            ? "yellow"
+            : event.type === "birthday"
+            ? "cyan"
+            : event.status === "start"
+            ? "lime"
+            : "pink"
+        }
+        className={classes.eventCard}
+        component={NextLink}
+        href={
+          event.type === "birthday" || event.type === "feature scout"
+            ? `/characters/${event.id}`
+            : `/events/${event.id}`
+        }
+        sx={(theme) => ({
+          borderRadius: theme.radius.sm,
+          borderColor:
+            theme.colorScheme === "dark"
+              ? theme.colors.dark[4]
+              : theme.colors.gray[3],
+        })}
+      >
+        {event.type === "birthday"
+          ? event.name.split(" ")[0] + "'s birthday"
+          : event.type === "feature scout"
+          ? event.status + ": " + event.name.split(" ")[0] + " FS"
+          : event.type === "scout"
+          ? event.status + ": SCOUT! " + event.name
+          : event.type === "song" || event.type === "tour"
+          ? event.status + ": " + event.short_name
+          : event.name}
+      </Badge>
+    </Tooltip>
+  );
 }
 
 export default CalendarEventCard;

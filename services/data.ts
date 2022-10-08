@@ -133,7 +133,7 @@ export async function getLocalizedDataArray<
     return flatten.unflatten(parseStringify(combined));
   });
 
-  // console.log(combinedArray);
+  if (data === "scout") console.log(combinedArray);
 
   return Promise.resolve({
     status: "success",
