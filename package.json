@@ -119,6 +119,9 @@
       "no-nested-ternary": [
         "off"
       ],
+      "react/self-closing-comp": [
+        "warn"
+      ],
       "react/jsx-props-no-spreading": [
         "off"
       ],
