@@ -1,6 +1,5 @@
 import { TypographyStylesProvider } from "@mantine/core";
 
-import Layout from "../../../components/Layout";
 import PageTitle from "../../../components/sections/PageTitle";
 import { CONSTANTS } from "../../../services/makotools/constants";
 import { getLayout } from "../../../components/Layout";
@@ -8,7 +7,7 @@ import { getLayout } from "../../../components/Layout";
 function Page() {
   return (
     <>
-      <PageTitle title="About Translations"></PageTitle>
+      <PageTitle title="About Translations" />
       <TypographyStylesProvider>
         <p>
           MakoTools contains translated content both from volunteers, and from

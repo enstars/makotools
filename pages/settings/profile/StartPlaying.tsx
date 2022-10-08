@@ -1,17 +1,7 @@
-import {
-  Box,
-  Checkbox,
-  Divider,
-  Group,
-  Input,
-  Select,
-  Switch,
-  Text,
-} from "@mantine/core";
-import { forwardRef, useEffect, useState } from "react";
+import { Checkbox, Group, Input, Select } from "@mantine/core";
+import { useEffect, useState } from "react";
 
 import useUser from "../../../services/firebase/user";
-import SelectSetting from "../shared/SelectSetting";
 import { useDayjs } from "../../../services/libraries/dayjs";
 
 const START_YEAR = 2015;
@@ -71,7 +61,6 @@ function StartPlaying() {
   useEffect(() => {
     if (isFirestoreAccessible && user.db) {
       const startPlaying = user.db.profile__start_playing;
-      // console.log(user.profile_start_playing);
       if (startPlaying && startPlaying !== "0000-00-00") {
         setPicked({
           month: dayjs(startPlaying).format("MM"),
@@ -95,11 +84,9 @@ function StartPlaying() {
     setData(resolvedData);
     if (
       user.loggedIn &&
-      user.db?.profile__start_playing &&
-      user.db.profile__start_playing !== resolvedData
+      (!user.db?.profile__start_playing ||
+        user.db.profile__start_playing !== resolvedData)
     ) {
-      user.db.set({ profile__start_playing: resolvedData });
-    } else if (user.loggedIn && !user.db?.profile__start_playing) {
       user.db.set({ profile__start_playing: resolvedData });
     }
   }, [picked, user]);
@@ -157,7 +144,6 @@ function StartPlaying() {
             }
           }}
         />
-        {/* <Box sx={{ flexGrow: 1 }} /> */}
 
         <Checkbox
           label="Unknown"

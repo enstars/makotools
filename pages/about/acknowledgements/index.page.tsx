@@ -6,7 +6,7 @@ import PageTitle from "../../../components/sections/PageTitle";
 function Page() {
   return (
     <>
-      <PageTitle title="Acknowledgements"></PageTitle>
+      <PageTitle title="Acknowledgements" />
       <TypographyStylesProvider>
         <p>
           Originally a dream of a certain TomoyaP, MakoTools has been built with

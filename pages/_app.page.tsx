@@ -1,14 +1,10 @@
-import App from "next/app";
 import React, { useState, useEffect } from "react";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import Head from "next/head";
 import { getCookie, setCookie } from "cookies-next";
-// import NProgress from "nprogress";
 import {
   MantineProvider,
   ColorSchemeProvider,
-  Tooltip,
-  NavLink,
   createEmotionCache,
   ColorScheme,
 } from "@mantine/core";
@@ -21,8 +17,6 @@ import "@fontsource/sora/variable.css";
 import "@fontsource/noto-sans-jp/japanese-400.css";
 import "@fontsource/noto-sans-jp/japanese-500.css";
 import "@fontsource/noto-sans-jp/japanese-700.css";
-// import "@fontsource/inter";
-// import "@fontsource/inter/variable-full.css";
 import "../styles/inter.scss";
 import "../styles/wordpress.scss";
 import { withAuthUser } from "next-firebase-auth";
@@ -31,10 +25,7 @@ import {
   resetNavigationProgress,
   NavigationProgress,
 } from "@mantine/nprogress";
-import {
-  GoogleReCaptchaProvider,
-  useGoogleReCaptcha,
-} from "react-google-recaptcha-v3";
+import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 
 import { initAuthentication } from "../services/firebase/authentication";
 import { UserProvider } from "../services/firebase/user";
@@ -63,12 +54,11 @@ function MakoTools({
 
   const setAppColorScheme = (value: any) => {
     setStateColorScheme(value);
-
-    // when color scheme is updated save it to cookie
     setCookie("color-scheme", value, {
       maxAge: 60 * 60 * 24 * 30,
     });
   };
+
   const toggleAppColorScheme = () => {
     setAppColorScheme(colorScheme === "light" ? "dark" : "light");
   };
@@ -78,10 +68,10 @@ function MakoTools({
       ? theme.colors.dark[2]
       : theme.colors.gray[6];
   };
+
   const getColor = (theme: any, color: any) =>
     theme.colors[color][theme.colorScheme === "dark" ? 5 : 7];
 
-  // https://mantine.dev/others/nprogress/
   useEffect(() => {
     const handleStart = (url: any) =>
       url !== router.asPath && startNavigationProgress();
@@ -118,7 +108,6 @@ function MakoTools({
             },
           },
           colors: {
-            // override dark colors to change them for all components
             dark: [
               "#D3D6E0",
               "#AAB1C2",
@@ -130,18 +119,6 @@ function MakoTools({
               "#191C27",
               "#171921",
               "#12141C",
-            ],
-            blue: [
-              "#edf2ff",
-              "#dbe4ff",
-              "#bac8ff",
-              "#91a7ff",
-              "#748ffc",
-              "#5c7cfa",
-              "#4c6ef5",
-              "#4263eb",
-              "#3b5bdb",
-              "#364fc7",
             ],
             lightblue: [
               "#e7f5ff",
@@ -155,10 +132,21 @@ function MakoTools({
               "#1971c2",
               "#1864ab",
             ],
+            blue: [
+              "#edf2ff",
+              "#dbe4ff",
+              "#bac8ff",
+              "#91a7ff",
+              "#748ffc",
+              "#5c7cfa",
+              "#4c6ef5",
+              "#4263eb",
+              "#3b5bdb",
+              "#364fc7",
+            ],
           },
           primaryShade: { light: 6, dark: 5 },
           lineHeight: 1.5,
-          // fontFamily: "InterVariable, Inter, Noto Sans JP, sans-serif",
           fontFamily: "Inter var, Inter, Noto Sans JP, sans-serif",
           headings: {
             fontFamily: "SoraVariable, Sora, InterVariable, Inter, sans-serif",

@@ -1,35 +1,22 @@
 import {
-  Accordion,
-  Anchor,
   AspectRatio,
   Badge,
-  Blockquote,
   Box,
   Divider,
-  Grid,
   Group,
   Image,
-  Indicator,
   Paper,
-  Stack,
   Text,
-  Textarea,
   ThemeIcon,
   Title,
-  TypographyStylesProvider,
 } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import Link from "next/link";
-import {
-  IconCalendar,
-  IconInfoCircle,
-  IconMessageCircle,
-  IconUser,
-} from "@tabler/icons";
+import { IconCalendar, IconInfoCircle } from "@tabler/icons";
 import { useRef, Fragment } from "react";
 import Autoplay from "embla-carousel-autoplay";
 
-import Layout, { getLayout } from "../../components/Layout";
+import { getLayout } from "../../components/Layout";
 import PageTitle from "../../components/sections/PageTitle";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { getAssetURL } from "../../services/data";
@@ -39,19 +26,17 @@ import { UserData } from "../../types/makotools";
 
 import BioDisplay from "components/sections/BioDisplay";
 
-// import dayjs from "dayjs";
 function Page({ profile }: { profile: UserData }) {
   const dayjs = useDayjs();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
-  console.log(dayjs(profile.profile__start_playing).format("MMMM YYYY"));
+
   return (
     <>
-      {profile?.profile__banner && profile?.profile__banner?.length ? (
+      {profile?.profile__banner && profile.profile__banner?.length ? (
         <Box>
           <Box sx={{ marginLeft: "-100%", marginRight: "-100%" }}>
             <Carousel
               slideSize="34%"
-              // height={200}
               height="30vh"
               slideGap="xs"
               loop
@@ -59,7 +44,7 @@ function Page({ profile }: { profile: UserData }) {
               plugins={[autoplay.current]}
             >
               {/* // doing this so we can surely have enough slides to loop in embla */}
-              {[0, 1, 2, 3, 4].map((n) => (
+              {[0, 1, 2].map((n) => (
                 <Fragment key={n}>
                   {profile?.profile__banner?.map((c) => (
                     <Carousel.Slide key={c}>
@@ -96,28 +81,26 @@ function Page({ profile }: { profile: UserData }) {
         </Box>
       ) : null}
       {profile.name ? (
-        <>
-          <PageTitle
-            space={profile?.profile__banner?.length ? 18 : undefined}
-            title={
-              <>
-                {profile.name}{" "}
-                <Text
-                  inline
-                  component="span"
-                  color="dimmed"
-                  weight={800}
-                  size="lg"
-                >
-                  {profile?.profile__pronouns &&
-                    `${profile?.profile__pronouns} · `}
-                  @{profile.username}
-                </Text>
-              </>
-            }
-            mb={0}
-          ></PageTitle>
-        </>
+        <PageTitle
+          space={profile?.profile__banner?.length ? 18 : undefined}
+          title={
+            <>
+              {profile.name}{" "}
+              <Text
+                inline
+                component="span"
+                color="dimmed"
+                weight={800}
+                size="lg"
+              >
+                {profile?.profile__pronouns &&
+                  `${profile?.profile__pronouns} · `}
+                @{profile.username}
+              </Text>
+            </>
+          }
+          mb={0}
+        />
       ) : (
         <PageTitle
           space={profile?.profile__banner?.length ? 18 : undefined}
@@ -138,7 +121,7 @@ function Page({ profile }: { profile: UserData }) {
             </>
           }
           mb={0}
-        ></PageTitle>
+        />
       )}
 
       <Group mt="xs" noWrap align="flex-start">
@@ -195,13 +178,6 @@ function Page({ profile }: { profile: UserData }) {
               .sort((a, b) => b.count - a.count)
               .map((c) => (
                 <Link key={c.id} href={`/cards/${c.id}`} passHref>
-                  {/* <Indicator
-                    styles={{ indicator: { display: c.count === 1 && "none" } }}
-                    size={20}
-                    radius="sm"
-                    label={
-                    }
-                  > */}
                   <Paper
                     radius="sm"
                     component="a"
@@ -235,7 +211,6 @@ function Page({ profile }: { profile: UserData }) {
                       </Badge>
                     )}
                   </Paper>
-                  {/* </Indicator> */}
                 </Link>
               ))}
           </Box>
@@ -262,13 +237,9 @@ export const getServerSideProps = getServerSideUser(
       .get();
     if (!querySnap.empty) {
       const profile = parseStringify(querySnap.docs[0].data());
-      // const cards = await getLocalizedData("cards", locale, [
-      //   "id",
-      // ]);
       return {
         props: {
           profile,
-          // cards,
           meta: {
             title: profile?.name
               ? `${profile.name} (@${profile.username})`

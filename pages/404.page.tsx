@@ -1,22 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import {
-  Button,
-  Paper,
-  Text,
-  Group,
-  Box,
-  Center,
-  Title,
-  Image,
-} from "@mantine/core";
+import { Button, Text, Title, Image } from "@mantine/core";
 
 import variant404Image1 from "../assets/404/404_1.png";
 import variant404Image2 from "../assets/404/404_2.png";
 import variant404Image3 from "../assets/404/404_3.png";
 import { getLayout } from "../components/Layout";
-import getServerSideUser from "../services/firebase/getServerSideUser";
-// import "./NoMatch.module.scss";
 
 function Page() {
   const [message, setMessage] = useState<any>(null);

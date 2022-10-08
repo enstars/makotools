@@ -28,11 +28,6 @@ const gameRegions = [
     label: "Global (English)",
     icon: <Flags.GB height={16} style={{ borderRadius: 3 }} />,
   },
-  // { come on baby america
-  //   value: "us",
-  //   label: "United States",
-  //   icon: <Flags.US height={16} style={{ borderRadius: 3 }} />,
-  // },
 ];
 
 function Region() {

@@ -1,19 +1,9 @@
-import {
-  useState,
-  useMemo,
-  useEffect,
-  ReactElement,
-  SyntheticEvent,
-  FormEvent,
-  ChangeEvent,
-} from "react";
+import { useState, useMemo, useEffect, ChangeEvent } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import {
   TextInput,
   Loader,
   useMantineTheme,
-  Textarea,
-  Box,
   Text,
   TextInputProps,
 } from "@mantine/core";

@@ -1,30 +1,8 @@
-import {
-  createEmotionCache,
-  Input,
-  MantineProvider,
-  Tabs,
-  Textarea,
-  TypographyStylesProvider,
-} from "@mantine/core";
-import Markdown from "marked-react";
-import { marked } from "marked";
-import DOMPurify from "isomorphic-dompurify";
-import dynamic from "next/dynamic";
-import {
-  createRef,
-  Fragment,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import Head from "next/head";
-import Frame, { FrameContextConsumer, useFrame } from "react-frame-component";
+import { Input, Tabs, Textarea } from "@mantine/core";
 import { IconPencil, IconTextCaption } from "@tabler/icons";
 
 import TextSetting from "../shared/TextSetting";
 import useUser from "../../../services/firebase/user";
-import { CONSTANTS } from "../../../services/makotools/constants";
 import BioDisplay from "../../../components/sections/BioDisplay";
 
 function Name() {

@@ -15,7 +15,6 @@ import {
 import Image from "next/image";
 import { IconNews } from "@tabler/icons";
 
-import useUser from "../services/firebase/user";
 import Banner from "../assets/banner.png";
 import AffiliatesLight from "../assets/Affiliates/affiliates_light.svg?url";
 import AffiliatesDark from "../assets/Affiliates/affiliates_dark.svg?url";
@@ -33,7 +32,6 @@ function Page({
   posts: any;
   characters: GameCharacter[];
 }) {
-  const user = useUser();
   const theme = useMantineTheme();
 
   return (
@@ -182,44 +180,41 @@ function Page({
 Page.getLayout = getLayout({});
 export default Page;
 
-export const getServerSideProps = getServerSideUser(
-  async ({ req, res, locale, params }) => {
-    const characters = await getLocalizedDataArray<GameCharacter>(
-      "characters",
-      locale,
+export const getServerSideProps = getServerSideUser(async ({ locale }) => {
+  const characters = await getLocalizedDataArray<GameCharacter>(
+    "characters",
+    locale,
+    "character_id",
+    [
       "character_id",
-      [
-        "character_id",
-        "first_name",
-        "last_name",
-        "birthday",
-        "image_color",
-        "sort_id",
-      ]
+      "first_name",
+      "last_name",
+      "birthday",
+      "image_color",
+      "sort_id",
+    ]
+  );
+
+  try {
+    const initRespose = await fetch(
+      `https://backend-stars.ensemble.moe/wp-main/wp-json/wp/v2/posts?categories=5,6&per_page=5&page=1`
     );
+    const initData = await initRespose.json();
 
-    try {
-      const initRespose = await fetch(
-        `https://backend-stars.ensemble.moe/wp-main/wp-json/wp/v2/posts?categories=5,6&per_page=5&page=1`
-      );
-      const initData = await initRespose.json();
-
-      return {
-        props: {
-          posts: initData,
-          characters: characters?.data,
+    return {
+      props: {
+        posts: initData,
+        characters: characters?.data,
+      },
+    };
+  } catch (e) {
+    return {
+      props: {
+        posts: {
+          error: true,
         },
-      };
-    } catch (e) {
-      console.error(e);
-      return {
-        props: {
-          posts: {
-            error: true,
-          },
-          characters: characters?.data,
-        },
-      };
-    }
+        characters: characters?.data,
+      },
+    };
   }
-);
+});

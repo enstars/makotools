@@ -1,14 +1,11 @@
 import {
   ActionIcon,
-  Autocomplete,
   Box,
-  Button,
   Card,
   createStyles,
   Group,
   Image,
   Input,
-  Paper,
   Select,
   Text,
 } from "@mantine/core";
@@ -19,7 +16,6 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 import { getAssetURL } from "../../../services/data";
 import useUser from "../../../services/firebase/user";
-import TextSetting from "../shared/TextSetting";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -79,9 +75,6 @@ function Banner({ cards }: { cards: GameCard[] | undefined }) {
         <Card
           radius="sm"
           p={0}
-          //   className={cx(classes.item, {
-          //     [classes.itemDragging]: snapshot.isDragging,
-          //   })}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
@@ -116,7 +109,6 @@ function Banner({ cards }: { cards: GameCard[] | undefined }) {
       )}
     </Draggable>
   ));
-  console.log(state, cards);
 
   return (
     <Input.Wrapper label="Banner Cards">
@@ -141,9 +133,9 @@ function Banner({ cards }: { cards: GameCard[] | undefined }) {
         placeholder="Add a card"
         value={acValue}
         onChange={(value) => {
-          console.log(value);
           if (value) handlers.append(parseInt(value));
-          //   user.db.set({ profile__banner: [...state, value] });
+          if (user.loggedIn)
+            user.db.set({ profile__banner: [...state, value] });
         }}
         searchable
         limit={25}

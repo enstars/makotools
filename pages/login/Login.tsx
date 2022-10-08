@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import {
   Alert,
-  Center,
   Container,
   Paper,
   Text,
   Button,
   Divider,
-  Input,
   TextInput,
   PasswordInput,
   Group,
@@ -16,23 +14,16 @@ import {
   Stack,
   Title,
   LoadingOverlay,
-  Badge,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import {
   IconAlertTriangle,
-  IconArrowLeft,
-  IconBrandFirefox,
   IconBrandGoogle,
   IconBrandTwitter,
 } from "@tabler/icons";
 import Link from "next/link";
-import { AuthAction } from "next-firebase-auth";
-import { showNotification } from "@mantine/notifications";
 import { useRouter } from "next/router";
 
-import Google from "../../assets/google.svg";
-import getServerSideUser from "../../services/firebase/getServerSideUser";
 import useUser from "../../services/firebase/user";
 import {
   signInWithGoogle,
@@ -61,7 +52,6 @@ function Login() {
   }, [user, router]);
 
   function signOnAlertMsg(error: { type: string; code?: string }) {
-    console.log(error);
     const { code } = error;
     let message;
     switch (code) {
@@ -211,7 +201,6 @@ function Login() {
               id="signin-form"
               onSubmit={form.onSubmit((values) => {
                 setSignOnError(null);
-                console.log(values);
                 if (isRegister) {
                   signUpWithEmail(
                     form.values.email,
@@ -226,7 +215,6 @@ function Login() {
                     }
                   );
                 } else {
-                  console.log("sign in");
                   signInWithEmail(
                     form.values.email,
                     form.values.password,

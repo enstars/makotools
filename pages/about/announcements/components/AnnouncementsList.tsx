@@ -51,7 +51,7 @@ function AnnouncementsList() {
   return (
     <>
       <InfiniteScroll
-        dataLength={(currentPage - 1) * PER_PAGE} //This is important field to render the next data
+        dataLength={(currentPage - 1) * PER_PAGE}
         next={loadMore}
         hasMore={currentPage <= allPagesCount}
         loader={
@@ -65,7 +65,7 @@ function AnnouncementsList() {
         }}
       >
         {announcements.map((a, i) => (
-          <Announcement key={a.id} announcement={a} i={i}></Announcement>
+          <Announcement key={a.id} announcement={a} i={i} />
         ))}
       </InfiniteScroll>
     </>

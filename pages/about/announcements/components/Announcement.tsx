@@ -1,12 +1,4 @@
-import {
-  Badge,
-  Divider,
-  Paper,
-  Text,
-  Title,
-  TypographyStylesProvider,
-} from "@mantine/core";
-import Link from "next/link";
+import { Badge, Divider, Paper, Text } from "@mantine/core";
 import { useRouter } from "next/router";
 
 import categories from "../../../../data/about/posts/categories.json";
@@ -34,23 +26,6 @@ function Announcement({
       <Text inline weight={700} size="lg">
         {announcement.title.rendered}
       </Text>
-      {/* <TypographyStylesProvider
-          my="xs"
-          sx={(theme) => ({
-            "& > p": {
-              margin: 0,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              lineHeight: 1.25,
-            },
-            fontSize: theme.fontSizes.sm,
-          })}
-        >
-          <div
-            dangerouslySetInnerHTML={{ __html: announcement.excerpt.rendered }}
-          />
-        </TypographyStylesProvider> */}
       {announcement.categories?.map((c) => (
         <Badge variant="dot" key={c} color={categories[c].color}>
           {categories[c].name}

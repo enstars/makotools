@@ -6,7 +6,7 @@ import AnnouncementsList from "./components/AnnouncementsList";
 function Page() {
   return (
     <>
-      <PageTitle title="Announcements" mb={24}></PageTitle>
+      <PageTitle title="Announcements" mb={24} />
       <AnnouncementsList />
     </>
   );

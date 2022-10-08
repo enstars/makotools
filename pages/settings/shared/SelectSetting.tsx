@@ -1,4 +1,4 @@
-import { Box, Group, Select, SelectProps, Text } from "@mantine/core";
+import { Group, Select, SelectProps, Text } from "@mantine/core";
 import { forwardRef, ReactElement } from "react";
 
 import useUser from "../../../services/firebase/user";

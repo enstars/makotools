@@ -7,7 +7,7 @@ function Email() {
   return (
     <TextInput
       label="Email"
-      value={(!user.loading && user.loggedIn && user.user.email) || " "}
+      value={(user.loggedIn && user.user.email) || " "}
       readOnly
     />
   );

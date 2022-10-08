@@ -1,13 +1,12 @@
-// ./pages/api/login
 import {
   setAuthCookies,
   verifyIdToken,
   getFirebaseAdmin,
 } from "next-firebase-auth";
-import { FieldValue, getFirestore } from "firebase-admin/firestore";
+import { FieldValue } from "firebase-admin/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { initAuthentication } from "../../services/firebase/authentication"; // the module you created above
+import { initAuthentication } from "../../services/firebase/authentication";
 
 initAuthentication();
 
@@ -33,11 +32,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!authToken) return;
 
     const authUser = await verifyIdToken(authToken);
-    console.log(authUser);
     if (!authUser.id) return;
 
     const db = getFirebaseAdmin().firestore();
-    // db.settings(firestoreSettings); // no idea why this doesnt work
     const docCollection = db.collection("users");
     const docRef = docCollection.doc(authUser.id);
     const docGet = (await docRef.get())?.data();

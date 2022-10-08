@@ -1,39 +1,28 @@
-import { useState, useEffect, forwardRef } from "react";
-import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
 import { useViewportSize } from "@mantine/hooks";
 import { AuthAction } from "next-firebase-auth";
 import {
   Stack,
   useMantineTheme,
-  useMantineColorScheme,
   Tabs,
-  Center,
-  Loader,
-  Text,
   Alert,
   Accordion,
   ThemeIcon,
-  Box,
   Group,
 } from "@mantine/core";
 import {
   IconUserCircle,
-  IconBrush,
   IconDeviceGamepad2,
-  IconEditCircle,
-  IconIdBadge,
   IconPalette,
   IconPencil,
 } from "@tabler/icons";
 import dynamic from "next/dynamic";
 
 import PageTitle from "../../components/sections/PageTitle";
-import useUser from "../../services/firebase/user";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { getLayout } from "../../components/Layout";
 import { getLocalizedDataArray } from "../../services/data";
 
-import SelectSetting from "./shared/SelectSetting";
 import Region from "./content/Region";
 import NameOrder from "./content/NameOrder";
 import DarkMode from "./appearance/DarkMode";
@@ -42,7 +31,6 @@ import Name from "./profile/Name";
 import Pronouns from "./profile/Pronouns";
 import Username from "./profile/Username";
 import ColorCode from "./account/ColorCode";
-// import Bio from "./profile/Bio";
 import StartPlaying from "./profile/StartPlaying";
 import Email from "./account/Email";
 import Banner from "./profile/Banner";
@@ -120,12 +108,10 @@ const tabs = [
 ];
 
 function Page({ cards }: { cards: GameCard[] | undefined }) {
-  const router = useRouter();
   const theme = useMantineTheme();
   const { width } = useViewportSize();
 
   const [isNarrowPage, setIsNarrowPage] = useState(true);
-  // const isNarrowPage = width < theme.breakpoints.sm;
 
   useEffect(() => {
     setIsNarrowPage(width < theme.breakpoints.sm);
@@ -157,10 +143,7 @@ function Page({ cards }: { cards: GameCard[] | undefined }) {
               <Accordion.Control
                 icon={
                   <ThemeIcon color={t.color} variant="light">
-                    <t.icon
-                      size={14}
-                      // color={theme.other.getColor(theme, t.color)}
-                    />
+                    <t.icon size={14} />
                   </ThemeIcon>
                 }
               >
@@ -175,7 +158,7 @@ function Page({ cards }: { cards: GameCard[] | undefined }) {
       ) : (
         <Tabs
           defaultValue="content"
-          orientation={"vertical"}
+          orientation="vertical"
           styles={{
             tabsList: {
               marginRight: !isNarrowPage ? 16 : undefined,

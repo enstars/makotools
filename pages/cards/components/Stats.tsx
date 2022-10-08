@@ -19,10 +19,7 @@ function LabelCell({ total, ...props }: BoxProps & { total?: any }) {
       component={"td"}
       sx={(theme) => ({
         "&&": {
-          // textAlign: "right",
-          // fontVariantCaps: "small-caps",
           textTransform: "uppercase",
-          //   fontWeight: total ? 800 : 400,
           fontFeatureSettings: "'kern' 1, 'ss02' 1",
           fontSize: theme.fontSizes.xs,
           fontWeight: 900,
@@ -126,7 +123,6 @@ function Stats({ card }: { card: GameCard }) {
             borderTopRightRadius: theme.radius.md,
           },
         })}
-        // radius="md"
       >
         <ScrollArea
           offsetScrollbars
@@ -142,7 +138,7 @@ function Stats({ card }: { card: GameCard }) {
           >
             <thead>
               <tr>
-                <StatCell header></StatCell>
+                <StatCell header />
                 <StatCell header>Da</StatCell>
                 <StatCell header>Vo</StatCell>
                 <StatCell header>Pf</StatCell>
