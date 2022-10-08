@@ -4,17 +4,15 @@ import { useState } from "react";
 
 import Sidebar from "../Sidebar";
 
-import Breadcrumbs from "./Breadcrumbs";
+import HeaderContents from "./HeaderContents";
 
 const cornerSize = 8;
 
 function HeaderApp({
   getBreadcrumbs,
-  title,
   breadcrumbs,
 }: {
   getBreadcrumbs: (path: string) => string[];
-  title: string;
   breadcrumbs: string[];
 }) {
   const [scroll] = useWindowScroll();
@@ -54,7 +52,6 @@ function HeaderApp({
               }}
               height="auto"
               px="md"
-              // py={0}
               sx={(theme) => ({
                 paddingTop: theme.spacing.xs / 1.5,
                 paddingBottom: theme.spacing.xs / 1.5,
@@ -93,7 +90,7 @@ function HeaderApp({
                 },
               })}
             >
-              <Breadcrumbs
+              <HeaderContents
                 getBreadcrumbs={getBreadcrumbs}
                 breadcrumbs={breadcrumbs}
                 setOpened={setOpened}
@@ -103,7 +100,7 @@ function HeaderApp({
         </Transition>
       </Affix>
 
-      <Breadcrumbs
+      <HeaderContents
         getBreadcrumbs={getBreadcrumbs}
         breadcrumbs={breadcrumbs}
         setOpened={setOpened}

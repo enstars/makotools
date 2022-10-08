@@ -1,10 +1,7 @@
-import Head from "next/head";
-import { Text, Box, TypographyStylesProvider } from "@mantine/core";
-import type { WP_REST_API_Post } from "wp-types";
+import { TypographyStylesProvider } from "@mantine/core";
 
-import Layout, { getLayout } from "../../../components/Layout";
+import { getLayout } from "../../../components/Layout";
 import PageTitle from "../../../components/sections/PageTitle";
-import ImageViewer from "../../../components/core/ImageViewer";
 import Reactions from "../../../components/sections/Reactions";
 import { MkAnnouncement } from "../../../types/makotools";
 

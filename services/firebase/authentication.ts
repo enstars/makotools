@@ -28,7 +28,9 @@ const firebaseConfig = {
   measurementId: "G-L1FLXJKQC5",
 };
 
-const initAuth = () => {
+const defaultCallback = console.error;
+
+export function initAuthentication() {
   init({
     authPageURL: "/login",
     appPageURL: "/",
@@ -111,52 +113,40 @@ const initAuth = () => {
       return response;
     },
   });
-};
+}
 
-export default initAuth;
-
-export const appSignInWithGoogle = () => {
+export function signInWithGoogle(errorCallback = defaultCallback) {
   const clientAuth = getAuth();
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
-  signInWithPopup(clientAuth, provider);
-};
-export const appSignInWithTwitter = (errorCallback = console.log) => {
+  signInWithPopup(clientAuth, provider).catch(errorCallback);
+}
+
+export function signInWithTwitter(errorCallback = defaultCallback) {
   const clientAuth = getAuth();
   const provider = new TwitterAuthProvider();
   provider.setCustomParameters({ force_login: "true" });
-  // provider.setCustomParameters({ lang: "th" });
   signInWithPopup(clientAuth, provider).catch(errorCallback);
-};
+}
 
-export const appSignInWithEmailAndPassword = (
+export function signInWithEmail(
   email: string,
   password: string,
-  callback = (a: any) => {}
-) => {
+  errorCallback = defaultCallback
+) {
   const clientAuth = getAuth();
-  signInWithEmailAndPassword(clientAuth, email, password)
-    .then((result) => {
-      //   syncFirestoreUserData(result.user);
-    })
-    .catch((error) => {
-      callback({ status: "error", error });
-    });
-};
-export const appSignUpWithEmailAndPassword = (
+  signInWithEmailAndPassword(clientAuth, email, password).catch(errorCallback);
+}
+
+export function signUpWithEmail(
   email: string,
   password: string,
-  data: null | {},
-  callback: (res: UserCredential | any) => void
-) => {
+  errorCallback = defaultCallback
+) {
   {
     const clientAuth = getAuth();
-    createUserWithEmailAndPassword(clientAuth, email, password)
-      .then((result) => {
-        callback(result);
-      })
-      .catch((error) => {
-        callback({ status: "error", error });
-      });
+    createUserWithEmailAndPassword(clientAuth, email, password).catch(
+      errorCallback
+    );
   }
-};
+}

@@ -3,6 +3,8 @@ import { AuthUserContext } from "next-firebase-auth";
 import { StaticImageData } from "next/image";
 import { WP_REST_API_Post } from "wp-types";
 
+type LoadingStatus = "success" | "error";
+
 type Locale =
   | "en" // English
   | "ja" // Japanese

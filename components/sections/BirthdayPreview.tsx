@@ -17,9 +17,8 @@ import {
 import Link from "next/link";
 
 import { twoStarIDs } from "../../data/characterIDtoCardID";
-import { useDayjs } from "../../services/dayjs";
-import { getB2File } from "../../services/ensquare";
-import styles from "../../styles/BirthdayPreview.module.scss";
+import { useDayjs } from "../../services/libraries/dayjs";
+import { getAssetURL } from "../../services/data";
 
 interface CharIDAndBirthday {
   id: number;
@@ -27,9 +26,9 @@ interface CharIDAndBirthday {
 }
 
 function retrieveClosestBirthdays(
-  characters: GameCharacter[]
+  characters: GameCharacter[],
+  dayjs: any
 ): CharIDAndBirthday[] {
-  const dayjs = useDayjs();
   const todaysDate = dayjs(new Date()).format("YYYY-MM-DD");
 
   const todaysDateObj = {
@@ -88,47 +87,34 @@ function HoroscopeSymbol({ ...props }) {
     // ^ stream knockin' fantasy
     case 0:
       return <IconZodiacAries className={props.className} size={48} />;
-      break;
     case 1:
       return <IconZodiacTaurus className={props.className} size={48} />;
-      break;
     case 2:
       return <IconZodiacGemini className={props.className} size={48} />;
-      break;
     case 3:
       return <IconZodiacCancer className={props.className} size={48} />;
-      break;
     case 4:
       return <IconZodiacLeo className={props.className} size={48} />;
-      break;
     case 5:
       return <IconZodiacVirgo className={props.className} size={48} />;
-      break;
     case 6:
       return <IconZodiacLibra className={props.className} size={48} />;
-      break;
     case 7:
       return <IconZodiacScorpio className={props.className} size={48} />;
-      break;
     case 8:
       return <IconZodiacSagittarius className={props.className} size={48} />;
-      break;
     case 9:
       return <IconZodiacCapricorn className={props.className} size={48} />;
-      break;
     case 10:
       return <IconZodiacAquarius className={props.className} size={48} />;
-      break;
     case 11:
       return <IconZodiacPisces className={props.className} size={48} />;
-      break;
     default:
       return null;
-      break;
   }
 }
 
-const useStyles = createStyles((theme, _params, getRef) => ({
+const useStyles = createStyles((theme, _params) => ({
   wrapper: {
     display: "block",
     width: "300px",
@@ -165,87 +151,75 @@ function calculateHoroscope(date: Date) {
       } else {
         return 11;
       }
-      break;
+
     case 4:
       if (day <= 19) {
         return 0;
       } else {
         return 1;
       }
-      break;
     case 5:
       if (day <= 20) {
         return 1;
       } else {
         return 2;
       }
-      break;
     case 6:
       if (day <= 20) {
         return 2;
       } else {
         return 3;
       }
-      break;
     case 7:
       if (day <= 22) {
         return 3;
       } else {
         return 4;
       }
-      break;
     case 8:
       if (day <= 22) {
         return 4;
       } else {
         return 5;
       }
-      break;
     case 9:
       if (day <= 22) {
         return 5;
       } else {
         return 6;
       }
-      break;
     case 10:
       if (day <= 22) {
         return 6;
       } else {
         return 7;
       }
-      break;
     case 11:
       if (day <= 21) {
         return 7;
       } else {
         return 8;
       }
-      break;
     case 12:
       if (day <= 21) {
         return 8;
       } else {
         return 9;
       }
-      break;
     case 1:
       if (day <= 19) {
         return 9;
       } else {
         return 10;
       }
-      break;
     case 2:
       if (day <= 18) {
         return 10;
       } else {
         return 11;
       }
-      break;
     default:
       return null;
-      break;
   }
 }
 
@@ -270,14 +244,14 @@ function BirthdayCard({ ...props }) {
               background: `linear-gradient(45deg, transparent 73%, ${props.character.image_color}99 83%)`,
               zIndex: 2,
             }}
-          ></Box>
+          />
           <HoroscopeSymbol
             className={classes.horoscope}
             horoscope={calculateHoroscope(new Date(props.character.birthday))}
           />
           <Image
             className={`${classes.alignImage}`}
-            src={getB2File(
+            src={getAssetURL(
               `cards/card_full1_${
                 (twoStarIDs as any)[props.character.character_id]
               }_normal.png`
@@ -296,7 +270,8 @@ function BirthdayCard({ ...props }) {
 }
 
 function BirthdayPreview({ ...props }) {
-  console.log(props.characters);
+  const dayjs = useDayjs();
+
   return (
     <Accordion variant="contained" defaultValue="birthday">
       <Accordion.Item value="birthday">
@@ -305,7 +280,7 @@ function BirthdayPreview({ ...props }) {
             Upcoming Birthdays
           </Text>
         </Accordion.Control>
-        {retrieveClosestBirthdays(props.characters).map(
+        {retrieveClosestBirthdays(props.characters, dayjs).map(
           (c: CharIDAndBirthday) => {
             let character = props.characters.find((char: GameCharacter) => {
               return char.character_id === c.id;

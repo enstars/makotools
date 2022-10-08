@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import {
   Alert,
-  Center,
   Container,
   Paper,
   Text,
   Button,
   Divider,
-  Input,
   TextInput,
   PasswordInput,
   Group,
@@ -16,29 +14,22 @@ import {
   Stack,
   Title,
   LoadingOverlay,
-  Badge,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import {
   IconAlertTriangle,
-  IconArrowLeft,
-  IconBrandFirefox,
   IconBrandGoogle,
   IconBrandTwitter,
 } from "@tabler/icons";
 import Link from "next/link";
-import { AuthAction } from "next-firebase-auth";
-import { showNotification } from "@mantine/notifications";
 import { useRouter } from "next/router";
 
-import Google from "../../assets/google.svg";
-import getServerSideUser from "../../services/firebase/getServerSideUser";
-import { useUser } from "../../services/firebase/user";
+import useUser from "../../services/firebase/user";
 import {
-  appSignInWithGoogle,
-  appSignInWithEmailAndPassword,
-  appSignUpWithEmailAndPassword,
-  appSignInWithTwitter,
+  signInWithGoogle,
+  signInWithTwitter,
+  signInWithEmail,
+  signUpWithEmail,
 } from "../../services/firebase/authentication";
 
 function Login() {
@@ -61,7 +52,6 @@ function Login() {
   }, [user, router]);
 
   function signOnAlertMsg(error: { type: string; code?: string }) {
-    console.log(error);
     const { code } = error;
     let message;
     switch (code) {
@@ -185,7 +175,7 @@ function Login() {
                 id="signin-google"
                 variant="default"
                 leftIcon={<IconBrandGoogle size={16} />}
-                onClick={appSignInWithGoogle}
+                onClick={() => signInWithGoogle()}
                 style={{ width: "100%" }}
               >
                 {isRegister ? "Sign up" : "Sign in"} with Google
@@ -194,14 +184,7 @@ function Login() {
                 id="signin-twitter"
                 variant="default"
                 leftIcon={<IconBrandTwitter size={16} />}
-                onClick={() => {
-                  appSignInWithTwitter((e) => {
-                    console.log(e.message, JSON.stringify(e));
-                  });
-                  // showNotification({
-                  //   title: "Twitter sign-on is coming soon!",
-                  // });
-                }}
+                onClick={() => signInWithTwitter()}
                 style={{ width: "100%" }}
               >
                 {isRegister ? "Sign up" : "Sign in"} with Twitter
@@ -218,37 +201,30 @@ function Login() {
               id="signin-form"
               onSubmit={form.onSubmit((values) => {
                 setSignOnError(null);
-                console.log(values);
                 if (isRegister) {
-                  appSignUpWithEmailAndPassword(
+                  signUpWithEmail(
                     form.values.email,
                     form.values.password,
-                    { name: form.values.name },
-                    (res) => {
-                      if (res.status === "error") {
-                        const errorCode = res.error.code.split("/")[1];
-                        const errorObj = {
-                          type: "registration",
-                          code: errorCode,
-                        };
-                        setSignOnError(errorObj);
-                      }
+                    (error) => {
+                      const errorCode = error.code.split("/")[1];
+                      const errorObj = {
+                        type: "registration",
+                        code: errorCode,
+                      };
+                      setSignOnError(errorObj);
                     }
                   );
                 } else {
-                  console.log("sign in");
-                  appSignInWithEmailAndPassword(
+                  signInWithEmail(
                     form.values.email,
                     form.values.password,
-                    (res) => {
-                      if (res.status === "error") {
-                        const errorCode = res.error.code.split("/")[1];
-                        const errorObj = {
-                          type: "login",
-                          code: errorCode,
-                        };
-                        setSignOnError(errorObj);
-                      }
+                    (error) => {
+                      const errorCode = error.code.split("/")[1];
+                      const errorObj = {
+                        type: "login",
+                        code: errorCode,
+                      };
+                      setSignOnError(errorObj);
                     }
                   );
                 }

@@ -4,7 +4,7 @@ import { IconCake, IconPlayerPlay, IconPlayerStop } from "@tabler/icons";
 import { useState } from "react";
 import { NextLink } from "@mantine/next";
 
-import { getB2File } from "../../../services/ensquare";
+import { getAssetURL } from "../../../services/data";
 import { twoStarIDs } from "../../../data/characterIDtoCardID";
 
 function CalendarEventCard({ ...props }) {

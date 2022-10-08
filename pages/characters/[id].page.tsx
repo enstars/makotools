@@ -4,12 +4,10 @@ import { IconCake } from "@tabler/icons";
 
 import {
   getData,
-  getB2File,
   getLocalizedDataArray,
   getItemFromLocalizedDataArray,
-} from "../../services/ensquare";
+} from "../../services/data";
 import PageTitle from "../../components/sections/PageTitle";
-import ImageViewer from "../../components/core/ImageViewer";
 import Reactions from "../../components/sections/Reactions";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { getLayout } from "../../components/Layout";
@@ -30,12 +28,11 @@ function isBirthdayToday(birthday: string) {
 }
 
 function Page({
-  character: localizedCharacter,
+  characterQuery,
 }: {
-  character: QuerySuccess<GameCharacter>;
+  characterQuery: QuerySuccess<GameCharacter>;
 }) {
-  const character = localizedCharacter.data;
-  console.log(character);
+  const { data: character } = characterQuery;
   return (
     <>
       {isBirthdayToday(character.birthday) && (
@@ -96,24 +93,18 @@ function Page({
             borderRadius: 16,
           }}
         >
-          <ImageViewer
-            src={getB2File(
-              `render/character_full1_${character.character_id}.png`
-            )}
+          <Picture
+            srcB2={`render/character_full1_${character.character_id}.png`}
+            transparent
             alt={character.first_name[0]}
+            fill={false}
             width={300}
             height={600}
-            // objectfit="cover"
           />
         </Box>
       </PageTitle>
       <Text>{character.introduction[0]}</Text>
       <Reactions />
-      {/* Birthday
-      {character.birthday}
-
-      Age
-      {character.age} */}
 
       <Picture
         srcB2={`render/character_full1_${character.character_id}.png`}
@@ -169,7 +160,6 @@ export const getServerSideProps = getServerSideUser(
       "character_id"
     );
 
-    console.log(characterEN.character_id, characters);
     if (character.status === "error") {
       return {
         notFound: true,
@@ -178,7 +168,7 @@ export const getServerSideProps = getServerSideUser(
 
     return {
       props: {
-        character,
+        characterQuery: character,
       },
     };
   }

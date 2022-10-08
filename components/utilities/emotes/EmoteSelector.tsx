@@ -1,15 +1,7 @@
-import { ReactElement, SyntheticEvent, useState } from "react";
-import {
-  Popover,
-  Text,
-  Button,
-  Image,
-  ActionIcon,
-  Group,
-  PopoverProps,
-} from "@mantine/core";
+import { ReactElement, useState } from "react";
+import { Popover, ActionIcon, Group, PopoverProps } from "@mantine/core";
 
-import emotes from "../../../services/emotes";
+import emotes from "../../../services/makotools/emotes";
 import { Emote as EmoteType } from "../../../types/makotools";
 
 import Emote from "./Emote";

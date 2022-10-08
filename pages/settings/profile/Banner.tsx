@@ -1,14 +1,11 @@
 import {
   ActionIcon,
-  Autocomplete,
   Box,
-  Button,
   Card,
   createStyles,
   Group,
   Image,
   Input,
-  Paper,
   Select,
   Text,
 } from "@mantine/core";
@@ -17,9 +14,8 @@ import { IconTrash } from "@tabler/icons";
 import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
-import { getB2File } from "../../../services/ensquare";
-import { useUser } from "../../../services/firebase/user";
-import TextSetting from "../shared/TextSetting";
+import { getAssetURL } from "../../../services/data";
+import useUser from "../../../services/firebase/user";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -79,9 +75,6 @@ function Banner({ cards }: { cards: GameCard[] | undefined }) {
         <Card
           radius="sm"
           p={0}
-          //   className={cx(classes.item, {
-          //     [classes.itemDragging]: snapshot.isDragging,
-          //   })}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
@@ -91,8 +84,8 @@ function Banner({ cards }: { cards: GameCard[] | undefined }) {
         >
           <Group>
             <Image
-              alt={cards.find((c) => c.id === item)?.title}
-              src={getB2File(`assets/card_still_full1_${item}_evolution.png`)}
+              alt={cards.find((c) => c.id === item)?.title[0]}
+              src={getAssetURL(`assets/card_still_full1_${item}_evolution.png`)}
               width={64}
               height={64}
             />
@@ -116,7 +109,6 @@ function Banner({ cards }: { cards: GameCard[] | undefined }) {
       )}
     </Draggable>
   ));
-  console.log(state, cards);
 
   return (
     <Input.Wrapper label="Banner Cards">
@@ -141,9 +133,9 @@ function Banner({ cards }: { cards: GameCard[] | undefined }) {
         placeholder="Add a card"
         value={acValue}
         onChange={(value) => {
-          console.log(value);
           if (value) handlers.append(parseInt(value));
-          //   user.db.set({ profile__banner: [...state, value] });
+          if (user.loggedIn)
+            user.db.set({ profile__banner: [...state, value] });
         }}
         searchable
         limit={25}
@@ -152,7 +144,7 @@ function Banner({ cards }: { cards: GameCard[] | undefined }) {
             ?.filter((c) => c?.title)
             ?.filter((c) => !state.includes(c.id))
             ?.map((c) => ({
-              label: `(${c.title[0]}) ${c.name[0]}`,
+              label: `(${c.title[0]}) ${c?.name?.[0]}`,
               value: c.id.toString(),
             })) || []
         }

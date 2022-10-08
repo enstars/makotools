@@ -1,5 +1,5 @@
 import React from "react";
-import { Anchor, Center, Box, Text, Button, Group, Stack } from "@mantine/core";
+import { Anchor, Center, Box, Text, Button, Stack } from "@mantine/core";
 import Router from "next/router";
 import Image from "next/image";
 

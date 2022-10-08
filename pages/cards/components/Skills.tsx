@@ -1,26 +1,15 @@
 import {
-  Accordion,
-  ActionIcon,
   Badge,
   Box,
-  Button,
-  Drawer,
   Group,
-  Indicator,
   Input,
-  Popover,
-  ScrollArea,
   Slider,
   Stack,
-  Table,
   Text,
   Title,
-  UnstyledButton,
 } from "@mantine/core";
-import { IconAdjustments } from "@tabler/icons";
 import { ReactElement, useState } from "react";
 
-import CardStatsNumber from "../../../components/utilities/formatting/CardStatsNumber";
 import attributes from "../../../data/attributes.json";
 import centerSkill from "../../../data/centerSkill.json";
 
@@ -109,7 +98,6 @@ function Skills({ card }: { card: GameCard }) {
             sx={{ flex: "2 1 0", minWidth: 150 }}
           >
             <Slider
-              // sx={{ width: 200 }}
               label={(l) => `Lvl. ${l}`}
               min={1}
               max={10}
@@ -132,7 +120,6 @@ function Skills({ card }: { card: GameCard }) {
           >
             <Slider
               label={(l) => `Lvl. ${l}`}
-              // sx={{ width: 200 }}
               min={1}
               max={5}
               value={supportSkillLevel}

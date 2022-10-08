@@ -17,6 +17,9 @@ const CONSTANTS = {
     DATA_TL: "https://tl.data.ensemble.moe/",
     PREVIEW: "https://preview.ensemble.moe/",
   },
+  KEYS: {
+    CAPTCHA: "6LfoKlAiAAAAAND6h3R6MapgfOxEH-7usSm7_hIE",
+  },
 };
 
 export { CONSTANTS };

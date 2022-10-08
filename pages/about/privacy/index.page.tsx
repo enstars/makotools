@@ -6,7 +6,7 @@ import { getLayout } from "../../../components/Layout";
 function Page() {
   return (
     <>
-      <PageTitle title="Privacy Policy"></PageTitle>
+      <PageTitle title="Privacy Policy" />
       <TypographyStylesProvider>
         <p>Google made us put this here, so here it is.</p>
 

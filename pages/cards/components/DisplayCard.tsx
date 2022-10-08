@@ -7,17 +7,12 @@ import {
   Text,
   Divider,
   Tooltip,
-  Skeleton,
   useMantineTheme,
-  useMantineColorScheme,
-  Button,
   ActionIcon,
   Popover,
   Stack,
 } from "@mantine/core";
 import {
-  IconBoxMultiple1,
-  IconFilePlus,
   IconMinus,
   IconPlaylistAdd,
   IconPlus,
@@ -26,13 +21,11 @@ import {
 } from "@tabler/icons";
 import { useRouter } from "next/router";
 
-import { getB2File } from "../../../services/ensquare";
 import attributes from "../../../data/attributes.json";
-import ImageViewer from "../../../components/core/ImageViewer";
 import OfficialityBadge from "../../../components/utilities/formatting/OfficialityBadge";
 import CardStatsNumber from "../../../components/utilities/formatting/CardStatsNumber";
-import { addCard } from "../../../services/collection";
-import { useUser } from "../../../services/firebase/user";
+import { addCard } from "../../../services/makotools/collection";
+import useUser from "../../../services/firebase/user";
 import Picture from "../../../components/core/Picture";
 import { Lang } from "../../../types/makotools";
 
@@ -89,19 +82,16 @@ export default function CardCard({
 }) {
   const router = useRouter();
   const theme = useMantineTheme();
-  const { colorScheme } = useMantineColorScheme();
 
   const user = useUser();
 
   const statsIR = sumStats(card.stats?.ir);
   const statsIR4 = sumStats(card.stats?.ir4);
 
-  const collection =
-    (!user.loading && user.loggedIn && user.db?.collection) || [];
+  const collection = (user.loggedIn && user.db?.collection) || [];
   const thisColItem = collection?.find((c) => c.id === card.id);
   const [collectionOpened, setCollectionOpened] = useState(false);
 
-  // if (thisColItem?.count === 0) setCollectionOpened(false);
   return (
     <Card
       withBorder
@@ -113,7 +103,6 @@ export default function CardCard({
     >
       <Card.Section sx={{ position: "relative" }} px={3} pt={3}>
         <Group
-          // grow
           sx={{
             "&:hover picture": { opacity: 0.25 },
           }}
@@ -185,7 +174,6 @@ export default function CardCard({
           {!user.loading && user.loggedIn && (
             <Group>
               <Box
-                // ml="xs"
                 sx={(theme) => ({
                   marginLeft: theme.spacing.xs / 2,
                 })}
@@ -213,7 +201,6 @@ export default function CardCard({
                       {...(thisColItem && thisColItem?.count > 0
                         ? { color: "orange" }
                         : {})}
-                      // color="red"
                     >
                       {thisColItem && thisColItem?.count > 0 ? (
                         <Text inline size="xs" weight="700">
@@ -275,7 +262,6 @@ export default function CardCard({
             sx={{ flex: "1 1 0", minWidth: 0 }}
             noWrap
             position="apart"
-            // mt={3}
           >
             {cardOptions.showFullInfo ? (
               <Text
@@ -296,7 +282,7 @@ export default function CardCard({
                   inline
                   inherit
                   color={
-                    colorScheme === "dark"
+                    theme.colorScheme === "dark"
                       ? theme.colors.yellow[2]
                       : theme.colors.yellow[7]
                   }

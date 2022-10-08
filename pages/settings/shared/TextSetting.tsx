@@ -1,25 +1,15 @@
-import {
-  useState,
-  useMemo,
-  useEffect,
-  ReactElement,
-  SyntheticEvent,
-  FormEvent,
-  ChangeEvent,
-} from "react";
+import { useState, useMemo, useEffect, ChangeEvent } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import {
   TextInput,
   Loader,
   useMantineTheme,
-  Textarea,
-  Box,
   Text,
   TextInputProps,
 } from "@mantine/core";
 import { IconCheck, IconX } from "@tabler/icons";
 
-import { useUser } from "../../../services/firebase/user";
+import useUser from "../../../services/firebase/user";
 import { UserData } from "../../../types/makotools";
 
 function TextSetting<T = {}>({

@@ -12,7 +12,6 @@ import {
   Switch,
   MultiSelect,
   Button,
-  Card,
   TextInput,
   ActionIcon,
   Tooltip,
@@ -25,14 +24,9 @@ import {
   IconSortAscending,
   IconSortDescending,
 } from "@tabler/icons";
-import { slice } from "lodash";
 import fuzzysort from "fuzzysort";
 
-import Layout from "../../components/Layout";
-import {
-  getItemFromLocalizedDataArray,
-  getLocalizedDataArray,
-} from "../../services/ensquare";
+import { getLocalizedDataArray } from "../../services/data";
 import PageTitle from "../../components/sections/PageTitle";
 import { getLayout } from "../../components/Layout";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
@@ -68,8 +62,6 @@ function Page({
   const cards = useMemo(() => cardsQuery.data, []);
   const characters = useMemo(() => charactersQuery.data, []);
 
-  // console.log(cards, characters);
-
   const theme = useMantineTheme();
   const [count, setCount] = useState<number>(CARD_LIST_INITIAL_COUNT);
   const [cardsList, setCardsList] = useState<GameCard[]>([]);
@@ -92,7 +84,6 @@ function Page({
     characterIDtoSort[c.character_id] = c.sort_id;
   });
 
-  // console.log(characterIDtoSort);
   const SORT_OPTIONS: { value: SortOption; label: string }[] = [
     { value: "id", label: "Card ID" },
     {
@@ -124,16 +115,7 @@ function Page({
           );
         return true;
       });
-    // console.log(
-    //   fuzzysort.go(viewOptions.searchQuery, filteredList, {
-    //     key: "title",
-    //     all: true,
-    //   })
-    // );
 
-    const searchableList = filteredList.map((c) => ({
-      data: c,
-    }));
     const searchedList = fuzzysort.go(debouncedSearch, filteredList, {
       keys: ["title.0", "title.1", "title.2"],
       all: true,
@@ -239,7 +221,6 @@ function Page({
                 const filterRarity = value.map(
                   (v) => parseInt(v, 10) as CardRarity
                 );
-                // console.log(filterRarity);
                 setViewOptions({ ...viewOptions, filterRarity });
               }}
               spacing={3}
@@ -289,7 +270,7 @@ function Page({
             {cardsList.length} results found.
           </Text>
           <InfiniteScroll
-            dataLength={slicedCardsList.length} //This is important field to render the next data
+            dataLength={slicedCardsList.length}
             next={loadMore}
             hasMore={count < cardsList.length}
             loader={
@@ -324,15 +305,13 @@ function Page({
   );
 }
 
-export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
+export const getServerSideProps = getServerSideUser(async ({ locale }) => {
   const characters = await getLocalizedDataArray<GameCharacter>(
     "characters",
     locale,
     "character_id",
     ["character_id", "first_name", "sort_id"]
   );
-  // const unit_to_characters = await getLocalizedData("unit_to_characters");
-  // const units = await getLocalizedData("units");
   const cards = await getLocalizedDataArray<GameCard>("cards", locale, "id", [
     "id",
     "name",
@@ -352,6 +331,7 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
     return {
       notFound: true,
     };
+
   return {
     props: { charactersQuery: characters, cardsQuery: cards },
   };

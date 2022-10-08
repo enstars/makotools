@@ -1,13 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import styled from "styled-components";
-import {
-  AppShell,
-  Container,
-  Paper,
-  useMantineTheme,
-  useMantineColorScheme,
-} from "@mantine/core";
+import { AppShell, Container, Paper, useMantineTheme } from "@mantine/core";
 
 import { PageMeta } from "../../types/makotools";
 
@@ -38,10 +29,9 @@ function Layout({
   pageProps?: any;
   meta?: PageMeta;
 }) {
-  const { colorScheme } = useMantineColorScheme();
-  const dark = colorScheme === "dark";
-
   const theme = useMantineTheme();
+  const dark = theme.colorScheme === "dark";
+
   return (
     <ErrorBoundary>
       <Meta {...{ ...pageProps?.meta, ...meta }} />
@@ -98,7 +88,6 @@ function Layout({
             <ErrorBoundary>
               {!hideHeader && (
                 <Header
-                  title={pageProps?.title}
                   getBreadcrumbs={pageProps?.getBreadcrumbs}
                   breadcrumbs={pageProps?.breadcrumbs}
                 />

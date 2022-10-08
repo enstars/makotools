@@ -1,10 +1,9 @@
-import { useRouter } from "next/router";
 import { ReactElement } from "react";
 
-import { getNameOrder } from "../../../services/ensquare";
-import { useUser } from "../../../services/firebase/user";
-import { DEFAULT_LOCALE } from "../../../services/locales";
+import useUser from "../../../services/firebase/user";
 import { Locale } from "../../../types/makotools";
+
+import { getNameOrder } from "services/game";
 
 function NameOrder({
   first_name,
@@ -30,4 +29,3 @@ function NameOrder({
 }
 
 export default NameOrder;
-export { getNameOrder };

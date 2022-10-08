@@ -6,7 +6,7 @@ import PageTitle from "../../components/sections/PageTitle";
 function Page() {
   return (
     <>
-      <PageTitle title="About"></PageTitle>
+      <PageTitle title="About" />
       <TypographyStylesProvider>
         <p>
           MakoTools is a website containing information, tools, and a lot more

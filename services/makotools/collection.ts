@@ -1,4 +1,4 @@
-import { CollectedCard } from "../types/makotools";
+import { CollectedCard } from "../../types/makotools";
 
 function addCard(
   originalCollection: CollectedCard[],

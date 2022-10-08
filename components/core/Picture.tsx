@@ -10,10 +10,8 @@ import {
   ActionIcon,
   Group,
   Stack,
-  BackgroundImage,
-  keyframes,
 } from "@mantine/core";
-import Image, { ImageProps, StaticImageData } from "next/future/image";
+import Image, { ImageProps } from "next/future/image";
 import { ImageProps as MantineImageProps } from "@mantine/core";
 import { SyntheticEvent, useState } from "react";
 import {
@@ -29,21 +27,18 @@ import {
   TransformComponent,
   TransformWrapper,
 } from "@pronestor/react-zoom-pan-pinch";
-// } from "@pronestor/react-zoom-pan-pinch";
 
-import { getB2File } from "../../services/ensquare";
+import { getAssetURL } from "../../services/data";
 import { downloadFromURL } from "../../services/utilities";
-import notify from "../../services/notify";
-import { CONSTANTS } from "../../services/constants";
+import notify from "../../services/libraries/notify";
+import { CONSTANTS } from "../../services/makotools/constants";
 
-function loader({ src }: { src: string }) {
-  return src;
+interface PictureProps extends NextMantineImageProps {
+  action?: "none" | "view" | "download";
+  srcB2?: string;
+  src?: string;
+  transparent?: boolean;
 }
-
-// const flash = keyframes({
-//   "from, to": { opacity: 0.75 },
-//   "50%": { opacity: 1 },
-// });
 
 const useStyles = createStyles(
   (
@@ -128,14 +123,8 @@ const useStyles = createStyles(
     },
   })
 );
-interface PictureProps extends NextMantineImageProps {
-  action?: "none" | "view" | "download";
-  srcB2?: string;
-  src?: string | StaticImageData;
-  transparent?: boolean;
-}
 
-function PictureStringSrc({
+function Picture({
   children,
   ...props
 }: Omit<PictureProps, "src"> & { src?: string }) {
@@ -155,7 +144,7 @@ function PictureStringSrc({
   const [loaded, setLoaded] = useState<boolean>(false);
   const [opened, setOpened] = useState<boolean>(false);
 
-  const src = originalSrc || getB2File(srcB2 as string);
+  const src = originalSrc || getAssetURL(srcB2 as string);
   const isB2Optimized = !!srcB2;
 
   const webpSrc = src?.replace("png", "webp");
@@ -187,22 +176,12 @@ function PictureStringSrc({
         styles={styles}
         className={cx(classes.picture, className)}
       >
-        {hasPlaceholder && (
-          <div
-            className={cx(
-              classes.placeholder
-              // loaded && classes.placeholderLoaded
-            )}
-          />
-        )}
+        {hasPlaceholder && <div className={classes.placeholder} />}
         <source srcSet={webpSrc} />
-        {/* eslint-disable-next-line jsx-a11y/alt-text */}
         <Image
           unoptimized
           fill
           sizes="100vw"
-          // width={10}
-          // height={10}
           placeholder="empty"
           src={src}
           alt={alt}
@@ -288,7 +267,7 @@ function PictureStringSrc({
                 minPositionY={20}
                 panning={{ velocityDisabled: true }}
               >
-                {({ zoomIn, zoomOut, centerView, ...rest }) => (
+                {({ zoomIn, zoomOut, centerView }) => (
                   <>
                     <Paper
                       radius="md"
@@ -340,13 +319,10 @@ function PictureStringSrc({
                         contentClass={classes.tcContent}
                       >
                         <MantineImage
-                          // component="img"
                           src={src}
                           alt={""}
-                          //   withPlaceholder
                           classNames={{ root: classes.modalImage }}
                           height="100%"
-                          //   width="auto"
                           fit="contain"
                         />
                       </TransformComponent>
@@ -374,52 +350,12 @@ function PictureStringSrc({
                   </>
                 )}
               </TransformWrapper>
-
-              {/* <Button
-                component="a"
-                href={props.src}
-                target="_blank"
-                mb="xs"
-                sx={{ width: "100%" }}
-                variant="outline"
-                leftIcon={<IconArrowUpRightCircle size="18" />}
-              >
-                Open Image In New Tab
-              </Button>
-              <Paper
-                radius="sm"
-                withBorder
-                sx={{
-                  background:
-                    "repeating-conic-gradient(#00000010 0% 25%, transparent 0% 50%) 50%",
-                  backgroundSize: "1.75em 1.75em",
-                }}
-              >
-                <Image
-                  src={props.src}
-                  alt={props.alt || "Image"}
-                  withPlaceholder
-                  styles={{ image: { minHeight: 100 } }}
-                ></Image>
-              </Paper> */}
             </Modal>
           </>
         )}
         {children}
       </Box>
     </>
-  );
-}
-
-function Picture(props: PictureProps) {
-  if (typeof props.src !== "undefined" && typeof props.src !== "string") {
-    // eslint-disable-next-line jsx-a11y/alt-text
-    return <Image {...(props as ImageProps)} />;
-  }
-  return (
-    <PictureStringSrc
-      {...(props as Omit<PictureProps, "src"> & { src?: string })}
-    />
   );
 }
 

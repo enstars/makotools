@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import _ from "lodash";
 import {
-  Select,
   Box,
   Paper,
   Group,
@@ -11,24 +9,13 @@ import {
 } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
 
-import {
-  getData,
-  getLocalizedData,
-  getLocalizedDataArray,
-} from "../../services/ensquare";
+import { getLocalizedDataArray } from "../../services/data";
 import PageTitle from "../../components/sections/PageTitle";
 import { getLayout } from "../../components/Layout";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
-import { LoadedData, Query, QuerySuccess } from "../../types/makotools";
+import { QuerySuccess } from "../../types/makotools";
 
 import CharacterCard from "./components/DisplayCard";
-
-interface CharacterCardProps {
-  i: number;
-  doubleface: boolean;
-  characters?: any;
-  unique_id?: string;
-}
 
 type SortOption = "default" | "id" | "birthday";
 interface CharacterViewOptions {
@@ -52,10 +39,8 @@ function Page({
   charactersQuery: QuerySuccess<GameCharacter[]>;
   unitsQuery: QuerySuccess<GameUnit[]>;
 }) {
-  const characters = useMemo(() => charactersQuery.data, []);
-  const units = useMemo(() => unitsQuery.data, []);
-
-  // console.log(characters, units);
+  const characters = useMemo(() => charactersQuery.data, [charactersQuery]);
+  const units = useMemo(() => unitsQuery.data, [unitsQuery]);
 
   const [listCharacters, setListCharacters] =
     useState<GameCharacter[]>(characters);
@@ -90,14 +75,8 @@ function Page({
   }, [viewOptions]);
 
   const handleNewUnit = (e: string[]) => {
-    // console.log(e);
     setViewOptions((v) => ({ ...v, filterUnits: e.map((u) => parseInt(u)) }));
   };
-
-  // if (!hasAllData) {
-  //     // This should probably be a more friendly loading state lol
-  //     return null;
-  // }
 
   return (
     <>

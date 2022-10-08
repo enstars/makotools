@@ -1,31 +1,13 @@
 import React from "react";
-import Head from "next/head";
-import {
-  Group,
-  AspectRatio,
-  Badge,
-  Title,
-  Table,
-  Divider,
-} from "@mantine/core";
+import { Group, AspectRatio, Badge, Divider } from "@mantine/core";
 import { IconStar } from "@tabler/icons";
-import {
-  withAuthUser,
-  AuthAction,
-  withAuthUserTokenSSR,
-  getFirebaseAdmin,
-} from "next-firebase-auth";
 
 import {
-  getB2File,
   getItemFromLocalizedDataArray,
   getLocalizedDataArray,
-  getNameOrder,
-  getPreviewImageURL,
-} from "../../services/ensquare";
+} from "../../services/data";
 import { getLayout } from "../../components/Layout";
 import PageTitle from "../../components/sections/PageTitle";
-import ImageViewer from "../../components/core/ImageViewer";
 import attributes from "../../data/attributes.json";
 import Reactions from "../../components/sections/Reactions";
 import NameOrder from "../../components/utilities/formatting/NameOrder";
@@ -40,6 +22,9 @@ import Skills, {
   liveSkillParse,
   supportSkillParse,
 } from "./components/Skills";
+
+import { getNameOrder } from "services/game";
+import { getPreviewImageURL } from "services/makotools/preview";
 
 function Page({
   characterQuery,
@@ -75,36 +60,9 @@ function Page({
                 {attributes[card.type].fullname}
               </Badge>
             </Group>
-            {/* <Paper
-              component={Box}
-              sx={{
-                position: "absolute",
-                bottom: -2,
-                right: -12.5,
-                borderTopLeftRadius: theme.radius.sm,
-                transform: "skew(-15deg)",
-                pointerEvents: "none",
-                borderBottom: `solid 2px ${
-                  characters.find((c) => c.character_id === card.character_id)
-                    .image_color
-                }`,
-              }}
-              pl={10}
-              pr={20}
-              py={2}
-              radius={0}
-            >
-              <Text
-                size="xs"
-                weight="700"
-                sx={{
-                  transform: "skew(15deg)",
-                }}
-              >{`${cardMainLang?.name?.split(" ")?.[0]}`}</Text>
-            </Paper> */}
           </>
         }
-      ></PageTitle>
+      />
 
       <Group>
         {["normal", "evolution"].map((type) => (
@@ -119,7 +77,7 @@ function Page({
               withPlaceholder
               srcB2={`assets/card_rectangle4_${card.id}_${type}.png`}
               action="view"
-            ></Picture>
+            />
           </AspectRatio>
         ))}
       </Group>
@@ -131,9 +89,7 @@ function Page({
   );
 }
 
-Page.getLayout = getLayout({
-  // hideSidebar: true,
-});
+Page.getLayout = getLayout({});
 export default Page;
 
 export const getServerSideProps = getServerSideUser(
@@ -159,7 +115,6 @@ export const getServerSideProps = getServerSideUser(
     const cardID = parseInt(lastURLSegment, 10);
 
     const card = getItemFromLocalizedDataArray<GameCard>(cards, cardID);
-    // console.log(card);
 
     if (card.status === "error") {
       return {
@@ -188,12 +143,6 @@ export const getServerSideProps = getServerSideUser(
     );
     const title = `(${card.data.title[0]}) ${cardCharacterName}`;
 
-    // const breadcrumbs = req.url.split("/").filter((e) => e);
-    // breadcrumbs[breadcrumbs.length - 1] = title;
-    // -> this doesnt work very well, see:
-    //    https://github.com/vercel/next.js/discussions/15787
-
-    // getLocalizedNumber
     const breadcrumbs = ["cards", title];
     const cardData = card.data;
     return {

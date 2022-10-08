@@ -4,28 +4,24 @@ import {
   Box,
   Button,
   createStyles,
-  Divider,
   Group,
   Paper,
-  Spoiler,
   Text,
-  Title,
   Tooltip,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
-import Image from "next/image";
+import { useCallback, useEffect, useState } from "react";
 import { IconChevronDown, IconChevronUp, IconMoodSmile } from "@tabler/icons";
 import { Collapse } from "react-collapse";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
-import emotes from "../../services/emotes";
-import { useUser } from "../../services/firebase/user";
+import emotes from "../../services/makotools/emotes";
+import useUser from "../../services/firebase/user";
 import EmoteSelector from "../utilities/emotes/EmoteSelector";
 import Emote from "../utilities/emotes/Emote";
 import { DbReaction, Reaction } from "../../types/makotools";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
-    // transition: "height 0.2s",
     transition: theme.other.transition,
     overflow: "hidden",
   },
@@ -33,26 +29,40 @@ const useStyles = createStyles((theme) => ({
 }));
 
 function Reactions() {
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const { classes } = useStyles();
   const { asPath } = useRouter();
-  console.log(asPath);
   const [reactions, setReactions] = useState<Reaction[]>([]);
   const [collapsed, setCollapsed] = useState<boolean>(true);
-  useEffect(() => {
-    fetchReactions();
-  }, [asPath]);
   const user = useUser();
 
+  const handleReCaptchaVerify = useCallback(async () => {
+    if (!executeRecaptcha) {
+      console.log("Execute recaptcha not yet available");
+      return;
+    }
+
+    const token = await executeRecaptcha();
+    console.log(token);
+    return token;
+  }, [executeRecaptcha]);
+
+  useEffect(() => {
+    handleReCaptchaVerify();
+  }, [handleReCaptchaVerify]);
+
   const currentPageId = asPath.replace(/\//g, "_");
-  // const currentPageId = 1;
-  const addReaction = (id: string) => {
+  const addReaction = async (id: string) => {
     if (user.loading || !user.loggedIn) return;
+    const captcha: any = await handleReCaptchaVerify();
     fetch(
-      `https://backend-stars.ensemble.moe/reactions.php?page_id=${currentPageId}&content=${id}&name=${user.user.id}`,
+      `https://backend-stars.ensemble.moe/db/reactions.php?page_id=${currentPageId}&content=${id}&name=${user.user.id}`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        // body: { content: "a", name: "b", parent_id: -1 },
+        headers: {
+          "Content-Type": "application/json",
+          "g-recaptcha-response": captcha,
+        },
       }
     )
       .then((res) => {
@@ -63,14 +73,18 @@ function Reactions() {
         console.error(e);
       });
   };
-  const fetchReactions = () => {
+  const fetchReactions = async () => {
+    const captcha: any = await handleReCaptchaVerify();
     fetch(
-      `https://backend-stars.ensemble.moe/reactions.php?page_id=${currentPageId}`
+      `https://backend-stars.ensemble.moe/db/reactions.php?page_id=${currentPageId}`,
+      {
+        headers: {
+          "g-recaptcha-response": captcha,
+        },
+      }
     )
       .then((res) => res.json())
       .then((data: DbReaction[]) => {
-        console.log("Request complete! response:", data);
-        // return data;
         const reactions = data
           .map((r) => {
             const emote = emotes.find((e) => e.stringId === r.content);
@@ -88,11 +102,12 @@ function Reactions() {
       })
       .catch((e) => {
         console.error(e);
-        // return null;
       });
   };
 
-  // if (!user.loggedIn) return null;
+  useEffect(() => {
+    fetchReactions();
+  }, [asPath, handleReCaptchaVerify]);
 
   return (
     <Paper my="sm" withBorder p={3} radius="md">
@@ -135,8 +150,6 @@ function Reactions() {
                 maskImage: collapsed
                   ? "linear-gradient(to left, transparent, black 28px)"
                   : "",
-
-                // marginRight: collapsed ? -30 : 0,
               }}
             >
               <Collapse
@@ -150,7 +163,6 @@ function Reactions() {
                   spacing="xs"
                   sx={{
                     maxHeight: collapsed ? 24 : undefined,
-                    // marginRight: collapsed ? -30 : 0,
                   }}
                 >
                   {reactions?.map((r: any) => (

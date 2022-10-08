@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import LocalizedFormat from "dayjs/plugin/localizedFormat";
 import localeData from "dayjs/plugin/localeData";
 
-import { dayjsLocales } from "./locales";
+import { dayjsLocales } from "../makotools/locales";
 
 const DayjsContext = createContext(dayjs);
 export const useDayjs = () => useContext(DayjsContext);

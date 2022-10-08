@@ -1,6 +1,4 @@
 import Link from "next/link";
-import styled from "styled-components";
-import Image from "next/image";
 import {
   Footer,
   Text,
@@ -13,9 +11,7 @@ import {
   Container,
 } from "@mantine/core";
 
-import { CONSTANTS } from "../../../services/constants";
-import MakotoolsLight from "../../../assets/Logo/mkt_light.svg?url";
-import MakotoolsDark from "../../../assets/Logo/mkt_dark.svg?url";
+import { CONSTANTS } from "../../../services/makotools/constants";
 import Affiliates from "../../../assets/Affiliates/affiliates.svg";
 
 import SvgBackground from "./mkt_bg.svg";
@@ -26,17 +22,14 @@ function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
   return (
     <Footer
       style={{
-        // position: "sticky",
         top: 0,
-        // bottom: 0,
         zIndex: 0,
         display: "flow-root",
         borderTop: "none",
         backgroundColor:
           theme.colorScheme === "dark"
             ? theme.colors.dark[9]
-            : // : theme.fn.lighten(theme.colors.gray[0], 0),
-              theme.fn.lighten(theme.colors.gray[0], 0.3),
+            : theme.fn.lighten(theme.colors.gray[0], 0.3),
         position: "relative",
       }}
       pt="xl"
@@ -127,7 +120,7 @@ function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
             </Link>
           </Stack>
 
-          <Box sx={{ flexGrow: 0.1 }}></Box>
+          <Box sx={{ flexGrow: 0.1 }} />
           <Box sx={{ flex: "1 1 350px", maxWidth: 560 }}>
             {!textOnly && (
               <Text

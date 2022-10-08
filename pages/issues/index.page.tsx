@@ -1,13 +1,9 @@
 import {
-  Accordion,
-  Anchor,
   Box,
   Button,
   Card,
   Center,
   Divider,
-  Paper,
-  Stack,
   Text,
   ThemeIcon,
   Title,
@@ -21,7 +17,7 @@ import { getLayout } from "../../components/Layout";
 function Page() {
   return (
     <>
-      <PageTitle title="Issues and Suggestions"></PageTitle>
+      <PageTitle title="Issues and Suggestions" />
       <TypographyStylesProvider>
         <p>
           Did you run into an error on the website? Do you have a suggestion to

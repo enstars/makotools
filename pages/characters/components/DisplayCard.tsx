@@ -1,21 +1,9 @@
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
-import {
-  Box,
-  Card,
-  createStyles,
-  Text,
-  Title,
-  useMantineTheme,
-} from "@mantine/core";
+import { Box, Card, createStyles, Title } from "@mantine/core";
 
-import { getB2File } from "../../../services/ensquare";
-import {
-  twoStarIDs,
-  twoStarIDsDoubleface,
-} from "../../../data/characterIDtoCardID";
-import styles from "../../../styles/CharacterCard.module.scss";
+import { getAssetURL } from "../../../services/data";
+import { twoStarIDs } from "../../../data/characterIDtoCardID";
 
 import NameOrder from "components/utilities/formatting/NameOrder";
 import { Lang } from "types/makotools";
@@ -31,7 +19,6 @@ const useStyles = createStyles((theme, params: any, getRef) => ({
       backgroundPosition: "right",
     },
     [`&:hover .${getRef("picture")}`]: {
-      // left: "-5%",
       flexBasis: 600,
       height: 200,
     },
@@ -80,8 +67,6 @@ const useStyles = createStyles((theme, params: any, getRef) => ({
     width: "100%",
     right: 0,
     bottom: 0,
-    // writingMode: "vertical-lr",
-    // textOrientation: "mixed",
     background:
       theme.colorScheme === "dark"
         ? theme.colors.dark[7] + "A0"
@@ -89,8 +74,6 @@ const useStyles = createStyles((theme, params: any, getRef) => ({
     padding: theme.spacing.xs / 1.25,
     textAlign: "end",
     lineHeight: 1,
-    wordSpacing: 999,
-    // backdropFilter: "blur(2px)",
   },
 }));
 
@@ -101,8 +84,6 @@ function DisplayCard({
   character: GameCharacter;
   locale: Lang[];
 }) {
-  const theme = useMantineTheme();
-
   const { classes, cx } = useStyles({ color: character.image_color });
 
   return (
@@ -112,7 +93,7 @@ function DisplayCard({
         <Box className={classes.pictureWrapper}>
           <Picture
             transparent
-            src={getB2File(
+            src={getAssetURL(
               `assets/card_full1_${
                 (twoStarIDs as any)[character.character_id]
               }_normal.png`
@@ -122,7 +103,7 @@ function DisplayCard({
           />
           <Picture
             transparent
-            src={getB2File(
+            src={getAssetURL(
               `assets/card_full1_${
                 (twoStarIDs as any)[character.character_id]
               }_subtracted.png`
