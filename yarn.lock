@@ -6450,6 +6450,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"inter-ui@npm:^3.19.3":
+  version: 3.19.3
+  resolution: "inter-ui@npm:3.19.3"
+  checksum: 74435e742e9829402cf15ac08aa48541c93e96d7528a29ba3bc2a14b059ccd3f330ddba8b1c96f06bfdda46b0c7e1a406db22a309045b3412b66ec4dcb5efa2a
+  languageName: node
+  linkType: hard
+
 "internal-slot@npm:^1.0.3":
   version: 1.0.3
   resolution: "internal-slot@npm:1.0.3"
@@ -7290,6 +7297,7 @@ __metadata:
     globalize: ^1.7.0
     iana-tz-data: ^2019.1.0
     iframe-resizer-react: ^1.1.0
+    inter-ui: ^3.19.3
     isomorphic-dompurify: ^0.22.0
     jsdom: ^20.0.0
     lodash: ^4.17.21

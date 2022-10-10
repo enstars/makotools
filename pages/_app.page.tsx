@@ -146,9 +146,10 @@ function MakoTools({
           },
           primaryShade: { light: 6, dark: 5 },
           lineHeight: 1.5,
-          fontFamily: "Inter var, Inter, Noto Sans JP, sans-serif",
+          fontFamily: "Inter var, Inter, system-ui, Noto Sans JP, sans-serif",
           headings: {
-            fontFamily: "SoraVariable, Sora, InterVariable, Inter, sans-serif",
+            fontFamily:
+              "SoraVariable, Sora, InterVariable, Inter, system-ui, Noto Sans JP, sans-serif",
             fontWeight: 800,
           },
           other: {
