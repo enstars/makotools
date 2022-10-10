@@ -90,7 +90,6 @@ function CalendarDay({ ...props }): React.ReactElement {
           : theme.colors.gray[5],
         width: "5vw",
         height: "15vh",
-        overflowY: "scroll",
       })}
     >
       <Stack
