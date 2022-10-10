@@ -37,7 +37,7 @@ function Page({
   const currMonth = dayjs(currentDate).format("MMMM");
   const currYear = dayjs(currentDate).format("YYYY");
 
-  const [view, setView] = useState("cal");
+  const [view, setView] = useState<string | string[]>("cal");
   const [month, changeMonth] = useState<string>(currMonth);
   const [year, changeYear] = useState<string>(currYear);
 
@@ -85,7 +85,7 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
     "character_id"
   );
 
-  const gameEvents = await getLocalizedDataArray<GameEvent>(
+  const gameEvents: any = await getLocalizedDataArray<GameEvent>(
     "events",
     locale,
     "event_id"
@@ -188,7 +188,7 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
           year: parseInt(startDateObj[0]),
         },
         id: scout.gacha_id,
-        render_id: scout.five_star.card_id[0],
+        render_id: scout?.five_star?.card_id[0],
       };
 
       let scoutEnd: InGameEvent = {
@@ -204,7 +204,7 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
           year: parseInt(endDateObj[0]),
         },
         id: scout.gacha_id,
-        render_id: scout.five_star.card_id[0],
+        render_id: scout?.five_star?.card_id[0],
       };
 
       events.push(scoutStart);

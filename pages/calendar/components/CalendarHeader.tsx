@@ -49,7 +49,7 @@ function CalendarHeader({ ...props }) {
         <Button
           className={classes.nav}
           leftIcon={<IconArrowLeft size={32} />}
-          onClick={(e) => {
+          onClick={(e: any) => {
             props.changeMonth(prevMonth);
             props.changeYear(prevYear);
           }}
@@ -66,7 +66,7 @@ function CalendarHeader({ ...props }) {
         <Button
           className={classes.nav}
           rightIcon={<IconArrowRight size={32} />}
-          onClick={(e) => {
+          onClick={(e: any) => {
             props.changeMonth(nextMonth);
             props.changeYear(nextYear);
           }}

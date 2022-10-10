@@ -160,7 +160,7 @@ interface Event<T = string[]> {
   story_season?: string;
   five_star?: {
     chara_id: ID | ID[];
-    card_id: ID | ID[];
+    card_id: any;
   };
   four_star?: {
     chara_id: ID | ID[];
