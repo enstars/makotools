@@ -12,14 +12,20 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   listDay: {
     padding: 0,
     height: "100%",
-    width: "55%",
     display: "flex",
-    flexFlow: "row wrap",
+    flexDirection: "row",
     alignItems: "flex-start",
     justifyContent: "center",
 
     [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+      width: "100%",
+      flexWrap: "wrap",
       marginTop: "5vh",
+    },
+
+    [`@media (min-width: ${theme.breakpoints.lg}px)`]: {
+      width: "55%",
+      flexWrap: "nowrap",
     },
   },
   listDayTitle: {

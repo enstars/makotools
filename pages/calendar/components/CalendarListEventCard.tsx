@@ -1,4 +1,12 @@
-import { Badge, Card, createStyles, Image, Stack, Text } from "@mantine/core";
+import {
+  Badge,
+  Card,
+  Container,
+  createStyles,
+  Group,
+  Image,
+  Text,
+} from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import {
   IconAlertCircle,
@@ -13,40 +21,24 @@ import { getAssetURL } from "../../../services/data";
 const useStyles = createStyles((theme, _params, getRef) => ({
   listEventCard: {
     margin: "auto",
-    display: "flex",
-    flexFlow: "row no-wrap",
-    alignItems: "flex-start",
-    justifyContent: "flex-start",
     marginTop: "1vh",
-    padding: "3px",
 
     [`@media (max-width: ${theme.breakpoints.md}px)`]: {
-      width: "95%",
-      maxHeight: "160px",
+      width: "100%",
     },
 
     [`@media (min-width: ${theme.breakpoints.lg}px)`]: {
       width: "80%",
-      maxHeight: "150px",
     },
   },
   listEventCardImage: {
-    width: "50%",
-    height: "100%",
+    minWidth: "100%",
+    height: "120px",
     overflow: "clip",
   },
   listEventCardText: {
     margin: 0,
-    marginLeft: "25px",
-    padding: "3px 3px",
-
-    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
-      width: "120px",
-    },
-
-    [`@media (min-width: ${theme.breakpoints.lg}px)`]: {
-      width: "350px",
-    },
+    padding: "2vh 1vw",
   },
 }));
 
@@ -79,13 +71,11 @@ function CalendarListEventCard({ ...props }) {
             }.webp`
           )}
           alt={props.event.name}
-          width={280}
-          height={280}
-          sx={{ marginLeft: "-65px", marginTop: "-15px" }}
+          sx={{ zIndex: -1 }}
         />
       </Card.Section>
       <Card.Section className={classes.listEventCardText}>
-        <Stack justify="space-around" spacing="md">
+        <Group noWrap={!isMobile}>
           <Badge
             fullWidth
             color={
@@ -125,14 +115,14 @@ function CalendarListEventCard({ ...props }) {
           </Badge>
           <Text size={isMobile ? "md" : "lg"} weight={600} lineClamp={4}>
             {props.event.type === "birthday"
-              ? props.event.name.split(" ")[0] + "'s Birthday"
+              ? props.event.name + "'s Birthday"
               : props.event.type === "scout"
               ? "SCOUT! " + props.event.name
               : props.event.type === "feature scout"
               ? "Featured Scout: " + props.event.name.split(" ")[0]
               : props.event.name}
           </Text>
-        </Stack>
+        </Group>
       </Card.Section>
     </Card>
   );
