@@ -1,12 +1,4 @@
-import {
-  Badge,
-  Card,
-  Container,
-  createStyles,
-  Group,
-  Image,
-  Text,
-} from "@mantine/core";
+import { Badge, Card, createStyles, Group, Image, Text } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import {
   IconAlertCircle,
@@ -38,7 +30,14 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
   listEventCardText: {
     margin: 0,
-    padding: "2vh 1vw",
+
+    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+      padding: "4vh 1vw",
+    },
+
+    [`@media (min-width: ${theme.breakpoints.lg}px)`]: {
+      padding: "2vh 1vw",
+    },
   },
 }));
 

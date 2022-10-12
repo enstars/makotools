@@ -234,16 +234,19 @@ function BirthdayCard({ ...props }) {
         <Card withBorder component="a" className={classes.wrapper}>
           <Box
             className="gradient"
-            sx={{
+            sx={(theme) => ({
               position: "absolute",
               right: 0,
               top: 0,
-              width: "100%",
-              height: "100%",
-              padding: "16px",
-              background: `linear-gradient(45deg, transparent 73%, ${props.character.image_color}99 83%)`,
-              zIndex: 2,
-            }}
+              marginRight: "-15px",
+              marginTop: "-15px",
+              width: "67px",
+              height: "67px",
+              padding: "15px",
+              borderRadius: theme.radius.lg,
+              background: `${props.character.image_color}cc`,
+              zIndex: 1,
+            })}
           />
           <HoroscopeSymbol
             className={classes.horoscope}

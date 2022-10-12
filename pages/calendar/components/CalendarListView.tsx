@@ -101,7 +101,6 @@ function CalendarListView({ ...props }) {
   let calendarDates: EventDate[] = [];
 
   for (const event of filteredEvents) {
-    console.log(event);
     const found = calendarDates.some(
       (calDate) => calDate.date === event.date.date
     );
@@ -109,7 +108,6 @@ function CalendarListView({ ...props }) {
   }
 
   calendarDates.sort((a, b) => a.date - b.date);
-  console.log(calendarDates);
 
   return (
     <Container className={classes.listBody}>
