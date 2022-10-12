@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Chip, Container, createStyles } from "@mantine/core";
 
 import { getLocalizedDataArray } from "../../services/data";
@@ -8,7 +8,7 @@ import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { CalendarEvent, EventType, InGameEvent } from "../../types/makotools";
 import { useDayjs } from "../../services/libraries/dayjs";
 
-import Calendar from "./components/Calendar";
+import CalendarGridView from "./components/CalendarGridView";
 import CalendarListView from "./components/CalendarListView";
 import CalendarHeader from "./components/CalendarHeader";
 
@@ -19,6 +19,10 @@ import CalendarHeader from "./components/CalendarHeader";
 const useStyles = createStyles((theme, _params, getRef) => ({
   calendar: {
     maxWidth: "100%",
+
+    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+      padding: 0,
+    },
   },
 }));
 
@@ -40,17 +44,27 @@ function Page({
   const [view, setView] = useState<string | string[]>("cal");
   const [month, changeMonth] = useState<string>(currMonth);
   const [year, changeYear] = useState<string>(currYear);
+  const [showViewOptions, changeShowViewOptions] = useState<boolean>(true);
 
   const displayMonth = `${month} 1, ${year}`;
   const displayDate = new Date(displayMonth);
 
+  useEffect(() => {
+    window.innerWidth < 900 ? setView("list") : setView("cal");
+    window.innerWidth < 900
+      ? changeShowViewOptions(false)
+      : changeShowViewOptions(true);
+  }, []);
+
   return (
     <>
       <PageTitle title="Calendar" />
-      <Chip.Group value={view} onChange={setView}>
-        <Chip value="cal">Calendar view</Chip>
-        <Chip value="list">List view</Chip>
-      </Chip.Group>
+      {showViewOptions && (
+        <Chip.Group value={view} onChange={setView}>
+          <Chip value="cal">Calendar view</Chip>
+          <Chip value="list">List view</Chip>
+        </Chip.Group>
+      )}
       <Container className={classes.calendar}>
         <CalendarHeader
           month={month}
@@ -60,7 +74,7 @@ function Page({
           lang={lang}
         />
         {view === "cal" ? (
-          <Calendar events={events} lang={lang} date={displayDate} />
+          <CalendarGridView events={events} lang={lang} date={displayDate} />
         ) : (
           <CalendarListView events={events} lang={lang} date={displayDate} />
         )}

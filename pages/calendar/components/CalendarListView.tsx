@@ -10,18 +10,24 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     margin: "auto",
   },
   listDay: {
+    padding: 0,
     height: "100%",
     width: "55%",
     display: "flex",
     flexFlow: "row wrap",
     alignItems: "flex-start",
     justifyContent: "center",
+
+    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+      marginTop: "5vh",
+    },
   },
   listDayTitle: {
     width: "auto",
   },
   listDayEvents: {
     width: "auto",
+    padding: 0,
     marginBottom: "10%",
   },
 }));

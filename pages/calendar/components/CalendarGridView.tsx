@@ -1,22 +1,16 @@
-import { ClassNames } from "@emotion/react";
 import {
   createStyles,
-  Button,
   Container,
   Grid,
   Text,
   Title,
   Stack,
 } from "@mantine/core";
-import { getMonthDays, getMonthsNames, getWeekdaysNames } from "@mantine/dates";
-import { MonthNames, weekdays } from "dayjs";
-import { IconArrowLeft, IconArrowRight } from "@tabler/icons";
-import { useState } from "react";
+import { getMonthDays, getWeekdaysNames } from "@mantine/dates";
 
 import { CalendarEvent } from "../../../types/makotools";
 
 import CalendarEventCard from "./CalendarEventCard";
-import CalendarHeader from "./CalendarHeader";
 
 import { useDayjs } from "services/libraries/dayjs";
 
@@ -38,13 +32,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
       theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[4]
     }`,
     borderRadius: theme.radius.md,
-  },
-  header: {
-    maxWidth: "100%",
-    flexFlow: "row nowrap",
-    margin: "auto",
-    marginBottom: "2vh",
-    padding: "2vh 0vw",
   },
   week: {
     maxWidth: "100%",
@@ -168,7 +155,7 @@ function CalendarWeek({ ...props }) {
   );
 }
 
-function Calendar({ ...props }) {
+function CalendarGridView({ ...props }) {
   const { classes } = useStyles();
 
   return (
@@ -188,4 +175,4 @@ function Calendar({ ...props }) {
   );
 }
 
-export default Calendar;
+export default CalendarGridView;

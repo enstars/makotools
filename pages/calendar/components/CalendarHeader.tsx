@@ -1,11 +1,25 @@
-import { Button, createStyles, Grid, Title } from "@mantine/core";
+import {
+  ActionIcon,
+  Button,
+  Container,
+  createStyles,
+  Grid,
+  Title,
+} from "@mantine/core";
 import { getMonthsNames } from "@mantine/dates";
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons";
+import { useEffect, useState } from "react";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
+  headerContainer: {
+    width: "100%",
+
+    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+      padding: 0,
+    },
+  },
   header: {
-    maxWidth: "100%",
-    flexFlow: "row nowrap",
+    width: "100%",
     margin: "auto",
     marginBottom: "2vh",
     padding: "2vh 0vw",
@@ -16,7 +30,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   nav: {
     display: "inline",
     height: "40px",
-    width: "100%",
     background:
       theme.colorScheme === "dark"
         ? theme.colors.blue[7]
@@ -26,6 +39,12 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 
 function CalendarHeader({ ...props }) {
   const { classes } = useStyles();
+  const [isMobile, setMobile] = useState<boolean>(true);
+
+  useEffect(() => {
+    window.innerWidth < 900 ? setMobile(true) : setMobile(false);
+  }, []);
+
   const months = getMonthsNames(props.lang, "MMMM");
 
   let prevMonth =
@@ -44,37 +63,63 @@ function CalendarHeader({ ...props }) {
     months.indexOf(props.month) === 11 ? parseInt(props.year) + 1 : props.year;
 
   return (
-    <Grid grow columns={7} className={classes.header}>
-      <Grid.Col span={1}>
-        <Button
-          className={classes.nav}
-          leftIcon={<IconArrowLeft size={32} />}
-          onClick={(e: any) => {
-            props.changeMonth(prevMonth);
-            props.changeYear(prevYear);
-          }}
-        >
-          {prevMonth.substring(0, 3)} {prevYear}
-        </Button>
-      </Grid.Col>
-      <Grid.Col span={5} className={classes.calTitle}>
-        <Title order={2}>
-          {props.month} {props.year}
-        </Title>
-      </Grid.Col>
-      <Grid.Col span={1}>
-        <Button
-          className={classes.nav}
-          rightIcon={<IconArrowRight size={32} />}
-          onClick={(e: any) => {
-            props.changeMonth(nextMonth);
-            props.changeYear(nextYear);
-          }}
-        >
-          {nextMonth.substring(0, 3)} {nextYear}
-        </Button>
-      </Grid.Col>
-    </Grid>
+    <Container className={classes.headerContainer}>
+      <Grid grow={isMobile} className={classes.header}>
+        <Grid.Col span={2}>
+          {!isMobile ? (
+            <Button
+              className={classes.nav}
+              leftIcon={<IconArrowLeft size={32} />}
+              onClick={(e: any) => {
+                props.changeMonth(prevMonth);
+                props.changeYear(prevYear);
+              }}
+            >
+              {prevMonth.substring(0, 3)} {prevYear}
+            </Button>
+          ) : (
+            <ActionIcon
+              onClick={(e: any) => {
+                props.changeMonth(prevMonth);
+                props.changeYear(prevYear);
+              }}
+              color="blue"
+            >
+              <IconArrowLeft size={32} />
+            </ActionIcon>
+          )}
+        </Grid.Col>
+        <Grid.Col span={8} className={classes.calTitle}>
+          <Title order={2}>
+            {props.month} {props.year}
+          </Title>
+        </Grid.Col>
+        <Grid.Col span={2}>
+          {!isMobile ? (
+            <Button
+              className={classes.nav}
+              rightIcon={<IconArrowRight size={32} />}
+              onClick={(e: any) => {
+                props.changeMonth(nextMonth);
+                props.changeYear(nextYear);
+              }}
+            >
+              {nextMonth.substring(0, 3)} {nextYear}
+            </Button>
+          ) : (
+            <ActionIcon
+              onClick={(e: any) => {
+                props.changeMonth(nextMonth);
+                props.changeYear(nextYear);
+              }}
+              color="blue"
+            >
+              <IconArrowRight size={32} />
+            </ActionIcon>
+          )}
+        </Grid.Col>
+      </Grid>
+    </Container>
   );
 }
 

@@ -6,42 +6,58 @@ import {
   IconPlayerPlay,
   IconStar,
 } from "@tabler/icons";
+import { useEffect, useState } from "react";
 
 import { getAssetURL } from "../../../services/data";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   listEventCard: {
+    margin: "auto",
     display: "flex",
     flexFlow: "row no-wrap",
     alignItems: "flex-start",
     justifyContent: "flex-start",
     marginTop: "1vh",
-    width: "450px",
-    maxHeight: "120px",
     padding: "3px",
+
+    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+      width: "95%",
+      maxHeight: "160px",
+    },
+
+    [`@media (min-width: ${theme.breakpoints.lg}px)`]: {
+      width: "80%",
+      maxHeight: "150px",
+    },
   },
   listEventCardImage: {
-    minHeight: "125px",
-    maxHeight: "150px",
-    minWidth: "125px",
-    maxWidth: "150px",
+    width: "50%",
+    height: "100%",
     overflow: "clip",
   },
   listEventCardText: {
     margin: 0,
     marginLeft: "25px",
-    width: "350px",
     padding: "3px 3px",
-  },
-  listEventCardButton: {
-    margin: "auto",
-    marginTop: "1vh",
+
+    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+      width: "120px",
+    },
+
+    [`@media (min-width: ${theme.breakpoints.lg}px)`]: {
+      width: "350px",
+    },
   },
 }));
 
 function CalendarListEventCard({ ...props }) {
   const { classes } = useStyles();
 
+  const [isMobile, setMobile] = useState<boolean>(true);
+
+  useEffect(() => {
+    window.innerWidth < 900 ? setMobile(true) : setMobile(false);
+  }, []);
   return (
     <Card
       component={NextLink}
@@ -107,7 +123,7 @@ function CalendarListEventCard({ ...props }) {
               ? "Start"
               : "End"}
           </Badge>
-          <Text size="lg" weight={600} lineClamp={4}>
+          <Text size={isMobile ? "md" : "lg"} weight={600} lineClamp={4}>
             {props.event.type === "birthday"
               ? props.event.name.split(" ")[0] + "'s Birthday"
               : props.event.type === "scout"
