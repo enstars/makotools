@@ -10,6 +10,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     margin: "auto",
   },
   listDay: {
+    margin: "auto",
     padding: 0,
     height: "100%",
     display: "flex",
@@ -24,7 +25,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     },
 
     [`@media (min-width: ${theme.breakpoints.lg}px)`]: {
-      width: "55%",
+      width: "60%",
       flexWrap: "nowrap",
     },
   },
@@ -32,9 +33,17 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     width: "auto",
   },
   listDayEvents: {
-    width: "auto",
     padding: 0,
     marginBottom: "10%",
+
+    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+      marginTop: "3vh",
+      width: "100%",
+    },
+
+    [`@media (min-width: ${theme.breakpoints.lg}px)`]: {
+      width: "60%",
+    },
   },
 }));
 

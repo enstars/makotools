@@ -41,10 +41,11 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     alignItems: "center",
   },
   today: {
-    color:
+    backgroundColor:
       theme.colorScheme === "dark"
-        ? theme.colors.blue[3]
-        : theme.colors.blue[7],
+        ? theme.colors.blue[7]
+        : theme.colors.blue[3],
+    borderRadius: `${theme.radius.md}px ${theme.radius.md}px 0px 0px`,
   },
 }));
 

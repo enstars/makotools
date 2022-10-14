@@ -1,42 +1,88 @@
-import { Badge, Card, createStyles, Group, Image, Text } from "@mantine/core";
+import {
+  Box,
+  createStyles,
+  Group,
+  Image,
+  Text,
+  ThemeIcon,
+} from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import {
-  IconAlertCircle,
   IconCake,
+  IconExclamationMark,
   IconPlayerPlay,
   IconStar,
 } from "@tabler/icons";
 import { useEffect, useState } from "react";
 
-import { getAssetURL } from "../../../services/data";
+import { getAssetURL } from "services/data";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
-  listEventCard: {
-    margin: "auto",
-    marginTop: "1vh",
-
-    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
-      width: "100%",
-    },
-
-    [`@media (min-width: ${theme.breakpoints.lg}px)`]: {
-      width: "80%",
-    },
-  },
-  listEventCardImage: {
-    minWidth: "100%",
-    height: "120px",
+  listCardImg: {
+    ref: getRef("image"),
+    display: "block",
+    width: "100%",
+    height: "100%",
+    border: `2px solid ${
+      theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.colors.gray[1]
+    }`,
+    borderRadius: theme.radius.md,
+    zIndex: -1,
     overflow: "clip",
   },
-  listEventCardText: {
-    margin: 0,
 
-    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
-      padding: "4vh 1vw",
-    },
+  listCardStatus: {
+    ref: getRef("status"),
+    display: "block",
+    position: "absolute",
+    zIndex: 1,
+    width: "auto",
+    color:
+      theme.colorScheme === "dark"
+        ? theme.colors.gray[2]
+        : theme.colors.gray[8],
+    backgroundColor:
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[8]
+        : theme.colors.gray[1],
+    padding: "0.5vh 1vw",
+    borderRadius: `${theme.radius.md}px  0px ${theme.radius.md}px 0px`,
+    textAlign: "left",
+    textTransform: "uppercase",
+    transition: "visibility",
+  },
 
-    [`@media (min-width: ${theme.breakpoints.lg}px)`]: {
-      padding: "2vh 1vw",
+  listCardName: {
+    ref: getRef("name"),
+    display: "block",
+    position: "absolute",
+    right: 0,
+    bottom: 0,
+    zIndex: 2,
+    width: "auto",
+    maxWidth: "95%",
+    backgroundColor:
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[8]
+        : theme.colors.gray[1],
+    color:
+      theme.colorScheme === "dark"
+        ? theme.colors.gray[2]
+        : theme.colors.gray[8],
+    padding: "1vh 1vw",
+    borderRadius: `${theme.radius.md}px 0px ${theme.radius.md}px 0px`,
+    textAlign: "right",
+    transition: "width, height, border-radius",
+  },
+
+  listCard: {
+    display: "block",
+    position: "relative",
+    width: "100%",
+    height: "20%",
+
+    [`&:not(:first-of-type)`]: {
+      marginTop: "5vh",
     },
   },
 }));
@@ -49,34 +95,22 @@ function CalendarListEventCard({ ...props }) {
   useEffect(() => {
     window.innerWidth < 900 ? setMobile(true) : setMobile(false);
   }, []);
+
   return (
-    <Card
+    <Box
       component={NextLink}
+      className={classes.listCard}
       href={
-        props.event.type === "birthday" || props.event.type === "feature scout"
+        props.event.type === "birthday"
           ? `/characters/${props.event.id}`
           : `/events/${props.event.id}`
       }
-      withBorder
-      className={classes.listEventCard}
     >
-      <Card.Section className={classes.listEventCardImage}>
-        <Image
-          src={getAssetURL(
-            `assets/card_still_full1_${
-              props.event.type === "birthday"
-                ? props.event.render_id + "_normal"
-                : props.event.render_id + "_evolution"
-            }.webp`
-          )}
-          alt={props.event.name}
-          sx={{ zIndex: -1 }}
-        />
-      </Card.Section>
-      <Card.Section className={classes.listEventCardText}>
-        <Group noWrap={!isMobile}>
-          <Badge
-            fullWidth
+      <Box className={classes.listCardStatus}>
+        <Group spacing="xs">
+          <ThemeIcon
+            variant="light"
+            radius="xl"
             color={
               props.event.type === "birthday"
                 ? "cyan"
@@ -86,44 +120,54 @@ function CalendarListEventCard({ ...props }) {
                 ? "lime"
                 : "pink"
             }
-            leftSection={
-              props.event.type === "birthday" ? (
-                <IconCake size={16} style={{ marginTop: "3px" }} />
-              ) : props.event.type === "anniversary" ? (
-                <IconStar size={16} style={{ marginTop: "3px" }} />
-              ) : props.event.status === "start" ? (
-                <IconPlayerPlay size={16} style={{ marginTop: "3px" }} />
-              ) : (
-                <IconAlertCircle size={17} style={{ marginTop: "4px" }} />
-              )
-            }
-            sx={{
-              display: "flex inline",
-              alignItems: "center",
-              minWidth: "75px",
-              maxWidth: "90px",
-            }}
           >
+            {props.event.type === "birthday" ? (
+              <IconCake size={16} />
+            ) : props.event.type === "anniversary" ? (
+              <IconStar size={16} />
+            ) : props.event.status === "start" ? (
+              <IconPlayerPlay size={16} />
+            ) : (
+              <IconExclamationMark size={16} />
+            )}
+          </ThemeIcon>
+          <Text weight={700} size="sm">
             {props.event.type === "birthday"
-              ? "Birth"
+              ? "Birthday"
               : props.event.type === "anniversary"
-              ? "Anni"
+              ? "Anniversary"
               : props.event.status === "start"
               ? "Start"
               : "End"}
-          </Badge>
-          <Text size={isMobile ? "md" : "lg"} weight={600} lineClamp={4}>
-            {props.event.type === "birthday"
-              ? props.event.name + "'s Birthday"
-              : props.event.type === "scout"
-              ? "SCOUT! " + props.event.name
-              : props.event.type === "feature scout"
-              ? "Featured Scout: " + props.event.name.split(" ")[0]
-              : props.event.name}
           </Text>
         </Group>
-      </Card.Section>
-    </Card>
+      </Box>
+      <Box className={classes.listCardName}>
+        <Text weight={600} size="lg">
+          {props.event.type === "birthday"
+            ? props.event.name + "'s Birthday"
+            : props.event.type === "scout"
+            ? "SCOUT! " + props.event.name
+            : props.event.type === "feature scout"
+            ? "Featured Scout: " + props.event.name.split(" ")[0]
+            : props.event.name}
+        </Text>
+      </Box>
+      <Image
+        src={getAssetURL(
+          `assets/card_still_full1_${
+            props.event.type === "birthday"
+              ? props.event.render_id + "_normal"
+              : props.event.render_id + "_evolution"
+          }.webp`
+        )}
+        alt={props.event.name}
+        radius="md"
+        className={classes.listCardImg}
+        height={150}
+        sx={{ marginTop: "-2vh" }}
+      />
+    </Box>
   );
 }
 
