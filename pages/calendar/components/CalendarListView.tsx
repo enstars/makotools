@@ -1,14 +1,37 @@
-import { createStyles, Container, Title, Box } from "@mantine/core";
+import {
+  createStyles,
+  Container,
+  Title,
+  Box,
+  Text,
+  Divider,
+} from "@mantine/core";
 
 import CalendarListEventCard from "./CalendarListEventCard";
 
 import { CalendarEvent, EventDate } from "types/makotools";
+import { useDayjs } from "services/libraries/dayjs";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   listBody: {
     maxWidth: "100%",
     margin: "auto",
+
+    [`@media (min-width: ${theme.breakpoints.lg}px)`]: {
+      marginTop: "3vh",
+    },
   },
+
+  listDayDivider: {
+    ref: getRef("divider"),
+    marginLeft: "1vw",
+    transition: "border-left-width 0.5s",
+
+    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+      visibility: "hidden",
+    },
+  },
+
   listDay: {
     margin: "auto",
     padding: 0,
@@ -27,14 +50,31 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     [`@media (min-width: ${theme.breakpoints.lg}px)`]: {
       width: "60%",
       flexWrap: "nowrap",
+      marginTop: "2vh",
+      marginBottom: "5vh",
+    },
+
+    [`&:hover .${getRef("divider")}`]: {
+      borderLeftWidth: "24px",
     },
   },
   listDayTitle: {
-    width: "auto",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-around",
+
+    [`@media (min-width: ${theme.breakpoints.lg}px)`]: {
+      width: "6%",
+      flexFlow: "column nowrap",
+    },
+
+    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+      width: "33%",
+      flexFlow: "row nowrap",
+    },
   },
   listDayEvents: {
     padding: 0,
-    marginBottom: "10%",
 
     [`@media (max-width: ${theme.breakpoints.md}px)`]: {
       marginTop: "3vh",
@@ -48,8 +88,16 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 }));
 
 function CalendarListDay({ ...props }) {
+  console.log(props.date);
   const { classes } = useStyles();
+  const dayjs = useDayjs();
   let today = new Date();
+  let dayDate = new Date(
+    `${props.date.year | today.getFullYear()}-${props.date.month}-${
+      props.date.date
+    }`
+  );
+  let dotw = dayjs(dayDate).format("ddd");
   return (
     <Container className={classes.listDay}>
       {props.date.date === today.getDate() &&
@@ -67,16 +115,26 @@ function CalendarListDay({ ...props }) {
             })}
           />
         )}
-      <Title order={2} className={classes.listDayTitle}>
-        {props.date.date}
-        {props.date.date % 10 === 1 && props.date.date !== 11
-          ? "st"
-          : props.date.date % 10 === 2 && props.date.date !== 12
-          ? "nd"
-          : props.date.date % 10 === 3 && props.date.date !== 13
-          ? "rd"
-          : "th"}
-      </Title>
+      <Box className={classes.listDayTitle}>
+        <Text sx={{ textTransform: "uppercase" }} size="sm">
+          {dotw}
+        </Text>
+        <Title order={2}>
+          {props.date.date}
+          {props.date.date % 10 === 1 && props.date.date !== 11
+            ? "st"
+            : props.date.date % 10 === 2 && props.date.date !== 12
+            ? "nd"
+            : props.date.date % 10 === 3 && props.date.date !== 13
+            ? "rd"
+            : "th"}
+        </Title>
+      </Box>
+      <Divider
+        size="lg"
+        orientation="vertical"
+        className={classes.listDayDivider}
+      />
       <Container className={classes.listDayEvents}>
         {props.events.map((event: CalendarEvent, i: number) => {
           return (

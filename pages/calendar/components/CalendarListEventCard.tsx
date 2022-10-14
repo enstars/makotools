@@ -73,6 +73,10 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     borderRadius: `${theme.radius.md}px 0px ${theme.radius.md}px 0px`,
     textAlign: "right",
     transition: "width, height, border-radius",
+
+    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+      marginBottom: "-1vh",
+    },
   },
 
   listCard: {
