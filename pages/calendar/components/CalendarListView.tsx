@@ -85,10 +85,14 @@ const useStyles = createStyles((theme, _params, getRef) => ({
       width: "60%",
     },
   },
+  listDayDotw: {
+    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+      visibility: "hidden",
+    },
+  },
 }));
 
 function CalendarListDay({ ...props }) {
-  console.log(props.date);
   const { classes } = useStyles();
   const dayjs = useDayjs();
   let today = new Date();
@@ -116,7 +120,11 @@ function CalendarListDay({ ...props }) {
           />
         )}
       <Box className={classes.listDayTitle}>
-        <Text sx={{ textTransform: "uppercase" }} size="sm">
+        <Text
+          sx={{ textTransform: "uppercase" }}
+          size="sm"
+          className={classes.listDayDotw}
+        >
           {dotw}
         </Text>
         <Title order={2}>
