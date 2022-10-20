@@ -9,6 +9,19 @@ const CONSTANTS = {
     SITE_TITLE: "MakoTools",
     META_DESC:
       "MakoTools is a website containing information, tools, and a lot more to aid you in playing Ensemble Stars!! Music English Version, created in collaboration between EN:Link, Daydream Guides, and The Ensemble Stars EN/CN Wiki.",
+
+    CREATORS: [
+      { LINK: "https://twitter.com/enstars_link", NAME: "EN:Link" },
+      { LINK: "https://twitter.com/DaydreamGuides", NAME: "Daydream Guides" },
+      {
+        LINK: "https://ensemble-stars.fandom.com",
+        NAME: "The English Ensemble Stars Wiki",
+      },
+      {
+        LINK: "https://ensemblestars.huijiwiki.com",
+        NAME: "The Chinese Ensemble Stars Wiki",
+      },
+    ],
   },
   EXTERNAL_URLS: {
     // ASSETS: "https://f002.backblazeb2.com/file/ensemble-square/",

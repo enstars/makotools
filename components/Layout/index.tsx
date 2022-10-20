@@ -13,21 +13,25 @@ function Layout({
   hideFooter = false,
   hideSidebar = false,
   hideHeader = false,
+  hideHeadBreadcrumb = false,
   wide = false,
   footerTextOnly = false,
-  hideOverflow = false,
+  hideOverflow = true,
   pageProps,
   meta,
+  headerProps = {},
 }: {
   children: any;
   hideFooter: boolean;
   hideSidebar: boolean;
   hideHeader: boolean;
+  hideHeadBreadcrumb: boolean;
   wide: boolean;
   footerTextOnly: boolean;
   hideOverflow: boolean;
   pageProps?: any;
   meta?: PageMeta;
+  headerProps?: any;
 }) {
   const theme = useMantineTheme();
   const dark = theme.colorScheme === "dark";
@@ -90,6 +94,8 @@ function Layout({
                 <Header
                   getBreadcrumbs={pageProps?.getBreadcrumbs}
                   breadcrumbs={pageProps?.breadcrumbs}
+                  hideHeadBreadcrumb={hideHeadBreadcrumb}
+                  headerProps={headerProps}
                 />
               )}
               {Component}

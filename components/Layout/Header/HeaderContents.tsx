@@ -18,20 +18,27 @@ function HeaderContents({
   getBreadcrumbs = defaultGetBreadcrumbs,
   breadcrumbs,
   setOpened,
+  headerProps = {},
   ...props
 }: {
   getBreadcrumbs?: (path: string) => string[];
   breadcrumbs?: string[];
   setOpened: any;
+  headerProps?: any;
 }) {
   const location = useRouter();
   let pageBreadcrumbs = breadcrumbs || getBreadcrumbs(location.asPath);
+  const { forceLight } = headerProps;
 
   return (
-    <Group noWrap align="center" {...props}>
+    <Group noWrap align="center" {...props} {...headerProps}>
       <MediaQuery largerThan="xs" styles={{ display: "none" }}>
         <Box sx={{ alignSelf: "stretch" }}>
-          <ActionIcon onClick={() => setOpened((o: boolean) => !o)}>
+          <ActionIcon
+            onClick={() => setOpened((o: boolean) => !o)}
+            variant="transparent"
+            sx={forceLight && { color: "#fff" }}
+          >
             <IconMenu2 size={18} />
           </ActionIcon>
         </Box>
@@ -50,7 +57,11 @@ function HeaderContents({
       >
         <Breadcrumbs
           separator={
-            <Text inherit color="dimmed" component="span">
+            <Text
+              inherit
+              color={forceLight ? "#fff8" : "dimmed"}
+              component="span"
+            >
               /
             </Text>
           }
@@ -69,7 +80,9 @@ function HeaderContents({
           })}
         >
           <Link href="/" passHref>
-            <Anchor inherit>Makotools</Anchor>
+            <Anchor inherit sx={forceLight && { color: "#fff" }}>
+              Makotools
+            </Anchor>
           </Link>
           {pageBreadcrumbs.map((crumb: string, index: number) => (
             <Link
@@ -77,7 +90,9 @@ function HeaderContents({
               href={`/${pageBreadcrumbs.slice(0, index + 1).join("/")}`}
               passHref
             >
-              <Anchor inherit>{decodeURIComponent(crumb)}</Anchor>
+              <Anchor inherit sx={forceLight && { color: "#fff" }}>
+                {decodeURIComponent(crumb)}
+              </Anchor>
             </Link>
           ))}
         </Breadcrumbs>

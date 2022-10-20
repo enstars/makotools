@@ -11,9 +11,13 @@ const cornerSize = 8;
 function HeaderApp({
   getBreadcrumbs,
   breadcrumbs,
+  hideHeadBreadcrumb,
+  headerProps,
 }: {
   getBreadcrumbs: (path: string) => string[];
   breadcrumbs: string[];
+  hideHeadBreadcrumb: boolean;
+  headerProps: any;
 }) {
   const [scroll] = useWindowScroll();
   const [opened, setOpened] = useState(false);
@@ -99,12 +103,14 @@ function HeaderApp({
           )}
         </Transition>
       </Affix>
-
-      <HeaderContents
-        getBreadcrumbs={getBreadcrumbs}
-        breadcrumbs={breadcrumbs}
-        setOpened={setOpened}
-      />
+      {!hideHeadBreadcrumb && (
+        <HeaderContents
+          getBreadcrumbs={getBreadcrumbs}
+          breadcrumbs={breadcrumbs}
+          setOpened={setOpened}
+          headerProps={headerProps}
+        />
+      )}
     </>
   );
 }
