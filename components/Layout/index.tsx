@@ -74,7 +74,7 @@ function Layout({
               : theme.fn.lighten(theme.colors.gray[0], 0.5),
           }}
           radius={0}
-          shadow="sm"
+          // shadow="sm"
         >
           <Container
             size={wide ? "xl" : "sm"}

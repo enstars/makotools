@@ -3,7 +3,6 @@ import {
   Footer,
   Text,
   Anchor,
-  Divider,
   useMantineTheme,
   Stack,
   Group,
@@ -29,8 +28,9 @@ function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
         backgroundColor:
           theme.colorScheme === "dark"
             ? theme.colors.dark[9]
-            : theme.fn.lighten(theme.colors.gray[0], 0.3),
+            : theme.colors.gray[0],
         position: "relative",
+        overflow: "hidden",
       }}
       pt="xl"
       p="md"
@@ -41,15 +41,18 @@ function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
         sx={{
           svg: {
             position: "absolute",
-            height: "100%",
-            width: "100%",
-            left: 0,
-            top: 0,
+            // height: "100%",
+            // width: "100%",
+            right: 0,
+            bottom: 0,
             strokeWidth: 10,
             objectPosition: "right",
             objectFit: "cover",
             maskImage: "linear-gradient(135deg, transparent 70%, #fff6 100%)",
             pointerEvents: "none",
+
+            width: "200%",
+            height: "140%",
           },
         }}
       >
@@ -97,27 +100,24 @@ function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
                 Contact Us
               </Anchor>
             </Link>
-            <Link href="/about/acknowledgements" passHref>
+            <Link href="/about" passHref>
               <Anchor component="a" size="sm">
-                Acknowledgements
+                About MakoTools
               </Anchor>
             </Link>
-            <Divider my="xs" sx={{ width: "100%" }} />
-            <Link href="/about/translations" passHref>
-              <Anchor component="a" size="sm">
-                About Translations
-              </Anchor>
-            </Link>
-            <Link href="/about/terms" passHref>
-              <Anchor component="a" size="sm">
-                Terms of Service
-              </Anchor>
-            </Link>
-            <Link href="/about/privacy" passHref>
-              <Anchor component="a" size="sm">
-                Privacy Policy
-              </Anchor>
-            </Link>
+            <Text color="dimmed" size="xs" mt="xs">
+              <Link href="/about/terms" passHref>
+                <Anchor component="a" inherit color="dimmed">
+                  Terms of Service
+                </Anchor>
+              </Link>
+              {" · "}
+              <Link href="/about/privacy" passHref>
+                <Anchor component="a" inherit color="dimmed">
+                  Privacy Policy
+                </Anchor>
+              </Link>
+            </Text>
           </Stack>
 
           <Box sx={{ flexGrow: 0.1 }} />
@@ -137,47 +137,9 @@ function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
                 <Affiliates viewBox="0 0 898 239" height={"auto"} />
               </Text>
             )}
-            <Text size="xs" color="dimmed">
-              MakoTools is a collaboration project between{" "}
-              <Anchor
-                inherit
-                href="https://twitter.com/enstars_link"
-                target="_blank"
-              >
-                EN:Link
-              </Anchor>
-              , The{" "}
-              <Anchor
-                inherit
-                href="https://ensemble-stars.fandom.com"
-                target="_blank"
-              >
-                English
-              </Anchor>
-              {" / "}
-              <Anchor
-                inherit
-                href="https://ensemblestars.huijiwiki.com"
-                target="_blank"
-              >
-                Chinese
-              </Anchor>{" "}
-              Ensemble Stars Wiki,{" "}
-              <Anchor
-                inherit
-                href="https://twitter.com/DaydreamGuides"
-                target="_blank"
-              >
-                Daydream Guides
-              </Anchor>
-              , and is developed by the{" "}
-              <Anchor inherit href="https://github.com/enstars" target="_blank">
-                Enstars Dev Team
-              </Anchor>
-              !
-            </Text>
             <Text size="xs" color="dimmed" mt="xs">
-              Not official nor related to Ensemble Stars!!, Cacalia Studio,
+              MakoTools is a non-commercial open-sourced fan project. Makotools
+              is not official nor related to Ensemble Stars!!, Cacalia Studio,
               Happy Elements K.K, or Happy Elements in any way. All assets
               belong to their respective owners.
             </Text>
