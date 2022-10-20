@@ -62,7 +62,7 @@ function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
         />
       </Text>
       <Container
-        size={wide ? "xl" : "sm"}
+        size={"sm"}
         px="xl"
         py="md"
         sx={(theme) => ({
