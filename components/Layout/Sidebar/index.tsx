@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import {
   IconUsers,
-  IconPlayCard,
+  IconCards,
   IconAward,
   IconBooks,
   IconChevronRight,
@@ -13,6 +13,8 @@ import {
   TablerIcon,
   IconAt,
   IconCalendar,
+  IconDiamond,
+  IconInfoCircle,
 } from "@tabler/icons";
 import {
   Navbar,
@@ -132,12 +134,18 @@ function Sidebar(props: any) {
     {
       link: "/cards",
       name: "Cards",
-      Icon: IconPlayCard,
+      Icon: IconCards,
     },
     {
       link: "/events",
       name: "Events",
       Icon: IconAward,
+      disabled: true,
+    },
+    {
+      link: "/scouts",
+      name: "Scouts",
+      Icon: IconDiamond,
       disabled: true,
     },
     {
@@ -163,6 +171,11 @@ function Sidebar(props: any) {
             name: "",
           },
     ],
+    {
+      link: "/about",
+      name: "About",
+      Icon: IconInfoCircle,
+    },
     {
       link: "https://www.patreon.com/makotools",
       name: "Patreon",
