@@ -120,7 +120,7 @@ function Sidebar(props: any) {
   const dark = theme.colorScheme === "dark";
   const user = useUser();
 
-  const [collapsed, toggleCollapsed] = useToggle([false, true]);
+  const [collapsed, toggleCollapsed] = useToggle([true, false]);
   if (props.permanentlyExpanded && collapsed) toggleCollapsed();
 
   const linkList: LinkObject[] = [
