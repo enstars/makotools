@@ -96,11 +96,10 @@ function Page() {
             <PageTitle
               title={<>About MakoTools</>}
               space={16}
-              sx={(theme) => ({
+              sx={{
                 overflow: "visible",
-                // color: theme.colors.blue[5],
                 zIndex: 5,
-              })}
+              }}
             />
           </Stack>
         </Box>
