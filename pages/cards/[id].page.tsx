@@ -22,6 +22,7 @@ import Skills, {
   liveSkillParse,
   supportSkillParse,
 } from "./components/Skills";
+import Gallery from "./components/Gallery";
 
 import { getNameOrder } from "services/game";
 import { getPreviewImageURL } from "services/makotools/preview";
@@ -82,8 +83,10 @@ function Page({
         ))}
       </Group>
       <Stats card={card} />
-      <Divider />
+      <Divider my="md" />
       <Skills card={card} />
+      <Divider my="md" />
+      <Gallery card={card} />
       <Reactions />
     </>
   );
