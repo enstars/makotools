@@ -226,7 +226,7 @@ function calculateHoroscope(date: Date) {
 // create individual birthday card
 function BirthdayCard({ ...props }) {
   const { classes } = useStyles();
-  const dayjs = useDayjs();
+  const { dayjs } = useDayjs();
   const formattedDate = dayjs(props.character.birthday).format("MMM D");
   return (
     <Accordion.Panel>
@@ -273,7 +273,7 @@ function BirthdayCard({ ...props }) {
 }
 
 function BirthdayPreview({ ...props }) {
-  const dayjs = useDayjs();
+  const { dayjs } = useDayjs();
 
   return (
     <Accordion variant="contained" defaultValue="birthday">

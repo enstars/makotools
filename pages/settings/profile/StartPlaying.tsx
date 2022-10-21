@@ -44,7 +44,7 @@ years.forEach((year) => {
 });
 
 function StartPlaying() {
-  const dayjs = useDayjs();
+  const { dayjs } = useDayjs();
   const user = useUser();
   const isFirestoreAccessible =
     !user.loading && user.loggedIn && typeof user.db !== undefined;

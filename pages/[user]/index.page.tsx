@@ -27,7 +27,7 @@ import { UserData } from "../../types/makotools";
 import BioDisplay from "components/sections/BioDisplay";
 
 function Page({ profile }: { profile: UserData }) {
-  const dayjs = useDayjs();
+  const { dayjs } = useDayjs();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
 
   return (

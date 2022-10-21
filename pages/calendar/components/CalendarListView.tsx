@@ -94,7 +94,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 
 function CalendarListDay({ ...props }) {
   const { classes } = useStyles();
-  const dayjs = useDayjs();
+  const { dayjs } = useDayjs();
   let today = new Date();
   let dayDate = new Date(
     `${props.date.year | today.getFullYear()}-${props.date.month}-${

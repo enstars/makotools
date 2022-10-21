@@ -124,7 +124,7 @@ function CalendarDay({ ...props }): React.ReactElement {
 }
 
 function CalendarWeek({ ...props }) {
-  const dayjs = useDayjs();
+  const { dayjs } = useDayjs();
   const { classes } = useStyles();
   return (
     <Grid columns={7} className={classes.week} gutter="xs">
