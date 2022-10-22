@@ -147,8 +147,8 @@ const useStyles = createStyles((theme, _params) => ({
     maxWidth: "80px",
     maxHeight: "80px",
     overflow: "hidden",
-    borderRadius: theme.radius.xl,
-    border: `1px solid ${theme.colors.blue[3]}`,
+    borderRadius: "40px",
+    border: `2px solid ${theme.colors.blue[3]}`,
 
     img: {
       marginLeft: "-175px",
@@ -242,7 +242,11 @@ function EventCard({ ...props }) {
   }
 }
 
-function UpcomingCampaigns({ ...props }) {
+function UpcomingCampaigns({
+  events,
+}: {
+  events: (BirthdayEvent | GameEvent | ScoutEvent)[];
+}) {
   const { dayjs } = useDayjs();
 
   return (
@@ -253,7 +257,7 @@ function UpcomingCampaigns({ ...props }) {
             Upcoming Campaigns
           </Text>
         </Accordion.Control>
-        {retrieveClosestEvents(props.events, dayjs).map(
+        {retrieveClosestEvents(events, dayjs).map(
           (e: BirthdayEvent | GameEvent | ScoutEvent, index) => {
             return <EventCard key={index} event={e} />;
           }

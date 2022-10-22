@@ -10,8 +10,17 @@ import {
 import CalendarListEventCard from "./CalendarListEventCard";
 
 import { useDayjs } from "services/libraries/dayjs";
-import { BirthdayEvent, GameEvent, ScoutEvent } from "types/game";
-import { areDatesEqual, areMonthYearEqual } from "services/events";
+import {
+  BirthdayEvent,
+  GameEvent,
+  GameEventStatus,
+  ScoutEvent,
+} from "types/game";
+import {
+  areDatesEqual,
+  areMonthYearEqual,
+  dateToString,
+} from "services/events";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   listBody: {
@@ -96,26 +105,29 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 interface ListViewObject {
   name: string;
   date: string;
-  status?: "start" | "end" | undefined;
+  status?: GameEventStatus;
   id: number;
 }
 
-function CalendarListDay({ ...props }) {
+function CalendarListDay({
+  date,
+  events,
+}: {
+  date: string;
+  events: (BirthdayEvent | GameEvent | ScoutEvent)[];
+}) {
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
   let today = new Date();
   let dayDate =
-    props.date.split("-")[0] === "2000"
-      ? new Date(`2000-${props.date.split("-")[1]}-${props.date.split("-")[2]}`)
-      : new Date(props.date);
+    date.split("-")[0] === "2000"
+      ? new Date(`2000-${date.split("-")[1]}-${date.split("-")[2]}`)
+      : new Date(date);
   let dotw = dayjs(dayDate).format("ddd");
-  let currentDate = props.date.split("-")[2].split(" ")[0];
+  let currentDate = parseInt(date.split("-")[2].split(" ")[0]);
   return (
     <Container className={classes.listDay}>
-      {areDatesEqual(
-        props.date,
-        `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
-      ) && (
+      {areDatesEqual(date, dateToString(today)) && (
         <Box
           sx={(theme) => ({
             width: "10px",
@@ -153,18 +165,18 @@ function CalendarListDay({ ...props }) {
         className={classes.listDayDivider}
       />
       <Container className={classes.listDayEvents}>
-        {props.events.map(
+        {events.map(
           (event: BirthdayEvent | GameEvent | ScoutEvent, i: number) => {
             return (
               <CalendarListEventCard
                 key={i}
                 index={i}
-                eventsAmt={props.events.length}
+                eventsAmt={events.length}
                 event={event}
                 status={
                   event.type === "birthday" || event.type === "anniversary"
                     ? undefined
-                    : event.start_date.split(" ")[0] === props.date
+                    : event.start_date.split(" ")[0] === date
                     ? "start"
                     : "end"
                 }
@@ -177,21 +189,27 @@ function CalendarListDay({ ...props }) {
   );
 }
 
-function CalendarListView({ ...props }) {
+function CalendarListView({
+  events,
+  lang,
+  date,
+}: {
+  events: (BirthdayEvent | GameEvent | ScoutEvent)[];
+  lang: string;
+  date: Date;
+}) {
   const { classes } = useStyles();
-  const date = `${props.date.getFullYear()}-${
-    props.date.getMonth() + 1
-  }-${props.date.getDate()} UTC`;
+  const dateString = `${dateToString(date)} UTC`;
   // get events happening in the active month
-  const filteredEvents = props.events.filter(
+  const filteredEvents = events.filter(
     (event: BirthdayEvent | GameEvent | ScoutEvent) => {
       if (event.type !== "birthday" && event.type !== "anniversary") {
         return (
-          areMonthYearEqual(event.start_date.split(" ")[0], date) ||
-          areMonthYearEqual(event.end_date.split(" ")[0], date)
+          areMonthYearEqual(event.start_date.split(" ")[0], dateString) ||
+          areMonthYearEqual(event.end_date.split(" ")[0], dateString)
         );
       } else {
-        return new Date(event.start_date).getMonth() === props.date.getMonth();
+        return new Date(event.start_date).getMonth() === date.getMonth();
       }
     }
   );
@@ -202,12 +220,12 @@ function CalendarListView({ ...props }) {
     // getting all the days in the month that have events
     if (
       !allEventDays.some((day) => day === event.start_date) &&
-      parseInt(event.start_date.split("-")[1]) === props.date.getMonth() + 1
+      parseInt(event.start_date.split("-")[1]) === date.getMonth() + 1
     ) {
       allEventDays.push(event.start_date.split(" ")[0]);
     } else if (
       !allEventDays.some((day) => day === event.end_date) &&
-      parseInt(event.end_date.split("-")[1]) === props.date.getMonth() + 1 &&
+      parseInt(event.end_date.split("-")[1]) === date.getMonth() + 1 &&
       event.type !== "birthday" &&
       event.type !== "anniversary"
     ) {

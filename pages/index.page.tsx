@@ -25,8 +25,14 @@ import UpcomingCampaigns from "../components/sections/UpcomingCampaigns";
 
 import Announcement from "./about/announcements/components/Announcement";
 
-import { GameCharacter, GameEvent, ScoutEvent } from "types/game";
+import {
+  BirthdayEvent,
+  GameCharacter,
+  GameEvent,
+  ScoutEvent,
+} from "types/game";
 import { retrieveEvents } from "services/events";
+import CurrentEventCountdown from "components/sections/CurrentEventCountdown";
 
 function Page({
   posts,
@@ -135,9 +141,16 @@ function Page({
               series.
             </List.Item>
           </List>
+          <CurrentEventCountdown
+            events={
+              events.filter((event: GameEvent) => event.event_id) as GameEvent[]
+            }
+          />
         </Box>
         <Stack>
-          <UpcomingCampaigns events={events} />
+          <UpcomingCampaigns
+            events={events as (BirthdayEvent | ScoutEvent | GameEvent)[]}
+          />
           <Accordion
             mt="xs"
             variant="contained"
@@ -202,7 +215,7 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     "gacha_id"
   );
 
-  let events = retrieveEvents({
+  let events: (BirthdayEvent | GameEvent | ScoutEvent)[] = retrieveEvents({
     characters: characters.data,
     gameEvents: gameEvents.data,
     scouts: scouts.data,

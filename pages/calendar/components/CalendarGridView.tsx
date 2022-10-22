@@ -11,8 +11,13 @@ import { getMonthDays, getWeekdaysNames } from "@mantine/dates";
 import CalendarEventCard from "./CalendarEventCard";
 
 import { useDayjs } from "services/libraries/dayjs";
-import { BirthdayEvent, GameEvent, ScoutEvent } from "types/game";
-import { areDatesEqual } from "services/events";
+import {
+  BirthdayEvent,
+  GameEvent,
+  GameEventStatus,
+  ScoutEvent,
+} from "types/game";
+import { areDatesEqual, dateToString } from "services/events";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   calendar: {
@@ -71,15 +76,23 @@ function CalendarDotW({ ...props }) {
   );
 }
 
-function CalendarDay({ ...props }): React.ReactElement {
+function CalendarDay({
+  day,
+  active,
+  events,
+}: {
+  day: string;
+  active: boolean;
+  events: (BirthdayEvent | GameEvent | ScoutEvent)[];
+}): React.ReactElement {
   const { classes } = useStyles();
-  let today = new Date();
+  let today = dateToString(new Date());
   return (
     <Grid.Col
       span={1}
       className={classes.dayContainer}
       sx={(theme) => ({
-        color: props.active
+        color: active
           ? "inherit"
           : theme.colorScheme === "dark"
           ? theme.colors.dark[3]
@@ -90,7 +103,7 @@ function CalendarDay({ ...props }): React.ReactElement {
         justify={"flex-start"}
         spacing="xs"
         sx={(theme) => ({
-          background: !props.active
+          background: !active
             ? "inherit"
             : theme.colorScheme === "light"
             ? theme.colors.gray[1]
@@ -98,31 +111,28 @@ function CalendarDay({ ...props }): React.ReactElement {
           height: "100%",
           borderRadius: theme.radius.md,
           "&:hover": {
-            background: !props.active
+            background: !active
               ? "inherit"
               : theme.colorScheme === "light"
               ? theme.colors.gray[0]
               : theme.colors.dark[9],
           },
         })}
-        className={props.day}
+        className={day}
       >
         <Text
           size="lg"
           sx={{ paddingLeft: "5px", paddingTop: "3px" }}
-          className={props.day === today ? classes.today : undefined}
+          className={day === today ? classes.today : undefined}
         >
-          {props.day.split("-")[2]}
+          {day.split("-")[2]}
         </Text>
-        {props.active &&
-          props.events.map(
+        {active &&
+          events.map(
             (event: BirthdayEvent | GameEvent | ScoutEvent, i: number) => {
-              let status: "start" | "end" | undefined;
+              let status: GameEventStatus;
               if (event.type !== "birthday" && event.type !== "anniversary") {
-                status = areDatesEqual(
-                  event.start_date.split(" ")[0],
-                  props.day
-                )
+                status = areDatesEqual(event.start_date.split(" ")[0], day)
                   ? "start"
                   : "end";
               }
@@ -130,7 +140,7 @@ function CalendarDay({ ...props }): React.ReactElement {
                 <CalendarEventCard
                   key={i}
                   event={event}
-                  day={props.day}
+                  day={day}
                   status={status}
                 />
               );
@@ -141,32 +151,30 @@ function CalendarDay({ ...props }): React.ReactElement {
   );
 }
 
-function CalendarWeek({ calendarTime, week, ...props }) {
+function CalendarWeek({
+  calendarTime,
+  week,
+  events,
+  ...props
+}: {
+  calendarTime: string;
+  week: Date[];
+  events: (GameEvent | BirthdayEvent | ScoutEvent)[];
+}) {
   const { dayjs } = useDayjs();
   const { classes } = useStyles();
   return (
     <Grid columns={7} className={classes.week} gutter="xs">
       {week.map((day: Date, i: number) => {
-        const filteredEvents = props.events.filter(
+        const filteredEvents = events.filter(
           (event: BirthdayEvent | GameEvent | ScoutEvent) => {
             if (event.type !== "birthday" && event.type !== "anniversary") {
               return (
                 areDatesEqual(
                   event.start_date.split(" ")[0],
-                  day.getFullYear() +
-                    "-" +
-                    (day.getMonth() + 1) +
-                    "-" +
-                    day.getDate()
+                  dateToString(day)
                 ) ||
-                areDatesEqual(
-                  event.end_date.split(" ")[0],
-                  day.getFullYear() +
-                    "-" +
-                    (day.getMonth() + 1) +
-                    "-" +
-                    day.getDate()
-                )
+                areDatesEqual(event.end_date.split(" ")[0], dateToString(day))
               );
             } else {
               return (
@@ -179,13 +187,7 @@ function CalendarWeek({ calendarTime, week, ...props }) {
         );
         return (
           <CalendarDay
-            day={
-              day.getFullYear() +
-              "-" +
-              (day.getMonth() + 1) +
-              "-" +
-              day.getDate()
-            }
+            day={dateToString(day)}
             key={i}
             active={day.getMonth() === dayjs(calendarTime).month()}
             events={filteredEvents}
@@ -198,25 +200,28 @@ function CalendarWeek({ calendarTime, week, ...props }) {
 
 function CalendarGridView({
   calendarTime,
-  ...props
+  events,
+  lang,
 }: {
   calendarTime: string;
+  events: (BirthdayEvent | GameEvent | ScoutEvent)[];
+  lang: string;
 }) {
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
   return (
     <Container className={classes.calendar}>
-      <CalendarDotW lang={props.lang} />
+      <CalendarDotW lang={lang} />
       <Container className={classes.calendarBody}>
         {getMonthDays(
           dayjs(calendarTime).startOf("M").toDate(),
           dayjs.localeData().firstDayOfWeek() === 0 ? "sunday" : "monday"
-        ).map((week, i) => (
+        ).map((week: Date[], i) => (
           <CalendarWeek
             calendarTime={calendarTime}
             week={week}
             key={i}
-            events={props.events}
+            events={events}
           />
         ))}
       </Container>

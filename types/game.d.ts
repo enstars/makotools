@@ -159,7 +159,7 @@ type EventType =
   | "tour"
   | "anniversary"
   | "other";
-type GameEventStatus = "start" | "end";
+export type GameEventStatus = "start" | "end" | undefined;
 
 export interface Event<T = string[]> {
   name: string;
@@ -200,3 +200,5 @@ export interface ScoutEvent<T = string[]> extends Event {
 export interface BirthdayEvent<T = string> extends Event {
   character_id: ID;
 }
+
+export type EventType = BirthdayEvent | GameEvent | ScoutEvent;

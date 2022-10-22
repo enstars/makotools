@@ -1,7 +1,22 @@
 import { Badge, createStyles, Tooltip } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 
-function CalendarEventCard({ ...props }) {
+import {
+  BirthdayEvent,
+  GameEvent,
+  GameEventStatus,
+  ScoutEvent,
+} from "types/game";
+
+function CalendarEventCard({
+  event,
+  day,
+  status,
+}: {
+  event: BirthdayEvent | GameEvent | ScoutEvent;
+  day: string;
+  status: GameEventStatus;
+}) {
   const useStyles = createStyles((theme, _params, getRef) => ({
     eventCard: {
       fontSize: "12px",
@@ -11,7 +26,6 @@ function CalendarEventCard({ ...props }) {
     },
   }));
 
-  const { event } = props;
   const { classes } = useStyles();
   return (
     <Tooltip
@@ -40,7 +54,7 @@ function CalendarEventCard({ ...props }) {
             ? "yellow"
             : event.type === "birthday"
             ? "cyan"
-            : props.status === "start"
+            : status === "start"
             ? "lime"
             : "pink"
         }
@@ -48,10 +62,10 @@ function CalendarEventCard({ ...props }) {
         component={NextLink}
         href={
           event.type === "birthday"
-            ? `/characters/${event.character_id}`
-            : event.event_id
-            ? `/events/${event.event_id}`
-            : `/scouts/${event.gacha_id}`
+            ? `/characters/${(event as BirthdayEvent).character_id}`
+            : (event as GameEvent).event_id
+            ? `/events/${(event as GameEvent).event_id}`
+            : `/scouts/${(event as ScoutEvent).gacha_id}`
         }
         sx={(theme) => ({
           borderRadius: theme.radius.sm,
@@ -64,11 +78,11 @@ function CalendarEventCard({ ...props }) {
         {event.type === "birthday"
           ? event.name.split(" ")[0] + "'s birthday"
           : event.type === "feature scout"
-          ? props.status + ": " + event.name.split(" ")[0] + " FS"
+          ? status + ": " + event.name.split(" ")[0] + " FS"
           : event.type === "scout"
-          ? props.status + ": SCOUT! " + event.name
+          ? status + ": SCOUT! " + event.name
           : event.type === "song" || event.type === "tour"
-          ? props.status + ": " + event.story_name
+          ? status + ": " + event.story_name
           : event.name}
       </Badge>
     </Tooltip>

@@ -90,11 +90,8 @@ function Page({
         )}
         {view === "list" && (
           <CalendarHeader
-            month={month}
-            changeMonth={changeMonth}
-            changeYear={changeYear}
-            year={year}
-            lang={lang}
+            calendarTime={calendarTime}
+            setCalendarTime={setCalendarTime}
           />
         )}
       </Container>

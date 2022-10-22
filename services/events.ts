@@ -78,6 +78,10 @@ function areMonthYearEqual(dateA: string, dateB: string): boolean {
   }
 }
 
+function dateToString(date: Date): string {
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+}
+
 // function localizeEventTimes(
 //   events: (BirthdayEvent | GameEvent | ScoutEvent)[]
 // ): (BirthdayEvent | GameEvent | ScoutEvent)[] {
@@ -97,4 +101,4 @@ function areMonthYearEqual(dateA: string, dateB: string): boolean {
 //   return events;
 // }
 
-export { retrieveEvents, areDatesEqual, areMonthYearEqual };
+export { retrieveEvents, areDatesEqual, areMonthYearEqual, dateToString };

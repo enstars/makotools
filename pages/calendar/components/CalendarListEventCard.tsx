@@ -16,6 +16,12 @@ import {
 import { useEffect, useState } from "react";
 
 import { getAssetURL } from "services/data";
+import {
+  BirthdayEvent,
+  GameEvent,
+  GameEventStatus,
+  ScoutEvent,
+} from "types/game";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   listCardImg: {
@@ -91,7 +97,17 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 }));
 
-function CalendarListEventCard({ ...props }) {
+function CalendarListEventCard({
+  index,
+  eventsAmt,
+  event,
+  status,
+}: {
+  index: number;
+  eventsAmt: number;
+  event: BirthdayEvent | GameEvent | ScoutEvent;
+  status: GameEventStatus;
+}) {
   const { classes } = useStyles();
 
   const [isMobile, setMobile] = useState<boolean>(true);
@@ -105,9 +121,11 @@ function CalendarListEventCard({ ...props }) {
       component={NextLink}
       className={classes.listCard}
       href={
-        props.event.type === "birthday"
-          ? `/characters/${props.event.id}`
-          : `/events/${props.event.id}`
+        event.type === "birthday"
+          ? `/characters/${(event as BirthdayEvent).character_id}`
+          : (event as GameEvent).event_id
+          ? `/events/${(event as GameEvent).event_id}`
+          : `/scouts/${(event as ScoutEvent).gacha_id}`
       }
     >
       <Box className={classes.listCardStatus}>
@@ -116,31 +134,31 @@ function CalendarListEventCard({ ...props }) {
             variant="light"
             radius="xl"
             color={
-              props.event.type === "birthday"
+              event.type === "birthday"
                 ? "cyan"
-                : props.event.type === "anniversary"
+                : event.type === "anniversary"
                 ? "yellow"
-                : props.status === "start"
+                : status === "start"
                 ? "lime"
                 : "pink"
             }
           >
-            {props.event.type === "birthday" ? (
+            {event.type === "birthday" ? (
               <IconCake size={16} />
-            ) : props.event.type === "anniversary" ? (
+            ) : event.type === "anniversary" ? (
               <IconStar size={16} />
-            ) : props.status === "start" ? (
+            ) : status === "start" ? (
               <IconPlayerPlay size={16} />
             ) : (
               <IconExclamationMark size={16} />
             )}
           </ThemeIcon>
           <Text weight={700} size="sm">
-            {props.event.type === "birthday"
+            {event.type === "birthday"
               ? "Birthday"
-              : props.event.type === "anniversary"
+              : event.type === "anniversary"
               ? "Anniversary"
-              : props.status === "start"
+              : status === "start"
               ? "Start"
               : "End"}
           </Text>
@@ -148,24 +166,24 @@ function CalendarListEventCard({ ...props }) {
       </Box>
       <Box className={classes.listCardName}>
         <Text weight={600} size="lg">
-          {props.event.type === "birthday"
-            ? props.event.name + "'s Birthday"
-            : props.event.type === "scout"
-            ? "SCOUT! " + props.event.name
-            : props.event.type === "feature scout"
-            ? "Featured Scout: " + props.event.name.split(" ")[0]
-            : props.event.name}
+          {event.type === "birthday"
+            ? event.name + "'s Birthday"
+            : event.type === "scout"
+            ? "SCOUT! " + event.name
+            : event.type === "feature scout"
+            ? "Featured Scout: " + event.name.split(" ")[0]
+            : event.name}
         </Text>
       </Box>
       <Image
         src={getAssetURL(
           `assets/card_still_full1_${
-            props.event.type === "birthday"
-              ? props.event.banner_id + "_normal"
-              : props.event.banner_id + "_evolution"
+            event.type === "birthday"
+              ? event.banner_id + "_normal"
+              : event.banner_id + "_evolution"
           }.webp`
         )}
-        alt={props.event.name}
+        alt={event.name}
         radius="md"
         className={classes.listCardImg}
         height={150}
