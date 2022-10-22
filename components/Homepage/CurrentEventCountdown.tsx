@@ -1,11 +1,14 @@
 import {
-  Box,
   Container,
   createStyles,
   Group,
   Image,
   Title,
   Text,
+  Paper,
+  Box,
+  Button,
+  Stack,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 
@@ -25,13 +28,6 @@ const useStyles = createStyles((theme, _params) => ({
   eventImage: {
     minWidth: "350px",
     maxWidth: "400px",
-    img: {
-      border: `2px solid ${
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[3]
-          : theme.colors.gray[5]
-      }`,
-    },
   },
 }));
 
@@ -83,15 +79,28 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
     <Container>
       <Title order={2}>Current Event</Title>
       {currentEvent && (
-        <Group noWrap={noWrap} className={classes.eventContainer}>
-          <EventImage event={currentEvent} />
-          <Box>
-            <Title order={3} sx={{ maxWidth: "300px" }}>
-              {currentEvent.name}
-            </Title>
-            <Countdown event={currentEvent} />
-          </Box>
-        </Group>
+        <Paper
+          shadow="xs"
+          radius="md"
+          p="lg"
+          withBorder
+          className={classes.eventContainer}
+        >
+          <Group noWrap={noWrap} align="flex-start" spacing="xl">
+            <EventImage event={currentEvent} />
+            <Stack justify="space-around">
+              <Box>
+                <Title order={3} sx={{ maxWidth: "300px" }}>
+                  {currentEvent.name}
+                </Title>
+                <Countdown event={currentEvent} />
+              </Box>
+              <Button color="indigo" disabled>
+                Event Calculator
+              </Button>
+            </Stack>
+          </Group>
+        </Paper>
       )}
     </Container>
   );
