@@ -9,8 +9,9 @@ import {
 
 import CalendarListEventCard from "./CalendarListEventCard";
 
-import { CalendarEvent, EventDate } from "types/makotools";
 import { useDayjs } from "services/libraries/dayjs";
+import { BirthdayEvent, GameEvent, ScoutEvent } from "types/game";
+import { areDatesEqual, areMonthYearEqual } from "services/events";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   listBody: {
@@ -92,33 +93,45 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 }));
 
+interface ListViewObject {
+  name: string;
+  date: string;
+  status?: "start" | "end" | undefined;
+  id: number;
+}
+
 function CalendarListDay({ ...props }) {
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
   let today = new Date();
-  let dayDate = new Date(
-    `${props.date.year | today.getFullYear()}-${props.date.month}-${
-      props.date.date
-    }`
-  );
+  let dayDate =
+    props.event.date.split("-")[0] === "2000"
+      ? new Date(
+          `2000-${props.event.date.split("-")[1]}-${
+            props.event.date.split("-")[2]
+          }`
+        )
+      : new Date(props.event.date);
   let dotw = dayjs(dayDate).format("ddd");
+  let currentDate = props.event.date.split("-")[2];
   return (
     <Container className={classes.listDay}>
-      {props.date.date === today.getDate() &&
-        props.date.month === today.getMonth() &&
-        props.date.year === today.getFullYear() && (
-          <Box
-            sx={(theme) => ({
-              width: "10px",
-              height: "75px",
-              background:
-                theme.colorScheme === "dark"
-                  ? theme.colors.blue[7]
-                  : theme.colors.blue[4],
-              marginRight: "10px",
-            })}
-          />
-        )}
+      {areDatesEqual(
+        props.event.date,
+        `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
+      ) && (
+        <Box
+          sx={(theme) => ({
+            width: "10px",
+            height: "75px",
+            background:
+              theme.colorScheme === "dark"
+                ? theme.colors.blue[7]
+                : theme.colors.blue[4],
+            marginRight: "10px",
+          })}
+        />
+      )}
       <Box className={classes.listDayTitle}>
         <Text
           sx={{ textTransform: "uppercase" }}
@@ -128,12 +141,12 @@ function CalendarListDay({ ...props }) {
           {dotw}
         </Text>
         <Title order={2}>
-          {props.date.date}
-          {props.date.date % 10 === 1 && props.date.date !== 11
+          {currentDate}
+          {currentDate % 10 === 1 && currentDate !== 11
             ? "st"
-            : props.date.date % 10 === 2 && props.date.date !== 12
+            : currentDate % 10 === 2 && currentDate !== 12
             ? "nd"
-            : props.date.date % 10 === 3 && props.date.date !== 13
+            : currentDate % 10 === 3 && currentDate !== 13
             ? "rd"
             : "th"}
         </Title>
@@ -144,16 +157,19 @@ function CalendarListDay({ ...props }) {
         className={classes.listDayDivider}
       />
       <Container className={classes.listDayEvents}>
-        {props.events.map((event: CalendarEvent, i: number) => {
-          return (
-            <CalendarListEventCard
-              key={i}
-              index={i}
-              eventsAmt={props.events.length}
-              event={event}
-            />
-          );
-        })}
+        {props.events.map(
+          (event: BirthdayEvent | GameEvent | ScoutEvent, i: number) => {
+            return (
+              <CalendarListEventCard
+                key={i}
+                index={i}
+                eventsAmt={props.events.length}
+                event={event}
+                status={props.event.status}
+              />
+            );
+          }
+        )}
       </Container>
     </Container>
   );
@@ -161,38 +177,89 @@ function CalendarListDay({ ...props }) {
 
 function CalendarListView({ ...props }) {
   const { classes } = useStyles();
+  const date = `${props.date.getFullYear()}-${
+    props.date.getMonth() + 1
+  }-${props.date.getDate()}`;
+  console.log(date);
+  // get events happening in the active month
+  const filteredEvents = props.events.filter(
+    (event: BirthdayEvent | GameEvent | ScoutEvent) => {
+      if (event.type !== "birthday" && event.type !== "anniversary") {
+        return (
+          areMonthYearEqual(event.start_date.split(" ")[0], date) ||
+          areMonthYearEqual(event.end_date.split(" ")[0], date)
+        );
+      } else {
+        return new Date(event.start_date).getMonth() === props.date.getMonth();
+      }
+    }
+  );
 
-  const filteredEvents = props.events.filter((event: CalendarEvent) => {
-    if (event.type !== "birthday" && event.type !== "anniversary") {
-      return (
-        event.date.year === props.date.getFullYear() &&
-        event.date.month === props.date.getMonth()
-      );
+  let sortedEvents: ListViewObject[] = [];
+
+  filteredEvents.forEach((event: BirthdayEvent | GameEvent | ScoutEvent) => {
+    if (event.start_date !== event.end_date) {
+      // doing this check cause the start date and end date might not always occur on the same month
+      if (
+        parseInt(event.start_date.split("-")[1]) ===
+        new Date().getMonth() + 1
+      ) {
+        let listDateObject: ListViewObject = {
+          id:
+            (event as BirthdayEvent).character_id ||
+            (event as GameEvent).event_id ||
+            (event as ScoutEvent).gacha_id,
+          date: event.start_date,
+          name: event.name,
+          status: "start",
+        };
+        sortedEvents.push(listDateObject);
+      }
+      if (
+        parseInt(event.end_date.split("-")[1]) ===
+        new Date().getMonth() + 1
+      ) {
+        let listDateObject: ListViewObject = {
+          id:
+            (event as BirthdayEvent).character_id ||
+            (event as GameEvent).event_id ||
+            (event as ScoutEvent).gacha_id,
+          date: event.end_date,
+          name: event.name,
+          status: "end",
+        };
+        sortedEvents.push(listDateObject);
+      }
     } else {
-      return event.date.month === props.date.getMonth();
+      let listDateObject: ListViewObject = {
+        id:
+          (event as BirthdayEvent).character_id ||
+          (event as GameEvent).event_id ||
+          (event as ScoutEvent).gacha_id,
+        date: event.start_date,
+        name: event.name,
+      };
     }
   });
 
-  let calendarDates: EventDate[] = [];
-
-  for (const event of filteredEvents) {
-    const found = calendarDates.some(
-      (calDate) => calDate.date === event.date.date
-    );
-    if (!found) calendarDates.push(event.date);
-  }
-
-  calendarDates.sort((a, b) => a.date - b.date);
+  sortedEvents.sort(
+    (a: ListViewObject, b: ListViewObject) =>
+      parseInt(a.date.split("-")[0]) - parseInt(b.date.split("-")[0])
+  );
 
   return (
     <Container className={classes.listBody}>
-      {calendarDates.map((date) => {
+      {sortedEvents.map((event, i) => {
         return (
           <CalendarListDay
-            key={date.date}
-            date={date}
+            key={i}
+            event={event}
             events={filteredEvents.filter(
-              (event: CalendarEvent) => event.date.date === date.date
+              (e: BirthdayEvent | GameEvent | ScoutEvent) =>
+                parseInt(e.start_date.split("-")[2]) ===
+                  parseInt(event.date.split("-")[2]) ||
+                parseInt(e.end_date.split("-")[2]) ===
+                  parseInt(event.date.split("-")[2])
             )}
           />
         );

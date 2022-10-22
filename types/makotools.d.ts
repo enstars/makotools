@@ -155,31 +155,3 @@ interface CalendarMonth {
   name: MonthName;
   amount_of_days: MonthLength;
 }
-
-type EventType =
-  | "birthday"
-  | "scout"
-  | "feature scout"
-  | "song"
-  | "tour"
-  | "anniversary";
-type GameEventStatus = "start" | "end";
-
-interface EventDate {
-  month: number;
-  date: number;
-  year?: number | undefined;
-}
-
-interface CalendarEvent {
-  type: EventType;
-  date: EventDate;
-  name: string;
-  render_id: ID[] | ID | null;
-  id: ID;
-}
-
-interface InGameEvent extends CalendarEvent {
-  status: GameEventStatus;
-  short_name?: string;
-}
