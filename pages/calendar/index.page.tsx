@@ -47,7 +47,6 @@ function Page({
   const currYear = dayjs(currentDate).format("YYYY");
 
   const [calendarTime, setCalendarTime] = useState<string>(dayjs().format());
-  console.log(calendarTime);
 
   const [view, setView] = useState<string | string[]>("cal");
   const [month, changeMonth] = useState<string>(currMonth);

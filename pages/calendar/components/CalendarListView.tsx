@@ -236,9 +236,6 @@ function CalendarListView({
     }
   });
 
-  console.log(filteredEvents);
-  console.log(allEventDays);
-
   allEventDays.sort(
     (a: string, b: string) =>
       parseInt(a.split("-")[2]) - parseInt(b.split("-")[2])
