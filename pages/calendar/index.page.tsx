@@ -89,7 +89,7 @@ function Page({
           <CalendarListView
             events={localizeEventTimes(events)}
             lang={lang}
-            date={displayDate}
+            calendarTime={calendarTime}
           />
         )}
         {view === "list" && (

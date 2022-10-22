@@ -190,26 +190,29 @@ function CalendarListDay({
 }
 
 function CalendarListView({
+  calendarTime,
   events,
   lang,
-  date,
 }: {
+  calendarTime: string;
   events: (BirthdayEvent | GameEvent | ScoutEvent)[];
   lang: string;
-  date: Date;
 }) {
   const { classes } = useStyles();
-  const dateString = `${dateToString(date)} UTC`;
+  const { dayjs } = useDayjs();
+  let calendarTimeDate: Date = dayjs(calendarTime).toDate();
   // get events happening in the active month
   const filteredEvents = events.filter(
     (event: BirthdayEvent | GameEvent | ScoutEvent) => {
       if (event.type !== "birthday" && event.type !== "anniversary") {
         return (
-          areMonthYearEqual(event.start_date.split(" ")[0], dateString) ||
-          areMonthYearEqual(event.end_date.split(" ")[0], dateString)
+          areMonthYearEqual(event.start_date.split(" ")[0], calendarTime) ||
+          areMonthYearEqual(event.end_date.split(" ")[0], calendarTime)
         );
       } else {
-        return new Date(event.start_date).getMonth() === date.getMonth();
+        return (
+          new Date(event.start_date).getMonth() === calendarTimeDate.getMonth()
+        );
       }
     }
   );
@@ -220,18 +223,21 @@ function CalendarListView({
     // getting all the days in the month that have events
     if (
       !allEventDays.some((day) => day === event.start_date) &&
-      parseInt(event.start_date.split("-")[1]) === date.getMonth() + 1
+      parseInt(event.start_date.split("-")[1]) ===
+        calendarTimeDate.getMonth() + 1
     ) {
       allEventDays.push(event.start_date.split(" ")[0]);
-    } else if (
+    }
+    if (
       !allEventDays.some((day) => day === event.end_date) &&
-      parseInt(event.end_date.split("-")[1]) === date.getMonth() + 1 &&
-      event.type !== "birthday" &&
-      event.type !== "anniversary"
+      parseInt(event.end_date.split("-")[1]) === calendarTimeDate.getMonth() + 1
     ) {
       allEventDays.push(event.end_date.split(" ")[0]);
     }
   });
+
+  console.log(filteredEvents);
+  console.log(allEventDays);
 
   allEventDays.sort(
     (a: string, b: string) =>
