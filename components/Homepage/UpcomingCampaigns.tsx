@@ -121,33 +121,34 @@ function HoroscopeSymbol({ ...props }) {
 }
 
 const useStyles = createStyles((theme, _params) => ({
+  panel: {
+    margin: "auto",
+  },
+
   eventCard: {
+    width: "100%",
     "&:hover": {
       cursor: "pointer",
     },
   },
   eventImg: {
-    maxWidth: "180px",
-    maxHeight: "90px",
+    maxWidth: "200px",
+    maxHeight: "100px",
     overflow: "hidden",
     borderRadius: theme.radius.lg,
-    border: `1px solid ${theme.colors.blue[3]}`,
+    border: `2px solid ${theme.colors.blue[3]}`,
 
     img: {
       marginLeft: "-140px",
       marginTop: "-20px",
     },
-
-    "&:hover": {
-      cursor: "pointer",
-    },
   },
 
   birthdayImg: {
-    maxWidth: "80px",
-    maxHeight: "80px",
+    maxWidth: "100px",
+    maxHeight: "100px",
     overflow: "hidden",
-    borderRadius: "40px",
+    borderRadius: "50px",
     border: `2px solid ${theme.colors.blue[3]}`,
 
     img: {
@@ -183,9 +184,14 @@ function EventCard({ ...props }) {
 
   if (props.event.type === "birthday") {
     return (
-      <Accordion.Panel>
+      <Accordion.Panel className={classes.panel}>
         <Link href={link} passHref>
-          <Group className={classes.eventCard}>
+          <Group
+            className={classes.eventCard}
+            align="flex-start"
+            position="center"
+            spacing="xl"
+          >
             <Box>
               <Title order={2}>{formattedDate}</Title>
               <Title order={5}>{formattedMonth}</Title>
@@ -214,12 +220,17 @@ function EventCard({ ...props }) {
     return (
       <Accordion.Panel>
         <Link href={link} passHref>
-          <Group align="flex-start">
+          <Group
+            className={classes.eventCard}
+            align="flex-start"
+            position="center"
+            spacing="xl"
+          >
             <Box>
               <Title order={2}>{formattedDate}</Title>
               <Title order={6}>{formattedMonth}</Title>
             </Box>
-            <Box sx={{ maxWidth: "180px" }}>
+            <Box sx={{ maxWidth: "200px" }}>
               <Image
                 alt={props.event.name}
                 src={getAssetURL(

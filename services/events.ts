@@ -109,7 +109,6 @@ function isEventHappeningToday(event: GameEvent | ScoutEvent): boolean {
 }
 
 function countdown(dateA: Date, dateB: Date): number {
-  console.log(dateA);
   return Date.parse(dateA.toString()) - Date.parse(dateB.toString());
 }
 
@@ -118,7 +117,7 @@ function toCountdownReadable(amount: number): string {
   const hours = Math.floor((amount % 86400000) / 3600000);
   const min = Math.floor(((amount % 86400000) % 3600000) / 60000);
   const sec = Math.floor((((amount % 86400000) % 3600000) % 60000) / 1000);
-  return `${days}D ${hours}H ${min}M ${sec}S`;
+  return `${days}d ${hours}h ${min}m ${sec}s`;
 }
 
 export {

@@ -11,6 +11,7 @@ import {
   Image as MantineImage,
   Stack,
   Accordion,
+  createStyles,
 } from "@mantine/core";
 import Image from "next/image";
 import { IconNews } from "@tabler/icons";
@@ -21,7 +22,7 @@ import AffiliatesDark from "../assets/Affiliates/affiliates_dark.svg?url";
 import { getLayout } from "../components/Layout";
 import getServerSideUser from "../services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "../services/data";
-import UpcomingCampaigns from "../components/sections/UpcomingCampaigns";
+import UpcomingCampaigns from "../components/Homepage/UpcomingCampaigns";
 
 import Announcement from "./about/announcements/components/Announcement";
 
@@ -32,7 +33,16 @@ import {
   ScoutEvent,
 } from "types/game";
 import { retrieveEvents } from "services/events";
-import CurrentEventCountdown from "components/sections/CurrentEventCountdown";
+import CurrentEventCountdown from "components/Homepage/CurrentEventCountdown";
+import CurrentScoutsCountdown from "components/Homepage/CurrentScoutsCountdown";
+
+const useStyles = createStyles((theme, _params) => ({
+  mainCol: {
+    [`@media (min-width: 768px)`]: {
+      maxWidth: "70%",
+    },
+  },
+}));
 
 function Page({
   posts,
@@ -42,10 +52,11 @@ function Page({
   events: (Event | GameEvent | ScoutEvent)[];
 }) {
   const theme = useMantineTheme();
+  const { classes } = useStyles();
 
   return (
-    <Group>
-      <Stack>
+    <Group grow align="flex-start" spacing="xl">
+      <Stack align="flex-start" spacing="lg" className={classes.mainCol}>
         <Image src={Banner} style={{ borderRadius: 0 }} alt="banner" />
         <MantineTitle order={1} mt="sm">
           Welcome to{" "}
@@ -144,6 +155,13 @@ function Page({
           <CurrentEventCountdown
             events={
               events.filter((event: GameEvent) => event.event_id) as GameEvent[]
+            }
+          />
+          <CurrentScoutsCountdown
+            scouts={
+              events.filter(
+                (scout: ScoutEvent) => scout.gacha_id
+              ) as ScoutEvent[]
             }
           />
         </Box>

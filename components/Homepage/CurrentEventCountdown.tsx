@@ -21,15 +21,31 @@ const useStyles = createStyles((theme, _params) => ({
   eventContainer: {
     marginTop: "2vh",
   },
+
+  eventImage: {
+    minWidth: "350px",
+    maxWidth: "400px",
+    img: {
+      border: `2px solid ${
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[3]
+          : theme.colors.gray[5]
+      }`,
+    },
+  },
 }));
 
 function EventImage({ event }: { event: GameEvent }) {
+  const { classes } = useStyles();
+
   return (
     <Image
       alt={event.name}
       src={getAssetURL(
         `assets/card_still_full1_${event.banner_id}_evolution.webp`
       )}
+      className={classes.eventImage}
+      radius="lg"
     />
   );
 }
@@ -44,7 +60,7 @@ function Countdown({ event }: { event: GameEvent }) {
     return () => clearInterval(interval);
   }, [event.end_date]);
   return (
-    <Group noWrap>
+    <Group>
       <Text weight={600}>Ends in </Text>
       <Title order={4}>{countdownAmt}</Title>
     </Group>
