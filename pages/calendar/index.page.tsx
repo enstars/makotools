@@ -156,34 +156,34 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
 
   if (gameEventData) {
     for (const event of gameEventData) {
-      let startDateObj = event.start_date[0].split("-");
-      let endDateObj = event.end_date[0].split("-");
+      let startDateObj = event.start_date[1].split("-");
+      let endDateObj = event.end_date[1].split("-");
       let gameEventStart: InGameEvent = {
-        type: event.type[0] as EventType,
+        type: event.type[1] as EventType,
         status: "start",
-        name: event.name[0],
-        short_name: event.story_name[0],
+        name: event.name[1],
+        short_name: event.story_name[1],
         date: {
           month: parseInt(startDateObj[1]) - 1,
           date: parseInt(startDateObj[2]),
           year: parseInt(startDateObj[0]),
         },
         id: event.event_id,
-        render_id: event.banner_id[0],
+        render_id: event.banner_id[1],
       };
 
       let gameEventEnd: InGameEvent = {
-        type: event.type[0] as EventType,
+        type: event.type[1] as EventType,
         status: "end",
-        name: event.name[0],
-        short_name: event.story_name[0],
+        name: event.name[1],
+        short_name: event.story_name[1],
         date: {
           month: parseInt(endDateObj[1]) - 1,
           date: parseInt(endDateObj[2]),
           year: parseInt(endDateObj[0]),
         },
         id: event.event_id,
-        render_id: event.banner_id[0],
+        render_id: event.banner_id[1],
       };
 
       events.push(gameEventStart);
@@ -193,38 +193,38 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
 
   if (scoutData) {
     for (const scout of scoutData) {
-      let startDateObj = scout.start_date[0].split("-");
-      let endDateObj = scout.end_date[0].split("-");
+      let startDateObj = scout.start_date[1].split("-");
+      let endDateObj = scout.end_date[1].split("-");
       let scoutStart: InGameEvent = {
-        type: scout.type[0] as EventType,
+        type: scout.type[1] as EventType,
         status: "start",
         name:
           scout.type === "feature scout"
-            ? scout.name[0].split(" ")[0]
-            : scout.name[0],
+            ? scout.name[1].split(" ")[0]
+            : scout.name[1],
         date: {
           month: parseInt(startDateObj[1]) - 1,
           date: parseInt(startDateObj[2]),
           year: parseInt(startDateObj[0]),
         },
         id: scout.gacha_id,
-        render_id: scout?.five_star?.card_id[0],
+        render_id: scout?.five_star?.card_id[1],
       };
 
       let scoutEnd: InGameEvent = {
-        type: scout.type[0] as EventType,
+        type: scout.type[1] as EventType,
         status: "end",
         name:
           scout.type === "feature scout"
-            ? scout.name[0].split(" ")[0]
-            : scout.name[0],
+            ? scout.name[1].split(" ")[0]
+            : scout.name[1],
         date: {
           month: parseInt(endDateObj[1]) - 1,
           date: parseInt(endDateObj[2]),
           year: parseInt(endDateObj[0]),
         },
         id: scout.gacha_id,
-        render_id: scout?.five_star?.card_id[0],
+        render_id: scout?.five_star?.card_id[1],
       };
 
       events.push(scoutStart);
