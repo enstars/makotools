@@ -12,7 +12,12 @@ import CalendarHeader from "./components/CalendarHeader";
 
 import { getLocalizedDataArray } from "services/data";
 import { retrieveEvents } from "services/events";
-import { GameCharacter, GameEvent, ScoutEvent } from "types/game";
+import {
+  GameCharacter,
+  GameEvent,
+  ScoutEvent,
+  BirthdayEvent,
+} from "types/game";
 
 /**
  * If the user is viewing from a mobile phone, the default view should be the list view. Otherwise, it should be the traditional calendar.

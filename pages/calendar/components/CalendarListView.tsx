@@ -105,19 +105,15 @@ function CalendarListDay({ ...props }) {
   const { dayjs } = useDayjs();
   let today = new Date();
   let dayDate =
-    props.event.date.split("-")[0] === "2000"
-      ? new Date(
-          `2000-${props.event.date.split("-")[1]}-${
-            props.event.date.split("-")[2]
-          }`
-        )
-      : new Date(props.event.date);
+    props.date.split("-")[0] === "2000"
+      ? new Date(`2000-${props.date.split("-")[1]}-${props.date.split("-")[2]}`)
+      : new Date(props.date);
   let dotw = dayjs(dayDate).format("ddd");
-  let currentDate = props.event.date.split("-")[2];
+  let currentDate = props.date.split("-")[2].split(" ")[0];
   return (
     <Container className={classes.listDay}>
       {areDatesEqual(
-        props.event.date,
+        props.date,
         `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
       ) && (
         <Box
@@ -165,7 +161,13 @@ function CalendarListDay({ ...props }) {
                 index={i}
                 eventsAmt={props.events.length}
                 event={event}
-                status={props.event.status}
+                status={
+                  event.type === "birthday" || event.type === "anniversary"
+                    ? undefined
+                    : event.start_date.split(" ")[0] === props.date
+                    ? "start"
+                    : "end"
+                }
               />
             );
           }
@@ -195,71 +197,51 @@ function CalendarListView({ ...props }) {
     }
   );
 
-  let sortedEvents: ListViewObject[] = [];
+  let allEventDays: string[] = [];
 
   filteredEvents.forEach((event: BirthdayEvent | GameEvent | ScoutEvent) => {
-    if (event.start_date !== event.end_date) {
-      // doing this check cause the start date and end date might not always occur on the same month
-      if (
-        parseInt(event.start_date.split("-")[1]) ===
-        new Date().getMonth() + 1
-      ) {
-        let listDateObject: ListViewObject = {
-          id:
-            (event as BirthdayEvent).character_id ||
-            (event as GameEvent).event_id ||
-            (event as ScoutEvent).gacha_id,
-          date: event.start_date,
-          name: event.name,
-          status: "start",
-        };
-        sortedEvents.push(listDateObject);
-      }
-      if (
-        parseInt(event.end_date.split("-")[1]) ===
-        new Date().getMonth() + 1
-      ) {
-        let listDateObject: ListViewObject = {
-          id:
-            (event as BirthdayEvent).character_id ||
-            (event as GameEvent).event_id ||
-            (event as ScoutEvent).gacha_id,
-          date: event.end_date,
-          name: event.name,
-          status: "end",
-        };
-        sortedEvents.push(listDateObject);
-      }
-    } else {
-      let listDateObject: ListViewObject = {
-        id:
-          (event as BirthdayEvent).character_id ||
-          (event as GameEvent).event_id ||
-          (event as ScoutEvent).gacha_id,
-        date: event.start_date,
-        name: event.name,
-      };
+    // getting all the days in the month that have events
+    if (
+      !allEventDays.some((day) => day === event.start_date) &&
+      parseInt(event.start_date.split("-")[1]) === props.date.getMonth() + 1
+    ) {
+      allEventDays.push(event.start_date.split(" ")[0]);
+    } else if (
+      !allEventDays.some((day) => day === event.end_date) &&
+      parseInt(event.end_date.split("-")[1]) === props.date.getMonth() + 1 &&
+      event.type !== "birthday" &&
+      event.type !== "anniversary"
+    ) {
+      allEventDays.push(event.end_date.split(" ")[0]);
     }
   });
 
-  sortedEvents.sort(
-    (a: ListViewObject, b: ListViewObject) =>
-      parseInt(a.date.split("-")[0]) - parseInt(b.date.split("-")[0])
+  allEventDays.sort(
+    (a: string, b: string) =>
+      parseInt(a.split("-")[2]) - parseInt(b.split("-")[2])
   );
+
+  allEventDays = [...new Set(allEventDays)];
+
+  console.log(allEventDays);
 
   return (
     <Container className={classes.listBody}>
-      {sortedEvents.map((event, i) => {
+      {allEventDays.map((date, i) => {
         return (
           <CalendarListDay
             key={i}
-            event={event}
+            date={date.split(" ")[0]}
             events={filteredEvents.filter(
-              (e: BirthdayEvent | GameEvent | ScoutEvent) =>
-                parseInt(e.start_date.split("-")[2]) ===
-                  parseInt(event.date.split("-")[2]) ||
-                parseInt(e.end_date.split("-")[2]) ===
-                  parseInt(event.date.split("-")[2])
+              (event: BirthdayEvent | GameEvent | ScoutEvent) =>
+                (parseInt(event.start_date.split("-")[2]) ===
+                  parseInt(date.split("-")[2]) &&
+                  parseInt(event.start_date.split("-")[1]) ===
+                    parseInt(date.split("-")[1])) ||
+                (parseInt(event.end_date.split("-")[2]) ===
+                  parseInt(date.split("-")[2]) &&
+                  parseInt(event.end_date.split("-")[1]) ===
+                    parseInt(date.split("-")[1]))
             )}
           />
         );

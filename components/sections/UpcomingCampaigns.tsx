@@ -38,6 +38,7 @@ function retrieveClosestEvents(
   const todaysDate: Event = {
     name: "",
     start_date: dayjs(new Date()).format("YYYY-MM-DD"),
+    end_date: dayjs(new Date()).format("YYYY-MM-DD"),
     type: "other",
   };
 

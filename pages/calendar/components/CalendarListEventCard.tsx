@@ -75,7 +75,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     transition: "width, height, border-radius",
 
     [`@media (max-width: ${theme.breakpoints.md}px)`]: {
-      marginBottom: "-1vh",
+      marginBottom: "-2vh",
     },
   },
 
