@@ -79,7 +79,7 @@ function CalendarHeader({
           )}
         </Grid.Col>
         <Grid.Col span={8} className={classes.calTitle}>
-          <Title order={2}>{dayjs(calendarTime).format("MMM YYYY")}</Title>
+          <Title order={2}>{dayjs(calendarTime).format("MMMM YYYY")}</Title>
         </Grid.Col>
         <Grid.Col span={2}>
           {!isMobile ? (
@@ -87,7 +87,7 @@ function CalendarHeader({
               className={classes.nav}
               rightIcon={<IconArrowRight size={32} />}
               onClick={() => {
-                setCalendarTime(dayjs(calendarTime).add(1, "month"));
+                setCalendarTime(dayjs(calendarTime).add(1, "month").format());
               }}
             >
               {dayjs(calendarTime).add(1, "month").format("MMM YYYY")}
@@ -95,7 +95,7 @@ function CalendarHeader({
           ) : (
             <ActionIcon
               onClick={() => {
-                setCalendarTime(dayjs(calendarTime).add(1, "month"));
+                setCalendarTime(dayjs(calendarTime).add(1, "month").format());
               }}
               color="blue"
             >

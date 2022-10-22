@@ -71,16 +71,15 @@ function Page({
 
       <Container className={classes.calendar}>
         <CalendarHeader
-          month={month}
-          changeMonth={changeMonth}
-          changeYear={changeYear}
-          year={year}
-          lang={lang}
           calendarTime={calendarTime}
           setCalendarTime={setCalendarTime}
         />
         {view === "cal" ? (
-          <CalendarGridView events={events} lang={lang} date={displayDate} />
+          <CalendarGridView
+            events={events}
+            lang={lang}
+            calendarTime={calendarTime}
+          />
         ) : (
           <CalendarListView events={events} lang={lang} date={displayDate} />
         )}
