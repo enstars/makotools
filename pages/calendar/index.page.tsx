@@ -36,10 +36,13 @@ function Page({
   lang: string;
 }) {
   const { classes } = useStyles();
-  const dayjs = useDayjs();
+  const { dayjs } = useDayjs();
   const currentDate = new Date();
-  const currMonth = dayjs(currentDate).format("MMMM");
+  const currMonth = dayjs(currentDate).format("MM");
   const currYear = dayjs(currentDate).format("YYYY");
+
+  const [calendarTime, setCalendarTime] = useState<string>(dayjs().format());
+  console.log(calendarTime);
 
   const [view, setView] = useState<string | string[]>("cal");
   const [month, changeMonth] = useState<string>(currMonth);
@@ -65,6 +68,7 @@ function Page({
           <Chip value="list">List view</Chip>
         </Chip.Group>
       )}
+
       <Container className={classes.calendar}>
         <CalendarHeader
           month={month}
@@ -72,6 +76,8 @@ function Page({
           changeYear={changeYear}
           year={year}
           lang={lang}
+          calendarTime={calendarTime}
+          setCalendarTime={setCalendarTime}
         />
         {view === "cal" ? (
           <CalendarGridView events={events} lang={lang} date={displayDate} />

@@ -21,15 +21,14 @@ import "dayjs/locale/fr";
 import "dayjs/locale/de";
 import "dayjs/locale/it";
 import "dayjs/locale/ar";
+import "dayjs/locale/th";
 
-const DayjsContext = createContext(dayjs);
+const DayjsContext = createContext({ dayjs });
 export const useDayjs = () => useContext(DayjsContext);
 
 function DayjsProvider({ children }: { children: ReactElement }) {
-  const router = useRouter();
-  const locale = router.locale || "en";
-  console.log("dl", locale);
-  dayjs.locale(locale);
+  const { locale } = useRouter();
+  dayjs.locale(locale || "en");
   dayjs.extend(LocalizedFormat);
   dayjs.extend(localeData);
 
