@@ -82,7 +82,6 @@ function retrieveClosestEvents(
     }
     todayIndex++;
   }
-  console.log(newArray);
 
   return newArray;
 }

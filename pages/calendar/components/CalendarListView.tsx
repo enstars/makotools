@@ -181,8 +181,7 @@ function CalendarListView({ ...props }) {
   const { classes } = useStyles();
   const date = `${props.date.getFullYear()}-${
     props.date.getMonth() + 1
-  }-${props.date.getDate()}`;
-  console.log(date);
+  }-${props.date.getDate()} UTC`;
   // get events happening in the active month
   const filteredEvents = props.events.filter(
     (event: BirthdayEvent | GameEvent | ScoutEvent) => {
@@ -222,8 +221,6 @@ function CalendarListView({ ...props }) {
   );
 
   allEventDays = [...new Set(allEventDays)];
-
-  console.log(allEventDays);
 
   return (
     <Container className={classes.listBody}>
