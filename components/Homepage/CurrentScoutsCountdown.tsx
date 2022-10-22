@@ -67,7 +67,9 @@ function ScoutCard({ scout }: { scout: ScoutEvent }) {
         <Text weight={600} size="lg">
           SCOUT! {scout.name}
         </Text>
-        <Badge variant="light">{scout.type}</Badge>
+        <Badge color="indigo">
+          {scout.type === "scout" ? "event scout" : scout.type}
+        </Badge>
       </Group>
       <Countdown endDate={scout.end_date} />
     </Card>
