@@ -40,16 +40,18 @@ function CalendarEventCard({ ...props }) {
             ? "yellow"
             : event.type === "birthday"
             ? "cyan"
-            : event.status === "start"
+            : props.status === "start"
             ? "lime"
             : "pink"
         }
         className={classes.eventCard}
         component={NextLink}
         href={
-          event.type === "birthday" || event.type === "feature scout"
-            ? `/characters/${event.id}`
-            : `/events/${event.id}`
+          event.type === "birthday"
+            ? `/characters/${event.character_id}`
+            : event.event_id
+            ? `/events/${event.event_id}`
+            : `/scouts/${event.gacha_id}`
         }
         sx={(theme) => ({
           borderRadius: theme.radius.sm,
@@ -62,11 +64,11 @@ function CalendarEventCard({ ...props }) {
         {event.type === "birthday"
           ? event.name.split(" ")[0] + "'s birthday"
           : event.type === "feature scout"
-          ? event.status + ": " + event.name.split(" ")[0] + " FS"
+          ? props.status + ": " + event.name.split(" ")[0] + " FS"
           : event.type === "scout"
-          ? event.status + ": SCOUT! " + event.name
+          ? props.status + ": SCOUT! " + event.name
           : event.type === "song" || event.type === "tour"
-          ? event.status + ": " + event.short_name
+          ? props.status + ": " + event.story_name
           : event.name}
       </Badge>
     </Tooltip>

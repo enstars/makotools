@@ -20,17 +20,20 @@ import AffiliatesLight from "../assets/Affiliates/affiliates_light.svg?url";
 import AffiliatesDark from "../assets/Affiliates/affiliates_dark.svg?url";
 import { getLayout } from "../components/Layout";
 import getServerSideUser from "../services/firebase/getServerSideUser";
-import BirthdayPreview from "../components/sections/BirthdayPreview";
 import { getLocalizedDataArray } from "../services/data";
+import UpcomingCampaigns from "../components/sections/UpcomingCampaigns";
 
 import Announcement from "./about/announcements/components/Announcement";
 
+import { GameCharacter, GameEvent, ScoutEvent } from "types/game";
+import { retrieveEvents } from "services/events";
+
 function Page({
   posts,
-  characters,
+  events,
 }: {
   posts: any;
-  characters: GameCharacter[];
+  events: (Event | GameEvent | ScoutEvent)[];
 }) {
   const theme = useMantineTheme();
 
@@ -134,6 +137,7 @@ function Page({
           </List>
         </Box>
         <Stack>
+          <UpcomingCampaigns events={events} />
           <Accordion
             mt="xs"
             variant="contained"
@@ -170,7 +174,6 @@ function Page({
               </Accordion.Panel>
             </Accordion.Item>
           </Accordion>
-          <BirthdayPreview characters={characters} />
         </Stack>
       </Group>
     </>
@@ -184,16 +187,26 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
   const characters = await getLocalizedDataArray<GameCharacter>(
     "characters",
     locale,
-    "character_id",
-    [
-      "character_id",
-      "first_name",
-      "last_name",
-      "birthday",
-      "image_color",
-      "sort_id",
-    ]
+    "character_id"
   );
+
+  const gameEvents: any = await getLocalizedDataArray<GameEvent>(
+    "events",
+    locale,
+    "event_id"
+  );
+
+  const scouts = await getLocalizedDataArray<ScoutEvent>(
+    "scouts",
+    locale,
+    "gacha_id"
+  );
+
+  let events = retrieveEvents({
+    characters: characters.data,
+    gameEvents: gameEvents.data,
+    scouts: scouts.data,
+  });
 
   try {
     const initRespose = await fetch(
@@ -204,7 +217,7 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     return {
       props: {
         posts: initData,
-        characters: characters?.data,
+        events: events,
       },
     };
   } catch (e) {
@@ -213,7 +226,7 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
         posts: {
           error: true,
         },
-        characters: characters?.data,
+        events: events,
       },
     };
   }

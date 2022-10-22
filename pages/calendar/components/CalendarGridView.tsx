@@ -8,11 +8,11 @@ import {
 } from "@mantine/core";
 import { getMonthDays, getWeekdaysNames } from "@mantine/dates";
 
-import { CalendarEvent } from "../../../types/makotools";
-
 import CalendarEventCard from "./CalendarEventCard";
 
 import { useDayjs } from "services/libraries/dayjs";
+import { BirthdayEvent, GameEvent, ScoutEvent } from "types/game";
+import { areDatesEqual } from "services/events";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   calendar: {
@@ -47,6 +47,11 @@ const useStyles = createStyles((theme, _params, getRef) => ({
         : theme.colors.blue[3],
     borderRadius: `${theme.radius.md}px ${theme.radius.md}px 0px 0px`,
   },
+  dayContainer: {
+    textAlign: "left",
+    width: "5vw",
+    height: "15vh",
+  },
 }));
 
 function CalendarDotW({ ...props }) {
@@ -72,15 +77,13 @@ function CalendarDay({ ...props }): React.ReactElement {
   return (
     <Grid.Col
       span={1}
+      className={classes.dayContainer}
       sx={(theme) => ({
-        textAlign: "left",
         color: props.active
           ? "inherit"
           : theme.colorScheme === "dark"
           ? theme.colors.dark[3]
           : theme.colors.gray[5],
-        width: "5vw",
-        height: "15vh",
       })}
     >
       <Stack
@@ -107,20 +110,32 @@ function CalendarDay({ ...props }): React.ReactElement {
         <Text
           size="lg"
           sx={{ paddingLeft: "5px", paddingTop: "3px" }}
-          className={
-            props.day.getDate() === today.getDate() &&
-            props.day.getMonth() === today.getMonth() &&
-            props.day.getFullYear() === today.getFullYear()
-              ? classes.today
-              : undefined
-          }
+          className={props.day === today ? classes.today : undefined}
         >
-          {props.day.getDate()}
+          {props.day.split("-")[2]}
         </Text>
         {props.active &&
-          props.events.map((event: CalendarEvent, i: number) => (
-            <CalendarEventCard key={i} event={event} day={props.day} />
-          ))}
+          props.events.map(
+            (event: BirthdayEvent | GameEvent | ScoutEvent, i: number) => {
+              let status: "start" | "end" | undefined;
+              if (event.type !== "birthday" && event.type !== "anniversary") {
+                status = areDatesEqual(
+                  event.start_date.split(" ")[0],
+                  props.day
+                )
+                  ? "start"
+                  : "end";
+              }
+              return (
+                <CalendarEventCard
+                  key={i}
+                  event={event}
+                  day={props.day}
+                  status={status}
+                />
+              );
+            }
+          )}
       </Stack>
     </Grid.Col>
   );
@@ -132,23 +147,45 @@ function CalendarWeek({ calendarTime, week, ...props }) {
   return (
     <Grid columns={7} className={classes.week} gutter="xs">
       {week.map((day: Date, i: number) => {
-        const filteredEvents = props.events.filter((event: CalendarEvent) => {
-          if (event.type !== "birthday" && event.type !== "anniversary") {
-            return (
-              event.date.year === day.getFullYear() &&
-              event.date.month === day.getMonth() &&
-              event.date.date === day.getDate()
-            );
-          } else {
-            return (
-              event.date.month === day.getMonth() &&
-              event.date.date === day.getDate()
-            );
+        const filteredEvents = props.events.filter(
+          (event: BirthdayEvent | GameEvent | ScoutEvent) => {
+            if (event.type !== "birthday" && event.type !== "anniversary") {
+              return (
+                areDatesEqual(
+                  event.start_date.split(" ")[0],
+                  day.getFullYear() +
+                    "-" +
+                    (day.getMonth() + 1) +
+                    "-" +
+                    day.getDate()
+                ) ||
+                areDatesEqual(
+                  event.end_date.split(" ")[0],
+                  day.getFullYear() +
+                    "-" +
+                    (day.getMonth() + 1) +
+                    "-" +
+                    day.getDate()
+                )
+              );
+            } else {
+              return (
+                parseInt(event.start_date.split("-")[1]) ===
+                  day.getMonth() + 1 &&
+                parseInt(event.start_date.split("-")[2]) === day.getDate()
+              );
+            }
           }
-        });
+        );
         return (
           <CalendarDay
-            day={day}
+            day={
+              day.getFullYear() +
+              "-" +
+              (day.getMonth() + 1) +
+              "-" +
+              day.getDate()
+            }
             key={i}
             active={day.getMonth() === dayjs(calendarTime).month()}
             events={filteredEvents}

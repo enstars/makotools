@@ -75,7 +75,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
     transition: "width, height, border-radius",
 
     [`@media (max-width: ${theme.breakpoints.md}px)`]: {
-      marginBottom: "-1vh",
+      marginBottom: "-2vh",
     },
   },
 
@@ -120,7 +120,7 @@ function CalendarListEventCard({ ...props }) {
                 ? "cyan"
                 : props.event.type === "anniversary"
                 ? "yellow"
-                : props.event.status === "start"
+                : props.status === "start"
                 ? "lime"
                 : "pink"
             }
@@ -129,7 +129,7 @@ function CalendarListEventCard({ ...props }) {
               <IconCake size={16} />
             ) : props.event.type === "anniversary" ? (
               <IconStar size={16} />
-            ) : props.event.status === "start" ? (
+            ) : props.status === "start" ? (
               <IconPlayerPlay size={16} />
             ) : (
               <IconExclamationMark size={16} />
@@ -140,7 +140,7 @@ function CalendarListEventCard({ ...props }) {
               ? "Birthday"
               : props.event.type === "anniversary"
               ? "Anniversary"
-              : props.event.status === "start"
+              : props.status === "start"
               ? "Start"
               : "End"}
           </Text>
@@ -161,8 +161,8 @@ function CalendarListEventCard({ ...props }) {
         src={getAssetURL(
           `assets/card_still_full1_${
             props.event.type === "birthday"
-              ? props.event.render_id + "_normal"
-              : props.event.render_id + "_evolution"
+              ? props.event.banner_id + "_normal"
+              : props.event.banner_id + "_evolution"
           }.webp`
         )}
         alt={props.event.name}
