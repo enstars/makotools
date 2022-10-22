@@ -55,7 +55,7 @@ function Page({
   const { classes } = useStyles();
 
   return (
-    <Group grow align="flex-start" spacing="xl">
+    <Group align="flex-start" spacing="xl">
       <Stack align="flex-start" spacing="lg" className={classes.mainCol}>
         <Image src={Banner} style={{ borderRadius: 0 }} alt="banner" />
         <MantineTitle order={1} mt="sm">

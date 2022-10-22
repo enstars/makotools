@@ -85,7 +85,9 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
       <Group noWrap={noWrap} className={classes.eventContainer}>
         <EventImage event={currentEvent} />
         <Box>
-          <Title order={3}>{currentEvent.name}</Title>
+          <Title order={3} sx={{ maxWidth: "300px" }}>
+            {currentEvent.name}
+          </Title>
           <Countdown event={currentEvent} />
         </Box>
       </Group>

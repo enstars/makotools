@@ -52,7 +52,7 @@ function Countdown({ endDate }: { endDate: string }) {
 function ScoutCard({ scout }: { scout: ScoutEvent }) {
   const { classes } = useStyles();
   return (
-    <Card>
+    <Card shadow="xs" p="md" radius="md" withBorder>
       <Card.Section>
         <Image
           alt={scout.name}
@@ -91,7 +91,6 @@ function CurrentScoutsCards({ scouts }: { scouts: ScoutEvent[] }) {
 }
 
 function CurrentScoutsCountdown({ scouts }: { scouts: ScoutEvent[] }) {
-  console.log(scouts);
   const { classes } = useStyles();
   const currentScouts: ScoutEvent[] = scouts.filter((scout) =>
     isEventHappeningToday(scout)
