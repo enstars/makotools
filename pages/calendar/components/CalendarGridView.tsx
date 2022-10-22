@@ -56,12 +56,15 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 
 function CalendarDotW({ ...props }) {
   let dotw: String[] = getWeekdaysNames(props.lang);
+  const { dayjs } = useDayjs();
+
+  const days = dayjs.weekdaysShort();
 
   return (
     <Grid columns={7} grow sx={{ marginBottom: "2vh", maxWidth: "100%" }}>
-      {dotw.map((day, i) => (
+      {days.map((day, i) => (
         <Grid.Col key={i} span={1} sx={{ textAlign: "center" }}>
-          <Title order={5}>{day.substring(0, 1)}</Title>
+          <Title order={5}>{day}</Title>
         </Grid.Col>
       ))}
     </Grid>
@@ -138,12 +141,12 @@ function CalendarDay({ ...props }): React.ReactElement {
   );
 }
 
-function CalendarWeek({ ...props }) {
+function CalendarWeek({ calendarTime, week, ...props }) {
   const { dayjs } = useDayjs();
   const { classes } = useStyles();
   return (
     <Grid columns={7} className={classes.week} gutter="xs">
-      {props.week.map((day: Date, i: number) => {
+      {week.map((day: Date, i: number) => {
         const filteredEvents = props.events.filter(
           (event: BirthdayEvent | GameEvent | ScoutEvent) => {
             if (event.type !== "birthday" && event.type !== "anniversary") {
@@ -184,7 +187,7 @@ function CalendarWeek({ ...props }) {
               day.getDate()
             }
             key={i}
-            active={day.getMonth() === props.month}
+            active={day.getMonth() === dayjs(calendarTime).month()}
             events={filteredEvents}
           />
         );
@@ -193,16 +196,24 @@ function CalendarWeek({ ...props }) {
   );
 }
 
-function CalendarGridView({ ...props }) {
+function CalendarGridView({
+  calendarTime,
+  ...props
+}: {
+  calendarTime: string;
+}) {
   const { classes } = useStyles();
-
+  const { dayjs } = useDayjs();
   return (
     <Container className={classes.calendar}>
       <CalendarDotW lang={props.lang} />
       <Container className={classes.calendarBody}>
-        {getMonthDays(props.date).map((week, i) => (
+        {getMonthDays(
+          dayjs(calendarTime).startOf("M").toDate(),
+          dayjs.localeData().firstDayOfWeek() === 0 ? "sunday" : "monday"
+        ).map((week, i) => (
           <CalendarWeek
-            month={props.date.getMonth()}
+            calendarTime={calendarTime}
             week={week}
             key={i}
             events={props.events}
