@@ -11,7 +11,7 @@ import CalendarListView from "./components/CalendarListView";
 import CalendarHeader from "./components/CalendarHeader";
 
 import { getLocalizedDataArray } from "services/data";
-import { retrieveEvents } from "services/events";
+import { retrieveEvents, localizeEventTimes } from "services/events";
 import {
   GameCharacter,
   GameEvent,
@@ -81,12 +81,16 @@ function Page({
         />
         {view === "cal" ? (
           <CalendarGridView
-            events={events}
+            events={localizeEventTimes(events)}
             lang={lang}
             calendarTime={calendarTime}
           />
         ) : (
-          <CalendarListView events={events} lang={lang} date={displayDate} />
+          <CalendarListView
+            events={localizeEventTimes(events)}
+            lang={lang}
+            date={displayDate}
+          />
         )}
         {view === "list" && (
           <CalendarHeader

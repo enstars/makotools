@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { BirthdayEvent, GameEvent, ScoutEvent } from "../types/game";
 
+import { useDayjs } from "./libraries/dayjs";
+
 function retrieveEvents(data: any): (BirthdayEvent | GameEvent | ScoutEvent)[] {
   let events: (BirthdayEvent | GameEvent | ScoutEvent)[] = [];
 
@@ -82,23 +84,29 @@ function dateToString(date: Date): string {
   return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 }
 
-// function localizeEventTimes(
-//   events: (BirthdayEvent | GameEvent | ScoutEvent)[]
-// ): (BirthdayEvent | GameEvent | ScoutEvent)[] {
-//   const { dayjs } = useDayjs();
-//   // localize the events to user time
-//   events.forEach((event: BirthdayEvent | GameEvent | ScoutEvent) => {
-//     if (event.type !== "birthday" && event.type !== "anniversary") {
-//       // birthday events do not need to be localzied as they are static dates
-//       event.start_date = dayjs(Date.parse(event.start_date)).format(
-//         "YYYY-MM-DD HH:MM:ss"
-//       );
-//       event.end_date = dayjs(Date.parse(event.end_date)).format(
-//         "YYYY-MM-DD HH:MM:ss"
-//       );
-//     }
-//   });
-//   return events;
-// }
+function localizeEventTimes(
+  events: (BirthdayEvent | GameEvent | ScoutEvent)[]
+): (BirthdayEvent | GameEvent | ScoutEvent)[] {
+  const { dayjs } = useDayjs();
+  // localize the events to user time
+  events.forEach((event: BirthdayEvent | GameEvent | ScoutEvent) => {
+    if (event.type !== "birthday" && event.type !== "anniversary") {
+      // birthday events do not need to be localzied as they are static dates
+      event.start_date = dayjs(Date.parse(event.start_date)).format(
+        "YYYY-MM-DD HH:MM:ss"
+      );
+      event.end_date = dayjs(Date.parse(event.end_date)).format(
+        "YYYY-MM-DD HH:MM:ss"
+      );
+    }
+  });
+  return events;
+}
 
-export { retrieveEvents, areDatesEqual, areMonthYearEqual, dateToString };
+export {
+  retrieveEvents,
+  areDatesEqual,
+  areMonthYearEqual,
+  dateToString,
+  localizeEventTimes,
+};

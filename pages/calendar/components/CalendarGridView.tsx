@@ -209,6 +209,7 @@ function CalendarGridView({
 }) {
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
+  console.log(events);
   return (
     <Container className={classes.calendar}>
       <CalendarDotW lang={lang} />
