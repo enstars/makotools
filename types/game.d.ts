@@ -161,7 +161,7 @@ type EventType =
   | "other";
 export type GameEventStatus = "start" | "end" | undefined;
 
-export interface Event<T = string[]> {
+export interface Event {
   name: string;
   start_date: string;
   end_date: string;
@@ -184,7 +184,7 @@ export interface Event<T = string[]> {
   };
 }
 
-export interface GameEvent<T = string[]> extends Event {
+export interface GameEvent extends Event {
   event_id: ID;
   event_gacha?: string;
   event_gacha_id?: ID;
@@ -193,11 +193,11 @@ export interface GameEvent<T = string[]> extends Event {
   units?: ID[];
 }
 
-export interface ScoutEvent<T = string[]> extends Event {
+export interface ScoutEvent extends Event {
   gacha_id: ID;
 }
 
-export interface BirthdayEvent<T = string> extends Event {
+export interface BirthdayEvent extends Event {
   character_id: ID;
 }
 

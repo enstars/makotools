@@ -44,26 +44,26 @@ function Page({
   const theme = useMantineTheme();
 
   return (
-    <>
-      <Image src={Banner} style={{ borderRadius: 0 }} alt="banner" />
-      <MantineTitle order={1} mt="sm">
-        Welcome to{" "}
-        <Text
-          inline
-          inherit
-          component="span"
-          sx={(theme) => ({
-            color:
-              theme.colorScheme === "dark"
-                ? theme.colors.blue[2]
-                : theme.colors.blue[5],
-          })}
-        >
-          MakoTools
-        </Text>
-        !
-      </MantineTitle>
-      <Group spacing="sm" align="flex-start">
+    <Group>
+      <Stack>
+        <Image src={Banner} style={{ borderRadius: 0 }} alt="banner" />
+        <MantineTitle order={1} mt="sm">
+          Welcome to{" "}
+          <Text
+            inline
+            inherit
+            component="span"
+            sx={(theme) => ({
+              color:
+                theme.colorScheme === "dark"
+                  ? theme.colors.blue[2]
+                  : theme.colors.blue[5],
+            })}
+          >
+            MakoTools
+          </Text>
+          !
+        </MantineTitle>
         <Box sx={{ flexBasis: 300, flexGrow: 1 }}>
           <Text my="sm">
             MakoTools is a website containing information, tools, and a lot more
@@ -147,53 +147,54 @@ function Page({
             }
           />
         </Box>
-        <Stack>
-          <UpcomingCampaigns
-            events={events as (BirthdayEvent | ScoutEvent | GameEvent)[]}
-          />
-          <Accordion
-            mt="xs"
-            variant="contained"
-            defaultValue="announcement"
-            sx={{ flexBasis: 300, flexGrow: 0.01, minWidth: 0 }}
-          >
-            <Accordion.Item value="announcement">
-              <Accordion.Control icon={<IconNews size={18} />}>
-                <Text inline weight={500}>
-                  Site Announcements
+      </Stack>
+
+      <Stack>
+        <UpcomingCampaigns
+          events={events as (BirthdayEvent | ScoutEvent | GameEvent)[]}
+        />
+        <Accordion
+          mt="xs"
+          variant="contained"
+          defaultValue="announcement"
+          sx={{ flexBasis: 300, flexGrow: 0.01, minWidth: 0 }}
+        >
+          <Accordion.Item value="announcement">
+            <Accordion.Control icon={<IconNews size={18} />}>
+              <Text inline weight={500}>
+                Site Announcements
+              </Text>
+            </Accordion.Control>
+            <Accordion.Panel>
+              {posts?.error ? (
+                <Text size="sm" align="center" color="dimmed">
+                  Error fetching latest announcements
                 </Text>
-              </Accordion.Control>
-              <Accordion.Panel>
-                {posts?.error ? (
-                  <Text size="sm" align="center" color="dimmed">
-                    Error fetching latest announcements
-                  </Text>
-                ) : (
-                  <>
-                    <Stack spacing="sm">
-                      {posts.map((p: any, i: number) => (
-                        <Announcement key={p.id} announcement={p} i={i} />
-                      ))}
-                    </Stack>
-                    <Box mt="xs">
-                      <Link href="/about/announcements" passHref>
-                        <Anchor component="a" size="xs">
-                          See all announcements
-                        </Anchor>
-                      </Link>
-                    </Box>
-                  </>
-                )}
-              </Accordion.Panel>
-            </Accordion.Item>
-          </Accordion>
-        </Stack>
-      </Group>
-    </>
+              ) : (
+                <>
+                  <Stack spacing="sm">
+                    {posts.map((p: any, i: number) => (
+                      <Announcement key={p.id} announcement={p} i={i} />
+                    ))}
+                  </Stack>
+                  <Box mt="xs">
+                    <Link href="/about/announcements" passHref>
+                      <Anchor component="a" size="xs">
+                        See all announcements
+                      </Anchor>
+                    </Link>
+                  </Box>
+                </>
+              )}
+            </Accordion.Panel>
+          </Accordion.Item>
+        </Accordion>
+      </Stack>
+    </Group>
   );
 }
 
-Page.getLayout = getLayout({});
+Page.getLayout = getLayout({ wide: true });
 export default Page;
 
 export const getServerSideProps = getServerSideUser(async ({ locale }) => {
