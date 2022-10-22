@@ -82,15 +82,17 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
   return (
     <Container>
       <Title order={2}>Current Event</Title>
-      <Group noWrap={noWrap} className={classes.eventContainer}>
-        <EventImage event={currentEvent} />
-        <Box>
-          <Title order={3} sx={{ maxWidth: "300px" }}>
-            {currentEvent.name}
-          </Title>
-          <Countdown event={currentEvent} />
-        </Box>
-      </Group>
+      {currentEvent && (
+        <Group noWrap={noWrap} className={classes.eventContainer}>
+          <EventImage event={currentEvent} />
+          <Box>
+            <Title order={3} sx={{ maxWidth: "300px" }}>
+              {currentEvent.name}
+            </Title>
+            <Countdown event={currentEvent} />
+          </Box>
+        </Group>
+      )}
     </Container>
   );
 }
