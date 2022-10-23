@@ -170,19 +170,23 @@ const useStyles = createStyles((theme, _params) => ({
 }));
 
 // create individual event card
-function EventCard({ ...props }) {
+function EventCard({
+  event,
+}: {
+  event: BirthdayEvent | GameEvent | ScoutEvent;
+}) {
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
-  const formattedMonth = dayjs(props.event.start_date).format("MMM");
-  const formattedDate = dayjs(props.event.start_date).format("D");
+  const formattedMonth = dayjs(event.start_date).format("MMM");
+  const formattedDate = dayjs(event.start_date).format("D");
 
-  let link = props.event.character_id
-    ? `/characters/${props.event.character_id}`
-    : props.event.event_id
-    ? `/events/${props.event.event_id}`
-    : `/scouts/${props.event.gacha_id}`;
+  let link = (event as BirthdayEvent).character_id
+    ? `/characters/${(event as BirthdayEvent).character_id}`
+    : (event as GameEvent).event_id
+    ? `/events/${(event as GameEvent).event_id}`
+    : `/scouts/${(event as ScoutEvent).gacha_id}`;
 
-  if (props.event.type === "birthday") {
+  if (event.type === "birthday") {
     return (
       <Accordion.Panel className={classes.panel}>
         <Link href={link} passHref>
@@ -198,16 +202,16 @@ function EventCard({ ...props }) {
             </Box>
             <Box className={classes.eventInfo}>
               <Text weight={550} size="md">
-                {props.event.name}
+                {event.name}
               </Text>
               <Title order={6} className={classes.eventType}>
-                {props.event.type}
+                {event.type}
               </Title>
             </Box>
             <Image
-              alt={props.event.name}
+              alt={event.name}
               src={getAssetURL(
-                `assets/card_still_full1_${props.event.banner_id}_normal.webp`
+                `assets/card_still_full1_${event.banner_id}_normal.webp`
               )}
               width={400}
               className={classes.birthdayImg}
@@ -232,18 +236,18 @@ function EventCard({ ...props }) {
             </Box>
             <Box sx={{ maxWidth: "200px" }}>
               <Image
-                alt={props.event.name}
+                alt={event.name}
                 src={getAssetURL(
-                  `assets/card_still_full1_${props.event.banner_id}_evolution.webp`
+                  `assets/card_still_full1_${event.banner_id}_evolution.webp`
                 )}
                 width={500}
                 className={classes.eventImg}
               />
               <Text weight={550} size="md">
-                {props.event.name}
+                {event.name}
               </Text>
               <Title order={6} className={classes.eventType}>
-                {props.event.type}
+                {event.type}
               </Title>
             </Box>
           </Group>

@@ -78,14 +78,14 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
   return (
     <Container>
       <Title order={2}>Current Event</Title>
-      {currentEvent && (
-        <Paper
-          shadow="xs"
-          radius="md"
-          p="lg"
-          withBorder
-          className={classes.eventContainer}
-        >
+      <Paper
+        shadow="xs"
+        radius="md"
+        p="lg"
+        withBorder
+        className={classes.eventContainer}
+      >
+        {currentEvent ? (
           <Group noWrap={noWrap} align="flex-start" spacing="xl">
             <EventImage event={currentEvent} />
             <Stack justify="space-around">
@@ -100,8 +100,12 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
               </Button>
             </Stack>
           </Group>
-        </Paper>
-      )}
+        ) : (
+          <Text size="lg" weight={600}>
+            No event is currently taking place.
+          </Text>
+        )}
+      </Paper>
     </Container>
   );
 }
