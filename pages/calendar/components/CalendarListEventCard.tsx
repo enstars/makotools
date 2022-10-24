@@ -131,7 +131,7 @@ function CalendarListEventCard({
       <Box className={classes.listCardStatus}>
         <Group spacing="xs">
           <ThemeIcon
-            variant="light"
+            variant="filled"
             radius="xl"
             color={
               event.type === "birthday"

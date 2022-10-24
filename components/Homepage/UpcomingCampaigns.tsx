@@ -73,8 +73,17 @@ const useStyles = createStyles((theme, _params) => ({
 
   eventCard: {
     width: "100%",
+    borderRadius: theme.radius.md,
+    padding: "5px",
+    transition: "background-color 0.1s",
+
     "&:hover": {
       cursor: "pointer",
+      backgroundColor: `${
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[4]
+          : theme.colors.gray[3]
+      }`,
     },
   },
   eventImg: {
@@ -82,7 +91,9 @@ const useStyles = createStyles((theme, _params) => ({
     maxHeight: "100px",
     overflow: "hidden",
     borderRadius: theme.radius.lg,
-    border: `2px solid ${theme.colors.blue[3]}`,
+    border: `1px solid ${
+      theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[4]
+    }`,
 
     img: {
       marginLeft: "-140px",
@@ -91,13 +102,16 @@ const useStyles = createStyles((theme, _params) => ({
   },
 
   birthdayImg: {
-    maxWidth: "100px",
-    maxHeight: "100px",
+    maxWidth: "70px",
+    maxHeight: "70px",
     overflow: "hidden",
-    borderRadius: "50px",
-    border: `2px solid ${theme.colors.blue[3]}`,
+    borderRadius: "35px",
+    border: `1px solid ${
+      theme.colorScheme === "dark" ? theme.colors.dark[2] : theme.colors.gray[4]
+    }`,
 
     img: {
+      marginTop: "-10px",
       marginLeft: "-175px",
     },
   },
