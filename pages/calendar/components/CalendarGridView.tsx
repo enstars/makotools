@@ -1,11 +1,4 @@
-import {
-  createStyles,
-  Container,
-  Grid,
-  Text,
-  Title,
-  Stack,
-} from "@mantine/core";
+import { createStyles, Grid, Text, Stack, Box, Paper } from "@mantine/core";
 import { getMonthDays } from "@mantine/dates";
 
 import CalendarEventCard from "./CalendarEventCard";
@@ -19,42 +12,56 @@ import {
 } from "types/game";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
-  calendar: {
-    maxWidth: "100%",
-    padding: 0,
-  },
+  calendar: {},
   calendarBody: {
-    margin: "auto",
-    maxWidth: "100%",
-    padding: "1%",
-    marginTop: "1%",
+    color: "red",
+    [`&:hover .${getRef("dayContainer")}`]: {
+      opacity: 0.5,
+    },
+  },
+  week: {},
+  today: {
+    // border: `solid 1px ${theme.colors.blue[5]}`,
+    [`& .${getRef("dateLabel")}`]: {
+      backgroundColor: theme.colors.blue[5],
+      alignSelf: "start",
+      padding: "2px 3px",
+      minWidth: 24,
+      borderRadius: 999,
+      color: "white",
+      textAlign: "center",
+    },
+  },
+  dateLabel: {
+    ref: getRef("dateLabel"),
+  },
+  dayContainer: {
+    ref: getRef("dayContainer"),
+    textAlign: "left",
+    height: "100px",
     background:
       theme.colorScheme === "dark"
         ? theme.colors.dark[6]
-        : theme.colors.gray[2],
-    border: `2px solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[9] : theme.colors.gray[4]
-    }`,
-    borderRadius: theme.radius.md,
+        : theme.colors.gray[1],
+    transition: theme.other.transition,
+    position: "relative",
+    zIndex: 1,
+    "&&&&&:hover": {
+      opacity: 1,
+      transform: "scale(1.1)",
+      zIndex: 1000,
+      background:
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[5]
+          : theme.colors.gray[2],
+    },
   },
-  week: {
-    maxWidth: "100%",
-    margin: "auto",
-    marginTop: "1vh",
-    marginBottom: "1vh",
-    alignItems: "center",
-  },
-  today: {
-    backgroundColor:
+  inactive: {
+    background:
       theme.colorScheme === "dark"
-        ? theme.colors.blue[7]
-        : theme.colors.blue[3],
-    borderRadius: `${theme.radius.md}px ${theme.radius.md}px 0px 0px`,
-  },
-  dayContainer: {
-    textAlign: "left",
-    width: "5vw",
-    height: "15vh",
+        ? theme.colors.dark[7]
+        : theme.colors.gray[0],
+    pointerEvents: "none",
   },
 }));
 
@@ -62,13 +69,15 @@ function CalendarDotW() {
   const { dayjs } = useDayjs();
 
   return (
-    <Grid columns={7} grow sx={{ marginBottom: "2vh", maxWidth: "100%" }}>
+    <>
       {dayjs.weekdaysShort().map((day, i) => (
-        <Grid.Col key={i} span={1} sx={{ textAlign: "center" }}>
-          <Title order={5}>{day}</Title>
+        <Grid.Col key={i} span={1} mb={4}>
+          <Text color="dimmed" weight={700} size="sm" align="center">
+            {day}
+          </Text>
         </Grid.Col>
       ))}
-    </Grid>
+    </>
   );
 }
 
@@ -81,58 +90,43 @@ function CalendarDay({
   active: boolean;
   events: (BirthdayEvent | GameEvent | ScoutEvent)[];
 }) {
-  const { classes } = useStyles();
+  const { classes, cx } = useStyles();
   const { dayjs } = useDayjs();
   return (
-    <Grid.Col
-      span={1}
-      className={classes.dayContainer}
-      sx={(theme) => ({
-        color: active
-          ? "inherit"
-          : theme.colorScheme === "dark"
-          ? theme.colors.dark[3]
-          : theme.colors.gray[5],
-      })}
-    >
-      <Stack
-        justify={"flex-start"}
-        spacing="xs"
-        sx={(theme) => ({
-          background: !active
-            ? "inherit"
-            : theme.colorScheme === "light"
-            ? theme.colors.gray[1]
-            : theme.colors.dark[8],
-          height: "100%",
-          borderRadius: theme.radius.md,
-          "&:hover": {
-            background: !active
-              ? "inherit"
-              : theme.colorScheme === "light"
-              ? theme.colors.gray[0]
-              : theme.colors.dark[9],
-          },
-        })}
+    <Grid.Col span={1}>
+      <Paper
+        className={cx(
+          classes.dayContainer,
+          dayjs(day).isSame(dayjs(), "day") ? classes.today : undefined,
+          active ? undefined : classes.inactive
+        )}
+        p={6}
       >
-        <Text
-          size="lg"
-          sx={{ paddingLeft: "5px", paddingTop: "3px" }}
-          className={dayjs(day).isToday() ? classes.today : undefined}
-        >
-          {dayjs(day).date()}
-        </Text>
-        {active &&
-          events.map((event, i) => {
-            let status: GameEventStatus;
-            if (event.type !== "birthday" && event.type !== "anniversary") {
-              status = dayjs(day).isSame(event.start_date, "day")
-                ? "start"
-                : "end";
-            }
-            return <CalendarEventCard key={i} event={event} status={status} />;
-          })}
-      </Stack>
+        <Stack justify={"flex-start"} spacing={4}>
+          <Text
+            size="sm"
+            pl={4}
+            pt={4}
+            weight={600}
+            color={active ? undefined : "dimmed"}
+            className={classes.dateLabel}
+          >
+            {dayjs(day).date()}
+          </Text>
+          {active &&
+            events.map((event, i) => {
+              let status: GameEventStatus;
+              if (event.type !== "birthday" && event.type !== "anniversary") {
+                status = dayjs(day).isSame(event.start_date, "day")
+                  ? "start"
+                  : "end";
+              }
+              return (
+                <CalendarEventCard key={i} event={event} status={status} />
+              );
+            })}
+        </Stack>
+      </Paper>
     </Grid.Col>
   );
 }
@@ -147,9 +141,8 @@ function CalendarWeek({
   events: (GameEvent | BirthdayEvent | ScoutEvent)[];
 }) {
   const { dayjs } = useDayjs();
-  const { classes } = useStyles();
   return (
-    <Grid columns={7} className={classes.week} gutter="xs">
+    <>
       {week.map((day: Date, i: number) => {
         const filteredEvents = events.filter((event) =>
           event.type === "birthday" || event.type === "anniversary"
@@ -168,7 +161,7 @@ function CalendarWeek({
           />
         );
       })}
-    </Grid>
+    </>
   );
 }
 
@@ -182,9 +175,9 @@ function CalendarGridView({
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
   return (
-    <Container className={classes.calendar}>
-      <CalendarDotW />
-      <Container className={classes.calendarBody}>
+    <Box className={classes.calendar}>
+      <Grid columns={7} gutter={4} mb={8} className={classes.calendarBody}>
+        <CalendarDotW />
         {getMonthDays(
           dayjs(calendarTime).startOf("M").toDate(),
           dayjs.localeData().firstDayOfWeek() === 0 ? "sunday" : "monday"
@@ -196,8 +189,8 @@ function CalendarGridView({
             events={events}
           />
         ))}
-      </Container>
-    </Container>
+      </Grid>
+    </Box>
   );
 }
 

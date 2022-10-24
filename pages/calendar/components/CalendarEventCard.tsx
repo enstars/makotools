@@ -1,5 +1,11 @@
-import { Badge, createStyles, Tooltip } from "@mantine/core";
+import { Badge, Box, createStyles, Tooltip } from "@mantine/core";
 import { NextLink } from "@mantine/next";
+import {
+  IconCake,
+  IconExclamationMark,
+  IconPlayerPlay,
+  IconStar,
+} from "@tabler/icons";
 
 import {
   BirthdayEvent,
@@ -10,7 +16,6 @@ import {
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   eventCard: {
-    fontSize: "12px",
     "&:hover": {
       cursor: "pointer",
     },
@@ -38,22 +43,26 @@ function CalendarEventCard({
           : event.name + "'s " + event.type
       }
       sx={{
-        fontVariant: "small-caps",
+        // fontVariant: "small-caps",
         fontWeight: "bold",
         textAlign: "center",
       }}
+      withinPortal={true}
     >
       <Badge
+        px={2}
         fullWidth
-        variant="dot"
+        variant="filled"
         color={
           event.type === "anniversary"
             ? "yellow"
             : event.type === "birthday"
             ? "cyan"
-            : status === "start"
-            ? "lime"
-            : "pink"
+            : event.type === "feature scout"
+            ? "lightblue"
+            : event.type === "scout"
+            ? "violet"
+            : "yellow"
         }
         className={classes.eventCard}
         component={NextLink}
@@ -66,20 +75,38 @@ function CalendarEventCard({
         }
         sx={(theme) => ({
           borderRadius: theme.radius.sm,
-          borderColor:
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[4]
-              : theme.colors.gray[3],
+          borderWidth: 0,
+          borderLeft:
+            status === "start"
+              ? `solid ${theme.radius.sm}px ${theme.colors.green[5]}`
+              : undefined,
+          borderRight:
+            status === "end"
+              ? `solid ${theme.radius.sm}px ${theme.colors.pink[5]}`
+              : undefined,
         })}
+        leftSection={
+          <Box mt={4}>
+            {event.type === "birthday" ? (
+              <IconCake size={12} strokeWidth={3} />
+            ) : event.type === "anniversary" ? (
+              <IconStar size={12} strokeWidth={3} />
+            ) : status === "start" ? (
+              <IconPlayerPlay size={12} strokeWidth={3} />
+            ) : (
+              <IconExclamationMark size={12} strokeWidth={3} />
+            )}
+          </Box>
+        }
       >
         {event.type === "birthday"
           ? event.name.split(" ")[0] + "'s birthday"
           : event.type === "feature scout"
-          ? status + ": " + event.name.split(" ")[0] + " FS"
+          ? event.name.split(" ")[0] + " FS"
           : event.type === "scout"
-          ? status + ": SCOUT! " + event.name
+          ? "SC! " + event.name
           : event.type === "song" || event.type === "tour"
-          ? status + ": " + event.story_name
+          ? event.story_name
           : event.name}
       </Badge>
     </Tooltip>

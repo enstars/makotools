@@ -1,53 +1,41 @@
 import {
-  ActionIcon,
+  Box,
   Button,
-  Container,
   createStyles,
-  Grid,
+  MediaQuery,
+  Stack,
   Title,
 } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons";
-import { useCallback } from "react";
+import { ReactElement, useCallback } from "react";
 
 import { useDayjs } from "services/libraries/dayjs";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
-  headerContainer: {
-    width: "100%",
-
-    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
-      padding: 0,
-    },
-  },
   header: {
     width: "100%",
-    margin: "auto",
-    marginBottom: "2vh",
-    padding: "2vh 0vw",
+    display: "flex",
+    alignItems: "center",
+    paddingTop: theme.spacing.sm,
+    paddingBottom: theme.spacing.sm,
+    gap: theme.spacing.md,
   },
-  calTitle: {
+  centerSection: {
     textAlign: "center",
-  },
-  nav: {
-    display: "inline",
-    height: "40px",
-    background:
-      theme.colorScheme === "dark"
-        ? theme.colors.blue[7]
-        : theme.colors.blue[4],
+    flex: "1 1 0",
   },
 }));
 
 function CalendarHeader({
   calendarTime,
   setCalendarTime,
+  children,
 }: {
   calendarTime: string;
   setCalendarTime: (a: string) => void;
+  children?: ReactElement;
 }) {
   const { classes } = useStyles();
-  const isMobile = useMediaQuery("(max-width: 900px)");
   const { dayjs } = useDayjs();
 
   const shiftCalendarTime = useCallback(
@@ -58,43 +46,42 @@ function CalendarHeader({
   );
 
   return (
-    <Container className={classes.headerContainer}>
-      <Grid grow={isMobile} className={classes.header}>
-        <Grid.Col span={2}>
-          {!isMobile ? (
-            <Button
-              className={classes.nav}
-              leftIcon={<IconArrowLeft size={32} />}
-              onClick={() => shiftCalendarTime(-1)}
-            >
-              {dayjs(calendarTime).add(-1, "month").format("MMM YYYY")}
-            </Button>
-          ) : (
-            <ActionIcon onClick={() => shiftCalendarTime(-1)} color="blue">
-              <IconArrowLeft size={32} />
-            </ActionIcon>
-          )}
-        </Grid.Col>
-        <Grid.Col span={8} className={classes.calTitle}>
-          <Title order={2}>{dayjs(calendarTime).format("MMMM YYYY")}</Title>
-        </Grid.Col>
-        <Grid.Col span={2}>
-          {!isMobile ? (
-            <Button
-              className={classes.nav}
-              rightIcon={<IconArrowRight size={32} />}
-              onClick={() => shiftCalendarTime(1)}
-            >
-              {dayjs(calendarTime).add(1, "month").format("MMM YYYY")}
-            </Button>
-          ) : (
-            <ActionIcon onClick={() => shiftCalendarTime(1)} color="blue">
-              <IconArrowRight size={32} />
-            </ActionIcon>
-          )}
-        </Grid.Col>
-      </Grid>
-    </Container>
+    <Box className={classes.header}>
+      <Button onClick={() => shiftCalendarTime(-1)} px="xs" variant="subtle">
+        <IconArrowLeft size={20} />
+        <MediaQuery
+          smallerThan="sm"
+          styles={{
+            display: "none",
+          }}
+        >
+          <Box ml={4}>
+            {dayjs(calendarTime).add(-1, "month").format("MMM YYYY")}
+          </Box>
+        </MediaQuery>
+      </Button>
+      <Stack className={classes.centerSection} spacing={0} align="start">
+        <Title order={2} my={0} color="dimmed" size="lg">
+          Game Calendar
+        </Title>
+        <Title order={3}>{dayjs(calendarTime).format("MMMM YYYY")}</Title>
+      </Stack>
+      {children}
+
+      <Button onClick={() => shiftCalendarTime(1)} px="xs" variant="subtle">
+        <MediaQuery
+          smallerThan="sm"
+          styles={{
+            display: "none",
+          }}
+        >
+          <Box mr={4}>
+            {dayjs(calendarTime).add(1, "month").format("MMM YYYY")}
+          </Box>
+        </MediaQuery>
+        <IconArrowRight size={20} />
+      </Button>
+    </Box>
   );
 }
 
