@@ -14,28 +14,18 @@ import { getLayout } from "../../components/Layout";
 import Picture from "../../components/core/Picture";
 import { QuerySuccess } from "../../types/makotools";
 
-function isBirthdayToday(birthday: string) {
-  let charBirthday = birthday.split("-");
-  let today = new Date();
-  if (
-    parseInt(charBirthday[1]) === today.getMonth() + 1 &&
-    parseInt(charBirthday[2]) === today.getDate()
-  ) {
-    return true;
-  } else {
-    return false;
-  }
-}
+import { useDayjs } from "services/libraries/dayjs";
 
 function Page({
   characterQuery,
 }: {
   characterQuery: QuerySuccess<GameCharacter>;
 }) {
+  const { dayjs } = useDayjs();
   const { data: character } = characterQuery;
   return (
     <>
-      {isBirthdayToday(character.birthday) && (
+      {dayjs(character.birthday).year(new Date().getFullYear()).isToday() && (
         <>
           <Confetti
             width={1200}

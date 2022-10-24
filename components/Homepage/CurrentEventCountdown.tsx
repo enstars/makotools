@@ -16,7 +16,6 @@ import Confetti from "react-confetti";
 import { getAssetURL } from "services/data";
 import {
   countdown,
-  isEventHappeningToday,
   isItYippeeTime,
   retrieveClosestEvents,
   toCountdownReadable,
@@ -79,29 +78,32 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
 
   const { classes } = useStyles();
 
-  let currentEvent: GameEvent = events.filter((event) =>
-    isEventHappeningToday(event)
-  )[0];
+  let currentEvent: GameEvent = events.filter((event) => {
+    return dayjs(new Date()).isBetween(
+      dayjs(event.start_date),
+      dayjs(event.end_date)
+    );
+  })[0];
 
   let nextEvent: GameEvent | null = !currentEvent
-    ? (retrieveClosestEvents(events, 1, dayjs)[0] as GameEvent)
+    ? (retrieveClosestEvents(events, 1)[0] as GameEvent)
     : null;
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (currentEvent) {
         setYippeeTime(
-          isItYippeeTime(new Date(currentEvent.end_date), new Date())
+          isItYippeeTime(new Date(currentEvent.end_date), new Date(), dayjs)
         );
       }
       if (nextEvent) {
         setYippeeTime(
-          isItYippeeTime(new Date(nextEvent.start_date), new Date())
+          isItYippeeTime(new Date(nextEvent.start_date), new Date(), dayjs)
         );
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, [currentEvent, nextEvent]);
+  }, [currentEvent, nextEvent, dayjs]);
 
   return (
     <Container>

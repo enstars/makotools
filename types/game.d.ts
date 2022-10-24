@@ -191,6 +191,7 @@ export interface GameEvent extends Event {
   intro_lines?: string;
   song_name?: string;
   units?: ID[];
+  original: GameEvent;
 }
 
 export interface ScoutEvent extends Event {

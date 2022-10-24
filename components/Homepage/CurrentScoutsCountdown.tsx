@@ -12,11 +12,8 @@ import {
 import { useState, useEffect } from "react";
 
 import { getAssetURL } from "services/data";
-import {
-  countdown,
-  isEventHappeningToday,
-  toCountdownReadable,
-} from "services/events";
+import { countdown, toCountdownReadable } from "services/events";
+import { useDayjs } from "services/libraries/dayjs";
 import { ScoutEvent } from "types/game";
 
 const useStyles = createStyles((theme, _params) => ({
@@ -93,10 +90,14 @@ function CurrentScoutsCards({ scouts }: { scouts: ScoutEvent[] }) {
 }
 
 function CurrentScoutsCountdown({ scouts }: { scouts: ScoutEvent[] }) {
+  const { dayjs } = useDayjs();
   const { classes } = useStyles();
-  const currentScouts: ScoutEvent[] = scouts.filter((scout) =>
-    isEventHappeningToday(scout)
-  );
+  const currentScouts: ScoutEvent[] = scouts.filter((scout) => {
+    return dayjs(new Date()).isBetween(
+      dayjs(scout.start_date),
+      dayjs(scout.end_date)
+    );
+  });
   return (
     <Container className={classes.scoutsContainer}>
       <Title order={2}>Current Scouts</Title>

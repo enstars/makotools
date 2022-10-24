@@ -60,9 +60,10 @@ function retrieveEvents(data: any): (BirthdayEvent | GameEvent | ScoutEvent)[] {
 
 function retrieveClosestEvents(
   events: (BirthdayEvent | GameEvent | ScoutEvent)[],
-  numOfEvents: number,
-  dayjs: any
+  numOfEvents: number
 ): (Event | BirthdayEvent | GameEvent | ScoutEvent)[] {
+  const { dayjs } = useDayjs();
+
   let thisYear = new Date().getFullYear();
   const todaysDate: Event = {
     name: "",
@@ -99,7 +100,7 @@ function retrieveClosestEvents(
     }
   );
 
-  // find today's date in array and retrieve the next 5 dates
+  // find today's date in array and retrieve the next amount of dates
   let todayIndex = sortedEvents.indexOf(todaysDate) + 1;
 
   let newArray: (BirthdayEvent | GameEvent | ScoutEvent | Event)[] = [];
@@ -121,35 +122,6 @@ function retrieveClosestEvents(
   return newArray;
 }
 
-function areDatesEqual(dateA: string, dateB: string): boolean {
-  if (
-    dateA.split("-")[0] === dateB.split("-")[0] &&
-    dateA.split("-")[1] === dateB.split("-")[1] &&
-    dateA.split("-")[2] === dateB.split("-")[2]
-  ) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function areMonthYearEqual(dateA: string, dateB: string): boolean {
-  if (
-    dateA.split("-")[0] === dateB.split("-")[0] &&
-    dateA.split("-")[1] === dateB.split("-")[1]
-  ) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function dateToString(date: Date): string {
-  return `${date.getFullYear()}-${
-    date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
-  }-${date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()}`;
-}
-
 function localizeEventTimes(
   events: (BirthdayEvent | GameEvent | ScoutEvent)[]
 ): (BirthdayEvent | GameEvent | ScoutEvent)[] {
@@ -169,11 +141,6 @@ function localizeEventTimes(
   return events;
 }
 
-function isEventHappeningToday(event: GameEvent | ScoutEvent): boolean {
-  let now = new Date();
-  return now >= new Date(event.start_date) && now <= new Date(event.end_date);
-}
-
 function countdown(dateA: Date, dateB: Date): number {
   const diff = Date.parse(dateA.toString()) - Date.parse(dateB.toString());
   return diff >= 0 ? diff : 0;
@@ -189,20 +156,16 @@ function toCountdownReadable(amount: number): string {
   } ${sec}s`;
 }
 
-function isItYippeeTime(dateA: Date, dateB: Date): boolean {
-  let maxDateRange: Date = new Date(Date.parse(dateB.toDateString()) + 3000);
-  return dateA >= dateB && dateA < maxDateRange;
+function isItYippeeTime(dateA: Date, dateB: Date, dayjs: any): boolean {
+  let maxDateRange = dayjs(dateB.toString()).add(2000).toDate();
+  return dayjs(dateA).isBetween(dayjs(dateB), maxDateRange);
 }
 
 export {
   retrieveEvents,
   retrieveClosestEvents,
-  areDatesEqual,
-  areMonthYearEqual,
-  dateToString,
   localizeEventTimes,
   countdown,
-  isEventHappeningToday,
   toCountdownReadable,
   isItYippeeTime,
 };

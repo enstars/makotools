@@ -218,7 +218,7 @@ function UpcomingCampaigns({
             Upcoming Campaigns
           </Text>
         </Accordion.Control>
-        {retrieveClosestEvents(events, 4, dayjs).map(
+        {retrieveClosestEvents(events, 4).map(
           (e: BirthdayEvent | GameEvent | ScoutEvent, index) => {
             return <EventCard key={index} event={e} />;
           }

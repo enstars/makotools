@@ -17,7 +17,6 @@ import {
   GameEventStatus,
   ScoutEvent,
 } from "types/game";
-import { dateToString } from "services/events";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   calendar: {
@@ -84,7 +83,6 @@ function CalendarDay({
 }) {
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
-  let today = dateToString(new Date());
   return (
     <Grid.Col
       span={1}
@@ -120,9 +118,7 @@ function CalendarDay({
         <Text
           size="lg"
           sx={{ paddingLeft: "5px", paddingTop: "3px" }}
-          className={
-            dayjs(day).isSame(dayjs(), "day") ? classes.today : undefined
-          }
+          className={dayjs(day).isToday() ? classes.today : undefined}
         >
           {dayjs(day).date()}
         </Text>

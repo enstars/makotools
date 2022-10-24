@@ -5,6 +5,10 @@ import Timezone from "dayjs/plugin/timezone";
 import AdvancedFormat from "dayjs/plugin/advancedFormat";
 import LocalizedFormat from "dayjs/plugin/localizedFormat";
 import localeData from "dayjs/plugin/localeData";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import isToday from "dayjs/plugin/isToday";
+import isBetween from "dayjs/plugin/isBetween";
 
 import "dayjs/locale/en";
 import "dayjs/locale/ja";
@@ -35,6 +39,10 @@ function DayjsProvider({ children }: { children: ReactElement }) {
   dayjs.extend(AdvancedFormat);
   dayjs.extend(LocalizedFormat);
   dayjs.extend(localeData);
+  dayjs.extend(isSameOrBefore);
+  dayjs.extend(isSameOrAfter);
+  dayjs.extend(isToday);
+  dayjs.extend(isBetween);
 
   return (
     <DayjsContext.Provider value={{ dayjs }}>{children}</DayjsContext.Provider>
