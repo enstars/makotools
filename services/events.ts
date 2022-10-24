@@ -27,13 +27,13 @@ function retrieveEvents(data: any): (BirthdayEvent | GameEvent | ScoutEvent)[] {
     for (const event of data.gameEvents) {
       let gameEvent: GameEvent = {
         event_id: event.event_id,
-        start_date: event.start_date[1],
-        end_date: event.end_date[1],
-        type: event.type[1],
+        start_date: event.start_date,
+        end_date: event.end_date,
+        type: event.type,
         name: event.name[1],
-        event_gacha: event.event_gacha[1],
-        event_gacha_id: event.gacha_id[1],
-        banner_id: event.banner_id[1],
+        event_gacha: event.event_gacha,
+        event_gacha_id: event.gacha_id,
+        banner_id: event.banner_id,
         story_name: event.story_name[1],
       };
       events.push(gameEvent);
@@ -44,16 +44,17 @@ function retrieveEvents(data: any): (BirthdayEvent | GameEvent | ScoutEvent)[] {
     for (const scout of data.scouts) {
       let scoutEvent: ScoutEvent = {
         gacha_id: scout.gacha_id,
-        start_date: scout.start_date[1],
-        end_date: scout.end_date[1],
-        type: scout.type[1],
+        start_date: scout.start_date,
+        end_date: scout.end_date,
+        type: scout.type,
         name: scout.name[1],
-        banner_id: scout.five_star.card_id[1],
+        banner_id: scout.five_star.card_id,
       };
       events.push(scoutEvent);
     }
   }
 
+  console.log(events);
   return events;
 }
 
