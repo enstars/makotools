@@ -89,12 +89,14 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setYippeeTime(
-        isItYippeeTime(new Date(currentEvent.end_date), new Date())
-      );
+      if (currentEvent) {
+        setYippeeTime(
+          isItYippeeTime(new Date(currentEvent.end_date), new Date())
+        );
+      }
     }, 1000);
     return () => clearInterval(interval);
-  }, [currentEvent.end_date]);
+  }, [currentEvent]);
 
   return (
     <Container>
