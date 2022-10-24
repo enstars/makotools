@@ -11,13 +11,17 @@ import {
   Stack,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
+import Confetti from "react-confetti";
 
 import { getAssetURL } from "services/data";
 import {
   countdown,
   isEventHappeningToday,
+  isItYippeeTime,
+  retrieveClosestEvents,
   toCountdownReadable,
 } from "services/events";
+import { useDayjs } from "services/libraries/dayjs";
 import { GameEvent } from "types/game";
 
 const useStyles = createStyles((theme, _params) => ({
@@ -46,15 +50,15 @@ function EventImage({ event }: { event: GameEvent }) {
   );
 }
 
-function Countdown({ event }: { event: GameEvent }) {
+function Countdown({ date }: { date: string }) {
   const [countdownAmt, setCountdownAmt] = useState<string>();
   useEffect(() => {
     const interval = setInterval(() => {
-      let ctdwn = countdown(new Date(event.end_date), new Date());
+      let ctdwn = countdown(new Date(date), new Date());
       setCountdownAmt(toCountdownReadable(ctdwn));
     }, 1000);
     return () => clearInterval(interval);
-  }, [event.end_date]);
+  }, [date]);
   return (
     <Group>
       <Text weight={600}>Ends in </Text>
@@ -64,7 +68,10 @@ function Countdown({ event }: { event: GameEvent }) {
 }
 
 function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
+  const { dayjs } = useDayjs();
+
   const [noWrap, setNoWrap] = useState<boolean>(true);
+  const [yippeeTime, setYippeeTime] = useState<boolean>(false);
 
   useEffect(() => {
     window.innerWidth < 900 ? setNoWrap(false) : setNoWrap(true);
@@ -75,9 +82,23 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
   let currentEvent: GameEvent = events.filter((event) =>
     isEventHappeningToday(event)
   )[0];
+
+  let nextEvent: GameEvent | null = !currentEvent
+    ? (retrieveClosestEvents(events, 1, dayjs)[0] as GameEvent)
+    : null;
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setYippeeTime(
+        isItYippeeTime(new Date(currentEvent.end_date), new Date())
+      );
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [currentEvent.end_date]);
+
   return (
     <Container>
-      <Title order={2}>Current Event</Title>
+      <Title order={2}>{currentEvent ? "Current Event" : "Next Event"}</Title>
       <Paper
         shadow="xs"
         radius="md"
@@ -85,6 +106,7 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
         withBorder
         className={classes.eventContainer}
       >
+        {yippeeTime && <Confetti recycle={false} />}
         {currentEvent ? (
           <Group noWrap={noWrap} align="flex-start" spacing="xl">
             <EventImage event={currentEvent} />
@@ -93,7 +115,22 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
                 <Title order={3} sx={{ maxWidth: "300px" }}>
                   {currentEvent.name}
                 </Title>
-                <Countdown event={currentEvent} />
+                <Countdown date={currentEvent.end_date} />
+              </Box>
+              <Button color="indigo" disabled>
+                Event Calculator
+              </Button>
+            </Stack>
+          </Group>
+        ) : nextEvent ? (
+          <Group noWrap={noWrap} align="flex-start" spacing="xl">
+            <EventImage event={nextEvent} />
+            <Stack justify="space-around">
+              <Box>
+                <Title order={3} sx={{ maxWidth: "300px" }}>
+                  {nextEvent.name}
+                </Title>
+                <Countdown date={nextEvent.end_date} />
               </Box>
               <Button color="indigo" disabled>
                 Event Calculator
@@ -102,7 +139,7 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
           </Group>
         ) : (
           <Text size="lg" weight={600}>
-            No event is currently taking place.
+            No upcoming events.
           </Text>
         )}
       </Paper>

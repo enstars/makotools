@@ -27,64 +27,10 @@ import Link from "next/link";
 
 import { useDayjs } from "../../services/libraries/dayjs";
 
-import { Event, BirthdayEvent, GameEvent, ScoutEvent } from "types/game";
+import { BirthdayEvent, GameEvent, ScoutEvent } from "types/game";
 import { getAssetURL } from "services/data";
+import { retrieveClosestEvents } from "services/events";
 
-function retrieveClosestEvents(
-  events: (BirthdayEvent | GameEvent | ScoutEvent)[],
-  dayjs: any
-): (Event | BirthdayEvent | GameEvent | ScoutEvent)[] {
-  let thisYear = new Date().getFullYear();
-  const todaysDate: Event = {
-    name: "",
-    start_date: dayjs(new Date()).format("YYYY-MM-DD"),
-    end_date: dayjs(new Date()).format("YYYY-MM-DD"),
-    type: "other",
-  };
-
-  // add proper years to the bdays
-  events.forEach((event) => {
-    if (new Date(event.start_date).getFullYear() === 2000) {
-      let splitDate = event.start_date.split("-");
-      let year =
-        parseInt(splitDate[1]) <= new Date().getMonth()
-          ? new Date().getFullYear() + 1
-          : new Date().getFullYear();
-      event.start_date = `${year}-${splitDate[1]}-${splitDate[2]}`;
-    }
-  });
-
-  let sortedEvents = [...events, todaysDate];
-
-  // sort array by date
-  sortedEvents.sort(
-    (
-      a: BirthdayEvent | GameEvent | ScoutEvent | Event,
-      b: BirthdayEvent | GameEvent | ScoutEvent | Event
-    ) => {
-      return a.start_date < b.start_date
-        ? -1
-        : a.start_date > b.start_date
-        ? 1
-        : 0;
-    }
-  );
-
-  // find today's date in array and retrieve the next 5 dates
-  let todayIndex = sortedEvents.indexOf(todaysDate) + 1;
-
-  let newArray: (BirthdayEvent | GameEvent | ScoutEvent | Event)[] = [];
-
-  while (newArray.length < 4) {
-    newArray.push(sortedEvents[todayIndex]);
-    if (todayIndex === sortedEvents.length - 1) {
-      todayIndex = -1;
-    }
-    todayIndex++;
-  }
-
-  return newArray;
-}
 /* END FUNCTION */
 
 // choose horoscope from value
@@ -272,7 +218,7 @@ function UpcomingCampaigns({
             Upcoming Campaigns
           </Text>
         </Accordion.Control>
-        {retrieveClosestEvents(events, dayjs).map(
+        {retrieveClosestEvents(events, 4, dayjs).map(
           (e: BirthdayEvent | GameEvent | ScoutEvent, index) => {
             return <EventCard key={index} event={e} />;
           }

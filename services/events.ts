@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { BirthdayEvent, GameEvent, ScoutEvent } from "../types/game";
+import { Event, BirthdayEvent, GameEvent, ScoutEvent } from "../types/game";
 
 import { useDayjs } from "./libraries/dayjs";
 
@@ -55,6 +55,69 @@ function retrieveEvents(data: any): (BirthdayEvent | GameEvent | ScoutEvent)[] {
   }
 
   return events;
+}
+
+function retrieveClosestEvents(
+  events: (BirthdayEvent | GameEvent | ScoutEvent)[],
+  numOfEvents: number,
+  dayjs: any
+): (Event | BirthdayEvent | GameEvent | ScoutEvent)[] {
+  let thisYear = new Date().getFullYear();
+  const todaysDate: Event = {
+    name: "",
+    start_date: dayjs(new Date()).format("YYYY-MM-DD"),
+    end_date: dayjs(new Date()).format("YYYY-MM-DD"),
+    type: "other",
+  };
+
+  // add proper years to the bdays
+  events.forEach((event) => {
+    if (new Date(event.start_date).getFullYear() === 2000) {
+      let splitDate = event.start_date.split("-");
+      let year =
+        parseInt(splitDate[1]) <= new Date().getMonth()
+          ? new Date().getFullYear() + 1
+          : new Date().getFullYear();
+      event.start_date = `${year}-${splitDate[1]}-${splitDate[2]}`;
+    }
+  });
+
+  let sortedEvents = [...events, todaysDate];
+
+  // sort array by date
+  sortedEvents.sort(
+    (
+      a: BirthdayEvent | GameEvent | ScoutEvent | Event,
+      b: BirthdayEvent | GameEvent | ScoutEvent | Event
+    ) => {
+      return a.start_date < b.start_date
+        ? -1
+        : a.start_date > b.start_date
+        ? 1
+        : 0;
+    }
+  );
+
+  // find today's date in array and retrieve the next 5 dates
+  let todayIndex = sortedEvents.indexOf(todaysDate) + 1;
+
+  let newArray: (BirthdayEvent | GameEvent | ScoutEvent | Event)[] = [];
+
+  while (newArray.length < numOfEvents) {
+    if (numOfEvents === 1) {
+      if ((sortedEvents[todayIndex] as GameEvent).event_id) {
+        newArray.push(sortedEvents[todayIndex]);
+      }
+    } else {
+      newArray.push(sortedEvents[todayIndex]);
+    }
+    if (todayIndex === sortedEvents.length - 1) {
+      todayIndex = -1;
+    }
+    todayIndex++;
+  }
+
+  return newArray;
 }
 
 function areDatesEqual(dateA: string, dateB: string): boolean {
@@ -123,8 +186,13 @@ function toCountdownReadable(amount: number): string {
   } ${sec}s`;
 }
 
+function isItYippeeTime(dateA: Date, dateB: Date): boolean {
+  return dateA === dateB;
+}
+
 export {
   retrieveEvents,
+  retrieveClosestEvents,
   areDatesEqual,
   areMonthYearEqual,
   dateToString,
@@ -132,4 +200,5 @@ export {
   countdown,
   isEventHappeningToday,
   toCountdownReadable,
+  isItYippeeTime,
 };
