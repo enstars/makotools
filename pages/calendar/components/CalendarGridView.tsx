@@ -21,9 +21,19 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
   week: {},
   today: {
-    borderColor: theme.colors.blue[5],
-    borderWidth: 1,
-    borderStyle: "solid",
+    // border: `solid 1px ${theme.colors.blue[5]}`,
+    [`& .${getRef("dateLabel")}`]: {
+      backgroundColor: theme.colors.blue[5],
+      alignSelf: "start",
+      padding: "2px 3px",
+      minWidth: 24,
+      borderRadius: 999,
+      color: "white",
+      textAlign: "center",
+    },
+  },
+  dateLabel: {
+    ref: getRef("dateLabel"),
   },
   dayContainer: {
     ref: getRef("dayContainer"),
@@ -99,6 +109,7 @@ function CalendarDay({
             pt={4}
             weight={600}
             color={active ? undefined : "dimmed"}
+            className={classes.dateLabel}
           >
             {dayjs(day).date()}
           </Text>

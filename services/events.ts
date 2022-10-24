@@ -35,7 +35,6 @@ function retrieveEvents(data: any): (BirthdayEvent | GameEvent | ScoutEvent)[] {
         event_gacha_id: event.gacha_id,
         banner_id: event.banner_id,
         story_name: event.story_name[1],
-        original: event,
       };
       events.push(gameEvent);
     }
