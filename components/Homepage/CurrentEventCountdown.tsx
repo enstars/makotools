@@ -94,9 +94,14 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
           isItYippeeTime(new Date(currentEvent.end_date), new Date())
         );
       }
+      if (nextEvent) {
+        setYippeeTime(
+          isItYippeeTime(new Date(nextEvent.start_date), new Date())
+        );
+      }
     }, 1000);
     return () => clearInterval(interval);
-  }, [currentEvent]);
+  }, [currentEvent, nextEvent]);
 
   return (
     <Container>

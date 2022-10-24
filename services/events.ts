@@ -144,7 +144,9 @@ function areMonthYearEqual(dateA: string, dateB: string): boolean {
 }
 
 function dateToString(date: Date): string {
-  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+  return `${date.getFullYear()}-${
+    date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
+  }-${date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()}`;
 }
 
 function localizeEventTimes(
@@ -187,7 +189,7 @@ function toCountdownReadable(amount: number): string {
 }
 
 function isItYippeeTime(dateA: Date, dateB: Date): boolean {
-  let maxDateRange: Date = new Date(Date.parse(dateB.toDateString()) + 120000);
+  let maxDateRange: Date = new Date(Date.parse(dateB.toDateString()) + 3000);
   return dateA >= dateB && dateA < maxDateRange;
 }
 

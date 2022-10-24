@@ -16,11 +16,7 @@ import {
   GameEventStatus,
   ScoutEvent,
 } from "types/game";
-import {
-  areDatesEqual,
-  areMonthYearEqual,
-  dateToString,
-} from "services/events";
+import { areMonthYearEqual } from "services/events";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   listBody: {
@@ -127,19 +123,6 @@ function CalendarListDay({
   let currentDate = parseInt(date.split("-")[2].split(" ")[0]);
   return (
     <Container className={classes.listDay}>
-      {areDatesEqual(date, dateToString(today)) && (
-        <Box
-          sx={(theme) => ({
-            width: "10px",
-            height: "75px",
-            background:
-              theme.colorScheme === "dark"
-                ? theme.colors.blue[7]
-                : theme.colors.blue[4],
-            marginRight: "10px",
-          })}
-        />
-      )}
       <Box className={classes.listDayTitle}>
         <Text
           sx={{ textTransform: "uppercase" }}
