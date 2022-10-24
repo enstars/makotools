@@ -1,6 +1,8 @@
 import { useRouter } from "next/router";
 import { createContext, ReactElement, useContext } from "react";
 import dayjs from "dayjs";
+import Timezone from "dayjs/plugin/timezone";
+import AdvancedFormat from "dayjs/plugin/advancedFormat";
 import LocalizedFormat from "dayjs/plugin/localizedFormat";
 import localeData from "dayjs/plugin/localeData";
 
@@ -29,6 +31,8 @@ export const useDayjs = () => useContext(DayjsContext);
 function DayjsProvider({ children }: { children: ReactElement }) {
   const { locale } = useRouter();
   dayjs.locale(locale || "en");
+  dayjs.extend(Timezone);
+  dayjs.extend(AdvancedFormat);
   dayjs.extend(LocalizedFormat);
   dayjs.extend(localeData);
 

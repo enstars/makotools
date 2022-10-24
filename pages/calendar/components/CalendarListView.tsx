@@ -10,13 +10,7 @@ import {
 import CalendarListEventCard from "./CalendarListEventCard";
 
 import { useDayjs } from "services/libraries/dayjs";
-import {
-  BirthdayEvent,
-  GameEvent,
-  GameEventStatus,
-  ScoutEvent,
-} from "types/game";
-import { areMonthYearEqual } from "services/events";
+import { BirthdayEvent, GameEvent, ScoutEvent } from "types/game";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   listBody: {
@@ -98,13 +92,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 }));
 
-interface ListViewObject {
-  name: string;
-  date: string;
-  status?: GameEventStatus;
-  id: number;
-}
-
 function CalendarListDay({
   date,
   events,
@@ -114,13 +101,7 @@ function CalendarListDay({
 }) {
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
-  let today = new Date();
-  let dayDate =
-    date.split("-")[0] === "2000"
-      ? new Date(`2000-${date.split("-")[1]}-${date.split("-")[2]}`)
-      : new Date(date);
-  let dotw = dayjs(dayDate).format("ddd");
-  let currentDate = parseInt(date.split("-")[2].split(" ")[0]);
+
   return (
     <Container className={classes.listDay}>
       <Box className={classes.listDayTitle}>
@@ -129,18 +110,9 @@ function CalendarListDay({
           size="sm"
           className={classes.listDayDotw}
         >
-          {dotw}
+          {dayjs(date).format("ddd")}
         </Text>
-        <Title order={2}>
-          {currentDate}
-          {currentDate % 10 === 1 && currentDate !== 11
-            ? "st"
-            : currentDate % 10 === 2 && currentDate !== 12
-            ? "nd"
-            : currentDate % 10 === 3 && currentDate !== 13
-            ? "rd"
-            : "th"}
-        </Title>
+        <Title order={2}>{dayjs(date).format("Do")}</Title>
       </Box>
       <Divider
         size="lg"
@@ -148,25 +120,23 @@ function CalendarListDay({
         className={classes.listDayDivider}
       />
       <Container className={classes.listDayEvents}>
-        {events.map(
-          (event: BirthdayEvent | GameEvent | ScoutEvent, i: number) => {
-            return (
-              <CalendarListEventCard
-                key={i}
-                index={i}
-                eventsAmt={events.length}
-                event={event}
-                status={
-                  event.type === "birthday" || event.type === "anniversary"
-                    ? undefined
-                    : event.start_date.split(" ")[0] === date
-                    ? "start"
-                    : "end"
-                }
-              />
-            );
-          }
-        )}
+        {events.map((event, i) => {
+          return (
+            <CalendarListEventCard
+              key={event.name}
+              index={i}
+              eventsAmt={events.length}
+              event={event}
+              status={
+                event.type === "birthday" || event.type === "anniversary"
+                  ? undefined
+                  : dayjs(date).isSame(event.start_date, "day")
+                  ? "start"
+                  : "end"
+              }
+            />
+          );
+        })}
       </Container>
     </Container>
   );
@@ -175,74 +145,71 @@ function CalendarListDay({
 function CalendarListView({
   calendarTime,
   events,
-  lang,
 }: {
   calendarTime: string;
   events: (BirthdayEvent | GameEvent | ScoutEvent)[];
-  lang: string;
 }) {
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
   let calendarTimeDate: Date = dayjs(calendarTime).toDate();
   // get events happening in the active month
   const filteredEvents = events.filter(
-    (event: BirthdayEvent | GameEvent | ScoutEvent) => {
-      if (event.type !== "birthday" && event.type !== "anniversary") {
-        return (
-          areMonthYearEqual(event.start_date.split(" ")[0], calendarTime) ||
-          areMonthYearEqual(event.end_date.split(" ")[0], calendarTime)
-        );
-      } else {
-        return (
-          new Date(event.start_date).getMonth() === calendarTimeDate.getMonth()
-        );
-      }
-    }
+    (event: BirthdayEvent | GameEvent | ScoutEvent) =>
+      event.type === "birthday" || event.type === "anniversary"
+        ? dayjs(calendarTime)
+            .year(2000)
+            .isSame(dayjs(event.start_date).year(2000), "month")
+        : dayjs(calendarTime).isSame(event.start_date, "month") ||
+          dayjs(calendarTime).isSame(event.end_date, "month")
   );
 
   let allEventDays: string[] = [];
 
-  filteredEvents.forEach((event: BirthdayEvent | GameEvent | ScoutEvent) => {
+  filteredEvents.forEach((event) => {
     // getting all the days in the month that have events
     if (
-      !allEventDays.some((day) => day === event.start_date) &&
-      parseInt(event.start_date.split("-")[1]) ===
-        calendarTimeDate.getMonth() + 1
+      !allEventDays.some((day) =>
+        dayjs(day).isSame(dayjs(event.start_date).startOf("day"))
+      ) &&
+      dayjs(calendarTime).month() === dayjs(event.start_date).month()
     ) {
-      allEventDays.push(event.start_date.split(" ")[0]);
+      allEventDays.push(
+        dayjs(event.start_date).year(dayjs().year()).startOf("day").format()
+      );
     }
+
     if (
-      !allEventDays.some((day) => day === event.end_date) &&
-      parseInt(event.end_date.split("-")[1]) === calendarTimeDate.getMonth() + 1
+      !allEventDays.some((day) =>
+        dayjs(calendarTime).isSame(dayjs(event.end_date).startOf("day"))
+      ) &&
+      dayjs(calendarTime).month() === dayjs(event.end_date).month()
     ) {
-      allEventDays.push(event.end_date.split(" ")[0]);
+      allEventDays.push(
+        dayjs(event.end_date).year(dayjs().year()).startOf("day").format()
+      );
     }
   });
 
   allEventDays.sort(
-    (a: string, b: string) =>
-      parseInt(a.split("-")[2]) - parseInt(b.split("-")[2])
+    (a: string, b: string) => dayjs(a).date() - dayjs(b).date()
   );
 
   allEventDays = [...new Set(allEventDays)];
-
   return (
     <Container className={classes.listBody}>
       {allEventDays.map((date, i) => {
         return (
           <CalendarListDay
             key={i}
-            date={date.split(" ")[0]}
+            date={date}
             events={filteredEvents.filter(
               (event: BirthdayEvent | GameEvent | ScoutEvent) =>
-                (parseInt(event.start_date.split("-")[2]) ===
-                  parseInt(date.split("-")[2]) &&
-                  parseInt(event.start_date.split("-")[1]) ===
-                    parseInt(date.split("-")[1])) ||
-                (parseInt(event.end_date.split("-")[2]) ===
-                  parseInt(date.split("-")[2]) &&
-                  parseInt(event.end_date.split("-")[1]) ===
-                    parseInt(date.split("-")[1]))
+                dayjs(date)
+                  .year(2000)
+                  .isSame(dayjs(event.start_date).year(2000), "day") ||
+                dayjs(date)
+                  .year(2000)
+                  .isSame(dayjs(event.end_date).year(2000), "day")
             )}
           />
         );

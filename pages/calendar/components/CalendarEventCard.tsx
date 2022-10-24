@@ -8,24 +8,21 @@ import {
   ScoutEvent,
 } from "types/game";
 
+const useStyles = createStyles((theme, _params, getRef) => ({
+  eventCard: {
+    fontSize: "12px",
+    "&:hover": {
+      cursor: "pointer",
+    },
+  },
+}));
 function CalendarEventCard({
   event,
-  day,
   status,
 }: {
   event: BirthdayEvent | GameEvent | ScoutEvent;
-  day: string;
   status: GameEventStatus;
 }) {
-  const useStyles = createStyles((theme, _params, getRef) => ({
-    eventCard: {
-      fontSize: "12px",
-      "&:hover": {
-        cursor: "pointer",
-      },
-    },
-  }));
-
   const { classes } = useStyles();
   return (
     <Tooltip

@@ -6,7 +6,7 @@ import {
   Title,
   Stack,
 } from "@mantine/core";
-import { getMonthDays, getWeekdaysNames } from "@mantine/dates";
+import { getMonthDays } from "@mantine/dates";
 
 import CalendarEventCard from "./CalendarEventCard";
 
@@ -17,7 +17,7 @@ import {
   GameEventStatus,
   ScoutEvent,
 } from "types/game";
-import { areDatesEqual, dateToString } from "services/events";
+import { dateToString } from "services/events";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   calendar: {
@@ -59,15 +59,12 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 }));
 
-function CalendarDotW({ ...props }) {
-  let dotw: String[] = getWeekdaysNames(props.lang);
+function CalendarDotW() {
   const { dayjs } = useDayjs();
-
-  const days = dayjs.weekdaysShort();
 
   return (
     <Grid columns={7} grow sx={{ marginBottom: "2vh", maxWidth: "100%" }}>
-      {days.map((day, i) => (
+      {dayjs.weekdaysShort().map((day, i) => (
         <Grid.Col key={i} span={1} sx={{ textAlign: "center" }}>
           <Title order={5}>{day}</Title>
         </Grid.Col>
@@ -81,11 +78,12 @@ function CalendarDay({
   active,
   events,
 }: {
-  day: string;
+  day: Date;
   active: boolean;
   events: (BirthdayEvent | GameEvent | ScoutEvent)[];
-}): React.ReactElement {
+}) {
   const { classes } = useStyles();
+  const { dayjs } = useDayjs();
   let today = dateToString(new Date());
   return (
     <Grid.Col
@@ -118,34 +116,26 @@ function CalendarDay({
               : theme.colors.dark[9],
           },
         })}
-        className={day}
       >
         <Text
           size="lg"
           sx={{ paddingLeft: "5px", paddingTop: "3px" }}
-          className={day === today ? classes.today : undefined}
+          className={
+            dayjs(day).isSame(dayjs(), "day") ? classes.today : undefined
+          }
         >
-          {day.split("-")[2]}
+          {dayjs(day).date()}
         </Text>
         {active &&
-          events.map(
-            (event: BirthdayEvent | GameEvent | ScoutEvent, i: number) => {
-              let status: GameEventStatus;
-              if (event.type !== "birthday" && event.type !== "anniversary") {
-                status = areDatesEqual(event.start_date.split(" ")[0], day)
-                  ? "start"
-                  : "end";
-              }
-              return (
-                <CalendarEventCard
-                  key={i}
-                  event={event}
-                  day={day}
-                  status={status}
-                />
-              );
+          events.map((event, i) => {
+            let status: GameEventStatus;
+            if (event.type !== "birthday" && event.type !== "anniversary") {
+              status = dayjs(day).isSame(event.start_date, "day")
+                ? "start"
+                : "end";
             }
-          )}
+            return <CalendarEventCard key={i} event={event} status={status} />;
+          })}
       </Stack>
     </Grid.Col>
   );
@@ -155,7 +145,6 @@ function CalendarWeek({
   calendarTime,
   week,
   events,
-  ...props
 }: {
   calendarTime: string;
   week: Date[];
@@ -166,30 +155,19 @@ function CalendarWeek({
   return (
     <Grid columns={7} className={classes.week} gutter="xs">
       {week.map((day: Date, i: number) => {
-        const filteredEvents = events.filter(
-          (event: BirthdayEvent | GameEvent | ScoutEvent) => {
-            if (event.type !== "birthday" && event.type !== "anniversary") {
-              return (
-                areDatesEqual(
-                  event.start_date.split(" ")[0],
-                  dateToString(day)
-                ) ||
-                areDatesEqual(event.end_date.split(" ")[0], dateToString(day))
-              );
-            } else {
-              return (
-                parseInt(event.start_date.split("-")[1]) ===
-                  day.getMonth() + 1 &&
-                parseInt(event.start_date.split("-")[2]) === day.getDate()
-              );
-            }
-          }
+        const filteredEvents = events.filter((event) =>
+          event.type === "birthday" || event.type === "anniversary"
+            ? dayjs(day)
+                .year(2000)
+                .isSame(dayjs(event.start_date).year(2000), "day")
+            : dayjs(day).isSame(event.start_date, "day") ||
+              dayjs(day).isSame(event.end_date, "day")
         );
         return (
           <CalendarDay
-            day={dateToString(day)}
+            day={day}
             key={i}
-            active={day.getMonth() === dayjs(calendarTime).month()}
+            active={dayjs(day).isSame(dayjs(calendarTime), "month")}
             events={filteredEvents}
           />
         );
@@ -201,17 +179,15 @@ function CalendarWeek({
 function CalendarGridView({
   calendarTime,
   events,
-  lang,
 }: {
   calendarTime: string;
   events: (BirthdayEvent | GameEvent | ScoutEvent)[];
-  lang: string;
 }) {
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
   return (
     <Container className={classes.calendar}>
-      <CalendarDotW lang={lang} />
+      <CalendarDotW />
       <Container className={classes.calendarBody}>
         {getMonthDays(
           dayjs(calendarTime).startOf("M").toDate(),

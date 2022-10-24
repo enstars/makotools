@@ -6,8 +6,9 @@ import {
   Grid,
   Title,
 } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons";
-import { useEffect, useState } from "react";
+import { useCallback } from "react";
 
 import { useDayjs } from "services/libraries/dayjs";
 
@@ -46,12 +47,15 @@ function CalendarHeader({
   setCalendarTime: (a: string) => void;
 }) {
   const { classes } = useStyles();
-  const [isMobile, setMobile] = useState<boolean>(true);
+  const isMobile = useMediaQuery("(max-width: 900px)");
   const { dayjs } = useDayjs();
 
-  useEffect(() => {
-    window.innerWidth < 900 ? setMobile(true) : setMobile(false);
-  }, []);
+  const shiftCalendarTime = useCallback(
+    (months: number) => {
+      setCalendarTime(dayjs(calendarTime).add(months, "month").format());
+    },
+    [setCalendarTime, calendarTime, dayjs]
+  );
 
   return (
     <Container className={classes.headerContainer}>
@@ -61,19 +65,12 @@ function CalendarHeader({
             <Button
               className={classes.nav}
               leftIcon={<IconArrowLeft size={32} />}
-              onClick={(e: any) => {
-                setCalendarTime(dayjs(calendarTime).add(-1, "month").format());
-              }}
+              onClick={() => shiftCalendarTime(-1)}
             >
               {dayjs(calendarTime).add(-1, "month").format("MMM YYYY")}
             </Button>
           ) : (
-            <ActionIcon
-              onClick={() => {
-                setCalendarTime(dayjs(calendarTime).add(-1, "month").format());
-              }}
-              color="blue"
-            >
+            <ActionIcon onClick={() => shiftCalendarTime(-1)} color="blue">
               <IconArrowLeft size={32} />
             </ActionIcon>
           )}
@@ -86,19 +83,12 @@ function CalendarHeader({
             <Button
               className={classes.nav}
               rightIcon={<IconArrowRight size={32} />}
-              onClick={() => {
-                setCalendarTime(dayjs(calendarTime).add(1, "month").format());
-              }}
+              onClick={() => shiftCalendarTime(1)}
             >
               {dayjs(calendarTime).add(1, "month").format("MMM YYYY")}
             </Button>
           ) : (
-            <ActionIcon
-              onClick={() => {
-                setCalendarTime(dayjs(calendarTime).add(1, "month").format());
-              }}
-              color="blue"
-            >
+            <ActionIcon onClick={() => shiftCalendarTime(1)} color="blue">
               <IconArrowRight size={32} />
             </ActionIcon>
           )}
