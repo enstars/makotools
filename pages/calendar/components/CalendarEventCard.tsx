@@ -1,4 +1,4 @@
-import { Badge, Box, createStyles, Tooltip } from "@mantine/core";
+import { Badge, Box, createStyles, HoverCard, Text } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import {
   IconCake,
@@ -7,6 +7,8 @@ import {
   IconStar,
 } from "@tabler/icons";
 
+import Picture from "components/core/Picture";
+import { useDayjs } from "services/libraries/dayjs";
 import {
   BirthdayEvent,
   GameEvent,
@@ -29,87 +31,115 @@ function CalendarEventCard({
   status: GameEventStatus;
 }) {
   const { classes } = useStyles();
+  const { dayjs } = useDayjs();
   return (
-    <Tooltip
-      multiline
-      width={150}
-      label={
-        event.type === "song" || event.type === "tour"
-          ? event.type + " event: " + event.name.toLowerCase()
-          : event.type === "scout"
-          ? event.type + "! " + event.name.toLowerCase()
-          : event.type === "feature scout"
-          ? event.type + ": " + event.name.toLowerCase()
-          : event.name + "'s " + event.type
-      }
-      sx={{
-        // fontVariant: "small-caps",
-        fontWeight: "bold",
-        textAlign: "center",
-      }}
+    <HoverCard
       withinPortal={true}
+      position="top"
+      width={200}
+      shadow="xs"
+      withArrow
     >
-      <Badge
-        px={2}
-        fullWidth
-        variant="filled"
-        color={
-          event.type === "anniversary"
-            ? "yellow"
-            : event.type === "birthday"
-            ? "cyan"
+      <HoverCard.Target>
+        <Badge
+          px={2}
+          fullWidth
+          variant="filled"
+          color={
+            event.type === "anniversary"
+              ? "yellow"
+              : event.type === "birthday"
+              ? "cyan"
+              : event.type === "feature scout"
+              ? "lightblue"
+              : event.type === "scout"
+              ? "violet"
+              : "yellow"
+          }
+          className={classes.eventCard}
+          component={NextLink}
+          href={
+            event.type === "birthday"
+              ? `/characters/${(event as BirthdayEvent).character_id}`
+              : (event as GameEvent).event_id
+              ? `/events/${(event as GameEvent).event_id}`
+              : `/scouts/${(event as ScoutEvent).gacha_id}`
+          }
+          sx={(theme) => ({
+            borderRadius: theme.radius.sm,
+            borderWidth: 0,
+            borderLeft:
+              status === "start"
+                ? `solid ${theme.radius.sm}px ${theme.colors.green[5]}`
+                : undefined,
+            borderRight:
+              status === "end"
+                ? `solid ${theme.radius.sm}px ${theme.colors.pink[5]}`
+                : undefined,
+          })}
+          leftSection={
+            <Box mt={4}>
+              {event.type === "birthday" ? (
+                <IconCake size={12} strokeWidth={3} />
+              ) : event.type === "anniversary" ? (
+                <IconStar size={12} strokeWidth={3} />
+              ) : status === "start" ? (
+                <IconPlayerPlay size={12} strokeWidth={3} />
+              ) : (
+                <IconExclamationMark size={12} strokeWidth={3} />
+              )}
+            </Box>
+          }
+        >
+          {event.type === "birthday"
+            ? event.name.split(" ")[0] + "'s birthday"
             : event.type === "feature scout"
-            ? "lightblue"
+            ? event.name.split(" ")[0] + " FS"
             : event.type === "scout"
-            ? "violet"
-            : "yellow"
-        }
-        className={classes.eventCard}
-        component={NextLink}
-        href={
-          event.type === "birthday"
-            ? `/characters/${(event as BirthdayEvent).character_id}`
-            : (event as GameEvent).event_id
-            ? `/events/${(event as GameEvent).event_id}`
-            : `/scouts/${(event as ScoutEvent).gacha_id}`
-        }
-        sx={(theme) => ({
-          borderRadius: theme.radius.sm,
-          borderWidth: 0,
-          borderLeft:
-            status === "start"
-              ? `solid ${theme.radius.sm}px ${theme.colors.green[5]}`
-              : undefined,
-          borderRight:
-            status === "end"
-              ? `solid ${theme.radius.sm}px ${theme.colors.pink[5]}`
-              : undefined,
-        })}
-        leftSection={
-          <Box mt={4}>
-            {event.type === "birthday" ? (
-              <IconCake size={12} strokeWidth={3} />
-            ) : event.type === "anniversary" ? (
-              <IconStar size={12} strokeWidth={3} />
-            ) : status === "start" ? (
-              <IconPlayerPlay size={12} strokeWidth={3} />
-            ) : (
-              <IconExclamationMark size={12} strokeWidth={3} />
-            )}
-          </Box>
-        }
-      >
-        {event.type === "birthday"
-          ? event.name.split(" ")[0] + "'s birthday"
-          : event.type === "feature scout"
-          ? event.name.split(" ")[0] + " FS"
-          : event.type === "scout"
-          ? "SC! " + event.name
-          : event.type === "song" || event.type === "tour"
-          ? event.story_name
-          : event.name}
-      </Badge>
-    </Tooltip>
+            ? "SC! " + event.name
+            : event.type === "song" || event.type === "tour"
+            ? event.story_name
+            : event.name}
+        </Badge>
+      </HoverCard.Target>
+      <HoverCard.Dropdown>
+        <Picture
+          srcB2={`assets/card_still_full1_${
+            event.type === "birthday"
+              ? event.banner_id + "_normal"
+              : event.banner_id + "_evolution"
+          }.png`}
+          alt={event.name}
+          sx={{
+            width: 200,
+            height: 80,
+            margin: "-12px -16px 8px",
+            overflow: "hidden",
+            borderTopLeftRadius: 4,
+            borderTopRightRadius: 4,
+            "& picture": {},
+          }}
+        />
+        <Text size="md" weight={700}>
+          {event.type === "song"
+            ? event.name
+            : event.type === "tour"
+            ? event.name
+            : event.type === "scout"
+            ? `SCOUT! ${event.name}`
+            : event.type === "feature scout"
+            ? `Featured Scout: ${event.name}`
+            : event.type === "birthday"
+            ? `${event.name}'s Birthday`
+            : event.name}
+        </Text>
+        <Text size="sm" color="dimmed" weight={500}>
+          {dayjs(status === "end" ? event.end_date : event.start_date).format(
+            "LT z"
+          )}
+        </Text>
+      </HoverCard.Dropdown>
+    </HoverCard>
   );
 }
 
