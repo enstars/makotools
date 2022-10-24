@@ -187,7 +187,8 @@ function toCountdownReadable(amount: number): string {
 }
 
 function isItYippeeTime(dateA: Date, dateB: Date): boolean {
-  return dateA === dateB;
+  let maxDateRange: Date = new Date(Date.parse(dateB.toDateString()) + 120000);
+  return dateA >= dateB && dateA < maxDateRange;
 }
 
 export {

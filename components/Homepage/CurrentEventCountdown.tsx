@@ -50,7 +50,7 @@ function EventImage({ event }: { event: GameEvent }) {
   );
 }
 
-function Countdown({ date }: { date: string }) {
+function Countdown({ date, status }: { date: string; status: string }) {
   const [countdownAmt, setCountdownAmt] = useState<string>();
   useEffect(() => {
     const interval = setInterval(() => {
@@ -61,7 +61,7 @@ function Countdown({ date }: { date: string }) {
   }, [date]);
   return (
     <Group>
-      <Text weight={600}>Ends in </Text>
+      <Text weight={600}>{status} in </Text>
       <Title order={4}>{countdownAmt}</Title>
     </Group>
   );
@@ -117,7 +117,7 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
                 <Title order={3} sx={{ maxWidth: "300px" }}>
                   {currentEvent.name}
                 </Title>
-                <Countdown date={currentEvent.end_date} />
+                <Countdown date={currentEvent.end_date} status="Ends" />
               </Box>
               <Button color="indigo" disabled>
                 Event Calculator
@@ -132,7 +132,7 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
                 <Title order={3} sx={{ maxWidth: "300px" }}>
                   {nextEvent.name}
                 </Title>
-                <Countdown date={nextEvent.end_date} />
+                <Countdown date={nextEvent.start_date} status="Starts" />
               </Box>
               <Button color="indigo" disabled>
                 Event Calculator
