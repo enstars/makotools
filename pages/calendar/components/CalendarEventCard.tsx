@@ -42,6 +42,7 @@ function CalendarEventCard({
         fontWeight: "bold",
         textAlign: "center",
       }}
+      withinPortal={true}
     >
       <Badge
         fullWidth

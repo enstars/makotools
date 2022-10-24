@@ -1,7 +1,15 @@
 import { useEffect, useState } from "react";
-import { Chip, Container, createStyles } from "@mantine/core";
+import {
+  Box,
+  Center,
+  createStyles,
+  Divider,
+  MediaQuery,
+  SegmentedControl,
+  Text,
+} from "@mantine/core";
+import { IconCalendar, IconList } from "@tabler/icons";
 
-import PageTitle from "../../components/sections/PageTitle";
 import { getLayout } from "../../components/Layout";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { useDayjs } from "../../services/libraries/dayjs";
@@ -26,10 +34,6 @@ import {
 const useStyles = createStyles((theme, _params, getRef) => ({
   calendar: {
     maxWidth: "100%",
-
-    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
-      padding: 0,
-    },
   },
 }));
 
@@ -55,19 +59,44 @@ function Page({
 
   return (
     <>
-      <PageTitle title="Calendar" />
-      {showViewOptions && (
-        <Chip.Group value={view} onChange={setView as any}>
-          <Chip value="cal">Calendar view</Chip>
-          <Chip value="list">List view</Chip>
-        </Chip.Group>
-      )}
-
-      <Container className={classes.calendar}>
+      <Box className={classes.calendar}>
         <CalendarHeader
           calendarTime={calendarTime}
           setCalendarTime={setCalendarTime}
-        />
+        >
+          <MediaQuery
+            smallerThan="xs"
+            styles={{
+              display: "none",
+            }}
+          >
+            <SegmentedControl
+              value={view}
+              onChange={setView}
+              data={[
+                {
+                  label: (
+                    <Center>
+                      <IconCalendar size={16} />
+                      <Text ml="xs">Month</Text>
+                    </Center>
+                  ),
+                  value: "cal",
+                },
+                {
+                  label: (
+                    <Center>
+                      <IconList size={16} />
+                      <Text ml="xs">Day</Text>
+                    </Center>
+                  ),
+                  value: "list",
+                },
+              ]}
+            />
+          </MediaQuery>
+        </CalendarHeader>
+        <Divider py="xs" />
         {view === "cal" ? (
           <CalendarGridView events={events} calendarTime={calendarTime} />
         ) : (
@@ -79,7 +108,7 @@ function Page({
             setCalendarTime={setCalendarTime}
           />
         )}
-      </Container>
+      </Box>
     </>
   );
 }
