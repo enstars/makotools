@@ -21,16 +21,16 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
   week: {},
   today: {
-    // border: `solid 1px ${theme.colors.blue[5]}`,
-    [`& .${getRef("dateLabel")}`]: {
-      backgroundColor: theme.colors.blue[5],
-      alignSelf: "start",
-      padding: "2px 3px",
-      minWidth: 24,
-      borderRadius: 999,
-      color: "white",
-      textAlign: "center",
-    },
+    border: `solid 2px ${theme.colors.blue[5]}`,
+    // [`& .${getRef("dateLabel")}`]: {
+    //   backgroundColor: theme.colors.blue[5],
+    //   alignSelf: "start",
+    //   padding: "2px 3px",
+    //   minWidth: 24,
+    //   borderRadius: 999,
+    //   color: "white",
+    //   textAlign: "center",
+    // },
   },
   dateLabel: {
     ref: getRef("dateLabel"),
