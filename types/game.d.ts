@@ -199,6 +199,7 @@ export interface ScoutEvent extends Event {
 
 export interface BirthdayEvent extends Event {
   character_id: ID;
+  horoscope?: ID;
 }
 
 export type EventType = BirthdayEvent | GameEvent | ScoutEvent;

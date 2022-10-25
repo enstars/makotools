@@ -69,13 +69,8 @@ function HoroscopeSymbol({ ...props }) {
 const useStyles = createStyles((theme, _params) => ({
   panel: {
     margin: "auto",
-  },
-
-  eventCard: {
-    width: "100%",
-    borderRadius: theme.radius.md,
-    padding: "5px",
     transition: "background-color 0.1s",
+    marginTop: "0.5vh",
 
     "&:hover": {
       cursor: "pointer",
@@ -86,6 +81,11 @@ const useStyles = createStyles((theme, _params) => ({
       }`,
     },
   },
+
+  eventCard: {
+    width: "100%",
+  },
+
   eventImg: {
     maxWidth: "200px",
     maxHeight: "100px",
@@ -153,7 +153,7 @@ function EventCard({
           <Group
             className={classes.eventCard}
             align="flex-start"
-            position="center"
+            position="apart"
             spacing="xl"
           >
             <Box>
@@ -182,7 +182,7 @@ function EventCard({
     );
   } else {
     return (
-      <Accordion.Panel>
+      <Accordion.Panel className={classes.panel}>
         <Link href={link} passHref>
           <Group
             className={classes.eventCard}

@@ -17,6 +17,7 @@ function retrieveEvents(data: any): (BirthdayEvent | GameEvent | ScoutEvent)[] {
         end_date: character.birthday,
         type: "birthday",
         banner_id: character.renders?.fs1_5 | 0,
+        horoscope: character.horoscope,
       };
 
       events.push(birthdayEvent);
