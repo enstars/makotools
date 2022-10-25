@@ -3528,6 +3528,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vercel/analytics@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "@vercel/analytics@npm:0.1.1"
+  peerDependencies:
+    react: ^16.8||^17||^18
+  checksum: 6c33d5621bc131950759a9497dfeb47231b8b5ca9efa477f273afe6bec63749eca412355057edbc6c14e9a7c0e13ad880b02603ae7e0d1de8c4d0bc3992b8884
+  languageName: node
+  linkType: hard
+
 "abab@npm:^2.0.6":
   version: 2.0.6
   resolution: "abab@npm:2.0.6"
@@ -7362,6 +7371,7 @@ __metadata:
     "@types/react-beautiful-dnd": ^13.1.2
     "@types/react-collapse": ^5.0.1
     "@types/styled-components": ^5.1.26
+    "@vercel/analytics": ^0.1.1
     cldr-data: ^36.0.1
     cldrjs: ^0.5.5
     cookies-next: ^2.1.1

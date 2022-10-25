@@ -31,6 +31,7 @@ import { UserProvider } from "../services/firebase/user";
 import DayjsProvider from "../services/libraries/dayjs";
 
 import { CONSTANTS } from "services/makotools/constants";
+import { Analytics } from "@vercel/analytics/react";
 initAuthentication();
 
 const emotionCache = createEmotionCache({ key: "mktl" });
@@ -165,6 +166,7 @@ function MakoTools({
         <Head>
           <meta name="viewport" content="initial-scale=1, width=device-width" />
         </Head>
+        <Analytics />
         <NotificationsProvider position="top-center">
           <UserProvider
             setAppColorScheme={setAppColorScheme}
