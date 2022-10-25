@@ -50,7 +50,7 @@ function CalendarHeader({
       <Button onClick={() => shiftCalendarTime(-1)} px="xs" variant="subtle">
         <IconArrowLeft size={20} />
         <MediaQuery
-          smallerThan="sm"
+          smallerThan="md"
           styles={{
             display: "none",
           }}
@@ -66,11 +66,12 @@ function CalendarHeader({
         </Title>
         <Title order={3}>{dayjs(calendarTime).format("MMMM YYYY")}</Title>
       </Stack>
+
       {children}
 
       <Button onClick={() => shiftCalendarTime(1)} px="xs" variant="subtle">
         <MediaQuery
-          smallerThan="sm"
+          smallerThan="md"
           styles={{
             display: "none",
           }}

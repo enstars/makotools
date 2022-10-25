@@ -59,13 +59,46 @@ function Page({
 
   return (
     <>
+      <MediaQuery
+        largerThan="sm"
+        styles={{
+          display: "none",
+        }}
+      >
+        <SegmentedControl
+          fullWidth
+          my="xs"
+          value={view}
+          onChange={setView}
+          data={[
+            {
+              label: (
+                <Center>
+                  <IconCalendar size={16} />
+                  <Text ml="xs">Monthly</Text>
+                </Center>
+              ),
+              value: "cal",
+            },
+            {
+              label: (
+                <Center>
+                  <IconList size={16} />
+                  <Text ml="xs">Daily</Text>
+                </Center>
+              ),
+              value: "list",
+            },
+          ]}
+        />
+      </MediaQuery>
       <Box className={classes.calendar}>
         <CalendarHeader
           calendarTime={calendarTime}
           setCalendarTime={setCalendarTime}
         >
           <MediaQuery
-            smallerThan="xs"
+            smallerThan="sm"
             styles={{
               display: "none",
             }}
