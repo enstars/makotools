@@ -16,7 +16,7 @@ import {
 import Image from "next/image";
 import { IconNews } from "@tabler/icons";
 
-import Banner from "../assets/banner.png";
+// import Banner from "../assets/banner.png";
 import AffiliatesLight from "../assets/Affiliates/affiliates_light.svg?url";
 import AffiliatesDark from "../assets/Affiliates/affiliates_dark.svg?url";
 import { getLayout } from "../components/Layout";
@@ -35,6 +35,7 @@ import {
 import { retrieveEvents } from "services/events";
 import CurrentEventCountdown from "components/Homepage/CurrentEventCountdown";
 import CurrentScoutsCountdown from "components/Homepage/CurrentScoutsCountdown";
+import Banner from "../components/Homepage/Banner";
 
 const useStyles = createStyles((theme, _params) => ({
   mainCol: {
@@ -49,15 +50,16 @@ function Page({
   events,
 }: {
   posts: any;
-  events: (Event | GameEvent | ScoutEvent)[];
+  events: (BirthdayEvent | GameEvent | ScoutEvent)[];
 }) {
   const theme = useMantineTheme();
   const { classes } = useStyles();
 
   return (
-    <Group align="flex-start" spacing="xl">
+    <Group align="flex-start" spacing="xl" mt="sm">
       <Stack align="flex-start" spacing="lg" className={classes.mainCol}>
-        <Image src={Banner} style={{ borderRadius: 0 }} alt="banner" />
+        <Banner events={events} />
+        {/* // <Image src={Banner} style={{ borderRadius: 0 }} alt="banner" /> */}
         <MantineTitle order={1} mt="sm">
           Welcome to{" "}
           <Text
@@ -76,82 +78,6 @@ function Page({
           !
         </MantineTitle>
         <Box sx={{ flexBasis: 300, flexGrow: 1 }}>
-          <Text my="sm">
-            MakoTools is a website containing information, tools, and a lot more
-            to aid you in playing Ensemble Stars!! Music English Version,
-            created in collaboration between{" "}
-            <Anchor
-              inherit
-              href="https://twitter.com/enstars_link"
-              target="_blank"
-            >
-              EN:Link
-            </Anchor>
-            , The{" "}
-            <Anchor
-              inherit
-              href="https://ensemble-stars.fandom.com"
-              target="_blank"
-            >
-              English
-            </Anchor>
-            {" / "}
-            <Anchor
-              inherit
-              href="https://ensemblestars.huijiwiki.com"
-              target="_blank"
-            >
-              Chinese
-            </Anchor>{" "}
-            Ensemble Stars Wiki,{" "}
-            <Anchor
-              inherit
-              href="https://twitter.com/DaydreamGuides"
-              target="_blank"
-            >
-              Daydream Guides
-            </Anchor>
-            .
-          </Text>
-          <AspectRatio
-            ratio={3 / 1}
-            mx="auto"
-            sx={(theme) => ({
-              svg: {
-                width: "100%",
-              },
-              maxWidth: 400,
-            })}
-          >
-            <MantineImage
-              src={
-                theme.colorScheme === "dark" ? AffiliatesDark : AffiliatesLight
-              }
-              alt="Affiliates: EN:Link, Daydream, Ensemble Stars Wiki"
-              px="sm"
-            />
-          </AspectRatio>
-
-          <Text my="sm">
-            <b>MakoTools is still in development</b>, but planned features
-            include:
-          </Text>
-          <List my="sm" withPadding>
-            <List.Item>
-              View any card&apos;s stats, skills, and related items.
-            </List.Item>
-            <List.Item>
-              View an event&apos;s start / end date, with live countdowns and
-              optimization tips.
-            </List.Item>
-            <List.Item>
-              Calculate how much dias you have to save up for events.
-            </List.Item>
-            <List.Item>
-              Find fan-translated comics and other various media from the
-              series.
-            </List.Item>
-          </List>
           <CurrentEventCountdown
             events={
               events.filter((event: GameEvent) => event.event_id) as GameEvent[]

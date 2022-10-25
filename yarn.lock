@@ -2378,17 +2378,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mantine/carousel@npm:^5.6.0":
-  version: 5.6.0
-  resolution: "@mantine/carousel@npm:5.6.0"
+"@mantine/carousel@npm:^5.6.2":
+  version: 5.6.2
+  resolution: "@mantine/carousel@npm:5.6.2"
   dependencies:
-    "@mantine/utils": 5.6.0
+    "@mantine/utils": 5.6.2
   peerDependencies:
-    "@mantine/core": 5.6.0
-    "@mantine/hooks": 5.6.0
+    "@mantine/core": 5.6.2
+    "@mantine/hooks": 5.6.2
     embla-carousel-react: ^7.0.0
     react: ">=16.8.0"
-  checksum: 9e5cb2dff8022c5628cccf840c8adeb54382a9f26fd9fd509ef0cc93a3e8547ad6931893477dae741f14537dc33e35ac6d211969141ba564959681af43c30194
+  checksum: 2d33a092b7332291fda4a8bcf6556a93da3c7523195b0913382f7edbb84bf16047254c27ae4df9afc367850ee9a47c3e03ff26550be990d38fe8bdc71c7e68ff
   languageName: node
   linkType: hard
 
@@ -2566,6 +2566,15 @@ __metadata:
   peerDependencies:
     react: ">=16.8.0"
   checksum: 4d9e3f63f000afa84acd323f5ae1daf7992d36bfca4c327673ba623c5e544385662a5ca7db6f2615920aca28e5e92bbaa5a8811ee90739de4840806486cf39a2
+  languageName: node
+  linkType: hard
+
+"@mantine/utils@npm:5.6.2":
+  version: 5.6.2
+  resolution: "@mantine/utils@npm:5.6.2"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: 14c2f671a268d81cbee2ffbb45e9f41549f68b8fafd8c712955e70e23840db7bde275d4ee03133bf05152537ce0f468db0cb881df24e1946ff9c03676a52630a
   languageName: node
   linkType: hard
 
@@ -7333,7 +7342,7 @@ __metadata:
     "@emotion/styled": ^11.10.4
     "@fontsource/noto-sans-jp": ^4.5.12
     "@fontsource/sora": ^4.5.10
-    "@mantine/carousel": ^5.6.0
+    "@mantine/carousel": ^5.6.2
     "@mantine/core": ^5.6.0
     "@mantine/dates": ^5.6.0
     "@mantine/form": ^5.6.0

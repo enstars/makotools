@@ -29,6 +29,7 @@ const CONSTANTS = {
     DATA: "https://data.ensemble.moe/",
     DATA_TL: "https://tl.data.ensemble.moe/",
     PREVIEW: "https://preview.ensemble.moe/",
+    PATREON: "https://www.patreon.com/makotools",
   },
   KEYS: {
     CAPTCHA: "6LfoKlAiAAAAAND6h3R6MapgfOxEH-7usSm7_hIE",
