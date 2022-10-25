@@ -225,29 +225,27 @@ function UpcomingCampaigns({
   const { dayjs } = useDayjs();
 
   return (
-    <Accordion variant="contained" defaultValue="birthday">
-      <Accordion.Item value="birthday">
-        <Accordion.Control icon={<IconCalendarTime size={18} />}>
-          <Text inline weight={500}>
-            Upcoming Campaigns
-          </Text>
-        </Accordion.Control>
-        {retrieveClosestEvents(events, 4).map(
-          (e: BirthdayEvent | GameEvent | ScoutEvent, index) => {
-            return <EventCard key={index} event={e} />;
-          }
-        )}
-        <Accordion.Panel>
-          <Box mt="xs">
-            <Link href="/calendar" passHref>
-              <Anchor component="a" size="xs">
-                Open calendar
-              </Anchor>
-            </Link>
-          </Box>
-        </Accordion.Panel>
-      </Accordion.Item>
-    </Accordion>
+    <Accordion.Item value="birthday">
+      <Accordion.Control icon={<IconCalendarTime size={18} />}>
+        <Text inline weight={500}>
+          Upcoming Campaigns
+        </Text>
+      </Accordion.Control>
+      {retrieveClosestEvents(events, 4).map(
+        (e: BirthdayEvent | GameEvent | ScoutEvent, index) => {
+          return <EventCard key={index} event={e} />;
+        }
+      )}
+      <Accordion.Panel>
+        <Box mt="xs">
+          <Link href="/calendar" passHref>
+            <Anchor component="a" size="xs">
+              Open calendar
+            </Anchor>
+          </Link>
+        </Box>
+      </Accordion.Panel>
+    </Accordion.Item>
   );
 }
 

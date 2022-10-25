@@ -12,6 +12,7 @@ import {
   Stack,
   Accordion,
   createStyles,
+  MediaQuery,
 } from "@mantine/core";
 import Image from "next/image";
 import { IconNews } from "@tabler/icons";
@@ -36,14 +37,43 @@ import { retrieveEvents } from "services/events";
 import CurrentEventCountdown from "components/Homepage/CurrentEventCountdown";
 import CurrentScoutsCountdown from "components/Homepage/CurrentScoutsCountdown";
 import Banner from "../components/Homepage/Banner";
+import SiteAnnouncements from "components/Homepage/SiteAnnouncements";
+import { forwardRef } from "react";
 
 const useStyles = createStyles((theme, _params) => ({
   mainCol: {
     [`@media (min-width: 768px)`]: {
-      maxWidth: "70%",
+      // maxWidth: "70%",
     },
   },
 }));
+
+function SidePanel({
+  events,
+  posts,
+  width = 250,
+  ...props
+}: {
+  events: (GameEvent | BirthdayEvent | ScoutEvent)[];
+  posts: any;
+  width?: number;
+}) {
+  return (
+    <Box sx={{ width: width, flexShrink: 0, flexGrow: 1 }} {...props}>
+      <Accordion
+        variant="contained"
+        defaultValue={["birthday", "announcement"]}
+        multiple
+        sx={{ flexBasis: 300, flexGrow: 1, minWidth: 0, width: "100%" }}
+      >
+        <UpcomingCampaigns
+          events={events as (BirthdayEvent | ScoutEvent | GameEvent)[]}
+        />
+        <SiteAnnouncements posts={posts} />
+      </Accordion>
+    </Box>
+  );
+}
 
 function Page({
   posts,
@@ -52,88 +82,39 @@ function Page({
   posts: any;
   events: (BirthdayEvent | GameEvent | ScoutEvent)[];
 }) {
-  const theme = useMantineTheme();
   const { classes } = useStyles();
 
   return (
-    <Group align="flex-start" spacing="xl" mt="sm">
+    <Group align="flex-start" spacing="xl" mt="sm" noWrap>
       <Stack align="flex-start" spacing="lg" className={classes.mainCol}>
         <Banner events={events} />
-        {/* // <Image src={Banner} style={{ borderRadius: 0 }} alt="banner" /> */}
-        <MantineTitle order={1} mt="sm">
-          Welcome to{" "}
-          <Text
-            inline
-            inherit
-            component="span"
-            sx={(theme) => ({
-              color:
-                theme.colorScheme === "dark"
-                  ? theme.colors.blue[2]
-                  : theme.colors.blue[5],
-            })}
-          >
-            MakoTools
-          </Text>
-          !
-        </MantineTitle>
-        <Box sx={{ flexBasis: 300, flexGrow: 1 }}>
-          <CurrentEventCountdown
-            events={
-              events.filter((event: GameEvent) => event.event_id) as GameEvent[]
-            }
-          />
-          <CurrentScoutsCountdown
-            scouts={
-              events.filter(
-                (scout: ScoutEvent) => scout.gacha_id
-              ) as ScoutEvent[]
-            }
-          />
-        </Box>
+
+        <Group align="start" sx={{ flexWrap: "wrap-reverse" }}>
+          <Box sx={{ "&&": { flexBasis: 300, flexGrow: 2 } }}>
+            <CurrentEventCountdown
+              events={
+                events.filter(
+                  (event: GameEvent) => event.event_id
+                ) as GameEvent[]
+              }
+            />
+            <CurrentScoutsCountdown
+              scouts={
+                events.filter(
+                  (scout: ScoutEvent) => scout.gacha_id
+                ) as ScoutEvent[]
+              }
+            />
+          </Box>
+          <MediaQuery largerThan="md" styles={{ display: "none" }}>
+            <SidePanel events={events} posts={posts} />
+          </MediaQuery>
+        </Group>
       </Stack>
 
-      <Stack>
-        <UpcomingCampaigns
-          events={events as (BirthdayEvent | ScoutEvent | GameEvent)[]}
-        />
-        <Accordion
-          mt="xs"
-          variant="contained"
-          defaultValue="announcement"
-          sx={{ flexBasis: 300, flexGrow: 0.01, minWidth: 0 }}
-        >
-          <Accordion.Item value="announcement">
-            <Accordion.Control icon={<IconNews size={18} />}>
-              <Text inline weight={500}>
-                Site Announcements
-              </Text>
-            </Accordion.Control>
-            <Accordion.Panel>
-              {posts?.error ? (
-                <Text size="sm" align="center" color="dimmed">
-                  Error fetching latest announcements
-                </Text>
-              ) : (
-                <>
-                  <Stack spacing="sm">
-                    {posts.map((p: any, i: number) => (
-                      <Announcement key={p.id} announcement={p} i={i} />
-                    ))}
-                  </Stack>
-                  <Box mt="xs">
-                    <Link href="/about/announcements" passHref>
-                      <Anchor component="a" size="xs">
-                        See all announcements
-                      </Anchor>
-                    </Link>
-                  </Box>
-                </>
-              )}
-            </Accordion.Panel>
-          </Accordion.Item>
-        </Accordion>
-      </Stack>
+      <MediaQuery smallerThan="md" styles={{ display: "none" }}>
+        <SidePanel events={events} posts={posts} />
+      </MediaQuery>
     </Group>
   );
 }

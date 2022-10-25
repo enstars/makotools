@@ -61,7 +61,7 @@ function Banner({
       loop
       withIndicators
       height={400}
-      // plugins={[autoplay.current]}
+      plugins={[autoplay.current]}
       onMouseEnter={autoplay.current.stop}
       onMouseLeave={autoplay.current.reset}
       sx={(theme) => ({

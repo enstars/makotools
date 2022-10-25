@@ -106,7 +106,7 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
   }, [currentEvent, nextEvent, dayjs]);
 
   return (
-    <Container>
+    <Box>
       <Title order={2}>{currentEvent ? "Current Event" : "Next Event"}</Title>
       <Paper
         shadow="xs"
@@ -133,7 +133,7 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
           </Group>
         ) : nextEvent ? (
           <Group noWrap={noWrap} align="flex-start" spacing="xl">
-            <EventImage event={nextEvent} />
+            {/* <EventImage event={nextEvent} /> */}
             <Stack justify="space-around">
               <Box>
                 <Title order={3} sx={{ maxWidth: "300px" }}>
@@ -152,7 +152,7 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
           </Text>
         )}
       </Paper>
-    </Container>
+    </Box>
   );
 }
 
