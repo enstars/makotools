@@ -1,10 +1,10 @@
 import {
   createStyles,
-  Container,
-  Title,
-  Box,
   Text,
   Divider,
+  Stack,
+  Group,
+  Container,
 } from "@mantine/core";
 
 import CalendarListEventCard from "./CalendarListEventCard";
@@ -14,12 +14,7 @@ import { BirthdayEvent, GameEvent, ScoutEvent } from "types/game";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   listBody: {
-    maxWidth: "100%",
-    margin: "auto",
-
-    [`@media (min-width: ${theme.breakpoints.lg}px)`]: {
-      marginTop: "3vh",
-    },
+    padding: 0,
   },
 
   listDayDivider: {
@@ -33,62 +28,18 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 
   listDay: {
-    margin: "auto",
+    // margin: "auto",
     padding: 0,
     height: "100%",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "flex-start",
-    justifyContent: "center",
-
-    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
-      width: "100%",
-      flexWrap: "wrap",
-      marginTop: "5vh",
-    },
-
-    [`@media (min-width: ${theme.breakpoints.lg}px)`]: {
-      width: "60%",
-      flexWrap: "nowrap",
-      marginTop: "2vh",
-      marginBottom: "5vh",
-    },
-
-    [`&:hover .${getRef("divider")}`]: {
-      borderLeftWidth: "24px",
-    },
+    flexWrap: "nowrap",
   },
   listDayTitle: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-around",
-
-    [`@media (min-width: ${theme.breakpoints.lg}px)`]: {
-      width: "6%",
-      flexFlow: "column nowrap",
-    },
-
-    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
-      width: "33%",
-      flexFlow: "row nowrap",
-    },
+    flex: "0 0 60px",
+    maxWidth: 60,
   },
   listDayEvents: {
     padding: 0,
-
-    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
-      marginTop: "3vh",
-      width: "100%",
-    },
-
-    [`@media (min-width: ${theme.breakpoints.lg}px)`]: {
-      width: "60%",
-    },
-  },
-  listDayDotw: {
-    [`@media (max-width: ${theme.breakpoints.md}px)`]: {
-      visibility: "hidden",
-    },
+    width: "100%",
   },
 }));
 
@@ -103,23 +54,27 @@ function CalendarListDay({
   const { dayjs } = useDayjs();
 
   return (
-    <Container className={classes.listDay}>
-      <Box className={classes.listDayTitle}>
+    <Group className={classes.listDay} spacing="xs" align="stretch">
+      <Stack
+        className={classes.listDayTitle}
+        spacing={0}
+        justify="start"
+        align="end"
+      >
         <Text
           sx={{ textTransform: "uppercase" }}
           size="sm"
-          className={classes.listDayDotw}
+          color="dimmed"
+          weight={500}
         >
           {dayjs(date).format("ddd")}
         </Text>
-        <Title order={2}>{dayjs(date).format("Do")}</Title>
-      </Box>
-      <Divider
-        size="lg"
-        orientation="vertical"
-        className={classes.listDayDivider}
-      />
-      <Container className={classes.listDayEvents}>
+        <Text size="xl" weight={700} inline>
+          {dayjs(date).format("Do")}
+        </Text>
+      </Stack>
+      <Divider orientation="vertical" />
+      <Stack className={classes.listDayEvents} spacing={0}>
         {events.map((event, i) => {
           return (
             <CalendarListEventCard
@@ -137,8 +92,8 @@ function CalendarListDay({
             />
           );
         })}
-      </Container>
-    </Container>
+      </Stack>
+    </Group>
   );
 }
 
@@ -196,24 +151,26 @@ function CalendarListView({
 
   allEventDays = [...new Set(allEventDays)];
   return (
-    <Container className={classes.listBody}>
-      {allEventDays.map((date, i) => {
-        return (
-          <CalendarListDay
-            key={i}
-            date={date}
-            events={filteredEvents.filter(
-              (event: BirthdayEvent | GameEvent | ScoutEvent) =>
-                dayjs(date)
-                  .year(2000)
-                  .isSame(dayjs(event.start_date).year(2000), "day") ||
-                dayjs(date)
-                  .year(2000)
-                  .isSame(dayjs(event.end_date).year(2000), "day")
-            )}
-          />
-        );
-      })}
+    <Container size="sm">
+      <Stack className={classes.listBody} spacing={0} align="stretch">
+        {allEventDays.map((date, i) => {
+          return (
+            <CalendarListDay
+              key={i}
+              date={date}
+              events={filteredEvents.filter(
+                (event: BirthdayEvent | GameEvent | ScoutEvent) =>
+                  dayjs(date)
+                    .year(2000)
+                    .isSame(dayjs(event.start_date).year(2000), "day") ||
+                  dayjs(date)
+                    .year(2000)
+                    .isSame(dayjs(event.end_date).year(2000), "day")
+              )}
+            />
+          );
+        })}
+      </Stack>
     </Container>
   );
 }

@@ -1,9 +1,11 @@
 import { Badge, Box, createStyles, HoverCard, Text } from "@mantine/core";
 import { NextLink } from "@mantine/next";
 import {
+  IconAward,
+  IconBus,
   IconCake,
-  IconExclamationMark,
-  IconPlayerPlay,
+  IconDiamond,
+  IconShirt,
   IconStar,
 } from "@tabler/icons";
 
@@ -83,10 +85,14 @@ function CalendarEventCard({
                 <IconCake size={12} strokeWidth={3} />
               ) : event.type === "anniversary" ? (
                 <IconStar size={12} strokeWidth={3} />
-              ) : status === "start" ? (
-                <IconPlayerPlay size={12} strokeWidth={3} />
+              ) : event.type === "feature scout" ? (
+                <IconShirt size={12} strokeWidth={3} />
+              ) : event.type === "scout" ? (
+                <IconDiamond size={12} strokeWidth={3} />
+              ) : event.type === "song" ? (
+                <IconAward size={12} strokeWidth={3} />
               ) : (
-                <IconExclamationMark size={12} strokeWidth={3} />
+                <IconBus size={12} strokeWidth={3} />
               )}
             </Box>
           }
