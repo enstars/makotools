@@ -1,8 +1,6 @@
 import {
-  Container,
   createStyles,
   Group,
-  Image,
   Title,
   Text,
   Paper,
@@ -13,7 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
 
-import { getAssetURL } from "services/data";
+import Picture from "components/core/Picture";
 import {
   countdown,
   isItYippeeTime,
@@ -36,14 +34,12 @@ const useStyles = createStyles((theme, _params) => ({
 
 function EventImage({ event }: { event: GameEvent }) {
   const { classes } = useStyles();
-
+  console.log(event);
   return (
-    <Image
+    <Picture
       alt={event.name}
-      src={getAssetURL(
-        `assets/card_still_full1_${event.banner_id}_evolution.webp`
-      )}
-      className={classes.eventImage}
+      srcB2={`assets/card_still_full1_${event.banner_id}_evolution.webp`}
+      sx={{ width: 350, height: 175 }}
       radius="lg"
     />
   );
@@ -133,7 +129,7 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
           </Group>
         ) : nextEvent ? (
           <Group noWrap={noWrap} align="flex-start" spacing="xl">
-            {/* <EventImage event={nextEvent} /> */}
+            <EventImage event={nextEvent} />
             <Stack justify="space-around">
               <Box>
                 <Title order={3} sx={{ maxWidth: "300px" }}>

@@ -3,7 +3,6 @@ import {
   Accordion,
   Anchor,
   Box,
-  Image,
   createStyles,
   Title,
   Group,
@@ -28,8 +27,8 @@ import Link from "next/link";
 import { useDayjs } from "../../services/libraries/dayjs";
 
 import { BirthdayEvent, GameEvent, ScoutEvent } from "types/game";
-import { getAssetURL } from "services/data";
 import { retrieveClosestEvents } from "services/events";
+import Picture from "components/core/Picture";
 
 /* END FUNCTION */
 
@@ -86,36 +85,6 @@ const useStyles = createStyles((theme, _params) => ({
     width: "100%",
   },
 
-  eventImg: {
-    maxWidth: "200px",
-    maxHeight: "100px",
-    overflow: "hidden",
-    borderRadius: theme.radius.lg,
-    border: `1px solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[4]
-    }`,
-
-    img: {
-      marginLeft: "-140px",
-      marginTop: "-20px",
-    },
-  },
-
-  birthdayImg: {
-    maxWidth: "70px",
-    maxHeight: "70px",
-    overflow: "hidden",
-    borderRadius: "35px",
-    border: `1px solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[2] : theme.colors.gray[4]
-    }`,
-
-    img: {
-      marginTop: "-10px",
-      marginLeft: "-175px",
-    },
-  },
-
   eventInfo: {
     marginTop: "1vh",
   },
@@ -168,13 +137,20 @@ function EventCard({
                 {event.type}
               </Title>
             </Box>
-            <Image
+            <Picture
               alt={event.name}
-              src={getAssetURL(
-                `assets/card_still_full1_${event.banner_id}_normal.webp`
-              )}
-              width={400}
-              className={classes.birthdayImg}
+              srcB2={`assets/card_still_full1_${event.banner_id}_normal.webp`}
+              sx={(theme) => ({
+                width: 70,
+                height: 70,
+                overflow: "hidden",
+                borderRadius: "35px",
+                border: `1px solid ${
+                  theme.colorScheme === "dark"
+                    ? theme.colors.dark[2]
+                    : theme.colors.gray[4]
+                }`,
+              })}
             />
           </Group>
         </Link>
@@ -195,15 +171,22 @@ function EventCard({
               <Title order={6}>{formattedMonth}</Title>
             </Box>
             <Box sx={{ maxWidth: "200px" }}>
-              <Image
+              <Picture
                 alt={event.name}
-                src={getAssetURL(
-                  `assets/card_still_full1_${event.banner_id}_evolution.webp`
-                )}
-                width={500}
-                className={classes.eventImg}
+                srcB2={`assets/card_still_full1_${event.banner_id}_evolution.webp`}
+                sx={(theme) => ({
+                  height: 80,
+                  width: 195,
+                  overflow: "hidden",
+                  borderRadius: theme.radius.lg,
+                  border: `1px solid ${
+                    theme.colorScheme === "dark"
+                      ? theme.colors.dark[4]
+                      : theme.colors.gray[4]
+                  }`,
+                })}
               />
-              <Text weight={550} size="md">
+              <Text weight={550} size="md" sx={{ maxWidth: "180px" }}>
                 {event.name}
               </Text>
               <Title order={6} className={classes.eventType}>
