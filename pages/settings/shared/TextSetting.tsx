@@ -37,7 +37,6 @@ function TextSetting<T = {}>({
 
   const handleValueChange = useDebouncedCallback((value) => {
     if (user.loggedIn && !user?.db?.admin?.disabledTextFields) {
-
       user.db.set({ [dataKey]: value });
     }
   }, 2000);

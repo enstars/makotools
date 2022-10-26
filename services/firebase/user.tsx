@@ -1,13 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {
-  useContext,
-  useState,
-  useEffect,
-  ReactElement,
-  useCallback,
-} from "react";
+import React, { useContext, useState, useEffect, ReactElement } from "react";
 import { showNotification } from "@mantine/notifications";
-import { IconAlertTriangle, IconArrowLeft } from "@tabler/icons";
+import { IconAlertTriangle } from "@tabler/icons";
 import { useAuthUser } from "next-firebase-auth";
 import { ColorScheme } from "@mantine/core";
 
