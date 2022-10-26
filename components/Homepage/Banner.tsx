@@ -88,6 +88,7 @@ function Banner({
               color="dark"
               component={NextLink}
               href={CONSTANTS.EXTERNAL_URLS.PATREON}
+              target="_blank"
             >
               Support us on Patreon!
             </Button>
