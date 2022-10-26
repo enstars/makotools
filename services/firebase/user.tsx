@@ -53,24 +53,27 @@ export function UserProvider({
       : loadingUser
   );
 
-  const setDb = useCallback(
-    (data: any, callback?: () => void) => {
-      if (user.loggedIn)
-        setFirestoreUserData(data, ({ status }) => {
-          if (status === "success") {
-            setUser((f: UserLoggedIn) => ({
-              ...f,
-              db: {
-                ...f.db,
-                ...data,
-              },
-            }));
-            if (callback) callback();
-          }
-        });
-    },
-    [user, setUser]
-  );
+  // const setDb = useCallback(
+  //   (data: any, callback?: () => void) => {
+  //     console.log(1, user);
+  //     if (user.loggedIn) {
+  //       console.log(2);
+  //       setFirestoreUserData(data, ({ status }) => {
+  //         if (status === "success") {
+  //           setUser((f: UserLoggedIn) => ({
+  //             ...f,
+  //             db: {
+  //               ...f.db,
+  //               ...data,
+  //             },
+  //           }));
+  //           if (callback) callback();
+  //         }
+  //       });
+  //     }
+  //   },
+  //   [user.loggedIn, user, setUser]
+  // );
 
   console.log("firebase user auth ", user);
   useEffect(() => {
@@ -100,15 +103,34 @@ export function UserProvider({
             });
             AuthUser.signOut();
           } else {
-            const db = {
-              ...currentUserData,
-              set: setDb,
-            };
             setUser((s) => ({
               ...s,
               ...userState,
-              db,
+              db: currentUserData as UserData,
             }));
+            setUser((s) => {
+              let newState = s;
+              if (newState.loggedIn)
+                newState.db.set = (data: any, callback?: () => void) => {
+                  console.log(1, newState);
+                  if (newState.loggedIn) {
+                    console.log(2);
+                    setFirestoreUserData(data, ({ status }) => {
+                      if (status === "success") {
+                        setUser((f: UserLoggedIn) => ({
+                          ...f,
+                          db: {
+                            ...f.db,
+                            ...data,
+                          },
+                        }));
+                        if (callback) callback();
+                      }
+                    });
+                  }
+                };
+              return newState;
+            });
             if (currentUserData?.dark_mode)
               setAppColorScheme(currentUserData.dark_mode ? "dark" : "light");
           }
@@ -134,7 +156,7 @@ export function UserProvider({
 
   useEffect(() => {
     if (!user.loading && user.loggedIn)
-      setDb({ dark_mode: colorScheme === "dark" });
+      user.db.set({ dark_mode: colorScheme === "dark" });
   }, [colorScheme]);
   // useEffect(() => {
   //   if (typeof user.db.dark_mode !== "undefined") {

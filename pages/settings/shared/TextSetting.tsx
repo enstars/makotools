@@ -29,15 +29,18 @@ function TextSetting<T = {}>({
   const theme = useMantineTheme();
   const user = useUser();
 
-  const isFirestoreAccessible = !user.loading && user.loggedIn && !!user.db;
+  const isFirestoreAccessible = user.loggedIn;
 
   const [inputValue, setInputValue] = useState(
-    isFirestoreAccessible ? user.db?.[dataKey] : undefined
+    user.loggedIn ? user.db?.[dataKey] : undefined
   );
 
   const handleValueChange = useDebouncedCallback((value) => {
-    if (isFirestoreAccessible && !user?.db?.admin?.disabledTextFields)
+    if (user.loggedIn && !user?.db?.admin?.disabledTextFields) {
+      console.log("a", value, user.db.set);
+
       user.db.set({ [dataKey]: value });
+    }
   }, 2000);
 
   const memoizedHandleValueChange = useMemo(
