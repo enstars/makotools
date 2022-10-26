@@ -26,6 +26,7 @@ import Gallery from "./components/Gallery";
 
 import { getNameOrder } from "services/game";
 import { getPreviewImageURL } from "services/makotools/preview";
+import { GameCard, GameCharacter } from "types/game";
 
 function Page({
   characterQuery,

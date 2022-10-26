@@ -1,31 +1,18 @@
-import Link from "next/link";
 import {
-  useMantineTheme,
-  Title as MantineTitle,
-  Text,
-  List,
   Group,
   Box,
-  AspectRatio,
-  Anchor,
-  Image as MantineImage,
   Stack,
   Accordion,
   createStyles,
   MediaQuery,
 } from "@mantine/core";
-import Image from "next/image";
-import { IconNews } from "@tabler/icons";
 
 // import Banner from "../assets/banner.png";
-import AffiliatesLight from "../assets/Affiliates/affiliates_light.svg?url";
-import AffiliatesDark from "../assets/Affiliates/affiliates_dark.svg?url";
 import { getLayout } from "../components/Layout";
 import getServerSideUser from "../services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "../services/data";
 import UpcomingCampaigns from "../components/Homepage/UpcomingCampaigns";
-
-import Announcement from "./about/announcements/components/Announcement";
+import Banner from "../components/Homepage/Banner";
 
 import {
   BirthdayEvent,
@@ -36,9 +23,7 @@ import {
 import { retrieveEvents } from "services/events";
 import CurrentEventCountdown from "components/Homepage/CurrentEventCountdown";
 import CurrentScoutsCountdown from "components/Homepage/CurrentScoutsCountdown";
-import Banner from "../components/Homepage/Banner";
 import SiteAnnouncements from "components/Homepage/SiteAnnouncements";
-import { forwardRef } from "react";
 
 const useStyles = createStyles((theme, _params) => ({
   mainCol: {

@@ -25,13 +25,13 @@ import {
   NavigationProgress,
 } from "@mantine/nprogress";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
+import { Analytics } from "@vercel/analytics/react";
 
 import { initAuthentication } from "../services/firebase/authentication";
 import { UserProvider } from "../services/firebase/user";
 import DayjsProvider from "../services/libraries/dayjs";
 
 import { CONSTANTS } from "services/makotools/constants";
-import { Analytics } from "@vercel/analytics/react";
 initAuthentication();
 
 const emotionCache = createEmotionCache({ key: "mktl" });

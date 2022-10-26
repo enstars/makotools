@@ -31,6 +31,8 @@ import { Lang } from "../../../types/makotools";
 
 import { sumStats } from "./Stats";
 
+import { GameCard } from "types/game";
+
 function RarityBadge({ card }: { card: GameCard }) {
   const theme = useMantineTheme();
   return (

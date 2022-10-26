@@ -1,5 +1,7 @@
 import { CollectedCard } from "../../types/makotools";
 
+import { ID } from "types/game";
+
 function addCard(
   originalCollection: CollectedCard[],
   id: ID,

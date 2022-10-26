@@ -33,6 +33,8 @@ import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { QuerySuccess } from "../../types/makotools";
 
 import CardCard from "./components/DisplayCard";
+
+import { CardRarity, GameCard, GameCharacter } from "types/game";
 type SortOption = "id" | "character";
 
 interface CardViewOptions {
@@ -59,8 +61,11 @@ function Page({
   charactersQuery: QuerySuccess<GameCharacter[]>;
   cardsQuery: QuerySuccess<GameCard[]>;
 }) {
-  const cards = useMemo(() => cardsQuery.data, []);
-  const characters = useMemo(() => charactersQuery.data, []);
+  const cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
+  const characters = useMemo(
+    () => charactersQuery.data,
+    [charactersQuery.data]
+  );
 
   const theme = useMantineTheme();
   const [count, setCount] = useState<number>(CARD_LIST_INITIAL_COUNT);

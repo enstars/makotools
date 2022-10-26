@@ -1,9 +1,10 @@
 import { Accordion, Anchor, Box, Stack, Text } from "@mantine/core";
 import { IconNews } from "@tabler/icons";
 import Link from "next/link";
+
 import Announcement from "pages/about/announcements/components/Announcement";
 
-function SiteAnnouncements({ posts }) {
+function SiteAnnouncements({ posts }: { posts: any }) {
   return (
     <Accordion.Item value="announcement">
       <Accordion.Control icon={<IconNews size={18} />}>

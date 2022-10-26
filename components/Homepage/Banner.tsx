@@ -1,11 +1,12 @@
 import { useRef } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { Carousel } from "@mantine/carousel";
-import { BirthdayEvent, Event, GameEvent, ScoutEvent } from "types/game";
-import { useDayjs } from "services/libraries/dayjs";
 import { Box, Button, createStyles, Stack, Text, Title } from "@mantine/core";
-import Picture from "components/core/Picture";
 import { NextLink } from "@mantine/next";
+
+import { BirthdayEvent, GameEvent, ScoutEvent } from "types/game";
+import { useDayjs } from "services/libraries/dayjs";
+import Picture from "components/core/Picture";
 import { CONSTANTS } from "services/makotools/constants";
 
 const useStyles = createStyles((theme) => ({

@@ -17,6 +17,8 @@ import { QuerySuccess } from "../../types/makotools";
 
 import CharacterCard from "./components/DisplayCard";
 
+import { GameCharacter, GameUnit } from "types/game";
+
 type SortOption = "default" | "id" | "birthday";
 interface CharacterViewOptions {
   filterUnits: number[];

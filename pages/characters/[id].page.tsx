@@ -15,6 +15,7 @@ import Picture from "../../components/core/Picture";
 import { QuerySuccess } from "../../types/makotools";
 
 import { useDayjs } from "services/libraries/dayjs";
+import { GameCharacter } from "types/game";
 
 function Page({
   characterQuery,

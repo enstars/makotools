@@ -1,6 +1,7 @@
 import { Accordion, AspectRatio, Group, Title } from "@mantine/core";
 
 import Picture from "components/core/Picture";
+import { GameCard } from "types/game";
 
 function PicturePair({
   card,

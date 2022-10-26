@@ -35,6 +35,8 @@ import StartPlaying from "./profile/StartPlaying";
 import Email from "./account/Email";
 import Banner from "./profile/Banner";
 
+import { GameCard } from "types/game";
+
 const Bio = dynamic(() => import("./profile/Bio"), {
   ssr: false,
 });

@@ -17,6 +17,8 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { getAssetURL } from "../../../services/data";
 import useUser from "../../../services/firebase/user";
 
+import { GameCard } from "types/game";
+
 const useStyles = createStyles((theme) => ({
   item: {
     ...theme.fn.focusStyles(),

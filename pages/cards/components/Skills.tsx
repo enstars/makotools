@@ -13,6 +13,8 @@ import { ReactElement, useState } from "react";
 import attributes from "../../../data/attributes.json";
 import centerSkill from "../../../data/centerSkill.json";
 
+import { SkillData, GameCard, SkillType } from "types/game";
+
 export function centerSkillParse(skill?: SkillData, fallback = "Unknown") {
   if (typeof skill === "undefined" || !centerSkill[skill.type_id])
     return fallback;

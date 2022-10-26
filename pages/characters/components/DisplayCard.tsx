@@ -8,6 +8,7 @@ import { twoStarIDs } from "../../../data/characterIDtoCardID";
 import NameOrder from "components/utilities/formatting/NameOrder";
 import { Lang } from "types/makotools";
 import Picture from "components/core/Picture";
+import { GameCharacter } from "types/game";
 
 const useStyles = createStyles((theme, params: any, getRef) => ({
   card: {
