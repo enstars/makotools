@@ -75,7 +75,7 @@ export function UserProvider({
   //   [user.loggedIn, user, setUser]
   // );
 
-  console.log("firebase user auth ", user);
+  // console.log("firebase user auth ", user);
   useEffect(() => {
     // if (userState.loggedIn) setUser((s) => ({ ...s, ...userState }));
 
@@ -112,9 +112,7 @@ export function UserProvider({
               let newState = s;
               if (newState.loggedIn)
                 newState.db.set = (data: any, callback?: () => void) => {
-                  console.log(1, newState);
                   if (newState.loggedIn) {
-                    console.log(2);
                     setFirestoreUserData(data, ({ status }) => {
                       if (status === "success") {
                         setUser((f: UserLoggedIn) => ({

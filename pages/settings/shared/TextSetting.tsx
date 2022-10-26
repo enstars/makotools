@@ -37,7 +37,6 @@ function TextSetting<T = {}>({
 
   const handleValueChange = useDebouncedCallback((value) => {
     if (user.loggedIn && !user?.db?.admin?.disabledTextFields) {
-      console.log("a", value, user.db.set);
 
       user.db.set({ [dataKey]: value });
     }
@@ -58,7 +57,6 @@ function TextSetting<T = {}>({
         value={inputValue}
         label={label}
         onChange={(e: ChangeEvent<HTMLInputElement>) => {
-          // console.log(e.target.value);
           setInputValue(e.target.value);
           if (e.target.value.length <= charLimit) {
             memoizedHandleValueChange(e.target.value);
