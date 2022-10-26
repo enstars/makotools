@@ -26,10 +26,11 @@ import CurrentScoutsCountdown from "components/Homepage/CurrentScoutsCountdown";
 import SiteAnnouncements from "components/Homepage/SiteAnnouncements";
 
 const useStyles = createStyles((theme, _params) => ({
+  main: {
+    maxWidth: "100%",
+  },
   mainCol: {
-    [`@media (min-width: 768px)`]: {
-      // maxWidth: "70%",
-    },
+    maxWidth: "100%",
   },
 }));
 
@@ -44,7 +45,7 @@ function SidePanel({
   width?: number;
 }) {
   return (
-    <Box sx={{ width: width, flexShrink: 0, flexGrow: 1 }} {...props}>
+    <Box sx={{ width: width, flexShrink: 0, flexGrow: 2 }} {...props}>
       <Accordion
         variant="contained"
         defaultValue={["birthday", "announcement"]}
@@ -70,12 +71,22 @@ function Page({
   const { classes } = useStyles();
 
   return (
-    <Group align="flex-start" spacing="xl" mt="sm" noWrap>
+    <Group
+      align="flex-start"
+      spacing="xl"
+      mt="sm"
+      noWrap
+      className={classes.main}
+    >
       <Stack align="flex-start" spacing="lg" className={classes.mainCol}>
         <Banner events={events} />
 
-        <Group align="start" sx={{ flexWrap: "wrap-reverse" }}>
-          <Box sx={{ "&&": { flexBasis: 300, flexGrow: 2 } }}>
+        <Group
+          align="start"
+          sx={{ flexWrap: "wrap-reverse" }}
+          className={classes.mainCol}
+        >
+          <Box sx={{ "&&": { flexGrow: 1 } }} className={classes.mainCol}>
             <CurrentEventCountdown
               events={
                 events.filter(

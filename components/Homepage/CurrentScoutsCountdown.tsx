@@ -23,10 +23,6 @@ const useStyles = createStyles((theme, _params) => ({
   scoutsCards: {
     marginTop: "2vh",
   },
-  scoutsImage: {
-    maxHeight: "130px",
-    overflow: "clip",
-  },
 }));
 
 function Countdown({ endDate }: { endDate: string }) {
@@ -56,8 +52,6 @@ function ScoutCard({ scout }: { scout: ScoutEvent }) {
           src={getAssetURL(
             `assets/card_still_full1_${scout.banner_id}_evolution.webp`
           )}
-          height={300}
-          className={classes.scoutsImage}
         />
       </Card.Section>
       <Group sx={{ padding: "5px" }}>
