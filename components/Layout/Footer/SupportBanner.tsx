@@ -19,6 +19,7 @@ function SupportBanner(props: PaperProps) {
             icon={<IconBrandPatreon size={16} />}
             label={<Text weight={700}>Support us on Patreon!</Text>}
             description={"Get exclusive perks and beta features!"}
+            target="_blank"
           />
         </Link>
       </Paper>
