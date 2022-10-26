@@ -30,7 +30,7 @@ function SelectSetting({
 }) {
   const user = useUser();
 
-  const isFirestoreAccessible = !user.loading && user.loggedIn && user?.db;
+  const isFirestoreAccessible = user.loggedIn;
   return (
     <Select
       value={isFirestoreAccessible ? user.db?.[dataKey] : undefined}
