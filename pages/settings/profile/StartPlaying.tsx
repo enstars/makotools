@@ -46,19 +46,21 @@ years.forEach((year) => {
 function StartPlaying() {
   const { dayjs } = useDayjs();
   const user = useUser();
-  const isFirestoreAccessible = user.loggedIn;
 
-  const [picked, setPicked] = useState({
+  const [picked, setPicked] = useState<{
+    month: string;
+    year: string;
+    unknown: boolean;
+    loading?: boolean;
+  }>({
     month: (thisMonth + 1).toString().padStart(2, "0"),
     year: thisYear.toString().padStart(2, "0"),
     unknown: true,
+    loading: true,
   });
-  const [data, setData] = useState(
-    (isFirestoreAccessible && user?.db?.profile__start_playing) || "0000-00-00"
-  );
 
   useEffect(() => {
-    if (isFirestoreAccessible && user.db) {
+    if (user.loggedIn) {
       const startPlaying = user.db.profile__start_playing;
       if (startPlaying && startPlaying !== "0000-00-00") {
         setPicked({
@@ -74,16 +76,16 @@ function StartPlaying() {
         });
       }
     }
-  }, [isFirestoreAccessible]);
+  }, [user]);
 
   useEffect(() => {
     const resolvedData = picked.unknown
       ? "0000-00-00"
       : `${picked.year}-${picked.month}-01`;
-    setData(resolvedData);
     if (
+      !picked.loading &&
       user.loggedIn &&
-      (!user.db?.profile__start_playing ||
+      (typeof user.db?.profile__start_playing === "undefined" ||
         user.db.profile__start_playing !== resolvedData)
     ) {
       user.db.set({ profile__start_playing: resolvedData });
