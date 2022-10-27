@@ -6,7 +6,6 @@ import Reactions from "../../../components/sections/Reactions";
 import { MkAnnouncement } from "../../../types/makotools";
 
 function Page({ post }: { post: MkAnnouncement }) {
-  console.log(post);
   return (
     <>
       <PageTitle title={post.title.rendered} />

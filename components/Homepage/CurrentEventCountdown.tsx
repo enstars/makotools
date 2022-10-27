@@ -34,7 +34,6 @@ const useStyles = createStyles((theme, _params) => ({
 
 function EventImage({ event }: { event: GameEvent }) {
   const { classes } = useStyles();
-  console.log(event);
   return (
     <Picture
       alt={event.name}

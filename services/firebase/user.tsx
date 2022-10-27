@@ -127,7 +127,6 @@ export function UserProvider({
               setAppColorScheme(currentUserData.dark_mode ? "dark" : "light");
           }
         } catch (e) {
-          console.log("error: ", e);
           showNotification({
             title: "Problem with Firestore",
             message: JSON.stringify(e),

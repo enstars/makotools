@@ -68,7 +68,6 @@ export default function getServerSideUser(
         if ("redirect" in renderData) return renderData;
 
         try {
-          // console.log("__user: ", firebaseContext.user);
           renderData.props = {
             ...renderData.props,
             __user: JSON.stringify(firebaseContext.user || null),

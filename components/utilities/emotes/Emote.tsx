@@ -6,7 +6,6 @@ import { Emote } from "../../../types/makotools";
 const EMOTE_SIZE = 24;
 
 function Emote({ emote, size }: { emote: Emote; size: number | MantineSize }) {
-  //   console.log(emote);
   if (!emote?.emote?.src) return null;
   return (
     <Tooltip

@@ -16,7 +16,6 @@ function NameOrder({
 }): ReactElement {
   const user = useUser();
 
-  console.log(first_name, last_name);
   const nameOrderSetting =
     (!user.loading && user.loggedIn && user?.db?.setting__name_order) ||
     "firstlast";

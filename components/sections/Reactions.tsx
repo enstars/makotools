@@ -38,12 +38,10 @@ function Reactions() {
 
   const handleReCaptchaVerify = useCallback(async () => {
     if (!executeRecaptcha) {
-      console.log("Execute recaptcha not yet available");
       return;
     }
 
     const token = await executeRecaptcha();
-    console.log(token);
     return token;
   }, [executeRecaptcha]);
 
@@ -66,7 +64,6 @@ function Reactions() {
       }
     )
       .then((res) => {
-        console.log("Request complete! response:", res);
         fetchReactions();
       })
       .catch((e) => {
@@ -133,7 +130,6 @@ function Reactions() {
             );
           }}
           callback={(emote) => {
-            console.log(emote);
             addReaction(emote.stringId);
           }}
           disabled={user.loading || !user.loggedIn}

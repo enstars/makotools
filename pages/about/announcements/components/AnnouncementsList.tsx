@@ -46,8 +46,6 @@ function AnnouncementsList() {
     setCurrentPage((p) => p + 1);
   };
 
-  console.log(announcements);
-
   return (
     <>
       <InfiniteScroll

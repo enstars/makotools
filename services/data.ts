@@ -27,7 +27,6 @@ export async function getData<T = any>(
     : `${CONSTANTS.EXTERNAL_URLS.DATA_TL}${locale}/${data}.json`;
   return fetch(databaseURL)
     .then((response) => {
-      // console.log(response.url, response.status);
       return response.json();
     })
     .then((responseJson) => {
@@ -114,8 +113,6 @@ export async function getLocalizedDataArray<
 
   propertiesToLocalize.delete(idField);
 
-  // console.log(propertiesToLocalize);
-
   const combinedArray: LocalizedType[] = jaData.data.map((jaItem) => {
     let combined = flatten(jaItem, { safe: true });
     filteredLocalized.forEach((l) => {
@@ -131,11 +128,8 @@ export async function getLocalizedDataArray<
         }
       });
     });
-    // console.log(combined);
     return flatten.unflatten(parseStringify(combined));
   });
-
-  if (data === "scout") console.log(combinedArray);
 
   return Promise.resolve({
     status: "success",
