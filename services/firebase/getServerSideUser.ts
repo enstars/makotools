@@ -53,6 +53,11 @@ export default function getServerSideUser(
             user,
             admin,
           };
+        } else {
+          firebaseContext = {
+            user,
+            admin,
+          };
         }
 
         const renderData = serverSideFunction
