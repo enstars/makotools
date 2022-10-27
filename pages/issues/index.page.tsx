@@ -9,7 +9,12 @@ import {
   Title,
   TypographyStylesProvider,
 } from "@mantine/core";
-import { IconForms, IconGitPullRequest, IconMail } from "@tabler/icons";
+import {
+  IconForms,
+  IconGitPullRequest,
+  IconMail,
+  IconBrandDiscord,
+} from "@tabler/icons";
 import Link from "next/link";
 
 import PageTitle from "../../components/sections/PageTitle";
@@ -59,6 +64,15 @@ function Page() {
             link: "mailto:makotools@ensemble.moe?subject=Issue Report",
             color: "teal",
             prompt: "Send an email",
+          },
+          {
+            icon: IconBrandDiscord,
+            title: "Discord",
+            description:
+              "Drop a bug or suggestion in the dedicated channels on our Discord server",
+            link: "https://discord.gg/TVVuahrD8d",
+            color: "green",
+            prompt: "Join our Discord",
           },
         ].map((method) => (
           <Card

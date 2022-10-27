@@ -8,6 +8,7 @@ import { BirthdayEvent, GameEvent, ScoutEvent } from "types/game";
 import { useDayjs } from "services/libraries/dayjs";
 import Picture from "components/core/Picture";
 import { CONSTANTS } from "services/makotools/constants";
+import useUser from "services/firebase/user";
 
 const useStyles = createStyles((theme) => ({
   bannerOverlay: {
@@ -29,6 +30,7 @@ function Banner({
 }: {
   events: (BirthdayEvent | GameEvent | ScoutEvent)[];
 }) {
+  const user = useUser();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const { dayjs } = useDayjs();
 
@@ -87,10 +89,10 @@ function Banner({
               variant="white"
               color="dark"
               component={NextLink}
-              href={CONSTANTS.EXTERNAL_URLS.PATREON}
+              href={user.loggedIn ? CONSTANTS.EXTERNAL_URLS.PATREON : "/login"}
               target="_blank"
             >
-              Support us on Patreon!
+              {user.loggedIn ? "Support us on Patreon!" : "Create an account!"}
             </Button>
           </Stack>
         </Box>
@@ -98,7 +100,7 @@ function Banner({
       {shownEvents.map((event) => (
         <Carousel.Slide key={event.name}>
           <Picture
-            alt={event.name}
+            alt={event.name || "caption"}
             srcB2={`assets/card_still_full1_${event.banner_id}_evolution.png`}
             sx={{ width: "100%", height: "100%" }}
             radius="sm"
