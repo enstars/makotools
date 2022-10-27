@@ -61,7 +61,13 @@ function Page() {
             prompt: "Send an email",
           },
         ].map((method) => (
-          <Card key={method.title} sx={{ overflow: "visible" }} mt="md">
+          <Card
+            key={method.title}
+            sx={{ overflow: "visible" }}
+            mt="md"
+            shadow="sm"
+            withBorder
+          >
             <Card.Section>
               <Center mt={-32}>
                 <ThemeIcon size="xl" radius="xl" color={method.color}>
