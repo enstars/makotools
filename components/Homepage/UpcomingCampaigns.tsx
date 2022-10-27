@@ -83,6 +83,7 @@ const useStyles = createStyles((theme, _params) => ({
 
   eventCard: {
     width: "100%",
+    minWidth: "100%",
   },
 
   eventInfo: {
@@ -122,8 +123,9 @@ function EventCard({
           <Group
             className={classes.eventCard}
             align="flex-start"
-            position="apart"
+            position="left"
             spacing="xl"
+            noWrap
           >
             <Box>
               <Title order={2}>{formattedDate}</Title>
@@ -164,8 +166,9 @@ function EventCard({
           <Group
             className={classes.eventCard}
             align="flex-start"
-            position="apart"
+            position="left"
             spacing="xl"
+            noWrap
           >
             <Box>
               <Title order={2}>{formattedDate}</Title>
