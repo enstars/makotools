@@ -166,6 +166,10 @@ function Page({ cards }: { cards: GameCard[] | undefined }) {
               marginRight: !isNarrowPage ? 16 : undefined,
               marginBottom: isNarrowPage ? 8 : undefined,
             },
+            panel: {
+              flexBasis: 0,
+              minWidth: 0,
+            },
           }}
         >
           <Tabs.List>

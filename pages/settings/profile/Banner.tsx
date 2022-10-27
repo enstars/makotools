@@ -18,6 +18,7 @@ import { getAssetURL } from "../../../services/data";
 import useUser from "../../../services/firebase/user";
 
 import { GameCard } from "types/game";
+import Picture from "components/core/Picture";
 
 const useStyles = createStyles((theme) => ({
   item: {
@@ -80,23 +81,39 @@ function Banner({ cards }: { cards: GameCard[] | undefined }) {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
-          sx={{ overflow: "hidden" }}
+          sx={{ overflow: "hidden", maxHeight: 64 }}
           mt="xs"
           shadow="sm"
         >
-          <Group>
-            <Image
-              alt={cards.find((c) => c.id === item)?.title[0]}
-              src={getAssetURL(`assets/card_still_full1_${item}_evolution.png`)}
-              width={64}
-              height={64}
+          <Group noWrap>
+            <Picture
+              alt={cards.find((c) => c.id === item)?.title[0] || "card"}
+              srcB2={`assets/card_still_full1_${item}_evolution.png`}
+              sx={{
+                width: 60,
+                height: 60,
+                margin: 2,
+              }}
+              radius={4}
             />
-            <Box sx={{ flexGrow: 1 }}>
+            <Box
+              sx={{
+                flexGrow: 1,
+                minWidth: 0,
+                flexBasis: 0,
+                maxWidth: "100%",
+                "& div": {
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                },
+              }}
+            >
               <Text weight={700}>
-                {cards.find((c) => c.id === item)?.title}
+                {cards.find((c) => c.id === item)?.title[0]}
               </Text>
               <Text size="sm" color="dimmed">
-                {cards.find((c) => c.id === item)?.name}
+                {cards.find((c) => c.id === item)?.name?.[0]}
               </Text>
             </Box>
             <ActionIcon
@@ -141,15 +158,20 @@ function Banner({ cards }: { cards: GameCard[] | undefined }) {
         }}
         searchable
         limit={25}
-        data={
-          cards
+        data={[
+          {
+            value: "-",
+            label: "Start typing to search for a card...",
+            disabled: true,
+          },
+          ...cards
             ?.filter((c) => c?.title)
             ?.filter((c) => !state.includes(c.id))
             ?.map((c) => ({
               label: `(${c.title[0]}) ${c?.name?.[0]}`,
               value: c.id.toString(),
-            })) || []
-        }
+            })),
+        ]}
         mt="xs"
         disabled={state?.length > 10}
       />
