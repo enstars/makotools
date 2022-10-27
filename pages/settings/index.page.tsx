@@ -36,6 +36,7 @@ import Email from "./account/Email";
 import Banner from "./profile/Banner";
 
 import { GameCard } from "types/game";
+import UseWebP from "./appearance/UseWebP";
 
 const Bio = dynamic(() => import("./profile/Bio"), {
   ssr: false,
@@ -65,6 +66,7 @@ const tabs = [
         <Stack>
           <DarkMode />
           <ShowTlBadge />
+          <UseWebP />
         </Stack>
       </>
     ),

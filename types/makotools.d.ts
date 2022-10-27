@@ -40,6 +40,7 @@ interface CollectedCard {
 }
 // USER
 
+type UseWebP = "use" | "dont-use";
 type NameOrder = "firstlast" | "lastfirst";
 type ShowTlBadge = "none" | "unofficial" | "all";
 type GameRegion = "jp" | "cn" | "kr" | "tw" | "en";
@@ -57,7 +58,8 @@ interface UserData {
   profile__start_playing?: string;
   setting__name_order?: NameOrder;
   setting__show_tl_badge?: ShowTlBadge;
-  setting__game_region: GameRegion;
+  setting__game_region?: GameRegion;
+  setting__use_webp?: UseWebP;
   readonly admin: any;
 }
 

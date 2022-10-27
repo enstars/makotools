@@ -32,6 +32,7 @@ import { getAssetURL } from "../../services/data";
 import { downloadFromURL } from "../../services/utilities";
 import notify from "../../services/libraries/notify";
 import { CONSTANTS } from "../../services/makotools/constants";
+import useUser from "services/firebase/user";
 
 interface PictureProps extends NextMantineImageProps {
   action?: "none" | "view" | "download";
@@ -140,6 +141,10 @@ function Picture({
     ...otherProps
   } = props;
   const theme = useMantineTheme();
+  const user = useUser();
+
+  const dontUseWebP =
+    (user.loggedIn && user.db.setting__use_webp === "dont-use") || false;
 
   const [loaded, setLoaded] = useState<boolean>(false);
   const [opened, setOpened] = useState<boolean>(false);
@@ -177,7 +182,7 @@ function Picture({
         className={cx(classes.picture, className)}
       >
         {hasPlaceholder && <div className={classes.placeholder} />}
-        <source srcSet={webpSrc} />
+        {!dontUseWebP && <source srcSet={webpSrc} />}
         <Image
           unoptimized
           fill
@@ -186,7 +191,7 @@ function Picture({
           src={src}
           alt={alt}
           onContextMenu={() => {
-            if (isB2Optimized || webpSrc)
+            if ((isB2Optimized || webpSrc) && !dontUseWebP)
               notify("info", {
                 title: "This is a WEBP file!",
                 message:
