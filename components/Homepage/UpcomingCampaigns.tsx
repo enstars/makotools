@@ -140,12 +140,13 @@ function EventCard({
             <Picture
               alt={event.name}
               srcB2={`assets/card_still_full1_${event.banner_id}_normal.webp`}
+              radius="xl"
               sx={(theme) => ({
                 width: 70,
                 height: 70,
                 overflow: "hidden",
-                borderRadius: "35px",
-                border: `1px solid ${
+                borderRadius: theme.radius.xl,
+                border: `2px solid ${
                   theme.colorScheme === "dark"
                     ? theme.colors.dark[2]
                     : theme.colors.gray[4]
@@ -174,14 +175,15 @@ function EventCard({
               <Picture
                 alt={event.name}
                 srcB2={`assets/card_still_full1_${event.banner_id}_evolution.webp`}
+                radius="lg"
                 sx={(theme) => ({
                   height: 80,
                   width: 195,
                   overflow: "hidden",
                   borderRadius: theme.radius.lg,
-                  border: `1px solid ${
+                  border: `2px solid ${
                     theme.colorScheme === "dark"
-                      ? theme.colors.dark[4]
+                      ? theme.colors.dark[2]
                       : theme.colors.gray[4]
                   }`,
                 })}
