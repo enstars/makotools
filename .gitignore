@@ -4,8 +4,6 @@
 /node_modules
 /.pnp
 .pnp.js
-package-lock.json
-yarn.lock
 
 # testing
 /coverage
@@ -27,7 +25,19 @@ yarn-error.log*
 # next.js
 .next
 
-Icon
+# vscode config
+.vscode
 
-package-lock.json
-yarn.lock
+# yarn 
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# https://nextjs.org/docs/basic-features/typescript
+next-env.d.ts
+
+tsconfig.tsbuildinfo

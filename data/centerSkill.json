@@ -1,26 +1,19 @@
-{
-  "Sparkle": {
-    "Vo": 1,
-    "Da": 2,
-    "Pf": 3,
-    "All": 4
-  },
-  "Brilliant": {
-    "Vo": 5,
-    "Da": 6,
-    "Pf": 7,
-    "All": 8
-  },
-  "Glitter": {
-    "Vo": 9,
-    "Da": 10,
-    "Pf": 11,
-    "All": 12
-  },
-  "Flash": {
-    "Vo": 13,
-    "Da": 14,
-    "Pf": 15,
-    "All": 16
-  }
-}
+[
+  { "attr": 0, "substat": "" },
+  { "attr": 1, "substat": "Vo" },
+  { "attr": 1, "substat": "Da" },
+  { "attr": 1, "substat": "Pf" },
+  { "attr": 1, "substat": "All" },
+  { "attr": 2, "substat": "Vo" },
+  { "attr": 2, "substat": "Da" },
+  { "attr": 2, "substat": "Pf" },
+  { "attr": 2, "substat": "All" },
+  { "attr": 3, "substat": "Vo" },
+  { "attr": 3, "substat": "Da" },
+  { "attr": 3, "substat": "Pf" },
+  { "attr": 3, "substat": "All" },
+  { "attr": 4, "substat": "Vo" },
+  { "attr": 4, "substat": "Da" },
+  { "attr": 4, "substat": "Pf" },
+  { "attr": 4, "substat": "All" }
+]

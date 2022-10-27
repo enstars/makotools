@@ -20,6 +20,7 @@ const appLocales = [
   "ar", // Arabic
   "th", // Thai
 ];
+
 module.exports = {
   webpack(config) {
     config.module.rules.push(
@@ -41,7 +42,7 @@ module.exports = {
     return config;
   },
   images: {
-    domains: ["uchuu.ensemble.moe", "assets.ensemble.link"],
+    domains: ["uchuu.ensemble.moe", "assets.enstars.link"],
   },
 
   compiler: {
@@ -53,6 +54,8 @@ module.exports = {
     locales: appLocales,
     defaultLocale: "en",
   },
+
+  pageExtensions: ["page.tsx", "page.ts", "page.jsx", "page.js"],
 
   async redirects() {
     return [
