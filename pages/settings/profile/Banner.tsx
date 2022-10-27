@@ -62,7 +62,7 @@ function Banner({ cards }: { cards: GameCard[] | undefined }) {
     ) {
       user.db.set({ profile__banner: state });
     }
-  }, [state, user]);
+  }, [state]);
 
   if (!cards)
     return (
@@ -132,7 +132,7 @@ function Banner({ cards }: { cards: GameCard[] | undefined }) {
         </Droppable>
       </DragDropContext>
       <Select
-        placeholder="Add a card"
+        placeholder="Type to search for a card"
         value={acValue}
         onChange={(value) => {
           if (value) handlers.append(parseInt(value));
