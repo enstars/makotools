@@ -34,53 +34,33 @@ function Page({ profile }: { profile: UserData }) {
   return (
     <>
       {profile?.profile__banner && profile.profile__banner?.length ? (
-        <Box>
-          <Box sx={{ marginLeft: "-100%", marginRight: "-100%" }}>
-            <Carousel
-              slideSize="34%"
-              height="30vh"
-              slideGap="xs"
-              loop
-              withControls={false}
-              plugins={[autoplay.current]}
-            >
-              {/* // doing this so we can surely have enough slides to loop in embla */}
-              {[0, 1, 2].map((n) => (
-                <Fragment key={n}>
-                  {profile?.profile__banner?.map((c) => (
-                    <Carousel.Slide key={c}>
-                      <Picture
-                        alt={`Card ${c}`}
-                        srcB2={`assets/card_still_full1_${c}_evolution.png`}
-                        sx={{
-                          height: "100%",
-                        }}
-                        radius="sm"
-                        // styles={(theme) => ({
-                        //   root: {
-                        //     height: "100%",
-                        //     overflow: "hidden",
-                        //     borderRadius: theme.radius.sm,
-                        //   },
-                        //   figure: {
-                        //     height: "100%",
-                        //   },
-                        //   imageWrapper: {
-                        //     height: "100%",
-                        //   },
-                        //   image: {
-                        //     height: "100% !important",
-                        //     objectFit: "cover",
-                        //     objectPosition: "top",
-                        //   },
-                        // })}
-                      />
-                    </Carousel.Slide>
-                  ))}
-                </Fragment>
-              ))}
-            </Carousel>
-          </Box>
+        <Box mt="sm" sx={{ marginLeft: "-100%", marginRight: "-100%" }}>
+          <Carousel
+            slideSize="34%"
+            height="30vh"
+            slideGap="xs"
+            loop
+            withControls={false}
+            plugins={[autoplay.current]}
+          >
+            {/* // doing this so we can surely have enough slides to loop in embla */}
+            {[0, 1, 2].map((n) => (
+              <Fragment key={n}>
+                {profile?.profile__banner?.map((c) => (
+                  <Carousel.Slide key={c}>
+                    <Picture
+                      alt={`Card ${c}`}
+                      srcB2={`assets/card_still_full1_${c}_evolution.png`}
+                      sx={{
+                        height: "100%",
+                      }}
+                      radius="sm"
+                    />
+                  </Carousel.Slide>
+                ))}
+              </Fragment>
+            ))}
+          </Carousel>
         </Box>
       ) : null}
       {profile.name ? (
