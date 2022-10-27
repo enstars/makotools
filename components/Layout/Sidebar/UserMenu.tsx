@@ -31,6 +31,7 @@ function UserMenu({ trigger }: { trigger: any }) {
       width={200}
       position="top-start"
       transition="pop"
+      shadow="sm"
       closeOnItemClick={true}
       opened={opened}
       onOpen={handlers.open}
