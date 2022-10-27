@@ -20,7 +20,6 @@ function addCard(
     };
     collection[i] = collectionItem;
   }
-  //   console.log(collectionItem);
   return collection;
 }
 
