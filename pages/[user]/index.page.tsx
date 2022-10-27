@@ -25,6 +25,7 @@ import { useDayjs } from "../../services/libraries/dayjs";
 import { UserData } from "../../types/makotools";
 
 import BioDisplay from "components/sections/BioDisplay";
+import Picture from "components/core/Picture";
 
 function Page({ profile }: { profile: UserData }) {
   const { dayjs } = useDayjs();
@@ -48,29 +49,31 @@ function Page({ profile }: { profile: UserData }) {
                 <Fragment key={n}>
                   {profile?.profile__banner?.map((c) => (
                     <Carousel.Slide key={c}>
-                      <Image
+                      <Picture
                         alt={`Card ${c}`}
-                        src={getAssetURL(
-                          `assets/card_still_full1_${c}_evolution.png`
-                        )}
-                        styles={(theme) => ({
-                          root: {
-                            height: "100%",
-                            overflow: "hidden",
-                            borderRadius: theme.radius.sm,
-                          },
-                          figure: {
-                            height: "100%",
-                          },
-                          imageWrapper: {
-                            height: "100%",
-                          },
-                          image: {
-                            height: "100% !important",
-                            objectFit: "cover",
-                            objectPosition: "top",
-                          },
-                        })}
+                        srcB2={`assets/card_still_full1_${c}_evolution.png`}
+                        sx={{
+                          height: "100%",
+                        }}
+                        radius="sm"
+                        // styles={(theme) => ({
+                        //   root: {
+                        //     height: "100%",
+                        //     overflow: "hidden",
+                        //     borderRadius: theme.radius.sm,
+                        //   },
+                        //   figure: {
+                        //     height: "100%",
+                        //   },
+                        //   imageWrapper: {
+                        //     height: "100%",
+                        //   },
+                        //   image: {
+                        //     height: "100% !important",
+                        //     objectFit: "cover",
+                        //     objectPosition: "top",
+                        //   },
+                        // })}
                       />
                     </Carousel.Slide>
                   ))}
