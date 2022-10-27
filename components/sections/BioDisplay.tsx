@@ -138,6 +138,7 @@ function BioDisplay({
                     </TypographyStylesProvider>
                   </MantineProvider>
                   <style>{NormalizeCSS}</style>
+                  <base target="_blank" />
                 </>
               );
             }}
