@@ -32,7 +32,7 @@ function Page({
             width={1200}
             height={1000}
             recycle={false}
-            style={{ marginLeft: "15%" }}
+            style={{ margin: "auto", marginTop: "-10%" }}
           />
           <Alert
             icon={<IconCake />}

@@ -122,7 +122,7 @@ function EventCard({
           <Group
             className={classes.eventCard}
             align="flex-start"
-            position="center"
+            position="apart"
             spacing="xl"
           >
             <Box>
@@ -163,7 +163,7 @@ function EventCard({
           <Group
             className={classes.eventCard}
             align="flex-start"
-            position="center"
+            position="apart"
             spacing="xl"
           >
             <Box>
