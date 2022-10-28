@@ -206,6 +206,7 @@ function Login() {
                     form.values.email,
                     form.values.password,
                     (error) => {
+                      console.error(error);
                       const errorCode = error.code.split("/")[1];
                       const errorObj = {
                         type: "registration",
@@ -219,6 +220,7 @@ function Login() {
                     form.values.email,
                     form.values.password,
                     (error) => {
+                      console.error(error);
                       const errorCode = error.code.split("/")[1];
                       const errorObj = {
                         type: "login",
