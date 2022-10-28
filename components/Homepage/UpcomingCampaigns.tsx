@@ -16,18 +16,6 @@ import {
   IconDiamond,
   IconShirt,
   IconStar,
-  IconZodiacAquarius,
-  IconZodiacAries,
-  IconZodiacCancer,
-  IconZodiacCapricorn,
-  IconZodiacGemini,
-  IconZodiacLeo,
-  IconZodiacLibra,
-  IconZodiacPisces,
-  IconZodiacSagittarius,
-  IconZodiacScorpio,
-  IconZodiacTaurus,
-  IconZodiacVirgo,
 } from "@tabler/icons";
 import Link from "next/link";
 
