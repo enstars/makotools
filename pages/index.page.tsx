@@ -28,6 +28,9 @@ import SiteAnnouncements from "components/Homepage/SiteAnnouncements";
 const useStyles = createStyles((theme, _params) => ({
   main: {
     maxWidth: "100%",
+    "& > *": {
+      minWidth: 0,
+    },
   },
   mainCol: {
     maxWidth: "100%",
@@ -45,7 +48,10 @@ function SidePanel({
   width?: number;
 }) {
   return (
-    <Box sx={{ width: width, flexShrink: 0, flexGrow: 2 }} {...props}>
+    <Box
+      sx={{ "&&&": { flexBasis: width, flexShrink: 0, flexGrow: 2 } }}
+      {...props}
+    >
       <Accordion
         variant="contained"
         defaultValue={["birthday", "announcement"]}
@@ -83,7 +89,9 @@ function Page({
 
         <Group
           align="start"
-          sx={{ flexWrap: "wrap-reverse" }}
+          sx={{
+            flexWrap: "wrap-reverse",
+          }}
           className={classes.mainCol}
         >
           <Box sx={{ "&&": { flexGrow: 1 } }} className={classes.mainCol}>

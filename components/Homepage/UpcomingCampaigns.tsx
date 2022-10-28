@@ -6,9 +6,16 @@ import {
   createStyles,
   Title,
   Group,
+  Badge,
 } from "@mantine/core";
 import {
+  IconAward,
+  IconBus,
+  IconCake,
   IconCalendarTime,
+  IconDiamond,
+  IconShirt,
+  IconStar,
   IconZodiacAquarius,
   IconZodiacAries,
   IconZodiacCancer,
@@ -32,70 +39,37 @@ import Picture from "components/core/Picture";
 
 /* END FUNCTION */
 
-// choose horoscope from value
-function HoroscopeSymbol({ ...props }) {
-  switch (props.horoscope) {
-    // ^ stream knockin' fantasy
-    case 0:
-      return <IconZodiacAries className={props.className} size={48} />;
-    case 1:
-      return <IconZodiacTaurus className={props.className} size={48} />;
-    case 2:
-      return <IconZodiacGemini className={props.className} size={48} />;
-    case 3:
-      return <IconZodiacCancer className={props.className} size={48} />;
-    case 4:
-      return <IconZodiacLeo className={props.className} size={48} />;
-    case 5:
-      return <IconZodiacVirgo className={props.className} size={48} />;
-    case 6:
-      return <IconZodiacLibra className={props.className} size={48} />;
-    case 7:
-      return <IconZodiacScorpio className={props.className} size={48} />;
-    case 8:
-      return <IconZodiacSagittarius className={props.className} size={48} />;
-    case 9:
-      return <IconZodiacCapricorn className={props.className} size={48} />;
-    case 10:
-      return <IconZodiacAquarius className={props.className} size={48} />;
-    case 11:
-      return <IconZodiacPisces className={props.className} size={48} />;
-    default:
-      return null;
-  }
-}
-
 const useStyles = createStyles((theme, _params) => ({
   panel: {
     margin: "auto",
     transition: "background-color 0.1s",
     marginTop: "0.5vh",
-
-    "&:hover": {
-      cursor: "pointer",
-      backgroundColor: `${
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[4]
-          : theme.colors.gray[3]
-      }`,
-    },
   },
 
   eventCard: {
     width: "100%",
     minWidth: "100%",
+
+    "&:hover": {
+      cursor: "pointer",
+      backgroundColor: `${
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[5]
+          : theme.colors.gray[2]
+      }`,
+    },
   },
 
   eventInfo: {
-    marginTop: "1vh",
+    // marginTop: "1vh",
   },
 
   eventType: {
-    fontVariant: "small-caps",
-    color:
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[2]
-        : theme.colors.gray[6],
+    // fontVariant: "small-caps",
+    // color:
+    //   theme.colorScheme === "dark"
+    //     ? theme.colors.dark[2]
+    //     : theme.colors.gray[6],
   },
 }));
 
@@ -116,93 +90,120 @@ function EventCard({
     ? `/events/${(event as GameEvent).event_id}`
     : `/scouts/${(event as ScoutEvent).gacha_id}`;
 
-  if (event.type === "birthday") {
-    return (
-      <Accordion.Panel className={classes.panel}>
-        <Link href={link} passHref>
-          <Group
-            className={classes.eventCard}
-            align="flex-start"
-            position="left"
-            spacing="xl"
-            noWrap
+  return (
+    <Link href={link} passHref>
+      <Group
+        className={classes.eventCard}
+        align="flex-start"
+        position="left"
+        spacing="sm"
+        noWrap
+        sx={(theme) => ({
+          minWidth: 0,
+          marginLeft: -16,
+          marginRight: -16,
+          width: "calc(100% + 32px)",
+        })}
+        py="xs"
+        px="md"
+      >
+        <Box sx={{ width: 38, flexShrink: 0 }}>
+          <Title
+            order={2}
+            sx={(theme) => ({
+              fontSize: theme.fontSizes.xl * 1.25,
+            })}
+            weight={900}
+            inline
           >
-            <Box>
-              <Title order={2}>{formattedDate}</Title>
-              <Title order={5}>{formattedMonth}</Title>
-            </Box>
-            <Box className={classes.eventInfo}>
-              <Text weight={550} size="md">
-                {event.name}
-              </Text>
-              <Title order={6} className={classes.eventType}>
-                {event.type}
-              </Title>
-            </Box>
-            <Picture
-              alt={event.name}
-              srcB2={`assets/card_still_full1_${event.banner_id}_normal.webp`}
-              radius="xl"
-              sx={(theme) => ({
+            {formattedDate}
+          </Title>
+          <Text size="md" weight={700} color="dimmed">
+            {formattedMonth}
+          </Text>
+        </Box>
+        <Group
+          align="start"
+          sx={(theme) => ({
+            "&&&": { flexGrow: 3 },
+            rowGap: theme.spacing.xs / 2,
+            columnGap: theme.spacing.xs,
+            flexWrap: "wrap-reverse",
+            minWidth: 0,
+          })}
+        >
+          <Box
+            className={classes.eventInfo}
+            sx={{
+              "&&&": { flexGrow: 2, minWidth: 120, flexBasis: 60 },
+            }}
+          >
+            <Title order={3} weight={700} size="md" sx={{ lineHeight: 1.2 }}>
+              {event.name}
+            </Title>
+
+            <Badge
+              size="sm"
+              className={classes.eventType}
+              variant="filled"
+              color={
+                event.type === "anniversary"
+                  ? "yellow"
+                  : event.type === "birthday"
+                  ? "cyan"
+                  : event.type === "feature scout"
+                  ? "lightblue"
+                  : event.type === "scout"
+                  ? "violet"
+                  : "yellow"
+              }
+              px={6}
+              leftSection={
+                <Text inline mt={0}>
+                  {event.type === "birthday" ? (
+                    <IconCake size={12} strokeWidth={3} />
+                  ) : event.type === "anniversary" ? (
+                    <IconStar size={12} strokeWidth={3} />
+                  ) : event.type === "feature scout" ? (
+                    <IconShirt size={12} strokeWidth={3} />
+                  ) : event.type === "scout" ? (
+                    <IconDiamond size={12} strokeWidth={3} />
+                  ) : event.type === "song" ? (
+                    <IconAward size={12} strokeWidth={3} />
+                  ) : (
+                    <IconBus size={12} strokeWidth={3} />
+                  )}
+                </Text>
+              }
+            >
+              {event.type}
+            </Badge>
+          </Box>
+          <Picture
+            alt={event.name}
+            srcB2={`assets/card_still_full1_${event.banner_id}_normal.webp`}
+            radius="sm"
+            sx={(theme) => ({
+              "&&&": {
+                flexGrow: 1,
+                flexShrink: 0,
                 width: 70,
                 height: 70,
                 overflow: "hidden",
-                borderRadius: theme.radius.xl,
-                border: `2px solid ${
+                borderRadius: theme.radius.sm,
+                border: `1px solid ${
                   theme.colorScheme === "dark"
-                    ? theme.colors.dark[2]
+                    ? theme.colors.dark[4]
                     : theme.colors.gray[4]
                 }`,
-              })}
-            />
-          </Group>
-        </Link>
-      </Accordion.Panel>
-    );
-  } else {
-    return (
-      <Accordion.Panel className={classes.panel}>
-        <Link href={link} passHref>
-          <Group
-            className={classes.eventCard}
-            align="flex-start"
-            position="left"
-            spacing="xl"
-            noWrap
-          >
-            <Box>
-              <Title order={2}>{formattedDate}</Title>
-              <Title order={6}>{formattedMonth}</Title>
-            </Box>
-            <Box sx={{ maxWidth: "200px" }}>
-              <Picture
-                alt={event.name}
-                srcB2={`assets/card_still_full1_${event.banner_id}_evolution.webp`}
-                radius="lg"
-                sx={(theme) => ({
-                  height: 80,
-                  width: 195,
-                  overflow: "hidden",
-                  borderRadius: theme.radius.lg,
-                  border: `2px solid ${
-                    theme.colorScheme === "dark"
-                      ? theme.colors.dark[2]
-                      : theme.colors.gray[4]
-                  }`,
-                })}
-              />
-              <Text weight={550} size="md" sx={{ maxWidth: "180px" }}>
-                {event.name}
-              </Text>
-              <Title order={6} className={classes.eventType}>
-                {event.type}
-              </Title>
-            </Box>
-          </Group>
-        </Link>
-      </Accordion.Panel>
-    );
-  }
+                // maxWidth: 120,
+              },
+            })}
+          />
+        </Group>
+      </Group>
+    </Link>
+  );
 }
 
 function UpcomingCampaigns({
@@ -211,6 +212,7 @@ function UpcomingCampaigns({
   events: (BirthdayEvent | GameEvent | ScoutEvent)[];
 }) {
   const { dayjs } = useDayjs();
+  const { classes } = useStyles();
 
   return (
     <Accordion.Item value="birthday">
@@ -219,16 +221,17 @@ function UpcomingCampaigns({
           Upcoming Campaigns
         </Text>
       </Accordion.Control>
-      {retrieveClosestEvents(events, 4).map(
-        (e: BirthdayEvent | GameEvent | ScoutEvent, index) => {
-          return <EventCard key={index} event={e} />;
-        }
-      )}
-      <Accordion.Panel>
+
+      <Accordion.Panel className={classes.panel} px={0}>
+        {retrieveClosestEvents(events, 8).map(
+          (e: BirthdayEvent | GameEvent | ScoutEvent, index) => {
+            return <EventCard key={index} event={e} />;
+          }
+        )}
         <Box mt="xs">
           <Link href="/calendar" passHref>
-            <Anchor component="a" size="xs">
-              Open calendar
+            <Anchor component="a" size="sm">
+              See full calendar
             </Anchor>
           </Link>
         </Box>
