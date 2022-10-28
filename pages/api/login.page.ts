@@ -64,8 +64,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const fixedCardCounts = docGet?.collection
       ? {
           collection: docGet.collection
-            .filter((c) => c.count > 0)
-            .map((c) => ({
+            .filter((c: any) => c.count > 0)
+            .map((c: any) => ({
               ...c,
               count: Math.min(c.count, 5),
             })),
