@@ -67,8 +67,8 @@ function retrieveClosestEvents(
   let thisYear = new Date().getFullYear();
   const todaysDate: Event = {
     name: "",
-    start_date: dayjs(new Date()).format("YYYY-MM-DDTHH:mm:ssZ"),
-    end_date: dayjs(new Date()).format("YYYY-MM-DDTHH:mm:ssZ"),
+    start_date: dayjs.utc().format("YYYY-MM-DDTHH:mm:ss"),
+    end_date: dayjs.utc().format("YYYY-MM-DDTHH:mm:ss"),
     type: "other",
   };
 

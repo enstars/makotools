@@ -9,6 +9,7 @@ import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isToday from "dayjs/plugin/isToday";
 import isBetween from "dayjs/plugin/isBetween";
+import utc from "dayjs/plugin/utc";
 
 import "dayjs/locale/en";
 import "dayjs/locale/ja";
@@ -43,6 +44,7 @@ function DayjsProvider({ children }: { children: ReactElement }) {
   dayjs.extend(isSameOrAfter);
   dayjs.extend(isToday);
   dayjs.extend(isBetween);
+  dayjs.extend(utc);
 
   return (
     <DayjsContext.Provider value={{ dayjs }}>{children}</DayjsContext.Provider>
