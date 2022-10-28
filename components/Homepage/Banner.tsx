@@ -44,19 +44,17 @@ function Banner({
     .sort((a, b) => dayjs(a.start_date).unix() - dayjs(b.start_date).unix());
 
   const shownEvents: (GameEvent | ScoutEvent)[] = [];
-  shownEvents.push(
-    pastEvents
-      .filter((event) => ["tour", "song"].includes(event.type))
-      .at(-1) as GameEvent
+
+  const pastGameEvents = pastEvents.filter((event) =>
+    ["tour", "song"].includes(event.type)
   );
-  shownEvents.push(
-    pastEvents.filter((event) => event.type === "scout").at(-1) as ScoutEvent
-  );
-  shownEvents.push(
-    pastEvents
-      .filter((event) => event.type === "feature scout")
-      .at(-1) as ScoutEvent
-  );
+  shownEvents.push(pastGameEvents[pastGameEvents.length - 1] as GameEvent);
+
+  const pastScouts = pastEvents.filter((event) => event.type === "scout");
+  shownEvents.push(pastScouts[pastScouts.length - 1] as ScoutEvent);
+
+  const pastFs = pastEvents.filter((event) => event.type === "feature scout");
+  shownEvents.push(pastFs[pastFs.length - 1] as ScoutEvent);
 
   return (
     <Carousel
