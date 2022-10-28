@@ -71,7 +71,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             })),
         }
       : {};
-    console.log("c", authUser.id, fixedCardCounts);
 
     await docRef.set(
       {
