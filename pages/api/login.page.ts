@@ -61,12 +61,25 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       );
     }
 
+    const fixedCardCounts = docGet?.collection
+      ? {
+          collection: docGet.collection
+            .filter((c) => c.count > 0)
+            .map((c) => ({
+              ...c,
+              count: Math.min(c.count, 5),
+            })),
+        }
+      : {};
+    console.log("c", authUser.id, fixedCardCounts);
+
     await docRef.set(
       {
         email: authUser?.email || null,
         lastLogin: FieldValue.serverTimestamp(),
         suid,
         username,
+        ...fixedCardCounts,
       },
       { merge: true }
     );
