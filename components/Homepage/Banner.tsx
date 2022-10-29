@@ -8,6 +8,7 @@ import { BirthdayEvent, GameEvent, ScoutEvent } from "types/game";
 import { useDayjs } from "services/libraries/dayjs";
 import Picture from "components/core/Picture";
 import { CONSTANTS } from "services/makotools/constants";
+import useUser from "services/firebase/user";
 
 const useStyles = createStyles((theme) => ({
   bannerOverlay: {
@@ -29,6 +30,7 @@ function Banner({
 }: {
   events: (BirthdayEvent | GameEvent | ScoutEvent)[];
 }) {
+  const user = useUser();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const { dayjs } = useDayjs();
 
@@ -42,19 +44,17 @@ function Banner({
     .sort((a, b) => dayjs(a.start_date).unix() - dayjs(b.start_date).unix());
 
   const shownEvents: (GameEvent | ScoutEvent)[] = [];
-  shownEvents.push(
-    pastEvents
-      .filter((event) => ["tour", "song"].includes(event.type))
-      .at(-1) as GameEvent
+
+  const pastGameEvents = pastEvents.filter((event) =>
+    ["tour", "song"].includes(event.type)
   );
-  shownEvents.push(
-    pastEvents.filter((event) => event.type === "scout").at(-1) as ScoutEvent
-  );
-  shownEvents.push(
-    pastEvents
-      .filter((event) => event.type === "feature scout")
-      .at(-1) as ScoutEvent
-  );
+  shownEvents.push(pastGameEvents[pastGameEvents.length - 1] as GameEvent);
+
+  const pastScouts = pastEvents.filter((event) => event.type === "scout");
+  shownEvents.push(pastScouts[pastScouts.length - 1] as ScoutEvent);
+
+  const pastFs = pastEvents.filter((event) => event.type === "feature scout");
+  shownEvents.push(pastFs[pastFs.length - 1] as ScoutEvent);
 
   return (
     <Carousel
@@ -87,10 +87,10 @@ function Banner({
               variant="white"
               color="dark"
               component={NextLink}
-              href={CONSTANTS.EXTERNAL_URLS.PATREON}
+              href={user.loggedIn ? CONSTANTS.EXTERNAL_URLS.PATREON : "/login"}
               target="_blank"
             >
-              Support us on Patreon!
+              {user.loggedIn ? "Support us on Patreon!" : "Create an account!"}
             </Button>
           </Stack>
         </Box>
@@ -98,7 +98,7 @@ function Banner({
       {shownEvents.map((event) => (
         <Carousel.Slide key={event.name}>
           <Picture
-            alt={event.name}
+            alt={event.name || "caption"}
             srcB2={`assets/card_still_full1_${event.banner_id}_evolution.png`}
             sx={{ width: "100%", height: "100%" }}
             radius="sm"

@@ -82,7 +82,7 @@ export async function getLocalizedDataArray<
     localized = [jaData, enFanData, enData];
   }
 
-  // TODO: Always keep the user's main language as the first one, without filterinf out;
+  // TODO: Always keep the user's main language as the first one, without filtering out;
   //       This way it can be show mainlang is missing and not immediately replaced with sublang
   const filteredLocalized = localized
     .filter((l) => l.status === "success")

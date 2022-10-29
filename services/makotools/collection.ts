@@ -16,7 +16,7 @@ function addCard(
     const i = collection.indexOf(collectionItem);
     collectionItem = {
       ...collectionItem,
-      count: collectionItem.count + count,
+      count: Math.max(Math.min(collectionItem.count + count, 5), 0),
     };
     collection[i] = collectionItem;
   }

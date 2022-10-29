@@ -3,7 +3,7 @@ import SelectSetting from "../shared/SelectSetting";
 const webpOptions = [
   {
     value: "use",
-    label: "Use WebPS wherever possible",
+    label: "Use WebPs wherever possible",
   },
   {
     value: "dont-use",
