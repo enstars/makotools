@@ -131,17 +131,17 @@ function Login() {
         </Text>
       ) : (
         <>
-          <Link href="/" passHref>
-            <Anchor
-              id="signin-back-link"
-              size="sm"
-              color="dimmed"
-              mb="sm"
-              style={{ display: "block" }}
-            >
-              Back to Ensemble Square
-            </Anchor>
-          </Link>
+          <Anchor
+            component={Link}
+            href="/"
+            id="signin-back-link"
+            size="sm"
+            color="dimmed"
+            mb="sm"
+            style={{ display: "block" }}
+          >
+            Back to MakoTools
+          </Anchor>
           {signOnError && (
             <Alert
               className="signin-alert-error"

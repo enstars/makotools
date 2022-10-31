@@ -6,15 +6,14 @@ import {
   IconCards,
   IconAward,
   IconBooks,
-  IconChevronRight,
-  IconChevronLeft,
   IconBrandPatreon,
   IconUserCircle,
   TablerIcon,
-  IconAt,
   IconCalendar,
   IconDiamond,
   IconInfoCircle,
+  IconChevronRight,
+  IconChevronLeft,
 } from "@tabler/icons";
 import {
   Navbar,
@@ -26,8 +25,8 @@ import {
   Tooltip,
   NavLink,
   Stack,
-  ActionIcon,
   NavLinkProps,
+  ActionIcon,
 } from "@mantine/core";
 import { useToggle } from "@mantine/hooks";
 
@@ -62,7 +61,8 @@ const SidebarLink = forwardRef(function SbL(
       name?: any;
       active?: boolean;
       collapsed: boolean;
-      component?: string;
+      component?: any;
+      href?: string;
     },
   ref
 ) {
@@ -122,7 +122,7 @@ function Sidebar(props: any) {
   const dark = theme.colorScheme === "dark";
   const user = useUser();
 
-  const [collapsed, toggleCollapsed] = useToggle([true, false]);
+  const [collapsed, toggleCollapsed] = useToggle([false, true]);
   if (props.permanentlyExpanded && collapsed) toggleCollapsed();
 
   const linkList: LinkObject[] = [
@@ -159,18 +159,6 @@ function Sidebar(props: any) {
       name: "Calendar",
       Icon: IconCalendar,
     },
-    ...[
-      !user.loading && user.loggedIn
-        ? {
-            link: `/@${user?.db?.username}`,
-            name: "Profile",
-            Icon: IconUserCircle,
-          }
-        : {
-            link: "",
-            name: "",
-          },
-    ],
     {
       link: "/about",
       name: "About",
@@ -210,46 +198,45 @@ function Sidebar(props: any) {
           minWidth: 0,
         })}
       >
-        <Link href="/" passHref>
-          <SidebarLink
-            collapsed={collapsed}
-            component="a"
-            label={
-              !collapsed && (
-                <Box sx={{ height: 18, display: "flex" }}>
-                  {theme.colorScheme === "light" ? (
-                    <MakotoolsTextLightComponent
-                      viewBox="0 0 1753 281"
-                      width={100}
-                      height={18}
-                    />
-                  ) : (
-                    <MakotoolsTextDarkComponent
-                      viewBox="0 0 1753 281"
-                      width={100}
-                      height={18}
-                    />
-                  )}
-                </Box>
-              )
-            }
-            Icon={
-              theme.colorScheme === "light" ? (
-                <MakotoolsLightComponent
-                  viewBox="0 0 281 281"
-                  width={18}
-                  height={18}
-                />
-              ) : (
-                <MakotoolsDarkComponent
-                  viewBox="0 0 281 281"
-                  width={18}
-                  height={18}
-                />
-              )
-            }
-          />
-        </Link>
+        <SidebarLink
+          collapsed={collapsed}
+          component={Link}
+          href="/"
+          label={
+            !collapsed && (
+              <Box sx={{ height: 18, display: "flex" }}>
+                {theme.colorScheme === "light" ? (
+                  <MakotoolsTextLightComponent
+                    viewBox="0 0 1753 281"
+                    width={100}
+                    height={18}
+                  />
+                ) : (
+                  <MakotoolsTextDarkComponent
+                    viewBox="0 0 1753 281"
+                    width={100}
+                    height={18}
+                  />
+                )}
+              </Box>
+            )
+          }
+          Icon={
+            theme.colorScheme === "light" ? (
+              <MakotoolsLightComponent
+                viewBox="0 0 281 281"
+                width={18}
+                height={18}
+              />
+            ) : (
+              <MakotoolsDarkComponent
+                viewBox="0 0 281 281"
+                width={18}
+                height={18}
+              />
+            )
+          }
+        />
       </Navbar.Section>
 
       <Navbar.Section
@@ -296,71 +283,85 @@ function Sidebar(props: any) {
                         {...link}
                       />
                     ) : (
-                      <Link key={link.link} href={link.link}>
-                        <SidebarLink
-                          collapsed={collapsed}
-                          active={active}
-                          {...link}
-                        />
-                      </Link>
+                      <SidebarLink
+                        component={Link}
+                        href={link.link}
+                        collapsed={collapsed}
+                        active={active}
+                        {...link}
+                      />
                     )}
                   </div>
                 </Tooltip>
               );
             })}
-        </Stack>
-      </Navbar.Section>
 
-      <Navbar.Section
-        sx={{
-          borderTop: "solid 1px",
-          borderColor: dark ? theme.colors.dark[5] : theme.colors.gray[2],
-        }}
-      >
-        <Group
-          sx={(theme) => ({
-            padding: theme.spacing.xs / 2,
-            gap: 0,
-          })}
-          position="center"
-        >
-          {!collapsed && (
-            <>
-              <UserMenu
-                trigger={
-                  <SidebarLink
-                    collapsed={collapsed}
-                    active={true}
-                    name={
-                      user.loading
-                        ? "Loading"
-                        : user.loggedIn
-                        ? user?.db?.username
-                        : "Not logged in"
-                    }
-                    Icon={IconAt}
-                    sx={{ "&&": { flex: "1 1 0" } }}
-                    props={{ variant: "subtle" }}
-                  />
-                }
-              />
-            </>
-          )}
-          <ActionIcon
-            size={40}
-            radius="sm"
-            onClick={() => {
-              toggleCollapsed();
-              if (props?.onCollapse) props.onCollapse();
-            }}
+          <Group
+            sx={(theme) => ({
+              padding: theme.spacing.xs / 2,
+              gap: 0,
+            })}
+            position="center"
+            p={0}
           >
-            {collapsed ? (
-              <IconChevronRight size={20} />
-            ) : (
-              <IconChevronLeft size={20} />
-            )}
-          </ActionIcon>
-        </Group>
+            {!collapsed && <></>}
+          </Group>
+          <UserMenu
+            trigger={
+              <SidebarLink
+                collapsed={collapsed}
+                active={true}
+                name="User"
+                Icon={IconUserCircle}
+                sx={{ "&&": { flex: "1 1 0" } }}
+                props={{ variant: "subtle" }}
+              />
+            }
+          />
+          {collapsed ? (
+            <Group position="right" p={0}>
+              <ActionIcon
+                size={40}
+                radius="sm"
+                onClick={() => {
+                  toggleCollapsed();
+                  if (props?.onCollapse) props.onCollapse();
+                }}
+                // variant="light"
+              >
+                <Text inline color="dimmed">
+                  <IconChevronRight size={20} />
+                </Text>
+              </ActionIcon>
+            </Group>
+          ) : (
+            <Group position="right" p={0}>
+              <ActionIcon
+                size={40}
+                // radius="sm"
+                onClick={() => {
+                  toggleCollapsed();
+                  if (props?.onCollapse) props.onCollapse();
+                }}
+                variant="default"
+                mr={-6}
+                sx={(theme) => ({
+                  borderRadius: 0,
+                  borderTopLeftRadius: theme.radius.md,
+                  borderBottomLeftRadius: theme.radius.md,
+                  width: 100,
+                })}
+              >
+                <Text component={Group} color="dimmed" spacing={4}>
+                  <IconChevronLeft size={16} />
+                  <Text inline size="sm" weight={500}>
+                    Collapse
+                  </Text>
+                </Text>
+              </ActionIcon>
+            </Group>
+          )}
+        </Stack>
       </Navbar.Section>
     </Navbar>
   );

@@ -17,11 +17,11 @@ function Page() {
         image: variant404Image2,
       },
       {
-        text: "W-what do you mean there's no page at this address?!",
+        text: "W-what do you mean there's an error?!",
         image: variant404Image3,
       },
       {
-        text: "Damnit, I can't find the page you're looking for…",
+        text: "Damnit, the website ran into an error…",
         image: variant404Image1,
       },
     ];
@@ -33,9 +33,9 @@ function Page() {
     <>
       <Title mt={64} mb="sm">
         <Text component="span" inherit color="dimmed">
-          404
+          500
         </Text>{" "}
-        Page Not Found
+        Internal Server Error
       </Title>
       {message && (
         <>
@@ -52,8 +52,8 @@ function Page() {
           <Text mt="xs" mb="sm" weight="500" size="sm" color="dimmed">
             {message.text}
           </Text>
-          <Button component={Link} href="/" px="xl">
-            Back to Home
+          <Button component={Link} href="/issues" px="xl">
+            Contact us
           </Button>
         </>
       )}

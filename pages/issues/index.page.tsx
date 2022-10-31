@@ -109,16 +109,16 @@ function Page() {
               </Text>
             </Card.Section>
             <Card.Section px="sm" pt="xs" pb="sm">
-              <Link href={method.link} passHref target="_blank">
-                <Button
-                  component="a"
-                  sx={{ width: "100%" }}
-                  color={method.color}
-                  variant="light"
-                >
-                  {method.prompt}
-                </Button>
-              </Link>
+              <Button
+                component={Link}
+                href={method.link}
+                target="_blank"
+                sx={{ width: "100%" }}
+                color={method.color}
+                variant="light"
+              >
+                {method.prompt}
+              </Button>
             </Card.Section>
           </Card>
         ))}

@@ -160,41 +160,41 @@ function Page({ profile }: { profile: UserData }) {
               .filter((c) => c.count)
               .sort((a, b) => b.count - a.count)
               .map((c) => (
-                <Link key={c.id} href={`/cards/${c.id}`} passHref>
-                  <Paper
-                    radius="sm"
-                    component="a"
-                    withBorder
-                    sx={{ position: "relative" }}
-                  >
-                    <AspectRatio ratio={4 / 5}>
-                      <Image
-                        radius="sm"
-                        alt={"card image"}
-                        withPlaceholder
-                        src={getAssetURL(
-                          `assets/card_rectangle4_${c.id}_evolution.png`
-                        )}
-                      />
-                    </AspectRatio>
-                    {c.count > 1 && (
-                      <Badge
-                        sx={{ position: "absolute", bottom: 4, left: 4 }}
-                        variant="filled"
-                      >
-                        <Text inline size="xs" weight="700">
-                          {c.count}
-                          <Text
-                            component="span"
-                            sx={{ verticalAlign: "-0.05em", lineHeight: 0 }}
-                          >
-                            ×
-                          </Text>
+                <Paper
+                  radius="sm"
+                  component={Link}
+                  key={c.id}
+                  href={`/cards/${c.id}`}
+                  withBorder
+                  sx={{ position: "relative" }}
+                >
+                  <AspectRatio ratio={4 / 5}>
+                    <Image
+                      radius="sm"
+                      alt={"card image"}
+                      withPlaceholder
+                      src={getAssetURL(
+                        `assets/card_rectangle4_${c.id}_evolution.png`
+                      )}
+                    />
+                  </AspectRatio>
+                  {c.count > 1 && (
+                    <Badge
+                      sx={{ position: "absolute", bottom: 4, left: 4 }}
+                      variant="filled"
+                    >
+                      <Text inline size="xs" weight="700">
+                        {c.count}
+                        <Text
+                          component="span"
+                          sx={{ verticalAlign: "-0.05em", lineHeight: 0 }}
+                        >
+                          ×
                         </Text>
-                      </Badge>
-                    )}
-                  </Paper>
-                </Link>
+                      </Text>
+                    </Badge>
+                  )}
+                </Paper>
               ))}
           </Box>
         </>

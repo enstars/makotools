@@ -1,5 +1,4 @@
 import { Badge, Box, Group, Paper, Text } from "@mantine/core";
-import { NextLink } from "@mantine/next";
 import {
   IconAward,
   IconBus,
@@ -11,6 +10,7 @@ import {
   IconStar,
 } from "@tabler/icons";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 import Picture from "components/core/Picture";
 import { useDayjs } from "services/libraries/dayjs";
@@ -52,7 +52,7 @@ function CalendarListEventCard({
   return (
     <Paper
       withBorder
-      component={NextLink}
+      component={Link}
       // className={classes.listCard}
       href={
         event.type === "birthday"

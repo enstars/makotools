@@ -36,6 +36,8 @@ function Reactions() {
   const [collapsed, setCollapsed] = useState<boolean>(true);
   const user = useUser();
 
+  const reactionsDisabled = user.loading || !user.loggedIn;
+
   const handleReCaptchaVerify = useCallback(async () => {
     if (!executeRecaptcha) {
       return;
@@ -114,18 +116,21 @@ function Reactions() {
             return (
               <Tooltip
                 label={<Text size="xs">Sign in to react!</Text>}
-                disabled={!user.loading && user.loggedIn}
+                disabled={!reactionsDisabled}
               >
-                <Button
-                  variant="light"
-                  size="xs"
-                  color="blue"
-                  onClick={onClick}
-                  leftIcon={<IconMoodSmile size={16} />}
-                  px="xs"
-                >
-                  Reactions
-                </Button>
+                <Box>
+                  <Button
+                    variant="light"
+                    size="xs"
+                    color="blue"
+                    onClick={onClick}
+                    leftIcon={<IconMoodSmile size={16} />}
+                    px="xs"
+                    disabled={reactionsDisabled}
+                  >
+                    Reactions
+                  </Button>
+                </Box>
               </Tooltip>
             );
           }}

@@ -3,7 +3,10 @@ import { Event, BirthdayEvent, GameEvent, ScoutEvent } from "../types/game";
 
 import { useDayjs } from "./libraries/dayjs";
 
-function retrieveEvents(data: any): (BirthdayEvent | GameEvent | ScoutEvent)[] {
+function retrieveEvents(
+  data: any,
+  locale: string | undefined
+): (BirthdayEvent | GameEvent | ScoutEvent)[] {
   let events: (BirthdayEvent | GameEvent | ScoutEvent)[] = [];
 
   if (data.characters) {
@@ -28,8 +31,8 @@ function retrieveEvents(data: any): (BirthdayEvent | GameEvent | ScoutEvent)[] {
     for (const event of data.gameEvents) {
       let gameEvent: GameEvent = {
         event_id: event.event_id,
-        start_date: event.start_date,
-        end_date: event.end_date,
+        start_date: event.start_date[locale as string] || event.start_date,
+        end_date: event.end_date[locale as string] || event.end_date,
         type: event.type,
         name: event.name[1],
         event_gacha: event.event_gacha,
@@ -45,8 +48,8 @@ function retrieveEvents(data: any): (BirthdayEvent | GameEvent | ScoutEvent)[] {
     for (const scout of data.scouts) {
       let scoutEvent: ScoutEvent = {
         gacha_id: scout.gacha_id,
-        start_date: scout.start_date,
-        end_date: scout.end_date,
+        start_date: scout.start_date[locale as string] || scout.start_date,
+        end_date: scout.end_date[locale as string] || scout.end_date,
         type: scout.type,
         name: scout.name[1],
         banner_id: scout.five_star.card_id,

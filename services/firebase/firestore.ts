@@ -1,4 +1,4 @@
-import { getAuth } from "firebase/auth";
+import { getAuth, sendEmailVerification } from "firebase/auth";
 import {
   getFirestore,
   doc,
@@ -59,4 +59,15 @@ export async function validateUsernameDb(username: string) {
   const querySnap = await getDocs(q);
   const usernameValid = !!!querySnap.size;
   return usernameValid;
+}
+
+export async function sendVerificationEmail() {
+  const clientAuth = getAuth();
+
+  if (
+    clientAuth.currentUser !== null &&
+    !clientAuth.currentUser.emailVerified
+  ) {
+    sendEmailVerification(clientAuth.currentUser);
+  }
 }

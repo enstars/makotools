@@ -25,11 +25,9 @@ function SiteAnnouncements({ posts }: { posts: any }) {
               ))}
             </Stack>
             <Box mt="xs">
-              <Link href="/about/announcements" passHref>
-                <Anchor component="a" size="xs">
-                  See all announcements
-                </Anchor>
-              </Link>
+              <Anchor component={Link} href="/about/announcements" size="xs">
+                See all announcements
+              </Anchor>
             </Box>
           </>
         )}

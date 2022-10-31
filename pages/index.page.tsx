@@ -24,6 +24,7 @@ import { retrieveEvents } from "services/events";
 import CurrentEventCountdown from "components/Homepage/CurrentEventCountdown";
 import CurrentScoutsCountdown from "components/Homepage/CurrentScoutsCountdown";
 import SiteAnnouncements from "components/Homepage/SiteAnnouncements";
+import UserVerification from "components/Homepage/UserVerification";
 
 const useStyles = createStyles((theme, _params) => ({
   main: {
@@ -86,6 +87,7 @@ function Page({
     >
       <Stack align="flex-start" spacing="lg" className={classes.mainCol}>
         <Banner events={events} />
+        <UserVerification />
 
         <Group
           align="start"
@@ -145,11 +147,14 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     "gacha_id"
   );
 
-  let events: (BirthdayEvent | GameEvent | ScoutEvent)[] = retrieveEvents({
-    characters: characters.data,
-    gameEvents: gameEvents.data,
-    scouts: scouts.data,
-  });
+  let events: (BirthdayEvent | GameEvent | ScoutEvent)[] = retrieveEvents(
+    {
+      characters: characters.data,
+      gameEvents: gameEvents.data,
+      scouts: scouts.data,
+    },
+    locale
+  );
 
   try {
     const initRespose = await fetch(
