@@ -165,15 +165,19 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
     "gacha_id"
   );
 
-  const events = retrieveEvents({
-    characters: characters.data,
-    gameEvents: gameEvents.data,
-    scouts: scouts.data,
-  });
+  const events = retrieveEvents(
+    {
+      characters: characters.data,
+      gameEvents: gameEvents.data,
+      scouts: scouts.data,
+    },
+    locale
+  );
 
   return {
     props: {
       events: events,
+      locale: locale,
     },
   };
 });
