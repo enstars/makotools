@@ -147,11 +147,14 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     "gacha_id"
   );
 
-  let events: (BirthdayEvent | GameEvent | ScoutEvent)[] = retrieveEvents({
-    characters: characters.data,
-    gameEvents: gameEvents.data,
-    scouts: scouts.data,
-  });
+  let events: (BirthdayEvent | GameEvent | ScoutEvent)[] = retrieveEvents(
+    {
+      characters: characters.data,
+      gameEvents: gameEvents.data,
+      scouts: scouts.data,
+    },
+    locale
+  );
 
   try {
     const initRespose = await fetch(
