@@ -7,6 +7,7 @@ import {
   Title,
   Group,
   Badge,
+  Card,
 } from "@mantine/core";
 import {
   IconAward,
@@ -79,7 +80,7 @@ function EventCard({
     : `/scouts/${(event as ScoutEvent).gacha_id}`;
 
   return (
-    <Box
+    <Card
       component={Link}
       href={link}
       className={classes.eventCard}
@@ -191,7 +192,7 @@ function EventCard({
           })}
         />
       </Group>
-    </Box>
+    </Card>
   );
 }
 
