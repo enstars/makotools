@@ -1,5 +1,4 @@
 import { Badge, Box, createStyles, HoverCard, Text } from "@mantine/core";
-import { NextLink } from "@mantine/next";
 import {
   IconAward,
   IconBus,
@@ -8,6 +7,7 @@ import {
   IconShirt,
   IconStar,
 } from "@tabler/icons";
+import Link from "next/link";
 
 import Picture from "components/core/Picture";
 import { useDayjs } from "services/libraries/dayjs";
@@ -59,7 +59,7 @@ function CalendarEventCard({
               : "yellow"
           }
           className={classes.eventCard}
-          component={NextLink}
+          component={Link}
           href={
             event.type === "birthday"
               ? `/characters/${(event as BirthdayEvent).character_id}`
