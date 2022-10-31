@@ -140,7 +140,7 @@ function Login() {
             mb="sm"
             style={{ display: "block" }}
           >
-            Back to Ensemble Square
+            Back to MakoTools
           </Anchor>
           {signOnError && (
             <Alert
