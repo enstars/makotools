@@ -79,21 +79,24 @@ function HeaderContents({
             },
           })}
         >
-          <Link href="/" passHref>
-            <Anchor inherit sx={forceLight && { color: "#fff" }}>
-              Makotools
-            </Anchor>
-          </Link>
+          <Anchor
+            component={Link}
+            href="/"
+            inherit
+            sx={forceLight && { color: "#fff" }}
+          >
+            Makotools
+          </Anchor>
           {pageBreadcrumbs.map((crumb: string, index: number) => (
-            <Link
+            <Anchor
+              component={Link}
               key={crumb}
               href={`/${pageBreadcrumbs.slice(0, index + 1).join("/")}`}
-              passHref
+              inherit
+              sx={forceLight && { color: "#fff" }}
             >
-              <Anchor inherit sx={forceLight && { color: "#fff" }}>
-                {decodeURIComponent(crumb)}
-              </Anchor>
-            </Link>
+              {decodeURIComponent(crumb)}
+            </Anchor>
           ))}
         </Breadcrumbs>
       </Text>

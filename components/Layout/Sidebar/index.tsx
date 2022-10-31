@@ -62,7 +62,8 @@ const SidebarLink = forwardRef(function SbL(
       name?: any;
       active?: boolean;
       collapsed: boolean;
-      component?: string;
+      component?: any;
+      href?: string;
     },
   ref
 ) {
@@ -210,46 +211,45 @@ function Sidebar(props: any) {
           minWidth: 0,
         })}
       >
-        <Link href="/" passHref>
-          <SidebarLink
-            collapsed={collapsed}
-            component="a"
-            label={
-              !collapsed && (
-                <Box sx={{ height: 18, display: "flex" }}>
-                  {theme.colorScheme === "light" ? (
-                    <MakotoolsTextLightComponent
-                      viewBox="0 0 1753 281"
-                      width={100}
-                      height={18}
-                    />
-                  ) : (
-                    <MakotoolsTextDarkComponent
-                      viewBox="0 0 1753 281"
-                      width={100}
-                      height={18}
-                    />
-                  )}
-                </Box>
-              )
-            }
-            Icon={
-              theme.colorScheme === "light" ? (
-                <MakotoolsLightComponent
-                  viewBox="0 0 281 281"
-                  width={18}
-                  height={18}
-                />
-              ) : (
-                <MakotoolsDarkComponent
-                  viewBox="0 0 281 281"
-                  width={18}
-                  height={18}
-                />
-              )
-            }
-          />
-        </Link>
+        <SidebarLink
+          collapsed={collapsed}
+          component={Link}
+          href="/"
+          label={
+            !collapsed && (
+              <Box sx={{ height: 18, display: "flex" }}>
+                {theme.colorScheme === "light" ? (
+                  <MakotoolsTextLightComponent
+                    viewBox="0 0 1753 281"
+                    width={100}
+                    height={18}
+                  />
+                ) : (
+                  <MakotoolsTextDarkComponent
+                    viewBox="0 0 1753 281"
+                    width={100}
+                    height={18}
+                  />
+                )}
+              </Box>
+            )
+          }
+          Icon={
+            theme.colorScheme === "light" ? (
+              <MakotoolsLightComponent
+                viewBox="0 0 281 281"
+                width={18}
+                height={18}
+              />
+            ) : (
+              <MakotoolsDarkComponent
+                viewBox="0 0 281 281"
+                width={18}
+                height={18}
+              />
+            )
+          }
+        />
       </Navbar.Section>
 
       <Navbar.Section
@@ -296,13 +296,13 @@ function Sidebar(props: any) {
                         {...link}
                       />
                     ) : (
-                      <Link key={link.link} href={link.link}>
-                        <SidebarLink
-                          collapsed={collapsed}
-                          active={active}
-                          {...link}
-                        />
-                      </Link>
+                      <SidebarLink
+                        component={Link}
+                        href={link.link}
+                        collapsed={collapsed}
+                        active={active}
+                        {...link}
+                      />
                     )}
                   </div>
                 </Tooltip>

@@ -79,118 +79,119 @@ function EventCard({
     : `/scouts/${(event as ScoutEvent).gacha_id}`;
 
   return (
-    <Link href={link} passHref>
-      <Group
-        className={classes.eventCard}
-        align="flex-start"
-        position="left"
-        spacing="sm"
-        noWrap
-        sx={(theme) => ({
-          minWidth: 0,
-          marginLeft: -16,
-          marginRight: -16,
-          width: "calc(100% + 32px)",
-        })}
-        py="xs"
-        px="md"
-      >
-        <Box sx={{ width: 38, flexShrink: 0 }}>
-          <Title
-            order={2}
-            sx={(theme) => ({
-              fontSize: theme.fontSizes.xl * 1.25,
-            })}
-            weight={900}
-            inline
-          >
-            {formattedDate}
-          </Title>
-          <Text size="md" weight={700} color="dimmed">
-            {formattedMonth}
-          </Text>
-        </Box>
-        <Group
-          align="start"
+    <Box
+      component={Link}
+      href={link}
+      className={classes.eventCard}
+      sx={(theme) => ({
+        display: "flex",
+        flexAlign: "flex-start",
+        justifyContent: "left",
+        gap: theme.spacing.sm,
+        flexWrap: "nowrap",
+        minWidth: 0,
+        marginLeft: -16,
+        marginRight: -16,
+        width: "calc(100% + 32px)",
+      })}
+      py="xs"
+      px="md"
+    >
+      <Box sx={{ width: 38, flexShrink: 0 }}>
+        <Title
+          order={2}
           sx={(theme) => ({
-            "&&&": { flexGrow: 3 },
-            rowGap: theme.spacing.xs / 2,
-            columnGap: theme.spacing.xs,
-            flexWrap: "wrap-reverse",
-            minWidth: 0,
+            fontSize: theme.fontSizes.xl * 1.25,
           })}
+          weight={900}
+          inline
         >
-          <Box
-            className={classes.eventInfo}
-            sx={{
-              "&&&": { flexGrow: 2, minWidth: 120, flexBasis: 60 },
-            }}
-          >
-            <Title order={3} weight={700} size="md" sx={{ lineHeight: 1.2 }}>
-              {event.name}
-            </Title>
+          {formattedDate}
+        </Title>
+        <Text size="md" weight={700} color="dimmed">
+          {formattedMonth}
+        </Text>
+      </Box>
+      <Group
+        align="start"
+        sx={(theme) => ({
+          "&&&": { flexGrow: 3 },
+          rowGap: theme.spacing.xs / 2,
+          columnGap: theme.spacing.xs,
+          flexWrap: "wrap-reverse",
+          minWidth: 0,
+        })}
+      >
+        <Box
+          className={classes.eventInfo}
+          sx={{
+            "&&&": { flexGrow: 2, minWidth: 120, flexBasis: 60 },
+          }}
+        >
+          <Title order={3} weight={700} size="md" sx={{ lineHeight: 1.2 }}>
+            {event.name}
+          </Title>
 
-            <Badge
-              size="sm"
-              className={classes.eventType}
-              variant="filled"
-              color={
-                event.type === "anniversary"
-                  ? "yellow"
-                  : event.type === "birthday"
-                  ? "cyan"
-                  : event.type === "feature scout"
-                  ? "lightblue"
-                  : event.type === "scout"
-                  ? "violet"
-                  : "yellow"
-              }
-              px={6}
-              leftSection={
-                <Text inline mt={0}>
-                  {event.type === "birthday" ? (
-                    <IconCake size={12} strokeWidth={3} />
-                  ) : event.type === "anniversary" ? (
-                    <IconStar size={12} strokeWidth={3} />
-                  ) : event.type === "feature scout" ? (
-                    <IconShirt size={12} strokeWidth={3} />
-                  ) : event.type === "scout" ? (
-                    <IconDiamond size={12} strokeWidth={3} />
-                  ) : event.type === "song" ? (
-                    <IconAward size={12} strokeWidth={3} />
-                  ) : (
-                    <IconBus size={12} strokeWidth={3} />
-                  )}
-                </Text>
-              }
-            >
-              {event.type}
-            </Badge>
-          </Box>
-          <Picture
-            alt={event.name}
-            srcB2={`assets/card_still_full1_${event.banner_id}_normal.webp`}
-            radius="sm"
-            sx={(theme) => ({
-              "&&&": {
-                flexGrow: 1,
-                flexShrink: 0,
-                width: 70,
-                height: 70,
-                overflow: "hidden",
-                borderRadius: theme.radius.sm,
-                border: `1px solid ${
-                  theme.colorScheme === "dark"
-                    ? theme.colors.dark[4]
-                    : theme.colors.gray[4]
-                }`,
-                // maxWidth: 120,
-              },
-            })}
-          />
-        </Group>
+          <Badge
+            size="sm"
+            className={classes.eventType}
+            variant="filled"
+            color={
+              event.type === "anniversary"
+                ? "yellow"
+                : event.type === "birthday"
+                ? "cyan"
+                : event.type === "feature scout"
+                ? "lightblue"
+                : event.type === "scout"
+                ? "violet"
+                : "yellow"
+            }
+            px={6}
+            leftSection={
+              <Text inline mt={0}>
+                {event.type === "birthday" ? (
+                  <IconCake size={12} strokeWidth={3} />
+                ) : event.type === "anniversary" ? (
+                  <IconStar size={12} strokeWidth={3} />
+                ) : event.type === "feature scout" ? (
+                  <IconShirt size={12} strokeWidth={3} />
+                ) : event.type === "scout" ? (
+                  <IconDiamond size={12} strokeWidth={3} />
+                ) : event.type === "song" ? (
+                  <IconAward size={12} strokeWidth={3} />
+                ) : (
+                  <IconBus size={12} strokeWidth={3} />
+                )}
+              </Text>
+            }
+          >
+            {event.type}
+          </Badge>
+        </Box>
+        <Picture
+          alt={event.name}
+          srcB2={`assets/card_still_full1_${event.banner_id}_normal.webp`}
+          radius="sm"
+          sx={(theme) => ({
+            "&&&": {
+              flexGrow: 1,
+              flexShrink: 0,
+              width: 70,
+              height: 70,
+              overflow: "hidden",
+              borderRadius: theme.radius.sm,
+              border: `1px solid ${
+                theme.colorScheme === "dark"
+                  ? theme.colors.dark[4]
+                  : theme.colors.gray[4]
+              }`,
+              // maxWidth: 120,
+            },
+          })}
+        />
       </Group>
-    </Link>
+    </Box>
   );
 }
 
@@ -217,11 +218,9 @@ function UpcomingCampaigns({
           }
         )}
         <Box mt="xs">
-          <Link href="/calendar" passHref>
-            <Anchor component="a" size="sm">
-              See full calendar
-            </Anchor>
-          </Link>
+          <Anchor component={Link} href="/calendar" size="sm">
+            See full calendar
+          </Anchor>
         </Box>
       </Accordion.Panel>
     </Accordion.Item>

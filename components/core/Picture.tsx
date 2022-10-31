@@ -337,14 +337,15 @@ function Picture({
                     <Group mt="xs" position="apart">
                       <Box />
                       <Group spacing="xs">
-                        <Link href={src} passHref target="_blank">
-                          <Button
-                            variant="light"
-                            leftIcon={<IconArrowUpRightCircle size={16} />}
-                          >
-                            Open
-                          </Button>
-                        </Link>
+                        <Button
+                          component={Link}
+                          href={src}
+                          target="_blank"
+                          variant="light"
+                          leftIcon={<IconArrowUpRightCircle size={16} />}
+                        >
+                          Open
+                        </Button>
                         <Button
                           leftIcon={<IconDownload size={16} />}
                           onClick={downloadFile}
