@@ -11,7 +11,7 @@ import {
   Group,
   Stack,
 } from "@mantine/core";
-import Image, { ImageProps } from "next/future/image";
+import Image, { ImageProps } from "next/image";
 import { ImageProps as MantineImageProps } from "@mantine/core";
 import { SyntheticEvent, useState } from "react";
 import {
