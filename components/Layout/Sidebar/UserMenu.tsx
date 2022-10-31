@@ -43,10 +43,13 @@ function UserMenu({ trigger }: { trigger: any }) {
           lineHeight: 1.15,
         },
       }}
+      withinPortal
     >
       <Menu.Target>{trigger}</Menu.Target>
       <Menu.Dropdown>
         <Menu.Item
+          component={Link}
+          href={user.loggedIn ? `/@${user?.db?.username}` : "#"}
           icon={
             <Avatar
               color="blue"
@@ -55,9 +58,6 @@ function UserMenu({ trigger }: { trigger: any }) {
               sx={{ "*": { display: "flex" } }}
             />
           }
-          sx={{
-            pointerEvents: "none",
-          }}
         >
           {user.loading ? (
             <Text size="sm" color="dimmed">

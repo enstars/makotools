@@ -6,15 +6,14 @@ import {
   IconCards,
   IconAward,
   IconBooks,
-  IconChevronRight,
-  IconChevronLeft,
   IconBrandPatreon,
   IconUserCircle,
   TablerIcon,
-  IconAt,
   IconCalendar,
   IconDiamond,
   IconInfoCircle,
+  IconChevronRight,
+  IconChevronLeft,
 } from "@tabler/icons";
 import {
   Navbar,
@@ -26,8 +25,8 @@ import {
   Tooltip,
   NavLink,
   Stack,
-  ActionIcon,
   NavLinkProps,
+  ActionIcon,
 } from "@mantine/core";
 import { useToggle } from "@mantine/hooks";
 
@@ -123,7 +122,7 @@ function Sidebar(props: any) {
   const dark = theme.colorScheme === "dark";
   const user = useUser();
 
-  const [collapsed, toggleCollapsed] = useToggle([true, false]);
+  const [collapsed, toggleCollapsed] = useToggle([false, true]);
   if (props.permanentlyExpanded && collapsed) toggleCollapsed();
 
   const linkList: LinkObject[] = [
@@ -160,18 +159,6 @@ function Sidebar(props: any) {
       name: "Calendar",
       Icon: IconCalendar,
     },
-    ...[
-      !user.loading && user.loggedIn
-        ? {
-            link: `/@${user?.db?.username}`,
-            name: "Profile",
-            Icon: IconUserCircle,
-          }
-        : {
-            link: "",
-            name: "",
-          },
-    ],
     {
       link: "/about",
       name: "About",
@@ -308,59 +295,73 @@ function Sidebar(props: any) {
                 </Tooltip>
               );
             })}
-        </Stack>
-      </Navbar.Section>
 
-      <Navbar.Section
-        sx={{
-          borderTop: "solid 1px",
-          borderColor: dark ? theme.colors.dark[5] : theme.colors.gray[2],
-        }}
-      >
-        <Group
-          sx={(theme) => ({
-            padding: theme.spacing.xs / 2,
-            gap: 0,
-          })}
-          position="center"
-        >
-          {!collapsed && (
-            <>
-              <UserMenu
-                trigger={
-                  <SidebarLink
-                    collapsed={collapsed}
-                    active={true}
-                    name={
-                      user.loading
-                        ? "Loading"
-                        : user.loggedIn
-                        ? user?.db?.username
-                        : "Not logged in"
-                    }
-                    Icon={IconAt}
-                    sx={{ "&&": { flex: "1 1 0" } }}
-                    props={{ variant: "subtle" }}
-                  />
-                }
-              />
-            </>
-          )}
-          <ActionIcon
-            size={40}
-            radius="sm"
-            onClick={() => {
-              toggleCollapsed();
-              if (props?.onCollapse) props.onCollapse();
-            }}
+          <Group
+            sx={(theme) => ({
+              padding: theme.spacing.xs / 2,
+              gap: 0,
+            })}
+            position="center"
+            p={0}
           >
-            {collapsed ? (
-              <IconChevronRight size={20} />
-            ) : (
-              <IconChevronLeft size={20} />
-            )}
-          </ActionIcon>
-        </Group>
+            {!collapsed && <></>}
+          </Group>
+          <UserMenu
+            trigger={
+              <SidebarLink
+                collapsed={collapsed}
+                active={true}
+                name="User"
+                Icon={IconUserCircle}
+                sx={{ "&&": { flex: "1 1 0" } }}
+                props={{ variant: "subtle" }}
+              />
+            }
+          />
+          {collapsed ? (
+            <Group position="right" p={0}>
+              <ActionIcon
+                size={40}
+                radius="sm"
+                onClick={() => {
+                  toggleCollapsed();
+                  if (props?.onCollapse) props.onCollapse();
+                }}
+                // variant="light"
+              >
+                <Text inline color="dimmed">
+                  <IconChevronRight size={20} />
+                </Text>
+              </ActionIcon>
+            </Group>
+          ) : (
+            <Group position="right" p={0}>
+              <ActionIcon
+                size={40}
+                // radius="sm"
+                onClick={() => {
+                  toggleCollapsed();
+                  if (props?.onCollapse) props.onCollapse();
+                }}
+                variant="default"
+                mr={-8}
+                sx={(theme) => ({
+                  borderRadius: 0,
+                  borderTopLeftRadius: theme.radius.md,
+                  borderBottomLeftRadius: theme.radius.md,
+                  width: 100,
+                })}
+              >
+                <Text component={Group} color="dimmed" spacing={4}>
+                  <IconChevronLeft size={16} />
+                  <Text inline size="sm" weight={500}>
+                    Collapse
+                  </Text>
+                </Text>
+              </ActionIcon>
+            </Group>
+          )}
+        </Stack>
       </Navbar.Section>
     </Navbar>
   );
