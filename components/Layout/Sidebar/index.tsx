@@ -344,7 +344,7 @@ function Sidebar(props: any) {
                   if (props?.onCollapse) props.onCollapse();
                 }}
                 variant="default"
-                mr={-8}
+                mr={-6}
                 sx={(theme) => ({
                   borderRadius: 0,
                   borderTopLeftRadius: theme.radius.md,
