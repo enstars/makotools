@@ -39,6 +39,7 @@ function retrieveEvents(
         event_gacha_id: event.gacha_id,
         banner_id: event.banner_id,
         story_name: event.story_name[1],
+        intro_lines: event.intro_lines[0] || null,
       };
       events.push(gameEvent);
     }

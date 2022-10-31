@@ -140,13 +140,11 @@ function Sidebar(props: any) {
       link: "/events",
       name: "Events",
       Icon: IconAward,
-      disabled: true,
     },
     {
       link: "/scouts",
       name: "Scouts",
       Icon: IconDiamond,
-      disabled: true,
     },
     {
       link: "/stories",
