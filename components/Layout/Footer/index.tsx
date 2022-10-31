@@ -90,33 +90,37 @@ function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
             mb="xl"
           >
             <SupportBanner mb="xs" sx={{ width: "100%" }} />
-            <Link href="/issues" passHref>
-              <Anchor component="a" size="sm">
-                Issues and Suggestions
-              </Anchor>
-            </Link>
-            <Link href={`mailto:${CONSTANTS.MAKOTOOLS.EMAIL}`} passHref>
-              <Anchor component="a" size="sm">
-                Contact Us
-              </Anchor>
-            </Link>
-            <Link href="/about" passHref>
-              <Anchor component="a" size="sm">
-                About MakoTools
-              </Anchor>
-            </Link>
+            <Anchor component={Link} href="/issues" size="sm">
+              Issues and Suggestions
+            </Anchor>
+            <Anchor
+              component={Link}
+              href={`mailto:${CONSTANTS.MAKOTOOLS.EMAIL}`}
+              size="sm"
+            >
+              Contact Us
+            </Anchor>
+            <Anchor component={Link} href="/about" size="sm">
+              About MakoTools
+            </Anchor>
             <Text color="dimmed" size="xs" mt="xs">
-              <Link href="/about/terms" passHref>
-                <Anchor component="a" inherit color="dimmed">
-                  Terms of Service
-                </Anchor>
-              </Link>
+              <Anchor
+                component={Link}
+                href="/about/terms"
+                inherit
+                color="dimmed"
+              >
+                Terms of Service
+              </Anchor>
               {" · "}
-              <Link href="/about/privacy" passHref>
-                <Anchor component="a" inherit color="dimmed">
-                  Privacy Policy
-                </Anchor>
-              </Link>
+              <Anchor
+                component={Link}
+                href="/about/privacy"
+                inherit
+                color="dimmed"
+              >
+                Privacy Policy
+              </Anchor>
             </Text>
           </Stack>
 

@@ -15,7 +15,7 @@ import {
   IconNews,
   IconSpy,
 } from "@tabler/icons";
-import { NextLink } from "@mantine/next";
+import Link from "next/link";
 
 import { getLayout } from "../../components/Layout";
 import PageTitle from "../../components/sections/PageTitle";
@@ -137,7 +137,7 @@ function Page() {
           { link: "terms", name: "Terms of Service", icon: IconGavel },
         ].map((l) => (
           <NavLink
-            component={NextLink}
+            component={Link}
             href={`/about/${l.link}`}
             icon={
               <ThemeIcon variant="light">

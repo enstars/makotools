@@ -2,7 +2,7 @@ import { useRef } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { Carousel } from "@mantine/carousel";
 import { Box, Button, createStyles, Stack, Text, Title } from "@mantine/core";
-import { NextLink } from "@mantine/next";
+import Link from "next/link";
 
 import { BirthdayEvent, GameEvent, ScoutEvent } from "types/game";
 import { useDayjs } from "services/libraries/dayjs";
@@ -86,7 +86,7 @@ function Banner({
             <Button
               variant="white"
               color="dark"
-              component={NextLink}
+              component={Link}
               href={user.loggedIn ? CONSTANTS.EXTERNAL_URLS.PATREON : "/login"}
               target="_blank"
             >

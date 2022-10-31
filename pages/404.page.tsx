@@ -52,11 +52,9 @@ function Page() {
           <Text mt="xs" mb="sm" weight="500" size="sm" color="dimmed">
             {message.text}
           </Text>
-          <Link href="/" passHref>
-            <Button component="a" px="xl">
-              Back to Home
-            </Button>
-          </Link>
+          <Button component={Link} href="/" px="xl">
+            Back to Home
+          </Button>
         </>
       )}
     </>

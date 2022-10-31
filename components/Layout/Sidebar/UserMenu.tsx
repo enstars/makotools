@@ -6,7 +6,6 @@ import {
   useMantineTheme,
   Box,
 } from "@mantine/core";
-import { NextLink } from "@mantine/next";
 import { useDisclosure } from "@mantine/hooks";
 import {
   IconSettings,
@@ -15,6 +14,7 @@ import {
   IconMoonStars,
 } from "@tabler/icons";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 import useUser from "../../../services/firebase/user";
 
@@ -130,7 +130,7 @@ function UserMenu({ trigger }: { trigger: any }) {
           <>
             <Menu.Item
               id="sidebar-link-settings"
-              component={NextLink}
+              component={Link}
               href="/settings"
               icon={<IconSettings size={14} />}
             >
@@ -151,7 +151,7 @@ function UserMenu({ trigger }: { trigger: any }) {
           <>
             <Menu.Item
               className="sidebar-link-login"
-              component={NextLink}
+              component={Link}
               href="/login"
               icon={<IconLogin size={14} />}
             >

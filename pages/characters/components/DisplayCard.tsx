@@ -88,36 +88,40 @@ function DisplayCard({
   const { classes, cx } = useStyles({ color: character.image_color });
 
   return (
-    <Link href={`/characters/${character.character_id}`} passHref>
-      <Card withBorder component="a" p={0} className={classes.card}>
-        <Box className={classes.background} />
-        <Box className={classes.pictureWrapper}>
-          <Picture
-            transparent
-            src={getAssetURL(
-              `assets/card_full1_${
-                (twoStarIDs as any)[character.character_id]
-              }_normal.png`
-            )}
-            alt={character.first_name[0]}
-            className={classes.picture}
-          />
-          <Picture
-            transparent
-            src={getAssetURL(
-              `assets/card_full1_${
-                (twoStarIDs as any)[character.character_id]
-              }_subtracted.png`
-            )}
-            alt={character.first_name[0]}
-            className={cx(classes.picture, classes.pictureBloomed)}
-          />
-        </Box>
-        <Title order={2} className={classes.title}>
-          <NameOrder {...character} locale={locale[0].locale} />
-        </Title>
-      </Card>
-    </Link>
+    <Card
+      withBorder
+      component={Link}
+      href={`/characters/${character.character_id}`}
+      p={0}
+      className={classes.card}
+    >
+      <Box className={classes.background} />
+      <Box className={classes.pictureWrapper}>
+        <Picture
+          transparent
+          src={getAssetURL(
+            `assets/card_full1_${
+              (twoStarIDs as any)[character.character_id]
+            }_normal.png`
+          )}
+          alt={character.first_name[0]}
+          className={classes.picture}
+        />
+        <Picture
+          transparent
+          src={getAssetURL(
+            `assets/card_full1_${
+              (twoStarIDs as any)[character.character_id]
+            }_subtracted.png`
+          )}
+          alt={character.first_name[0]}
+          className={cx(classes.picture, classes.pictureBloomed)}
+        />
+      </Box>
+      <Title order={2} className={classes.title}>
+        <NameOrder {...character} locale={locale[0].locale} />
+      </Title>
+    </Card>
   );
 }
 
