@@ -1,4 +1,4 @@
-import { MantineSize, Text, Tooltip } from "@mantine/core";
+import { MantineSize, Text, Tooltip, useMantineTheme } from "@mantine/core";
 import Image from "next/image";
 
 import { Emote } from "../../../types/makotools";
@@ -6,7 +6,14 @@ import { Emote } from "../../../types/makotools";
 const EMOTE_SIZE = 24;
 
 function Emote({ emote, size }: { emote: Emote; size: number | MantineSize }) {
+  const theme = useMantineTheme();
   if (!emote?.emote?.src) return null;
+  const numberSize =
+    typeof size === "undefined"
+      ? EMOTE_SIZE
+      : typeof size === "number"
+      ? size
+      : theme.fontSizes[size];
   return (
     <Tooltip
       offset={2}
@@ -25,8 +32,8 @@ function Emote({ emote, size }: { emote: Emote; size: number | MantineSize }) {
     >
       <Image
         src={emote.emote}
-        height={size || EMOTE_SIZE}
-        width={size || EMOTE_SIZE}
+        height={numberSize}
+        width={numberSize}
         alt={emote?.name}
       />
     </Tooltip>
