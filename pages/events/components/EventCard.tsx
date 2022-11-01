@@ -19,14 +19,19 @@ import { useDayjs } from "services/libraries/dayjs";
 const useStyles = createStyles((theme, _params, getRef) => ({
   eventCard: {
     display: "flex",
+    flexFlow: "row wrap",
     width: "80%",
     margin: "auto",
     marginTop: "2vh",
   },
   eventInfo: {
     position: "relative",
-    flex: "2 1 100px",
+    flex: "2 1 55%",
     padding: "10px 10px 10px 20px",
+
+    ["@media (max-width: 768px)"]: {
+      width: "100%",
+    },
   },
   eventDate: {
     color:
@@ -36,10 +41,19 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
   eventSummary: {
     fontSize: "11pt",
+    marginBottom: "1vh",
   },
 }));
 
-function EventCard({ event, units }: { event: GameEvent; units: GameUnit[] }) {
+function EventCard({
+  event,
+  units,
+  locale,
+}: {
+  event: GameEvent;
+  units: GameUnit[];
+  locale: string | undefined;
+}) {
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
 
@@ -51,14 +65,14 @@ function EventCard({ event, units }: { event: GameEvent; units: GameUnit[] }) {
       withBorder
       className={classes.eventCard}
     >
-      <Box sx={{ position: "relative", flex: "1 1 100px" }}>
+      <Box sx={{ position: "relative", flex: "1 1 45%" }}>
         <Picture
           alt={event.name}
           srcB2={`assets/card_still_full1_${event.banner_id}_evolution.png`}
           radius="sm"
           sx={(theme) => ({
             height: 250,
-            minHeight: 230,
+            minHeight: 150,
           })}
         />
       </Box>
@@ -126,7 +140,12 @@ function EventCard({ event, units }: { event: GameEvent; units: GameUnit[] }) {
         <Box>
           {units.length > 0 && (
             <Group
-              sx={{ position: "absolute", bottom: 0, marginBottom: "1vh" }}
+              sx={{
+                position: "absolute",
+                bottom: 0,
+                marginBottom: "1vh",
+                paddingTop: "5px",
+              }}
             >
               {units.map((unit) => (
                 <Text

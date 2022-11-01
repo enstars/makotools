@@ -14,7 +14,7 @@ import { GameEvent } from "types/game";
 function Page({ event }: { event: GameEvent }) {
   return (
     <>
-      <PageTitle title={event.name[0]} />
+      <PageTitle title={event.name} />
       <Group>
         <Box sx={{ position: "relative", flex: "1 2 100px" }}>
           <Picture
@@ -51,9 +51,9 @@ export const getServerSideProps = getServerSideUser(
 
     if (getEvent.status === "error") return { notFound: true };
 
-    let event: GameEvent = retrieveEvent(getEvent.data);
+    let event: GameEvent = retrieveEvent(getEvent.data, locale);
 
-    const title = event.name[0];
+    const title = event.name;
     const breadcrumbs = ["events", title];
 
     return {

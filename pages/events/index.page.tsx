@@ -47,10 +47,12 @@ interface EventViewOptions {
 function Page({
   events,
   units,
+  locale,
   charactersQuery,
 }: {
   events: GameEvent[];
   units: GameUnit[];
+  locale: string[];
   charactersQuery: QuerySuccess<GameCharacter[]>;
 }) {
   const characters = useMemo(
@@ -269,7 +271,12 @@ function Page({
         });
         console.log(eventUnits);
         return (
-          <EventCard key={event.event_id} event={event} units={eventUnits} />
+          <EventCard
+            key={event.event_id}
+            event={event}
+            units={eventUnits}
+            locale={locale}
+          />
         );
       })}
     </>
@@ -307,6 +314,7 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     props: {
       events: events,
       units: getUnits.data,
+      locale: locale,
       charactersQuery: getCharacters,
     },
   };
