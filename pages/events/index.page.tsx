@@ -52,7 +52,7 @@ function Page({
 }: {
   events: GameEvent[];
   units: GameUnit[];
-  locale: string[];
+  locale: string | undefined;
   charactersQuery: QuerySuccess<GameCharacter[]>;
 }) {
   const characters = useMemo(
@@ -113,155 +113,157 @@ function Page({
   return (
     <>
       <PageTitle title="Events" />
-      <Alert icon={<IconAlertCircle size={16} />} color="indigo">
+      <Alert
+        icon={<IconAlertCircle size={16} strokeWidth={3} />}
+        color="indigo"
+      >
         In-game events are gradually being added to MakoTools. We appreciate
         your patience!
       </Alert>
       <Paper mb="sm" p="md" withBorder sx={{ marginTop: "1vh" }}>
         <Text weight="700" size="xs" color="dimmed">
           <IconSearch size="1em" /> Search Options
-          <Group>
-            <TextInput
-              label="Search"
-              placeholder="Type an event name..."
-              value={search}
-              onChange={(event) => {
-                setSearch(event.target.value);
-              }}
-              sx={{ maxWidth: 200 }}
-              variant="default"
-              icon={<IconSearch size="1em" />}
-            />
-            <Select
-              label="Sort by"
-              placeholder="Select sorting option..."
-              data={SORT_OPTIONS}
-              value={viewOptions.sortOption}
-              onChange={(value: SortOption) => {
-                if (value)
-                  setViewOptions({ ...viewOptions, sortOption: value });
-              }}
-              sx={{ maxWidth: 200 }}
-              variant="default"
-              icon={<IconArrowsSort size="1em" />}
-              rightSection={
-                <Tooltip label="Toggle ascending/descending">
-                  <ActionIcon
-                    onClick={() => {
-                      setViewOptions((v) => ({
-                        ...viewOptions,
-                        sortDescending: !v.sortDescending,
-                      }));
-                    }}
-                    variant="light"
-                    color="blue"
-                  >
-                    {viewOptions.sortDescending ? (
-                      <IconSortAscending size={16} />
-                    ) : (
-                      <IconSortDescending size={16} />
-                    )}
-                  </ActionIcon>
-                </Tooltip>
-              }
-            />
-            <MultiSelect
-              label="Featured Units"
-              placeholder="Pick a unit..."
-              data={units
-                .sort((a: GameUnit, b: GameUnit) => a.id - b.id)
-                .map((unit) => {
-                  return {
-                    value: unit.id.toString(),
-                    label: unit.name[0],
-                  };
-                })}
-              variant="default"
-              searchable
-            />
-            <MultiSelect
-              label="Character 5★"
-              placeholder="Pick a character..."
-              data={characters
-                .sort(
-                  (a: any, b: any) =>
-                    characterIDtoSort[a.character_id] -
-                    characterIDtoSort[b.character_id]
-                )
-                .map((c: GameCharacter) => {
-                  return {
-                    value: c.character_id.toString(),
-                    label: c.first_name[0],
-                  };
-                })}
-              value={viewOptions.filterFiveStar}
-              onChange={(val) => {
-                setViewOptions({ ...viewOptions, filterFiveStar: val });
-              }}
-              sx={{ maxWidth: 400 }}
-              variant="default"
-              searchable
-            />
-            <MultiSelect
-              label="Character 4★"
-              placeholder="Pick a character..."
-              data={characters
-                .sort(
-                  (a: any, b: any) =>
-                    characterIDtoSort[a.character_id] -
-                    characterIDtoSort[b.character_id]
-                )
-                .map((c: GameCharacter) => {
-                  return {
-                    value: c.character_id.toString(),
-                    label: c.first_name[0],
-                  };
-                })}
-              value={viewOptions.filterFourStar}
-              onChange={(val) => {
-                setViewOptions({ ...viewOptions, filterFourStar: val });
-              }}
-              sx={{ maxWidth: 400 }}
-              variant="default"
-              searchable
-            />
-            <Input.Wrapper id="type" label="Event Type">
-              <Chip.Group
-                multiple
-                value={viewOptions.filterType}
-                onChange={(value) => {
-                  const filterType = value;
-                  setViewOptions({ ...viewOptions, filterType });
-                }}
-                spacing={3}
-              >
-                {["Song", "Tour", "Special", "Shuffle"].map((r) => (
-                  <Chip
-                    key={r}
-                    value={r.toString()}
-                    radius="md"
-                    styles={{
-                      label: { paddingLeft: 10, paddingRight: 10 },
-                      iconWrapper: { display: "none" },
-                    }}
-                    color="yellow"
-                    variant="filled"
-                  >
-                    {r}
-                  </Chip>
-                ))}
-              </Chip.Group>
-            </Input.Wrapper>
-            <Button
-              compact
-              onClick={() => {
-                setViewOptions(EVENT_VIEW_OPTIONS_DEFAULT);
-              }}
-            >
-              Reset all filters
-            </Button>
-          </Group>
         </Text>
+        <Group>
+          <TextInput
+            label="Search"
+            placeholder="Type an event name..."
+            value={search}
+            onChange={(event) => {
+              setSearch(event.target.value);
+            }}
+            sx={{ maxWidth: 200 }}
+            variant="default"
+            icon={<IconSearch size="1em" />}
+          />
+          <Select
+            label="Sort by"
+            placeholder="Select sorting option..."
+            data={SORT_OPTIONS}
+            value={viewOptions.sortOption}
+            onChange={(value: SortOption) => {
+              if (value) setViewOptions({ ...viewOptions, sortOption: value });
+            }}
+            sx={{ maxWidth: 200 }}
+            variant="default"
+            icon={<IconArrowsSort size="1em" />}
+            rightSection={
+              <Tooltip label="Toggle ascending/descending">
+                <ActionIcon
+                  onClick={() => {
+                    setViewOptions((v) => ({
+                      ...viewOptions,
+                      sortDescending: !v.sortDescending,
+                    }));
+                  }}
+                  variant="light"
+                  color="blue"
+                >
+                  {viewOptions.sortDescending ? (
+                    <IconSortAscending size={16} />
+                  ) : (
+                    <IconSortDescending size={16} />
+                  )}
+                </ActionIcon>
+              </Tooltip>
+            }
+          />
+          <MultiSelect
+            label="Featured Units"
+            placeholder="Pick a unit..."
+            data={units
+              .sort((a: GameUnit, b: GameUnit) => a.id - b.id)
+              .map((unit) => {
+                return {
+                  value: unit.id.toString(),
+                  label: unit.name[0],
+                };
+              })}
+            variant="default"
+            searchable
+          />
+          <MultiSelect
+            label="Character 5★"
+            placeholder="Pick a character..."
+            data={characters
+              .sort(
+                (a: any, b: any) =>
+                  characterIDtoSort[a.character_id] -
+                  characterIDtoSort[b.character_id]
+              )
+              .map((c: GameCharacter) => {
+                return {
+                  value: c.character_id.toString(),
+                  label: c.first_name[0],
+                };
+              })}
+            value={viewOptions.filterFiveStar}
+            onChange={(val) => {
+              setViewOptions({ ...viewOptions, filterFiveStar: val });
+            }}
+            sx={{ maxWidth: 400 }}
+            variant="default"
+            searchable
+          />
+          <MultiSelect
+            label="Character 4★"
+            placeholder="Pick a character..."
+            data={characters
+              .sort(
+                (a: any, b: any) =>
+                  characterIDtoSort[a.character_id] -
+                  characterIDtoSort[b.character_id]
+              )
+              .map((c: GameCharacter) => {
+                return {
+                  value: c.character_id.toString(),
+                  label: c.first_name[0],
+                };
+              })}
+            value={viewOptions.filterFourStar}
+            onChange={(val) => {
+              setViewOptions({ ...viewOptions, filterFourStar: val });
+            }}
+            sx={{ maxWidth: 400 }}
+            variant="default"
+            searchable
+          />
+          <Input.Wrapper id="type" label="Event Type">
+            <Chip.Group
+              multiple
+              value={viewOptions.filterType}
+              onChange={(value) => {
+                const filterType = value;
+                setViewOptions({ ...viewOptions, filterType });
+              }}
+              spacing={3}
+            >
+              {["Song", "Tour", "Special", "Shuffle"].map((r) => (
+                <Chip
+                  key={r}
+                  value={r.toString()}
+                  radius="md"
+                  styles={{
+                    label: { paddingLeft: 10, paddingRight: 10 },
+                    iconWrapper: { display: "none" },
+                  }}
+                  color="yellow"
+                  variant="filled"
+                >
+                  {r}
+                </Chip>
+              ))}
+            </Chip.Group>
+          </Input.Wrapper>
+          <Button
+            compact
+            onClick={() => {
+              setViewOptions(EVENT_VIEW_OPTIONS_DEFAULT);
+            }}
+          >
+            Reset all filters
+          </Button>
+        </Group>
       </Paper>
       {filteredEvents.map((event) => {
         let eventUnits: GameUnit[] = units.filter((unit: GameUnit) => {

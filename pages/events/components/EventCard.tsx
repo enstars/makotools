@@ -78,7 +78,7 @@ function EventCard({
       </Box>
       <Box className={classes.eventInfo}>
         <Group noWrap>
-          <Title order={3} sx={{ width: "80%" }}>
+          <Title order={3} sx={{ width: "75%" }}>
             {event.name}
           </Title>
           <Badge
