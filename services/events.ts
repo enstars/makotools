@@ -29,6 +29,18 @@ function retrieveEvents(
 
   if (data.gameEvents) {
     for (const event of data.gameEvents) {
+      let unitId;
+      if (event.unit_id === undefined) {
+        unitId = null;
+      } else if (!isNaN(event.unit_id)) {
+        unitId = [event.unit_id];
+      } else {
+        let arr = event.unit_id.split(",");
+        unitId = [];
+        for (let i = 0; i < arr.length; i++) {
+          unitId.push(parseInt(arr[i]));
+        }
+      }
       let gameEvent: GameEvent = {
         event_id: event.event_id,
         start_date: event.start_date[locale as string] || event.start_date,
@@ -39,7 +51,8 @@ function retrieveEvents(
         event_gacha_id: event.gacha_id,
         banner_id: event.banner_id,
         story_name: event.story_name[1],
-        intro_lines: event.intro_lines[0] || null,
+        intro_lines: event.intro_lines[1] || null,
+        unit_id: unitId,
       };
       events.push(gameEvent);
     }
@@ -60,6 +73,36 @@ function retrieveEvents(
   }
 
   return events;
+}
+
+function retrieveEvent(event: any): GameEvent {
+  let unitId, fiveStars, fourStars, threeStars;
+  if (event.unit_id === undefined) {
+    unitId = null;
+  } else if (!isNaN(event.unit_id)) {
+    unitId = [event.unit_id];
+  } else {
+    let arr = event.unit_id.split(",");
+    unitId = [];
+    for (let i = 0; i < arr.length; i++) {
+      unitId.push(parseInt(arr[i]));
+    }
+  }
+  return {
+    event_id: event.event_id,
+    name: event.name,
+    start_date: event.start_date,
+    end_date: event.end_date,
+    type: event.type,
+    story_name: event.story_name || null,
+    story_author: event.story_author || null,
+    story_season: event.story_season || null,
+    banner_id: event.banner_id,
+    event_gacha: event.event_gacha || null,
+    event_gacha_id: event.event_gacha_id || null,
+    intro_lines: event.intro_lines || null,
+    unit_id: unitId,
+  } as GameEvent;
 }
 
 function retrieveClosestEvents(
@@ -167,6 +210,7 @@ function isItYippeeTime(dateA: Date, dateB: Date, dayjs: any): boolean {
 
 export {
   retrieveEvents,
+  retrieveEvent,
   retrieveClosestEvents,
   localizeEventTimes,
   countdown,

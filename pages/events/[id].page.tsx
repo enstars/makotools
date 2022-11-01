@@ -1,25 +1,45 @@
+import { Box } from "@mantine/core";
+
 import { getLayout } from "components/Layout";
-import { getLocalizedDataArray } from "services/data";
-import { retrieveEvents } from "services/events";
+import {
+  getItemFromLocalizedDataArray,
+  getLocalizedDataArray,
+} from "services/data";
+import { retrieveEvent } from "services/events";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameEvent } from "types/game";
 
-function Page() {}
+function Page({ event }: { event: GameEvent }) {
+  return <Box>{event.name}</Box>;
+}
 
 export const getServerSideProps = getServerSideUser(
-  async ({ locale, params }) => {
-    const gameEvents: any = await getLocalizedDataArray<GameEvent>(
+  async ({ res, locale, params }) => {
+    if (!params?.id || Array.isArray(params?.id)) return { notFound: true };
+
+    const getEvents: any = await getLocalizedDataArray(
       "events",
       locale,
       "event_id"
     );
 
-    const events = retrieveEvents(
-      {
-        gameEvents: gameEvents.data,
-      },
-      locale
+    console.log(params.id);
+
+    const getEvent: any = getItemFromLocalizedDataArray(
+      getEvents,
+      parseInt(params.id),
+      "event_id"
     );
+
+    if (getEvent.status === "error") return { notFound: true };
+
+    let event: GameEvent = retrieveEvent(getEvent.data);
+
+    return {
+      props: {
+        event: event,
+      },
+    };
   }
 );
 
