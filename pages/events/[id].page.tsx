@@ -1,6 +1,8 @@
-import { Box } from "@mantine/core";
+import { Blockquote, Box, Group } from "@mantine/core";
 
+import Picture from "components/core/Picture";
 import { getLayout } from "components/Layout";
+import PageTitle from "components/sections/PageTitle";
 import {
   getItemFromLocalizedDataArray,
   getLocalizedDataArray,
@@ -10,7 +12,23 @@ import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameEvent } from "types/game";
 
 function Page({ event }: { event: GameEvent }) {
-  return <Box>{event.name}</Box>;
+  return (
+    <>
+      <PageTitle title={event.name[0]} />
+      <Group>
+        <Box sx={{ position: "relative", flex: "1 2 100px" }}>
+          <Picture
+            alt={event.name}
+            srcB2={`assets/card_still_full1_${event.banner_id}_evolution.png`}
+            radius="sm"
+            sx={{ height: 250 }}
+          />
+        </Box>
+
+        <Blockquote>{event.intro_lines}</Blockquote>
+      </Group>
+    </>
+  );
 }
 
 export const getServerSideProps = getServerSideUser(
@@ -35,9 +53,14 @@ export const getServerSideProps = getServerSideUser(
 
     let event: GameEvent = retrieveEvent(getEvent.data);
 
+    const title = event.name[0];
+    const breadcrumbs = ["events", title];
+
     return {
       props: {
         event: event,
+        title,
+        breadcrumbs,
       },
     };
   }
