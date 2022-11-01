@@ -300,7 +300,7 @@ function Page({
             key={event.event_id}
             event={event}
             units={eventUnits}
-            locale={locale[0]}
+            locale={locale}
           />
         );
       })}

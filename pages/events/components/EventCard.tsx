@@ -15,20 +15,21 @@ import { IconArrowsShuffle2, IconBus, IconDiamond } from "@tabler/icons";
 import Picture from "components/core/Picture";
 import { GameEvent, GameUnit } from "types/game";
 import { useDayjs } from "services/libraries/dayjs";
+import IconEnstars from "components/core/IconEnstars";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   eventCard: {
     display: "flex",
     flexFlow: "row wrap",
-    width: "80%",
+    width: "100%",
     margin: "auto",
-    marginTop: "2vh",
+    // marginTop: "2vh",
   },
   eventInfo: {
     position: "relative",
-    flex: "2 1 55%",
+    flex: "2 1 60%",
     padding: "10px 10px 10px 20px",
-
+    minWidth: 200,
     ["@media (max-width: 768px)"]: {
       width: "100%",
     },
@@ -65,13 +66,13 @@ function EventCard({
       withBorder
       className={classes.eventCard}
     >
-      <Box sx={{ position: "relative", flex: "1 1 45%" }}>
+      <Box sx={{ position: "relative", flex: "1 1 30%", minWidth: 175 }}>
         <Picture
           alt={event.name}
           srcB2={`assets/card_still_full1_${event.banner_id}_evolution.png`}
           radius="sm"
           sx={(theme) => ({
-            height: 250,
+            height: "100%",
             minHeight: 150,
           })}
         />
@@ -79,7 +80,7 @@ function EventCard({
       <Box className={classes.eventInfo}>
         <Group noWrap>
           <Title order={3} sx={{ width: "80%" }}>
-            {event.name}
+            {event.name[0]}
           </Title>
           <Badge
             variant="filled"
@@ -135,7 +136,7 @@ function EventCard({
         </Group>
 
         <Blockquote className={classes.eventSummary}>
-          {event.intro_lines || "Event description to be announced soon."}
+          {event.intro_lines?.[0] || "Event description to be announced soon."}
         </Blockquote>
         <Box>
           {units.length > 0 && (
@@ -148,19 +149,21 @@ function EventCard({
               }}
             >
               {units.map((unit) => (
-                <Text
+                <Badge
                   key={unit.id}
-                  size="xs"
-                  weight={600}
+                  // size="xs"
+                  // weight={600}
+                  color={unit.image_color}
                   sx={(theme) => ({
                     background: `${unit.image_color}44`,
                     color: unit.image_color,
                     padding: "2px 8px",
                     borderRadius: theme.radius.lg,
                   })}
+                  leftSection={<IconEnstars unit={unit.id} size={10} />}
                 >
                   {unit.name[0]}
-                </Text>
+                </Badge>
               ))}
             </Group>
           )}
