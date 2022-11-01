@@ -11,6 +11,7 @@ import {
   IconBook2,
   IconGavel,
   IconHeart,
+  IconHeartHandshake,
   IconLanguageHiragana,
   IconNews,
   IconSpy,
@@ -123,6 +124,11 @@ function Page() {
       >
         {[
           { link: "announcements", name: "Site Announcements", icon: IconNews },
+          {
+            link: "guidelines",
+            name: "Community Guidelines",
+            icon: IconHeartHandshake,
+          },
           {
             link: "translations",
             name: "About Translations",
