@@ -29,16 +29,17 @@ function retrieveEvents(
 
   if (data.gameEvents) {
     for (const event of data.gameEvents) {
+      console.log(event.name);
       let gameEvent: GameEvent = {
         event_id: event.event_id,
         start_date: event.start_date[locale as string] || event.start_date,
         end_date: event.end_date[locale as string] || event.end_date,
         type: event.type,
-        name: event.name[1],
+        name: event.name[0],
         event_gacha: event.event_gacha,
         event_gacha_id: event.gacha_id,
         banner_id: event.banner_id,
-        story_name: event.story_name[1],
+        story_name: event.story_name[0],
       };
       events.push(gameEvent);
     }
@@ -51,7 +52,7 @@ function retrieveEvents(
         start_date: scout.start_date[locale as string] || scout.start_date,
         end_date: scout.end_date[locale as string] || scout.end_date,
         type: scout.type,
-        name: scout.name[1],
+        name: scout.name[0],
         banner_id: scout.five_star.card_id,
       };
       events.push(scoutEvent);
