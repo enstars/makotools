@@ -7,9 +7,10 @@ import {
   Badge,
   Group,
   Blockquote,
+  Tooltip,
 } from "@mantine/core";
 import Link from "next/link";
-import { IconBus, IconDiamond } from "@tabler/icons";
+import { IconArrowsShuffle2, IconBus, IconDiamond } from "@tabler/icons";
 
 import Picture from "components/core/Picture";
 import { GameEvent, GameUnit } from "types/game";
@@ -68,11 +69,19 @@ function EventCard({ event, units }: { event: GameEvent; units: GameUnit[] }) {
           </Title>
           <Badge
             variant="filled"
-            color={event.type === "song" ? "grape" : "teal"}
+            color={
+              event.type === "song"
+                ? "grape"
+                : event.type === "shuffle"
+                ? "blue"
+                : "teal"
+            }
             leftSection={
               <Box mt={4}>
                 {event.type === "song" ? (
                   <IconDiamond size={12} strokeWidth={3} />
+                ) : event.type === "shuffle" ? (
+                  <IconArrowsShuffle2 size={12} strokeWidth={3} />
                 ) : (
                   <IconBus size={12} strokeWidth={3} />
                 )}
@@ -82,11 +91,35 @@ function EventCard({ event, units }: { event: GameEvent; units: GameUnit[] }) {
             {event.type}
           </Badge>
         </Group>
-        <Text size="sm" className={classes.eventDate}>
-          {dayjs(event.start_date).format("lll")}
-          {" - "}
-          {dayjs(event.end_date).format("lll z")}
-        </Text>
+        <Group>
+          <Text size="sm" className={classes.eventDate}>
+            {dayjs(event.start_date).format("lll")}
+            {" - "}
+            {dayjs(event.end_date).format("lll z")}
+          </Text>
+          {dayjs(event.start_date).isAfter(dayjs()) && (
+            <Tooltip
+              multiline
+              width={250}
+              label="This event has not occured yet and this date range will be updated when official dates are provided."
+              position="bottom"
+              withArrow
+            >
+              <Badge color="red" variant="dot">
+                Estimate
+              </Badge>
+            </Tooltip>
+          )}
+          {dayjs().isBetween(
+            dayjs(event.start_date),
+            dayjs(event.end_date)
+          ) && (
+            <Badge color="yellow" variant="dot">
+              Ongoing
+            </Badge>
+          )}
+        </Group>
+
         <Blockquote className={classes.eventSummary}>
           {event.intro_lines || "Event description to be announced soon."}
         </Blockquote>

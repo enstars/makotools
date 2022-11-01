@@ -1,7 +1,11 @@
 import {
   ActionIcon,
   Alert,
+  Button,
+  Chip,
   Group,
+  Input,
+  MultiSelect,
   Paper,
   Select,
   Text,
@@ -15,7 +19,7 @@ import {
   IconSortAscending,
   IconSortDescending,
 } from "@tabler/icons";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDebouncedValue, useLocalStorage } from "@mantine/hooks";
 
 import EventCard from "./components/EventCard";
@@ -25,7 +29,8 @@ import PageTitle from "components/sections/PageTitle";
 import { getLocalizedDataArray } from "services/data";
 import { retrieveEvents } from "services/events";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { GameEvent, GameUnit } from "types/game";
+import { GameCharacter, GameEvent, GameUnit } from "types/game";
+import { QuerySuccess } from "types/makotools";
 
 type SortOption = "date" | "id";
 
@@ -33,13 +38,34 @@ interface EventViewOptions {
   searchQuery: string;
   sortOption: SortOption;
   sortDescending: boolean;
+  filterUnits: string[];
+  filterFiveStar: string[];
+  filterFourStar: string[];
+  filterType: string[];
 }
 
-function Page({ events, units }: { events: GameEvent[]; units: GameUnit[] }) {
+function Page({
+  events,
+  units,
+  charactersQuery,
+}: {
+  events: GameEvent[];
+  units: GameUnit[];
+  charactersQuery: QuerySuccess<GameCharacter[]>;
+}) {
+  const characters = useMemo(
+    () => charactersQuery.data,
+    [charactersQuery.data]
+  );
+
   const EVENT_VIEW_OPTIONS_DEFAULT: EventViewOptions = {
     searchQuery: "",
     sortOption: "id",
     sortDescending: false,
+    filterUnits: [],
+    filterFiveStar: [],
+    filterFourStar: [],
+    filterType: [],
   };
 
   const [viewOptions, setViewOptions] = useLocalStorage<EventViewOptions>({
@@ -57,6 +83,11 @@ function Page({ events, units }: { events: GameEvent[]; units: GameUnit[] }) {
     date: (a: any, b: any) =>
       (Date.parse(a.start_date) - Date.parse(b.start_date)) * descending,
   };
+
+  let characterIDtoSort: { [key: number]: number } = {};
+  characters.forEach((c) => {
+    characterIDtoSort[c.character_id] = c.sort_id;
+  });
 
   useEffect(() => {
     // update events by search
@@ -132,6 +163,101 @@ function Page({ events, units }: { events: GameEvent[]; units: GameUnit[] }) {
                 </Tooltip>
               }
             />
+            <MultiSelect
+              label="Featured Units"
+              placeholder="Pick a unit..."
+              data={units
+                .sort((a: GameUnit, b: GameUnit) => a.id - b.id)
+                .map((unit) => {
+                  return {
+                    value: unit.id.toString(),
+                    label: unit.name[0],
+                  };
+                })}
+              variant="default"
+              searchable
+            />
+            <MultiSelect
+              label="Character 5★"
+              placeholder="Pick a character..."
+              data={characters
+                .sort(
+                  (a: any, b: any) =>
+                    characterIDtoSort[a.character_id] -
+                    characterIDtoSort[b.character_id]
+                )
+                .map((c: GameCharacter) => {
+                  return {
+                    value: c.character_id.toString(),
+                    label: c.first_name[0],
+                  };
+                })}
+              value={viewOptions.filterFiveStar}
+              onChange={(val) => {
+                setViewOptions({ ...viewOptions, filterFiveStar: val });
+              }}
+              sx={{ maxWidth: 400 }}
+              variant="default"
+              searchable
+            />
+            <MultiSelect
+              label="Character 4★"
+              placeholder="Pick a character..."
+              data={characters
+                .sort(
+                  (a: any, b: any) =>
+                    characterIDtoSort[a.character_id] -
+                    characterIDtoSort[b.character_id]
+                )
+                .map((c: GameCharacter) => {
+                  return {
+                    value: c.character_id.toString(),
+                    label: c.first_name[0],
+                  };
+                })}
+              value={viewOptions.filterFourStar}
+              onChange={(val) => {
+                setViewOptions({ ...viewOptions, filterFourStar: val });
+              }}
+              sx={{ maxWidth: 400 }}
+              variant="default"
+              searchable
+            />
+            <Input.Wrapper id="type" label="Event Type">
+              <Chip.Group
+                multiple
+                value={viewOptions.filterType}
+                onChange={(value) => {
+                  const filterType = value;
+                  setViewOptions({ ...viewOptions, filterType });
+                }}
+                spacing={3}
+              >
+                {["Song", "Tour", "Special", "Shuffle"].map((r) => (
+                  <Chip
+                    key={r}
+                    value={r.toString()}
+                    radius="md"
+                    styles={{
+                      label: { paddingLeft: 10, paddingRight: 10 },
+                      iconWrapper: { display: "none" },
+                    }}
+                    color="yellow"
+                    variant="filled"
+                  >
+                    {r}
+                  </Chip>
+                ))}
+              </Chip.Group>
+            </Input.Wrapper>
+            <Button
+              compact
+              onClick={() => {
+                setViewOptions(EVENT_VIEW_OPTIONS_DEFAULT);
+              }}
+            >
+              Reset all filters
+            </Button>
           </Group>
         </Text>
       </Paper>
@@ -157,6 +283,13 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     "event_id"
   );
 
+  const getCharacters: any = await getLocalizedDataArray<GameCharacter>(
+    "characters",
+    locale,
+    "character_id",
+    ["character_id", "first_name", "sort_id"]
+  );
+
   const getUnits: any = await getLocalizedDataArray<GameUnit>(
     "units",
     locale,
@@ -174,6 +307,7 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     props: {
       events: events,
       units: getUnits.data,
+      charactersQuery: getCharacters,
     },
   };
 });
