@@ -19,13 +19,13 @@ import {
 } from "@tabler/icons";
 import { useMemo } from "react";
 import dayjs from "dayjs";
+import { useRouter } from "next/router";
 
 import EventCard from "./components/EventCard";
 
 import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import { getLocalizedDataArray } from "services/data";
-import { retrieveEvents } from "services/events";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCharacter, GameEvent, GameUnit } from "types/game";
 import { QuerySuccess } from "types/makotools";
@@ -41,16 +41,17 @@ const defaultView = {
 };
 
 function Page({
-  events,
-  units,
-  locale,
+  eventsQuery,
+  unitsQuery,
   charactersQuery,
 }: {
-  events: GameEvent[];
-  units: GameUnit[];
-  locale: string[];
+  eventsQuery: QuerySuccess<GameEvent[]>;
+  unitsQuery: QuerySuccess<GameUnit[]>;
   charactersQuery: QuerySuccess<GameCharacter[]>;
 }) {
+  const { locale } = useRouter();
+  const events = useMemo(() => eventsQuery.data, [eventsQuery.data]);
+  const units = useMemo(() => unitsQuery.data, [unitsQuery.data]);
   const characters = useMemo(
     () => charactersQuery.data,
     [charactersQuery.data]
@@ -107,6 +108,8 @@ function Page({
   characters.forEach((c) => {
     characterIDtoSort[c.character_id] = c.sort_id;
   });
+
+  console.log(events);
 
   return (
     <>
@@ -285,7 +288,11 @@ function Page({
       {results.map((event) => {
         let eventUnits: GameUnit[] = units.filter((unit: GameUnit) => {
           return event.unit_id
-            ? (event.unit_id as number[]).includes(unit.id)
+            ? event.unit_id
+                ?.toString()
+                ?.split(",")
+                ?.map(parseInt)
+                ?.includes(unit.id)
             : false;
         });
         return (
@@ -302,38 +309,37 @@ function Page({
 }
 
 export const getServerSideProps = getServerSideUser(async ({ locale }) => {
-  const getEvents: any = await getLocalizedDataArray<any>(
+  const eventsQuery: any = await getLocalizedDataArray<any>(
     "events",
     locale,
     "event_id"
   );
 
-  const getCharacters: any = await getLocalizedDataArray<GameCharacter>(
+  const charactersQuery: any = await getLocalizedDataArray<GameCharacter>(
     "characters",
     locale,
     "character_id",
     ["character_id", "first_name", "sort_id"]
   );
 
-  const getUnits: any = await getLocalizedDataArray<GameUnit>(
+  const unitsQuery: any = await getLocalizedDataArray<GameUnit>(
     "units",
     locale,
     "id"
   );
 
-  const events: GameEvent[] = retrieveEvents(
-    {
-      gameEvents: getEvents.data,
-    },
-    locale
-  ) as GameEvent[];
+  // const events: GameEvent[] = retrieveEvents(
+  //   {
+  //     gameEvents: getEvents.data,
+  //   },
+  //   locale
+  // ) as GameEvent[];
 
   return {
     props: {
-      events: events,
-      units: getUnits.data,
-      locale: locale,
-      charactersQuery: getCharacters,
+      eventsQuery,
+      unitsQuery,
+      charactersQuery,
     },
   };
 });
