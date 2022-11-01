@@ -16,6 +16,7 @@ import { QuerySuccess } from "../../types/makotools";
 
 import { useDayjs } from "services/libraries/dayjs";
 import { GameCharacter } from "types/game";
+import { getNameOrder } from "services/game";
 
 function Page({
   characterQuery,
@@ -112,7 +113,7 @@ function Page({
 }
 
 export const getServerSideProps = getServerSideUser(
-  async ({ res, locale, params }) => {
+  async ({ res, locale, params, db }) => {
     const characters = await getLocalizedDataArray<GameCharacter>(
       "characters",
       locale,
@@ -157,9 +158,18 @@ export const getServerSideProps = getServerSideUser(
       };
     }
 
+    const characterName = getNameOrder(
+      character.data,
+      db?.setting__name_order,
+      locale
+    );
+
+    const breadcrumbs = ["characters", characterName];
+
     return {
       props: {
         characterQuery: character,
+        breadcrumbs,
       },
     };
   }
