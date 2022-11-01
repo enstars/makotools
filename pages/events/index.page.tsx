@@ -114,7 +114,10 @@ function Page({
   return (
     <>
       <PageTitle title="Events" />
-      <Alert icon={<IconAlertCircle size={16} />} color="indigo">
+      <Alert
+        icon={<IconAlertCircle size={16} strokeWidth={3} />}
+        color="indigo"
+      >
         In-game events are gradually being added to MakoTools. We appreciate
         your patience!
       </Alert>
