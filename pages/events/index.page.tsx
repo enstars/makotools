@@ -17,7 +17,7 @@ import {
   IconSortAscending,
   IconSortDescending,
 } from "@tabler/icons";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import dayjs from "dayjs";
 
 import EventCard from "./components/EventCard";
@@ -51,25 +51,10 @@ function Page({
   locale: string[];
   charactersQuery: QuerySuccess<GameCharacter[]>;
 }) {
-  console.log("\n==========RERENDERED=========\n ");
   const characters = useMemo(
     () => charactersQuery.data,
     [charactersQuery.data]
   );
-
-  const [view, setView] = useState<ViewType>({
-    filters: { units: [] },
-    search: "",
-    sort: {
-      type: "id",
-      ascending: true,
-    },
-  });
-
-  let characterIDtoSort: { [key: number]: number } = {};
-  characters.forEach((c) => {
-    characterIDtoSort[c.character_id] = c.sort_id;
-  });
 
   const fssOptions = useMemo<FSSOptions<GameEvent>>(
     () => ({
@@ -112,13 +97,17 @@ function Page({
       search: {
         fields: ["name"],
       },
+      defaultView,
     }),
-    [dayjs]
+    []
   );
-  const results = useFSSList<GameEvent>(events, view, fssOptions);
+  const { results, view, setView } = useFSSList<GameEvent>(events, fssOptions);
 
-  console.log("results", JSON.stringify(results.map((e) => e.event_id)));
-  console.log(view);
+  let characterIDtoSort: { [key: number]: number } = {};
+  characters.forEach((c) => {
+    characterIDtoSort[c.character_id] = c.sort_id;
+  });
+
   return (
     <>
       <PageTitle title="Events" />
@@ -201,7 +190,6 @@ function Page({
             variant="default"
             searchable
             onChange={(val) => {
-              console.log("v", val);
               setView((v) => ({
                 ...v,
                 filters: {
@@ -294,20 +282,18 @@ function Page({
           </Button>
         </Group>
       </Paper>
-      {results.map((r) => r.event_id).join(" ")}
       {results.map((event) => {
         let eventUnits: GameUnit[] = units.filter((unit: GameUnit) => {
           return event.unit_id
             ? (event.unit_id as number[]).includes(unit.id)
             : false;
         });
-        // console.log(eventUnits);
         return (
           <EventCard
             key={event.event_id}
             event={event}
             units={eventUnits}
-            locale={locale}
+            locale={locale[0]}
           />
         );
       })}

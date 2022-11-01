@@ -5,24 +5,20 @@ import fuzzysort from "fuzzysort";
 // fss = filter + search + sort
 export default function useFSSList<DataType>(
   data: DataType[],
-  view: ViewType,
   options: FSSOptions<DataType>
 ) {
   const [results, setResults] = useState(data);
+  const [view, setView] = useState(options.defaultView);
   const [debouncedSearch] = useDebouncedValue(view.search, 200);
 
   useEffect(() => {
     let filteredList = data;
-
-    console.log("s", JSON.stringify(data.map((e) => e.event_id)));
-    console.log("s", JSON.stringify(filteredList.map((e) => e.event_id)));
 
     let finalList;
     options.filters.forEach((filter) => {
       if (view.filters[filter.type].length) {
         filteredList = filteredList.filter(filter.function(view));
       }
-      JSON.stringify(filteredList.map((e) => e.event_id));
     });
 
     if (debouncedSearch) {
@@ -37,12 +33,6 @@ export default function useFSSList<DataType>(
       //   setResults(sortedSearchList);
     } else {
       const sortDirection = view.sort.ascending ? 1 : -1;
-      console.log(
-        view.sort.ascending,
-        sortDirection,
-        JSON.stringify(filteredList.map((e) => e.event_id)),
-        filteredList[0]?.event_id
-      );
 
       const baseSortFunction =
         options.sorts.find((s) => s.value === options.baseSort)?.function ||
@@ -57,15 +47,10 @@ export default function useFSSList<DataType>(
       if (viewSortFunction) {
         sortedList.sort((a, b) => viewSortFunction(a, b) * sortDirection);
       }
-      console.log(
-        "postsort",
-        JSON.stringify(sortedList.map((e) => e.event_id))
-      );
       finalList = sortedList;
-      //   setResults(sortedList);
     }
-    setResults(finalList);
+    setResults([...finalList]);
   }, [view, debouncedSearch, data, options]);
 
-  return results;
+  return { results, view, setView };
 }

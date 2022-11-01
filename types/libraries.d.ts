@@ -39,4 +39,5 @@ interface FSSOptions<DataType> {
   sorts: Sort<DataType>[];
   baseSort: string;
   search: SearchSettings;
+  defaultView: ViewType;
 }
