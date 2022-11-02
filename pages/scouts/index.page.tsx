@@ -1,23 +1,30 @@
 import {
-  Accordion,
+  ActionIcon,
   Alert,
   Button,
   Group,
   MultiSelect,
   Paper,
+  Select,
   SimpleGrid,
+  Space,
+  Tabs,
   Text,
   TextInput,
   Title,
+  Tooltip,
 } from "@mantine/core";
 import {
   IconAlertCircle,
+  IconArrowsSort,
   IconComet,
   IconDiamond,
   IconSearch,
+  IconSortAscending,
+  IconSortDescending,
+  IconStars,
 } from "@tabler/icons";
-import { useMemo, useState } from "react";
-import { useLocalStorage } from "@mantine/hooks";
+import { useEffect, useMemo, useState } from "react";
 
 import ScoutCard from "./components/ScoutCard";
 
@@ -28,6 +35,8 @@ import { retrieveEvents } from "services/events";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCharacter, ScoutEvent } from "types/game";
 import { QuerySuccess } from "types/makotools";
+import { useDayjs } from "services/libraries/dayjs";
+import useFSSList from "services/makotools/search";
 
 interface ScoutViewOptions {
   searchQuery: string;
@@ -44,29 +53,119 @@ function Page({
   scouts: ScoutEvent[];
   charactersQuery: QuerySuccess<GameCharacter[]>;
 }) {
+  const { dayjs } = useDayjs();
+
   const characters = useMemo(
     () => charactersQuery.data,
     [charactersQuery.data]
   );
 
-  const SCOUT_VIEW_OPTIONS_DEFAULT: ScoutViewOptions = {
-    searchQuery: "",
-    filterFiveStar: [],
-    filterFourStar: [],
-    filterThreeStar: [],
-    filterType: [],
+  const defaultView = {
+    filters: { fivestar: [], fourstar: [], threestar: [] },
+    search: "",
+    sort: {
+      type: "id",
+      ascending: true,
+    },
   };
 
-  const [search, setSearch] = useState<string>("");
-  const [viewOptions, setViewOptions] = useLocalStorage<ScoutViewOptions>({
-    key: "scoutFilters",
-    defaultValue: SCOUT_VIEW_OPTIONS_DEFAULT,
-  });
+  const fssOptions = useMemo<FSSOptions<ScoutEvent>>(
+    () => ({
+      filters: [
+        {
+          type: "fivestar",
+          values: [],
+          function: (view) => {
+            // return (c) =>
+            //   view.filters.units.filter((value: number) =>
+            //     c.unit_id?.includes(value)
+            //   ).length;
+
+            // this mess below can be removed when we can confirm
+            // event's unit_id is ALWAYS an array of numbers
+
+            return (c) =>
+              view.filters.fivestar.filter((value: number) =>
+                Array.isArray(c.five_star?.chara_id)
+                  ? c.five_star?.chara_id?.includes(value)
+                  : c.five_star?.chara_id === value
+              ).length;
+          },
+        },
+        {
+          type: "fourstar",
+          values: [],
+          function: (view) => {
+            // return (c) =>
+            //   view.filters.units.filter((value: number) =>
+            //     c.unit_id?.includes(value)
+            //   ).length;
+
+            // this mess below can be removed when we can confirm
+            // event's unit_id is ALWAYS an array of numbers
+
+            return (c) =>
+              view.filters.fourstar.filter((value: number) =>
+                Array.isArray(c.four_star?.chara_id)
+                  ? c.four_star?.chara_id?.includes(value)
+                  : c.four_star?.chara_id === value
+              ).length;
+          },
+        },
+        {
+          type: "threestar",
+          values: [],
+          function: (view) => {
+            // return (c) =>
+            //   view.filters.units.filter((value: number) =>
+            //     c.unit_id?.includes(value)
+            //   ).length;
+
+            // this mess below can be removed when we can confirm
+            // event's unit_id is ALWAYS an array of numbers
+
+            return (c) =>
+              view.filters.threestar.filter((value: number) =>
+                Array.isArray(c.three_star?.chara_id)
+                  ? c.three_star?.chara_id?.includes(value)
+                  : c.three_star?.chara_id === value
+              ).length;
+          },
+        },
+      ],
+      sorts: [
+        {
+          label: "Scout ID",
+          value: "id",
+          function: (a, b) => a.gacha_id - b.gacha_id,
+        },
+        {
+          label: "Start Date",
+          value: "date",
+          function: (a, b) =>
+            dayjs(a.start_date).unix() - dayjs(b.start_date).unix(),
+        },
+      ],
+      baseSort: "id",
+      search: {
+        fields: ["name"],
+      },
+      defaultView,
+    }),
+    []
+  );
+  const { results, view, setView } = useFSSList<ScoutEvent>(scouts, fssOptions);
+
+  const [isMobile, setMobile] = useState<boolean>(false);
 
   let characterIDtoSort: { [key: number]: number } = {};
   characters.forEach((c) => {
     characterIDtoSort[c.character_id] = c.sort_id;
   });
+
+  useEffect(() => {
+    window.innerWidth <= 900 ? setMobile(true) : setMobile(false);
+  }, []);
 
   return (
     <>
@@ -86,13 +185,58 @@ function Page({
           <TextInput
             label="Search"
             placeholder="Type a scout name..."
-            value={search}
+            value={view.search}
             onChange={(event) => {
-              setSearch(event.target.value);
+              setView((v) => ({
+                ...v,
+                search: event.target.value,
+              }));
             }}
             sx={{ maxWidth: 200 }}
             variant="default"
             icon={<IconSearch size="1em" />}
+          />
+          <Select
+            label="Sort by"
+            placeholder="Select sorting option..."
+            data={fssOptions.sorts}
+            value={view.sort.type}
+            onChange={(value) => {
+              if (value)
+                setView((v) => ({
+                  ...v,
+                  sort: {
+                    ...v.sort,
+                    type: value,
+                  },
+                }));
+            }}
+            sx={{ maxWidth: 200 }}
+            variant="default"
+            icon={<IconArrowsSort size="1em" />}
+            rightSection={
+              <Tooltip label="Toggle ascending/descending">
+                <ActionIcon
+                  onClick={() => {
+                    setView((v) => ({
+                      ...v,
+                      sort: {
+                        ...v.sort,
+                        ascending: !v.sort.ascending,
+                      },
+                    }));
+                  }}
+                  variant="light"
+                  color="blue"
+                >
+                  {view.sort.ascending ? (
+                    <IconSortAscending size={16} />
+                  ) : (
+                    <IconSortDescending size={16} />
+                  )}
+                </ActionIcon>
+              </Tooltip>
+            }
           />
           <MultiSelect
             label="Character 5★"
@@ -109,9 +253,14 @@ function Page({
                   label: c.first_name[0],
                 };
               })}
-            value={viewOptions.filterFiveStar}
             onChange={(val) => {
-              setViewOptions({ ...viewOptions, filterFiveStar: val });
+              setView((v) => ({
+                ...v,
+                filters: {
+                  ...v.filters,
+                  fivestar: val.map(parseInt),
+                },
+              }));
             }}
             sx={{ maxWidth: 400 }}
             variant="default"
@@ -132,9 +281,14 @@ function Page({
                   label: c.first_name[0],
                 };
               })}
-            value={viewOptions.filterFourStar}
             onChange={(val) => {
-              setViewOptions({ ...viewOptions, filterFourStar: val });
+              setView((v) => ({
+                ...v,
+                filters: {
+                  ...v.filters,
+                  fourstar: val.map(parseInt),
+                },
+              }));
             }}
             sx={{ maxWidth: 400 }}
             variant="default"
@@ -155,9 +309,14 @@ function Page({
                   label: c.first_name[0],
                 };
               })}
-            value={viewOptions.filterThreeStar}
             onChange={(val) => {
-              setViewOptions({ ...viewOptions, filterThreeStar: val });
+              setView((v) => ({
+                ...v,
+                filters: {
+                  ...v.filters,
+                  threestar: val.map(parseInt),
+                },
+              }));
             }}
             sx={{ maxWidth: 400 }}
             variant="default"
@@ -166,49 +325,79 @@ function Page({
           <Button
             compact
             onClick={() => {
-              setViewOptions(SCOUT_VIEW_OPTIONS_DEFAULT);
+              setView(defaultView);
             }}
           >
             Reset all filters
           </Button>
         </Group>
       </Paper>
-      <Accordion variant="separated">
-        <Accordion.Item value="event_scouts">
-          <Accordion.Control>
-            <Group>
-              <IconDiamond size={36} strokeWidth={2} color="#99e9f2" />{" "}
-              <Title order={2}>Scout Events</Title>
-            </Group>
-          </Accordion.Control>
-          <Accordion.Panel sx={{ maxHeight: "30%", overflowY: "scroll" }}>
-            <SimpleGrid cols={4} spacing="lg">
-              {scouts
-                .filter((scout) => scout.type === "scout")
-                .map((scout) => (
-                  <ScoutCard key={scout.gacha_id} scout={scout} />
-                ))}
-            </SimpleGrid>
-          </Accordion.Panel>
-        </Accordion.Item>
-        <Accordion.Item value="feature_scouts">
-          <Accordion.Control>
-            <Group>
-              <IconComet size={36} strokeWidth={2} color="#ffd43b" />{" "}
-              <Title order={2}>Feature Scouts</Title>
-            </Group>
-          </Accordion.Control>
-          <Accordion.Panel sx={{ maxHeight: "30%", overflowY: "scroll" }}>
-            <SimpleGrid cols={4} spacing="lg">
-              {scouts
-                .filter((scout) => scout.type === "feature scout")
-                .map((scout) => (
-                  <ScoutCard key={scout.gacha_id} scout={scout} />
-                ))}
-            </SimpleGrid>
-          </Accordion.Panel>
-        </Accordion.Item>
-      </Accordion>
+      <Space h="lg" />
+      <Tabs
+        orientation={isMobile ? "horizontal" : "vertical"}
+        variant="outline"
+        defaultValue="event"
+      >
+        <Tabs.List>
+          <Tabs.Tab
+            value="event"
+            icon={<IconDiamond size={36} strokeWidth={2} color="#99e9f2" />}
+            aria-label="Event scouts"
+          >
+            {!isMobile && <Title order={4}>Event Scouts</Title>}
+          </Tabs.Tab>
+          <Tabs.Tab
+            value="feature"
+            icon={<IconComet size={36} strokeWidth={2} color="#ffd43b" />}
+            aria-label="Feature Scouts"
+          >
+            {!isMobile && <Title order={4}>Feature Scouts</Title>}
+          </Tabs.Tab>
+          <Tabs.Tab
+            value="special"
+            icon={<IconStars size={36} strokeWidth={2} color="#d0bfff" />}
+            aria-label="Special Campaigns"
+          >
+            {!isMobile && <Title order={4}>Special Campaigns</Title>}
+          </Tabs.Tab>
+        </Tabs.List>
+
+        <Tabs.Panel value="event">
+          {isMobile && <Space h="md" />}
+          <SimpleGrid
+            cols={4}
+            breakpoints={[
+              { maxWidth: 500, cols: 1 },
+              { maxWidth: 900, cols: 3 },
+            ]}
+            sx={{ ["@media (min-width: 900px)"]: { marginLeft: "1vw" } }}
+          >
+            {scouts
+              .filter((scout) => scout.type === "scout")
+              .map((scout: ScoutEvent) => (
+                <ScoutCard key={scout.gacha_id} scout={scout} />
+              ))}
+          </SimpleGrid>
+        </Tabs.Panel>
+
+        <Tabs.Panel value="feature">
+          {isMobile && <Space h="md" />}
+          <SimpleGrid
+            cols={4}
+            breakpoints={[
+              { maxWidth: 500, cols: 1 },
+              { maxWidth: 900, cols: 3 },
+            ]}
+            sx={{ ["@media (min-width: 900px)"]: { marginLeft: "1vw" } }}
+          >
+            {scouts
+              .filter((scout) => scout.type === "feature scout")
+              .map((scout: ScoutEvent) => (
+                <ScoutCard key={scout.gacha_id} scout={scout} />
+              ))}
+          </SimpleGrid>
+        </Tabs.Panel>
+      </Tabs>
     </>
   );
 }

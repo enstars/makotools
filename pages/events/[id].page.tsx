@@ -4,6 +4,7 @@ import {
   Box,
   Group,
   Paper,
+  SimpleGrid,
   Space,
   Stack,
   Tabs,
@@ -17,11 +18,8 @@ import {
   IconCards,
   IconDiamond,
   IconMusic,
-  IconStar,
 } from "@tabler/icons";
 import { useMemo } from "react";
-
-import attributes from "../../data/attributes.json";
 
 import Picture from "components/core/Picture";
 import { getLayout } from "components/Layout";
@@ -36,6 +34,7 @@ import { useDayjs } from "services/libraries/dayjs";
 import { GameCard, GameEvent, GameUnit, ID } from "types/game";
 import { QuerySuccess } from "types/makotools";
 import IconEnstars from "components/core/IconEnstars";
+import CardCard from "pages/cards/components/DisplayCard";
 
 type Colors = "red" | "blue" | "yellow" | "green";
 
@@ -67,26 +66,37 @@ function Page({
 
   return (
     <>
-      <Group position="apart" align="baseline">
-        <Stack>
-          <PageTitle title={event.name} sx={{ width: "100%" }} />
-          <Box sx={{ position: "relative", flex: "1 1 70%" }}>
-            <Picture
-              alt={event.name}
-              srcB2={`assets/card_still_full1_${event.banner_id}_evolution.png`}
-              sx={{ height: 180 }}
-              radius="md"
-            />
-          </Box>
-        </Stack>
-        <Box sx={{ flex: "1 1 25%" }}>
+      <PageTitle title={event.name} sx={{ width: "100%" }} />
+      <Group position="apart" align="flex-start">
+        <Box sx={{ position: "relative", flex: "2 1 55%" }}>
+          <Picture
+            alt={event.name}
+            srcB2={`assets/card_still_full1_${event.banner_id}_evolution.png`}
+            sx={{ height: 180 }}
+            radius="md"
+          />
+        </Box>
+        <Box sx={{ flex: "2 1 40%" }}>
+          <Group>
+            <Box sx={{ flex: "1 1 0", minWidth: 200 }}>
+              <Text size="sm" color="dimmed" weight={700}>
+                Start ({dayjs(event.start_date).format("z")})
+              </Text>
+              <Text size="lg" weight={500}>
+                {dayjs(event.start_date).format("lll")}
+              </Text>
+            </Box>
+            <Box sx={{ flex: "1 1 0", minWidth: 200 }}>
+              <Text size="sm" color="dimmed" weight={700}>
+                End ({dayjs(event.end_date).format("z")})
+              </Text>
+              <Text size="lg" weight={500}>
+                {dayjs(event.end_date).format("lll")}
+              </Text>
+            </Box>
+          </Group>
+          <Space h="md" />
           <Group noWrap>
-            <Space w="sm" />
-            <Text size="md" weight={600} sx={{ flex: "1 2 0" }}>
-              {dayjs(event.start_date).format("lll")}
-              {" — "}
-              {dayjs(event.end_date).format("lll z")}
-            </Text>
             {dayjs(event.end_date).isBefore(dayjs()) ? (
               <Badge color="gray">Past</Badge>
             ) : dayjs().isBetween(
@@ -97,20 +107,6 @@ function Page({
             ) : (
               <Badge color="lime">Upcoming</Badge>
             )}
-          </Group>
-          <Blockquote
-            sx={(theme) => ({
-              fontSize: "12pt",
-              fontStyle: "italic",
-              color:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[2]
-                  : theme.colors.gray[6],
-            })}
-          >
-            {event.intro_lines}
-          </Blockquote>
-          <Group noWrap>
             {units.map((unit) => (
               <Badge
                 key={unit.id}
@@ -150,103 +146,91 @@ function Page({
           </Group>
         </Box>
       </Group>
-      <Space h="md" />
+      <Space h={60} />
       <Tabs variant="outline" defaultValue="cards">
-        <Tabs.List>
+        <Tabs.List grow>
           <Tabs.Tab
             value="cards"
             icon={<IconCards size={16} strokeWidth={3} />}
           >
-            Cards
+            <Text size="md" weight={600}>
+              Cards
+            </Text>
           </Tabs.Tab>
           {event.type === "song" && (
             <Tabs.Tab
               value="song"
               icon={<IconMusic size={16} strokeWidth={3} />}
             >
-              Song
+              <Text size="md" weight={600}>
+                Song
+              </Text>
             </Tabs.Tab>
           )}
           <Tabs.Tab value="story" icon={<IconBook strokeWidth={3} />}>
-            Story
+            <Text size="md" weight={600}>
+              Story
+            </Text>
           </Tabs.Tab>
         </Tabs.List>
         <Tabs.Panel value="cards" sx={{ padding: "15px" }}>
-          <Stack>
+          <SimpleGrid
+            cols={4}
+            breakpoints={[
+              { maxWidth: 960, cols: 2 },
+              { maxWidth: 400, cols: 1 },
+            ]}
+          >
             {cards.map((card: GameCard) => (
-              <Group key={card.id}>
-                <Group
-                  sx={(theme) => ({
-                    width: 300,
-                    border: `4px solid ${
-                      theme.colors[attributes[card.type].color][7]
-                    }`,
-                    borderRadius: theme.radius.md,
-                    position: "relative",
-
-                    ["@media (max-width: 768px)"]: {
-                      margin: "auto",
-                    },
-                  })}
-                >
-                  <Group
-                    noWrap
-                    spacing="xs"
-                    sx={(theme) => ({
-                      position: "absolute",
-                      bottom: 0,
-                      padding: "5px",
-                      background: theme.colors[attributes[card.type].color][7],
-                      zIndex: 3,
-                      borderRadius: `0px ${theme.radius.sm}px 0px 0px`,
-                    })}
-                  >
-                    {[...Array(card.rarity)].map((star, i) => (
-                      <IconStar key={i} size={16} color="white" fill="white" />
-                    ))}
-                  </Group>
-                  <Group spacing={3} noWrap>
-                    {["normal", "evolution"].map((type) => (
-                      <Box key={type} sx={{ position: "relative", width: 145 }}>
-                        <Picture
-                          alt={card.title[0]}
-                          srcB2={
-                            card.rarity >= 4
-                              ? `assets/card_still_full1_${card.id}_${type}.png`
-                              : `assets/card_rectangle4_${card.id}_${type}.png`
-                          }
-                          radius="sm"
-                          sx={(theme) => ({
-                            height: 250,
-                            flex: "1 1 100%",
-                            transition: theme.other.transition,
-                          })}
-                        />
-                      </Box>
-                    ))}
-                  </Group>
-                </Group>
-                <Paper
-                  shadow="xs"
-                  p="md"
-                  withBorder
-                  sx={{
-                    flex: "1 1 50%",
-                    ["@media (min-width: 960px)"]: {
-                      height: 250,
-                      minHeight: 250,
-                    },
-                  }}
-                >
-                  <Title order={4}>{card.title[0]}</Title>
-                  <Text size="md">{card.name[0]}</Text>
-                </Paper>
-              </Group>
+              <CardCard
+                key={card.id}
+                cardOptions={{ showFullInfo: true }}
+                card={card}
+                lang={cardsQuery.lang}
+              />
             ))}
-          </Stack>
+          </SimpleGrid>
         </Tabs.Panel>
         {event.type === "song" && <Tabs.Panel value="song" />}
-        <Tabs.Panel value="story" />
+        <Tabs.Panel value="story">
+          <Space h="md" />
+          <Group sx={{ padding: "10px" }}>
+            <Box sx={{ position: "relative", flex: "1 2 45%" }}>
+              <Picture
+                alt={event.name[0]}
+                srcB2={`assets/card_still_full1_${event.banner_id}_normal.png`}
+                sx={{ height: 200 }}
+                radius="sm"
+              />
+            </Box>
+            <Box sx={{ flex: "2 1 50%" }}>
+              <Stack>
+                <Title order={3}>{event.story_name}</Title>
+                <Blockquote
+                  sx={(theme) => ({
+                    fontSize: "12pt",
+                    fontStyle: "italic",
+                    color:
+                      theme.colorScheme === "dark"
+                        ? theme.colors.dark[2]
+                        : theme.colors.gray[6],
+                  })}
+                >
+                  {event.intro_lines}
+                </Blockquote>
+                <Text size="sm" color="dimmed">
+                  Story written by {event.story_author[0]}
+                </Text>
+              </Stack>
+            </Box>
+          </Group>
+          <Space h="md" />
+          <Title order={2}>Story Chapters</Title>
+          <Space h="sm" />
+          <Paper shadow="xs" p="md" withBorder>
+            Coming soon!
+          </Paper>
+        </Tabs.Panel>
       </Tabs>
     </>
   );
