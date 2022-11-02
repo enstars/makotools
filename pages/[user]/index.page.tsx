@@ -1,4 +1,5 @@
 import {
+  Anchor,
   AspectRatio,
   Badge,
   Box,
@@ -26,6 +27,7 @@ import { UserData } from "../../types/makotools";
 
 import BioDisplay from "components/sections/BioDisplay";
 import Picture from "components/core/Picture";
+import { CONSTANTS } from "services/makotools/constants";
 
 function Page({ profile }: { profile: UserData }) {
   const { dayjs } = useDayjs();
@@ -138,6 +140,20 @@ function Page({ profile }: { profile: UserData }) {
         </Box>
       </Group>
 
+      <Group position="right" mt="xs">
+        <Anchor
+          component={Link}
+          href={CONSTANTS.MODERATION.GET_REPORT_LINK(
+            profile.username,
+            profile.suid
+          )}
+          target="_blank"
+          color="dimmed"
+          size="sm"
+        >
+          Report User
+        </Anchor>
+      </Group>
       <Divider my="xs" />
 
       <Title order={2} mt="md" mb="xs">

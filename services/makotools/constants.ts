@@ -34,6 +34,14 @@ const CONSTANTS = {
   KEYS: {
     CAPTCHA: "6LfoKlAiAAAAAND6h3R6MapgfOxEH-7usSm7_hIE",
   },
+  MODERATION: {
+    GET_REPORT_LINK: (username: string, SUID: string) =>
+      `https://docs.google.com/forms/d/e/1FAIpQLSdvhp5JggaI2jV8286087m7QFnyhxq5LFngjRGRR7MNWqzN3Q/viewform?usp=pp_url&entry.953932405=__other_option__&entry.953932405.other_option_response=User+Report&entry.1443896834=Reporting+user+@${encodeURIComponent(
+        username
+      )},+SUID+@${encodeURIComponent(
+        SUID
+      )}%0A%0A(Optional)+Please+write+any+information+you'd+like+to+add+below+this+line:`,
+  },
 };
 
 export { CONSTANTS };
