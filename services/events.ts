@@ -102,6 +102,10 @@ function retrieveEvent(event: any, locale: string | undefined): GameEvent {
     event_gacha_id: event.event_gacha_id || null,
     intro_lines: event.intro_lines[0] || null,
     unit_id: unitId,
+    five_star: {
+      chara_id: event.five_star.chara_id || null,
+      card_id: event.five_star.card_id || null,
+    },
   } as GameEvent;
 }
 
