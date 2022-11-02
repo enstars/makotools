@@ -226,7 +226,18 @@ function Page({
                     ))}
                   </Group>
                 </Group>
-                <Paper shadow="xs" p="md" withBorder sx={{ flex: "1 1 50%" }}>
+                <Paper
+                  shadow="xs"
+                  p="md"
+                  withBorder
+                  sx={{
+                    flex: "1 1 50%",
+                    ["@media (min-width: 960px)"]: {
+                      height: 250,
+                      minHeight: 250,
+                    },
+                  }}
+                >
                   <Title order={4}>{card.title[0]}</Title>
                   <Text size="md">{card.name[0]}</Text>
                 </Paper>
