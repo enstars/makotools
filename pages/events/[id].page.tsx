@@ -28,7 +28,6 @@ import {
   getItemFromLocalizedDataArray,
   getLocalizedDataArray,
 } from "services/data";
-import { retrieveEvent } from "services/events";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { useDayjs } from "services/libraries/dayjs";
 import { GameCard, GameEvent, GameUnit, ID } from "types/game";
@@ -67,11 +66,11 @@ function Page({
 
   return (
     <>
-      <PageTitle title={event.name} sx={{ width: "100%" }} />
+      <PageTitle title={event.name[0]} sx={{ width: "100%" }} />
       <Group position="apart" align="flex-start">
         <Box sx={{ position: "relative", flex: "2 1 55%" }}>
           <Picture
-            alt={event.name}
+            alt={event.name[0]}
             srcB2={`assets/card_still_full1_${event.banner_id}_evolution.png`}
             sx={{ height: 180 }}
             radius="md"
@@ -173,7 +172,7 @@ function Page({
       </SimpleGrid>
       <Space h="lg" />
       <Group>
-        <IconBook size={25} strokeWidth={3} color="#99e9f2" />
+        <IconBook size={25} strokeWidth={3} color="#b197fc" />
         <Title order={2}>Story</Title>
       </Group>
       <Space h="sm" />
@@ -190,7 +189,7 @@ function Page({
         </Box>
         <Box sx={{ flex: "2 1 50%" }}>
           <Stack>
-            <Title order={3}>{event.story_name}</Title>
+            <Title order={3}>{event.story_name && event.story_name[0]}</Title>
             <Blockquote
               sx={(theme) => ({
                 fontSize: "12pt",
@@ -201,10 +200,10 @@ function Page({
                     : theme.colors.gray[6],
               })}
             >
-              {event.intro_lines}
+              {event.intro_lines && event.intro_lines[0]}
             </Blockquote>
             <Text size="sm" color="dimmed">
-              Story written by {event.story_author[0]}
+              Story written by {event.story_author && event.story_author[0]}
             </Text>
           </Stack>
         </Box>
@@ -219,7 +218,7 @@ function Page({
       {event.type !== "tour" && (
         <>
           <Group>
-            <IconMusic size={25} strokeWidth={3} color="#b197fc" />
+            <IconMusic size={25} strokeWidth={3} color="#99e9f2" />
             <Title order={2}>Song</Title>
           </Group>
           <Space h="sm" />
@@ -238,7 +237,7 @@ export const getServerSideProps = getServerSideUser(
   async ({ res, locale, params }) => {
     if (!params?.id || Array.isArray(params?.id)) return { notFound: true };
 
-    const getEvents: any = await getLocalizedDataArray(
+    const getEvents: any = await getLocalizedDataArray<GameEvent>(
       "events",
       locale,
       "event_id"
@@ -246,7 +245,7 @@ export const getServerSideProps = getServerSideUser(
 
     console.log(params.id);
 
-    const getEvent = getItemFromLocalizedDataArray(
+    const getEvent = getItemFromLocalizedDataArray<GameEvent>(
       getEvents,
       parseInt(params.id),
       "event_id"
@@ -256,8 +255,6 @@ export const getServerSideProps = getServerSideUser(
 
     if (getEvent.status === "error") return { notFound: true };
 
-    let event: GameEvent = retrieveEvent(getEvent.data, locale);
-
     const cards = await getLocalizedDataArray<GameCard>("cards", locale, "id", [
       "id",
       "name",
@@ -266,7 +263,8 @@ export const getServerSideProps = getServerSideUser(
       "rarity",
     ]);
 
-    const title = event.name;
+    const event = getEvent.data;
+    const title = event.name[0];
     const breadcrumbs = ["events", title];
 
     return {

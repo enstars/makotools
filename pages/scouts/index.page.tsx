@@ -35,6 +35,7 @@ import { retrieveEvents } from "services/events";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCharacter, ScoutEvent } from "types/game";
 import { QuerySuccess } from "types/makotools";
+import { FSSOptions } from "types/libraries";
 import { useDayjs } from "services/libraries/dayjs";
 import useFSSList from "services/makotools/search";
 
@@ -60,12 +61,12 @@ function Page({
     [charactersQuery.data]
   );
 
-  const defaultView = {
+  const defaultView: ViewType = {
     filters: { fivestar: [], fourstar: [], threestar: [] },
     search: "",
     sort: {
       type: "id",
-      ascending: true,
+      ascending: false,
     },
   };
 
@@ -75,7 +76,7 @@ function Page({
         {
           type: "fivestar",
           values: [],
-          function: (view) => {
+          function: (view: ViewType) => {
             // return (c) =>
             //   view.filters.units.filter((value: number) =>
             //     c.unit_id?.includes(value)
@@ -84,8 +85,8 @@ function Page({
             // this mess below can be removed when we can confirm
             // event's unit_id is ALWAYS an array of numbers
 
-            return (c) =>
-              view.filters.fivestar.filter((value: number) =>
+            return (c: ScoutEvent) =>
+              (view.filters.fivestar as any[]).filter((value: number) =>
                 Array.isArray(c.five_star?.chara_id)
                   ? c.five_star?.chara_id?.includes(value)
                   : c.five_star?.chara_id === value
@@ -95,7 +96,7 @@ function Page({
         {
           type: "fourstar",
           values: [],
-          function: (view) => {
+          function: (view: ViewType) => {
             // return (c) =>
             //   view.filters.units.filter((value: number) =>
             //     c.unit_id?.includes(value)
@@ -104,8 +105,8 @@ function Page({
             // this mess below can be removed when we can confirm
             // event's unit_id is ALWAYS an array of numbers
 
-            return (c) =>
-              view.filters.fourstar.filter((value: number) =>
+            return (c: ScoutEvent) =>
+              (view.filters.fourstar as any[]).filter((value: number) =>
                 Array.isArray(c.four_star?.chara_id)
                   ? c.four_star?.chara_id?.includes(value)
                   : c.four_star?.chara_id === value
@@ -115,7 +116,7 @@ function Page({
         {
           type: "threestar",
           values: [],
-          function: (view) => {
+          function: (view: ViewType) => {
             // return (c) =>
             //   view.filters.units.filter((value: number) =>
             //     c.unit_id?.includes(value)
@@ -124,8 +125,8 @@ function Page({
             // this mess below can be removed when we can confirm
             // event's unit_id is ALWAYS an array of numbers
 
-            return (c) =>
-              view.filters.threestar.filter((value: number) =>
+            return (c: ScoutEvent) =>
+              (view.filters.threestar as any[]).filter((value: number) =>
                 Array.isArray(c.three_star?.chara_id)
                   ? c.three_star?.chara_id?.includes(value)
                   : c.three_star?.chara_id === value
@@ -137,12 +138,12 @@ function Page({
         {
           label: "Scout ID",
           value: "id",
-          function: (a, b) => a.gacha_id - b.gacha_id,
+          function: (a: ScoutEvent, b: ScoutEvent) => a.gacha_id - b.gacha_id,
         },
         {
           label: "Start Date",
           value: "date",
-          function: (a, b) =>
+          function: (a: ScoutEvent, b: ScoutEvent) =>
             dayjs(a.start_date).unix() - dayjs(b.start_date).unix(),
         },
       ],

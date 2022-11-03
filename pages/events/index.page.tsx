@@ -29,6 +29,7 @@ import { getLocalizedDataArray } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCharacter, GameEvent, GameUnit } from "types/game";
 import { QuerySuccess } from "types/makotools";
+import { FSSOptions } from "types/libraries";
 import useFSSList from "services/makotools/search";
 
 const defaultView = {
@@ -63,7 +64,7 @@ function Page({
         {
           type: "units",
           values: [],
-          function: (view) => {
+          function: (view: ViewType) => {
             // return (c) =>
             //   view.filters.units.filter((value: number) =>
             //     c.unit_id?.includes(value)
@@ -72,8 +73,8 @@ function Page({
             // this mess below can be removed when we can confirm
             // event's unit_id is ALWAYS an array of numbers
 
-            return (c) =>
-              view.filters.units.filter((value: number) =>
+            return (c: GameEvent) =>
+              (view.filters.units as any[]).filter((value: number) =>
                 Array.isArray(c.unit_id)
                   ? c.unit_id?.includes(value)
                   : c.unit_id === value
@@ -85,12 +86,12 @@ function Page({
         {
           label: "Event ID",
           value: "id",
-          function: (a, b) => a.event_id - b.event_id,
+          function: (a: GameEvent, b: GameEvent) => a.event_id - b.event_id,
         },
         {
           label: "Start Date",
           value: "date",
-          function: (a, b) =>
+          function: (a: GameEvent, b: GameEvent) =>
             dayjs(a.start_date).unix() - dayjs(b.start_date).unix(),
         },
       ],
@@ -299,12 +300,7 @@ function Page({
             : false;
         });
         return (
-          <EventCard
-            key={event.event_id}
-            event={event}
-            units={eventUnits}
-            locale={locale}
-          />
+          <EventCard key={event.event_id} event={event} units={eventUnits} />
         );
       })}
     </>

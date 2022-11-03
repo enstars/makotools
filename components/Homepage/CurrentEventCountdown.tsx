@@ -10,6 +10,7 @@ import {
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
+import Link from "next/link";
 
 import Picture from "components/core/Picture";
 import {
@@ -35,12 +36,14 @@ const useStyles = createStyles((theme, _params) => ({
 function EventImage({ event }: { event: GameEvent }) {
   const { classes } = useStyles();
   return (
-    <Picture
-      alt={event.name[0]}
-      srcB2={`assets/card_still_full1_${event.banner_id}_evolution.webp`}
-      sx={{ width: 350, height: 175 }}
-      radius="lg"
-    />
+    <Link href={`/events/${event.event_id}`}>
+      <Picture
+        alt={event.name[0]}
+        srcB2={`assets/card_still_full1_${event.banner_id}_evolution.webp`}
+        sx={{ width: 350, height: 175 }}
+        radius="lg"
+      />
+    </Link>
   );
 }
 

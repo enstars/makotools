@@ -9,6 +9,7 @@ import {
   Text,
   Title,
 } from "@mantine/core";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 
 import { getAssetURL } from "services/data";
@@ -45,7 +46,14 @@ function Countdown({ endDate }: { endDate: string }) {
 function ScoutCard({ scout }: { scout: ScoutEvent }) {
   const { classes } = useStyles();
   return (
-    <Card shadow="xs" p="md" radius="md" withBorder>
+    <Card
+      shadow="xs"
+      p="md"
+      radius="md"
+      withBorder
+      component={Link}
+      href={`/scouts/${scout.gacha_id}`}
+    >
       <Card.Section>
         <Image
           alt={scout.name[0]}
@@ -58,7 +66,10 @@ function ScoutCard({ scout }: { scout: ScoutEvent }) {
         <Text weight={600} size="lg">
           SCOUT! {scout.name[0]}
         </Text>
-        <Badge color="indigo">
+        <Badge
+          variant="filled"
+          color={scout.type === "scout" ? "violet" : "lightblue"}
+        >
           {scout.type === "scout" ? "event scout" : scout.type}
         </Badge>
       </Group>
