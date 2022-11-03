@@ -63,9 +63,7 @@ function ScoutCard({ scout }: { scout: ScoutEvent }) {
         />
       </Card.Section>
       <Group sx={{ padding: "5px" }}>
-        <Text weight={600} size="lg">
-          SCOUT! {scout.name[0]}
-        </Text>
+        <Title order={4}>SCOUT! {scout.name[0]}</Title>
         <Badge
           variant="filled"
           color={scout.type === "scout" ? "violet" : "lightblue"}

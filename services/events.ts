@@ -1,112 +1,33 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { Event, BirthdayEvent, GameEvent, ScoutEvent } from "../types/game";
+import {
+  Event,
+  BirthdayEvent,
+  GameEvent,
+  ScoutEvent,
+  GameCharacter,
+} from "../types/game";
 
 import { useDayjs } from "./libraries/dayjs";
 
-function retrieveEvents(
-  data: any,
-  locale: string | undefined
-): (BirthdayEvent | GameEvent | ScoutEvent)[] {
-  let events: (BirthdayEvent | GameEvent | ScoutEvent)[] = [];
+function createBirthdayData(characters: GameCharacter[]): BirthdayEvent[] {
+  let birthdays = [];
+  for (const character of characters) {
+    let birthdayEvent: BirthdayEvent = {
+      character_id: character.character_id,
+      name: `${character.first_name[0]}${
+        character.last_name[0] ? " " + character.last_name[0] : ""
+      }`,
+      start_date: character.birthday,
+      end_date: character.birthday,
+      type: "birthday",
+      banner_id: character.renders?.fs1_5 | 0,
+      horoscope: character.horoscope,
+    };
 
-  if (data.characters) {
-    for (const character of data.characters) {
-      let birthdayEvent: BirthdayEvent = {
-        character_id: character.character_id,
-        name: `${character.first_name[0]}${
-          character.last_name[0] ? " " + character.last_name[0] : ""
-        }`,
-        start_date: character.birthday,
-        end_date: character.birthday,
-        type: "birthday",
-        banner_id: character.renders?.fs1_5 | 0,
-        horoscope: character.horoscope,
-      };
-
-      events.push(birthdayEvent);
-    }
+    birthdays.push(birthdayEvent);
   }
 
-  if (data.gameEvents) {
-    for (const event of data.gameEvents) {
-      let unitId;
-      if (event.unit_id === undefined) {
-        unitId = null;
-      } else if (!isNaN(event.unit_id)) {
-        unitId = [event.unit_id];
-      } else {
-        let arr = event.unit_id.split(",");
-        unitId = [];
-        for (let i = 0; i < arr.length; i++) {
-          unitId.push(parseInt(arr[i]));
-        }
-      }
-      let gameEvent: GameEvent = {
-        event_id: event.event_id,
-        start_date: event.start_date[locale as string] || event.start_date,
-        end_date: event.end_date[locale as string] || event.end_date,
-        type: event.type,
-        name: event.name[0],
-        event_gacha: event.event_gacha,
-        event_gacha_id: event.gacha_id,
-        banner_id: event.banner_id,
-        story_name: event.story_name[1],
-        intro_lines: event.intro_lines[1] || null,
-        unit_id: unitId,
-      };
-      events.push(gameEvent);
-    }
-  }
-
-  if (data.scouts) {
-    for (const scout of data.scouts) {
-      let scoutEvent: ScoutEvent = {
-        gacha_id: scout.gacha_id,
-        start_date: scout.start_date[locale as string] || scout.start_date,
-        end_date: scout.end_date[locale as string] || scout.end_date,
-        type: scout.type,
-        name: scout.name[0],
-        banner_id: scout.five_star.card_id,
-      };
-      events.push(scoutEvent);
-    }
-  }
-
-  return events;
-}
-
-function retrieveEvent(event: any, locale: string | undefined): GameEvent {
-  let unitId, fiveStars, fourStars, threeStars;
-  if (event.unit_id === undefined) {
-    unitId = null;
-  } else if (!isNaN(event.unit_id)) {
-    unitId = [event.unit_id];
-  } else {
-    let arr = event.unit_id.split(",");
-    unitId = [];
-    for (let i = 0; i < arr.length; i++) {
-      unitId.push(parseInt(arr[i]));
-    }
-  }
-  return {
-    event_id: event.event_id,
-    name: event.name[0],
-    start_date: event.start_date[locale as string] || event.start_date,
-    end_date: event.end_date[locale as string] || event.end_date,
-    type: event.type,
-    story_name: event.story_name[0] || null,
-    story_author: event.story_author || null,
-    story_season: event.story_season || null,
-    banner_id: event.banner_id,
-    event_gacha: event.event_gacha || null,
-    event_gacha_id: event.event_gacha_id || null,
-    intro_lines: event.intro_lines[0] || null,
-    unit_id: unitId,
-    five_star: {
-      chara_id: event.five_star.chara_id || null,
-      card_id: event.five_star.card_id || null,
-    },
-  } as GameEvent;
+  return birthdays;
 }
 
 function retrieveClosestEvents(
@@ -213,8 +134,7 @@ function isItYippeeTime(dateA: Date, dateB: Date, dayjs: any): boolean {
 }
 
 export {
-  retrieveEvents,
-  retrieveEvent,
+  createBirthdayData,
   retrieveClosestEvents,
   localizeEventTimes,
   countdown,

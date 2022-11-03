@@ -65,19 +65,9 @@ function Page({
           type: "units",
           values: [],
           function: (view: ViewType) => {
-            // return (c) =>
-            //   view.filters.units.filter((value: number) =>
-            //     c.unit_id?.includes(value)
-            //   ).length;
-
-            // this mess below can be removed when we can confirm
-            // event's unit_id is ALWAYS an array of numbers
-
             return (c: GameEvent) =>
               (view.filters.units as any[]).filter((value: number) =>
-                Array.isArray(c.unit_id)
-                  ? c.unit_id?.includes(value)
-                  : c.unit_id === value
+                c.unit_id?.includes(value)
               ).length;
           },
         },
@@ -109,8 +99,6 @@ function Page({
   characters.forEach((c) => {
     characterIDtoSort[c.character_id] = c.sort_id;
   });
-
-  console.log(events);
 
   return (
     <>

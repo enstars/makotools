@@ -30,7 +30,7 @@ import {
 } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { useDayjs } from "services/libraries/dayjs";
-import { GameCard, GameEvent, GameUnit, ID } from "types/game";
+import { GameCard, GameEvent, GameUnit } from "types/game";
 import { QuerySuccess } from "types/makotools";
 import IconEnstars from "components/core/IconEnstars";
 import CardCard from "pages/cards/components/DisplayCard";
@@ -59,8 +59,7 @@ function Page({
   });
 
   units = units.filter(
-    (unit: GameUnit) =>
-      (event.unit_id as ID[]).includes(unit.id) || event.unit_id === unit.id
+    (unit: GameUnit) => event.unit_id && event.unit_id.includes(unit.id)
   );
   console.log(cards);
 

@@ -31,7 +31,6 @@ import ScoutCard from "./components/ScoutCard";
 import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import { getLocalizedDataArray } from "services/data";
-import { retrieveEvents } from "services/events";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCharacter, ScoutEvent } from "types/game";
 import { QuerySuccess } from "types/makotools";
@@ -48,14 +47,18 @@ interface ScoutViewOptions {
 }
 
 function Page({
-  scouts,
+  scoutsQuery,
   charactersQuery,
 }: {
-  scouts: ScoutEvent[];
+  scoutsQuery: QuerySuccess<ScoutEvent[]>;
   charactersQuery: QuerySuccess<GameCharacter[]>;
 }) {
   const { dayjs } = useDayjs();
 
+  const scouts: ScoutEvent[] = useMemo(
+    () => scoutsQuery.data,
+    [scoutsQuery.data]
+  );
   const characters = useMemo(
     () => charactersQuery.data,
     [charactersQuery.data]
@@ -77,19 +80,9 @@ function Page({
           type: "fivestar",
           values: [],
           function: (view: ViewType) => {
-            // return (c) =>
-            //   view.filters.units.filter((value: number) =>
-            //     c.unit_id?.includes(value)
-            //   ).length;
-
-            // this mess below can be removed when we can confirm
-            // event's unit_id is ALWAYS an array of numbers
-
             return (c: ScoutEvent) =>
-              (view.filters.fivestar as any[]).filter((value: number) =>
-                Array.isArray(c.five_star?.chara_id)
-                  ? c.five_star?.chara_id?.includes(value)
-                  : c.five_star?.chara_id === value
+              (view.filters.fivestar as number[]).filter((value: number) =>
+                c.five_star?.chara_id?.includes(value)
               ).length;
           },
         },
@@ -97,19 +90,9 @@ function Page({
           type: "fourstar",
           values: [],
           function: (view: ViewType) => {
-            // return (c) =>
-            //   view.filters.units.filter((value: number) =>
-            //     c.unit_id?.includes(value)
-            //   ).length;
-
-            // this mess below can be removed when we can confirm
-            // event's unit_id is ALWAYS an array of numbers
-
             return (c: ScoutEvent) =>
-              (view.filters.fourstar as any[]).filter((value: number) =>
-                Array.isArray(c.four_star?.chara_id)
-                  ? c.four_star?.chara_id?.includes(value)
-                  : c.four_star?.chara_id === value
+              (view.filters.fourstar as number[]).filter((value: number) =>
+                c.four_star?.chara_id?.includes(value)
               ).length;
           },
         },
@@ -117,19 +100,9 @@ function Page({
           type: "threestar",
           values: [],
           function: (view: ViewType) => {
-            // return (c) =>
-            //   view.filters.units.filter((value: number) =>
-            //     c.unit_id?.includes(value)
-            //   ).length;
-
-            // this mess below can be removed when we can confirm
-            // event's unit_id is ALWAYS an array of numbers
-
             return (c: ScoutEvent) =>
-              (view.filters.threestar as any[]).filter((value: number) =>
-                Array.isArray(c.three_star?.chara_id)
-                  ? c.three_star?.chara_id?.includes(value)
-                  : c.three_star?.chara_id === value
+              (view.filters.threestar as number[]).filter((value: number) =>
+                c.three_star?.chara_id?.includes(value)
               ).length;
           },
         },
@@ -259,7 +232,7 @@ function Page({
                 ...v,
                 filters: {
                   ...v.filters,
-                  fivestar: val.map(parseInt),
+                  fivestar: val.map((id) => parseInt(id)),
                 },
               }));
             }}
@@ -287,7 +260,7 @@ function Page({
                 ...v,
                 filters: {
                   ...v.filters,
-                  fourstar: val.map(parseInt),
+                  fourstar: val.map((id) => parseInt(id)),
                 },
               }));
             }}
@@ -315,7 +288,7 @@ function Page({
                 ...v,
                 filters: {
                   ...v.filters,
-                  threestar: val.map(parseInt),
+                  threestar: val.map((id) => parseInt(id)),
                 },
               }));
             }}
@@ -417,16 +390,9 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     ["character_id", "first_name", "sort_id"]
   );
 
-  const scouts: ScoutEvent[] = retrieveEvents(
-    {
-      scouts: getScouts.data,
-    },
-    locale
-  ) as ScoutEvent[];
-
   return {
     props: {
-      scouts: scouts,
+      scoutsQuery: getScouts,
       charactersQuery: getCharacters,
     },
   };

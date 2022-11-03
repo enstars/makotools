@@ -26,6 +26,7 @@ import CurrentScoutsCountdown from "components/Homepage/CurrentScoutsCountdown";
 import SiteAnnouncements from "components/Homepage/SiteAnnouncements";
 import UserVerification from "components/Homepage/UserVerification";
 import { QuerySuccess } from "types/makotools";
+import { createBirthdayData } from "services/events";
 
 const useStyles = createStyles((theme, _params) => ({
   main: {
@@ -67,27 +68,6 @@ function SidePanel({
       </Accordion>
     </Box>
   );
-}
-
-function createBirthdayData(characters: GameCharacter[]): BirthdayEvent[] {
-  let birthdays = [];
-  for (const character of characters) {
-    let birthdayEvent: BirthdayEvent = {
-      character_id: character.character_id,
-      name: `${character.first_name[0]}${
-        character.last_name[0] ? " " + character.last_name[0] : ""
-      }`,
-      start_date: character.birthday,
-      end_date: character.birthday,
-      type: "birthday",
-      banner_id: character.renders?.fs1_5 | 0,
-      horoscope: character.horoscope,
-    };
-
-    birthdays.push(birthdayEvent);
-  }
-
-  return birthdays;
 }
 
 function Page({

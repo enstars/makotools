@@ -100,12 +100,12 @@ function CalendarEventCard({
           {event.type === "birthday"
             ? event.name.split(" ")[0] + "'s birthday"
             : event.type === "feature scout"
-            ? event.name.split(" ")[0] + " FS"
+            ? event.name[0].split(" ")[0] + " FS"
             : event.type === "scout"
-            ? "SC! " + event.name
+            ? "SC! " + event.name[0]
             : event.type === "song" || event.type === "tour"
-            ? event.story_name
-            : event.name}
+            ? event.story_name && event.story_name[0]
+            : event.name[0]}
         </Badge>
       </HoverCard.Target>
       <HoverCard.Dropdown>
@@ -128,16 +128,16 @@ function CalendarEventCard({
         />
         <Text size="md" weight={700}>
           {event.type === "song"
-            ? event.name
+            ? event.name[0]
             : event.type === "tour"
-            ? event.name
+            ? event.name[0]
             : event.type === "scout"
-            ? `SCOUT! ${event.name}`
+            ? `SCOUT! ${event.name[0]}`
             : event.type === "feature scout"
-            ? `Featured Scout: ${event.name}`
+            ? `Featured Scout: ${event.name[0]}`
             : event.type === "birthday"
             ? `${event.name}'s Birthday`
-            : event.name}
+            : event.name[0]}
         </Text>
         <Text size="sm" color="dimmed" weight={500}>
           {dayjs(status === "end" ? event.end_date : event.start_date).format(

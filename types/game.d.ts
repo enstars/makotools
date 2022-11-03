@@ -191,11 +191,14 @@ export interface GameEvent extends Event {
   event_gacha_id?: ID;
   intro_lines?: string;
   song_name?: string;
-  unit_id?: ID | ID[] | null;
+  unit_id?: ID[];
 }
 
 export interface ScoutEvent extends Event {
   gacha_id: ID;
+  event_id?: ID;
+  intro_lines?: string;
+  intro_lines_tl_credits?: string;
 }
 
 export interface BirthdayEvent extends Event {

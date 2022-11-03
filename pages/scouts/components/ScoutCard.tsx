@@ -52,7 +52,7 @@ function ScoutCard({ scout }: { scout: ScoutEvent }) {
               padding: "5px 10px",
               background:
                 theme.colorScheme === "dark"
-                  ? `${theme.colors.dark[7]}ea`
+                  ? `${theme.colors.dark[7]}dd`
                   : `${theme.colors.gray[1]}ea`,
               borderRadius: `0px 0px 0px ${theme.radius.md}px`,
               color: theme.colorScheme === "dark" ? "#D3D6E0" : "#000",
@@ -116,7 +116,7 @@ function ScoutCard({ scout }: { scout: ScoutEvent }) {
         href={`/scouts/${scout.gacha_id}`}
         className={classes.scoutInfo}
       >
-        <Title order={4}>{scout.name}</Title>
+        <Title order={4}>{scout.name[0]}</Title>
         <Text size="sm" className={classes.scoutDates}>
           {dayjs(scout.start_date).format("ll")}
           {" - "}

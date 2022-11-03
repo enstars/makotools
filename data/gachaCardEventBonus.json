@@ -1,0 +1,17 @@
+[
+  {
+    "rarity": 3,
+    "minBonus": 1,
+    "maxBonus": 5
+  },
+  {
+    "rarity": 4,
+    "minBonus": 5,
+    "maxBonus": 50
+  },
+  {
+    "rarity": 5,
+    "minBonus": 20,
+    "maxBonus": 150
+  }
+]
