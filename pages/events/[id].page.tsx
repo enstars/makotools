@@ -2,12 +2,12 @@ import {
   Badge,
   Blockquote,
   Box,
+  Divider,
   Group,
   Paper,
   SimpleGrid,
   Space,
   Stack,
-  Tabs,
   Text,
   Title,
 } from "@mantine/core";
@@ -53,8 +53,9 @@ function Page({
   console.log(event);
   cards = cards.filter((card) => {
     return (
-      event.five_star?.card_id === card.id ||
-      event.four_star?.card_id === card.id
+      event.five_star?.card_id.includes(card.id) ||
+      event.four_star?.card_id.includes(card.id) ||
+      event.three_star?.card_id.includes(card.id)
     );
   });
 
@@ -147,91 +148,88 @@ function Page({
         </Box>
       </Group>
       <Space h={60} />
-      <Tabs variant="outline" defaultValue="cards">
-        <Tabs.List grow>
-          <Tabs.Tab
-            value="cards"
-            icon={<IconCards size={16} strokeWidth={3} />}
-          >
-            <Text size="md" weight={600}>
-              Cards
-            </Text>
-          </Tabs.Tab>
-          {event.type === "song" && (
-            <Tabs.Tab
-              value="song"
-              icon={<IconMusic size={16} strokeWidth={3} />}
+      <Group>
+        <IconCards size={25} strokeWidth={3} color="#ffd43b" />{" "}
+        <Title order={2}>Cards</Title>
+      </Group>
+      <Space h="sm" />
+      <Divider />
+      <Space h="md" />
+      <SimpleGrid
+        cols={4}
+        breakpoints={[
+          { maxWidth: 960, cols: 2 },
+          { maxWidth: 400, cols: 1 },
+        ]}
+      >
+        {cards.map((card: GameCard) => (
+          <CardCard
+            key={card.id}
+            cardOptions={{ showFullInfo: true }}
+            card={card}
+            lang={cardsQuery.lang}
+          />
+        ))}
+      </SimpleGrid>
+      <Space h="lg" />
+      <Group>
+        <IconBook size={25} strokeWidth={3} color="#99e9f2" />
+        <Title order={2}>Story</Title>
+      </Group>
+      <Space h="sm" />
+      <Divider />
+      <Space h="md" />
+      <Group sx={{ padding: "10px" }}>
+        <Box sx={{ position: "relative", flex: "1 2 45%" }}>
+          <Picture
+            alt={event.name[0]}
+            srcB2={`assets/card_still_full1_${event.banner_id}_normal.png`}
+            sx={{ height: 200 }}
+            radius="sm"
+          />
+        </Box>
+        <Box sx={{ flex: "2 1 50%" }}>
+          <Stack>
+            <Title order={3}>{event.story_name}</Title>
+            <Blockquote
+              sx={(theme) => ({
+                fontSize: "12pt",
+                fontStyle: "italic",
+                color:
+                  theme.colorScheme === "dark"
+                    ? theme.colors.dark[2]
+                    : theme.colors.gray[6],
+              })}
             >
-              <Text size="md" weight={600}>
-                Song
-              </Text>
-            </Tabs.Tab>
-          )}
-          <Tabs.Tab value="story" icon={<IconBook strokeWidth={3} />}>
-            <Text size="md" weight={600}>
-              Story
+              {event.intro_lines}
+            </Blockquote>
+            <Text size="sm" color="dimmed">
+              Story written by {event.story_author[0]}
             </Text>
-          </Tabs.Tab>
-        </Tabs.List>
-        <Tabs.Panel value="cards" sx={{ padding: "15px" }}>
-          <SimpleGrid
-            cols={4}
-            breakpoints={[
-              { maxWidth: 960, cols: 2 },
-              { maxWidth: 400, cols: 1 },
-            ]}
-          >
-            {cards.map((card: GameCard) => (
-              <CardCard
-                key={card.id}
-                cardOptions={{ showFullInfo: true }}
-                card={card}
-                lang={cardsQuery.lang}
-              />
-            ))}
-          </SimpleGrid>
-        </Tabs.Panel>
-        {event.type === "song" && <Tabs.Panel value="song" />}
-        <Tabs.Panel value="story">
-          <Space h="md" />
-          <Group sx={{ padding: "10px" }}>
-            <Box sx={{ position: "relative", flex: "1 2 45%" }}>
-              <Picture
-                alt={event.name[0]}
-                srcB2={`assets/card_still_full1_${event.banner_id}_normal.png`}
-                sx={{ height: 200 }}
-                radius="sm"
-              />
-            </Box>
-            <Box sx={{ flex: "2 1 50%" }}>
-              <Stack>
-                <Title order={3}>{event.story_name}</Title>
-                <Blockquote
-                  sx={(theme) => ({
-                    fontSize: "12pt",
-                    fontStyle: "italic",
-                    color:
-                      theme.colorScheme === "dark"
-                        ? theme.colors.dark[2]
-                        : theme.colors.gray[6],
-                  })}
-                >
-                  {event.intro_lines}
-                </Blockquote>
-                <Text size="sm" color="dimmed">
-                  Story written by {event.story_author[0]}
-                </Text>
-              </Stack>
-            </Box>
+          </Stack>
+        </Box>
+      </Group>
+      <Space h="md" />
+      <Title order={3}>Story Chapters</Title>
+      <Space h="sm" />
+      <Paper shadow="xs" p="md" withBorder>
+        Coming soon!
+      </Paper>
+      <Space h="xl" />
+      {event.type !== "tour" && (
+        <>
+          <Group>
+            <IconMusic size={25} strokeWidth={3} color="#b197fc" />
+            <Title order={2}>Song</Title>
           </Group>
-          <Space h="md" />
-          <Title order={2}>Story Chapters</Title>
           <Space h="sm" />
+          <Divider />
+          <Space h="md" />
           <Paper shadow="xs" p="md" withBorder>
             Coming soon!
           </Paper>
-        </Tabs.Panel>
-      </Tabs>
+        </>
+      )}
     </>
   );
 }

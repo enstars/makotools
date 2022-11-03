@@ -78,15 +78,15 @@ function ScoutCard({ scout }: { scout: ScoutEvent }) {
               alignItems: "center",
               justifyContent: "space-around",
               position: "absolute",
-              bottom: 0,
+              top: 0,
               right: 0,
               zIndex: 5,
               padding: "5px 10px",
               background:
                 theme.colorScheme === "dark"
-                  ? theme.colors.lime[8]
-                  : theme.colors.lime[4],
-              borderRadius: `${theme.radius.md}px 0px 0px 0px`,
+                  ? `${theme.colors.lime[8]}ea`
+                  : `${theme.colors.lime[4]}ea`,
+              borderRadius: `0px 0px 0px ${theme.radius.md}px`,
               color:
                 theme.colorScheme === "dark"
                   ? theme.colors.gray[0]

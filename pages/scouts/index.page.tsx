@@ -338,10 +338,10 @@ function Page({
         variant="outline"
         defaultValue="event"
       >
-        <Tabs.List>
+        <Tabs.List sx={{ position: "sticky", top: "50px" }}>
           <Tabs.Tab
             value="event"
-            icon={<IconDiamond size={36} strokeWidth={2} color="#99e9f2" />}
+            icon={<IconDiamond size={36} strokeWidth={2} color="#66d9e8" />}
             aria-label="Event scouts"
           >
             {!isMobile && <Title order={4}>Event Scouts</Title>}

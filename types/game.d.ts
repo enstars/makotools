@@ -172,16 +172,16 @@ export interface Event {
   story_season?: string;
   banner_id?: ID | ID[];
   five_star?: {
-    chara_id: ID | ID[];
-    card_id: any;
+    chara_id: ID[];
+    card_id: ID[];
   };
   four_star?: {
-    chara_id: ID | ID[];
-    card_id: ID | ID[];
+    chara_id: ID[];
+    card_id: ID[];
   };
   three_star?: {
-    chara_id: ID | ID[];
-    card_id: ID | ID[];
+    chara_id: ID[];
+    card_id: ID[];
   };
 }
 
