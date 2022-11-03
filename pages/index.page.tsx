@@ -6,8 +6,9 @@ import {
   createStyles,
   MediaQuery,
 } from "@mantine/core";
-
 // import Banner from "../assets/banner.png";
+import { useMemo } from "react";
+
 import { getLayout } from "../components/Layout";
 import getServerSideUser from "../services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "../services/data";
@@ -20,11 +21,11 @@ import {
   GameEvent,
   ScoutEvent,
 } from "types/game";
-import { retrieveEvents } from "services/events";
 import CurrentEventCountdown from "components/Homepage/CurrentEventCountdown";
 import CurrentScoutsCountdown from "components/Homepage/CurrentScoutsCountdown";
 import SiteAnnouncements from "components/Homepage/SiteAnnouncements";
 import UserVerification from "components/Homepage/UserVerification";
+import { QuerySuccess } from "types/makotools";
 
 const useStyles = createStyles((theme, _params) => ({
   main: {
@@ -68,14 +69,65 @@ function SidePanel({
   );
 }
 
+function createBirthdayData(characters: GameCharacter[]): BirthdayEvent[] {
+  let birthdays = [];
+  for (const character of characters) {
+    let birthdayEvent: BirthdayEvent = {
+      character_id: character.character_id,
+      name: `${character.first_name[0]}${
+        character.last_name[0] ? " " + character.last_name[0] : ""
+      }`,
+      start_date: character.birthday,
+      end_date: character.birthday,
+      type: "birthday",
+      banner_id: character.renders?.fs1_5 | 0,
+      horoscope: character.horoscope,
+    };
+
+    birthdays.push(birthdayEvent);
+  }
+
+  return birthdays;
+}
+
 function Page({
   posts,
-  events,
+  charactersQuery,
+  gameEventsQuery,
+  scoutsQuery,
 }: {
   posts: any;
-  events: (BirthdayEvent | GameEvent | ScoutEvent)[];
+  charactersQuery: QuerySuccess<GameCharacter[]>;
+  gameEventsQuery: QuerySuccess<GameEvent[]>;
+  scoutsQuery: QuerySuccess<ScoutEvent[]>;
 }) {
   const { classes } = useStyles();
+
+  const characters: GameCharacter[] = useMemo(
+    () => charactersQuery.data,
+    [charactersQuery.data]
+  );
+
+  const birthdays: BirthdayEvent[] = createBirthdayData(characters);
+  console.log(birthdays);
+
+  const gameEvents: GameEvent[] = useMemo(
+    () => gameEventsQuery.data,
+    [gameEventsQuery.data]
+  );
+
+  console.log(gameEvents);
+
+  const scouts: ScoutEvent[] = useMemo(
+    () => scoutsQuery.data,
+    [scoutsQuery.data]
+  );
+
+  const events: (BirthdayEvent | GameEvent | ScoutEvent)[] = [
+    ...birthdays,
+    ...gameEvents,
+    ...scouts,
+  ];
 
   return (
     <Group
@@ -104,13 +156,7 @@ function Page({
                 ) as GameEvent[]
               }
             />
-            <CurrentScoutsCountdown
-              scouts={
-                events.filter(
-                  (scout: ScoutEvent) => scout.gacha_id
-                ) as ScoutEvent[]
-              }
-            />
+            <CurrentScoutsCountdown scouts={scouts} />
           </Box>
           <MediaQuery largerThan="md" styles={{ display: "none" }}>
             <SidePanel events={events} posts={posts} />
@@ -147,15 +193,6 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     "gacha_id"
   );
 
-  let events: (BirthdayEvent | GameEvent | ScoutEvent)[] = retrieveEvents(
-    {
-      characters: characters.data,
-      gameEvents: gameEvents.data,
-      scouts: scouts.data,
-    },
-    locale
-  );
-
   try {
     const initRespose = await fetch(
       `https://backend-stars.ensemble.moe/wp-main/wp-json/wp/v2/posts?categories=5,6&per_page=5&page=1`
@@ -165,7 +202,9 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     return {
       props: {
         posts: initData,
-        events: events,
+        charactersQuery: characters,
+        gameEventsQuery: gameEvents,
+        scoutsQuery: scouts,
       },
     };
   } catch (e) {
@@ -174,7 +213,9 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
         posts: {
           error: true,
         },
-        events: events,
+        charactersQuery: characters,
+        gameEventsQuery: gameEvents,
+        scoutsQuery: scouts,
       },
     };
   }

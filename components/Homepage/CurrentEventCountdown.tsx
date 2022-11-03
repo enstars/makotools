@@ -36,7 +36,7 @@ function EventImage({ event }: { event: GameEvent }) {
   const { classes } = useStyles();
   return (
     <Picture
-      alt={event.name}
+      alt={event.name[0]}
       srcB2={`assets/card_still_full1_${event.banner_id}_evolution.webp`}
       sx={{ width: 350, height: 175 }}
       radius="lg"
@@ -117,7 +117,7 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
             <Stack justify="space-around">
               <Box>
                 <Title order={3} sx={{ maxWidth: "300px" }}>
-                  {currentEvent.name}
+                  {currentEvent.name[0]}
                 </Title>
                 <Countdown date={currentEvent.end_date} status="Ends" />
               </Box>
