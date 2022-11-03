@@ -48,7 +48,7 @@ function ScoutCard({ scout }: { scout: ScoutEvent }) {
     <Card shadow="xs" p="md" radius="md" withBorder>
       <Card.Section>
         <Image
-          alt={scout.name}
+          alt={scout.name[0]}
           src={getAssetURL(
             `assets/card_still_full1_${scout.banner_id}_evolution.webp`
           )}
@@ -56,7 +56,7 @@ function ScoutCard({ scout }: { scout: ScoutEvent }) {
       </Card.Section>
       <Group sx={{ padding: "5px" }}>
         <Text weight={600} size="lg">
-          SCOUT! {scout.name}
+          SCOUT! {scout.name[0]}
         </Text>
         <Badge color="indigo">
           {scout.type === "scout" ? "event scout" : scout.type}
