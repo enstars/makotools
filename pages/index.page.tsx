@@ -181,7 +181,7 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     "character_id"
   );
 
-  const gameEvents: any = await getLocalizedDataArray<GameEvent>(
+  const gameEvents: any = await getLocalizedDataArray(
     "events",
     locale,
     "event_id"

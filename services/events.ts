@@ -29,8 +29,18 @@ function retrieveEvents(
 
   if (data.gameEvents) {
     for (const event of data.gameEvents) {
-      console.log("retrieveEvents event", event);
-      console.log(event.name);
+      let unitId;
+      if (event.unit_id === undefined) {
+        unitId = null;
+      } else if (!isNaN(event.unit_id)) {
+        unitId = [event.unit_id];
+      } else {
+        let arr = event.unit_id.split(",");
+        unitId = [];
+        for (let i = 0; i < arr.length; i++) {
+          unitId.push(parseInt(arr[i]));
+        }
+      }
       let gameEvent: GameEvent = {
         event_id: event.event_id,
         start_date: event.start_date[locale as string] || event.start_date,
@@ -40,7 +50,9 @@ function retrieveEvents(
         event_gacha: event.event_gacha,
         event_gacha_id: event.gacha_id,
         banner_id: event.banner_id,
-        story_name: event.story_name[0],
+        story_name: event.story_name[1],
+        intro_lines: event.intro_lines[1] || null,
+        unit_id: unitId,
       };
       events.push(gameEvent);
     }
@@ -61,6 +73,40 @@ function retrieveEvents(
   }
 
   return events;
+}
+
+function retrieveEvent(event: any, locale: string | undefined): GameEvent {
+  let unitId, fiveStars, fourStars, threeStars;
+  if (event.unit_id === undefined) {
+    unitId = null;
+  } else if (!isNaN(event.unit_id)) {
+    unitId = [event.unit_id];
+  } else {
+    let arr = event.unit_id.split(",");
+    unitId = [];
+    for (let i = 0; i < arr.length; i++) {
+      unitId.push(parseInt(arr[i]));
+    }
+  }
+  return {
+    event_id: event.event_id,
+    name: event.name[0],
+    start_date: event.start_date[locale as string] || event.start_date,
+    end_date: event.end_date[locale as string] || event.end_date,
+    type: event.type,
+    story_name: event.story_name[0] || null,
+    story_author: event.story_author || null,
+    story_season: event.story_season || null,
+    banner_id: event.banner_id,
+    event_gacha: event.event_gacha || null,
+    event_gacha_id: event.event_gacha_id || null,
+    intro_lines: event.intro_lines[0] || null,
+    unit_id: unitId,
+    five_star: {
+      chara_id: event.five_star.chara_id || null,
+      card_id: event.five_star.card_id || null,
+    },
+  } as GameEvent;
 }
 
 function retrieveClosestEvents(
@@ -168,6 +214,7 @@ function isItYippeeTime(dateA: Date, dateB: Date, dayjs: any): boolean {
 
 export {
   retrieveEvents,
+  retrieveEvent,
   retrieveClosestEvents,
   localizeEventTimes,
   countdown,
