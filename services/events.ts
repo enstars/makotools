@@ -29,6 +29,7 @@ function retrieveEvents(
 
   if (data.gameEvents) {
     for (const event of data.gameEvents) {
+      console.log("retrieveEvents event", event);
       console.log(event.name);
       let gameEvent: GameEvent = {
         event_id: event.event_id,
