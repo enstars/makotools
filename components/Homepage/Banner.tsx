@@ -43,7 +43,15 @@ function Banner({
     )
     .sort((a, b) => dayjs(a.start_date).unix() - dayjs(b.start_date).unix());
 
-  const shownEvents: (GameEvent | ScoutEvent)[] = [];
+  const shownEvents: (GameEvent | ScoutEvent | BirthdayEvent)[] = [];
+
+  const currentBirthdays = events.filter(
+    (event) =>
+      dayjs(event.start_date).isToday() && ["birthday"].includes(event.type)
+  );
+  currentBirthdays.forEach((birthday) =>
+    shownEvents.push(birthday as BirthdayEvent)
+  );
 
   const pastGameEvents = pastEvents.filter((event) =>
     ["tour", "song"].includes(event.type)
@@ -101,7 +109,9 @@ function Banner({
           <Carousel.Slide key={event.name[0]}>
             <Picture
               alt={event.name[0] || "caption"}
-              srcB2={`assets/card_still_full1_${event.banner_id}_evolution.png`}
+              srcB2={`assets/card_still_full1_${event.banner_id}_${
+                event.type === "birthday" ? "normal" : "evolution"
+              }.png`}
               sx={{ width: "100%", height: "100%" }}
               radius="sm"
             />
@@ -121,9 +131,11 @@ function Banner({
                     : event.name[0]}
                 </Title>
                 <Text weight={500} sx={{ opacity: 0.75 }}>
-                  {dayjs(event.start_date).format("lll")}
-                  {" – "}
-                  {dayjs(event.end_date).format("lll z")}
+                  {event.type !== "birthday"
+                    ? dayjs(event.start_date).format("lll") +
+                      " – " +
+                      dayjs(event.end_date).format("lll z")
+                    : dayjs(event.start_date).format("MMMM D")}
                 </Text>
               </Stack>
             </Box>
