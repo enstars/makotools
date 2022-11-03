@@ -31,6 +31,22 @@ const useStyles = createStyles((theme, _params) => ({
     minWidth: "350px",
     maxWidth: "400px",
   },
+
+  link: {
+    "&:link": {
+      color:
+        theme.colorScheme === "dark"
+          ? theme.colors.indigo[2]
+          : theme.colors.indigo[6],
+      textDecoration: "none",
+    },
+    "&:visited": {
+      color:
+        theme.colorScheme === "dark"
+          ? theme.colors.indigo[2]
+          : theme.colors.indigo[6],
+    },
+  },
 }));
 
 function EventImage({ event }: { event: GameEvent }) {
@@ -105,7 +121,12 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
 
   return (
     <Box>
-      <Title order={2}>{currentEvent ? "Current Event" : "Next Event"}</Title>
+      <Group align="end">
+        <Title order={2}>{currentEvent ? "Current Event" : "Next Event"}</Title>
+        <Link href="/events" className={classes.link}>
+          See all events
+        </Link>
+      </Group>
       <Paper
         shadow="xs"
         radius="md"

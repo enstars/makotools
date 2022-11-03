@@ -24,6 +24,21 @@ const useStyles = createStyles((theme, _params) => ({
   scoutsCards: {
     marginTop: "2vh",
   },
+  link: {
+    "&:link": {
+      color:
+        theme.colorScheme === "dark"
+          ? theme.colors.indigo[2]
+          : theme.colors.indigo[6],
+      textDecoration: "none",
+    },
+    "&:visited": {
+      color:
+        theme.colorScheme === "dark"
+          ? theme.colors.indigo[2]
+          : theme.colors.indigo[6],
+    },
+  },
 }));
 
 function Countdown({ endDate }: { endDate: string }) {
@@ -103,7 +118,12 @@ function CurrentScoutsCountdown({ scouts }: { scouts: ScoutEvent[] }) {
   });
   return (
     <Container className={classes.scoutsContainer}>
-      <Title order={2}>Current Scouts</Title>
+      <Group align="end">
+        <Title order={2}>Current Scouts</Title>
+        <Link href="/scouts" className={classes.link}>
+          See all scouts
+        </Link>
+      </Group>
       <CurrentScoutsCards scouts={currentScouts} />
     </Container>
   );

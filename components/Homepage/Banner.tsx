@@ -49,9 +49,8 @@ function Banner({
     (event) =>
       dayjs(event.start_date).isToday() && ["birthday"].includes(event.type)
   );
-  currentBirthdays.forEach((birthday) =>
-    shownEvents.push(birthday as BirthdayEvent)
-  );
+
+  shownEvents.push(...currentBirthdays);
 
   const pastGameEvents = pastEvents.filter((event) =>
     ["tour", "song"].includes(event.type)
