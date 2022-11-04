@@ -3,7 +3,6 @@ import {
   Group,
   Box,
   Space,
-  Badge,
   Text,
   Divider,
   SimpleGrid,
@@ -13,10 +12,7 @@ import {
   Stack,
   Table,
   Alert,
-  Accordion,
-  List,
 } from "@mantine/core";
-import dayjs from "dayjs";
 import {
   IconBook,
   IconCards,
@@ -39,6 +35,8 @@ import { QuerySuccess } from "types/makotools";
 import { getLayout } from "components/Layout";
 import Picture from "components/core/Picture";
 import CardCard from "pages/cards/components/DisplayCard";
+import ESPageHeader from "pages/events/components/ESPageHeader";
+import Contents from "pages/events/components/Contents";
 
 function Page({
   scout,
@@ -70,105 +68,35 @@ function Page({
     );
   });
 
-  console.log(event);
+  let contentItems = [
+    {
+      id: "#cards",
+      name: "Cards",
+      icon: <IconCards size={16} strokeWidth={3} />,
+    },
+    {
+      id: "#event",
+      name: "Event",
+      icon: <IconMedal size={16} strokeWidth={3} />,
+    },
+    {
+      id: "#story",
+      name: "Story",
+      icon: <IconBook size={16} strokeWidth={3} />,
+    },
+  ];
 
   return (
     <>
       <PageTitle
-        title={`${
-          scout.type === "scout"
-            ? "SCOUT!"
-            : scout.type === "feature scout"
-            ? "Featured Scout:"
-            : ""
-        } ${scout.name[0]}`}
+        title={`${scout.type === "scout" ? "SCOUT!" : ""} ${scout.name[0]}`}
       />
-      <Group position="apart" align="flex-start">
-        <Box sx={{ position: "relative", flex: "2 1 55%" }}>
-          <Picture
-            alt={scout.name[0]}
-            srcB2={`assets/card_still_full1_${scout.banner_id}_evolution.png`}
-            sx={{ height: 180 }}
-            radius="md"
-          />
-        </Box>
-        <Box sx={{ flex: "2 1 40%" }}>
-          <Group>
-            <Box sx={{ flex: "1 1 0", minWidth: 200 }}>
-              <Text size="sm" color="dimmed" weight={700}>
-                Start ({dayjs(scout.start_date).format("z")})
-              </Text>
-              <Text size="lg" weight={500}>
-                {dayjs(scout.start_date).format("lll")}
-              </Text>
-            </Box>
-            <Box sx={{ flex: "1 1 0", minWidth: 200 }}>
-              <Text size="sm" color="dimmed" weight={700}>
-                End ({dayjs(scout.end_date).format("z")})
-              </Text>
-              <Text size="lg" weight={500}>
-                {dayjs(scout.end_date).format("lll")}
-              </Text>
-            </Box>
-          </Group>
-          <Space h="md" />
-          <Group noWrap>
-            {dayjs(scout.end_date).isBefore(dayjs()) ? (
-              <Badge color="gray">Past</Badge>
-            ) : dayjs().isBetween(
-                dayjs(scout.start_date),
-                dayjs(scout.end_date)
-              ) ? (
-              <Badge color="yellow">Ongoing</Badge>
-            ) : (
-              <Badge color="lime">Upcoming</Badge>
-            )}
-          </Group>
-        </Box>
-      </Group>
+      <ESPageHeader content={scout} />
       <Space h="xl" />
       <Space h="xl" />
-      {scout.type === "scout" && (
-        <>
-          <Accordion
-            variant="contained"
-            defaultValue="contents"
-            sx={{
-              ["@media (min-width: 900px)"]: {
-                width: "50%",
-              },
-            }}
-          >
-            <Accordion.Item value="contents">
-              <Accordion.Control>
-                <Title order={4}>Contents</Title>
-              </Accordion.Control>
-              <Accordion.Panel>
-                <List size="md" spacing="sm" center>
-                  <List.Item icon={<IconCards size={16} strokeWidth={3} />}>
-                    <Text size="md" component={Link} href="#cards">
-                      Cards
-                    </Text>
-                  </List.Item>
-                  <List.Item icon={<IconMedal size={16} strokeWidth={3} />}>
-                    <Text size="md" component={Link} href="#event">
-                      Event
-                    </Text>
-                  </List.Item>
-                  <List.Item icon={<IconBook size={16} strokeWidth={3} />}>
-                    <Text size="md" component={Link} href="#story">
-                      Story
-                    </Text>
-                  </List.Item>
-                </List>
-              </Accordion.Panel>
-            </Accordion.Item>
-          </Accordion>
-          <Space h="xl" />
-          <Space h="xl" />
-        </>
-      )}
-
+      {scout.type === "scout" && <Contents items={contentItems} />}
+      <Space h="xl" />
+      <Space h="xl" />
       <Group>
         <IconCards size={25} strokeWidth={3} color="#ffd43b" />{" "}
         <Title id="cards" order={2}>
@@ -178,13 +106,7 @@ function Page({
       <Space h="sm" />
       <Divider />
       <Space h="md" />
-      <SimpleGrid
-        cols={4}
-        breakpoints={[
-          { maxWidth: 960, cols: 2 },
-          { maxWidth: 400, cols: 1 },
-        ]}
-      >
+      <SimpleGrid cols={2} breakpoints={[{ maxWidth: 400, cols: 1 }]}>
         {cards.map((card: GameCard) => (
           <CardCard
             key={card.id}
@@ -222,7 +144,7 @@ function Page({
                 </Box>
                 <Box sx={{ flex: "1 1 55%" }}>
                   <Alert
-                    variant="filled"
+                    variant="outline"
                     color="indigo"
                     sx={{ minHeight: 100 }}
                   >
