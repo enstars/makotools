@@ -10,14 +10,16 @@ import {
   Text,
   ThemeIcon,
   Title,
+  useMantineTheme,
 } from "@mantine/core";
-import { Carousel } from "@mantine/carousel";
+import { Carousel, Embla } from "@mantine/carousel";
 import Link from "next/link";
 import { IconCalendar, IconInfoCircle } from "@tabler/icons";
-import { useRef, Fragment } from "react";
+import { useRef, Fragment, useState, useEffect } from "react";
 import Autoplay from "embla-carousel-autoplay";
+import { useMediaQuery } from "@mantine/hooks";
 
-import { getLayout } from "../../components/Layout";
+import { getLayout, useSidebarStatus } from "../../components/Layout";
 import PageTitle from "../../components/sections/PageTitle";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { getAssetURL } from "../../services/data";
@@ -32,36 +34,48 @@ import { CONSTANTS } from "services/makotools/constants";
 function Page({ profile }: { profile: UserData }) {
   const { dayjs } = useDayjs();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
+  const theme = useMantineTheme();
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.xs}px)`);
 
+  const [embla, setEmbla] = useState<Embla | null>(null);
+
+  const { collapsed } = useSidebarStatus();
+  useEffect(() => {
+    embla?.reInit();
+  }, [embla, collapsed]);
   return (
     <>
       {profile?.profile__banner && profile.profile__banner?.length ? (
         <Box mt="sm" sx={{ marginLeft: "-100%", marginRight: "-100%" }}>
           <Carousel
             slideSize="34%"
-            height="30vh"
+            height={isMobile ? 150 : 250}
             slideGap="xs"
             loop
             withControls={false}
             plugins={[autoplay.current]}
+            getEmblaApi={setEmbla}
+            draggable={profile.profile__banner.length > 1}
           >
             {/* // doing this so we can surely have enough slides to loop in embla */}
-            {[0, 1, 2].map((n) => (
-              <Fragment key={n}>
-                {profile?.profile__banner?.map((c) => (
-                  <Carousel.Slide key={c}>
-                    <Picture
-                      alt={`Card ${c}`}
-                      srcB2={`assets/card_still_full1_${c}_evolution.png`}
-                      sx={{
-                        height: "100%",
-                      }}
-                      radius="sm"
-                    />
-                  </Carousel.Slide>
-                ))}
-              </Fragment>
-            ))}
+            {(profile.profile__banner.length > 1 ? [0, 1, 2, 3] : [0]).map(
+              (n) => (
+                <Fragment key={n}>
+                  {profile?.profile__banner?.map((c) => (
+                    <Carousel.Slide key={c}>
+                      <Picture
+                        alt={`Card ${c}`}
+                        srcB2={`assets/card_still_full1_${c}_evolution.png`}
+                        sx={{
+                          height: "100%",
+                        }}
+                        radius="sm"
+                      />
+                    </Carousel.Slide>
+                  ))}
+                </Fragment>
+              )
+            )}
           </Carousel>
         </Box>
       ) : null}
