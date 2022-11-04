@@ -65,6 +65,7 @@ const useStyles = createStyles(() => ({
   },
   paper: {
     display: "flex",
+    colorScheme: "light",
   },
 }));
 
@@ -116,6 +117,7 @@ function BioDisplay({
           // @ts-ignore
           ref={iframeRef}
           scrolling="no"
+          allowtransparency="true"
         >
           <FrameContextConsumer>
             {({ document }) => {

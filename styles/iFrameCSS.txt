@@ -9,6 +9,12 @@ html {
   }
 }
 
+/* NOT NORMALIZE: Makotools - Transparent background */
+
+body {
+  background: none transparent;
+}
+
 /* NOT NORMALIZE: Makotools - Remove margin from first-last elements */
 
 .bio > *:first-child,
