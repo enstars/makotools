@@ -9,7 +9,7 @@ function UserVerification() {
 
   return (
     <>
-      {user.loggedIn && !user.user.emailVerified && (
+      {user.loggedIn && user.user.email && !user.user.emailVerified && (
         <Alert
           sx={{ width: "100%" }}
           py="xs"

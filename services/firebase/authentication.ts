@@ -7,6 +7,9 @@ import {
   TwitterAuthProvider,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  updateEmail,
+  updatePassword,
+  reauthenticateWithPopup,
 } from "firebase/auth";
 
 const parseKey = (key: string) => {
@@ -151,4 +154,28 @@ export function signUpWithEmail(
       errorCallback
     );
   }
+}
+
+export async function bindEmailForTwitterUser() {
+  const clientAuth = getAuth();
+  const provider = new TwitterAuthProvider();
+  provider.setCustomParameters({ force_login: "true" });
+
+  if (clientAuth.currentUser !== null) {
+    const provider = new TwitterAuthProvider();
+    provider.setCustomParameters({ force_login: "true" });
+    try {
+      await reauthenticateWithPopup(clientAuth.currentUser, provider);
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+    return (email: string, password: string) => {
+      if (clientAuth.currentUser) {
+        updateEmail(clientAuth.currentUser, email);
+        updatePassword(clientAuth.currentUser, password);
+      }
+    };
+  }
+  return null;
 }
