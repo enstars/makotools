@@ -1,12 +1,9 @@
 import {
-  Accordion,
   Alert,
-  Badge,
   Blockquote,
   Box,
   Divider,
   Group,
-  List,
   Paper,
   SimpleGrid,
   Space,
@@ -16,9 +13,7 @@ import {
   Title,
 } from "@mantine/core";
 import {
-  IconArrowsShuffle2,
   IconBook,
-  IconBus,
   IconCards,
   IconDiamond,
   IconList,
@@ -29,6 +24,9 @@ import { useMemo } from "react";
 import Link from "next/link";
 
 import gachaCardEventBonus from "../../data/gachaCardEventBonus.json";
+
+import ESPageHeader from "./components/ESPageHeader";
+import Contents from "./components/Contents";
 
 import Picture from "components/core/Picture";
 import { getLayout } from "components/Layout";
@@ -41,7 +39,6 @@ import getServerSideUser from "services/firebase/getServerSideUser";
 import { useDayjs } from "services/libraries/dayjs";
 import { GameCard, GameEvent, GameUnit, ScoutEvent } from "types/game";
 import { QuerySuccess } from "types/makotools";
-import IconEnstars from "components/core/IconEnstars";
 import CardCard from "pages/cards/components/DisplayCard";
 
 type Colors = "red" | "blue" | "yellow" | "green";
@@ -74,131 +71,38 @@ function Page({
   );
   console.log(cards);
 
+  let contentItems = [
+    {
+      id: "#cards",
+      name: "Cards",
+      icon: <IconCards size={16} strokeWidth={3} />,
+    },
+    {
+      id: "#story",
+      name: "Story",
+      icon: <IconBook size={16} strokeWidth={3} />,
+    },
+    {
+      id: "#scout",
+      name: "Scout",
+      icon: <IconDiamond size={16} strokeWidth={3} />,
+    },
+  ];
+
+  if (event.type !== "tour")
+    contentItems.splice(contentItems.length - 1, 0, {
+      id: "#song",
+      name: "Song",
+      icon: <IconMusic size={16} strokeWidth={3} />,
+    });
+
   return (
     <>
       <PageTitle title={event.name[0]} sx={{ width: "100%" }} />
-      <Group position="apart" align="flex-start">
-        <Box sx={{ position: "relative", flex: "2 1 55%" }}>
-          <Picture
-            alt={event.name[0]}
-            srcB2={`assets/card_still_full1_${event.banner_id}_evolution.png`}
-            sx={{ height: 180 }}
-            radius="md"
-          />
-        </Box>
-        <Box sx={{ flex: "2 1 40%" }}>
-          <Group>
-            <Box sx={{ flex: "1 1 0", minWidth: 200 }}>
-              <Text size="sm" color="dimmed" weight={700}>
-                Start ({dayjs(event.start_date).format("z")})
-              </Text>
-              <Text size="lg" weight={500}>
-                {dayjs(event.start_date).format("lll")}
-              </Text>
-            </Box>
-            <Box sx={{ flex: "1 1 0", minWidth: 200 }}>
-              <Text size="sm" color="dimmed" weight={700}>
-                End ({dayjs(event.end_date).format("z")})
-              </Text>
-              <Text size="lg" weight={500}>
-                {dayjs(event.end_date).format("lll")}
-              </Text>
-            </Box>
-          </Group>
-          <Space h="md" />
-          <Group noWrap>
-            {dayjs(event.end_date).isBefore(dayjs()) ? (
-              <Badge color="gray">Past</Badge>
-            ) : dayjs().isBetween(
-                dayjs(event.start_date),
-                dayjs(event.end_date)
-              ) ? (
-              <Badge color="yellow">Ongoing</Badge>
-            ) : (
-              <Badge color="lime">Upcoming</Badge>
-            )}
-            {units.map((unit) => (
-              <Badge
-                key={unit.id}
-                color={unit.image_color}
-                leftSection={<IconEnstars unit={unit.id} size={10} />}
-                sx={{
-                  background: unit.image_color,
-                }}
-                variant="filled"
-              >
-                {unit.name[0]}
-              </Badge>
-            ))}
-            <Badge
-              variant="filled"
-              color={
-                event.type === "song"
-                  ? "grape"
-                  : event.type === "shuffle"
-                  ? "blue"
-                  : "teal"
-              }
-              leftSection={
-                <Box mt={4}>
-                  {event.type === "song" ? (
-                    <IconDiamond size={12} strokeWidth={3} />
-                  ) : event.type === "shuffle" ? (
-                    <IconArrowsShuffle2 size={12} strokeWidth={3} />
-                  ) : (
-                    <IconBus size={12} strokeWidth={3} />
-                  )}
-                </Box>
-              }
-            >
-              {event.type}
-            </Badge>
-          </Group>
-        </Box>
-      </Group>
+      <ESPageHeader content={event} units={units} />
       <Space h="xl" />
       <Space h="xl" />
-      <Accordion
-        variant="contained"
-        defaultValue="contents"
-        sx={{
-          ["@media (min-width: 900px)"]: {
-            width: "50%",
-          },
-        }}
-      >
-        <Accordion.Item value="contents">
-          <Accordion.Control>
-            <Title order={4}>Contents</Title>
-          </Accordion.Control>
-          <Accordion.Panel>
-            <List size="md" spacing="sm" center>
-              <List.Item icon={<IconCards size={16} strokeWidth={3} />}>
-                <Text size="md" component={Link} href="#cards">
-                  Cards
-                </Text>
-              </List.Item>
-              <List.Item icon={<IconBook size={16} strokeWidth={3} />}>
-                <Text size="md" component={Link} href="#story">
-                  Story
-                </Text>
-              </List.Item>
-              {event.type === "song" && (
-                <List.Item icon={<IconMusic size={16} strokeWidth={3} />}>
-                  <Text size="md" component={Link} href="#song">
-                    Song
-                  </Text>
-                </List.Item>
-              )}
-              <List.Item icon={<IconDiamond size={16} strokeWidth={3} />}>
-                <Text size="md" component={Link} href="#scout">
-                  Scout
-                </Text>
-              </List.Item>
-            </List>
-          </Accordion.Panel>
-        </Accordion.Item>
-      </Accordion>
+      <Contents items={contentItems} />
       <Space h="xl" />
       <Space h="xl" />
       <Group>
@@ -210,13 +114,7 @@ function Page({
       <Space h="sm" />
       <Divider />
       <Space h="md" />
-      <SimpleGrid
-        cols={4}
-        breakpoints={[
-          { maxWidth: 960, cols: 2 },
-          { maxWidth: 400, cols: 1 },
-        ]}
-      >
+      <SimpleGrid cols={2} breakpoints={[{ maxWidth: 400, cols: 1 }]}>
         {cards.map((card: GameCard) => (
           <CardCard
             key={card.id}
@@ -320,7 +218,7 @@ function Page({
           <Space h="md" />
           <Group>
             <Box sx={{ position: "relative", flex: "1 1 40%" }}>
-              <Link href={`/scout/${scout.gacha_id}`}>
+              <Link href={`/scouts/${scout.gacha_id}`}>
                 <Picture
                   alt={scout.name[0]}
                   srcB2={`assets/card_still_full1_${scout.banner_id}_evolution.png`}
@@ -330,7 +228,7 @@ function Page({
               </Link>
             </Box>
             <Box sx={{ flex: "1 1 55%" }}>
-              <Alert variant="filled" color="indigo" sx={{ minHeight: 100 }}>
+              <Alert variant="outline" color="indigo" sx={{ minHeight: 100 }}>
                 <Text size="md">
                   Cards in the <strong>{scout.name[0]}</strong> scout offer a
                   point bonus for this event!
