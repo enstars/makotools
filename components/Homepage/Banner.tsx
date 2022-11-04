@@ -33,6 +33,7 @@ function Banner({
   const user = useUser();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const { dayjs } = useDayjs();
+  console.log(events);
 
   const { classes } = useStyles();
   const pastEvents = events
