@@ -17,7 +17,13 @@ import {
   List,
 } from "@mantine/core";
 import dayjs from "dayjs";
-import { IconBook, IconCards, IconMedal, IconStar } from "@tabler/icons";
+import {
+  IconBook,
+  IconCards,
+  IconList,
+  IconMedal,
+  IconStar,
+} from "@tabler/icons";
 import Link from "next/link";
 
 import gachaCardEventBonus from "../../data/gachaCardEventBonus.json";
@@ -232,8 +238,8 @@ function Page({
                 <Table striped captionSide="bottom">
                   <caption>
                     The event bonus range is based on the number of copies of a
-                    card you own. One copy of a card offers the minimum bonus in
-                    a range while owning five or more copies offers the maximum
+                    card owned. One copy of a card offers the minimum bonus in a
+                    range while owning five or more copies offers the maximum
                     bonus.
                   </caption>
                   <thead>
@@ -268,7 +274,7 @@ function Page({
           <Space h="sm" />
           <Divider />
           <Space h="md" />
-          <Group sx={{ padding: "10px" }}>
+          <Group align="flex-start" sx={{ padding: "10px" }}>
             <Box sx={{ position: "relative", flex: "1 2 45%" }}>
               <Picture
                 alt={scout.name[0]}
@@ -291,7 +297,7 @@ function Page({
                 >
                   {scout.intro_lines && scout.intro_lines[0]}
                 </Blockquote>
-                <Text size="sm" color="dimmed">
+                <Text align="right" size="sm" color="dimmed">
                   Summary translated by{" "}
                   {scout.intro_lines_tl_credits && (
                     <Text
@@ -308,7 +314,11 @@ function Page({
             </Box>
           </Group>
           <Space h="md" />
-          <Title order={3}>Story Chapters</Title>
+          <Title id="chapters" order={3}>
+            <Group align="center">
+              <IconList size={24} strokeWidth={2} /> Story Chapters
+            </Group>
+          </Title>
           <Space h="sm" />
           <Paper shadow="xs" p="md" withBorder>
             Coming soon!

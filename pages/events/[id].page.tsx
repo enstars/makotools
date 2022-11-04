@@ -21,6 +21,7 @@ import {
   IconBus,
   IconCards,
   IconDiamond,
+  IconList,
   IconMusic,
   IconStar,
 } from "@tabler/icons";
@@ -236,7 +237,7 @@ function Page({
       <Space h="sm" />
       <Divider />
       <Space h="md" />
-      <Group sx={{ padding: "10px" }}>
+      <Group align="flex-start" sx={{ padding: "10px" }}>
         <Box sx={{ position: "relative", flex: "1 2 45%" }}>
           <Picture
             alt={event.name[0]}
@@ -260,15 +261,27 @@ function Page({
             >
               {event.intro_lines && event.intro_lines[0]}
             </Blockquote>
-            <Text size="sm" color="dimmed">
-              Story written by {event.story_author && event.story_author[0]}
+            <Text align="right" size="sm" color="dimmed">
+              Story written by {event.story_author && event.story_author[0]}{" "}
+              {event.intro_lines_tl_credits &&
+                `| Summary translated by ${(
+                  <Text
+                    component={Link}
+                    color="indigo"
+                    href={`https://twitter.com/${event.intro_lines_tl_credits[0]}`}
+                  >
+                    @{event.intro_lines_tl_credits[0]}
+                  </Text>
+                )}`}
             </Text>
           </Stack>
         </Box>
       </Group>
       <Space h="md" />
       <Title id="chapters" order={3}>
-        Story Chapters
+        <Group align="center">
+          <IconList size={24} strokeWidth={2} /> Story Chapters
+        </Group>
       </Title>
       <Space h="sm" />
       <Paper shadow="xs" p="md" withBorder>
@@ -330,7 +343,7 @@ function Page({
             <Table striped captionSide="bottom">
               <caption>
                 The event bonus range is based on the number of copies of a card
-                you own. One copy of a card offers the minimum bonus in a range
+                owned. One copy of a card offers the minimum bonus in a range
                 while owning five or more copies offers the maximum bonus.
               </caption>
               <thead>
