@@ -11,10 +11,16 @@ import {
   Blockquote,
   Paper,
   Stack,
+  Table,
+  Alert,
+  Accordion,
+  List,
 } from "@mantine/core";
 import dayjs from "dayjs";
-import { IconBook, IconCards, IconMedal } from "@tabler/icons";
+import { IconBook, IconCards, IconMedal, IconStar } from "@tabler/icons";
 import Link from "next/link";
+
+import gachaCardEventBonus from "../../data/gachaCardEventBonus.json";
 
 import PageTitle from "components/sections/PageTitle";
 import {
@@ -57,6 +63,8 @@ function Page({
       scout.three_star?.chara_id.includes(character.character_id)
     );
   });
+
+  console.log(event);
 
   return (
     <>
@@ -112,10 +120,54 @@ function Page({
           </Group>
         </Box>
       </Group>
-      <Space h={60} />
+      <Space h="xl" />
+      <Space h="xl" />
+      {scout.type === "scout" && (
+        <>
+          <Accordion
+            variant="contained"
+            defaultValue="contents"
+            sx={{
+              ["@media (min-width: 900px)"]: {
+                width: "50%",
+              },
+            }}
+          >
+            <Accordion.Item value="contents">
+              <Accordion.Control>
+                <Title order={4}>Contents</Title>
+              </Accordion.Control>
+              <Accordion.Panel>
+                <List size="md" spacing="sm" center>
+                  <List.Item icon={<IconCards size={16} strokeWidth={3} />}>
+                    <Text size="md" component={Link} href="#cards">
+                      Cards
+                    </Text>
+                  </List.Item>
+                  <List.Item icon={<IconMedal size={16} strokeWidth={3} />}>
+                    <Text size="md" component={Link} href="#event">
+                      Event
+                    </Text>
+                  </List.Item>
+                  <List.Item icon={<IconBook size={16} strokeWidth={3} />}>
+                    <Text size="md" component={Link} href="#story">
+                      Story
+                    </Text>
+                  </List.Item>
+                </List>
+              </Accordion.Panel>
+            </Accordion.Item>
+          </Accordion>
+          <Space h="xl" />
+          <Space h="xl" />
+        </>
+      )}
+
       <Group>
         <IconCards size={25} strokeWidth={3} color="#ffd43b" />{" "}
-        <Title order={2}>Cards</Title>
+        <Title id="cards" order={2}>
+          Cards
+        </Title>
       </Group>
       <Space h="sm" />
       <Divider />
@@ -136,12 +188,82 @@ function Page({
           />
         ))}
       </SimpleGrid>
-      <Space h="lg" />
+      <Space h="xl" />
       {scout.type === "scout" && (
         <>
+          <Space h="xl" />
+          {event && (
+            <>
+              <Group align="flex-start">
+                <IconMedal size={25} strokeWidth={3} color="#66d9e8" />
+                <Title id="event" order={2}>
+                  Event: {event.name[0]}
+                </Title>
+              </Group>
+              <Space h="sm" />
+              <Divider />
+              <Space h="md" />
+              <Group>
+                <Box sx={{ position: "relative", flex: "1 1 40%" }}>
+                  <Link href={`/events/${event.event_id}`}>
+                    <Picture
+                      alt={scout.name[0]}
+                      srcB2={`assets/card_still_full1_${event.banner_id}_evolution.png`}
+                      sx={{ height: 100 }}
+                      radius="sm"
+                    />
+                  </Link>
+                </Box>
+                <Box sx={{ flex: "1 1 55%" }}>
+                  <Alert
+                    variant="filled"
+                    color="indigo"
+                    sx={{ minHeight: 100 }}
+                  >
+                    <Text size="md">
+                      Cards in the <strong>{scout.name[0]}</strong> scout offer
+                      an event point bonus for <strong>{event.name[0]}</strong>!
+                    </Text>
+                  </Alert>
+                </Box>
+              </Group>
+              <Space h="lg" />
+              <Paper withBorder shadow="xs" p="xl">
+                <Table striped captionSide="bottom">
+                  <caption>
+                    The event bonus range is based on the number of copies of a
+                    card you own. One copy of a card offers the minimum bonus in
+                    a range while owning five or more copies offers the maximum
+                    bonus.
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th>Card rarity</th>
+                      <th>Event point bonus</th>
+                    </tr>
+                  </thead>
+                  {gachaCardEventBonus.map((row) => (
+                    <tr key={row.rarity}>
+                      <td>
+                        {row.rarity}
+                        <IconStar size={10} />
+                      </td>
+                      <td>
+                        {row.minBonus}% - {row.maxBonus}%
+                      </td>
+                    </tr>
+                  ))}
+                </Table>
+              </Paper>
+            </>
+          )}
+          <Space h="xl" />
+          <Space h="xl" />
           <Group>
             <IconBook size={25} strokeWidth={3} color="#b197fc" />
-            <Title order={2}>Story</Title>
+            <Title id="story" order={2}>
+              Story
+            </Title>
           </Group>
           <Space h="sm" />
           <Divider />
@@ -172,11 +294,14 @@ function Page({
                 <Text size="sm" color="dimmed">
                   Summary translated by{" "}
                   {scout.intro_lines_tl_credits && (
-                    <Link
-                      href={`https://twitter.com/${scout.intro_lines_tl_credits}`}
+                    <Text
+                      color="indigo"
+                      component={Link}
+                      href={`https://twitter.com/${scout.intro_lines_tl_credits[0]}`}
+                      target="_blank"
                     >
-                      @{scout.intro_lines_tl_credits}
-                    </Link>
+                      @{scout.intro_lines_tl_credits[0]}
+                    </Text>
                   )}
                 </Text>
               </Stack>
@@ -189,16 +314,6 @@ function Page({
             Coming soon!
           </Paper>
           <Space h="xl" />
-          <Group>
-            <IconMedal size={25} strokeWidth={3} color="#99e9f2" />
-            <Title order={2}>Event</Title>
-          </Group>
-          <Space h="sm" />
-          <Divider />
-          <Space h="md" />
-          <Paper shadow="xs" p="md" withBorder>
-            Coming soon!
-          </Paper>
         </>
       )}
     </>
@@ -271,5 +386,5 @@ export const getServerSideProps = getServerSideUser(
   }
 );
 
-Page.getLayout = getLayout({ wide: true });
+Page.getLayout = getLayout({});
 export default Page;

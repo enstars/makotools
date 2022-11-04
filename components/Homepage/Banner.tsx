@@ -33,6 +33,7 @@ function Banner({
   const user = useUser();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const { dayjs } = useDayjs();
+  console.log(events);
 
   const { classes } = useStyles();
   const pastEvents = events
@@ -51,6 +52,8 @@ function Banner({
   );
 
   shownEvents.push(...currentBirthdays);
+
+  console.log("shownEvents post bday", shownEvents);
 
   const pastGameEvents = pastEvents.filter((event) =>
     ["tour", "song"].includes(event.type)
@@ -124,7 +127,7 @@ function Banner({
                     : event.type === "scout"
                     ? `SCOUT! ${event.name[0]}`
                     : event.type === "feature scout"
-                    ? `Featured Scout: ${event.name[0]}`
+                    ? event.name[0]
                     : event.type === "birthday"
                     ? `Happy birthday, ${event.name.split(" ")[0]}!`
                     : event.name[0]}
