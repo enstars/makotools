@@ -190,7 +190,7 @@ export interface GameEvent extends Event {
   event_gacha?: string;
   gacha_id?: ID;
   intro_lines?: string;
-  intro_lines_tl_credits?: string;
+  intro_lines_tl_credit?: string;
   song_name?: string;
   unit_id?: ID[];
 }

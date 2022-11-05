@@ -1,5 +1,4 @@
 import {
-  Alert,
   Blockquote,
   Box,
   Divider,
@@ -8,7 +7,6 @@ import {
   SimpleGrid,
   Space,
   Stack,
-  Table,
   Text,
   Title,
 } from "@mantine/core";
@@ -18,15 +16,13 @@ import {
   IconDiamond,
   IconList,
   IconMusic,
-  IconStar,
 } from "@tabler/icons";
 import { useMemo } from "react";
 import Link from "next/link";
 
-import gachaCardEventBonus from "../../data/gachaCardEventBonus.json";
-
 import ESPageHeader from "./components/ESPageHeader";
 import Contents from "./components/Contents";
+import PointsTable from "./components/PointsTable";
 
 import Picture from "components/core/Picture";
 import { getLayout } from "components/Layout";
@@ -37,7 +33,7 @@ import {
 } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { useDayjs } from "services/libraries/dayjs";
-import { GameCard, GameEvent, GameUnit, ScoutEvent } from "types/game";
+import { GameCard, GameEvent, GameUnit, ID, ScoutEvent } from "types/game";
 import { QuerySuccess } from "types/makotools";
 import CardCard from "pages/cards/components/DisplayCard";
 
@@ -57,7 +53,7 @@ function Page({
   let cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
   let units = useMemo(() => unitsQuery.data, [unitsQuery.data]);
   const { dayjs } = useDayjs();
-  console.log(event);
+
   cards = cards.filter((card) => {
     return (
       event.five_star?.card_id.includes(card.id) ||
@@ -69,7 +65,6 @@ function Page({
   units = units.filter(
     (unit: GameUnit) => event.unit_id && event.unit_id.includes(unit.id)
   );
-  console.log(cards);
 
   let contentItems = [
     {
@@ -159,19 +154,21 @@ function Page({
             >
               {event.intro_lines && event.intro_lines[0]}
             </Blockquote>
-            <Text align="right" size="sm" color="dimmed">
-              Story written by {event.story_author && event.story_author[0]}{" "}
-              {event.intro_lines_tl_credits &&
-                `| Summary translated by ${(
+            {event.intro_lines_tl_credit && (
+              <Text align="right" color="dimmed" size="sm">
+                Summary translated by{" "}
+                {
                   <Text
                     component={Link}
                     color="indigo"
-                    href={`https://twitter.com/${event.intro_lines_tl_credits[0]}`}
+                    href={`https://twitter.com/${event.intro_lines_tl_credit[0]}`}
+                    target="_blank"
                   >
-                    @{event.intro_lines_tl_credits[0]}
+                    @{event.intro_lines_tl_credit[0]}
                   </Text>
-                )}`}
-            </Text>
+                }
+              </Text>
+            )}
           </Stack>
         </Box>
       </Group>
@@ -216,53 +213,13 @@ function Page({
           <Space h="sm" />
           <Divider />
           <Space h="md" />
-          <Group>
-            <Box sx={{ position: "relative", flex: "1 1 40%" }}>
-              <Link href={`/scouts/${scout.gacha_id}`}>
-                <Picture
-                  alt={scout.name[0]}
-                  srcB2={`assets/card_still_full1_${scout.banner_id}_evolution.png`}
-                  sx={{ height: 100 }}
-                  radius="sm"
-                />
-              </Link>
-            </Box>
-            <Box sx={{ flex: "1 1 55%" }}>
-              <Alert variant="outline" color="indigo" sx={{ minHeight: 100 }}>
-                <Text size="md">
-                  Cards in the <strong>{scout.name[0]}</strong> scout offer a
-                  point bonus for this event!
-                </Text>
-              </Alert>
-            </Box>
-          </Group>
-          <Space h="lg" />
-          <Paper withBorder shadow="xs" p="xl">
-            <Table striped captionSide="bottom">
-              <caption>
-                The event bonus range is based on the number of copies of a card
-                owned. One copy of a card offers the minimum bonus in a range
-                while owning five or more copies offers the maximum bonus.
-              </caption>
-              <thead>
-                <tr>
-                  <th>Card rarity</th>
-                  <th>Event point bonus</th>
-                </tr>
-              </thead>
-              {gachaCardEventBonus.map((row) => (
-                <tr key={row.rarity}>
-                  <td>
-                    {row.rarity}
-                    <IconStar size={10} />
-                  </td>
-                  <td>
-                    {row.minBonus}% - {row.maxBonus}%
-                  </td>
-                </tr>
-              ))}
-            </Table>
-          </Paper>
+          <PointsTable
+            id={scout.gacha_id}
+            type={event.type}
+            eventName={event.name[0]}
+            scoutName={scout.name[0]}
+            banner={scout.banner_id as ID}
+          />
         </>
       )}
     </>

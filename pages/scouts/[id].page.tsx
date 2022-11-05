@@ -10,19 +10,9 @@ import {
   Blockquote,
   Paper,
   Stack,
-  Table,
-  Alert,
 } from "@mantine/core";
-import {
-  IconBook,
-  IconCards,
-  IconList,
-  IconMedal,
-  IconStar,
-} from "@tabler/icons";
+import { IconBook, IconCards, IconList, IconMedal } from "@tabler/icons";
 import Link from "next/link";
-
-import gachaCardEventBonus from "../../data/gachaCardEventBonus.json";
 
 import PageTitle from "components/sections/PageTitle";
 import {
@@ -30,13 +20,14 @@ import {
   getLocalizedDataArray,
 } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { GameCard, GameCharacter, GameEvent, ScoutEvent } from "types/game";
+import { GameCard, GameCharacter, GameEvent, ID, ScoutEvent } from "types/game";
 import { QuerySuccess } from "types/makotools";
 import { getLayout } from "components/Layout";
 import Picture from "components/core/Picture";
 import CardCard from "pages/cards/components/DisplayCard";
 import ESPageHeader from "pages/events/components/ESPageHeader";
 import Contents from "pages/events/components/Contents";
+import PointsTable from "pages/events/components/PointsTable";
 
 function Page({
   scout,
@@ -125,64 +116,19 @@ function Page({
               <Group align="flex-start">
                 <IconMedal size={25} strokeWidth={3} color="#66d9e8" />
                 <Title id="event" order={2}>
-                  Event: {event.name[0]}
+                  Event
                 </Title>
               </Group>
               <Space h="sm" />
               <Divider />
               <Space h="md" />
-              <Group>
-                <Box sx={{ position: "relative", flex: "1 1 40%" }}>
-                  <Link href={`/events/${event.event_id}`}>
-                    <Picture
-                      alt={scout.name[0]}
-                      srcB2={`assets/card_still_full1_${event.banner_id}_evolution.png`}
-                      sx={{ height: 100 }}
-                      radius="sm"
-                    />
-                  </Link>
-                </Box>
-                <Box sx={{ flex: "1 1 55%" }}>
-                  <Alert
-                    variant="outline"
-                    color="indigo"
-                    sx={{ minHeight: 100 }}
-                  >
-                    <Text size="md">
-                      Cards in the <strong>{scout.name[0]}</strong> scout offer
-                      an event point bonus for <strong>{event.name[0]}</strong>!
-                    </Text>
-                  </Alert>
-                </Box>
-              </Group>
-              <Space h="lg" />
-              <Paper withBorder shadow="xs" p="xl">
-                <Table striped captionSide="bottom">
-                  <caption>
-                    The event bonus range is based on the number of copies of a
-                    card owned. One copy of a card offers the minimum bonus in a
-                    range while owning five or more copies offers the maximum
-                    bonus.
-                  </caption>
-                  <thead>
-                    <tr>
-                      <th>Card rarity</th>
-                      <th>Event point bonus</th>
-                    </tr>
-                  </thead>
-                  {gachaCardEventBonus.map((row) => (
-                    <tr key={row.rarity}>
-                      <td>
-                        {row.rarity}
-                        <IconStar size={10} />
-                      </td>
-                      <td>
-                        {row.minBonus}% - {row.maxBonus}%
-                      </td>
-                    </tr>
-                  ))}
-                </Table>
-              </Paper>
+              <PointsTable
+                id={event.event_id}
+                type={event.type}
+                eventName={event.name[0]}
+                scoutName={scout.name[0]}
+                banner={event.banner_id as ID}
+              />
             </>
           )}
           <Space h="xl" />
