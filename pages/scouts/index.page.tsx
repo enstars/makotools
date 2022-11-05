@@ -22,7 +22,6 @@ import {
   IconSearch,
   IconSortAscending,
   IconSortDescending,
-  IconStars,
 } from "@tabler/icons";
 import { useEffect, useMemo, useState } from "react";
 
@@ -34,17 +33,19 @@ import { getLocalizedDataArray } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCharacter, ScoutEvent } from "types/game";
 import { QuerySuccess } from "types/makotools";
-import { FSSOptions } from "types/libraries";
 import { useDayjs } from "services/libraries/dayjs";
 import useFSSList from "services/makotools/search";
 
-interface ScoutViewOptions {
-  searchQuery: string;
-  filterFiveStar: string[];
-  filterFourStar: string[];
-  filterThreeStar: string[];
-  filterType: string[];
-}
+const defaultView = {
+  filters: {
+    characters: [] as number[],
+  },
+  search: "",
+  sort: {
+    type: "id",
+    ascending: true,
+  },
+};
 
 function Page({
   scoutsQuery,
@@ -64,46 +65,23 @@ function Page({
     [charactersQuery.data]
   );
 
-  const defaultView: ViewType = {
-    filters: { fivestar: [], fourstar: [], threestar: [] },
-    search: "",
-    sort: {
-      type: "id",
-      ascending: false,
-    },
-  };
-
-  const fssOptions = useMemo<FSSOptions<ScoutEvent>>(
+  const fssOptions = useMemo<
+    FSSOptions<ScoutEvent, typeof defaultView.filters>
+  >(
     () => ({
       filters: [
         {
-          type: "fivestar",
+          type: "characters",
           values: [],
-          function: (view: ViewType) => {
-            return (c: ScoutEvent) =>
-              (view.filters.fivestar as number[]).filter((value: number) =>
-                c.five_star?.chara_id?.includes(value)
-              ).length;
-          },
-        },
-        {
-          type: "fourstar",
-          values: [],
-          function: (view: ViewType) => {
-            return (c: ScoutEvent) =>
-              (view.filters.fourstar as number[]).filter((value: number) =>
-                c.four_star?.chara_id?.includes(value)
-              ).length;
-          },
-        },
-        {
-          type: "threestar",
-          values: [],
-          function: (view: ViewType) => {
-            return (c: ScoutEvent) =>
-              (view.filters.threestar as number[]).filter((value: number) =>
-                c.three_star?.chara_id?.includes(value)
-              ).length;
+          function: (view) => {
+            return (event) =>
+              view.filters.characters.filter((c) =>
+                [
+                  ...(event.five_star?.chara_id || []),
+                  ...(event.four_star?.chara_id || []),
+                  ...(event.three_star?.chara_id || []),
+                ].includes(c)
+              ).length > 0;
           },
         },
       ],
@@ -122,20 +100,20 @@ function Page({
       ],
       baseSort: "id",
       search: {
-        fields: ["name"],
+        fields: ["name.0", "name.1", "name.2"],
       },
       defaultView,
     }),
     []
   );
-  const { results, view, setView } = useFSSList<ScoutEvent>(scouts, fssOptions);
+  const { results, view, setView } = useFSSList<
+    ScoutEvent,
+    typeof defaultView.filters
+  >(scouts, fssOptions);
+
+  console.log(view, results);
 
   const [isMobile, setMobile] = useState<boolean>(false);
-
-  let characterIDtoSort: { [key: number]: number } = {};
-  characters.forEach((c) => {
-    characterIDtoSort[c.character_id] = c.sort_id;
-  });
 
   useEffect(() => {
     window.innerWidth <= 900 ? setMobile(true) : setMobile(false);
@@ -213,14 +191,10 @@ function Page({
             }
           />
           <MultiSelect
-            label="Character 5★"
+            label="5★ Characters"
             placeholder="Pick a character..."
             data={characters
-              .sort(
-                (a: any, b: any) =>
-                  characterIDtoSort[a.character_id] -
-                  characterIDtoSort[b.character_id]
-              )
+              .sort((a: any, b: any) => a.sort_id - b.sort_id)
               .map((c: GameCharacter) => {
                 return {
                   value: c.character_id.toString(),
@@ -232,63 +206,7 @@ function Page({
                 ...v,
                 filters: {
                   ...v.filters,
-                  fivestar: val.map((id) => parseInt(id)),
-                },
-              }));
-            }}
-            sx={{ maxWidth: 400 }}
-            variant="default"
-            searchable
-          />
-          <MultiSelect
-            label="Character 4★"
-            placeholder="Pick a character..."
-            data={characters
-              .sort(
-                (a: any, b: any) =>
-                  characterIDtoSort[a.character_id] -
-                  characterIDtoSort[b.character_id]
-              )
-              .map((c: GameCharacter) => {
-                return {
-                  value: c.character_id.toString(),
-                  label: c.first_name[0],
-                };
-              })}
-            onChange={(val) => {
-              setView((v) => ({
-                ...v,
-                filters: {
-                  ...v.filters,
-                  fourstar: val.map((id) => parseInt(id)),
-                },
-              }));
-            }}
-            sx={{ maxWidth: 400 }}
-            variant="default"
-            searchable
-          />
-          <MultiSelect
-            label="Character 3★"
-            placeholder="Pick a character..."
-            data={characters
-              .sort(
-                (a: any, b: any) =>
-                  characterIDtoSort[a.character_id] -
-                  characterIDtoSort[b.character_id]
-              )
-              .map((c: GameCharacter) => {
-                return {
-                  value: c.character_id.toString(),
-                  label: c.first_name[0],
-                };
-              })}
-            onChange={(val) => {
-              setView((v) => ({
-                ...v,
-                filters: {
-                  ...v.filters,
-                  threestar: val.map((id) => parseInt(id)),
+                  characters: val.map((id) => parseInt(id)),
                 },
               }));
             }}
@@ -327,13 +245,6 @@ function Page({
           >
             {!isMobile && <Title order={4}>Feature Scouts</Title>}
           </Tabs.Tab>
-          <Tabs.Tab
-            value="special"
-            icon={<IconStars size={36} strokeWidth={2} color="#d0bfff" />}
-            aria-label="Special Campaigns"
-          >
-            {!isMobile && <Title order={4}>Special Campaigns</Title>}
-          </Tabs.Tab>
         </Tabs.List>
 
         <Tabs.Panel value="event">
@@ -346,7 +257,7 @@ function Page({
             ]}
             sx={{ ["@media (min-width: 900px)"]: { marginLeft: "1vw" } }}
           >
-            {scouts
+            {results
               .filter((scout) => scout.type === "scout")
               .map((scout: ScoutEvent) => (
                 <ScoutCard key={scout.gacha_id} scout={scout} />
@@ -364,7 +275,7 @@ function Page({
             ]}
             sx={{ ["@media (min-width: 900px)"]: { marginLeft: "1vw" } }}
           >
-            {scouts
+            {results
               .filter((scout) => scout.type === "feature scout")
               .map((scout: ScoutEvent) => (
                 <ScoutCard key={scout.gacha_id} scout={scout} />
