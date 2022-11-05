@@ -229,7 +229,7 @@ function Page({
             position: "sticky",
             top: "40px",
             alignSelf: "start",
-            zIndex: 10,
+            zIndex: 20,
             background:
               theme.colorScheme === "dark"
                 ? theme.colors.dark[8]
