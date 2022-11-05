@@ -1,18 +1,6 @@
 import { useMemo } from "react";
-import {
-  Group,
-  Box,
-  Space,
-  Text,
-  Divider,
-  SimpleGrid,
-  Title,
-  Blockquote,
-  Paper,
-  Stack,
-} from "@mantine/core";
-import { IconBook, IconCards, IconList, IconMedal } from "@tabler/icons";
-import Link from "next/link";
+import { Group, Space, Divider, SimpleGrid, Title } from "@mantine/core";
+import { IconBook, IconCards, IconMedal } from "@tabler/icons";
 
 import PageTitle from "components/sections/PageTitle";
 import {
@@ -23,11 +11,11 @@ import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCard, GameCharacter, GameEvent, ID, ScoutEvent } from "types/game";
 import { QuerySuccess } from "types/makotools";
 import { getLayout } from "components/Layout";
-import Picture from "components/core/Picture";
 import CardCard from "pages/cards/components/DisplayCard";
 import ESPageHeader from "pages/events/components/ESPageHeader";
 import Contents from "pages/events/components/Contents";
 import PointsTable from "pages/events/components/PointsTable";
+import Stories from "pages/events/components/Stories";
 
 function Page({
   scout,
@@ -142,55 +130,7 @@ function Page({
           <Space h="sm" />
           <Divider />
           <Space h="md" />
-          <Group align="flex-start" sx={{ padding: "10px" }}>
-            <Box sx={{ position: "relative", flex: "1 2 45%" }}>
-              <Picture
-                alt={scout.name[0]}
-                srcB2={`assets/card_still_full1_${scout.banner_id}_normal.png`}
-                sx={{ height: 200 }}
-                radius="sm"
-              />
-            </Box>
-            <Box sx={{ flex: "2 1 50%" }}>
-              <Stack>
-                <Blockquote
-                  sx={(theme) => ({
-                    fontSize: "12pt",
-                    fontStyle: "italic",
-                    color:
-                      theme.colorScheme === "dark"
-                        ? theme.colors.dark[2]
-                        : theme.colors.gray[6],
-                  })}
-                >
-                  {scout.intro_lines && scout.intro_lines[0]}
-                </Blockquote>
-                <Text align="right" size="sm" color="dimmed">
-                  Summary translated by{" "}
-                  {scout.intro_lines_tl_credits && (
-                    <Text
-                      color="indigo"
-                      component={Link}
-                      href={`https://twitter.com/${scout.intro_lines_tl_credits[0]}`}
-                      target="_blank"
-                    >
-                      @{scout.intro_lines_tl_credits[0]}
-                    </Text>
-                  )}
-                </Text>
-              </Stack>
-            </Box>
-          </Group>
-          <Space h="md" />
-          <Title id="chapters" order={3}>
-            <Group align="center">
-              <IconList size={24} strokeWidth={2} /> Story Chapters
-            </Group>
-          </Title>
-          <Space h="sm" />
-          <Paper shadow="xs" p="md" withBorder>
-            Coming soon!
-          </Paper>
+          <Stories content={scout} />
           <Space h="xl" />
         </>
       )}

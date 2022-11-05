@@ -99,7 +99,7 @@ export default function CardCard({
       withBorder
       p={0}
       onClick={() => {
-        router.push(`cards/${card.id}`);
+        router.push(`/cards/${card.id}`);
       }}
       sx={{ "&:hover": { cursor: "pointer" } }}
     >

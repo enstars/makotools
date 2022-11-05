@@ -1,30 +1,12 @@
-import {
-  Blockquote,
-  Box,
-  Divider,
-  Group,
-  Paper,
-  SimpleGrid,
-  Space,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core";
-import {
-  IconBook,
-  IconCards,
-  IconDiamond,
-  IconList,
-  IconMusic,
-} from "@tabler/icons";
+import { Divider, Group, Paper, SimpleGrid, Space, Title } from "@mantine/core";
+import { IconBook, IconCards, IconDiamond, IconMusic } from "@tabler/icons";
 import { useMemo } from "react";
-import Link from "next/link";
 
 import ESPageHeader from "./components/ESPageHeader";
 import Contents from "./components/Contents";
 import PointsTable from "./components/PointsTable";
+import Stories from "./components/Stories";
 
-import Picture from "components/core/Picture";
 import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import {
@@ -130,58 +112,7 @@ function Page({
       <Space h="sm" />
       <Divider />
       <Space h="md" />
-      <Group align="flex-start" sx={{ padding: "10px" }}>
-        <Box sx={{ position: "relative", flex: "1 2 45%" }}>
-          <Picture
-            alt={event.name[0]}
-            srcB2={`assets/card_still_full1_${event.banner_id}_normal.png`}
-            sx={{ height: 200 }}
-            radius="sm"
-          />
-        </Box>
-        <Box sx={{ flex: "2 1 50%" }}>
-          <Stack>
-            <Title order={3}>{event.story_name && event.story_name[0]}</Title>
-            <Blockquote
-              sx={(theme) => ({
-                fontSize: "12pt",
-                fontStyle: "italic",
-                color:
-                  theme.colorScheme === "dark"
-                    ? theme.colors.dark[2]
-                    : theme.colors.gray[6],
-              })}
-            >
-              {event.intro_lines && event.intro_lines[0]}
-            </Blockquote>
-            {event.intro_lines_tl_credit && (
-              <Text align="right" color="dimmed" size="sm">
-                Summary translated by{" "}
-                {
-                  <Text
-                    component={Link}
-                    color="indigo"
-                    href={`https://twitter.com/${event.intro_lines_tl_credit[0]}`}
-                    target="_blank"
-                  >
-                    @{event.intro_lines_tl_credit[0]}
-                  </Text>
-                }
-              </Text>
-            )}
-          </Stack>
-        </Box>
-      </Group>
-      <Space h="md" />
-      <Title id="chapters" order={3}>
-        <Group align="center">
-          <IconList size={24} strokeWidth={2} /> Story Chapters
-        </Group>
-      </Title>
-      <Space h="sm" />
-      <Paper shadow="xs" p="md" withBorder>
-        Coming soon!
-      </Paper>
+      <Stories content={event} />
       <Space h="xl" />
       {event.type !== "tour" && (
         <>

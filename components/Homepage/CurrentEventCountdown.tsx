@@ -56,7 +56,7 @@ function EventImage({ event }: { event: GameEvent }) {
       <Picture
         alt={event.name[0]}
         srcB2={`assets/card_still_full1_${event.banner_id}_evolution.webp`}
-        sx={{ width: 350, height: 175 }}
+        sx={{ width: 300, height: 175 }}
         radius="lg"
       />
     </Link>

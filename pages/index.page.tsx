@@ -89,14 +89,11 @@ function Page({
   );
 
   const birthdays: BirthdayEvent[] = createBirthdayData(characters);
-  console.log(birthdays);
 
   const gameEvents: GameEvent[] = useMemo(
     () => gameEventsQuery.data,
     [gameEventsQuery.data]
   );
-
-  console.log(gameEvents);
 
   const scouts: ScoutEvent[] = useMemo(
     () => scoutsQuery.data,

@@ -199,7 +199,7 @@ export interface ScoutEvent extends Event {
   gacha_id: ID;
   event_id?: ID;
   intro_lines?: string;
-  intro_lines_tl_credits?: string;
+  intro_lines_tl_credit?: string;
 }
 
 export interface BirthdayEvent extends Event {
