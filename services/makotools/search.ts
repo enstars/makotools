@@ -3,9 +3,9 @@ import { useDebouncedValue } from "@mantine/hooks";
 import fuzzysort from "fuzzysort";
 
 // fss = filter + search + sort
-export default function useFSSList<DataType>(
+export default function useFSSList<DataType, Filter>(
   data: DataType[],
-  options: FSSOptions<DataType>
+  options: FSSOptions<DataType, Filter>
 ) {
   const [results, setResults] = useState(data);
   const [view, setView] = useState(options.defaultView);

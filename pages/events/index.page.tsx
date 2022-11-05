@@ -2,7 +2,9 @@ import {
   ActionIcon,
   Alert,
   Button,
+  Chip,
   Group,
+  Input,
   MultiSelect,
   Paper,
   Select,
@@ -29,11 +31,14 @@ import { getLocalizedDataArray } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCharacter, GameEvent, GameUnit } from "types/game";
 import { QuerySuccess } from "types/makotools";
-import { FSSOptions } from "types/libraries";
 import useFSSList from "services/makotools/search";
 
 const defaultView = {
-  filters: { units: [] },
+  filters: {
+    units: [] as number[],
+    characters: [] as number[],
+    types: [] as string[],
+  },
   search: "",
   sort: {
     type: "id",
@@ -58,17 +63,33 @@ function Page({
     [charactersQuery.data]
   );
 
-  const fssOptions = useMemo<FSSOptions<GameEvent>>(
+  const fssOptions = useMemo<FSSOptions<GameEvent, typeof defaultView.filters>>(
     () => ({
       filters: [
         {
           type: "units",
           values: [],
-          function: (view: ViewType) => {
+          function: (view) => {
             return (c: GameEvent) =>
-              (view.filters.units as any[]).filter((value: number) =>
-                c.unit_id?.includes(value)
-              ).length;
+              view.filters.units.filter((value) => c.unit_id?.includes(value))
+                .length === view.filters.units.length;
+          },
+        },
+        {
+          type: "characters",
+          values: [],
+          function: (view) => {
+            return (c) =>
+              view.filters.characters.filter((value) =>
+                c?.five_star?.chara_id?.includes(value)
+              ).length > 0;
+          },
+        },
+        {
+          type: "types",
+          values: [],
+          function: (view) => {
+            return (c) => view.filters.types.includes(c.type);
           },
         },
       ],
@@ -93,7 +114,10 @@ function Page({
     }),
     []
   );
-  const { results, view, setView } = useFSSList<GameEvent>(events, fssOptions);
+  const { results, view, setView } = useFSSList<
+    GameEvent,
+    typeof defaultView.filters
+  >(events, fssOptions);
 
   let characterIDtoSort: { [key: number]: number } = {};
   characters.forEach((c) => {
@@ -189,52 +213,32 @@ function Page({
                 ...v,
                 filters: {
                   ...v.filters,
-                  units: val.map(parseInt),
+                  units: val.map((u) => parseInt(u)),
                 },
               }));
             }}
-          />
-          {/* <MultiSelect
-            label="Character 5★"
-            placeholder="Pick a character..."
-            data={characters
-              .sort(
-                (a: any, b: any) =>
-                  characterIDtoSort[a.character_id] -
-                  characterIDtoSort[b.character_id]
-              )
-              .map((c: GameCharacter) => {
-                return {
-                  value: c.character_id.toString(),
-                  label: c.first_name[0],
-                };
-              })}
-            value={viewOptions.filterFiveStar}
-            onChange={(val) => {
-              setViewOptions({ ...viewOptions, filterFiveStar: val });
-            }}
-            sx={{ maxWidth: 400 }}
-            variant="default"
-            searchable
+            value={view.filters.units.map((u) => u.toString())}
           />
           <MultiSelect
-            label="Character 4★"
+            label="5★ Characters"
             placeholder="Pick a character..."
             data={characters
-              .sort(
-                (a: any, b: any) =>
-                  characterIDtoSort[a.character_id] -
-                  characterIDtoSort[b.character_id]
-              )
+              .sort((a, b) => a.sort_id - b.sort_id)
               .map((c: GameCharacter) => {
                 return {
                   value: c.character_id.toString(),
                   label: c.first_name[0],
                 };
               })}
-            value={viewOptions.filterFourStar}
+            value={view.filters.characters.map((u) => u.toString())}
             onChange={(val) => {
-              setViewOptions({ ...viewOptions, filterFourStar: val });
+              setView((v) => ({
+                ...v,
+                filters: {
+                  ...v.filters,
+                  characters: val.map((u) => parseInt(u)),
+                },
+              }));
             }}
             sx={{ maxWidth: 400 }}
             variant="default"
@@ -243,30 +247,37 @@ function Page({
           <Input.Wrapper id="type" label="Event Type">
             <Chip.Group
               multiple
-              value={viewOptions.filterType}
-              onChange={(value) => {
-                const filterType = value;
-                setViewOptions({ ...viewOptions, filterType });
+              value={view.filters.types}
+              onChange={(val) => {
+                setView((v) => ({
+                  ...v,
+                  filters: {
+                    ...v.filters,
+                    types: val,
+                  },
+                }));
               }}
               spacing={3}
             >
-              {["Song", "Tour", "Special", "Shuffle"].map((r) => (
+              {[
+                { value: "song", label: "Unit Song" },
+                { value: "tour", label: "Tour" },
+                { value: "shuffle", label: "Shuffle" },
+              ].map((r) => (
                 <Chip
-                  key={r}
-                  value={r.toString()}
+                  key={r.value}
+                  value={r.value}
                   radius="md"
                   styles={{
                     label: { paddingLeft: 10, paddingRight: 10 },
-                    iconWrapper: { display: "none" },
                   }}
-                  color="yellow"
                   variant="filled"
                 >
-                  {r}
+                  {r.label}
                 </Chip>
               ))}
             </Chip.Group>
-          </Input.Wrapper> */}
+          </Input.Wrapper>
           <Button
             compact
             onClick={() => {
@@ -277,20 +288,9 @@ function Page({
           </Button>
         </Group>
       </Paper>
-      {results.map((event) => {
-        let eventUnits: GameUnit[] = units.filter((unit: GameUnit) => {
-          return event.unit_id
-            ? event.unit_id
-                ?.toString()
-                ?.split(",")
-                ?.map(parseInt)
-                ?.includes(unit.id)
-            : false;
-        });
-        return (
-          <EventCard key={event.event_id} event={event} units={eventUnits} />
-        );
-      })}
+      {results.map((event) => (
+        <EventCard key={event.event_id} event={event} units={units} />
+      ))}
     </>
   );
 }

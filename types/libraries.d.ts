@@ -10,10 +10,10 @@ declare module "*.svg?url" {
 
 // search.ts
 
-interface Filter<Data> {
+interface Filter<Data, Filters> {
   type: string;
   values: any;
-  function: (v: any) => (d: Data) => boolean;
+  function: (v: ViewType<Filters>) => (d: Data) => boolean;
 }
 interface Sort<Data> {
   label: string;
@@ -23,8 +23,8 @@ interface Sort<Data> {
 interface UseFilter {
   [type: string]: string | any[];
 }
-interface ViewType {
-  filters: UseFilter;
+interface ViewType<Filters> {
+  filters: Filters & UseFilter;
   search: string;
   sort: {
     type: string;
@@ -34,10 +34,10 @@ interface ViewType {
 interface SearchSettings {
   fields: string[];
 }
-interface FSSOptions<DataType> {
-  filters: Filter<DataType>[];
+interface FSSOptions<DataType, Filters = UseFilter> {
+  filters: Filter<DataType, Filters>[];
   sorts: Sort<DataType>[];
   baseSort: string;
   search: SearchSettings;
-  defaultView: ViewType;
+  defaultView: ViewType<Filters>;
 }

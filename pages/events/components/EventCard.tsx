@@ -57,6 +57,10 @@ function EventCard({ event, units }: { event: GameEvent; units: GameUnit[] }) {
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
 
+  let eventUnits: GameUnit[] = units.filter((unit: GameUnit) => {
+    return event.unit_id ? event.unit_id?.includes(unit.id) : false;
+  });
+
   const isEstimatedDate = dayjs(event.start_date).isAfter(dayjs());
   const isOngoing = dayjs().isBetween(
     dayjs(event.start_date),
@@ -130,7 +134,7 @@ function EventCard({ event, units }: { event: GameEvent; units: GameUnit[] }) {
                 {event.type}
               </Badge>
 
-              {units.map((unit) => (
+              {eventUnits.map((unit) => (
                 <ThemeIcon
                   key={unit.id}
                   color={unit.image_color}
