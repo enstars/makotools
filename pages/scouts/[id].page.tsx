@@ -54,14 +54,14 @@ function Page({
       icon: <IconCards size={16} strokeWidth={3} />,
     },
     {
-      id: "#event",
-      name: "Event",
-      icon: <IconMedal size={16} strokeWidth={3} />,
-    },
-    {
       id: "#story",
       name: "Story",
       icon: <IconBook size={16} strokeWidth={3} />,
+    },
+    {
+      id: "#event",
+      name: "Event",
+      icon: <IconMedal size={16} strokeWidth={3} />,
     },
   ];
 
@@ -71,9 +71,13 @@ function Page({
         title={`${scout.type === "scout" ? "SCOUT!" : ""} ${scout.name[0]}`}
       />
       <ESPageHeader content={scout} />
-      <Space h="xl" />
-      <Space h="xl" />
-      {scout.type === "scout" && <Contents items={contentItems} />}
+      {scout.type === "scout" && (
+        <>
+          <Space h="xl" />
+          <Space h="xl" />
+          <Contents items={contentItems} />
+        </>
+      )}
       <Space h="xl" />
       <Space h="xl" />
       <Group>
@@ -96,6 +100,22 @@ function Page({
         ))}
       </SimpleGrid>
       <Space h="xl" />
+      <Space h="xl" />
+      {scout.story_name && (
+        <>
+          <Group>
+            <IconBook size={25} strokeWidth={3} color="#b197fc" />
+            <Title id="story" order={2}>
+              {scout.type === "scout" ? "Story" : "Featured Story"}
+            </Title>
+          </Group>
+          <Space h="sm" />
+          <Divider />
+          <Space h="md" />
+          <Stories content={scout} />
+          <Space h="xl" />
+        </>
+      )}
       {scout.type === "scout" && (
         <>
           <Space h="xl" />
@@ -119,18 +139,6 @@ function Page({
               />
             </>
           )}
-          <Space h="xl" />
-          <Space h="xl" />
-          <Group>
-            <IconBook size={25} strokeWidth={3} color="#b197fc" />
-            <Title id="story" order={2}>
-              Story
-            </Title>
-          </Group>
-          <Space h="sm" />
-          <Divider />
-          <Space h="md" />
-          <Stories content={scout} />
           <Space h="xl" />
         </>
       )}
