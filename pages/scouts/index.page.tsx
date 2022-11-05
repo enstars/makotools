@@ -112,7 +112,7 @@ function Page({
     typeof defaultView.filters
   >(scouts, fssOptions);
 
-  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.xs}px)`);
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
 
   return (
     <>
@@ -234,9 +234,10 @@ function Page({
               theme.colorScheme === "dark"
                 ? theme.colors.dark[8]
                 : theme.fn.lighten(theme.colors.gray[0], 0.5),
-            [theme.fn.smallerThan("xs")]: {
+            [theme.fn.smallerThan("sm")]: {
               "& > *": {
                 flexGrow: 1,
+                flexBasis: 0,
               },
             },
           }}
