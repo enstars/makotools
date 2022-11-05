@@ -6,13 +6,11 @@ import {
   MultiSelect,
   Paper,
   Select,
-  SimpleGrid,
-  Space,
   Tabs,
   Text,
   TextInput,
-  Title,
   Tooltip,
+  useMantineTheme,
 } from "@mantine/core";
 import {
   IconAlertCircle,
@@ -23,7 +21,8 @@ import {
   IconSortAscending,
   IconSortDescending,
 } from "@tabler/icons";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
+import { useMediaQuery } from "@mantine/hooks";
 
 import ScoutCard from "./components/ScoutCard";
 
@@ -35,6 +34,7 @@ import { GameCharacter, ScoutEvent } from "types/game";
 import { QuerySuccess } from "types/makotools";
 import { useDayjs } from "services/libraries/dayjs";
 import useFSSList from "services/makotools/search";
+import ResponsiveGrid from "components/core/ResponsiveGrid";
 
 const defaultView = {
   filters: {
@@ -55,6 +55,7 @@ function Page({
   charactersQuery: QuerySuccess<GameCharacter[]>;
 }) {
   const { dayjs } = useDayjs();
+  const theme = useMantineTheme();
 
   const scouts: ScoutEvent[] = useMemo(
     () => scoutsQuery.data,
@@ -111,13 +112,7 @@ function Page({
     typeof defaultView.filters
   >(scouts, fssOptions);
 
-  console.log(view, results);
-
-  const [isMobile, setMobile] = useState<boolean>(false);
-
-  useEffect(() => {
-    window.innerWidth <= 900 ? setMobile(true) : setMobile(false);
-  }, []);
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.xs}px)`);
 
   return (
     <>
@@ -129,7 +124,7 @@ function Page({
         Scouts are gradually being added to MakoTools. We appreciate your
         patience!
       </Alert>
-      <Paper mb="sm" p="md" withBorder sx={{ marginTop: "1vh" }}>
+      <Paper mt="sm" p="md" withBorder>
         <Text weight="700" size="xs" color="dimmed">
           <IconSearch size="1em" /> Search Options
         </Text>
@@ -224,63 +219,70 @@ function Page({
           </Button>
         </Group>
       </Paper>
-      <Space h="lg" />
       <Tabs
         orientation={isMobile ? "horizontal" : "vertical"}
-        variant="outline"
         defaultValue="event"
+        pt="xs"
       >
-        <Tabs.List sx={{ position: "sticky", top: "50px" }}>
+        <Tabs.List
+          sx={{
+            position: "sticky",
+            top: "40px",
+            alignSelf: "start",
+            zIndex: 10,
+            background:
+              theme.colorScheme === "dark"
+                ? theme.colors.dark[8]
+                : theme.fn.lighten(theme.colors.gray[0], 0.5),
+            [theme.fn.smallerThan("xs")]: {
+              "& > *": {
+                flexGrow: 1,
+              },
+            },
+          }}
+        >
           <Tabs.Tab
             value="event"
-            icon={<IconDiamond size={36} strokeWidth={2} color="#66d9e8" />}
+            color="lightblue"
+            icon={<IconDiamond size={18} />}
             aria-label="Event scouts"
           >
-            {!isMobile && <Title order={4}>Event Scouts</Title>}
+            <Text weight={700}>Event{!isMobile && " Scouts"}</Text>
           </Tabs.Tab>
           <Tabs.Tab
             value="feature"
-            icon={<IconComet size={36} strokeWidth={2} color="#ffd43b" />}
+            color="yellow"
+            icon={<IconComet size={18} />}
             aria-label="Feature Scouts"
           >
-            {!isMobile && <Title order={4}>Feature Scouts</Title>}
+            <Text weight={700}>Feature{!isMobile && " Scouts"}</Text>
           </Tabs.Tab>
         </Tabs.List>
 
         <Tabs.Panel value="event">
-          {isMobile && <Space h="md" />}
-          <SimpleGrid
-            cols={4}
-            breakpoints={[
-              { maxWidth: 500, cols: 1 },
-              { maxWidth: 900, cols: 3 },
-            ]}
-            sx={{ ["@media (min-width: 900px)"]: { marginLeft: "1vw" } }}
+          <ResponsiveGrid
+            width={200}
+            {...(isMobile ? { mt: "xs" } : { ml: "xs" })}
           >
             {results
               .filter((scout) => scout.type === "scout")
               .map((scout: ScoutEvent) => (
                 <ScoutCard key={scout.gacha_id} scout={scout} />
               ))}
-          </SimpleGrid>
+          </ResponsiveGrid>
         </Tabs.Panel>
 
         <Tabs.Panel value="feature">
-          {isMobile && <Space h="md" />}
-          <SimpleGrid
-            cols={4}
-            breakpoints={[
-              { maxWidth: 500, cols: 1 },
-              { maxWidth: 900, cols: 3 },
-            ]}
-            sx={{ ["@media (min-width: 900px)"]: { marginLeft: "1vw" } }}
+          <ResponsiveGrid
+            width={200}
+            {...(isMobile ? { mt: "xs" } : { ml: "xs" })}
           >
             {results
               .filter((scout) => scout.type === "feature scout")
               .map((scout: ScoutEvent) => (
                 <ScoutCard key={scout.gacha_id} scout={scout} />
               ))}
-          </SimpleGrid>
+          </ResponsiveGrid>
         </Tabs.Panel>
       </Tabs>
     </>
@@ -309,5 +311,5 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
   };
 });
 
-Page.getLayout = getLayout({ wide: true });
+Page.getLayout = getLayout({ wide: true, hideOverflow: false });
 export default Page;
