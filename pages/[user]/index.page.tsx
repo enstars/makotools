@@ -15,7 +15,12 @@ import {
 } from "@mantine/core";
 import { Carousel, Embla } from "@mantine/carousel";
 import Link from "next/link";
-import { IconAlertCircle, IconCalendar, IconInfoCircle } from "@tabler/icons";
+import {
+  IconAlertCircle,
+  IconBrandPatreon,
+  IconCalendar,
+  IconInfoCircle,
+} from "@tabler/icons";
 import { useRef, Fragment, useState, useEffect } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { useMediaQuery } from "@mantine/hooks";
@@ -46,6 +51,7 @@ function Page({ profile }: { profile: UserData }) {
   useEffect(() => {
     embla?.reInit();
   }, [embla, collapsed]);
+  console.log(profile?.admin.patreon);
   return (
     <>
       {profile?.profile__banner && profile.profile__banner?.length ? (
@@ -115,6 +121,14 @@ function Page({ profile }: { profile: UserData }) {
                   `${profile?.profile__pronouns} · `}
                 @{profile.username}
               </Text>
+              {profile?.admin.patreon > 0 && (
+                <Group sx={{ margin: "1vh 0vw" }} spacing="xs">
+                  <IconBrandPatreon size={20} strokeWidth={3} color="#fab005" />{" "}
+                  <Badge variant="filled" color="indigo">
+                    Patreon Tier {profile.admin.patreon}
+                  </Badge>
+                </Group>
+              )}
             </>
           }
           mb={0}
@@ -135,6 +149,14 @@ function Page({ profile }: { profile: UserData }) {
                 >
                   {profile?.profile__pronouns}
                 </Text>
+              )}
+              {profile?.admin.patreon > 0 && (
+                <Group sx={{ margin: "1vh 0vw" }} spacing="xs">
+                  <IconBrandPatreon size={20} strokeWidth={3} color="#fab005" />{" "}
+                  <Badge variant="filled" color="indigo">
+                    Patreon Tier {profile.admin.patreon}
+                  </Badge>
+                </Group>
               )}
             </>
           }
