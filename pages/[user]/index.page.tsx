@@ -1,4 +1,5 @@
 import {
+  Alert,
   Anchor,
   AspectRatio,
   Badge,
@@ -14,7 +15,7 @@ import {
 } from "@mantine/core";
 import { Carousel, Embla } from "@mantine/carousel";
 import Link from "next/link";
-import { IconCalendar, IconInfoCircle } from "@tabler/icons";
+import { IconAlertCircle, IconCalendar, IconInfoCircle } from "@tabler/icons";
 import { useRef, Fragment, useState, useEffect } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { useMediaQuery } from "@mantine/hooks";
@@ -27,6 +28,7 @@ import { parseStringify } from "../../services/utilities";
 import { useDayjs } from "../../services/libraries/dayjs";
 import { UserData } from "../../types/makotools";
 
+import useUser from "services/firebase/user";
 import BioDisplay from "components/sections/BioDisplay";
 import Picture from "components/core/Picture";
 import { CONSTANTS } from "services/makotools/constants";
@@ -36,6 +38,7 @@ function Page({ profile }: { profile: UserData }) {
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.xs}px)`);
+  const user = useUser();
 
   const [embla, setEmbla] = useState<Embla | null>(null);
 
@@ -79,6 +82,22 @@ function Page({ profile }: { profile: UserData }) {
           </Carousel>
         </Box>
       ) : null}
+      {user.loggedIn &&
+        user.db.suid === profile.suid &&
+        user.db.admin.disableTextFields && (
+          <Alert
+            icon={<IconAlertCircle size={16} />}
+            color="red"
+            sx={{ marginTop: "2vh" }}
+          >
+            You&apos;ve been restricted from editing your profile. You can
+            appeal at our{" "}
+            <Text component={Link} href="/issues">
+              issues
+            </Text>{" "}
+            page.
+          </Alert>
+        )}
       {profile.name ? (
         <PageTitle
           space={profile?.profile__banner?.length ? 18 : undefined}
@@ -122,7 +141,6 @@ function Page({ profile }: { profile: UserData }) {
           mb={0}
         />
       )}
-
       <Group mt="xs" noWrap align="flex-start">
         <ThemeIcon variant="light" color="lightblue" sx={{ flexShrink: 0 }}>
           <IconInfoCircle size={16} />
@@ -139,34 +157,38 @@ function Page({ profile }: { profile: UserData }) {
           )}
         </Box>
       </Group>
-      <Group mt="xs" noWrap align="flex-start">
-        <ThemeIcon variant="light" color="yellow" sx={{ flexShrink: 0 }}>
-          <IconCalendar size={16} />
-        </ThemeIcon>
-        <Box>
-          <Text size="xs" weight={700} color="dimmed">
-            Started Playing
-          </Text>
-          {profile.profile__start_playing &&
-          profile.profile__start_playing !== "0000-00-00"
-            ? dayjs(profile.profile__start_playing).format("MMMM YYYY")
-            : "Unknown"}
-        </Box>
-      </Group>
+      {profile.profile__start_playing !== "0000-00-00" && (
+        <Group mt="xs" noWrap align="flex-start">
+          <ThemeIcon variant="light" color="yellow" sx={{ flexShrink: 0 }}>
+            <IconCalendar size={16} />
+          </ThemeIcon>
+          <Box>
+            <Text size="xs" weight={700} color="dimmed">
+              Started Playing
+            </Text>
+            {profile.profile__start_playing &&
+            profile.profile__start_playing !== "0000-00-00"
+              ? dayjs(profile.profile__start_playing).format("MMMM YYYY")
+              : "Unknown"}
+          </Box>
+        </Group>
+      )}
 
       <Group position="right" mt="xs">
-        <Anchor
-          component={Link}
-          href={CONSTANTS.MODERATION.GET_REPORT_LINK(
-            profile.username,
-            profile.suid
-          )}
-          target="_blank"
-          color="dimmed"
-          size="sm"
-        >
-          Report User
-        </Anchor>
+        {user.loggedIn && user.db.suid !== profile.suid && (
+          <Anchor
+            component={Link}
+            href={CONSTANTS.MODERATION.GET_REPORT_LINK(
+              profile.username,
+              profile.suid
+            )}
+            target="_blank"
+            color="dimmed"
+            size="sm"
+          >
+            Report User
+          </Anchor>
+        )}
       </Group>
       <Divider my="xs" />
 
