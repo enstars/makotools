@@ -156,7 +156,7 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
             <Stack justify="space-around">
               <Box>
                 <Title order={3} sx={{ maxWidth: "300px" }}>
-                  {nextEvent.name}
+                  {nextEvent.name[0]}
                 </Title>
                 <Countdown date={nextEvent.start_date} status="Starts" />
               </Box>

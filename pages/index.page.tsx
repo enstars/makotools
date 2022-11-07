@@ -129,7 +129,9 @@ function Page({
             <CurrentEventCountdown
               events={
                 events.filter(
-                  (event: GameEvent) => event.event_id
+                  (event: GameEvent) =>
+                    event.event_id &&
+                    (event.type === "song" || event.type === "tour")
                 ) as GameEvent[]
               }
             />
