@@ -97,7 +97,7 @@ function Page({ profile }: { profile: UserData }) {
             sx={{ marginTop: "2vh" }}
           >
             You&apos;ve been restricted from editing your profile. You can
-            appeal at our{" "}
+            submit an appeal through our{" "}
             <Text component={Link} href="/issues">
               issues
             </Text>{" "}

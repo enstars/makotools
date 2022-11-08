@@ -1,5 +1,6 @@
-import { Input, Tabs, Textarea } from "@mantine/core";
-import { IconPencil, IconTextCaption } from "@tabler/icons";
+import { Alert, Input, Tabs, Textarea, Text } from "@mantine/core";
+import { IconAlertCircle, IconPencil, IconTextCaption } from "@tabler/icons";
+import Link from "next/link";
 
 import TextSetting from "../shared/TextSetting";
 import useUser from "../../../services/firebase/user";
@@ -15,15 +16,31 @@ function Name() {
         label="Bio"
         description="You can use markdown in your bio (GFM)"
       >
+        {user.db.admin.disableTextFields && (
+          <Alert
+            icon={<IconAlertCircle size={16} />}
+            color="red"
+            sx={{ marginTop: "2vh" }}
+          >
+            You&apos;ve been restricted from editing your profile. You can
+            submit an appeal through our{" "}
+            <Text component={Link} href="/issues">
+              issues
+            </Text>{" "}
+            page.
+          </Alert>
+        )}
         <Tabs variant="pills" defaultValue="edit" mt="xs">
-          <Tabs.List>
-            <Tabs.Tab value="edit" icon={<IconPencil size={14} />}>
-              Edit
-            </Tabs.Tab>
-            <Tabs.Tab value="preview" icon={<IconTextCaption size={14} />}>
-              Preview
-            </Tabs.Tab>
-          </Tabs.List>
+          {!user.db.admin.disableTextFields && (
+            <Tabs.List>
+              <Tabs.Tab value="edit" icon={<IconPencil size={14} />}>
+                Edit
+              </Tabs.Tab>
+              <Tabs.Tab value="preview" icon={<IconTextCaption size={14} />}>
+                Preview
+              </Tabs.Tab>
+            </Tabs.List>
+          )}
 
           <Tabs.Panel value="edit" pt="xs">
             <TextSetting
