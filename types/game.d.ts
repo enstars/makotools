@@ -171,17 +171,17 @@ export interface Event {
   story_author?: string;
   story_season?: string;
   banner_id?: ID | ID[];
-  five_star?: {
-    chara_id: ID[];
-    card_id: ID[];
-  };
-  four_star?: {
-    chara_id: ID[];
-    card_id: ID[];
-  };
-  three_star?: {
-    chara_id: ID[];
-    card_id: ID[];
+  cards?: {
+    ids: {
+      5: ID[];
+      4?: ID[];
+      3?: ID[];
+    };
+    characters: {
+      5: ID[];
+      4?: ID[];
+      3?: ID[];
+    };
   };
 }
 

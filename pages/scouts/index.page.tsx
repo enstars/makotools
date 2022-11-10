@@ -78,9 +78,9 @@ function Page({
             return (event) =>
               view.filters.characters.filter((c) =>
                 [
-                  ...(event.five_star?.chara_id || []),
-                  ...(event.four_star?.chara_id || []),
-                  ...(event.three_star?.chara_id || []),
+                  ...(event.cards?.characters[5] || []),
+                  ...(event.cards?.characters[4] || []),
+                  ...(event.cards?.characters[3] || []),
                 ].includes(c)
               ).length > 0;
           },

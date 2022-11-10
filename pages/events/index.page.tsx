@@ -79,9 +79,9 @@ function Page({
           type: "characters",
           values: [],
           function: (view) => {
-            return (c) =>
+            return (c: GameEvent) =>
               view.filters.characters.filter((value) =>
-                c?.five_star?.chara_id?.includes(value)
+                c.cards?.characters[5].includes(value)
               ).length > 0;
           },
         },

@@ -38,9 +38,9 @@ function Page({
 
   cards = cards.filter((card) => {
     return (
-      event.five_star?.card_id.includes(card.id) ||
-      event.four_star?.card_id.includes(card.id) ||
-      event.three_star?.card_id.includes(card.id)
+      event.cards?.ids[5].includes(card.id) ||
+      event.cards?.ids[4]?.includes(card.id) ||
+      event.cards?.ids[3]?.includes(card.id)
     );
   });
 

@@ -33,17 +33,17 @@ function Page({
 
   cards = cards.filter((card) => {
     return (
-      scout.five_star?.card_id.includes(card.id) ||
-      scout.four_star?.card_id.includes(card.id) ||
-      scout.three_star?.card_id.includes(card.id)
+      scout.cards?.ids[5].includes(card.id) ||
+      scout.cards?.ids[4]?.includes(card.id) ||
+      scout.cards?.ids[3]?.includes(card.id)
     );
   });
 
   characters = characters.filter((character) => {
     return (
-      scout.five_star?.chara_id.includes(character.character_id) ||
-      scout.four_star?.chara_id.includes(character.character_id) ||
-      scout.three_star?.chara_id.includes(character.character_id)
+      scout.cards?.characters[5].includes(character.character_id) ||
+      scout.cards?.characters[4]?.includes(character.character_id) ||
+      scout.cards?.characters[3]?.includes(character.character_id)
     );
   });
 
