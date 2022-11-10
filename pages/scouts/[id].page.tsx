@@ -31,20 +31,12 @@ function Page({
   let characters = useMemo(() => charactersQuery.data, [charactersQuery.data]);
   let cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
 
-  cards = cards.filter((card) => {
-    return (
-      scout.cards?.ids[5].includes(card.id) ||
-      scout.cards?.ids[4]?.includes(card.id) ||
-      scout.cards?.ids[3]?.includes(card.id)
-    );
-  });
+  cards = cards.filter((card) => scout.cards?.includes(card.id));
 
   characters = characters.filter((character) => {
-    return (
-      scout.cards?.characters[5].includes(character.character_id) ||
-      scout.cards?.characters[4]?.includes(character.character_id) ||
-      scout.cards?.characters[3]?.includes(character.character_id)
-    );
+    return cards
+      .map((card) => card.character_id)
+      .includes(character.character_id);
   });
 
   let contentItems = [

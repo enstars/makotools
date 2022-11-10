@@ -37,11 +37,7 @@ function Page({
   const { dayjs } = useDayjs();
 
   cards = cards.filter((card) => {
-    return (
-      event.cards?.ids[5].includes(card.id) ||
-      event.cards?.ids[4]?.includes(card.id) ||
-      event.cards?.ids[3]?.includes(card.id)
-    );
+    return event.cards?.includes(card.id);
   });
 
   units = units.filter(

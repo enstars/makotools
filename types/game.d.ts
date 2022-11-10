@@ -171,18 +171,7 @@ export interface Event {
   story_author?: string;
   story_season?: string;
   banner_id?: ID | ID[];
-  cards?: {
-    ids: {
-      5: ID[];
-      4?: ID[];
-      3?: ID[];
-    };
-    characters: {
-      5: ID[];
-      4?: ID[];
-      3?: ID[];
-    };
-  };
+  cards?: ID[];
 }
 
 export interface GameEvent extends Event {

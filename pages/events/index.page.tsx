@@ -29,7 +29,7 @@ import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import { getLocalizedDataArray } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { GameCharacter, GameEvent, GameUnit } from "types/game";
+import { GameCard, GameCharacter, GameEvent, GameUnit } from "types/game";
 import { QuerySuccess } from "types/makotools";
 import useFSSList from "services/makotools/search";
 
@@ -48,15 +48,18 @@ const defaultView = {
 
 function Page({
   eventsQuery,
+  cardsQuery,
   unitsQuery,
   charactersQuery,
 }: {
   eventsQuery: QuerySuccess<GameEvent[]>;
+  cardsQuery: QuerySuccess<GameCard[]>;
   unitsQuery: QuerySuccess<GameUnit[]>;
   charactersQuery: QuerySuccess<GameCharacter[]>;
 }) {
   const { locale } = useRouter();
   const events = useMemo(() => eventsQuery.data, [eventsQuery.data]);
+  const cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
   const units = useMemo(() => unitsQuery.data, [unitsQuery.data]);
   const characters = useMemo(
     () => charactersQuery.data,
@@ -80,9 +83,12 @@ function Page({
           values: [],
           function: (view) => {
             return (c: GameEvent) =>
-              view.filters.characters.filter((value) =>
-                c.cards?.characters[5].includes(value)
-              ).length > 0;
+              view.filters.characters.filter((value: number) => {
+                return cards
+                  .filter((card) => c.cards?.includes(card.id))
+                  .map((card) => card.character_id)
+                  .includes(value);
+              }).length > 0;
           },
         },
         {
@@ -220,7 +226,7 @@ function Page({
             value={view.filters.units.map((u) => u.toString())}
           />
           <MultiSelect
-            label="5★ Characters"
+            label="Featured Characters"
             placeholder="Pick a character..."
             data={characters
               .sort((a, b) => a.sort_id - b.sort_id)
@@ -296,10 +302,17 @@ function Page({
 }
 
 export const getServerSideProps = getServerSideUser(async ({ locale }) => {
-  const eventsQuery: any = await getLocalizedDataArray<any>(
+  const eventsQuery: any = await getLocalizedDataArray<GameEvent>(
     "events",
     locale,
     "event_id"
+  );
+
+  const cardsQuery: any = await getLocalizedDataArray<GameCard>(
+    "cards",
+    locale,
+    "id",
+    ["id", "character_id", "rarity"]
   );
 
   const charactersQuery: any = await getLocalizedDataArray<GameCharacter>(
@@ -325,6 +338,7 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
   return {
     props: {
       eventsQuery,
+      cardsQuery,
       unitsQuery,
       charactersQuery,
     },

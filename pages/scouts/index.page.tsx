@@ -30,7 +30,7 @@ import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import { getLocalizedDataArray } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { GameCharacter, ScoutEvent } from "types/game";
+import { GameCard, GameCharacter, ScoutEvent } from "types/game";
 import { QuerySuccess } from "types/makotools";
 import { useDayjs } from "services/libraries/dayjs";
 import useFSSList from "services/makotools/search";
@@ -49,9 +49,11 @@ const defaultView = {
 
 function Page({
   scoutsQuery,
+  cardsQuery,
   charactersQuery,
 }: {
   scoutsQuery: QuerySuccess<ScoutEvent[]>;
+  cardsQuery: QuerySuccess<GameCard[]>;
   charactersQuery: QuerySuccess<GameCharacter[]>;
 }) {
   const { dayjs } = useDayjs();
@@ -61,6 +63,7 @@ function Page({
     () => scoutsQuery.data,
     [scoutsQuery.data]
   );
+  const cards: GameCard[] = useMemo(() => cardsQuery.data, [cardsQuery.data]);
   const characters = useMemo(
     () => charactersQuery.data,
     [charactersQuery.data]
@@ -75,14 +78,13 @@ function Page({
           type: "characters",
           values: [],
           function: (view) => {
-            return (event) =>
-              view.filters.characters.filter((c) =>
-                [
-                  ...(event.cards?.characters[5] || []),
-                  ...(event.cards?.characters[4] || []),
-                  ...(event.cards?.characters[3] || []),
-                ].includes(c)
-              ).length > 0;
+            return (scout) =>
+              view.filters.characters.filter((value: number) => {
+                return cards
+                  .filter((card) => scout.cards?.includes(card.id))
+                  .map((card) => card.character_id)
+                  .includes(value);
+              }).length > 0;
           },
         },
       ],
@@ -186,7 +188,7 @@ function Page({
             }
           />
           <MultiSelect
-            label="5★ Characters"
+            label="Featured Characters"
             placeholder="Pick a character..."
             data={characters
               .sort((a: any, b: any) => a.sort_id - b.sort_id)
@@ -297,6 +299,13 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     "gacha_id"
   );
 
+  const cardsQuery: any = await getLocalizedDataArray<GameCard>(
+    "cards",
+    locale,
+    "id",
+    ["id", "character_id", "rarity"]
+  );
+
   const getCharacters: any = await getLocalizedDataArray<GameCharacter>(
     "characters",
     locale,
@@ -307,6 +316,7 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
   return {
     props: {
       scoutsQuery: getScouts,
+      cardsQuery: cardsQuery,
       charactersQuery: getCharacters,
     },
   };
