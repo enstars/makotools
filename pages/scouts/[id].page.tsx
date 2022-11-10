@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Group, Space, Divider, SimpleGrid, Title } from "@mantine/core";
+import { Space, SimpleGrid, Divider } from "@mantine/core";
 import { IconBook, IconCards, IconMedal } from "@tabler/icons";
 
 import PageTitle from "components/sections/PageTitle";
@@ -16,6 +16,7 @@ import ESPageHeader from "pages/events/components/ESPageHeader";
 import Contents from "pages/events/components/Contents";
 import PointsTable from "pages/events/components/PointsTable";
 import Stories from "pages/events/components/Stories";
+import SectionTitle from "pages/events/components/SectionTitle";
 
 function Page({
   scout,
@@ -63,25 +64,19 @@ function Page({
         title={`${scout.type === "scout" ? "SCOUT!" : ""} ${scout.name[0]}`}
       />
       <ESPageHeader content={scout} />
+      <Space h={50} />
       {scout.type === "scout" && (
         <>
-          <Space h="xl" />
-          <Space h="xl" />
           <Contents items={contentItems} />
+          <Space h="xl" />
         </>
       )}
-      <Space h="xl" />
-      <Space h="xl" />
-      <Group>
-        <IconCards size={25} strokeWidth={3} color="#ffd43b" />{" "}
-        <Title id="cards" order={2}>
-          Cards
-        </Title>
-      </Group>
-      <Space h="sm" />
-      <Divider />
-      <Space h="md" />
-      <SimpleGrid cols={2} breakpoints={[{ maxWidth: 400, cols: 1 }]}>
+      <SectionTitle title="Cards" id="cards" icon={<IconCards size={70} />} />
+      <SimpleGrid
+        cols={2}
+        breakpoints={[{ maxWidth: 400, cols: 1 }]}
+        sx={{ marginBottom: "50px" }}
+      >
         {cards.map((card: GameCard) => (
           <CardCard
             key={card.id}
@@ -91,37 +86,27 @@ function Page({
           />
         ))}
       </SimpleGrid>
-      <Space h="xl" />
-      <Space h="xl" />
+      <Divider />
       {scout.story_name && (
         <>
-          <Group>
-            <IconBook size={25} strokeWidth={3} color="#b197fc" />
-            <Title id="story" order={2}>
-              {scout.type === "scout" ? "Story" : "Featured Story"}
-            </Title>
-          </Group>
-          <Space h="sm" />
-          <Divider />
-          <Space h="md" />
+          <SectionTitle
+            title={scout.type === "scout" ? "Story" : "Featured Story"}
+            id="story"
+            icon={<IconBook size={70} />}
+          />
           <Stories content={scout} />
-          <Space h="xl" />
+          <Divider />
         </>
       )}
       {scout.type === "scout" && (
         <>
-          <Space h="xl" />
           {event && (
             <>
-              <Group align="flex-start">
-                <IconMedal size={25} strokeWidth={3} color="#66d9e8" />
-                <Title id="event" order={2}>
-                  Event
-                </Title>
-              </Group>
-              <Space h="sm" />
-              <Divider />
-              <Space h="md" />
+              <SectionTitle
+                title="Event"
+                id="event"
+                icon={<IconMedal size={70} />}
+              />
               <PointsTable
                 id={event.event_id}
                 type={event.type}
@@ -129,9 +114,9 @@ function Page({
                 scoutName={scout.name[0]}
                 banner={event.banner_id as ID}
               />
+              <Divider />
             </>
           )}
-          <Space h="xl" />
         </>
       )}
     </>

@@ -1,4 +1,4 @@
-import { Divider, Group, Paper, SimpleGrid, Space, Title } from "@mantine/core";
+import { Divider, Paper, SimpleGrid, Space } from "@mantine/core";
 import { IconBook, IconCards, IconDiamond, IconMusic } from "@tabler/icons";
 import { useMemo } from "react";
 
@@ -6,6 +6,7 @@ import ESPageHeader from "./components/ESPageHeader";
 import Contents from "./components/Contents";
 import PointsTable from "./components/PointsTable";
 import Stories from "./components/Stories";
+import SectionTitle from "./components/SectionTitle";
 
 import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
@@ -73,21 +74,15 @@ function Page({
     <>
       <PageTitle title={event.name[0]} sx={{ width: "100%" }} />
       <ESPageHeader content={event} units={units} />
-      <Space h="xl" />
-      <Space h="xl" />
+      <Space h={50} />
       <Contents items={contentItems} />
       <Space h="xl" />
-      <Space h="xl" />
-      <Group>
-        <IconCards size={25} strokeWidth={3} color="#fcc419" />{" "}
-        <Title id="cards" order={2}>
-          Cards
-        </Title>
-      </Group>
-      <Space h="sm" />
-      <Divider />
-      <Space h="md" />
-      <SimpleGrid cols={2} breakpoints={[{ maxWidth: 400, cols: 1 }]}>
+      <SectionTitle title="Cards" id="cards" icon={<IconCards size={70} />} />
+      <SimpleGrid
+        cols={2}
+        breakpoints={[{ maxWidth: 400, cols: 1 }]}
+        sx={{ marginBottom: "50px" }}
+      >
         {cards.map((card: GameCard) => (
           <CardCard
             key={card.id}
@@ -97,49 +92,26 @@ function Page({
           />
         ))}
       </SimpleGrid>
-      <Space h="xl" />
-      <Space h="xl" />
-      <Group>
-        <IconBook size={25} strokeWidth={3} color="#9775fa" />
-        <Title id="story" order={2}>
-          Story
-        </Title>
-      </Group>
-      <Space h="sm" />
       <Divider />
-      <Space h="md" />
+      <SectionTitle title="Story" id="story" icon={<IconBook size={70} />} />
       <Stories content={event} />
-      <Space h="xl" />
+      <Divider />
       {event.type !== "tour" && (
         <>
-          <Space h="xl" />
-          <Group>
-            <IconMusic size={25} strokeWidth={3} color="#94d82d" />
-            <Title id="song" order={2}>
-              Song
-            </Title>
-          </Group>
-          <Space h="sm" />
-          <Divider />
-          <Space h="md" />
-          <Paper shadow="xs" p="md" withBorder>
+          <SectionTitle title="Song" id="song" icon={<IconMusic size={70} />} />
+          <Paper shadow="xs" p="md" withBorder sx={{ marginBottom: "50px" }}>
             Coming soon!
           </Paper>
+          <Divider />
         </>
       )}
-      <Space h="xl" />
       {scout && (
         <>
-          <Space h="xl" />
-          <Group align="flex-start">
-            <IconDiamond size={25} strokeWidth={3} color="#66d9e8" />
-            <Title id="scout" order={2}>
-              Scout! {scout.name[0]}
-            </Title>
-          </Group>
-          <Space h="sm" />
-          <Divider />
-          <Space h="md" />
+          <SectionTitle
+            title={`Scout! ${scout.name[0]}`}
+            id="scout"
+            icon={<IconDiamond size={70} />}
+          />
           <PointsTable
             id={scout.gacha_id}
             type={event.type}
@@ -147,6 +119,7 @@ function Page({
             scoutName={scout.name[0]}
             banner={scout.banner_id as ID}
           />
+          <Space h={50} />
         </>
       )}
     </>

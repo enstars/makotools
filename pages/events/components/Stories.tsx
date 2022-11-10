@@ -27,7 +27,7 @@ function Stories({ content }: { content: GameEvent | ScoutEvent }) {
           />
         </Box>
         <Box sx={{ flex: "1 1 50%" }}>
-          <Stack>
+          <Stack spacing="xs">
             <Title order={3}>
               {content.story_name && content.story_name[0]}
             </Title>
@@ -68,7 +68,7 @@ function Stories({ content }: { content: GameEvent | ScoutEvent }) {
         </Group>
       </Title>
       <Space h="sm" />
-      <Paper shadow="xs" p="md" withBorder>
+      <Paper shadow="xs" p="md" withBorder sx={{ marginBottom: "50px" }}>
         Coming soon!
       </Paper>
     </>
