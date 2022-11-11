@@ -9,14 +9,17 @@ import {
   Accordion,
   ThemeIcon,
   Group,
+  Text,
 } from "@mantine/core";
 import {
   IconUserCircle,
   IconDeviceGamepad2,
   IconPalette,
   IconPencil,
+  IconAlertCircle,
 } from "@tabler/icons";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 
 import PageTitle from "../../components/sections/PageTitle";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
@@ -34,9 +37,10 @@ import ColorCode from "./account/ColorCode";
 import StartPlaying from "./profile/StartPlaying";
 import Email from "./account/Email";
 import Banner from "./profile/Banner";
+import UseWebP from "./appearance/UseWebP";
 
 import { GameCard } from "types/game";
-import UseWebP from "./appearance/UseWebP";
+import useUser from "services/firebase/user";
 
 const Bio = dynamic(() => import("./profile/Bio"), {
   ssr: false,
@@ -76,13 +80,38 @@ const tabs = [
     value: "profile",
     icon: IconPencil,
     color: "lightblue",
-    contents: ({ cards }: { cards: GameCard[] | undefined }) => (
+    contents: ({
+      cards,
+      user,
+    }: {
+      cards: GameCard[] | undefined;
+      user: any;
+    }) => (
       <>
         <Stack>
-          <Alert color="yellow">
-            These are publicly accessible from your profile page, so make sure
-            to follow our community guidelines.
-          </Alert>
+          {user.db.admin.disableTextFields ? (
+            <Alert
+              icon={<IconAlertCircle size={16} />}
+              color="red"
+              sx={{ marginTop: "2vh" }}
+            >
+              You&apos;ve been restricted from editing your profile. You can
+              submit an appeal through our{" "}
+              <Text
+                component={Link}
+                href="/issues"
+                sx={{ textDecoration: "underline" }}
+              >
+                issues
+              </Text>{" "}
+              page.
+            </Alert>
+          ) : (
+            <Alert color="yellow">
+              These are publicly accessible from your profile page, so make sure
+              to follow our community guidelines.
+            </Alert>
+          )}
           <Group>
             <Name />
             <Pronouns />
@@ -114,6 +143,7 @@ const tabs = [
 function Page({ cards }: { cards: GameCard[] | undefined }) {
   const theme = useMantineTheme();
   const { width } = useViewportSize();
+  const user = useUser();
 
   const [isNarrowPage, setIsNarrowPage] = useState(true);
 
@@ -154,7 +184,7 @@ function Page({ cards }: { cards: GameCard[] | undefined }) {
                 {t.label}
               </Accordion.Control>
               <Accordion.Panel>
-                <t.contents cards={cards} />
+                <t.contents cards={cards} user={user} />
               </Accordion.Panel>
             </Accordion.Item>
           ))}
@@ -189,7 +219,7 @@ function Page({ cards }: { cards: GameCard[] | undefined }) {
 
           {tabs.map(({ value, ...t }) => (
             <Tabs.Panel key={value} value={value}>
-              <t.contents cards={cards} />
+              <t.contents cards={cards} user={user} />
             </Tabs.Panel>
           ))}
         </Tabs>
