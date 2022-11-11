@@ -173,7 +173,7 @@ function Sidebar(props: any) {
       position={{ top: 0, left: 0 }}
       width={{
         base: 0,
-        xs: collapsed ? 50 : 250,
+        xs: collapsed ? 50 : 200,
       }}
       hidden={true}
       hiddenBreakpoint="xs"
