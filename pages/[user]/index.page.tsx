@@ -349,7 +349,7 @@ export const getServerSideProps = getServerSideUser(
               ? `${profile.name} (@${profile.username})`
               : `@${profile.username}`,
             desc:
-              profile?.bio ||
+              profile?.profile__bio ||
               `View @${profile.username}'s profile on MakoTools`,
           },
         },
