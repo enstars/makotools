@@ -38,6 +38,24 @@ import BioDisplay from "components/sections/BioDisplay";
 import Picture from "components/core/Picture";
 import { CONSTANTS } from "services/makotools/constants";
 
+function PatreonBanner({ profile }: { profile: UserData }) {
+  const tier = CONSTANTS.PATREON.TIERS[profile.admin.patreon];
+  if (profile?.admin.patreon > 0)
+    return (
+      <Alert
+        color="orange"
+        icon={<IconBrandPatreon size={20} />}
+        my="xs"
+        // title={`${tier.NAME} Tier ($${tier.VALUE}) Patreon Supporter!`}
+      >
+        <Text color="orange" weight={700}>
+          {tier.NAME} (${tier.VALUE}) Patreon Supporter!
+        </Text>
+      </Alert>
+    );
+  return null;
+}
+
 function Page({ profile }: { profile: UserData }) {
   const { dayjs } = useDayjs();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
@@ -121,14 +139,6 @@ function Page({ profile }: { profile: UserData }) {
                   `${profile?.profile__pronouns} · `}
                 @{profile.username}
               </Text>
-              {profile?.admin.patreon > 0 && (
-                <Group sx={{ margin: "1vh 0vw" }} spacing="xs">
-                  <IconBrandPatreon size={20} strokeWidth={3} color="#fab005" />{" "}
-                  <Badge variant="filled" color="indigo">
-                    Patreon Tier {profile.admin.patreon}
-                  </Badge>
-                </Group>
-              )}
             </>
           }
           mb={0}
@@ -150,19 +160,12 @@ function Page({ profile }: { profile: UserData }) {
                   {profile?.profile__pronouns}
                 </Text>
               )}
-              {profile?.admin.patreon > 0 && (
-                <Group sx={{ margin: "1vh 0vw" }} spacing="xs">
-                  <IconBrandPatreon size={20} strokeWidth={3} color="#fab005" />{" "}
-                  <Badge variant="filled" color="indigo">
-                    Patreon Tier {profile.admin.patreon}
-                  </Badge>
-                </Group>
-              )}
             </>
           }
           mb={0}
         />
       )}
+      <PatreonBanner profile={profile} />
       <Group mt="xs" noWrap align="flex-start">
         <ThemeIcon variant="light" color="lightblue" sx={{ flexShrink: 0 }}>
           <IconInfoCircle size={16} />
