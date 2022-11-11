@@ -1,12 +1,14 @@
 import {
+  ActionIcon,
   Alert,
-  Anchor,
   AspectRatio,
   Badge,
   Box,
+  CopyButton,
   Divider,
   Group,
   Image,
+  Menu,
   Paper,
   Text,
   ThemeIcon,
@@ -19,7 +21,11 @@ import {
   IconAlertCircle,
   IconBrandPatreon,
   IconCalendar,
+  IconCopy,
+  IconDots,
+  IconFlag,
   IconInfoCircle,
+  IconMessageShare,
 } from "@tabler/icons";
 import { useRef, Fragment, useState, useEffect } from "react";
 import Autoplay from "embla-carousel-autoplay";
@@ -37,6 +43,7 @@ import useUser from "services/firebase/user";
 import BioDisplay from "components/sections/BioDisplay";
 import Picture from "components/core/Picture";
 import { CONSTANTS } from "services/makotools/constants";
+import notify from "services/libraries/notify";
 
 function PatreonBanner({ profile }: { profile: UserData }) {
   const tier = CONSTANTS.PATREON.TIERS[profile.admin.patreon];
@@ -62,6 +69,8 @@ function Page({ profile }: { profile: UserData }) {
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.xs}px)`);
   const user = useUser();
+  const shareURL = `enstars.link/@${profile.username}`;
+  const shareURLFull = `https://enstars.link/@${profile.username}`;
 
   const [embla, setEmbla] = useState<Embla | null>(null);
 
@@ -199,22 +208,57 @@ function Page({ profile }: { profile: UserData }) {
         </Group>
       )}
 
-      <Group position="right" mt="xs">
-        {user.loggedIn && user.db.suid !== profile.suid && (
-          <Anchor
-            component={Link}
-            href={CONSTANTS.MODERATION.GET_REPORT_LINK(
-              profile.username,
-              profile.suid
-            )}
-            target="_blank"
-            color="dimmed"
-            size="sm"
-          >
-            Report User
-          </Anchor>
-        )}
-      </Group>
+      <Paper withBorder mt="xs">
+        <Group p={4} pl="xs">
+          <Group spacing={0} sx={{ "&&": { flexGrow: 1 } }}>
+            <IconMessageShare size={18} />
+            <Text size="sm" ml="xs">
+              <Text span color="dimmed" weight={500}>
+                https://
+              </Text>
+              <Text span weight={700}>
+                {shareURL}
+              </Text>
+            </Text>
+            <CopyButton value={shareURLFull}>
+              {({ copy }) => (
+                <ActionIcon
+                  onClick={() => {
+                    copy();
+                    notify("info", { message: "Profile link copied" });
+                  }}
+                  size="sm"
+                >
+                  <IconCopy size={16} />
+                </ActionIcon>
+              )}
+            </CopyButton>
+          </Group>
+          {user.loggedIn && user.db.suid !== profile.suid && (
+            <Menu shadow="sm" width={200} position="top-end">
+              <Menu.Target>
+                <ActionIcon>
+                  <IconDots size={18} />
+                </ActionIcon>
+              </Menu.Target>
+
+              <Menu.Dropdown>
+                <Menu.Item
+                  component={Link}
+                  href={CONSTANTS.MODERATION.GET_REPORT_LINK(
+                    profile.username,
+                    profile.suid
+                  )}
+                  target="_blank"
+                  icon={<IconFlag size={14} />}
+                >
+                  Report User
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+          )}
+        </Group>
+      </Paper>
       <Divider my="xs" />
 
       <Title order={2} mt="md" mb="xs">
