@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Space, SimpleGrid, Divider } from "@mantine/core";
+import { Divider } from "@mantine/core";
 import { IconBook, IconCards, IconMedal } from "@tabler/icons";
 
 import PageTitle from "components/sections/PageTitle";
@@ -13,10 +13,10 @@ import { QuerySuccess } from "types/makotools";
 import { getLayout } from "components/Layout";
 import CardCard from "pages/cards/components/DisplayCard";
 import ESPageHeader from "pages/events/components/ESPageHeader";
-import Contents from "pages/events/components/Contents";
 import PointsTable from "pages/events/components/PointsTable";
 import Stories from "pages/events/components/Stories";
 import SectionTitle from "pages/events/components/SectionTitle";
+import ResponsiveGrid from "components/core/ResponsiveGrid";
 
 function Page({
   scout,
@@ -64,19 +64,8 @@ function Page({
         title={`${scout.type === "scout" ? "SCOUT!" : ""} ${scout.name[0]}`}
       />
       <ESPageHeader content={scout} />
-      <Space h={50} />
-      {scout.type === "scout" && (
-        <>
-          <Contents items={contentItems} />
-          <Space h="xl" />
-        </>
-      )}
-      <SectionTitle title="Cards" id="cards" icon={<IconCards size={70} />} />
-      <SimpleGrid
-        cols={2}
-        breakpoints={[{ maxWidth: 400, cols: 1 }]}
-        sx={{ marginBottom: "50px" }}
-      >
+      <SectionTitle title="Cards" id="cards" Icon={IconCards} />
+      <ResponsiveGrid width={224}>
         {cards.map((card: GameCard) => (
           <CardCard
             key={card.id}
@@ -85,28 +74,24 @@ function Page({
             lang={cardsQuery.lang}
           />
         ))}
-      </SimpleGrid>
-      <Divider />
+      </ResponsiveGrid>
+      <Divider my="md" />
       {scout.story_name && (
         <>
           <SectionTitle
             title={scout.type === "scout" ? "Story" : "Featured Story"}
             id="story"
-            icon={<IconBook size={70} />}
+            Icon={IconBook}
           />
           <Stories content={scout} />
-          <Divider />
+          <Divider my="md" />
         </>
       )}
       {scout.type === "scout" && (
         <>
           {event && (
             <>
-              <SectionTitle
-                title="Event"
-                id="event"
-                icon={<IconMedal size={70} />}
-              />
+              <SectionTitle title="Event" id="event" Icon={IconMedal} />
               <PointsTable
                 id={event.event_id}
                 type={event.type}
@@ -114,7 +99,6 @@ function Page({
                 scoutName={scout.name[0]}
                 banner={event.banner_id as ID}
               />
-              <Divider />
             </>
           )}
         </>
