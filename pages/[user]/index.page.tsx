@@ -125,7 +125,11 @@ function Page({ profile }: { profile: UserData }) {
           >
             You&apos;ve been restricted from editing your profile. You can
             submit an appeal through our{" "}
-            <Text component={Link} href="/issues">
+            <Text
+              component={Link}
+              href="/issues"
+              sx={{ textDecoration: "underline" }}
+            >
               issues
             </Text>{" "}
             page.
@@ -349,7 +353,7 @@ export const getServerSideProps = getServerSideUser(
               ? `${profile.name} (@${profile.username})`
               : `@${profile.username}`,
             desc:
-              profile?.bio ||
+              profile?.profile__bio ||
               `View @${profile.username}'s profile on MakoTools`,
           },
         },
