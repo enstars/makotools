@@ -22,8 +22,8 @@ function PointsTable({
 }) {
   return (
     <>
-      <Group>
-        <Box sx={{ position: "relative", flex: "1 1 40%" }}>
+      <Group align="stretch">
+        <Box sx={{ "&&&": { flex: "1 1 40%", position: "relative" } }}>
           <Link
             href={`/${
               type === "song" || type === "tour" ? "events" : "scouts"
@@ -32,12 +32,12 @@ function PointsTable({
             <Picture
               alt={type === "song" || type === "tour" ? scoutName : eventName}
               srcB2={`assets/card_still_full1_${banner}_evolution.png`}
-              sx={{ height: 100 }}
+              sx={{ height: "100%", minHeight: 100 }}
               radius="sm"
             />
           </Link>
         </Box>
-        <Box sx={{ flex: "1 1 55%" }}>
+        <Box sx={{ "&&&": { flex: "1 1 55%", minWidth: 240 } }}>
           <Alert variant="outline" color="indigo" sx={{ minHeight: 100 }}>
             <Text size="md">
               Cards in the <strong>{scoutName}</strong> scout offer an event
@@ -47,30 +47,39 @@ function PointsTable({
         </Box>
       </Group>
       <Space h="lg" />
-      <Paper withBorder shadow="xs" p="xl">
-        <Table striped captionSide="bottom">
-          <caption>
-            The event bonus range is based on the number of copies of a card
-            owned. One copy of a card offers the minimum bonus in a range while
-            owning five or more copies offers the maximum bonus.
-          </caption>
+      <Paper withBorder shadow="xs" p="md">
+        <Text weight={700} align="center">
+          Event point bonus
+        </Text>
+        <Table striped highlightOnHover captionSide="bottom">
           <thead>
             <tr>
-              <th>Card rarity</th>
-              <th>Event point bonus</th>
+              <th rowSpan={2}>Card rarity</th>
+              <th colSpan={5} style={{ textAlign: "center" }}>
+                Card Copies
+              </th>
+            </tr>
+            <tr>
+              <th>1x</th>
+              <th>2x</th>
+              <th>3x</th>
+              <th>4x</th>
+              <th>5x</th>
             </tr>
           </thead>
-          {gachaCardEventBonus.map((row) => (
-            <tr key={row.rarity}>
-              <td>
-                {row.rarity}
-                <IconStar size={10} />
-              </td>
-              <td>
-                {row.minBonus}% - {row.maxBonus}%
-              </td>
-            </tr>
-          ))}
+          <tbody>
+            {gachaCardEventBonus.map((row) => (
+              <tr key={row.rarity}>
+                <td>
+                  {row.rarity}
+                  <IconStar size={10} />
+                </td>
+                {row.bonus.map((b) => (
+                  <td key={b}>{b}%</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
         </Table>
       </Paper>
     </>

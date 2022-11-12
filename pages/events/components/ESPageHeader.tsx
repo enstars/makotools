@@ -30,6 +30,7 @@ function ESPageHeader({
               picture: { position: "relative", img: { marginTop: "2vh" } },
             }}
             radius="md"
+            action="view"
           />
         </Box>
         <Box sx={{ flex: "2 1 50%" }}>

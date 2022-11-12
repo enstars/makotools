@@ -1,9 +1,14 @@
-import { Divider, Paper, SimpleGrid, Space } from "@mantine/core";
-import { IconBook, IconCards, IconDiamond, IconMusic } from "@tabler/icons";
+import { Divider, Paper, Text } from "@mantine/core";
+import {
+  IconBook,
+  IconCards,
+  IconDiamond,
+  IconMusic,
+  IconVinyl,
+} from "@tabler/icons";
 import { useMemo } from "react";
 
 import ESPageHeader from "./components/ESPageHeader";
-import Contents from "./components/Contents";
 import PointsTable from "./components/PointsTable";
 import Stories from "./components/Stories";
 import SectionTitle from "./components/SectionTitle";
@@ -19,6 +24,7 @@ import { useDayjs } from "services/libraries/dayjs";
 import { GameCard, GameEvent, GameUnit, ID, ScoutEvent } from "types/game";
 import { QuerySuccess } from "types/makotools";
 import CardCard from "pages/cards/components/DisplayCard";
+import ResponsiveGrid from "components/core/ResponsiveGrid";
 
 type Colors = "red" | "blue" | "yellow" | "green";
 
@@ -74,15 +80,8 @@ function Page({
     <>
       <PageTitle title={event.name[0]} sx={{ width: "100%" }} />
       <ESPageHeader content={event} units={units} />
-      <Space h={50} />
-      <Contents items={contentItems} />
-      <Space h="xl" />
-      <SectionTitle title="Cards" id="cards" icon={<IconCards size={70} />} />
-      <SimpleGrid
-        cols={2}
-        breakpoints={[{ maxWidth: 400, cols: 1 }]}
-        sx={{ marginBottom: "50px" }}
-      >
+      <SectionTitle title="Cards" id="cards" Icon={IconCards} />
+      <ResponsiveGrid width={224}>
         {cards.map((card: GameCard) => (
           <CardCard
             key={card.id}
@@ -91,18 +90,20 @@ function Page({
             lang={cardsQuery.lang}
           />
         ))}
-      </SimpleGrid>
-      <Divider />
-      <SectionTitle title="Story" id="story" icon={<IconBook size={70} />} />
+      </ResponsiveGrid>
+      <Divider my="md" />
+      <SectionTitle title="Story" id="story" Icon={IconBook} />
       <Stories content={event} />
-      <Divider />
+      <Divider my="md" />
       {event.type !== "tour" && (
         <>
-          <SectionTitle title="Song" id="song" icon={<IconMusic size={70} />} />
-          <Paper shadow="xs" p="md" withBorder sx={{ marginBottom: "50px" }}>
-            Coming soon!
+          <SectionTitle title="Song" id="song" Icon={IconVinyl} />
+          <Paper p="sm" withBorder>
+            <Text align="center" color="dimmed" size="sm" weight={700}>
+              Coming soon!
+            </Text>
           </Paper>
-          <Divider />
+          <Divider my="md" />
         </>
       )}
       {scout && (
@@ -110,7 +111,7 @@ function Page({
           <SectionTitle
             title={`Scout! ${scout.name[0]}`}
             id="scout"
-            icon={<IconDiamond size={70} />}
+            Icon={IconDiamond}
           />
           <PointsTable
             id={scout.gacha_id}
@@ -119,7 +120,6 @@ function Page({
             scoutName={scout.name[0]}
             banner={scout.banner_id as ID}
           />
-          <Space h={50} />
         </>
       )}
     </>
@@ -166,6 +166,13 @@ export const getServerSideProps = getServerSideUser(
       "title",
       "type",
       "rarity",
+      "stats.ir.da",
+      "stats.ir.vo",
+      "stats.ir.pf",
+      "stats.ir4.da",
+      "stats.ir4.vo",
+      "stats.ir4.pf",
+      "character_id",
     ]);
 
     const event = getEvent.data;

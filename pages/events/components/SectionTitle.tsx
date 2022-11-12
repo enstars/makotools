@@ -1,39 +1,38 @@
-import { Box, Space, Title } from "@mantine/core";
+import { Box, Title, useMantineTheme } from "@mantine/core";
 
 function SectionTitle({
   title,
   id,
-  icon,
+  Icon,
 }: {
   title: string;
   id: string;
-  icon: any;
+  Icon: any;
 }) {
+  const theme = useMantineTheme();
   return (
-    <>
-      <Space h="xl" />
-      <Box sx={{ position: "relative", width: "100%", height: 70 }}>
-        <Title
-          id={id}
-          order={2}
-          sx={{ position: "absolute", top: "25%", left: "7%" }}
-        >
-          {title}
-        </Title>
-        <Box
-          sx={{
-            position: "absolute",
-            left: 0,
-            top: 0,
-            zIndex: -2,
-            opacity: 0.15,
-          }}
-        >
-          {icon}
-        </Box>
+    <Title
+      id={id}
+      order={2}
+      sx={{ position: "relative", overflow: "visible" }}
+      mt={32}
+      mb="lg"
+    >
+      {title}
+      <Box
+        sx={(theme) => ({
+          position: "absolute",
+          zIndex: -2,
+          opacity: 0.3,
+          bottom: -20,
+          left: -32,
+          transform: "rotate(-5deg)",
+          color: theme.colors.blue[5],
+        })}
+      >
+        <Icon strokeWidth={1.25} size={64} style={{ opacity: 1 }} />
       </Box>
-      <Space h="xl" />
-    </>
+    </Title>
   );
 }
 
