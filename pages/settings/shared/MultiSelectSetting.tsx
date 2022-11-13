@@ -18,7 +18,9 @@ function MultiSelectSetting({
 
   return (
     <MultiSelect
-      value={(isFirestoreAccessible && user.db?.[dataKey]) || null}
+      value={
+        (isFirestoreAccessible && (user.db?.[dataKey] as string[])) || undefined
+      }
       label={label}
       onChange={(value) => {
         if (user.loggedIn) user.db.set({ [dataKey]: value });
