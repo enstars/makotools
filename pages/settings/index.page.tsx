@@ -89,7 +89,7 @@ const tabs = [
     }) => (
       <>
         <Stack>
-          {user.db.admin.disableTextFields ? (
+          {user.db?.admin?.disableTextFields ? (
             <Alert
               icon={<IconAlertCircle size={16} />}
               color="red"

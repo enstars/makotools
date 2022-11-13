@@ -15,8 +15,7 @@ function Username() {
       <TextInput
         label="Username"
         value={user.loggedIn ? user.db?.username : ""}
-        disabled
-        description="Username changes are unavailable during the beta."
+        readOnly
         placeholder={"Username not set"}
         icon={<IconAt size={16} />}
         sx={{ flexGrow: 1 }}
@@ -25,7 +24,6 @@ function Username() {
             onClick={() => setUsernameModalOpen(true)}
             variant="filled"
             color="blue"
-            disabled //temporarily
           >
             <IconPencil size={14} />
           </ActionIcon>
