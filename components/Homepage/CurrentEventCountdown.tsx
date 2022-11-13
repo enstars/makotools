@@ -10,6 +10,7 @@ import {
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
+import Link from "next/link";
 
 import Picture from "components/core/Picture";
 import {
@@ -30,17 +31,35 @@ const useStyles = createStyles((theme, _params) => ({
     minWidth: "350px",
     maxWidth: "400px",
   },
+
+  link: {
+    "&:link": {
+      color:
+        theme.colorScheme === "dark"
+          ? theme.colors.indigo[2]
+          : theme.colors.indigo[6],
+      textDecoration: "none",
+    },
+    "&:visited": {
+      color:
+        theme.colorScheme === "dark"
+          ? theme.colors.indigo[2]
+          : theme.colors.indigo[6],
+    },
+  },
 }));
 
 function EventImage({ event }: { event: GameEvent }) {
   const { classes } = useStyles();
   return (
-    <Picture
-      alt={event.name}
-      srcB2={`assets/card_still_full1_${event.banner_id}_evolution.webp`}
-      sx={{ width: 350, height: 175 }}
-      radius="lg"
-    />
+    <Link href={`/events/${event.event_id}`}>
+      <Picture
+        alt={event.name[0]}
+        srcB2={`assets/card_still_full1_${event.banner_id}_evolution.webp`}
+        sx={{ width: 300, height: 175 }}
+        radius="lg"
+      />
+    </Link>
   );
 }
 
@@ -102,7 +121,12 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
 
   return (
     <Box>
-      <Title order={2}>{currentEvent ? "Current Event" : "Next Event"}</Title>
+      <Group align="end">
+        <Title order={2}>{currentEvent ? "Current Event" : "Next Event"}</Title>
+        <Link href="/events" className={classes.link}>
+          See all events
+        </Link>
+      </Group>
       <Paper
         shadow="xs"
         radius="md"
@@ -117,7 +141,7 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
             <Stack justify="space-around">
               <Box>
                 <Title order={3} sx={{ maxWidth: "300px" }}>
-                  {currentEvent.name}
+                  {currentEvent.name[0]}
                 </Title>
                 <Countdown date={currentEvent.end_date} status="Ends" />
               </Box>
@@ -132,7 +156,7 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
             <Stack justify="space-around">
               <Box>
                 <Title order={3} sx={{ maxWidth: "300px" }}>
-                  {nextEvent.name}
+                  {nextEvent.name[0]}
                 </Title>
                 <Countdown date={nextEvent.start_date} status="Starts" />
               </Box>

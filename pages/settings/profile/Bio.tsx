@@ -16,14 +16,16 @@ function Name() {
         description="You can use markdown in your bio (GFM)"
       >
         <Tabs variant="pills" defaultValue="edit" mt="xs">
-          <Tabs.List>
-            <Tabs.Tab value="edit" icon={<IconPencil size={14} />}>
-              Edit
-            </Tabs.Tab>
-            <Tabs.Tab value="preview" icon={<IconTextCaption size={14} />}>
-              Preview
-            </Tabs.Tab>
-          </Tabs.List>
+          {!user.db.admin.disableTextFields && (
+            <Tabs.List>
+              <Tabs.Tab value="edit" icon={<IconPencil size={14} />}>
+                Edit
+              </Tabs.Tab>
+              <Tabs.Tab value="preview" icon={<IconTextCaption size={14} />}>
+                Preview
+              </Tabs.Tab>
+            </Tabs.List>
+          )}
 
           <Tabs.Panel value="edit" pt="xs">
             <TextSetting

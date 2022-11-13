@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { Carousel } from "@mantine/carousel";
 import { Box, Button, createStyles, Stack, Text, Title } from "@mantine/core";
@@ -43,18 +43,31 @@ function Banner({
     )
     .sort((a, b) => dayjs(a.start_date).unix() - dayjs(b.start_date).unix());
 
-  const shownEvents: (GameEvent | ScoutEvent)[] = [];
+  const banners = useMemo(() => {
+    const shownEvents: (GameEvent | ScoutEvent | BirthdayEvent)[] = [];
 
-  const pastGameEvents = pastEvents.filter((event) =>
-    ["tour", "song"].includes(event.type)
-  );
-  shownEvents.push(pastGameEvents[pastGameEvents.length - 1] as GameEvent);
+    const currentBirthdays = events.filter(
+      (event) =>
+        event.type === "birthday" &&
+        dayjs(event.start_date).add(1, "day").format("MMDD") ===
+          dayjs().format("MMDD")
+    );
 
-  const pastScouts = pastEvents.filter((event) => event.type === "scout");
-  shownEvents.push(pastScouts[pastScouts.length - 1] as ScoutEvent);
+    shownEvents.push(...currentBirthdays);
 
-  const pastFs = pastEvents.filter((event) => event.type === "feature scout");
-  shownEvents.push(pastFs[pastFs.length - 1] as ScoutEvent);
+    const pastGameEvents = pastEvents.filter((event) =>
+      ["tour", "song"].includes(event.type)
+    );
+    shownEvents.push(pastGameEvents[pastGameEvents.length - 1] as GameEvent);
+
+    const pastScouts = pastEvents.filter((event) => event.type === "scout");
+    shownEvents.push(pastScouts[pastScouts.length - 1] as ScoutEvent);
+
+    const pastFs = pastEvents.filter((event) => event.type === "feature scout");
+    shownEvents.push(pastFs[pastFs.length - 1] as ScoutEvent);
+
+    return shownEvents;
+  }, [dayjs, events, pastEvents]);
 
   return (
     <Carousel
@@ -95,11 +108,13 @@ function Banner({
           </Stack>
         </Box>
       </Carousel.Slide>
-      {shownEvents.map((event) => (
-        <Carousel.Slide key={event.name}>
+      {banners.map((event) => (
+        <Carousel.Slide key={event.name[0]}>
           <Picture
-            alt={event.name || "caption"}
-            srcB2={`assets/card_still_full1_${event.banner_id}_evolution.png`}
+            alt={event.name[0] || "caption"}
+            srcB2={`assets/card_still_full1_${event.banner_id}_${
+              event.type === "birthday" ? "normal" : "evolution"
+            }.png`}
             sx={{ width: "100%", height: "100%" }}
             radius="sm"
           />
@@ -107,19 +122,23 @@ function Banner({
             <Stack spacing={0}>
               <Title order={2}>
                 {event.type === "song"
-                  ? event.name
+                  ? event.name[0]
                   : event.type === "tour"
-                  ? event.name
+                  ? event.name[0]
                   : event.type === "scout"
-                  ? `SCOUT! ${event.name}`
+                  ? `SCOUT! ${event.name[0]}`
                   : event.type === "feature scout"
-                  ? `Featured Scout: ${event.name}`
-                  : event.name}
+                  ? `Featured Scout: ${event.name[0]}`
+                  : event.type === "birthday"
+                  ? `Happy birthday, ${event.name.split(" ")[0]}!`
+                  : event.name[0]}
               </Title>
               <Text weight={500} sx={{ opacity: 0.75 }}>
-                {dayjs(event.start_date).format("lll")}
-                {" – "}
-                {dayjs(event.end_date).format("lll z")}
+                {event.type !== "birthday"
+                  ? dayjs(event.start_date).format("lll") +
+                    " – " +
+                    dayjs(event.end_date).format("lll z")
+                  : dayjs(event.start_date).format("MMMM D")}
               </Text>
             </Stack>
           </Box>

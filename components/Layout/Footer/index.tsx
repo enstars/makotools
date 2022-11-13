@@ -106,6 +106,15 @@ function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
             <Text color="dimmed" size="xs" mt="xs">
               <Anchor
                 component={Link}
+                href="/about/guidelines"
+                inherit
+                color="dimmed"
+              >
+                Community Guidelines
+              </Anchor>
+              <br />
+              <Anchor
+                component={Link}
                 href="/about/terms"
                 inherit
                 color="dimmed"
@@ -119,7 +128,7 @@ function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
                 inherit
                 color="dimmed"
               >
-                Privacy Policy
+                Privacy
               </Anchor>
             </Text>
           </Stack>

@@ -9,6 +9,7 @@ import {
   Text,
   Title,
 } from "@mantine/core";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 
 import { getAssetURL } from "services/data";
@@ -22,6 +23,21 @@ const useStyles = createStyles((theme, _params) => ({
   },
   scoutsCards: {
     marginTop: "2vh",
+  },
+  link: {
+    "&:link": {
+      color:
+        theme.colorScheme === "dark"
+          ? theme.colors.indigo[2]
+          : theme.colors.indigo[6],
+      textDecoration: "none",
+    },
+    "&:visited": {
+      color:
+        theme.colorScheme === "dark"
+          ? theme.colors.indigo[2]
+          : theme.colors.indigo[6],
+    },
   },
 }));
 
@@ -45,20 +61,31 @@ function Countdown({ endDate }: { endDate: string }) {
 function ScoutCard({ scout }: { scout: ScoutEvent }) {
   const { classes } = useStyles();
   return (
-    <Card shadow="xs" p="md" radius="md" withBorder>
+    <Card
+      shadow="xs"
+      p="md"
+      radius="md"
+      withBorder
+      component={Link}
+      href={`/scouts/${scout.gacha_id}`}
+    >
       <Card.Section>
         <Image
-          alt={scout.name}
+          alt={scout.name[0]}
           src={getAssetURL(
             `assets/card_still_full1_${scout.banner_id}_evolution.webp`
           )}
         />
       </Card.Section>
       <Group sx={{ padding: "5px" }}>
-        <Text weight={600} size="lg">
-          SCOUT! {scout.name}
-        </Text>
-        <Badge color="indigo">
+        <Title order={4}>
+          {scout.type === "scout" ? "SCOUT! " : ""}
+          {scout.name[0]}
+        </Title>
+        <Badge
+          variant="filled"
+          color={scout.type === "scout" ? "violet" : "lightblue"}
+        >
           {scout.type === "scout" ? "event scout" : scout.type}
         </Badge>
       </Group>
@@ -94,7 +121,12 @@ function CurrentScoutsCountdown({ scouts }: { scouts: ScoutEvent[] }) {
   });
   return (
     <Container className={classes.scoutsContainer}>
-      <Title order={2}>Current Scouts</Title>
+      <Group align="end">
+        <Title order={2}>Current Scouts</Title>
+        <Link href="/scouts" className={classes.link}>
+          See all scouts
+        </Link>
+      </Group>
       <CurrentScoutsCards scouts={currentScouts} />
     </Container>
   );

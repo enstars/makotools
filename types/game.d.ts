@@ -157,6 +157,7 @@ type EventType =
   | "feature scout"
   | "song"
   | "tour"
+  | "shuffle"
   | "anniversary"
   | "other";
 export type GameEventStatus = "start" | "end" | undefined;
@@ -170,31 +171,24 @@ export interface Event {
   story_author?: string;
   story_season?: string;
   banner_id?: ID | ID[];
-  five_star?: {
-    chara_id: ID | ID[];
-    card_id: any;
-  };
-  four_star?: {
-    chara_id: ID | ID[];
-    card_id: ID | ID[];
-  };
-  three_star?: {
-    chara_id: ID | ID[];
-    card_id: ID | ID[];
-  };
+  cards?: ID[];
 }
 
 export interface GameEvent extends Event {
   event_id: ID;
   event_gacha?: string;
-  event_gacha_id?: ID;
+  gacha_id?: ID;
   intro_lines?: string;
+  intro_lines_tl_credit?: string;
   song_name?: string;
-  units?: ID[];
+  unit_id?: ID[];
 }
 
 export interface ScoutEvent extends Event {
   gacha_id: ID;
+  event_id?: ID;
+  intro_lines?: string;
+  intro_lines_tl_credit?: string;
 }
 
 export interface BirthdayEvent extends Event {

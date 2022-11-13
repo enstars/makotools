@@ -1,64 +1,33 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { Event, BirthdayEvent, GameEvent, ScoutEvent } from "../types/game";
+import {
+  Event,
+  BirthdayEvent,
+  GameEvent,
+  ScoutEvent,
+  GameCharacter,
+} from "../types/game";
 
 import { useDayjs } from "./libraries/dayjs";
 
-function retrieveEvents(
-  data: any,
-  locale: string | undefined
-): (BirthdayEvent | GameEvent | ScoutEvent)[] {
-  let events: (BirthdayEvent | GameEvent | ScoutEvent)[] = [];
+function createBirthdayData(characters: GameCharacter[]): BirthdayEvent[] {
+  let birthdays = [];
+  for (const character of characters) {
+    let birthdayEvent: BirthdayEvent = {
+      character_id: character.character_id,
+      name: `${character.first_name[0]}${
+        character.last_name[0] ? " " + character.last_name[0] : ""
+      }`,
+      start_date: character.birthday,
+      end_date: character.birthday,
+      type: "birthday",
+      banner_id: character.renders?.fs1_5 | 0,
+      horoscope: character.horoscope,
+    };
 
-  if (data.characters) {
-    for (const character of data.characters) {
-      let birthdayEvent: BirthdayEvent = {
-        character_id: character.character_id,
-        name: `${character.first_name[0]}${
-          character.last_name[0] ? " " + character.last_name[0] : ""
-        }`,
-        start_date: character.birthday,
-        end_date: character.birthday,
-        type: "birthday",
-        banner_id: character.renders?.fs1_5 | 0,
-        horoscope: character.horoscope,
-      };
-
-      events.push(birthdayEvent);
-    }
+    birthdays.push(birthdayEvent);
   }
 
-  if (data.gameEvents) {
-    for (const event of data.gameEvents) {
-      let gameEvent: GameEvent = {
-        event_id: event.event_id,
-        start_date: event.start_date[locale as string] || event.start_date,
-        end_date: event.end_date[locale as string] || event.end_date,
-        type: event.type,
-        name: event.name[1],
-        event_gacha: event.event_gacha,
-        event_gacha_id: event.gacha_id,
-        banner_id: event.banner_id,
-        story_name: event.story_name[1],
-      };
-      events.push(gameEvent);
-    }
-  }
-
-  if (data.scouts) {
-    for (const scout of data.scouts) {
-      let scoutEvent: ScoutEvent = {
-        gacha_id: scout.gacha_id,
-        start_date: scout.start_date[locale as string] || scout.start_date,
-        end_date: scout.end_date[locale as string] || scout.end_date,
-        type: scout.type,
-        name: scout.name[1],
-        banner_id: scout.five_star.card_id,
-      };
-      events.push(scoutEvent);
-    }
-  }
-
-  return events;
+  return birthdays;
 }
 
 function retrieveClosestEvents(
@@ -165,7 +134,7 @@ function isItYippeeTime(dateA: Date, dateB: Date, dayjs: any): boolean {
 }
 
 export {
-  retrieveEvents,
+  createBirthdayData,
   retrieveClosestEvents,
   localizeEventTimes,
   countdown,

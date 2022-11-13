@@ -130,7 +130,7 @@ function EventCard({
           }}
         >
           <Title order={3} weight={700} size="md" sx={{ lineHeight: 1.2 }}>
-            {event.name}
+            {event.type !== "birthday" ? event.name[0] : event.name}
           </Title>
 
           <Badge

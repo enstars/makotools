@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Box,
   Center,
@@ -19,13 +19,14 @@ import CalendarListView from "./components/CalendarListView";
 import CalendarHeader from "./components/CalendarHeader";
 
 import { getLocalizedDataArray } from "services/data";
-import { retrieveEvents } from "services/events";
+import { createBirthdayData } from "services/events";
 import {
   GameCharacter,
   GameEvent,
   ScoutEvent,
   BirthdayEvent,
 } from "types/game";
+import { QuerySuccess } from "types/makotools";
 
 /**
  * If the user is viewing from a mobile phone, the default view should be the list view. Otherwise, it should be the traditional calendar.
@@ -38,12 +39,33 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 }));
 
 function Page({
-  events,
+  charactersQuery,
+  gameEventsQuery,
+  scoutsQuery,
 }: {
-  events: (BirthdayEvent | GameEvent | ScoutEvent)[];
+  charactersQuery: QuerySuccess<GameCharacter[]>;
+  gameEventsQuery: QuerySuccess<GameEvent[]>;
+  scoutsQuery: QuerySuccess<ScoutEvent[]>;
 }) {
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
+
+  const characters: GameCharacter[] = useMemo(
+    () => charactersQuery.data,
+    [charactersQuery.data]
+  );
+  const gameEvents: GameEvent[] = useMemo(
+    () => gameEventsQuery.data,
+    [gameEventsQuery.data]
+  );
+  const scouts: ScoutEvent[] = useMemo(
+    () => scoutsQuery.data,
+    [scoutsQuery.data]
+  );
+
+  const birthdays: BirthdayEvent[] = createBirthdayData(characters);
+
+  const events = [...birthdays, ...gameEvents, ...scouts];
 
   const [calendarTime, setCalendarTime] = useState<string>(dayjs().format());
 
@@ -153,7 +175,7 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
     "character_id"
   );
 
-  const gameEvents: any = await getLocalizedDataArray<GameEvent>(
+  const gameEvents: any = await getLocalizedDataArray(
     "events",
     locale,
     "event_id"
@@ -165,18 +187,11 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
     "gacha_id"
   );
 
-  const events = retrieveEvents(
-    {
-      characters: characters.data,
-      gameEvents: gameEvents.data,
-      scouts: scouts.data,
-    },
-    locale
-  );
-
   return {
     props: {
-      events: events,
+      charactersQuery: characters,
+      gameEventsQuery: gameEvents,
+      scoutsQuery: scouts,
       locale: locale,
     },
   };

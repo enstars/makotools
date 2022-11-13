@@ -150,16 +150,16 @@ function CalendarListEventCard({
         </Group>
         <Text size="md" weight={700}>
           {event.type === "song"
-            ? event.name
+            ? event.name[0]
             : event.type === "tour"
-            ? event.name
+            ? event.name[0]
             : event.type === "scout"
-            ? `SCOUT! ${event.name}`
+            ? `SCOUT! ${event.name[0]}`
             : event.type === "feature scout"
-            ? `Featured Scout: ${event.name}`
+            ? `Featured Scout: ${event.name[0]}`
             : event.type === "birthday"
             ? `${event.name}'s Birthday`
-            : event.name}
+            : event.name[0]}
         </Text>
         <Text size="sm" color="dimmed" weight={500}>
           {dayjs(status === "end" ? event.end_date : event.start_date).format(

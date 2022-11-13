@@ -79,7 +79,7 @@ function TextSetting<T = {}>({
             ? `${label} must be under ${charLimit} characters`
             : null
         }
-        disabled={isFirestoreAccessible && user?.db?.admin?.disabledTextFields}
+        disabled={isFirestoreAccessible && user?.db?.admin?.disableTextFields}
       />
       {showCharCount && (
         <Text align="right" color="dimmed" size="xs" mt="xs">

@@ -28,13 +28,13 @@ import {
   NavLinkProps,
   ActionIcon,
 } from "@mantine/core";
-import { useToggle } from "@mantine/hooks";
 
 import MakotoolsLightComponent from "../../../assets/Logo/mkt_light_icon.svg";
 import MakotoolsDarkComponent from "../../../assets/Logo/mkt_dark_icon.svg";
 import MakotoolsTextLightComponent from "../../../assets/Logo/mkt_light_text.svg";
 import MakotoolsTextDarkComponent from "../../../assets/Logo/mkt_dark_text.svg";
 import useUser from "../../../services/firebase/user";
+import { useSidebarStatus } from "..";
 
 import UserMenu from "./UserMenu";
 
@@ -122,7 +122,7 @@ function Sidebar(props: any) {
   const dark = theme.colorScheme === "dark";
   const user = useUser();
 
-  const [collapsed, toggleCollapsed] = useToggle([false, true]);
+  const { collapsed, toggleCollapsed } = useSidebarStatus();
   if (props.permanentlyExpanded && collapsed) toggleCollapsed();
 
   const linkList: LinkObject[] = [
@@ -140,13 +140,11 @@ function Sidebar(props: any) {
       link: "/events",
       name: "Events",
       Icon: IconAward,
-      disabled: true,
     },
     {
       link: "/scouts",
       name: "Scouts",
       Icon: IconDiamond,
-      disabled: true,
     },
     {
       link: "/stories",
@@ -175,7 +173,7 @@ function Sidebar(props: any) {
       position={{ top: 0, left: 0 }}
       width={{
         base: 0,
-        xs: collapsed ? 50 : 250,
+        xs: collapsed ? 50 : 200,
       }}
       hidden={true}
       hiddenBreakpoint="xs"
