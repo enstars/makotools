@@ -46,20 +46,22 @@ import { CONSTANTS } from "services/makotools/constants";
 import notify from "services/libraries/notify";
 
 function PatreonBanner({ profile }: { profile: UserData }) {
-  const tier = CONSTANTS.PATREON.TIERS[profile.admin.patreon];
-  if (profile?.admin.patreon > 0)
-    return (
-      <Alert
-        color="orange"
-        icon={<IconBrandPatreon size={20} />}
-        my="xs"
-        // title={`${tier.NAME} Tier ($${tier.VALUE}) Patreon Supporter!`}
-      >
-        <Text color="orange" weight={700}>
-          {tier.NAME} (${tier.VALUE}) Patreon Supporter!
-        </Text>
-      </Alert>
-    );
+  if (profile?.admin?.patreon) {
+    const tier = CONSTANTS.PATREON.TIERS[profile?.admin?.patreon];
+    if (profile?.admin?.patreon > 0)
+      return (
+        <Alert
+          color="orange"
+          icon={<IconBrandPatreon size={20} />}
+          my="xs"
+          // title={`${tier.NAME} Tier ($${tier.VALUE}) Patreon Supporter!`}
+        >
+          <Text color="orange" weight={700}>
+            {tier.NAME} (${tier.VALUE}) Patreon Supporter!
+          </Text>
+        </Alert>
+      );
+  }
   return null;
 }
 
@@ -78,7 +80,6 @@ function Page({ profile }: { profile: UserData }) {
   useEffect(() => {
     embla?.reInit();
   }, [embla, collapsed]);
-  console.log(profile?.admin.patreon);
   return (
     <>
       {profile?.profile__banner && profile.profile__banner?.length ? (
@@ -117,7 +118,7 @@ function Page({ profile }: { profile: UserData }) {
       ) : null}
       {user.loggedIn &&
         user.db.suid === profile.suid &&
-        user.db.admin.disableTextFields && (
+        user.db?.admin?.disableTextFields && (
           <Alert
             icon={<IconAlertCircle size={16} />}
             color="red"

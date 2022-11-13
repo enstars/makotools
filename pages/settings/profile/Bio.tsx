@@ -16,7 +16,7 @@ function Name() {
         description="You can use markdown in your bio (GFM)"
       >
         <Tabs variant="pills" defaultValue="edit" mt="xs">
-          {!user.db.admin.disableTextFields && (
+          {!user.db?.admin?.disableTextFields && (
             <Tabs.List>
               <Tabs.Tab value="edit" icon={<IconPencil size={14} />}>
                 Edit
