@@ -23,7 +23,7 @@ function UserMenu({ trigger }: { trigger: any }) {
   const dark = theme.colorScheme === "dark";
   const [opened, handlers] = useDisclosure(false);
   const user = useUser();
-  const { reload } = useRouter();
+  const { push } = useRouter();
 
   return (
     <Menu
@@ -139,8 +139,9 @@ function UserMenu({ trigger }: { trigger: any }) {
             <Menu.Item
               id="sidebar-link-logout"
               onClick={() => {
-                user.user.signOut();
-                reload();
+                user.user.signOut().then(() => {
+                  push("/");
+                });
               }}
               icon={<IconLogout size={14} />}
             >
