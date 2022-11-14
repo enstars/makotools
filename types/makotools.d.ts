@@ -128,11 +128,13 @@ interface Emote {
 }
 
 interface DbReaction {
-  content: string;
   id: ID;
-  name: UID;
-  page_id: string;
-  submit_date: string;
+  attributes: {
+    content: string;
+    user: UID;
+    page: string;
+    createdAt: string;
+  };
 }
 
 interface Reaction {
