@@ -1,6 +1,5 @@
 import {
   ActionIcon,
-  Alert,
   Button,
   Chip,
   Group,
@@ -13,7 +12,6 @@ import {
   Tooltip,
 } from "@mantine/core";
 import {
-  IconAlertCircle,
   IconArrowsSort,
   IconSearch,
   IconSortAscending,
@@ -133,13 +131,6 @@ function Page({
   return (
     <>
       <PageTitle title="Events" />
-      <Alert
-        icon={<IconAlertCircle size={16} strokeWidth={3} />}
-        color="indigo"
-      >
-        In-game events are gradually being added to MakoTools. We appreciate
-        your patience!
-      </Alert>
       <Paper mb="sm" p="md" withBorder sx={{ marginTop: "1vh" }}>
         <Text weight="700" size="xs" color="dimmed">
           <IconSearch size="1em" /> Search Options
