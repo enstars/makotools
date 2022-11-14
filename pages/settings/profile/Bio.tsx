@@ -1,20 +1,36 @@
-import { Input, Tabs, Textarea } from "@mantine/core";
+import { Input, Tabs, Textarea, Text } from "@mantine/core";
 import { IconPencil, IconTextCaption } from "@tabler/icons";
+import { useState } from "react";
 
 import TextSetting from "../shared/TextSetting";
 import useUser from "../../../services/firebase/user";
 import BioDisplay from "../../../components/sections/BioDisplay";
 
+import BioHelpModal from "./BioHelpModal";
+
 function Name() {
   const user = useUser();
+  const [opened, setOpened] = useState<boolean>(false);
   if (!user.loggedIn) return null;
 
   return (
     <>
-      <Input.Wrapper
-        label="Bio"
-        description="You can use markdown in your bio (GFM)"
-      >
+      <BioHelpModal opened={opened} openFunction={setOpened} />
+
+      <Input.Wrapper label="Bio">
+        <Input.Description>
+          You can use markdown in your bio (GFM){" "}
+          <Text
+            component="span"
+            onClick={() => setOpened(true)}
+            sx={(theme) => ({
+              color: theme.colors.indigo[5],
+              "&:hover": { cursor: "pointer" },
+            })}
+          >
+            Need help?
+          </Text>
+        </Input.Description>
         <Tabs variant="pills" defaultValue="edit" mt="xs">
           {!user.db?.admin?.disableTextFields && (
             <Tabs.List>
