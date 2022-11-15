@@ -183,7 +183,7 @@ function BioHelpModal({
       </Table>
       <Space h="xl" />
       <Title order={4}>You can also use our custom emojis in your bio!</Title>
-      {/* <Text color="dimmed" size="sm">
+      <Text color="dimmed" size="sm">
         Non-official emojis are drawn by{" "}
         <Link
           href="https://twitter.com/neeneemi"
@@ -195,7 +195,7 @@ function BioHelpModal({
         >
           @neeneemi
         </Link>
-      </Text> */}
+      </Text>
       <Space h="xl" />
       <SimpleGrid
         spacing="xs"
