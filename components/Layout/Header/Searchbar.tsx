@@ -13,12 +13,10 @@ import { useEffect, useState } from "react";
 import { MeiliSearch } from "meilisearch";
 import Link from "next/link";
 
-const API_KEY = "77b703b4aec68f6906c33bd4633a9cfe354ed72403325783b4e8c2e211b1";
-
 const client = new MeiliSearch({
   host: "https://puka.ensemble.moe",
   headers: {
-    Authorization: `Bearer ${API_KEY}`,
+    Authorization: `Bearer ${process.env.MEILISEARCH_API_KEY}`,
     "Content-Type": "application/json",
   },
 });
