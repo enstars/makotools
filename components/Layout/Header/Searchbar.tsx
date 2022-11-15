@@ -12,6 +12,7 @@ import { IconSearch } from "@tabler/icons";
 import { useEffect, useState } from "react";
 import { MeiliSearch } from "meilisearch";
 import Link from "next/link";
+import { useDebouncedValue } from "@mantine/hooks";
 
 import { CONSTANTS } from "services/makotools/constants";
 
@@ -61,6 +62,7 @@ function SearchCard({
 function Searchbar() {
   const [opened, setOpened] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>("");
+  const [debouncedSearchValue] = useDebouncedValue(searchValue, 500);
   const [searchResults, setSearchResults] = useState<any[]>([]);
 
   async function searchIndexes(value: string) {
@@ -69,9 +71,9 @@ function Searchbar() {
   }
 
   useEffect(() => {
-    searchIndexes(searchValue);
-    if (searchValue === "") setSearchResults([]);
-  }, [searchValue]);
+    searchIndexes(debouncedSearchValue);
+    if (debouncedSearchValue === "") setSearchResults([]);
+  }, [debouncedSearchValue]);
 
   return (
     <>
