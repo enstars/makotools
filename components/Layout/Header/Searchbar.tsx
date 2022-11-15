@@ -13,17 +13,18 @@ import { useEffect, useState } from "react";
 import { MeiliSearch } from "meilisearch";
 import Link from "next/link";
 
+const API_KEY =
+  "vKI1H4hs4e03d87b8dc6f15d557418e5bd50face6e20b228d4716e285319cc9001479fdb";
+
 const client = new MeiliSearch({
   host: "https://puka.ensemble.moe",
   headers: {
-    Authorization: `Bearer ${process.env.MEILISEARCH_API_KEY}`,
+    Authorization: `Bearer ${API_KEY}`,
     "Content-Type": "application/json",
   },
 });
 
-const charactersIndex = client.index("characters");
-const cardsIndex = client.index("cards");
-const eventsIndex = client.index("events");
+const index = client.index("all");
 
 function SearchCard({
   type,
@@ -39,7 +40,7 @@ function SearchCard({
   return (
     <Box
       component={Link}
-      href={`/${type}s/${id}`}
+      href={`/${type}/${id}`}
       sx={{
         display: "block",
         color: "inherit",
@@ -64,18 +65,8 @@ function Searchbar() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
 
   async function searchIndexes(value: string) {
-    const charactersSearch = await charactersIndex.search(value, { limit: 5 });
-    const cardsSearch = await cardsIndex.search(value, { limit: 5 });
-    const eventsSearch = await eventsIndex.search(value, { limit: 5 });
-    console.log(eventsSearch.hits);
-    value.length > 0
-      ? setSearchResults([
-          ...charactersSearch.hits,
-          ...cardsSearch.hits,
-          ...eventsSearch.hits,
-        ])
-      : setSearchResults([]);
-    console.log(charactersSearch);
+    const search = await index.search(value);
+    value.length > 0 ? setSearchResults(search.hits) : setSearchResults([]);
   }
 
   useEffect(() => {
@@ -103,51 +94,24 @@ function Searchbar() {
         <Space h="xl" />
         <Paper sx={{ padding: "0px 5px" }} withBorder>
           {searchResults.length > 0
-            ? searchResults.map((result) => {
-                if (result.character_id) {
-                  return (
-                    <SearchCard
-                      key={result.character_id}
-                      type="character"
-                      id={result.character_id}
-                      content={`${result.en__first_name} ${result.en__last_name}`}
-                      onClick={() => {
-                        setOpened(false);
-                        setSearchValue("");
-                        setSearchResults([]);
-                      }}
-                    />
-                  );
-                } else if (result.id) {
-                  return (
-                    <SearchCard
-                      key={result.id}
-                      type="card"
-                      id={result.id}
-                      content={result.en__title}
-                      onClick={() => {
-                        setOpened(false);
-                        setSearchValue("");
-                        setSearchResults([]);
-                      }}
-                    />
-                  );
-                } else if (result.event_id) {
-                  return (
-                    <SearchCard
-                      key={result.event_id}
-                      type="event"
-                      id={result.event_id}
-                      content={result.en__name}
-                      onClick={() => {
-                        setOpened(false);
-                        setSearchValue("");
-                        setSearchResults([]);
-                      }}
-                    />
-                  );
-                }
-              })
+            ? searchResults.map((result) => (
+                <SearchCard
+                  key={result.unique_id}
+                  type={result.type}
+                  id={result.unique_id.split("__")[1]}
+                  content={
+                    result.en__title ||
+                    result.en__name ||
+                    result["data-tl__en__name"] ||
+                    `${result["data-tl__en__first_name"]} ${result["data-tl__en__last_name"]}`
+                  }
+                  onClick={() => {
+                    setOpened(false);
+                    setSearchValue("");
+                    setSearchResults([]);
+                  }}
+                />
+              ))
             : "No search results found"}
         </Paper>
       </Modal>
