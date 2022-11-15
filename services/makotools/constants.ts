@@ -34,6 +34,8 @@ const CONSTANTS = {
   },
   KEYS: {
     CAPTCHA: "6LfoKlAiAAAAAND6h3R6MapgfOxEH-7usSm7_hIE",
+    SEARCH:
+      "vKI1H4hs4e03d87b8dc6f15d557418e5bd50face6e20b228d4716e285319cc9001479fdb",
   },
   MODERATION: {
     GET_REPORT_LINK: (username: string, SUID: string) =>
