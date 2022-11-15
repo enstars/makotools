@@ -13,10 +13,12 @@ import { useEffect, useState } from "react";
 import { MeiliSearch } from "meilisearch";
 import Link from "next/link";
 
+const API_KEY = "77b703b4aec68f6906c33bd4633a9cfe354ed72403325783b4e8c2e211b1";
+
 const client = new MeiliSearch({
   host: "https://puka.ensemble.moe",
   headers: {
-    Authorization: `Bearer ${process.env.MEILISEARCH_API_KEY}`,
+    Authorization: `Bearer ${API_KEY}`,
     "Content-Type": "application/json",
   },
 });
@@ -88,7 +90,11 @@ function Searchbar() {
       <Modal
         title={<Title order={3}>Search</Title>}
         opened={opened}
-        onClose={() => setOpened(false)}
+        onClose={() => {
+          setOpened(false);
+          setSearchValue("");
+          setSearchResults([]);
+        }}
         size="xl"
       >
         <Input
@@ -109,6 +115,7 @@ function Searchbar() {
                       content={`${result.en__first_name} ${result.en__last_name}`}
                       onClick={() => {
                         setOpened(false);
+                        setSearchValue("");
                         setSearchResults([]);
                       }}
                     />
@@ -122,6 +129,7 @@ function Searchbar() {
                       content={result.en__title}
                       onClick={() => {
                         setOpened(false);
+                        setSearchValue("");
                         setSearchResults([]);
                       }}
                     />
@@ -135,6 +143,7 @@ function Searchbar() {
                       content={result.en__name}
                       onClick={() => {
                         setOpened(false);
+                        setSearchValue("");
                         setSearchResults([]);
                       }}
                     />
