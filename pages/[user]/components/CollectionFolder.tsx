@@ -125,7 +125,7 @@ function CollectionFolder({
                   </Box>
                   {editing && (
                     <Switch
-                      aria-Label="Set bloomed"
+                      aria-label="Set bloomed"
                       onLabel="Bloomed"
                       offLabel="Unbloomed"
                       size="xl"
