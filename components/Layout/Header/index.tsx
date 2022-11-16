@@ -98,7 +98,6 @@ function HeaderApp({
                   maskClip: "no-clip",
                   maskImage: "linear-gradient(black, black)",
                 })}
-                parentSx={(theme) => ({})}
               >
                 <HeaderContents
                   getBreadcrumbs={getBreadcrumbs}
