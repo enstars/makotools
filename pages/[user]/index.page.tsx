@@ -1,18 +1,14 @@
 import {
   ActionIcon,
   Alert,
-  AspectRatio,
-  Badge,
   Box,
   CopyButton,
   Divider,
   Group,
-  Image,
   Menu,
   Paper,
   Text,
   ThemeIcon,
-  Title,
   useMantineTheme,
 } from "@mantine/core";
 import { Carousel, Embla } from "@mantine/carousel";
@@ -34,10 +30,11 @@ import { useMediaQuery } from "@mantine/hooks";
 import { getLayout, useSidebarStatus } from "../../components/Layout";
 import PageTitle from "../../components/sections/PageTitle";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
-import { getAssetURL } from "../../services/data";
 import { parseStringify } from "../../services/utilities";
 import { useDayjs } from "../../services/libraries/dayjs";
 import { UserData } from "../../types/makotools";
+
+import CardCollections from "./components/CardCollections";
 
 import useUser from "services/firebase/user";
 import BioDisplay from "components/sections/BioDisplay";
@@ -265,66 +262,7 @@ function Page({ profile }: { profile: UserData }) {
         </Group>
       </Paper>
       <Divider my="xs" />
-
-      <Title order={2} mt="md" mb="xs">
-        Card Collection
-      </Title>
-      {!profile?.collection?.length ? (
-        <Text color="dimmed" size="sm">
-          This user has no cards in their collection
-        </Text>
-      ) : (
-        <>
-          <Box
-            sx={(theme) => ({
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
-              gap: theme.spacing.xs,
-            })}
-          >
-            {profile.collection
-              .filter((c) => c.count)
-              .sort((a, b) => b.count - a.count)
-              .map((c) => (
-                <Paper
-                  radius="sm"
-                  component={Link}
-                  key={c.id}
-                  href={`/cards/${c.id}`}
-                  withBorder
-                  sx={{ position: "relative" }}
-                >
-                  <AspectRatio ratio={4 / 5}>
-                    <Image
-                      radius="sm"
-                      alt={"card image"}
-                      withPlaceholder
-                      src={getAssetURL(
-                        `assets/card_rectangle4_${c.id}_evolution.png`
-                      )}
-                    />
-                  </AspectRatio>
-                  {c.count > 1 && (
-                    <Badge
-                      sx={{ position: "absolute", bottom: 4, left: 4 }}
-                      variant="filled"
-                    >
-                      <Text inline size="xs" weight="700">
-                        {c.count}
-                        <Text
-                          component="span"
-                          sx={{ verticalAlign: "-0.05em", lineHeight: 0 }}
-                        >
-                          ×
-                        </Text>
-                      </Text>
-                    </Badge>
-                  )}
-                </Paper>
-              ))}
-          </Box>
-        </>
-      )}
+      <CardCollections user={user} profile={profile} />
     </>
   );
 }

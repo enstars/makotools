@@ -38,6 +38,18 @@ interface CollectedCard {
   id: ID;
   count: number;
 }
+
+type CollectionPrivacyLevel = 0 | 1 | 2 | 3;
+// 0 = public, 1 = only logged in users, 2 = only friends/following 3 = total privacy
+
+interface CardCollection {
+  name: string;
+  privacyLevel: CollectionPrivacyLevel;
+  default: boolean;
+  color?: string;
+  cards: CollectedCard[];
+}
+
 // USER
 
 type UseWebP = "use" | "dont-use";
