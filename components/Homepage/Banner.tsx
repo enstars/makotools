@@ -49,8 +49,7 @@ function Banner({
     const currentBirthdays = events.filter(
       (event) =>
         event.type === "birthday" &&
-        dayjs(event.start_date).add(1, "day").format("MMDD") ===
-          dayjs().format("MMDD")
+        dayjs(event.start_date).format("MMDD") === dayjs().format("MMDD")
     );
 
     shownEvents.push(...currentBirthdays);
