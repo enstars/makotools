@@ -4,14 +4,17 @@ import {
   AspectRatio,
   Badge,
   Box,
+  Button,
   Group,
   Image,
   Paper,
+  Stack,
+  Switch,
   Text,
   TextInput,
   Title,
 } from "@mantine/core";
-import { IconCircle, IconX } from "@tabler/icons";
+import { IconCircle, IconTrash, IconX } from "@tabler/icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -48,6 +51,11 @@ function CollectionFolder({
             ) : (
               <Title order={4}>Collection #1</Title>
             )}
+            {editing && (
+              <Button color="indigo" leftIcon={<IconTrash />}>
+                Delete collection
+              </Button>
+            )}
           </Group>
         </Accordion.Control>
         <Accordion.Panel>
@@ -62,51 +70,69 @@ function CollectionFolder({
               ?.filter((c: CollectedCard) => c.count)
               .sort((a: CollectedCard, b: CollectedCard) => b.count - a.count)
               .map((c: CollectedCard) => (
-                <Box key={c.id} sx={{ position: "relative" }}>
-                  {editing && (
-                    <Box
-                      sx={{ position: "absolute", top: 1, right: 1, zIndex: 3 }}
-                    >
-                      <ActionIcon variant="filled" color="dark" radius="lg">
-                        <IconX />
-                      </ActionIcon>
-                    </Box>
-                  )}
-                  <Paper
-                    radius="sm"
-                    component={Link}
-                    href={`/cards/${c.id}`}
-                    withBorder
-                    sx={{ position: "relative" }}
-                  >
-                    <AspectRatio ratio={4 / 5}>
-                      <Image
-                        radius="sm"
-                        alt={"card image"}
-                        withPlaceholder
-                        src={getAssetURL(
-                          `assets/card_rectangle4_${c.id}_evolution.png`
-                        )}
-                      />
-                    </AspectRatio>
-                    {c.count > 1 && (
-                      <Badge
-                        sx={{ position: "absolute", bottom: 4, left: 4 }}
-                        variant="filled"
+                <Stack key={c.id} spacing="xs">
+                  <Box sx={{ position: "relative" }}>
+                    {editing && (
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: 1,
+                          right: 1,
+                          zIndex: 3,
+                        }}
                       >
-                        <Text inline size="xs" weight="700">
-                          {c.count}
-                          <Text
-                            component="span"
-                            sx={{ verticalAlign: "-0.05em", lineHeight: 0 }}
-                          >
-                            ×
-                          </Text>
-                        </Text>
-                      </Badge>
+                        <ActionIcon variant="filled" color="dark" radius="lg">
+                          <IconX />
+                        </ActionIcon>
+                      </Box>
                     )}
-                  </Paper>
-                </Box>
+                    <Paper
+                      radius="sm"
+                      component={Link}
+                      href={`/cards/${Math.abs(c.id)}`}
+                      withBorder
+                      sx={{ position: "relative" }}
+                    >
+                      <AspectRatio ratio={4 / 5}>
+                        <Image
+                          radius="sm"
+                          alt={"card image"}
+                          withPlaceholder
+                          src={getAssetURL(
+                            `assets/card_rectangle4_${Math.abs(c.id)}_${
+                              c.id < 0 ? "normal" : "evolution"
+                            }.png`
+                          )}
+                        />
+                      </AspectRatio>
+                      {c.count > 1 && (
+                        <Badge
+                          sx={{ position: "absolute", bottom: 4, left: 4 }}
+                          variant="filled"
+                        >
+                          <Text inline size="xs" weight="700">
+                            {c.count}
+                            <Text
+                              component="span"
+                              sx={{ verticalAlign: "-0.05em", lineHeight: 0 }}
+                            >
+                              ×
+                            </Text>
+                          </Text>
+                        </Badge>
+                      )}
+                    </Paper>
+                  </Box>
+                  {editing && (
+                    <Switch
+                      aria-Label="Set bloomed"
+                      onLabel="Bloomed"
+                      offLabel="Unbloomed"
+                      size="xl"
+                      sx={{ marginTop: 0 }}
+                    />
+                  )}
+                </Stack>
               ))}
           </Box>
         </Accordion.Panel>
