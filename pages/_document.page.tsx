@@ -1,19 +1,37 @@
-import { createGetInitialProps } from "@mantine/next";
-import Document, { Html, Head, Main, NextScript } from "next/document";
+import { createStylesServer, ServerStyles } from "@mantine/next";
+import Document, {
+  DocumentContext,
+  Head,
+  Html,
+  Main,
+  NextScript,
+} from "next/document";
 
-const getInitialProps = createGetInitialProps();
+import { emotionCache } from "services/libraries/emotion";
 
-class MyDocument extends Document {
-  static getInitialProps = getInitialProps;
+const stylesServer = createStylesServer(emotionCache);
+
+export default class _Document extends Document {
+  static async getInitialProps(ctx: DocumentContext) {
+    const initialProps = await Document.getInitialProps(ctx);
+
+    return {
+      ...initialProps,
+      styles: [
+        initialProps.styles,
+        <ServerStyles
+          html={initialProps.html}
+          server={stylesServer}
+          key="mktls"
+        />,
+      ],
+    };
+  }
 
   render() {
     return (
       <Html>
         <Head>
-          <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css"
-          />
           <script
             defer
             src="https://static.cloudflareinsights.com/beacon.min.js"
@@ -28,5 +46,3 @@ class MyDocument extends Document {
     );
   }
 }
-
-export default MyDocument;

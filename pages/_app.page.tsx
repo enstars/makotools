@@ -2,11 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { getCookie, setCookie } from "cookies-next";
-import {
-  MantineProvider,
-  createEmotionCache,
-  ColorScheme,
-} from "@mantine/core";
+import { MantineProvider, ColorScheme } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
 import "@fontsource/sora/400.css";
 import "@fontsource/sora/500.css";
@@ -18,7 +14,6 @@ import "@fontsource/noto-sans-jp/japanese-500.css";
 import "@fontsource/noto-sans-jp/japanese-700.css";
 import "../styles/inter.scss";
 import "../styles/wordpress.scss";
-import { withAuthUser } from "next-firebase-auth";
 import {
   startNavigationProgress,
   resetNavigationProgress,
@@ -26,30 +21,30 @@ import {
 } from "@mantine/nprogress";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import { Analytics } from "@vercel/analytics/react";
+import { AppProps } from "next/app";
+import { withAuthUser } from "next-firebase-auth";
 
 import { initAuthentication } from "../services/firebase/authentication";
 import { UserProvider } from "../services/firebase/user";
 import DayjsProvider from "../services/libraries/dayjs";
 
 import { CONSTANTS } from "services/makotools/constants";
+import { emotionCache } from "services/libraries/emotion";
 initAuthentication();
-
-const emotionCache = createEmotionCache({ key: "mktl" });
 
 function MakoTools({
   Component,
   pageProps,
   initColorScheme,
 }: {
-  Component: any;
-  pageProps: any;
   initColorScheme: ColorScheme;
-}) {
+} & AppProps) {
   const router = useRouter();
   const [colorScheme, setStateColorScheme] = useState(
     initColorScheme || "dark"
   );
 
+  // @ts-ignore / im too lazy to do this shit
   const getLayout = Component.getLayout || ((page: any) => page);
 
   const setAppColorScheme = (value: any) => {
@@ -178,7 +173,6 @@ function MakoTools({
               db: pageProps?.__db ? JSON.parse(pageProps.__db) : undefined,
             }}
           >
-            {/*  TODO: Remove this just use the theme povider */}
             <DayjsProvider>
               {getLayout(<Component {...pageProps} />, pageProps)}
             </DayjsProvider>
