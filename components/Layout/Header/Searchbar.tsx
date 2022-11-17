@@ -17,7 +17,7 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { CONSTANTS } from "services/makotools/constants";
 
 const client = new MeiliSearch({
-  host: "https://puka.ensemble.moe",
+  host: CONSTANTS.EXTERNAL_URLS.SEARCH,
   headers: {
     Authorization: `Bearer ${CONSTANTS.KEYS.SEARCH}`,
     "Content-Type": "application/json",
@@ -62,7 +62,7 @@ function SearchCard({
 function Searchbar() {
   const [opened, setOpened] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>("");
-  const [debouncedSearchValue] = useDebouncedValue(searchValue, 500);
+  const [debouncedSearchValue] = useDebouncedValue(searchValue, 200);
   const [searchResults, setSearchResults] = useState<any[]>([]);
 
   async function searchIndexes(value: string) {

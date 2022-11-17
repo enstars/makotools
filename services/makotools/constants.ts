@@ -30,6 +30,7 @@ const CONSTANTS = {
     DATA_TL: "https://tl.data.ensemble.moe/",
     PREVIEW: "https://preview.ensemble.moe/",
     PATREON: "https://www.patreon.com/makotools",
+    SEARCH: "https://oceans.ensemble.moe",
     BACKEND: "http://oceans.ensemble.moe:1337",
   },
   KEYS: {
