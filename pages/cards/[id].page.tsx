@@ -17,16 +17,17 @@ import { QuerySuccess } from "../../types/makotools";
 import Picture from "../../components/core/Picture";
 
 import Stats, { sumStats } from "./components/Stats";
-import Skills, {
-  centerSkillParse,
-  liveSkillParse,
-  supportSkillParse,
-} from "./components/Skills";
+import Skills from "./components/Skills";
 import Gallery from "./components/Gallery";
 
 import { getNameOrder } from "services/game";
 import { getPreviewImageURL } from "services/makotools/preview";
 import { GameCard, GameCharacter } from "types/game";
+import {
+  centerSkillParse,
+  liveSkillParse,
+  supportSkillParse,
+} from "services/skills";
 
 function Page({
   characterQuery,
@@ -76,7 +77,6 @@ function Page({
             <Picture
               radius="md"
               alt={card.title[0]}
-              withPlaceholder
               srcB2={`assets/card_rectangle4_${card.id}_${type}.png`}
               action="view"
             />
@@ -182,10 +182,10 @@ export const getServerSideProps = getServerSideUser(
               ? centerSkillParse(cardData.skills.center)
               : "",
             skill2desc: cardData?.skills?.live?.type_id
-              ? liveSkillParse(cardData.skills.live)
+              ? liveSkillParse(cardData.skills.live, cardData.rarity)
               : "",
             skill3desc: cardData?.skills?.support?.type_id
-              ? supportSkillParse(cardData.skills.support)
+              ? supportSkillParse(cardData.skills.support, cardData.rarity)
               : "",
           }),
           desc: `View ${title}'s stats, skills, and more on MakoTools!`,
