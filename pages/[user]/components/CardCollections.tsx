@@ -1,4 +1,4 @@
-import { Box, Button, Group, Text, Title } from "@mantine/core";
+import { Box, Button, Group, Stack, Text, Title } from "@mantine/core";
 import { IconDeviceFloppy, IconPencil, IconPlus } from "@tabler/icons";
 import { useState } from "react";
 
@@ -38,7 +38,14 @@ function CardCollections({ user, profile }: { user: User; profile: UserData }) {
           )}
         </Text>
       ) : (
-        <CollectionFolder profile={profile} editing={editMode} />
+        <Stack align="stretch">
+          {editMode && (
+            <Button color="indigo" variant="outline" leftIcon={<IconPlus />}>
+              Add collection
+            </Button>
+          )}
+          <CollectionFolder profile={profile} editing={editMode} />
+        </Stack>
       )}
     </Box>
   );

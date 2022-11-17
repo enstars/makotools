@@ -1,24 +1,20 @@
 import {
   Accordion,
   ActionIcon,
-  AspectRatio,
-  Badge,
   Box,
   Button,
   Group,
-  Image,
-  Paper,
-  Stack,
-  Switch,
-  Text,
+  Indicator,
+  Menu,
   TextInput,
   Title,
+  useMantineTheme,
 } from "@mantine/core";
-import { IconCircle, IconTrash, IconX } from "@tabler/icons";
-import Link from "next/link";
+import { IconCircle, IconPencil, IconTrash } from "@tabler/icons";
 import { useEffect, useState } from "react";
 
-import { getAssetURL } from "services/data";
+import CollectionCard from "./CollectionCard";
+
 import { CollectedCard, UserData } from "types/makotools";
 
 function CollectionFolder({
@@ -29,6 +25,20 @@ function CollectionFolder({
   editing: boolean;
 }) {
   const [focused, setFocused] = useState<string>("");
+  const [color, setColor] = useState<string>("#D3D6E0");
+
+  const theme = useMantineTheme();
+
+  const COLORS: string[] = [
+    "#d3d6e0",
+    "#ff8787",
+    "#faa2c1",
+    "#b197fc",
+    "#4dabf7",
+    "#38d9a9",
+    "#a9e34b",
+    "#ffd43b",
+  ];
 
   useEffect(() => {
     setFocused("");
@@ -39,7 +49,37 @@ function CollectionFolder({
       <Accordion.Item value="default">
         <Accordion.Control>
           <Group>
-            <IconCircle fill="#D3D6E0" size={16} />
+            {editing ? (
+              <Menu position="top">
+                <Menu.Target>
+                  <Indicator
+                    color="indigo"
+                    size={15}
+                    offset={5}
+                    label={<IconPencil size={10} />}
+                  >
+                    <ActionIcon>
+                      <IconCircle fill={color} size={20} />
+                    </ActionIcon>
+                  </Indicator>
+                </Menu.Target>
+                <Menu.Dropdown sx={{ width: "auto", maxWidth: "190px" }}>
+                  <Menu.Label>Choose Collection Color</Menu.Label>
+                  {COLORS.map((color) => (
+                    <Menu.Item
+                      key={color}
+                      component="button"
+                      onClick={() => setColor(color)}
+                      sx={{ width: "auto", display: "inline" }}
+                    >
+                      <IconCircle size={20} fill={color} stroke={0} />
+                    </Menu.Item>
+                  ))}
+                </Menu.Dropdown>
+              </Menu>
+            ) : (
+              <IconCircle fill={color} size={20} stroke={0} />
+            )}
             {editing ? (
               <TextInput
                 id="field-0"
@@ -70,69 +110,7 @@ function CollectionFolder({
               ?.filter((c: CollectedCard) => c.count)
               .sort((a: CollectedCard, b: CollectedCard) => b.count - a.count)
               .map((c: CollectedCard) => (
-                <Stack key={c.id} spacing="xs">
-                  <Box sx={{ position: "relative" }}>
-                    {editing && (
-                      <Box
-                        sx={{
-                          position: "absolute",
-                          top: 1,
-                          right: 1,
-                          zIndex: 3,
-                        }}
-                      >
-                        <ActionIcon variant="filled" color="dark" radius="lg">
-                          <IconX />
-                        </ActionIcon>
-                      </Box>
-                    )}
-                    <Paper
-                      radius="sm"
-                      component={Link}
-                      href={`/cards/${Math.abs(c.id)}`}
-                      withBorder
-                      sx={{ position: "relative" }}
-                    >
-                      <AspectRatio ratio={4 / 5}>
-                        <Image
-                          radius="sm"
-                          alt={"card image"}
-                          withPlaceholder
-                          src={getAssetURL(
-                            `assets/card_rectangle4_${Math.abs(c.id)}_${
-                              c.id < 0 ? "normal" : "evolution"
-                            }.png`
-                          )}
-                        />
-                      </AspectRatio>
-                      {c.count > 1 && (
-                        <Badge
-                          sx={{ position: "absolute", bottom: 4, left: 4 }}
-                          variant="filled"
-                        >
-                          <Text inline size="xs" weight="700">
-                            {c.count}
-                            <Text
-                              component="span"
-                              sx={{ verticalAlign: "-0.05em", lineHeight: 0 }}
-                            >
-                              ×
-                            </Text>
-                          </Text>
-                        </Badge>
-                      )}
-                    </Paper>
-                  </Box>
-                  {editing && (
-                    <Switch
-                      aria-label="Set bloomed"
-                      onLabel="Bloomed"
-                      offLabel="Unbloomed"
-                      size="xl"
-                      sx={{ marginTop: 0 }}
-                    />
-                  )}
-                </Stack>
+                <CollectionCard key={c.id} card={c} editing={editing} />
               ))}
           </Box>
         </Accordion.Panel>
