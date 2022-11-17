@@ -102,16 +102,39 @@ interface SkillStringsSupport<T> extends SkillStrings<T> {
   support_skill_type_name?: T;
 }
 interface SkillData {
-  type_id: ID;
-  effect_values: SkillEffect[];
+  effect_values?: SkillEffect[];
 }
 type SkillType = "center" | "live" | "support";
 
-interface CenterSkill<T> extends SkillData, SkillStrings<T> {}
-interface LiveSkill<T> extends SkillData, SkillStringsLive<T> {
-  duration: number;
+interface CenterSkill<T = string[]> extends SkillData, SkillStrings<T> {
+  type_id: ID;
 }
-interface SupportSkill<T> extends SkillData, SkillStringsSupport<T> {}
+interface LiveSkill<T = string[]> extends SkillData, SkillStringsLive<T> {
+  type_id: ID;
+  duration: 5 | 8 | 12;
+}
+
+type SupportSkillIDs =
+  | 1
+  | 2
+  | 3
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 9
+  | 10
+  | 11
+  | 12
+  | 13
+  | 14
+  | 15
+  | 16
+  | 28;
+interface SupportSkill<T = string[]> extends SkillData, SkillStringsSupport<T> {
+  type_id: SupportSkillIDs;
+}
 
 interface GameCardStrings<T> {
   title: T;
@@ -139,10 +162,10 @@ interface GameCard<T = string[]> extends GameCardRegional<T> {
   stats?: {
     [Level in StatLevel]: Stats;
   };
-  skills?: {
-    ["center"]?: CenterSkill<T>;
-    ["live"]?: LiveSkill<T>;
-    ["support"]?: SupportSkill<T>;
+  skills: {
+    center: CenterSkill<T>;
+    live: LiveSkill<T>;
+    support: SupportSkill<T>;
   };
   spp?: {
     song_id: ID;
