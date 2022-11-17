@@ -11,6 +11,8 @@ import {
 } from "@mantine/core";
 import { IconMenu2 } from "@tabler/icons";
 
+import Searchbar from "./Searchbar";
+
 const defaultGetBreadcrumbs = (path: string) =>
   path.split("/").filter((x) => x);
 
@@ -31,75 +33,78 @@ function HeaderContents({
   const { forceLight } = headerProps;
 
   return (
-    <Group noWrap align="center" {...props} {...headerProps}>
-      <MediaQuery largerThan="xs" styles={{ display: "none" }}>
-        <Box sx={{ alignSelf: "stretch" }}>
-          <ActionIcon
-            onClick={() => setOpened((o: boolean) => !o)}
-            variant="transparent"
-            sx={forceLight && { color: "#fff" }}
-          >
-            <IconMenu2 size={18} />
-          </ActionIcon>
-        </Box>
-      </MediaQuery>
-      <Text
-        transform="uppercase"
-        weight="600"
-        sx={(theme) => ({
-          zIndex: 10,
-          position: "relative",
-          letterSpacing: "0.05em",
-          fontSize: theme.fontSizes.sm - 2,
-          maxWidth: "100%",
-        })}
-        inline
-      >
-        <Breadcrumbs
-          separator={
-            <Text
-              inherit
-              color={forceLight ? "#fff8" : "dimmed"}
-              component="span"
+    <Group position="apart">
+      <Group noWrap align="center" {...props} {...headerProps}>
+        <MediaQuery largerThan="xs" styles={{ display: "none" }}>
+          <Box sx={{ alignSelf: "stretch" }}>
+            <ActionIcon
+              onClick={() => setOpened((o: boolean) => !o)}
+              variant="transparent"
+              sx={forceLight && { color: "#fff" }}
             >
-              /
-            </Text>
-          }
-          styles={(theme) => ({
-            separator: {
-              display: "inline",
-              marginLeft: theme.spacing.xs / 1.75,
-              marginRight: theme.spacing.xs / 1.75,
-            },
-            root: {
-              display: "block",
-              lineHeight: 1.5,
-              paddingTop: theme.spacing.xs * 0.25,
-              paddingBottom: theme.spacing.xs * 0.25,
-            },
+              <IconMenu2 size={18} />
+            </ActionIcon>
+          </Box>
+        </MediaQuery>
+        <Text
+          transform="uppercase"
+          weight="600"
+          sx={(theme) => ({
+            zIndex: 10,
+            position: "relative",
+            letterSpacing: "0.05em",
+            fontSize: theme.fontSizes.sm - 2,
+            maxWidth: "100%",
           })}
+          inline
         >
-          <Anchor
-            component={Link}
-            href="/"
-            inherit
-            sx={forceLight && { color: "#fff" }}
+          <Breadcrumbs
+            separator={
+              <Text
+                inherit
+                color={forceLight ? "#fff8" : "dimmed"}
+                component="span"
+              >
+                /
+              </Text>
+            }
+            styles={(theme) => ({
+              separator: {
+                display: "inline",
+                marginLeft: theme.spacing.xs / 1.75,
+                marginRight: theme.spacing.xs / 1.75,
+              },
+              root: {
+                display: "block",
+                lineHeight: 1.5,
+                paddingTop: theme.spacing.xs * 0.25,
+                paddingBottom: theme.spacing.xs * 0.25,
+              },
+            })}
           >
-            Makotools
-          </Anchor>
-          {pageBreadcrumbs.map((crumb: string, index: number) => (
             <Anchor
               component={Link}
-              key={crumb}
-              href={`/${pageBreadcrumbs.slice(0, index + 1).join("/")}`}
+              href="/"
               inherit
               sx={forceLight && { color: "#fff" }}
             >
-              {decodeURIComponent(crumb)}
+              Makotools
             </Anchor>
-          ))}
-        </Breadcrumbs>
-      </Text>
+            {pageBreadcrumbs.map((crumb: string, index: number) => (
+              <Anchor
+                component={Link}
+                key={crumb}
+                href={`/${pageBreadcrumbs.slice(0, index + 1).join("/")}`}
+                inherit
+                sx={forceLight && { color: "#fff" }}
+              >
+                {decodeURIComponent(crumb)}
+              </Anchor>
+            ))}
+          </Breadcrumbs>
+        </Text>
+      </Group>
+      <Searchbar />
     </Group>
   );
 }
