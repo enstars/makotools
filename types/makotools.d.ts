@@ -39,8 +39,16 @@ interface CollectedCard {
   count: number;
 }
 
+/**
+ * 0: completely public collection
+ *
+ * 1: collection is only visible to logged in users
+ *
+ * 2: collection is only visible to friends/following
+ *
+ * 3: collection is completely private
+ */
 type CollectionPrivacyLevel = 0 | 1 | 2 | 3;
-// 0 = public, 1 = only logged in users, 2 = only friends/following 3 = total privacy
 
 interface CardCollection {
   name: string;
