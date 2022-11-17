@@ -77,7 +77,6 @@ function Page({
             <Picture
               radius="md"
               alt={card.title[0]}
-              withPlaceholder
               srcB2={`assets/card_rectangle4_${card.id}_${type}.png`}
               action="view"
             />

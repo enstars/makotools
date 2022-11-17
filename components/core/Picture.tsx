@@ -139,6 +139,7 @@ function Picture({
     className,
     action = "none",
     transparent = false,
+
     ...otherProps
   } = props;
   const theme = useMantineTheme();

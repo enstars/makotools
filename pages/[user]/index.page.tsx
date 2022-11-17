@@ -298,7 +298,6 @@ function Page({ profile }: { profile: UserData }) {
                     <Image
                       radius="sm"
                       alt={"card image"}
-                      withPlaceholder
                       src={getAssetURL(
                         `assets/card_rectangle4_${c.id}_evolution.png`
                       )}

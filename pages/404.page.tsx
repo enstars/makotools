@@ -42,7 +42,6 @@ function Page() {
           <Image
             src={message.image.src}
             alt=""
-            withPlaceholder
             height={200}
             radius="md"
             sx={{
