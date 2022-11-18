@@ -94,26 +94,28 @@ function Searchbar() {
         />
         <Space h="xl" />
         <Paper sx={{ padding: "0px 5px" }} withBorder>
-          {searchResults.length > 0
-            ? searchResults.map((result) => (
-                <SearchCard
-                  key={result.unique_id}
-                  type={result.type}
-                  id={result.unique_id.split("__")[1]}
-                  content={
-                    result.en__title ||
-                    result.en__name ||
-                    result["data-tl__en__name"] ||
-                    `${result["data-tl__en__first_name"]} ${result["data-tl__en__last_name"]}`
-                  }
-                  onClick={() => {
-                    setOpened(false);
-                    setSearchValue("");
-                    setSearchResults([]);
-                  }}
-                />
-              ))
-            : "No search results found"}
+          {searchResults.length > 0 ? (
+            searchResults.map((result) => (
+              <SearchCard
+                key={result.unique_id}
+                type={result.type}
+                id={result.unique_id.split("__")[1]}
+                content={
+                  result.en__title ||
+                  result.en__name ||
+                  result["data-tl__en__name"] ||
+                  `${result["data-tl__en__first_name"]} ${result["data-tl__en__last_name"]}`
+                }
+                onClick={() => {
+                  setOpened(false);
+                  setSearchValue("");
+                  setSearchResults([]);
+                }}
+              />
+            ))
+          ) : (
+            <Text color="dimmed">No search results found</Text>
+          )}
         </Paper>
       </Modal>
 
