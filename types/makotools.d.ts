@@ -53,7 +53,7 @@ type CollectionPrivacyLevel = 0 | 1 | 2 | 3;
 
 interface CardCollection {
   name: string;
-  privacyLevel: CollectionPrivacyLevel;
+  privacyLevel: CollectionPrivacyLevel | number;
   default: boolean;
   color?: string;
   cards: CollectedCard[];

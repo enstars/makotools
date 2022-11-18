@@ -1,6 +1,8 @@
 import { Box, Button, Group, Stack, Text, Title } from "@mantine/core";
 import { IconDeviceFloppy, IconPencil, IconPlus } from "@tabler/icons";
 import { useState } from "react";
+import { useListState } from "@mantine/hooks";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 import CollectionFolder from "./CollectionFolder";
 
@@ -8,7 +10,7 @@ import { CardCollection, User, UserData } from "types/makotools";
 
 function CardCollections({ user, profile }: { user: User; profile: UserData }) {
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [collections, changeCollections] = useState<CardCollection[]>([
+  const [values, handlers] = useListState([
     {
       name: "Collection #1",
       privacyLevel: 0,
@@ -19,10 +21,27 @@ function CardCollections({ user, profile }: { user: User; profile: UserData }) {
   const isYourProfile = user.loggedIn && user.db.suid === profile.suid;
 
   function removeCollection(collection: CardCollection) {
-    changeCollections(
-      collections.splice(collections.indexOf(collection) - 1, 1)
-    );
+    handlers.remove(values.indexOf(collection));
   }
+
+  const collectionFolders = values.map((collection, index) => (
+    <Draggable key={`${index}`} index={index} draggableId={`${index}`}>
+      {(provided, snapshot) => (
+        <Box
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          ref={provided.innerRef}
+          sx={{ marginBottom: "10px" }}
+        >
+          <CollectionFolder
+            collection={collection}
+            editing={editMode}
+            deleteFunction={removeCollection}
+          />
+        </Box>
+      )}
+    </Draggable>
+  ));
 
   return (
     <Box>
@@ -59,28 +78,45 @@ function CardCollections({ user, profile }: { user: User; profile: UserData }) {
               variant="outline"
               leftIcon={<IconPlus />}
               onClick={() => {
-                changeCollections([
-                  {
-                    name: `Collection #${collections.length + 1}`,
-                    privacyLevel: 0,
-                    default: false,
-                    cards: [],
-                  },
-                  ...collections,
-                ]);
+                handlers.prepend({
+                  name: `Collection #${values.length + 1}`,
+                  privacyLevel: 0,
+                  default: false,
+                  cards: [],
+                });
               }}
             >
               Add collection
             </Button>
           )}
-          {collections.map((collection, index) => (
-            <CollectionFolder
-              key={index}
-              collection={collection}
-              editing={editMode}
-              deleteFunction={removeCollection}
-            />
-          ))}
+          {editMode ? (
+            <DragDropContext
+              onDragEnd={({ destination, source }) => {
+                handlers.reorder({
+                  from: source.index,
+                  to: destination?.index || 0,
+                });
+              }}
+            >
+              <Droppable droppableId="dnd-list" direction="vertical">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {collectionFolders}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+          ) : (
+            values.map((collection, index) => (
+              <CollectionFolder
+                key={index}
+                collection={collection}
+                editing={editMode}
+                deleteFunction={removeCollection}
+              />
+            ))
+          )}
         </Stack>
       )}
     </Box>

@@ -3,6 +3,7 @@ import {
   ActionIcon,
   Box,
   Button,
+  createStyles,
   Group,
   Indicator,
   Menu,
@@ -35,6 +36,12 @@ import CollectionCard from "./CollectionCard";
 
 import { CardCollection, CollectedCard } from "types/makotools";
 
+const useStyles = createStyles((theme) => ({
+  accordion: {
+    border: "none",
+  },
+}));
+
 function CollectionFolder({
   collection,
   editing,
@@ -44,7 +51,10 @@ function CollectionFolder({
   editing: boolean;
   deleteFunction: (collection: CardCollection) => void;
 }) {
+  const { classes } = useStyles();
+
   const [focused, setFocused] = useState<string>("");
+  const [collName, changeName] = useState<string>(collection.name || "");
   const [color, setColor] = useState<string>(collection.color || "#D3D6E0");
   const [privacyLevel, setPrivacy] = useState<number>(
     collection.privacyLevel || 0
@@ -75,14 +85,12 @@ function CollectionFolder({
       <Modal
         opened={openDeleteModal}
         onClose={() => setOpenDeleteModal(false)}
-        title={<Title order={3}>Delete {collection.name}?</Title>}
+        title={<Title order={3}>Delete {collName}?</Title>}
         withCloseButton={false}
         centered
         size="lg"
       >
-        <Text size="lg">
-          Are you sure you want to delete {collection.name}?
-        </Text>
+        <Text size="lg">Are you sure you want to delete {collName}?</Text>
         <Space h="lg" />
         <Group position="right">
           <Button variant="outline" onClick={() => setOpenDeleteModal(false)}>
@@ -100,8 +108,8 @@ function CollectionFolder({
           </Button>
         </Group>
       </Modal>
-      <Paper withBorder p="md">
-        <Group noWrap>
+      <Paper withBorder>
+        <Group noWrap p="md">
           <Menu position="top">
             <Menu.Target>
               <Indicator
@@ -135,6 +143,8 @@ function CollectionFolder({
             placeholder="Input collection name"
             onFocus={(event) => setFocused(event.target.id)}
             onBlur={(event) => setFocused("")}
+            defaultValue={collName}
+            onChange={(event) => changeName(event.currentTarget.value)}
           />
           <Menu position="top">
             <Menu.Target>
@@ -159,7 +169,7 @@ function CollectionFolder({
                     data={[
                       { value: "0", label: "Public to everyone" },
                       { value: "1", label: "Visible to logged in users" },
-                      { value: "2", label: "Visible only to followers" },
+                      { value: "2", label: "Visible only to friends" },
                       { value: "3", label: "Completely private" },
                     ]}
                     defaultValue={`${privacyLevel}`}
@@ -177,10 +187,16 @@ function CollectionFolder({
             </Menu.Dropdown>
           </Menu>
         </Group>
-        <Space h="lg" />
-        <Accordion defaultValue="cards">
+        <Accordion
+          defaultValue="cards"
+          classNames={{ item: classes.accordion }}
+        >
           <Accordion.Item value="cards">
-            <Accordion.Control>View cards</Accordion.Control>
+            <Accordion.Control>
+              <Title order={4} sx={{ textAlign: "center" }}>
+                View cards
+              </Title>
+            </Accordion.Control>
             <Accordion.Panel>
               <Select
                 placeholder="Sort by..."
@@ -230,7 +246,7 @@ function CollectionFolder({
         <Accordion.Control>
           <Group noWrap>
             <IconCircle fill={color} size={20} stroke={0} />
-            <Title order={4}>{collection.name}</Title>
+            <Title order={4}>{collName}</Title>
           </Group>
         </Accordion.Control>
         <Accordion.Panel>
