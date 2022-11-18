@@ -1,27 +1,6 @@
-const appLocales = [
-  // game languages
-  "en", // English
-  "ja", // Japanese
-  "zh", // Standard Mandarin / Simplified
-  "zh-TW", // Taiwanese Mandarin / Traditional
-  "ko", // Korean
-  // Oissu Statistics
-  "id", // Indonesian
-  "fil", // Filipino
-  "vi", // Vietnamese
-  "ru", // Russian
-  "ms", // Malaysian
-  "es", // Spanish
-  "pt", // Portugese
-  "pt-BR", // Brazilian Portugese
-  "fr", // French
-  "de", // German
-  "it", // Italian
-  "ar", // Arabic
-  "th", // Thai
-];
+const nextTranslate = require("next-translate");
 
-module.exports = {
+module.exports = nextTranslate({
   webpack(config) {
     config.module.rules.push(
       {
@@ -46,14 +25,38 @@ module.exports = {
   },
 
   compiler: {
-    // Enables the styled-components SWC transform
     styledComponents: true,
   },
 
-  i18n: {
-    locales: appLocales,
-    defaultLocale: "en",
-  },
+  // i18n: {
+  //   locales: [
+  //     // Game official languages
+  //     "en", // English
+  //     "ja", // Japanese
+  //     "zh", // Standard Mandarin / Simplified
+  //     "zh-TW", // Taiwanese Mandarin / Traditional
+  //     "ko", // Korean
+
+  //     // MakoTools statistics
+  //     "id", // Indonesian
+  //     "fil", // Filipino
+  //     "ms", // Malaysian
+  //     "pt-BR", // Brazilian Portugese
+  //     "th", // Thai
+  //     "vi", // Vietnamese
+
+  //     // Future adoption, hopefully!
+  //     // "es", // Spanish
+  //     // "de", // German
+  //     // "it", // Italian
+  //     // "pol", // Polish
+  //     // "fr", // French
+  //     // "ru", // Russian
+  //     // "pt", // Portugese
+  //     // "ar", // Arabic
+  //   ],
+  //   defaultLocale: "en",
+  // },
 
   pageExtensions: ["page.tsx", "page.ts", "page.jsx", "page.js"],
 
@@ -66,4 +69,4 @@ module.exports = {
       },
     ];
   },
-};
+});

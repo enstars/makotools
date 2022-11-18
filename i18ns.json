@@ -1,0 +1,11 @@
+{
+  "locales": ["en", "th"],
+  "defaultLocale": "en",
+  "pages": {
+    "*": ["common"],
+    "/": ["home"],
+    "/about": ["about"]
+  },
+  "loggerEnvironment": "both",
+  "logBuild": true
+}

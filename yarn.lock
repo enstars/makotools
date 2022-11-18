@@ -7750,6 +7750,7 @@ __metadata:
     next: ^13.0.3
     next-firebase-auth: ^1.0.0-canary.9
     next-i18next: ^12.1.0
+    next-translate: ^1.6.0
     normalize.css: ^8.0.1
     prettier: ^2.7.1
     raw-loader: ^4.0.2
@@ -8131,6 +8132,16 @@ __metadata:
     next: ">= 10.0.0"
     react: ">= 16.8.0"
   checksum: 8c0e2f976437b222f32fdfdae604f6c247fae698f3c66feef7f9f663dfaa5bc86dcc5fcbf130b9fbb8651364d0df67c943eb2f0b24896adac132a5eee315d459
+  languageName: node
+  linkType: hard
+
+"next-translate@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "next-translate@npm:1.6.0"
+  peerDependencies:
+    next: ">= 10.0.0"
+    react: ">= 16.8.0"
+  checksum: 766475bc7362fc8b6a5409586d6248e0c03405d71b5ced2274fefc275803eb68137225952ed9d1651d8bd396fec14fad42ad63b4eca64e2b038dbcc7926a3ddc
   languageName: node
   linkType: hard
 

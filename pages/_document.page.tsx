@@ -22,7 +22,7 @@ export default class _Document extends Document {
         <ServerStyles
           html={initialProps.html}
           server={stylesServer}
-          key="mktls"
+          key="mktl"
         />,
       ],
     };

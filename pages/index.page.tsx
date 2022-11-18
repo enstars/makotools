@@ -8,6 +8,7 @@ import {
 } from "@mantine/core";
 // import Banner from "../assets/banner.png";
 import { useMemo } from "react";
+import useTranslation from "next-translate/useTranslation";
 
 import { getLayout } from "../components/Layout";
 import getServerSideUser from "../services/firebase/getServerSideUser";
@@ -81,8 +82,10 @@ function Page({
   gameEventsQuery: QuerySuccess<GameEvent[]>;
   scoutsQuery: QuerySuccess<ScoutEvent[]>;
 }) {
+  const { t } = useTranslation("common");
   const { classes } = useStyles();
 
+  // console.log(t, t("test"));
   const characters: GameCharacter[] = useMemo(
     () => charactersQuery.data,
     [charactersQuery.data]
@@ -114,6 +117,7 @@ function Page({
       noWrap
       className={classes.main}
     >
+      {t("home:welcome")}
       <Stack align="flex-start" spacing="lg" className={classes.mainCol}>
         <Banner events={events} />
         <UserVerification />
