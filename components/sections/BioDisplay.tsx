@@ -122,7 +122,7 @@ function BioDisplay({
           <FrameContextConsumer>
             {({ document }) => {
               const emotionCache = createEmotionCache({
-                key: "mktl",
+                key: "bio",
                 container: document?.head,
               });
               return (
