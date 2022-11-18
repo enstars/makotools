@@ -51,11 +51,13 @@ interface UserData {
   suid: string;
   username: string;
   name?: string;
-  dark_mode: boolean;
   profile__banner?: number[];
   profile__bio?: string;
   profile__pronouns?: string;
   profile__start_playing?: string;
+
+  // private
+  dark_mode: boolean;
   setting__name_order?: NameOrder;
   setting__show_tl_badge?: ShowTlBadge;
   setting__game_region?: GameRegion;
@@ -64,6 +66,9 @@ interface UserData {
     disableTextFields?: boolean;
     patreon?: 0 | 1 | 2 | 3 | 4;
   };
+  friends__list?: UID;
+  friends__sentRequests?: UID[];
+  friends__receivedRequests?: UID[];
 }
 
 interface UserLoading {

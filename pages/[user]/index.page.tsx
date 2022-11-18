@@ -26,6 +26,7 @@ import {
   IconFlag,
   IconInfoCircle,
   IconMessageShare,
+  IconUserPlus,
 } from "@tabler/icons";
 import { useRef, Fragment, useState, useEffect } from "react";
 import Autoplay from "embla-carousel-autoplay";
@@ -65,7 +66,7 @@ function PatreonBanner({ profile }: { profile: UserData }) {
   return null;
 }
 
-function Page({ profile }: { profile: UserData }) {
+function Page({ profile, uid }: { profile: UserData; uid: string }) {
   const { dayjs } = useDayjs();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const theme = useMantineTheme();
@@ -259,6 +260,24 @@ function Page({ profile }: { profile: UserData }) {
                 >
                   Report User
                 </Menu.Item>
+                {user.loggedIn && (
+                  <Menu.Item
+                    icon={<IconUserPlus size={14} />}
+                    onClick={async () => {
+                      const token = await user.user.getIdToken();
+                      await fetch("/api/friendRequest", {
+                        method: "POST",
+                        headers: {
+                          Authorization: token || "",
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ friend: uid }),
+                      });
+                    }}
+                  >
+                    Send Friend Request
+                  </Menu.Item>
+                )}
               </Menu.Dropdown>
             </Menu>
           )}
@@ -348,6 +367,7 @@ export const getServerSideProps = getServerSideUser(
       return {
         props: {
           profile,
+          uid: querySnap.docs[0].id,
           meta: {
             title: profile?.name
               ? `${profile.name} (@${profile.username})`
