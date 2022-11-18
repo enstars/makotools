@@ -37,6 +37,7 @@ interface MkAnnouncement extends WP_REST_API_Post {}
 interface CollectedCard {
   id: ID;
   count: number;
+  dateAdded?: string;
 }
 
 /**

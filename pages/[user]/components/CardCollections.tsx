@@ -4,11 +4,25 @@ import { useState } from "react";
 
 import CollectionFolder from "./CollectionFolder";
 
-import { User, UserData } from "types/makotools";
+import { CardCollection, User, UserData } from "types/makotools";
 
 function CardCollections({ user, profile }: { user: User; profile: UserData }) {
   const [editMode, setEditMode] = useState<boolean>(false);
+  const [collections, changeCollections] = useState<CardCollection[]>([
+    {
+      name: "Collection #1",
+      privacyLevel: 0,
+      default: true,
+      cards: profile.collection || [],
+    },
+  ]);
   const isYourProfile = user.loggedIn && user.db.suid === profile.suid;
+
+  function removeCollection(collection: CardCollection) {
+    changeCollections(
+      collections.splice(collections.indexOf(collection) - 1, 1)
+    );
+  }
 
   return (
     <Box>
@@ -40,11 +54,33 @@ function CardCollections({ user, profile }: { user: User; profile: UserData }) {
       ) : (
         <Stack align="stretch">
           {editMode && (
-            <Button color="indigo" variant="outline" leftIcon={<IconPlus />}>
+            <Button
+              color="indigo"
+              variant="outline"
+              leftIcon={<IconPlus />}
+              onClick={() => {
+                changeCollections([
+                  {
+                    name: `Collection #${collections.length + 1}`,
+                    privacyLevel: 0,
+                    default: false,
+                    cards: [],
+                  },
+                  ...collections,
+                ]);
+              }}
+            >
               Add collection
             </Button>
           )}
-          <CollectionFolder profile={profile} editing={editMode} />
+          {collections.map((collection, index) => (
+            <CollectionFolder
+              key={index}
+              collection={collection}
+              editing={editMode}
+              deleteFunction={removeCollection}
+            />
+          ))}
         </Stack>
       )}
     </Box>
