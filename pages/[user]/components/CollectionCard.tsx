@@ -127,14 +127,15 @@ function CollectionCard({
                 src={getAssetURL(
                   `assets/card_rectangle4_${Math.abs(card.id)}_normal.png`
                 )}
-                {...editingProps}
-                sx={(theme) => ({
+                sx={{
                   position: "absolute",
                   top: 0,
-                  borderRadius: `${theme.radius.sm}px ${theme.radius.sm}px 0px 0px`,
-                  transition: "visibility 0.2s",
-                  visibility: `${card.id > 0 ? "hidden" : "visible"}`,
-                })}
+                  left: card.id < 0 ? "auto" : 120,
+                  borderRadius: "4px 4px 0px 0px",
+                  transition: "left 0.2s linear",
+                  MozTransition: "left 0.2s linear",
+                }}
+                {...editingProps}
               />
               <Image
                 alt={"card image"}
@@ -142,13 +143,14 @@ function CollectionCard({
                 src={getAssetURL(
                   `assets/card_rectangle4_${Math.abs(card.id)}_evolution.png`
                 )}
-                sx={(theme) => ({
+                sx={{
                   position: "absolute",
                   top: 0,
-                  borderRadius: `${theme.radius.sm}px ${theme.radius.sm}px 0px 0px`,
-                  transition: "visibility 0.2s",
-                  visibility: `${card.id > 0 ? "visible" : "hidden"}`,
-                })}
+                  right: card.id > 0 ? "auto" : 120,
+                  borderRadius: "4px 4px 0px 0px",
+                  transition: "right 0.2s linear",
+                  MozTransition: "right 0.2s linear",
+                }}
                 {...editingProps}
               />
             </Box>
