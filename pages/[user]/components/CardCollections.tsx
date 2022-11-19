@@ -9,7 +9,7 @@ import {
   Title,
 } from "@mantine/core";
 import { IconDeviceFloppy, IconPencil, IconPlus, IconX } from "@tabler/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useListState } from "@mantine/hooks";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
@@ -35,24 +35,32 @@ function CardCollections({ user, profile }: { user: User; profile: UserData }) {
     handlers.remove(collections.indexOf(collection));
   }
 
-  const collectionFolders = collections.map((collection, index) => (
-    <Draggable key={`${index}`} index={index} draggableId={`${index}`}>
-      {(provided, snapshot) => (
-        <Box
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          ref={provided.innerRef}
-          sx={{ marginBottom: "10px" }}
-        >
-          <CollectionFolder
-            collection={collection}
-            editing={editMode}
-            deleteFunction={removeCollection}
-          />
-        </Box>
-      )}
-    </Draggable>
-  ));
+  function createEditFolders(collections: CardCollection[]) {
+    return collections.map((collection, index) => (
+      <Draggable key={collection.id} index={index} draggableId={`${index}`}>
+        {(provided, snapshot) => (
+          <Box
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            ref={provided.innerRef}
+            sx={{ marginBottom: "10px" }}
+          >
+            <CollectionFolder
+              collection={collection}
+              editing={editMode}
+              deleteFunction={removeCollection}
+            />
+          </Box>
+        )}
+      </Draggable>
+    ));
+  }
+
+  let collectionFolders = createEditFolders(collections);
+
+  useEffect(() => {
+    let collectionFolders = createEditFolders(collections);
+  }, [collections]);
 
   return (
     <Box>
