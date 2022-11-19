@@ -66,7 +66,10 @@ interface UserData {
     disableTextFields?: boolean;
     patreon?: 0 | 1 | 2 | 3 | 4;
   };
-  friends__list?: UID;
+}
+interface UserPrivateData {
+  set(data: any, callback?: () => any): any;
+  friends__list?: UID[];
   friends__sentRequests?: UID[];
   friends__receivedRequests?: UID[];
 }
@@ -85,6 +88,8 @@ interface UserLoggedIn {
   loggedIn: true;
   user: AuthUserContext;
   db: UserData;
+  privateDb: UserPrivateData;
+  refreshData: () => void;
 }
 
 type User = UserLoading | UserLoggedOut | UserLoggedIn;

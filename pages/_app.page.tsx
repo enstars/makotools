@@ -171,6 +171,9 @@ function MakoTools({
                 ? JSON.parse(pageProps.__user)
                 : undefined,
               db: pageProps?.__db ? JSON.parse(pageProps.__db) : undefined,
+              privateDb: pageProps?.__privateDb
+                ? JSON.parse(pageProps.__privateDb)
+                : undefined,
             }}
           >
             <DayjsProvider>

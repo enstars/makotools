@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState, useEffect, ReactElement } from "react";
-import { showNotification } from "@mantine/notifications";
 import { IconAlertTriangle } from "@tabler/icons";
 import { useAuthUser } from "next-firebase-auth";
 import { ColorScheme } from "@mantine/core";
@@ -9,10 +8,16 @@ import {
   User,
   UserData,
   UserLoading,
-  UserLoggedIn,
+  UserPrivateData,
 } from "../../types/makotools";
 
-import { getFirestoreUserData, setFirestoreUserData } from "./firestore";
+import {
+  getFirestorePrivateUserData,
+  getFirestoreUserData,
+  setFirestoreUserData,
+} from "./firestore";
+
+import notify from "services/libraries/notify";
 
 const loadingUser: UserLoading = {
   loading: true,
@@ -23,7 +28,6 @@ const UserContext = React.createContext<User>(loadingUser);
 const useUser = () => useContext(UserContext);
 
 export default useUser;
-
 export function UserProvider({
   children,
   colorScheme,
@@ -43,11 +47,12 @@ export function UserProvider({
           loggedIn: !!AuthUser.id,
           user: serverData.user,
           db: serverData?.db,
+          privateDb: serverData?.privateDb,
+          refreshData: () => {},
         }
       : loadingUser
   );
 
-  // const setDb = useCallback(
   //   (data: any, callback?: () => void) => {
   //     console.log(1, user);
   //     if (user.loggedIn) {
@@ -71,14 +76,7 @@ export function UserProvider({
 
   // console.log("firebase user auth ", user);
   useEffect(() => {
-    // if (userState.loggedIn) setUser((s) => ({ ...s, ...userState }));
-
     if (AuthUser.id) {
-      const userState = {
-        loading: false as const,
-        loggedIn: true as const,
-        user: AuthUser,
-      };
       const setFirestoreData = async () => {
         try {
           let currentUserData: UserData | undefined = undefined,
@@ -87,8 +85,49 @@ export function UserProvider({
             currentUserData = await getFirestoreUserData(AuthUser.id);
             fetchCount--;
           }
-          if (typeof currentUserData === "undefined") {
-            showNotification({
+          if (typeof currentUserData !== "undefined" && AuthUser.id !== null) {
+            const db: UserData = {
+              ...currentUserData,
+              set: (data: any, callback?: () => void) => {
+                setFirestoreUserData(data, ({ status }) => {
+                  if (status === "success") {
+                    setFirestoreData();
+                    if (callback) callback();
+                  }
+                });
+              },
+            };
+
+            const privateDb: UserPrivateData = {
+              ...(await getFirestorePrivateUserData(AuthUser.id)),
+              set: (data: any, callback?: () => void) => {
+                setFirestoreUserData(
+                  data,
+                  ({ status }) => {
+                    if (status === "success") {
+                      setFirestoreData();
+                      if (callback) callback();
+                    }
+                  },
+                  true
+                );
+              },
+            };
+            setUser((s) => ({
+              ...s,
+              loading: false as const,
+              loggedIn: true as const,
+              user: AuthUser,
+              db,
+              privateDb,
+              refreshData: () => {
+                setFirestoreData();
+              },
+            }));
+            if (currentUserData?.dark_mode)
+              setAppColorScheme(currentUserData.dark_mode ? "dark" : "light");
+          } else {
+            notify("error", {
               title: "Error",
               message:
                 "We had trouble fetching your user data. If this is your first time signing up, please try signing in again. If this error persists, please report at the Issues and Suggestions page.",
@@ -96,52 +135,26 @@ export function UserProvider({
               icon: <IconAlertTriangle size={16} />,
             });
             AuthUser.signOut();
-          } else {
-            setUser((s) => ({
-              ...s,
-              ...userState,
-              db: currentUserData as UserData,
-            }));
-            setUser((s) => {
-              let newState = s;
-              if (newState.loggedIn)
-                newState.db.set = (data: any, callback?: () => void) => {
-                  if (newState.loggedIn) {
-                    setFirestoreUserData(data, ({ status }) => {
-                      if (status === "success") {
-                        setUser((f: UserLoggedIn) => ({
-                          ...f,
-                          db: {
-                            ...f.db,
-                            ...data,
-                          },
-                        }));
-                        if (callback) callback();
-                      }
-                    });
-                  }
-                };
-              return newState;
-            });
-            if (currentUserData?.dark_mode)
-              setAppColorScheme(currentUserData.dark_mode ? "dark" : "light");
           }
         } catch (e) {
-          showNotification({
-            title: "Problem with Firestore",
-            message: JSON.stringify(e),
+          notify("error", {
+            title: "Uh oh!",
+            message: `We ran into a problem with your data: ${JSON.stringify(
+              e
+            )}`,
             color: "red",
             icon: <IconAlertTriangle size={16} />,
           });
         }
       };
       setFirestoreData();
+      setUser((s) => ({ ...s }));
     } else {
-      const userState = {
+      setUser((s) => ({
+        ...s,
         loading: false as const,
         loggedIn: false as const,
-      };
-      setUser((s) => ({ ...s, ...userState }));
+      }));
     }
   }, [AuthUser]);
 
@@ -149,11 +162,6 @@ export function UserProvider({
     if (!user.loading && user.loggedIn)
       user.db.set({ dark_mode: colorScheme === "dark" });
   }, [colorScheme]);
-  // useEffect(() => {
-  //   if (typeof user.db.dark_mode !== "undefined") {
-  //     setAppColorScheme(user.db.dark_mode ? "dark" : "light");
-  //   }
-  // }, [user]);
 
   return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
 }
