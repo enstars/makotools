@@ -119,19 +119,54 @@ function CollectionCard({
       )}
       <Paper radius="sm" withBorder sx={{ position: "relative" }}>
         <AspectRatio ratio={4 / 5}>
-          <Image
-            alt={"card image"}
-            withPlaceholder
-            src={getAssetURL(
-              `assets/card_rectangle4_${Math.abs(card.id)}_${
-                card.id < 0 ? "normal" : "evolution"
-              }.png`
-            )}
-            sx={(theme) => ({
-              borderRadius: `${theme.radius.sm}px ${theme.radius.sm}px 0px 0px`,
-            })}
-            {...editingProps}
-          />
+          {editing ? (
+            <Box sx={{ position: "relative" }}>
+              <Image
+                alt={"card image"}
+                withPlaceholder
+                src={getAssetURL(
+                  `assets/card_rectangle4_${Math.abs(card.id)}_normal.png`
+                )}
+                {...editingProps}
+                sx={(theme) => ({
+                  position: "absolute",
+                  top: 0,
+                  borderRadius: `${theme.radius.sm}px ${theme.radius.sm}px 0px 0px`,
+                  transition: "visibility 0.2s",
+                  visibility: `${card.id > 0 ? "hidden" : "visible"}`,
+                })}
+              />
+              <Image
+                alt={"card image"}
+                withPlaceholder
+                src={getAssetURL(
+                  `assets/card_rectangle4_${Math.abs(card.id)}_evolution.png`
+                )}
+                sx={(theme) => ({
+                  position: "absolute",
+                  top: 0,
+                  borderRadius: `${theme.radius.sm}px ${theme.radius.sm}px 0px 0px`,
+                  transition: "visibility 0.2s",
+                  visibility: `${card.id > 0 ? "visible" : "hidden"}`,
+                })}
+                {...editingProps}
+              />
+            </Box>
+          ) : (
+            <Image
+              alt={"card image"}
+              withPlaceholder
+              src={getAssetURL(
+                `assets/card_rectangle4_${Math.abs(card.id)}_${
+                  card.id < 0 ? "normal" : "evolution"
+                }.png`
+              )}
+              sx={(theme) => ({
+                borderRadius: `${theme.radius.sm}px ${theme.radius.sm}px 0px 0px`,
+              })}
+              {...editingProps}
+            />
+          )}
         </AspectRatio>
         {editing && (
           <Switch

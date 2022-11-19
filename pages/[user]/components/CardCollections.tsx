@@ -22,8 +22,8 @@ function CardCollections({ user, profile }: { user: User; profile: UserData }) {
   const [editMode, setEditMode] = useState<boolean>(false);
   const [collections, handlers] = useListState([
     {
-      id: 0,
-      name: "Collection #1",
+      id: 1,
+      name: "Collection",
       privacyLevel: 0,
       default: true,
       cards: profile.collection || [],
@@ -117,11 +117,12 @@ function CardCollections({ user, profile }: { user: User; profile: UserData }) {
                 onClick={() => {
                   handlers.prepend({
                     id: collections.length + 1,
-                    name: `Collection #${collections.length + 1}`,
+                    name: `Collection #${collections.length}`,
                     privacyLevel: 0,
                     default: false,
                     cards: [],
                   });
+                  console.log(collections);
                 }}
               >
                 Add collection

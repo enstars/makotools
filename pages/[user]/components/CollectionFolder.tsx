@@ -145,7 +145,7 @@ function CollectionFolder({
             placeholder="Input collection name"
             onFocus={(event) => setFocused(event.target.id)}
             onBlur={(event) => setFocused("")}
-            defaultValue={collName}
+            defaultValue={collection.name}
             onChange={(event) => changeName(event.currentTarget.value)}
           />
           <Menu position="top">
