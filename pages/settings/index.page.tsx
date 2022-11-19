@@ -17,6 +17,7 @@ import {
   IconPalette,
   IconPencil,
   IconAlertCircle,
+  IconFriends,
 } from "@tabler/icons";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -38,6 +39,7 @@ import StartPlaying from "./profile/StartPlaying";
 import Email from "./account/Email";
 import Banner from "./profile/Banner";
 import UseWebP from "./appearance/UseWebP";
+import Requests from "./friends/Requests";
 
 import { GameCard } from "types/game";
 import useUser from "services/firebase/user";
@@ -119,6 +121,19 @@ const tabs = [
           <Bio />
           {cards && <Banner cards={cards} />}
           <StartPlaying />
+        </Stack>
+      </>
+    ),
+  },
+  {
+    label: "Friends",
+    value: "friends",
+    icon: IconFriends,
+    color: "green",
+    contents: () => (
+      <>
+        <Stack>
+          <Requests />
         </Stack>
       </>
     ),

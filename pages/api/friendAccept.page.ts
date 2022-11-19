@@ -29,16 +29,26 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!(await db.collection("users").doc(friendUID).get()).data())
       throw Error("Friend error");
 
+    if (
+      !friendDocGet?.friends__sentRequests.includes(authUser.id) ||
+      !docGet?.friends__receivedRequests.includes(friendUID)
+    )
+      throw Error("Request doesn't exist");
+
     await docRef.set(
       {
-        friends__sentRequests: FieldValue.arrayUnion(friendUID),
+        friends__list: FieldValue.arrayUnion(friendUID),
+        friends__sentRequests: FieldValue.arrayRemove(friendUID),
+        friends__receivedRequests: FieldValue.arrayRemove(friendUID),
       },
       { merge: true }
     );
 
     await friendDocRef.set(
       {
-        friends__receivedRequests: FieldValue.arrayUnion(authUser.id),
+        friends__list: FieldValue.arrayUnion(authUser.id),
+        friends__sentRequests: FieldValue.arrayRemove(authUser.id),
+        friends__receivedRequests: FieldValue.arrayRemove(authUser.id),
       },
       { merge: true }
     );
