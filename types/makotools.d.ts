@@ -52,6 +52,7 @@ interface CollectedCard {
 type CollectionPrivacyLevel = 0 | 1 | 2 | 3;
 
 interface CardCollection {
+  id: number;
   name: string;
   privacyLevel: CollectionPrivacyLevel | number;
   default: boolean;

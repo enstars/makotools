@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   createStyles,
+  Divider,
   Group,
   Indicator,
   Menu,
@@ -31,6 +32,7 @@ import {
   IconX,
 } from "@tabler/icons";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 import CollectionCard from "./CollectionCard";
 
@@ -177,6 +179,7 @@ function CollectionFolder({
                   />
                 </Stack>
               </Menu.Item>
+              <Divider />
               <Menu.Item
                 icon={<IconX />}
                 sx={{ color: theme.colors.red[4] }}
@@ -187,69 +190,73 @@ function CollectionFolder({
             </Menu.Dropdown>
           </Menu>
         </Group>
-        <Accordion
-          defaultValue="cards"
-          classNames={{ item: classes.accordion }}
-        >
+        <Accordion classNames={{ item: classes.accordion }}>
           <Accordion.Item value="cards">
             <Accordion.Control>
               <Title order={4} sx={{ textAlign: "center" }}>
-                View cards
+                Card options
               </Title>
             </Accordion.Control>
             <Accordion.Panel>
-              <Select
-                placeholder="Sort by..."
-                data={[
-                  { value: "dateAdded", label: "Date added" },
-                  { value: "charId", label: "Character ID" },
-                  { value: "cardId", label: "Card ID" },
-                ]}
-                icon={<IconArrowsSort size="1em" />}
-                rightSection={
-                  <Tooltip label="Toggle ascending/descending">
-                    <ActionIcon variant="light" color="blue">
-                      {asc ? (
-                        <IconSortAscending size={16} />
-                      ) : (
-                        <IconSortDescending size={16} />
-                      )}
-                    </ActionIcon>
-                  </Tooltip>
-                }
-              />
+              {collection.cards.length > 1 && (
+                <Select
+                  placeholder="Sort by..."
+                  data={[
+                    { value: "dateAdded", label: "Date added" },
+                    { value: "charId", label: "Character ID" },
+                    { value: "cardId", label: "Card ID" },
+                  ]}
+                  icon={<IconArrowsSort size="1em" />}
+                  rightSection={
+                    <Tooltip label="Toggle ascending/descending">
+                      <ActionIcon variant="light" color="blue">
+                        {asc ? (
+                          <IconSortAscending size={16} />
+                        ) : (
+                          <IconSortDescending size={16} />
+                        )}
+                      </ActionIcon>
+                    </Tooltip>
+                  }
+                />
+              )}
               <Space h="lg" />
-              <Box
-                sx={(theme) => ({
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
-                  gap: theme.spacing.xs,
-                })}
-              >
-                {collection.cards
-                  ?.filter((c: CollectedCard) => c.count)
-                  .sort(
-                    (a: CollectedCard, b: CollectedCard) => b.count - a.count
-                  )
-                  .map((c: CollectedCard) => (
-                    <CollectionCard key={c.id} card={c} editing={editing} />
-                  ))}
-              </Box>
+              {collection.cards && collection.cards.length > 0 ? (
+                <Box
+                  sx={(theme) => ({
+                    display: "grid",
+                    gridTemplateColumns:
+                      "repeat(auto-fill, minmax(100px, 1fr))",
+                    gap: theme.spacing.xs,
+                  })}
+                >
+                  {collection.cards
+                    .filter((c: CollectedCard) => c.count)
+                    .sort(
+                      (a: CollectedCard, b: CollectedCard) => b.count - a.count
+                    )
+                    .map((c: CollectedCard) => (
+                      <CollectionCard key={c.id} card={c} editing={editing} />
+                    ))}
+                </Box>
+              ) : (
+                <Text color="dimmed">This collection is empty.</Text>
+              )}
             </Accordion.Panel>
           </Accordion.Item>
         </Accordion>
       </Paper>
     </>
   ) : (
-    <Accordion variant="contained" defaultValue="default">
-      <Accordion.Item value="default">
-        <Accordion.Control>
-          <Group noWrap>
-            <IconCircle fill={color} size={20} stroke={0} />
-            <Title order={4}>{collName}</Title>
-          </Group>
-        </Accordion.Control>
-        <Accordion.Panel>
+    <Accordion.Item value={collection.name}>
+      <Accordion.Control>
+        <Group noWrap>
+          <IconCircle fill={color} size={20} stroke={0} />
+          <Title order={4}>{collName}</Title>
+        </Group>
+      </Accordion.Control>
+      <Accordion.Panel>
+        {collection.cards && collection.cards.length > 0 ? (
           <Box
             sx={(theme) => ({
               display: "grid",
@@ -258,15 +265,22 @@ function CollectionFolder({
             })}
           >
             {collection.cards
-              ?.filter((c: CollectedCard) => c.count)
+              .filter((c: CollectedCard) => c.count)
               .sort((a: CollectedCard, b: CollectedCard) => b.count - a.count)
               .map((c: CollectedCard) => (
                 <CollectionCard key={c.id} card={c} editing={editing} />
               ))}
           </Box>
-        </Accordion.Panel>
-      </Accordion.Item>
-    </Accordion>
+        ) : (
+          <Stack align="flex-start">
+            <Text color="dimmed">This collection is empty.</Text>
+            <Button variant="outline" component={Link} href="/cards">
+              Add some cards!
+            </Button>
+          </Stack>
+        )}
+      </Accordion.Panel>
+    </Accordion.Item>
   );
 }
 
