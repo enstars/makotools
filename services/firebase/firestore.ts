@@ -31,8 +31,8 @@ export function setFirestoreUserData(
   setDoc(
     doc(
       db,
-      priv ? "users" : `users/${clientAuth.currentUser.uid}/private`,
-      priv ? clientAuth.currentUser.uid : "values"
+      priv ? `users/${clientAuth.currentUser.uid}/private` : "users",
+      priv ? "values" : clientAuth.currentUser.uid
     ),
     data,
     {
