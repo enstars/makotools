@@ -62,9 +62,9 @@ function Requests() {
         {user.privateDb.friends__list?.map((uid) => (
           <Card key={uid} px="md" py="xs">
             <Group spacing={0}>
-              <Text weight={700}>{loadedProfiles[uid].name}</Text>
+              <Text weight={700}>{loadedProfiles?.[uid]?.name}</Text>
               <Text ml={"xs"} weight={500} color="dimmed">
-                @{loadedProfiles[uid].username}
+                @{loadedProfiles?.[uid]?.username}
               </Text>
             </Group>
           </Card>
