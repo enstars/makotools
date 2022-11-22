@@ -11,8 +11,6 @@ import {
 } from "@mantine/core";
 import { IconMenu2 } from "@tabler/icons";
 
-import Searchbar from "./Searchbar";
-
 const defaultGetBreadcrumbs = (path: string) =>
   path.split("/").filter((x) => x);
 
@@ -104,7 +102,7 @@ function HeaderContents({
           </Breadcrumbs>
         </Text>
       </Group>
-      <Searchbar />
+      {/* <Searchbar /> */}
     </Group>
   );
 }
