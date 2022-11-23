@@ -10,9 +10,11 @@ import {
   Image,
   Menu,
   Paper,
+  Space,
   Text,
   ThemeIcon,
   Title,
+  Tooltip,
   useMantineTheme,
 } from "@mantine/core";
 import { Carousel, Embla } from "@mantine/carousel";
@@ -24,8 +26,7 @@ import {
   IconCopy,
   IconDots,
   IconFlag,
-  IconInfoCircle,
-  IconMessageShare,
+  IconLink,
   IconUserPlus,
 } from "@tabler/icons";
 import { useRef, Fragment, useState, useEffect } from "react";
@@ -33,7 +34,6 @@ import Autoplay from "embla-carousel-autoplay";
 import { useMediaQuery } from "@mantine/hooks";
 
 import { getLayout, useSidebarStatus } from "../../components/Layout";
-import PageTitle from "../../components/sections/PageTitle";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { getAssetURL } from "../../services/data";
 import { parseStringify } from "../../services/utilities";
@@ -137,66 +137,103 @@ function Page({ profile, uid }: { profile: UserData; uid: string }) {
             page.
           </Alert>
         )}
-      {profile.name ? (
-        <PageTitle
-          space={profile?.profile__banner?.length ? 18 : undefined}
-          title={
-            <>
-              {profile.name}{" "}
-              <Text
-                inline
-                component="span"
-                color="dimmed"
-                weight={800}
-                size="lg"
-              >
-                {profile?.profile__pronouns &&
-                  `${profile?.profile__pronouns} · `}
-                @{profile.username}
-              </Text>
-            </>
-          }
-          mb={0}
-        />
-      ) : (
-        <PageTitle
-          space={profile?.profile__banner?.length ? 18 : undefined}
-          title={
-            <>
-              @{profile.username}
-              {profile?.profile__pronouns && (
-                <Text
-                  inline
-                  component="span"
-                  color="dimmed"
-                  weight={800}
+      <Space h="lg" />
+
+      <Group position="apart">
+        <Box>
+          <Title order={1}>{profile?.name || profile.username}</Title>
+          <Text inline component="span" color="dimmed" weight={500} size="lg">
+            @{profile.username}
+            {profile?.profile__pronouns && ` · ${profile?.profile__pronouns}`}
+          </Text>
+        </Box>
+        <Group spacing="xs">
+          <CopyButton value={shareURLFull}>
+            {({ copy }) => (
+              <Tooltip label="Copy sharable URL">
+                <ActionIcon
+                  onClick={() => {
+                    copy();
+                    notify("info", {
+                      icon: <IconCopy size={16} />,
+                      message: "Profile link copied",
+                      title: (
+                        <>
+                          <Text span>
+                            <Text span weight={400}>
+                              https://
+                            </Text>
+                            <Text span weight={700}>
+                              {shareURL}
+                            </Text>
+                          </Text>
+                        </>
+                      ),
+                    });
+                  }}
                   size="lg"
+                  color="blue"
+                  variant="light"
                 >
-                  {profile?.profile__pronouns}
-                </Text>
-              )}
+                  <IconLink size={18} />
+                </ActionIcon>
+              </Tooltip>
+            )}
+          </CopyButton>
+
+          {user.loggedIn && user.db.suid !== profile.suid && (
+            <>
+              <Tooltip label="Send friend request">
+                <ActionIcon
+                  onClick={async () => {
+                    const token = await user.user.getIdToken();
+                    await fetch("/api/friendRequest", {
+                      method: "POST",
+                      headers: {
+                        Authorization: token || "",
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({ friend: uid }),
+                    });
+                  }}
+                  size="lg"
+                  color="green"
+                  variant="light"
+                >
+                  <IconUserPlus size={18} />
+                </ActionIcon>
+              </Tooltip>
+              <Tooltip label="Report profile">
+                <ActionIcon
+                  component={Link}
+                  href={CONSTANTS.MODERATION.GET_REPORT_LINK(
+                    profile.username,
+                    profile.suid
+                  )}
+                  target="_blank"
+                  size="lg"
+                  color="orange"
+                  variant="light"
+                >
+                  <IconFlag size={18} />
+                </ActionIcon>
+              </Tooltip>
             </>
-          }
-          mb={0}
+          )}
+        </Group>
+      </Group>
+
+      <PatreonBanner profile={profile} />
+
+      {profile?.profile__bio && (
+        <BioDisplay
+          rawBio={profile.profile__bio}
+          withBorder={false}
+          // p={0}
+          // sx={{ background: "transparent" }}
+          my="md"
         />
       )}
-      <PatreonBanner profile={profile} />
-      <Group mt="xs" noWrap align="flex-start">
-        <ThemeIcon variant="light" color="lightblue" sx={{ flexShrink: 0 }}>
-          <IconInfoCircle size={16} />
-        </ThemeIcon>
-        <Box sx={{ width: "100%" }}>
-          <Text size="xs" weight={700} color="dimmed">
-            Bio
-          </Text>
-
-          {profile?.profile__bio ? (
-            <BioDisplay rawBio={profile.profile__bio} />
-          ) : (
-            <Text color="dimmed">This user has no bio set</Text>
-          )}
-        </Box>
-      </Group>
       {profile.profile__start_playing !== "0000-00-00" && (
         <Group mt="xs" noWrap align="flex-start">
           <ThemeIcon variant="light" color="yellow" sx={{ flexShrink: 0 }}>
@@ -207,39 +244,13 @@ function Page({ profile, uid }: { profile: UserData; uid: string }) {
               Started Playing
             </Text>
             {profile.profile__start_playing &&
-            profile.profile__start_playing !== "0000-00-00"
-              ? dayjs(profile.profile__start_playing).format("MMMM YYYY")
-              : "Unknown"}
+              dayjs(profile.profile__start_playing).format("MMMM YYYY")}
           </Box>
         </Group>
       )}
 
       <Paper withBorder mt="xs">
         <Group p={4} pl="xs">
-          <Group spacing={0} sx={{ "&&": { flexGrow: 1 } }}>
-            <IconMessageShare size={18} />
-            <Text size="sm" ml="xs">
-              <Text span color="dimmed" weight={500}>
-                https://
-              </Text>
-              <Text span weight={700}>
-                {shareURL}
-              </Text>
-            </Text>
-            <CopyButton value={shareURLFull}>
-              {({ copy }) => (
-                <ActionIcon
-                  onClick={() => {
-                    copy();
-                    notify("info", { message: "Profile link copied" });
-                  }}
-                  size="sm"
-                >
-                  <IconCopy size={16} />
-                </ActionIcon>
-              )}
-            </CopyButton>
-          </Group>
           {user.loggedIn && user.db.suid !== profile.suid && (
             <Menu shadow="sm" width={200} position="top-end">
               <Menu.Target>
