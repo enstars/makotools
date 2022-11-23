@@ -130,9 +130,18 @@ function Sidebar(props: any) {
     defaultValue: "",
     key: "sidebarSearch",
   });
-
+  const DEFAULT_WIDTH = 200;
+  const [width, setWidth] = useLocalStorage<number>({
+    defaultValue: DEFAULT_WIDTH,
+    key: "sidebarWidth",
+  });
+  let mouseDown = false;
   const { collapsed, toggleCollapsed } = useSidebarStatus();
   if (props.permanentlyExpanded && collapsed) toggleCollapsed();
+
+  function resize(event: MouseEvent) {
+    setWidth(width + (event.pageX - width));
+  }
 
   const linkList: LinkObject[] = [
     {
@@ -182,7 +191,7 @@ function Sidebar(props: any) {
       position={{ top: 0, left: 0 }}
       width={{
         base: 0,
-        xs: collapsed ? 50 : 200,
+        xs: collapsed ? 50 : width,
       }}
       hidden={true}
       hiddenBreakpoint="xs"
@@ -421,6 +430,31 @@ function Sidebar(props: any) {
           )}
         </Stack>
       </Navbar.Section>
+      {!collapsed && (
+        <Box
+          sx={{
+            position: "absolute",
+            right: 0,
+            width: 1,
+            height: "100%",
+            background:
+              theme.colorScheme === "dark"
+                ? theme.colors.dark[5]
+                : theme.colors.gray[4],
+            zIndex: 5,
+            "&:hover": { cursor: "ew-resize" },
+          }}
+          onMouseDown={(event) => {
+            event.preventDefault();
+            mouseDown = true;
+            console.log("down");
+            window.addEventListener("mousemove", resize);
+            window.addEventListener("mouseup", (e) => {
+              window.removeEventListener("mousemove", resize);
+            });
+          }}
+        />
+      )}
     </Navbar>
   );
 }
