@@ -14,6 +14,8 @@ import { useListState } from "@mantine/hooks";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 import CollectionFolder from "./CollectionFolder";
+import EditCollectionFolder from "./EditCollectionFolder";
+import EditCollectionCards from "./EditCollectionCards";
 
 import { CardCollection, User, UserData } from "types/makotools";
 import { CONSTANTS } from "services/makotools/constants";
@@ -30,6 +32,9 @@ function CardCollections({ user, profile }: { user: User; profile: UserData }) {
     },
   ]);
   const isYourProfile = user.loggedIn && user.db.suid === profile.suid;
+  const [editCards, setEditCards] = useState<boolean>(false);
+  const [currentCollection, setCurrentCollection] =
+    useState<CardCollection | null>(null);
 
   function removeCollection(collection: CardCollection) {
     handlers.remove(collections.indexOf(collection));
@@ -45,10 +50,11 @@ function CardCollections({ user, profile }: { user: User; profile: UserData }) {
             ref={provided.innerRef}
             sx={{ marginBottom: "10px" }}
           >
-            <CollectionFolder
+            <EditCollectionFolder
               collection={collection}
-              editing={editMode}
               deleteFunction={removeCollection}
+              cardsFunction={setEditCards}
+              setFunction={setCurrentCollection}
             />
           </Box>
         )}
@@ -114,46 +120,53 @@ function CardCollections({ user, profile }: { user: User; profile: UserData }) {
         </Text>
       ) : (
         <Stack align="stretch">
-          {editMode &&
-            collections.length <
-              CONSTANTS.PATREON.TIERS[profile.admin?.patreon || 0]
-                .COLLECTIONS && (
-              <Button
-                color="indigo"
-                variant="outline"
-                leftIcon={<IconPlus />}
-                onClick={() => {
-                  handlers.prepend({
-                    id: collections.length + 1,
-                    name: `Collection #${collections.length}`,
-                    privacyLevel: 0,
-                    default: false,
-                    cards: [],
+          {editMode && !editCards ? (
+            <>
+              {collections.length <
+                CONSTANTS.PATREON.TIERS[profile.admin?.patreon || 0]
+                  .COLLECTIONS && (
+                <Button
+                  color="indigo"
+                  variant="outline"
+                  leftIcon={<IconPlus />}
+                  onClick={() => {
+                    handlers.prepend({
+                      id: collections.length + 1,
+                      name: `Collection #${collections.length}`,
+                      privacyLevel: 0,
+                      default: false,
+                      cards: [],
+                    });
+                    console.log(collections);
+                  }}
+                >
+                  Add collection
+                </Button>
+              )}
+              <DragDropContext
+                onDragEnd={({ destination, source }) => {
+                  handlers.reorder({
+                    from: source.index,
+                    to: destination?.index || 0,
                   });
-                  console.log(collections);
                 }}
               >
-                Add collection
-              </Button>
-            )}
-          {editMode ? (
-            <DragDropContext
-              onDragEnd={({ destination, source }) => {
-                handlers.reorder({
-                  from: source.index,
-                  to: destination?.index || 0,
-                });
-              }}
-            >
-              <Droppable droppableId="dnd-list" direction="vertical">
-                {(provided) => (
-                  <div {...provided.droppableProps} ref={provided.innerRef}>
-                    {collectionFolders}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
+                <Droppable droppableId="dnd-list" direction="vertical">
+                  {(provided) => (
+                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                      {collectionFolders}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
+            </>
+          ) : editMode && editCards && currentCollection ? (
+            <EditCollectionCards
+              collection={currentCollection}
+              cardsFunction={setEditCards}
+              setFunction={setCurrentCollection}
+            />
           ) : (
             <Accordion
               variant="contained"
@@ -162,12 +175,7 @@ function CardCollections({ user, profile }: { user: User; profile: UserData }) {
               }`}
             >
               {collections.map((collection) => (
-                <CollectionFolder
-                  key={collection.id}
-                  collection={collection}
-                  editing={editMode}
-                  deleteFunction={removeCollection}
-                />
+                <CollectionFolder key={collection.id} collection={collection} />
               ))}
             </Accordion>
           )}

@@ -135,7 +135,6 @@ function CollectionCard({
                   transition: "left 0.2s linear",
                   MozTransition: "left 0.2s linear",
                 }}
-                {...editingProps}
               />
               <Image
                 alt={"card image"}
@@ -151,7 +150,6 @@ function CollectionCard({
                   transition: "right 0.2s linear",
                   MozTransition: "right 0.2s linear",
                 }}
-                {...editingProps}
               />
             </Box>
           ) : (
