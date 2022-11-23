@@ -66,7 +66,7 @@ function CollectionCard({
   };
 
   return (
-    <Box sx={{ position: "relative" }}>
+    <Box sx={{ position: "relative", width: "100%", height: "100%" }}>
       {editing && (
         <Box
           sx={{

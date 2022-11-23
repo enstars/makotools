@@ -232,46 +232,39 @@ function CollectionFolder({
               )}
               <Space h="lg" />
               {cards && cards.length > 0 ? (
-                <GridContextProvider
-                  onChange={(
-                    sourceId: string,
-                    sourceIndex: number,
-                    targetIndex: number,
-                    targetId: string
-                  ) => {
-                    if (targetId) {
-                      const result = move(
+                <Box sx={{ width: "100%", height: "100%" }} ref={parentRef}>
+                  {console.log(parentRef.current)}
+                  <GridContextProvider
+                    onChange={(
+                      sourceId: string,
+                      sourceIndex: number,
+                      targetIndex: number,
+                      targetId: string
+                    ) => {
+                      if (targetId) {
+                        const result = move(
+                          cards[sourceId],
+                          cards[targetId],
+                          sourceIndex,
+                          targetIndex
+                        );
+                        return arrangeCards({
+                          ...cards,
+                          [sourceId]: result[0],
+                          [targetId]: result[1],
+                        });
+                      }
+
+                      const result = swap(
                         cards[sourceId],
-                        cards[targetId],
                         sourceIndex,
                         targetIndex
                       );
                       return arrangeCards({
                         ...cards,
-                        [sourceId]: result[0],
-                        [targetId]: result[1],
+                        [sourceId]: result,
                       });
-                    }
-
-                    const result = swap(
-                      cards[sourceId],
-                      sourceIndex,
-                      targetIndex
-                    );
-                    return arrangeCards({
-                      ...cards,
-                      [sourceId]: result,
-                    });
-                  }}
-                >
-                  <Box
-                    sx={(theme) => ({
-                      display: "grid",
-                      gridTemplateColumns:
-                        "repeat(auto-fill, minmax(100px, 1fr))",
-                      gap: theme.spacing.xs,
-                    })}
-                    ref={parentRef}
+                    }}
                   >
                     <GridDropZone
                       id="card-drop-zone"
@@ -285,7 +278,7 @@ function CollectionFolder({
                       rowHeight={190}
                       style={{
                         width: "100%",
-                        height: parentRef.current.clientHeight,
+                        height: parentRef.current.scrollHeight,
                       }}
                     >
                       {cards
@@ -300,8 +293,8 @@ function CollectionFolder({
                           </GridItem>
                         ))}
                     </GridDropZone>
-                  </Box>
-                </GridContextProvider>
+                  </GridContextProvider>
+                </Box>
               ) : (
                 <Text color="dimmed">This collection is empty.</Text>
               )}
