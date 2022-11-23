@@ -31,8 +31,15 @@ import {
   IconTrash,
   IconX,
 } from "@tabler/icons";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import {
+  GridContextProvider,
+  GridDropZone,
+  GridItem,
+  swap,
+  move,
+} from "react-grid-drag";
 
 import CollectionCard from "./CollectionCard";
 
@@ -61,9 +68,12 @@ function CollectionFolder({
   const [privacyLevel, setPrivacy] = useState<number>(
     collection.privacyLevel || 0
   );
-  const [isDefault, setAsDefault] = useState<boolean>(true);
+  const [isDefault, setAsDefault] = useState<boolean>(collection.default);
   const [asc, setAsc] = useState<boolean>(true);
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
+  const [cards, arrangeCards] = useState<CollectedCard[]>(collection.cards);
+
+  const parentRef = useRef();
 
   const theme = useMantineTheme();
 
@@ -221,24 +231,77 @@ function CollectionFolder({
                 />
               )}
               <Space h="lg" />
-              {collection.cards && collection.cards.length > 0 ? (
-                <Box
-                  sx={(theme) => ({
-                    display: "grid",
-                    gridTemplateColumns:
-                      "repeat(auto-fill, minmax(100px, 1fr))",
-                    gap: theme.spacing.xs,
-                  })}
+              {cards && cards.length > 0 ? (
+                <GridContextProvider
+                  onChange={(
+                    sourceId: string,
+                    sourceIndex: number,
+                    targetIndex: number,
+                    targetId: string
+                  ) => {
+                    if (targetId) {
+                      const result = move(
+                        cards[sourceId],
+                        cards[targetId],
+                        sourceIndex,
+                        targetIndex
+                      );
+                      return arrangeCards({
+                        ...cards,
+                        [sourceId]: result[0],
+                        [targetId]: result[1],
+                      });
+                    }
+
+                    const result = swap(
+                      cards[sourceId],
+                      sourceIndex,
+                      targetIndex
+                    );
+                    return arrangeCards({
+                      ...cards,
+                      [sourceId]: result,
+                    });
+                  }}
                 >
-                  {collection.cards
-                    .filter((c: CollectedCard) => c.count)
-                    .sort(
-                      (a: CollectedCard, b: CollectedCard) => b.count - a.count
-                    )
-                    .map((c: CollectedCard) => (
-                      <CollectionCard key={c.id} card={c} editing={editing} />
-                    ))}
-                </Box>
+                  <Box
+                    sx={(theme) => ({
+                      display: "grid",
+                      gridTemplateColumns:
+                        "repeat(auto-fill, minmax(100px, 1fr))",
+                      gap: theme.spacing.xs,
+                    })}
+                    ref={parentRef}
+                  >
+                    <GridDropZone
+                      id="card-drop-zone"
+                      boxesPerRow={
+                        window.innerWidth < 768
+                          ? 2
+                          : window.innerWidth > 786 && window.innerWidth < 900
+                          ? 4
+                          : 5
+                      }
+                      rowHeight={190}
+                      style={{
+                        width: "100%",
+                        height: parentRef.current.clientHeight,
+                      }}
+                    >
+                      {cards
+                        .filter((c: CollectedCard) => c.count)
+                        .sort(
+                          (a: CollectedCard, b: CollectedCard) =>
+                            b.count - a.count
+                        )
+                        .map((c: CollectedCard) => (
+                          <GridItem key={c.id}>
+                            <CollectionCard card={c} editing={editing} />
+                          </GridItem>
+                        ))}
+                    </GridDropZone>
+                  </Box>
+                </GridContextProvider>
               ) : (
                 <Text color="dimmed">This collection is empty.</Text>
               )}
