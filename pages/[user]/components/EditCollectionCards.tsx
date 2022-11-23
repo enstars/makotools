@@ -1,7 +1,6 @@
 import {
   ActionIcon,
   Box,
-  Button,
   Group,
   Select,
   Space,
@@ -9,6 +8,7 @@ import {
   Title,
   Tooltip,
 } from "@mantine/core";
+import { useListState } from "@mantine/hooks";
 import {
   IconArrowsSort,
   IconChevronLeft,
@@ -16,13 +16,7 @@ import {
   IconSortDescending,
 } from "@tabler/icons";
 import { Dispatch, SetStateAction, useState } from "react";
-import {
-  GridContextProvider,
-  move,
-  swap,
-  GridDropZone,
-  GridItem,
-} from "react-grid-drag";
+import { GridContextProvider, GridDropZone, GridItem } from "react-grid-drag";
 
 import CollectionCard from "./CollectionCard";
 
@@ -38,7 +32,8 @@ function EditCollectionCards({
   setFunction: Dispatch<SetStateAction<CardCollection | null>>;
 }) {
   const [asc, setAsc] = useState<boolean>(true);
-  const [cards, arrangeCards] = useState<CollectedCard[]>(collection.cards);
+  // const [cards, handlers] = useState<CollectedCard[]>(collection.cards);
+  const [cards, handlers] = useListState<CollectedCard>(collection.cards);
 
   const NUM_COLS =
     window.innerWidth < 768
@@ -54,17 +49,15 @@ function EditCollectionCards({
   return (
     <Box>
       <Group>
-        <Title order={3}>Edit {collection.name} cards</Title>
-        <Button
-          leftIcon={<IconChevronLeft />}
-          variant="subtle"
+        <ActionIcon
           onClick={() => {
             cardsFunction(false);
             setFunction(null);
           }}
         >
-          Back to collections
-        </Button>
+          <IconChevronLeft size={40} strokeWidth={3} />
+        </ActionIcon>
+        <Title order={3}>Edit {collection.name} cards</Title>
       </Group>
       <Space h="md" />
       {collection.cards.length > 1 && (
@@ -74,6 +67,7 @@ function EditCollectionCards({
             { value: "dateAdded", label: "Date added" },
             { value: "charId", label: "Character ID" },
             { value: "cardId", label: "Card ID" },
+            { value: "rarity", label: "Card rarity" },
           ]}
           icon={<IconArrowsSort size="1em" />}
           rightSection={
@@ -89,7 +83,6 @@ function EditCollectionCards({
           }
         />
       )}
-
       <Space h="lg" />
       {cards && cards.length > 0 ? (
         <Box sx={{ width: "100%", height: "100%" }}>
@@ -100,25 +93,10 @@ function EditCollectionCards({
               targetIndex: number,
               targetId: string
             ) => {
-              if (targetId) {
-                const result = move(
-                  cards[sourceId],
-                  cards[targetId],
-                  sourceIndex,
-                  targetIndex
-                );
-                return arrangeCards({
-                  ...cards,
-                  [sourceId]: result[0],
-                  [targetId]: result[1],
-                });
-              }
-
-              const result = swap(cards[sourceId], sourceIndex, targetIndex);
-              return arrangeCards({
-                ...cards,
-                [sourceId]: result,
-              });
+              // const nextState = swap(cards, sourceIndex, targetIndex);
+              // console.log(cards, nextState);
+              // handlers(nextState);
+              handlers.reorder({ from: sourceIndex, to: targetIndex });
             }}
           >
             <GridDropZone
@@ -132,7 +110,7 @@ function EditCollectionCards({
             >
               {cards
                 .filter((c: CollectedCard) => c.count)
-                .sort((a: CollectedCard, b: CollectedCard) => b.count - a.count)
+                // .sort((a: CollectedCard, b: CollectedCard) => b.count - a.count)
                 .map((c: CollectedCard) => (
                   <GridItem key={c.id}>
                     <CollectionCard card={c} editing={true} />

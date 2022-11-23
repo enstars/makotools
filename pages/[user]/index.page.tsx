@@ -62,7 +62,7 @@ function PatreonBanner({ profile }: { profile: UserData }) {
   return null;
 }
 
-function Page({ profile }: { profile: UserData }) {
+function Page({ profile, uid }: { profile: UserData; uid: string }) {
   const { dayjs } = useDayjs();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const theme = useMantineTheme();
@@ -262,7 +262,7 @@ function Page({ profile }: { profile: UserData }) {
         </Group>
       </Paper>
       <Divider my="xs" />
-      <CardCollections user={user} profile={profile} />
+      <CardCollections user={user} profile={profile} uid={uid} />
     </>
   );
 }
@@ -287,6 +287,7 @@ export const getServerSideProps = getServerSideUser(
       return {
         props: {
           profile,
+          uid: querySnap.docs[0].id,
           meta: {
             title: profile?.name
               ? `${profile.name} (@${profile.username})`

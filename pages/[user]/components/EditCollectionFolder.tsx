@@ -127,7 +127,12 @@ function EditCollectionFolder({
               onBlur={(event) => setFocused("")}
               defaultValue={collection.name}
               onChange={(event) => changeName(event.currentTarget.value)}
-              sx={{ input: { fontFamily: theme.headings.fontFamily, fontWeight: theme.headings.fontWeight } }}
+              sx={{
+                input: {
+                  fontFamily: theme.headings.fontFamily,
+                  fontWeight: theme.headings.fontWeight,
+                },
+              }}
             />
             <Menu position="top">
               <Menu.Target>
@@ -184,7 +189,7 @@ function EditCollectionFolder({
           >
             <Group>
               <Title order={4}>Edit cards</Title>
-              <IconChevronRight />
+              <IconChevronRight strokeWidth={3} />
             </Group>
           </Button>
         </Group>

@@ -12,6 +12,7 @@ import { IconDeviceFloppy, IconPencil, IconPlus, IconX } from "@tabler/icons";
 import { useEffect, useState } from "react";
 import { useListState } from "@mantine/hooks";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import useSWR from "swr";
 
 import CollectionFolder from "./CollectionFolder";
 import EditCollectionFolder from "./EditCollectionFolder";
@@ -19,8 +20,23 @@ import EditCollectionCards from "./EditCollectionCards";
 
 import { CardCollection, User, UserData } from "types/makotools";
 import { CONSTANTS } from "services/makotools/constants";
+import { getFirestoreUserCollection } from "services/firebase/firestore";
+function CardCollections({
+  user,
+  profile,
+  uid: profileUid,
+}: {
+  user: User;
+  profile: UserData;
+  uid: string;
+}) {
+  const { profileCollections, error } = useSWR(
+    `users/${profileUid}/collections`,
+    getFirestoreUserCollection
+  );
 
-function CardCollections({ user, profile }: { user: User; profile: UserData }) {
+  console.log(profileCollections);
+
   const [editMode, setEditMode] = useState<boolean>(false);
   const [collections, handlers] = useListState([
     {
