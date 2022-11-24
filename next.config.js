@@ -1,7 +1,7 @@
 const nextTranslate = require("next-translate");
 
-module.exports = nextTranslate({
-  webpack(config) {
+const config = nextTranslate({
+  webpack: (config) => {
     config.module.rules.push(
       {
         test: /\.svg$/i,
@@ -22,10 +22,6 @@ module.exports = nextTranslate({
   },
   images: {
     domains: ["uchuu.ensemble.moe", "assets.enstars.link"],
-  },
-
-  compiler: {
-    styledComponents: true,
   },
 
   // i18n: {
@@ -70,3 +66,6 @@ module.exports = nextTranslate({
     ];
   },
 });
+console.log("TEST???", nextTranslate, config);
+
+module.exports = config;
