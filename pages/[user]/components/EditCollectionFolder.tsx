@@ -31,14 +31,18 @@ import { CardCollection } from "types/makotools";
 
 function EditCollectionFolder({
   collection,
+  defaultCollection,
   deleteFunction,
   cardsFunction,
   setFunction,
+  defaultFunction,
 }: {
   collection: CardCollection;
+  defaultCollection: CardCollection;
   deleteFunction: (collection: CardCollection) => void;
   cardsFunction: Dispatch<SetStateAction<boolean>>;
   setFunction: Dispatch<SetStateAction<CardCollection>>;
+  defaultFunction: Dispatch<SetStateAction<CardCollection>>;
 }) {
   const COLORS: string[] = [
     "#d3d6e0",
@@ -58,7 +62,6 @@ function EditCollectionFolder({
   const [privacyLevel, setPrivacy] = useState<number>(
     collection.privacyLevel || 0
   );
-  const [isDefault, setAsDefault] = useState<boolean>(collection.default);
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
 
   return (
@@ -127,10 +130,10 @@ function EditCollectionFolder({
               onBlur={(event) => setFocused("")}
               defaultValue={collection.name}
               onChange={(event) => changeName(event.currentTarget.value)}
-              sx={{
+              styles={{
                 input: {
                   fontFamily: theme.headings.fontFamily,
-                  fontWeight: theme.headings.fontWeight,
+                  fontWeight: "bold",
                 },
               }}
             />
@@ -142,7 +145,13 @@ function EditCollectionFolder({
               </Menu.Target>
               <Menu.Dropdown>
                 <Menu.Label>Collection options</Menu.Label>
-                <Menu.Item icon={<IconCheck />} disabled={isDefault}>
+                <Menu.Item
+                  icon={<IconCheck />}
+                  disabled={defaultCollection.id === collection.id}
+                  onClick={() => {
+                    defaultFunction(collection);
+                  }}
+                >
                   Set collection as default
                 </Menu.Item>
                 <Menu.Item

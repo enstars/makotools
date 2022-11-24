@@ -56,7 +56,13 @@ function EditCard({ card }: { card: CollectedCard }) {
 
   return (
     <Box
-      sx={{ position: "relative", width: "100%", height: "100%", padding: 4 }}
+      sx={{
+        position: "relative",
+        width: "100%",
+        height: "100%",
+        padding: 4,
+        "&:hover": { cursor: "grab" },
+      }}
     >
       <Box
         sx={{
@@ -75,7 +81,7 @@ function EditCard({ card }: { card: CollectedCard }) {
           width: "50%",
           position: "absolute",
           bottom: 42,
-          left: 6,
+          left: 8,
           zIndex: 3,
         }}
       >

@@ -38,10 +38,11 @@ function CardCollections({
   console.log(profileCollections);
 
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [collections, handlers] = useListState([
+  const [collections, handlers] = useListState<CardCollection>([
     {
       id: 1,
       name: "Collection",
+      color: "#d3d6e0",
       privacyLevel: 0,
       default: true,
       cards: profile.collection || [],
@@ -51,7 +52,9 @@ function CardCollections({
   const [editCards, setEditCards] = useState<boolean>(false);
   const [currentCollection, setCurrentCollection] =
     useState<CardCollection | null>(null);
-
+  const [defaultCollection, setDefault] = useState<CardCollection>(
+    collections.filter((collection) => collection.default)[0]
+  );
   function removeCollection(collection: CardCollection) {
     handlers.remove(collections.indexOf(collection));
   }
@@ -68,9 +71,11 @@ function CardCollections({
           >
             <EditCollectionFolder
               collection={collection}
+              defaultCollection={defaultCollection}
               deleteFunction={removeCollection}
               cardsFunction={setEditCards}
               setFunction={setCurrentCollection}
+              defaultFunction={setDefault}
             />
           </Box>
         )}
@@ -83,6 +88,12 @@ function CardCollections({
   useEffect(() => {
     let collectionFolders = createEditFolders(collections);
   }, [collections]);
+
+  useEffect(() => {
+    collections.forEach((collection) => {
+      if (defaultCollection.id !== collection.id) collection.default = false;
+    });
+  }, [defaultCollection]);
 
   return (
     <Box>
@@ -98,7 +109,11 @@ function CardCollections({
                 radius="xl"
                 variant="subtle"
                 leftIcon={<IconDeviceFloppy />}
-                onClick={() => setEditMode(!editMode)}
+                onClick={() => {
+                  setEditMode(!editMode);
+                  setCurrentCollection(null);
+                  setEditCards(!editCards);
+                }}
               >
                 Save
               </Button>
@@ -107,7 +122,11 @@ function CardCollections({
                 radius="xl"
                 variant="subtle"
                 leftIcon={<IconX />}
-                onClick={() => setEditMode(!editMode)}
+                onClick={() => {
+                  setEditMode(!editMode);
+                  setCurrentCollection(null);
+                  setEditCards(!editCards);
+                }}
               >
                 Cancel
               </Button>
@@ -149,6 +168,7 @@ function CardCollections({
                     handlers.prepend({
                       id: collections.length + 1,
                       name: `Collection #${collections.length}`,
+                      color: "#d3d6e0",
                       privacyLevel: 0,
                       default: false,
                       cards: [],
@@ -186,9 +206,7 @@ function CardCollections({
           ) : (
             <Accordion
               variant="contained"
-              defaultValue={`${
-                collections.filter((collection) => collection.default)[0].id
-              }`}
+              defaultValue={defaultCollection.name}
             >
               {collections.map((collection) => (
                 <CollectionFolder key={collection.id} collection={collection} />
