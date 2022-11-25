@@ -56,7 +56,7 @@ interface CardCollection {
   name: string;
   privacyLevel: CollectionPrivacyLevel | number;
   default: boolean;
-  color?: string;
+  icon?: number;
   cards: CollectedCard[];
 }
 

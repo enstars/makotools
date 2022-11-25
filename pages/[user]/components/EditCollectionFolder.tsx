@@ -2,7 +2,6 @@ import {
   Paper,
   Group,
   Menu,
-  Indicator,
   ActionIcon,
   TextInput,
   Stack,
@@ -15,15 +14,15 @@ import {
   Space,
   Title,
 } from "@mantine/core";
+import { UseListStateHandlers } from "@mantine/hooks";
 import {
-  IconPencil,
-  IconCircle,
   IconDots,
   IconCheck,
   IconEye,
   IconX,
   IconTrash,
   IconChevronRight,
+  IconChevronUp,
 } from "@tabler/icons";
 import { Dispatch, SetStateAction, useState } from "react";
 
@@ -31,37 +30,26 @@ import { CardCollection } from "types/makotools";
 
 function EditCollectionFolder({
   collection,
+  index,
+  icons,
+  handlers,
   defaultCollection,
-  deleteFunction,
   cardsFunction,
   setFunction,
   defaultFunction,
 }: {
   collection: CardCollection;
+  index: number;
+  icons: JSX.Element[];
+  handlers: UseListStateHandlers<CardCollection>;
   defaultCollection: CardCollection;
-  deleteFunction: (collection: CardCollection) => void;
   cardsFunction: Dispatch<SetStateAction<boolean>>;
   setFunction: Dispatch<SetStateAction<CardCollection>>;
   defaultFunction: Dispatch<SetStateAction<CardCollection>>;
 }) {
-  const COLORS: string[] = [
-    "#d3d6e0",
-    "#ff8787",
-    "#faa2c1",
-    "#b197fc",
-    "#4dabf7",
-    "#38d9a9",
-    "#a9e34b",
-    "#ffd43b",
-  ];
   const theme = useMantineTheme();
 
   const [focused, setFocused] = useState<string>("");
-  const [collName, changeName] = useState<string>(collection.name || "");
-  const [color, setColor] = useState<string>(collection.color || "#D3D6E0");
-  const [privacyLevel, setPrivacy] = useState<number>(
-    collection.privacyLevel || 0
-  );
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
 
   return (
@@ -69,12 +57,14 @@ function EditCollectionFolder({
       <Modal
         opened={openDeleteModal}
         onClose={() => setOpenDeleteModal(false)}
-        title={<Title order={3}>Delete {collName}?</Title>}
+        title={<Title order={3}>Delete {collection.name}?</Title>}
         withCloseButton={false}
         centered
         size="lg"
       >
-        <Text size="lg">Are you sure you want to delete {collName}?</Text>
+        <Text size="lg">
+          Are you sure you want to delete {collection.name}?
+        </Text>
         <Space h="lg" />
         <Group position="right">
           <Button variant="outline" onClick={() => setOpenDeleteModal(false)}>
@@ -85,7 +75,7 @@ function EditCollectionFolder({
             color="red"
             onClick={() => {
               setOpenDeleteModal(false);
-              deleteFunction(collection);
+              handlers.remove(index);
             }}
           >
             Yes, Delete
@@ -95,29 +85,26 @@ function EditCollectionFolder({
       <Paper withBorder>
         <Group position="apart">
           <Group noWrap p="md">
+            {icons[collection.icon || 0]}
             <Menu position="top">
               <Menu.Target>
-                <Indicator
-                  color="indigo"
-                  size={15}
-                  offset={5}
-                  label={<IconPencil size={10} />}
-                >
-                  <ActionIcon>
-                    <IconCircle fill={color} size={20} />
-                  </ActionIcon>
-                </Indicator>
+                <ActionIcon>
+                  <IconChevronUp />
+                </ActionIcon>
               </Menu.Target>
               <Menu.Dropdown sx={{ width: "auto", maxWidth: "190px" }}>
-                <Menu.Label>Choose Collection Color</Menu.Label>
-                {COLORS.map((color) => (
+                <Menu.Label>Choose Collection Icon</Menu.Label>
+                {icons.map((icon, i) => (
                   <Menu.Item
-                    key={color}
+                    key={icon.key}
                     component="button"
-                    onClick={() => setColor(color)}
+                    onClick={() => {
+                      console.log(index, i);
+                      handlers.setItemProp(index, "icon", i);
+                    }}
                     sx={{ width: "auto", display: "inline" }}
                   >
-                    <IconCircle size={20} fill={color} stroke={0} />
+                    {icon}
                   </Menu.Item>
                 ))}
               </Menu.Dropdown>
@@ -129,7 +116,9 @@ function EditCollectionFolder({
               onFocus={(event) => setFocused(event.target.id)}
               onBlur={(event) => setFocused("")}
               defaultValue={collection.name}
-              onChange={(event) => changeName(event.currentTarget.value)}
+              onChange={(event) =>
+                handlers.setItemProp(index, "name", event.currentTarget.value)
+              }
               styles={{
                 input: {
                   fontFamily: theme.headings.fontFamily,
@@ -169,9 +158,13 @@ function EditCollectionFolder({
                         { value: "2", label: "Visible only to friends" },
                         { value: "3", label: "Completely private" },
                       ]}
-                      defaultValue={`${privacyLevel}`}
+                      defaultValue={`${collection.privacyLevel}`}
                       onChange={(value) =>
-                        setPrivacy(parseInt(value as string))
+                        handlers.setItemProp(
+                          index,
+                          "privacyLevel",
+                          parseInt(value as string)
+                        )
                       }
                     />
                   </Stack>

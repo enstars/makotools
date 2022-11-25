@@ -7,19 +7,24 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { IconCircle } from "@tabler/icons";
 import Link from "next/link";
 
 import CollectionCard from "./CollectionCard";
 
 import { CardCollection, CollectedCard } from "types/makotools";
 
-function CollectionFolder({ collection }: { collection: CardCollection }) {
+function CollectionFolder({
+  collection,
+  icons,
+}: {
+  collection: CardCollection;
+  icons: JSX.Element[];
+}) {
   return (
     <Accordion.Item value={collection.name}>
       <Accordion.Control>
         <Group noWrap>
-          <IconCircle fill={collection.color} size={20} stroke={0} />
+          {icons[collection.icon || 0]}
           <Title order={4}>{collection.name}</Title>
         </Group>
       </Accordion.Control>

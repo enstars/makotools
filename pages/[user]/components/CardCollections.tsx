@@ -6,9 +6,19 @@ import {
   Space,
   Stack,
   Text,
+  ThemeIcon,
   Title,
 } from "@mantine/core";
-import { IconDeviceFloppy, IconPencil, IconPlus, IconX } from "@tabler/icons";
+import {
+  IconCircle,
+  IconDeviceFloppy,
+  IconHeart,
+  IconMoodCry,
+  IconPencil,
+  IconPlus,
+  IconStar,
+  IconX,
+} from "@tabler/icons";
 import { useEffect, useState } from "react";
 import { useListState } from "@mantine/hooks";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
@@ -35,6 +45,22 @@ function CardCollections({
     getFirestoreUserCollection
   );
 
+  const ICON_SIZE = 25;
+  const ICONS = [
+    <ThemeIcon variant="outline" key="default">
+      <IconCircle />
+    </ThemeIcon>,
+    <ThemeIcon variant="outline" key="heart">
+      <IconHeart />
+    </ThemeIcon>,
+    <ThemeIcon variant="outline" key="star">
+      <IconStar />
+    </ThemeIcon>,
+    <ThemeIcon variant="outline" key="cry">
+      <IconMoodCry />
+    </ThemeIcon>,
+  ];
+
   console.log(profileCollections);
 
   const [editMode, setEditMode] = useState<boolean>(false);
@@ -42,7 +68,7 @@ function CardCollections({
     {
       id: 1,
       name: "Collection",
-      color: "#d3d6e0",
+      icon: 0,
       privacyLevel: 0,
       default: true,
       cards: profile.collection || [],
@@ -55,9 +81,8 @@ function CardCollections({
   const [defaultCollection, setDefault] = useState<CardCollection>(
     collections.filter((collection) => collection.default)[0]
   );
-  function removeCollection(collection: CardCollection) {
-    handlers.remove(collections.indexOf(collection));
-  }
+
+  const prevState = collections;
 
   function createEditFolders(collections: CardCollection[]) {
     return collections.map((collection, index) => (
@@ -71,8 +96,10 @@ function CardCollections({
           >
             <EditCollectionFolder
               collection={collection}
+              index={index}
+              icons={ICONS}
+              handlers={handlers}
               defaultCollection={defaultCollection}
-              deleteFunction={removeCollection}
               cardsFunction={setEditCards}
               setFunction={setCurrentCollection}
               defaultFunction={setDefault}
@@ -126,6 +153,7 @@ function CardCollections({
                   setEditMode(!editMode);
                   setCurrentCollection(null);
                   setEditCards(!editCards);
+                  handlers.setState(prevState);
                 }}
               >
                 Cancel
@@ -168,7 +196,7 @@ function CardCollections({
                     handlers.prepend({
                       id: collections.length + 1,
                       name: `Collection #${collections.length}`,
-                      color: "#d3d6e0",
+                      icon: 0,
                       privacyLevel: 0,
                       default: false,
                       cards: [],
@@ -200,6 +228,8 @@ function CardCollections({
           ) : editMode && editCards && currentCollection ? (
             <EditCollectionCards
               collection={currentCollection}
+              handlers={handlers}
+              index={collections.indexOf(currentCollection)}
               cardsFunction={setEditCards}
               setFunction={setCurrentCollection}
             />
@@ -209,7 +239,11 @@ function CardCollections({
               defaultValue={defaultCollection.name}
             >
               {collections.map((collection) => (
-                <CollectionFolder key={collection.id} collection={collection} />
+                <CollectionFolder
+                  key={collection.id}
+                  collection={collection}
+                  icons={ICONS}
+                />
               ))}
             </Accordion>
           )}
