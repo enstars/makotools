@@ -22,15 +22,20 @@ import CollectionCard from "./CollectionCard";
 
 import { useDayjs } from "services/libraries/dayjs";
 import { CardCollection, CollectedCard } from "types/makotools";
+import { GameCard, GameUnit } from "types/game";
 
 function EditCollectionCards({
   collection,
+  units,
+  allCards,
   handlers,
   index,
   cardsFunction,
   setFunction,
 }: {
   collection: CardCollection;
+  units: GameUnit[];
+  allCards: GameCard[];
   handlers: UseListStateHandlers<CardCollection>;
   index: number;
   cardsFunction: Dispatch<SetStateAction<boolean>>;
@@ -55,7 +60,7 @@ function EditCollectionCards({
 
   const ROW_HEIGHT = 200;
 
-  const height = Math.ceil(cards.length / NUM_COLS) * ROW_HEIGHT;
+  const height = Math.ceil(collection.cards.length / NUM_COLS) * ROW_HEIGHT;
 
   return (
     <Box>
@@ -71,7 +76,7 @@ function EditCollectionCards({
         <Title order={3}>Edit {collection.name} cards</Title>
       </Group>
       <Space h="md" />
-      {cards.length > 1 && (
+      {collection.cards.length > 1 && (
         <Select
           placeholder="Sort by..."
           data={[
@@ -108,27 +113,42 @@ function EditCollectionCards({
                   dayjs(a.dateAdded).diff(dayjs(b.dateAdded))
                 );
 
-                handlers.setItemProp(index, "cards", sorted);
+                break;
+              case "charId":
+                sorted = cards.sort((a: CollectedCard, b: CollectedCard) => {
+                  let charA =
+                    allCards.find((c) => c.id === a.id)?.character_id || 0;
+                  let charB =
+                    allCards.find((c) => c.id === b.id)?.character_id || 0;
+                  return charA - charB;
+                });
                 break;
               case "cardId":
                 sorted = cards.sort(
                   (a: CollectedCard, b: CollectedCard) => a.id - b.id
                 );
-                handlers.setItemProp(index, "cards", sorted);
                 break;
               case "amount":
                 sorted = cards.sort(
                   (a: CollectedCard, b: CollectedCard) => b.count - a.count
                 );
-                handlers.setItemProp(index, "cards", sorted);
+              case "rarity":
+                sorted = cards.sort((a: CollectedCard, b: CollectedCard) => {
+                  let rarityA =
+                    allCards.find((c) => c.id === a.id)?.rarity || 0;
+                  let rarityB =
+                    allCards.find((c) => c.id === b.id)?.rarity || 0;
+                  return rarityB - rarityA;
+                });
               default:
                 break;
             }
+            sorted && handlers.setItemProp(index, "cards", sorted);
           }}
         />
       )}
       <Space h="lg" />
-      {cards && cards.length > 0 ? (
+      {collection.cards && collection.cards.length > 0 ? (
         <Box sx={{ width: "100%", height: "100%" }}>
           <GridContextProvider
             onChange={(
@@ -149,12 +169,17 @@ function EditCollectionCards({
                 height: height,
               }}
             >
-              {cards
+              {collection.cards
                 .filter((c: CollectedCard) => c.count)
-                // .sort((a: CollectedCard, b: CollectedCard) => b.count - a.count)
-                .map((c: CollectedCard) => (
+                .map((c: CollectedCard, index: number) => (
                   <GridItem key={c.id}>
-                    <CollectionCard card={c} editing={true} />
+                    <CollectionCard
+                      card={c}
+                      editing={true}
+                      collHandlers={handlers}
+                      handlers={cardHandlers}
+                      index={index}
+                    />
                   </GridItem>
                 ))}
             </GridDropZone>

@@ -38,19 +38,14 @@ function CollectionFolder({
     borderRadius: theme.radius.lg,
   };
 
+  console.log(isYourProfile);
+
   return (
     <Accordion.Item value={collection.name}>
       <Accordion.Control>
         <Group noWrap>
           {icons[collection.icon || 0]}
-          <Title
-            order={4}
-            color={
-              isYourProfile && collection.privacyLevel > 0 ? "dimmed" : "gray"
-            }
-          >
-            {collection.name}
-          </Title>
+          <Title order={4}>{collection.name}</Title>
           {isYourProfile &&
             (collection.privacyLevel === 1 ? (
               <Tooltip

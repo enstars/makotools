@@ -10,12 +10,13 @@ import {
   NumberInput,
   createStyles,
 } from "@mantine/core";
+import { UseListStateHandlers } from "@mantine/hooks";
 import { IconX } from "@tabler/icons";
 import Link from "next/link";
 import { useState } from "react";
 
 import { getAssetURL } from "services/data";
-import { CollectedCard } from "types/makotools";
+import { CardCollection, CollectedCard } from "types/makotools";
 
 const useStyles = createStyles((theme) => ({
   switchRoot: {
@@ -49,10 +50,19 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-function EditCard({ card }: { card: CollectedCard }) {
+function EditCard({
+  card,
+  collHandlers,
+  handlers,
+  index,
+}: {
+  card: CollectedCard;
+  collHandlers: UseListStateHandlers<CardCollection>;
+  handlers: UseListStateHandlers<CollectedCard>;
+  index: number;
+}) {
   const { classes } = useStyles();
   const [checked, setChecked] = useState<boolean>(card.id > 0);
-  const [amount, setAmount] = useState<number>(card.count);
 
   return (
     <Box
@@ -72,7 +82,12 @@ function EditCard({ card }: { card: CollectedCard }) {
           zIndex: 3,
         }}
       >
-        <ActionIcon variant="filled" color="dark" radius="lg">
+        <ActionIcon
+          variant="filled"
+          color="dark"
+          radius="lg"
+          onClick={() => handlers.remove(index)}
+        >
           <IconX />
         </ActionIcon>
       </Box>
@@ -89,8 +104,10 @@ function EditCard({ card }: { card: CollectedCard }) {
           aria-label="Number of card copies"
           min={1}
           max={5}
-          value={amount}
-          onChange={(amt) => setAmount(amt as number)}
+          value={card.count}
+          onChange={(amt) =>
+            handlers.setItemProp(index, "count", amt as number)
+          }
         />
       </Box>
       <Paper radius="sm" withBorder sx={{ position: "relative" }}>
@@ -139,7 +156,7 @@ function EditCard({ card }: { card: CollectedCard }) {
           size="lg"
           onChange={(event) => {
             setChecked(event.currentTarget.checked);
-            card.id = card.id * -1;
+            handlers.setItemProp(index, "id", card.id * -1);
           }}
           classNames={{
             root: classes.switchRoot,
@@ -202,11 +219,26 @@ function RegularCard({ card }: { card: CollectedCard }) {
 function CollectionCard({
   card,
   editing,
+  collHandlers,
+  handlers,
+  index,
 }: {
   card: CollectedCard;
   editing: boolean;
+  collHandlers?: UseListStateHandlers<CardCollection>;
+  handlers?: UseListStateHandlers<CollectedCard>;
+  index?: number;
 }) {
-  return editing ? <EditCard card={card} /> : <RegularCard card={card} />;
+  return editing ? (
+    <EditCard
+      card={card}
+      collHandlers={collHandlers as UseListStateHandlers<CardCollection>}
+      handlers={handlers as UseListStateHandlers<CollectedCard>}
+      index={index as number}
+    />
+  ) : (
+    <RegularCard card={card} />
+  );
 }
 
 export default CollectionCard;

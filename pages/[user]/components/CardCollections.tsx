@@ -32,7 +32,7 @@ import { CardCollection, User, UserData } from "types/makotools";
 import { CONSTANTS } from "services/makotools/constants";
 import { getFirestoreUserCollection } from "services/firebase/firestore";
 import IconEnstars from "components/core/IconEnstars";
-import { GameUnit } from "types/game";
+import { GameCard, GameUnit } from "types/game";
 function CardCollections({
   user,
   profile,
@@ -43,8 +43,8 @@ function CardCollections({
   user: User;
   profile: UserData;
   uid: string;
-  cards: any;
-  units: any;
+  cards: GameCard[];
+  units: GameUnit[];
 }) {
   const { profileCollections, error } = useSWR(
     `users/${profileUid}/collections`,
@@ -215,7 +215,6 @@ function CardCollections({
                       default: false,
                       cards: [],
                     });
-                    console.log(collections);
                   }}
                 >
                   Add collection
@@ -242,6 +241,8 @@ function CardCollections({
           ) : editMode && editCards && currentCollection ? (
             <EditCollectionCards
               collection={currentCollection}
+              units={units}
+              allCards={cards}
               handlers={handlers}
               index={collections.indexOf(currentCollection)}
               cardsFunction={setEditCards}
