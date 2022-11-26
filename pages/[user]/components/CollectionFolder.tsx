@@ -78,7 +78,7 @@ function CollectionFolder({
                 </ThemeIcon>
               </Tooltip>
             ))}
-          {collection.default && (
+          {isYourProfile && collection.default && (
             <Tooltip
               multiline
               width={200}
