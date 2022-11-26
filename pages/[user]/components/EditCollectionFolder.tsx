@@ -13,6 +13,7 @@ import {
   Modal,
   Space,
   Title,
+  Box,
 } from "@mantine/core";
 import { UseListStateHandlers } from "@mantine/hooks";
 import {
@@ -42,10 +43,10 @@ function EditCollectionFolder({
   index: number;
   icons: JSX.Element[];
   handlers: UseListStateHandlers<CardCollection>;
-  defaultCollection: CardCollection;
+  defaultCollection: CardCollection | null;
   cardsFunction: Dispatch<SetStateAction<boolean>>;
   setFunction: Dispatch<SetStateAction<CardCollection>>;
-  defaultFunction: Dispatch<SetStateAction<CardCollection>>;
+  defaultFunction: Dispatch<SetStateAction<CardCollection | null>>;
 }) {
   const theme = useMantineTheme();
 
@@ -85,15 +86,18 @@ function EditCollectionFolder({
       <Paper withBorder>
         <Group position="apart">
           <Group noWrap p="md">
-            {icons[collection.icon || 0]}
             <Menu position="top">
               <Menu.Target>
                 <ActionIcon>
-                  <IconChevronUp />
+                  <Box sx={{ display: "flex", flexFlow: "row no-wrap" }}>
+                    {icons[collection.icon || 0]} <IconChevronUp size={20} />
+                  </Box>
                 </ActionIcon>
               </Menu.Target>
-              <Menu.Dropdown sx={{ width: "auto", maxWidth: "190px" }}>
-                <Menu.Label>Choose Collection Icon</Menu.Label>
+              <Menu.Dropdown sx={{ width: "auto", maxWidth: "260px" }}>
+                <Menu.Label sx={{ textAlign: "center" }}>
+                  Choose a collection icon
+                </Menu.Label>
                 {icons.map((icon, i) => (
                   <Menu.Item
                     key={icon.key}
@@ -136,7 +140,10 @@ function EditCollectionFolder({
                 <Menu.Label>Collection options</Menu.Label>
                 <Menu.Item
                   icon={<IconCheck />}
-                  disabled={defaultCollection.id === collection.id}
+                  disabled={
+                    defaultCollection?.id === collection.id ||
+                    collection.privacyLevel > 0
+                  }
                   onClick={() => {
                     defaultFunction(collection);
                   }}
@@ -159,13 +166,20 @@ function EditCollectionFolder({
                         { value: "3", label: "Completely private" },
                       ]}
                       defaultValue={`${collection.privacyLevel}`}
-                      onChange={(value) =>
+                      onChange={(value) => {
                         handlers.setItemProp(
                           index,
                           "privacyLevel",
                           parseInt(value as string)
-                        )
-                      }
+                        );
+                        if (
+                          parseInt(value as string) > 0 &&
+                          defaultCollection?.id === collection.id
+                        ) {
+                          handlers.setItemProp(index, "default", false);
+                          defaultFunction(null);
+                        }
+                      }}
                     />
                   </Stack>
                 </Menu.Item>

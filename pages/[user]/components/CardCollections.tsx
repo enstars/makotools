@@ -31,40 +31,52 @@ import EditCollectionCards from "./EditCollectionCards";
 import { CardCollection, User, UserData } from "types/makotools";
 import { CONSTANTS } from "services/makotools/constants";
 import { getFirestoreUserCollection } from "services/firebase/firestore";
+import IconEnstars from "components/core/IconEnstars";
+import { GameUnit } from "types/game";
 function CardCollections({
   user,
   profile,
   uid: profileUid,
+  cards,
+  units,
 }: {
   user: User;
   profile: UserData;
   uid: string;
+  cards: any;
+  units: any;
 }) {
   const { profileCollections, error } = useSWR(
     `users/${profileUid}/collections`,
     getFirestoreUserCollection
   );
 
-  const ICON_SIZE = 25;
-  const ICONS = [
-    <ThemeIcon variant="outline" key="default">
+  let ICONS = [
+    <ThemeIcon key="default">
       <IconCircle />
     </ThemeIcon>,
-    <ThemeIcon variant="outline" key="heart">
+    <ThemeIcon color="pink" key="heart">
       <IconHeart />
     </ThemeIcon>,
-    <ThemeIcon variant="outline" key="star">
+    <ThemeIcon color="yellow" key="star">
       <IconStar />
     </ThemeIcon>,
-    <ThemeIcon variant="outline" key="cry">
+    <ThemeIcon color="cyan" key="cry">
       <IconMoodCry />
     </ThemeIcon>,
   ];
 
+  units.forEach((unit: GameUnit) =>
+    ICONS.push(
+      <ThemeIcon key={unit.id} color={unit.image_color}>
+        <IconEnstars unit={unit.id} />
+      </ThemeIcon>
+    )
+  );
+
   console.log(profileCollections);
 
-  const [editMode, setEditMode] = useState<boolean>(false);
-  const [collections, handlers] = useListState<CardCollection>([
+  const PROFILE_COLLECTIONS: CardCollection[] = [
     {
       id: 1,
       name: "Collection",
@@ -73,16 +85,18 @@ function CardCollections({
       default: true,
       cards: profile.collection || [],
     },
-  ]);
+  ];
+
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const [collections, handlers] =
+    useListState<CardCollection>(PROFILE_COLLECTIONS);
   const isYourProfile = user.loggedIn && user.db.suid === profile.suid;
   const [editCards, setEditCards] = useState<boolean>(false);
   const [currentCollection, setCurrentCollection] =
     useState<CardCollection | null>(null);
-  const [defaultCollection, setDefault] = useState<CardCollection>(
+  const [defaultCollection, setDefault] = useState<CardCollection | null>(
     collections.filter((collection) => collection.default)[0]
   );
-
-  const prevState = collections;
 
   function createEditFolders(collections: CardCollection[]) {
     return collections.map((collection, index) => (
@@ -118,7 +132,7 @@ function CardCollections({
 
   useEffect(() => {
     collections.forEach((collection) => {
-      if (defaultCollection.id !== collection.id) collection.default = false;
+      if (defaultCollection?.id !== collection.id) collection.default = false;
     });
   }, [defaultCollection]);
 
@@ -137,9 +151,9 @@ function CardCollections({
                 variant="subtle"
                 leftIcon={<IconDeviceFloppy />}
                 onClick={() => {
-                  setEditMode(!editMode);
+                  setEditMode(false);
                   setCurrentCollection(null);
-                  setEditCards(!editCards);
+                  setEditCards(false);
                 }}
               >
                 Save
@@ -150,10 +164,10 @@ function CardCollections({
                 variant="subtle"
                 leftIcon={<IconX />}
                 onClick={() => {
-                  setEditMode(!editMode);
+                  setEditMode(false);
                   setCurrentCollection(null);
-                  setEditCards(!editCards);
-                  handlers.setState(prevState);
+                  setEditCards(false);
+                  handlers.setState(PROFILE_COLLECTIONS);
                 }}
               >
                 Cancel
@@ -165,7 +179,7 @@ function CardCollections({
               radius="xl"
               variant="subtle"
               leftIcon={<IconPencil />}
-              onClick={() => setEditMode(!editMode)}
+              onClick={() => setEditMode(true)}
             >
               Edit
             </Button>
@@ -236,13 +250,14 @@ function CardCollections({
           ) : (
             <Accordion
               variant="contained"
-              defaultValue={defaultCollection.name}
+              defaultValue={defaultCollection?.name || null}
             >
               {collections.map((collection) => (
                 <CollectionFolder
                   key={collection.id}
                   collection={collection}
                   icons={ICONS}
+                  isYourProfile={isYourProfile}
                 />
               ))}
             </Accordion>

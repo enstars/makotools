@@ -23,7 +23,7 @@ import {
   IconInfoCircle,
   IconMessageShare,
 } from "@tabler/icons";
-import { useRef, Fragment, useState, useEffect } from "react";
+import { useRef, Fragment, useState, useEffect, useMemo } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { useMediaQuery } from "@mantine/hooks";
 
@@ -32,7 +32,7 @@ import PageTitle from "../../components/sections/PageTitle";
 import getServerSideUser from "../../services/firebase/getServerSideUser";
 import { parseStringify } from "../../services/utilities";
 import { useDayjs } from "../../services/libraries/dayjs";
-import { UserData } from "../../types/makotools";
+import { QuerySuccess, UserData } from "../../types/makotools";
 
 import CardCollections from "./components/CardCollections";
 
@@ -41,6 +41,8 @@ import BioDisplay from "components/sections/BioDisplay";
 import Picture from "components/core/Picture";
 import { CONSTANTS } from "services/makotools/constants";
 import notify from "services/libraries/notify";
+import { getLocalizedDataArray } from "services/data";
+import { GameCard, GameUnit } from "types/game";
 
 function PatreonBanner({ profile }: { profile: UserData }) {
   if (profile?.admin?.patreon) {
@@ -62,8 +64,20 @@ function PatreonBanner({ profile }: { profile: UserData }) {
   return null;
 }
 
-function Page({ profile, uid }: { profile: UserData; uid: string }) {
+function Page({
+  profile,
+  uid,
+  cardsQuery,
+  unitsQuery,
+}: {
+  profile: UserData;
+  uid: string;
+  cardsQuery: QuerySuccess<GameCard[]>;
+  unitsQuery: QuerySuccess<GameUnit[]>;
+}) {
   const { dayjs } = useDayjs();
+  const cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
+  const units = useMemo(() => unitsQuery.data, [unitsQuery.data]);
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.xs}px)`);
@@ -262,7 +276,13 @@ function Page({ profile, uid }: { profile: UserData; uid: string }) {
         </Group>
       </Paper>
       <Divider my="xs" />
-      <CardCollections user={user} profile={profile} uid={uid} />
+      <CardCollections
+        user={user}
+        profile={profile}
+        uid={uid}
+        cards={cards}
+        units={units}
+      />
     </>
   );
 }
@@ -271,7 +291,23 @@ Page.getLayout = getLayout({ hideOverflow: true });
 export default Page;
 
 export const getServerSideProps = getServerSideUser(
-  async ({ params, admin }) => {
+  async ({ params, admin, locale }) => {
+    const cardsQuery: any = await getLocalizedDataArray<GameCard>(
+      "cards",
+      locale,
+      "id",
+      ["id", "character_id", "rarity"]
+    );
+    const unitsQuery: any = await getLocalizedDataArray<GameUnit>(
+      "units",
+      locale,
+      "id",
+      ["id", "image_color"]
+    );
+
+    if (cardsQuery.status === "error" || unitsQuery.status === "error")
+      return { notFound: true };
+
     if (typeof params?.user !== "string" || !params.user.startsWith("@")) {
       return {
         notFound: true,
@@ -288,6 +324,8 @@ export const getServerSideProps = getServerSideUser(
         props: {
           profile,
           uid: querySnap.docs[0].id,
+          cardsQuery: cardsQuery,
+          unitsQuery: unitsQuery,
           meta: {
             title: profile?.name
               ? `${profile.name} (@${profile.username})`

@@ -105,7 +105,7 @@ function EditCard({ card }: { card: CollectedCard }) {
               sx={{
                 position: "absolute",
                 top: 0,
-                left: card.id < 0 ? "auto" : 120,
+                left: card.id < 0 ? "auto" : 150,
                 borderRadius: "4px 4px 0px 0px",
                 transition: "left 0.2s linear",
                 MozTransition: "left 0.2s linear",
@@ -120,7 +120,7 @@ function EditCard({ card }: { card: CollectedCard }) {
               sx={{
                 position: "absolute",
                 top: 0,
-                right: card.id > 0 ? "auto" : 120,
+                right: card.id > 0 ? "auto" : 150,
                 borderRadius: "4px 4px 0px 0px",
                 transition: "right 0.2s linear",
                 MozTransition: "right 0.2s linear",
