@@ -146,5 +146,8 @@
   },
   "_comment": "Add empty prettier key in order to override code editor settings while applying all Prettier defaults",
   "prettier": {},
-  "packageManager": "yarn@3.2.2"
+  "packageManager": "yarn@3.2.2",
+  "resolutions": {
+    "next-translate@^1.6.0": "patch:next-translate@npm:1.6.0#.yarn/patches/next-translate-npm-1.6.0-6f2148f6ed.patch"
+  }
 }

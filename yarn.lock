@@ -7673,7 +7673,7 @@ __metadata:
     next: ^13.0.3
     next-firebase-auth: ^1.0.0-canary.9
     next-i18next: ^12.1.0
-    next-translate: ^1.6.0
+    next-translate: 1.6.0
     normalize.css: ^8.0.1
     prettier: ^2.7.1
     raw-loader: ^4.0.2
@@ -8057,13 +8057,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next-translate@npm:^1.6.0":
+"next-translate@npm:1.6.0":
   version: 1.6.0
   resolution: "next-translate@npm:1.6.0"
   peerDependencies:
     next: ">= 10.0.0"
     react: ">= 16.8.0"
   checksum: 766475bc7362fc8b6a5409586d6248e0c03405d71b5ced2274fefc275803eb68137225952ed9d1651d8bd396fec14fad42ad63b4eca64e2b038dbcc7926a3ddc
+  languageName: node
+  linkType: hard
+
+"next-translate@patch:next-translate@npm:1.6.0#.yarn/patches/next-translate-npm-1.6.0-6f2148f6ed.patch::locator=makotools%40workspace%3A.":
+  version: 1.6.0
+  resolution: "next-translate@patch:next-translate@npm%3A1.6.0#.yarn/patches/next-translate-npm-1.6.0-6f2148f6ed.patch::version=1.6.0&hash=13bace&locator=makotools%40workspace%3A."
+  peerDependencies:
+    next: ">= 10.0.0"
+    react: ">= 16.8.0"
+  checksum: cb6a793cc15ba35f64886f0e010894de1b0c6bec524826224dc81a83ade741741682411ea9aa8ca4cca8110685c8e35bff3fe021182d166d4c038bc3f7342d1f
   languageName: node
   linkType: hard
 

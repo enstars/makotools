@@ -82,10 +82,10 @@ function Page({
   gameEventsQuery: QuerySuccess<GameEvent[]>;
   scoutsQuery: QuerySuccess<ScoutEvent[]>;
 }) {
-  const { t } = useTranslation("common");
+  const { t } = useTranslation();
   const { classes } = useStyles();
 
-  // console.log(t, t("test"));
+  console.log(t, t("common:test"));
   const characters: GameCharacter[] = useMemo(
     () => charactersQuery.data,
     [charactersQuery.data]
@@ -117,7 +117,6 @@ function Page({
       noWrap
       className={classes.main}
     >
-      {t("home:welcome")}
       <Stack align="flex-start" spacing="lg" className={classes.mainCol}>
         <Banner events={events} />
         <UserVerification />

@@ -1,6 +1,6 @@
 const nextTranslate = require("next-translate");
 
-const config = nextTranslate({
+module.exports = nextTranslate({
   webpack: (config) => {
     config.module.rules.push(
       {
@@ -24,36 +24,6 @@ const config = nextTranslate({
     domains: ["uchuu.ensemble.moe", "assets.enstars.link"],
   },
 
-  // i18n: {
-  //   locales: [
-  //     // Game official languages
-  //     "en", // English
-  //     "ja", // Japanese
-  //     "zh", // Standard Mandarin / Simplified
-  //     "zh-TW", // Taiwanese Mandarin / Traditional
-  //     "ko", // Korean
-
-  //     // MakoTools statistics
-  //     "id", // Indonesian
-  //     "fil", // Filipino
-  //     "ms", // Malaysian
-  //     "pt-BR", // Brazilian Portugese
-  //     "th", // Thai
-  //     "vi", // Vietnamese
-
-  //     // Future adoption, hopefully!
-  //     // "es", // Spanish
-  //     // "de", // German
-  //     // "it", // Italian
-  //     // "pol", // Polish
-  //     // "fr", // French
-  //     // "ru", // Russian
-  //     // "pt", // Portugese
-  //     // "ar", // Arabic
-  //   ],
-  //   defaultLocale: "en",
-  // },
-
   pageExtensions: ["page.tsx", "page.ts", "page.jsx", "page.js"],
 
   async redirects() {
@@ -66,6 +36,3 @@ const config = nextTranslate({
     ];
   },
 });
-console.log("TEST???", nextTranslate, config);
-
-module.exports = config;

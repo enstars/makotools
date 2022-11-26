@@ -17,7 +17,6 @@ import {
   IconSpy,
 } from "@tabler/icons";
 import Link from "next/link";
-import useTranslation from "next-translate/useTranslation";
 
 import { getLayout } from "../../components/Layout";
 import PageTitle from "../../components/sections/PageTitle";
@@ -25,7 +24,6 @@ import PageTitle from "../../components/sections/PageTitle";
 import Picture from "components/core/Picture";
 
 function Page() {
-  const { t } = useTranslation();
   const theme = useMantineTheme();
   const bannerBlue =
     theme.colorScheme === "dark" ? theme.colors.blue[9] : theme.colors.blue[5];
@@ -108,7 +106,6 @@ function Page() {
         </Box>
       </Box>
       <Blockquote icon={<IconBook2 />} pt={0}>
-        <Text size="xl">{t("common:test")}</Text>
         <Text size="xl">
           MakoTools is a website containing information, tools, and a lot more
           to aid you in playing Ensemble Stars!! Music English.
