@@ -22,7 +22,7 @@ export default class _Document extends Document {
         <ServerStyles
           html={initialProps.html}
           server={stylesServer}
-          key="mktls"
+          key="mktl"
         />,
       ],
     };
@@ -32,6 +32,8 @@ export default class _Document extends Document {
     return (
       <Html>
         <Head>
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" />
           <script
             defer
             src="https://static.cloudflareinsights.com/beacon.min.js"

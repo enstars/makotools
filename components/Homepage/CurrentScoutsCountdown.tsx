@@ -9,6 +9,7 @@ import {
   Text,
   Title,
 } from "@mantine/core";
+import useTranslation from "next-translate/useTranslation";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
@@ -42,6 +43,7 @@ const useStyles = createStyles((theme, _params) => ({
 }));
 
 function Countdown({ endDate }: { endDate: string }) {
+  const { t } = useTranslation("home");
   const [countdownAmt, setCountdownAmt] = useState<string>();
   useEffect(() => {
     const interval = setInterval(() => {
@@ -52,13 +54,14 @@ function Countdown({ endDate }: { endDate: string }) {
   }, [endDate]);
   return (
     <Group>
-      <Text weight={500}>Ends in </Text>
+      <Text weight={500}>{t("scout.end")}</Text>
       <Text weight={700}>{countdownAmt}</Text>
     </Group>
   );
 }
 
 function ScoutCard({ scout }: { scout: ScoutEvent }) {
+  const { t } = useTranslation("home");
   const { classes } = useStyles();
   return (
     <Card
@@ -79,8 +82,9 @@ function ScoutCard({ scout }: { scout: ScoutEvent }) {
       </Card.Section>
       <Group sx={{ padding: "5px" }}>
         <Title order={4}>
-          {scout.type === "scout" ? "SCOUT! " : ""}
-          {scout.name[0]}
+          {scout.type === "scout"
+            ? t("scout.scout", { name: scout.name[0] })
+            : t("scout.fs", { name: scout.name[0] })}
         </Title>
         <Badge
           variant="filled"
@@ -111,6 +115,7 @@ function CurrentScoutsCards({ scouts }: { scouts: ScoutEvent[] }) {
 }
 
 function CurrentScoutsCountdown({ scouts }: { scouts: ScoutEvent[] }) {
+  const { t } = useTranslation("home");
   const { dayjs } = useDayjs();
   const { classes } = useStyles();
   const currentScouts: ScoutEvent[] = scouts.filter((scout) => {
@@ -122,9 +127,9 @@ function CurrentScoutsCountdown({ scouts }: { scouts: ScoutEvent[] }) {
   return (
     <Container className={classes.scoutsContainer}>
       <Group align="end">
-        <Title order={2}>Current Scouts</Title>
+        <Title order={2}>{t("scout.current")}</Title>
         <Link href="/scouts" className={classes.link}>
-          See all scouts
+          {t("scout.seeAll")}
         </Link>
       </Group>
       <CurrentScoutsCards scouts={currentScouts} />

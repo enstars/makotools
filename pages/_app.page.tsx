@@ -142,10 +142,11 @@ function MakoTools({
           },
           primaryShade: { light: 6, dark: 5 },
           lineHeight: 1.5,
-          fontFamily: "Inter var, Inter, system-ui, Noto Sans JP, sans-serif",
+          fontFamily:
+            "Inter var, Inter, system-ui, Noto Sans JP, IBM Plex Sans Thai, sans-serif",
           headings: {
             fontFamily:
-              "SoraVariable, Sora, InterVariable, Inter, system-ui, Noto Sans JP, sans-serif",
+              "SoraVariable, Sora, InterVariable, Inter, system-ui, Noto Sans JP, IBM Plex Sans Thai, sans-serif",
             fontWeight: 800,
           },
           other: {
@@ -160,6 +161,12 @@ function MakoTools({
         <NavigationProgress />
         <Head>
           <meta name="viewport" content="initial-scale=1, width=device-width" />
+          {router.locale === "th" && (
+            <link
+              href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;700&display=swap"
+              rel="stylesheet"
+            />
+          )}
         </Head>
         <Analytics />
         <NotificationsProvider position="top-center">

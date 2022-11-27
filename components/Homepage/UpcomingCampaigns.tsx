@@ -19,6 +19,7 @@ import {
   IconStar,
 } from "@tabler/icons";
 import Link from "next/link";
+import useTranslation from "next-translate/useTranslation";
 
 import { useDayjs } from "../../services/libraries/dayjs";
 
@@ -68,6 +69,7 @@ function EventCard({
 }: {
   event: BirthdayEvent | GameEvent | ScoutEvent;
 }) {
+  const { t } = useTranslation("home");
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
   const formattedMonth = dayjs(event.start_date).format("MMM");
@@ -201,6 +203,7 @@ function UpcomingCampaigns({
 }: {
   events: (BirthdayEvent | GameEvent | ScoutEvent)[];
 }) {
+  const { t } = useTranslation("home");
   const { dayjs } = useDayjs();
   const { classes } = useStyles();
 
@@ -208,7 +211,7 @@ function UpcomingCampaigns({
     <Accordion.Item value="birthday">
       <Accordion.Control icon={<IconCalendarTime size={18} />}>
         <Text inline weight={500}>
-          Upcoming Campaigns
+          {t("upcomingCampaigns.title")}
         </Text>
       </Accordion.Control>
 
@@ -220,7 +223,7 @@ function UpcomingCampaigns({
         )}
         <Box mt="xs">
           <Anchor component={Link} href="/calendar" size="sm">
-            See full calendar
+            {t("upcomingCampaigns.seeAll")}
           </Anchor>
         </Box>
       </Accordion.Panel>

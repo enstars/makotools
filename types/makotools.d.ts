@@ -11,20 +11,13 @@ type Locale =
   | "zh" // Standard Mandarin / Simplified
   | "zh-TW" // Taiwanese Mandarin / Traditional
   | "ko" // Korean
-  // Oissu Statistics
+  // MakoTools Statistics
   | "id" // Indonesian
   | "fil" // Filipino
-  | "vi" // Vietnamese
-  | "ru" // Russian
   | "ms" // Malaysian
-  | "es" // Spanish
-  | "pt" // Portugese
   | "pt-BR" // Brazilian Portugese
-  | "fr" // French
-  | "de" // German
-  | "it" // Italian
-  | "ar" // Arabic
-  | "th"; // Thai
+  | "th" // Thai
+  | "vi"; // Vietnamese
 
 interface PageMeta {
   title: string;
