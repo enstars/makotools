@@ -7673,7 +7673,7 @@ __metadata:
     next: ^13.0.3
     next-firebase-auth: ^1.0.0-canary.9
     next-i18next: ^12.1.0
-    next-translate: 1.6.0
+    next-translate: ^1.6.0
     normalize.css: ^8.0.1
     prettier: ^2.7.1
     raw-loader: ^4.0.2
