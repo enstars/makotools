@@ -1,3 +1,23 @@
+const workaround = require("next-translate/lib/cjs/plugin/utils.js");
+
+// https://github.com/aralroca/next-translate/issues/888
+workaround.defaultLoader = `async (lang, ns) => {
+    if (process.env.NODE_ENV === "development") {
+      return import(\`./locales/\${lang}/\${ns}.json\`).then((m) => m.default);
+    }
+    console.log("AAAAAAAAAAAAAA");
+    try {
+      return await (
+        await fetch(\`https://tl.stars.ensemble.moe/\${lang}/\${ns}.json\`)
+      ).json();
+    }
+    catch (e) { 
+      return fetch(\`https://tl.stars.ensemble.moe/en/\${ns}.json\`).then((r) =>
+        r.json()
+      );
+    }
+  }`;
+
 module.exports = {
   locales: [
     // Official game languages
@@ -27,12 +47,5 @@ module.exports = {
     "*": ["common"],
     "/": ["home"],
     // "/about": ["about"],
-  },
-  loadLocaleFrom: async (lang, ns) => {
-    if (process.env.NODE_ENV === "development")
-      return import(`./locales/${lang}/${ns}.json`).then((m) => m.default);
-    return fetch(`https://tl.stars.ensemble.moe/${lang}/${ns}.json`).then((r) =>
-      r.json()
-    );
   },
 };
