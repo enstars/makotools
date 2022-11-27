@@ -58,6 +58,7 @@ interface UserData {
   readonly admin?: {
     disableTextFields?: boolean;
     patreon?: 0 | 1 | 2 | 3 | 4;
+    administrator?: boolean;
   };
 }
 interface UserPrivateData {

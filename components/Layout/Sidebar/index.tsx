@@ -253,51 +253,54 @@ function Sidebar(props: any) {
             )
           }
         />
-        {collapsed ? (
-          <TextInput
-            styles={(theme) => ({
-              input: {
-                padding: theme.spacing.xs,
-                paddingRight: 0,
-              },
-            })}
-            // variant="filled"
-            value=""
-            icon={<IconSearch size={18} />}
-            iconWidth={38}
-            onClick={() => {
-              console.log("hi");
-              toggleCollapsed();
-              if (props?.onCollapse) props.onCollapse();
-            }}
-          />
-        ) : (
-          <TextInput
-            styles={(theme) => ({
-              input: {
-                padding: theme.spacing.xs,
-              },
-            })}
-            // variant="unstyled"
-            value={searchValue}
-            onChange={(event) => setSearchValue(event.currentTarget.value)}
-            placeholder="Search"
-            icon={<IconSearch size={18} />}
-            iconWidth={38}
-            rightSection={
-              searchValue && (
-                <ActionIcon
-                  size="xs"
-                  onClick={() => {
-                    setSearchValue("");
-                  }}
-                >
-                  <IconX size={14} />
-                </ActionIcon>
-              )
-            }
-          />
-        )}
+        {user.loggedIn &&
+          ((user.db.admin?.patreon && user.db.admin?.patreon >= 1) ||
+            user.db.admin?.administrator) &&
+          (collapsed ? (
+            <TextInput
+              styles={(theme) => ({
+                input: {
+                  padding: theme.spacing.xs,
+                  paddingRight: 0,
+                },
+              })}
+              // variant="filled"
+              value=""
+              icon={<IconSearch size={18} />}
+              iconWidth={38}
+              onClick={() => {
+                console.log("hi");
+                toggleCollapsed();
+                if (props?.onCollapse) props.onCollapse();
+              }}
+            />
+          ) : (
+            <TextInput
+              styles={(theme) => ({
+                input: {
+                  padding: theme.spacing.xs,
+                },
+              })}
+              // variant="unstyled"
+              value={searchValue}
+              onChange={(event) => setSearchValue(event.currentTarget.value)}
+              placeholder="Search"
+              icon={<IconSearch size={18} />}
+              iconWidth={38}
+              rightSection={
+                searchValue && (
+                  <ActionIcon
+                    size="xs"
+                    onClick={() => {
+                      setSearchValue("");
+                    }}
+                  >
+                    <IconX size={14} />
+                  </ActionIcon>
+                )
+              }
+            />
+          ))}
       </Navbar.Section>
       <Navbar.Section
         grow
