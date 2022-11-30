@@ -3,7 +3,7 @@ const workaround = require("next-translate/lib/cjs/plugin/utils.js");
 // https://github.com/aralroca/next-translate/issues/888
 workaround.defaultLoader = `async (lang, ns) => {
     if (process.env.NODE_ENV === "development") {
-      return import(\`./locales/\${lang}/\${ns}.json\`).then((m) => m.default);
+      return import(\`/locales/\${lang}/\${ns}.json\`).then((m) => m.default);
     }
     console.log("AAAAAAAAAAAAAA");
     try {
