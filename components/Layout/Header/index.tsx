@@ -38,6 +38,7 @@ function HeaderApp({
             setOpened(false);
           }}
           hidden={false}
+          disableResize
         />
       </Drawer>
       <Affix

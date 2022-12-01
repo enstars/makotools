@@ -1,4 +1,4 @@
-import React, { forwardRef, ReactElement } from "react";
+import React, { forwardRef, ReactElement, SyntheticEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import {
@@ -32,6 +32,7 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
+import { clamp } from "lodash";
 
 import MakotoolsLightComponent from "../../../assets/Logo/mkt_light_icon.svg";
 import MakotoolsDarkComponent from "../../../assets/Logo/mkt_dark_icon.svg";
@@ -140,7 +141,7 @@ function Sidebar(props: any) {
   if (props.permanentlyExpanded && collapsed) toggleCollapsed();
 
   function resize(event: MouseEvent) {
-    setWidth(width + (event.pageX - width));
+    setWidth(clamp(width + (event.pageX - width), 175, 300));
   }
 
   const linkList: LinkObject[] = [
@@ -412,12 +413,17 @@ function Sidebar(props: any) {
                       if (props?.onCollapse) props.onCollapse();
                     }}
                     variant="default"
-                    mr={-6}
+                    mr={-5}
                     sx={(theme) => ({
                       borderRadius: 0,
                       borderTopLeftRadius: theme.radius.md,
                       borderBottomLeftRadius: theme.radius.md,
+                      borderRightWidth: 0,
                       width: 100,
+                      borderColor:
+                        theme.colorScheme === "dark"
+                          ? theme.colors.dark[5]
+                          : theme.colors.gray[2],
                     })}
                   >
                     <Text component={Group} color="dimmed" spacing={4}>
@@ -433,21 +439,17 @@ function Sidebar(props: any) {
           )}
         </Stack>
       </Navbar.Section>
-      {!collapsed && (
+      {!collapsed && !props.disableResize && (
         <Box
           sx={{
             position: "absolute",
-            right: 0,
-            width: 1,
+            right: -3,
+            width: 6,
             height: "100%",
-            background:
-              theme.colorScheme === "dark"
-                ? theme.colors.dark[5]
-                : theme.colors.gray[4],
             zIndex: 5,
             "&:hover": { cursor: "ew-resize" },
           }}
-          onMouseDown={(event) => {
+          onMouseDown={(event: SyntheticEvent) => {
             event.preventDefault();
             mouseDown = true;
             console.log("down");
