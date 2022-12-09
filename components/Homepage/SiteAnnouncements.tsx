@@ -4,8 +4,9 @@ import useTranslation from "next-translate/useTranslation";
 import Link from "next/link";
 
 import Announcement from "pages/about/announcements/components/Announcement";
+import { MakoPost, StrapiItem } from "types/makotools";
 
-function SiteAnnouncements({ posts }: { posts: any }) {
+function SiteAnnouncements({ posts }: { posts: StrapiItem<MakoPost>[] }) {
   const { t } = useTranslation("home");
   return (
     <Accordion.Item value="announcement">
@@ -15,24 +16,16 @@ function SiteAnnouncements({ posts }: { posts: any }) {
         </Text>
       </Accordion.Control>
       <Accordion.Panel>
-        {posts?.error ? (
-          <Text size="sm" align="center" color="dimmed">
-            {t("announcements.fetchError")}
-          </Text>
-        ) : (
-          <>
-            <Stack spacing="sm">
-              {posts.map((p: any, i: number) => (
-                <Announcement key={p.id} announcement={p} i={i} />
-              ))}
-            </Stack>
-            <Box mt="xs">
-              <Anchor component={Link} href="/about/announcements" size="xs">
-                {t("announcements.seeAll")}
-              </Anchor>
-            </Box>
-          </>
-        )}
+        <Stack spacing="sm">
+          {posts.map((p, i: number) => (
+            <Announcement key={p.id} announcement={p.attributes} i={i} />
+          ))}
+        </Stack>
+        <Box mt="xs">
+          <Anchor component={Link} href="/about/announcements" size="xs">
+            {t("announcements.seeAll")}
+          </Anchor>
+        </Box>
       </Accordion.Panel>
     </Accordion.Item>
   );

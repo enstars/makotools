@@ -31,12 +31,14 @@ const CONSTANTS = {
     PREVIEW: "https://preview.ensemble.moe/",
     PATREON: "https://www.patreon.com/makotools",
     SEARCH: "https://oceans.ensemble.moe",
-    BACKEND: "http://oceans.ensemble.moe:1337",
+    BACKEND: "https://oceans.ensemble.moe/strapi",
   },
   KEYS: {
     CAPTCHA: "6LfoKlAiAAAAAND6h3R6MapgfOxEH-7usSm7_hIE",
     SEARCH:
       "vKI1H4hs4e03d87b8dc6f15d557418e5bd50face6e20b228d4716e285319cc9001479fdb",
+    BACKEND:
+      "9645227f1a0ac174f60f56319fc15ad3960c5f7811f69a07ea4aaf705be68c9f8974222c04589fa9c616cd12e09ca0e31c01039b9ba7c520e4345d553b9d15707411eba276a7c495fab69ec73914a71f75a7d8a46c0f2429bd8f38ccf8c763ff20180e6ff3d0e08d3194211d0991b016dd7c3d77105b6e9c1dfa308555a1d24d",
   },
   MODERATION: {
     GET_REPORT_LINK: (username: string, SUID: string) =>

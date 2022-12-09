@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext } from "next";
 import { AuthUserContext } from "next-firebase-auth";
 import { StaticImageData } from "next/image";
-import { WP_REST_API_Post } from "wp-types";
+import { StrapiResponse } from "strapi-sdk-js";
 
 type LoadingStatus = "success" | "error";
 
@@ -25,7 +25,27 @@ interface PageMeta {
   img: string;
 }
 
-interface MkAnnouncement extends WP_REST_API_Post {}
+interface MkAnnouncement {}
+type HTML = string;
+type RichText = HTML;
+
+interface StrapiItem<T> {
+  attributes: T;
+  id: number;
+}
+
+interface MakoPostCategory {
+  title: string;
+}
+
+interface MakoPost {
+  slug: string;
+  content: RichText;
+  title: string;
+  categories: StrapiResponse<StrapiItem<MakoPostCategory>[]>;
+  date_created: string;
+  preview?: string;
+}
 
 interface CollectedCard {
   id: ID;
