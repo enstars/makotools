@@ -30,10 +30,10 @@ function Skills({ card }: { card: GameCard }) {
       >
         <Title order={2}>Skills</Title>
 
-        <Group sx={{ flexGrow: 1, maxWidth: 350 }}>
+        <Group sx={{ "&&&": { flexGrow: 1, maxWidth: 350 } }}>
           <Input.Wrapper
             label="Live Lvl."
-            sx={{ flex: "2 1 0", minWidth: 150 }}
+            sx={{ "&&&": { flex: "2 1 0", minWidth: 150 } }}
           >
             <Slider
               label={(l) => `Lvl. ${l}`}
@@ -54,7 +54,7 @@ function Skills({ card }: { card: GameCard }) {
           </Input.Wrapper>
           <Input.Wrapper
             label="Support Lvl."
-            sx={{ flex: "1 1 0", minWidth: 85 }}
+            sx={{ "&&&": { flex: "1 1 0", minWidth: 85 } }}
           >
             <Slider
               label={(l) => `Lvl. ${l}`}
@@ -132,7 +132,7 @@ function Skills({ card }: { card: GameCard }) {
                   {s.type}
                 </Badge>
               </Box>
-              <Box sx={{ flex: "1 1 0", minWidth: 200 }}>
+              <Box sx={{ "&&&": { flex: "1 1 0", minWidth: 200 } }}>
                 <Text weight={700}>
                   {card?.skills?.[s.type]?.name?.[0]}{" "}
                   <Text
