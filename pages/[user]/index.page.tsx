@@ -5,10 +5,8 @@ import {
   Badge,
   Box,
   CopyButton,
-  Divider,
   Group,
   Image,
-  Menu,
   Paper,
   Space,
   Text,
@@ -24,7 +22,6 @@ import {
   IconBrandPatreon,
   IconCalendar,
   IconCopy,
-  IconDots,
   IconFlag,
   IconLink,
   IconUserPlus,
@@ -248,53 +245,6 @@ function Page({ profile, uid }: { profile: UserData; uid: string }) {
           </Box>
         </Group>
       )}
-
-      <Paper withBorder mt="xs">
-        <Group p={4} pl="xs">
-          {user.loggedIn && user.db.suid !== profile.suid && (
-            <Menu shadow="sm" width={200} position="top-end">
-              <Menu.Target>
-                <ActionIcon>
-                  <IconDots size={18} />
-                </ActionIcon>
-              </Menu.Target>
-
-              <Menu.Dropdown>
-                <Menu.Item
-                  component={Link}
-                  href={CONSTANTS.MODERATION.GET_REPORT_LINK(
-                    profile.username,
-                    profile.suid
-                  )}
-                  target="_blank"
-                  icon={<IconFlag size={14} />}
-                >
-                  Report User
-                </Menu.Item>
-                {user.loggedIn && (
-                  <Menu.Item
-                    icon={<IconUserPlus size={14} />}
-                    onClick={async () => {
-                      const token = await user.user.getIdToken();
-                      await fetch("/api/friendRequest", {
-                        method: "POST",
-                        headers: {
-                          Authorization: token || "",
-                          "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({ friend: uid }),
-                      });
-                    }}
-                  >
-                    Send Friend Request
-                  </Menu.Item>
-                )}
-              </Menu.Dropdown>
-            </Menu>
-          )}
-        </Group>
-      </Paper>
-      <Divider my="xs" />
 
       <Title order={2} mt="md" mb="xs">
         Card Collection
