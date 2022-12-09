@@ -1,5 +1,5 @@
 import { useWindowScroll } from "@mantine/hooks";
-import { Affix, Transition, Header, Drawer } from "@mantine/core";
+import { Affix, Transition, Header, Drawer, Box } from "@mantine/core";
 import { useState } from "react";
 
 import Sidebar from "../Sidebar";
@@ -38,43 +38,33 @@ function HeaderApp({
             setOpened(false);
           }}
           hidden={false}
+          disableResize
         />
       </Drawer>
       <Affix
         position={{ top: 0, right: 0 }}
-        sx={{
+        sx={(theme) => ({
           width: "calc(100% - var(--mantine-navbar-width, 0px))",
           zIndex: 200,
           boxSizing: "content-box",
-        }}
+        })}
       >
         <Transition transition="slide-down" mounted={scroll.y > 40 && !opened}>
           {(transitionStyles) => (
-            <Header
+            <Box
               style={{
                 ...transitionStyles,
               }}
-              height="auto"
-              px="md"
               sx={(theme) => ({
-                paddingTop: theme.spacing.xs / 1.5,
-                paddingBottom: theme.spacing.xs / 1.5,
-                minHeight: 37,
-                display: "flex",
-                alignItems: "center",
-                boxShadow: theme.shadows.sm,
-                maskRepeat: "repeat-y",
-                maskSize: "200% 30%",
-                maskClip: "no-clip",
-                maskImage: "linear-gradient(black, black)",
                 [theme.fn.largerThan("xs")]: {
                   ":before": {
                     content: "''",
                     position: "absolute",
                     left: 0,
-                    top: "100%",
+                    top: "calc(100% - 1px)",
                     width: cornerSize,
                     height: cornerSize,
+                    zIndex: 201,
                     background: `top left/200% 200% radial-gradient(transparent ${
                       cornerSize - 1
                     }px,  ${
@@ -94,12 +84,29 @@ function HeaderApp({
                 },
               })}
             >
-              <HeaderContents
-                getBreadcrumbs={getBreadcrumbs}
-                breadcrumbs={breadcrumbs}
-                setOpened={setOpened}
-              />
-            </Header>
+              <Header
+                height="auto"
+                px="md"
+                sx={(theme) => ({
+                  paddingTop: theme.spacing.xs / 1.5,
+                  paddingBottom: theme.spacing.xs / 1.5,
+                  minHeight: 37,
+                  display: "flex",
+                  alignItems: "center",
+                  boxShadow: theme.shadows.sm,
+                  maskRepeat: "repeat-y",
+                  maskSize: "200% 30%",
+                  maskClip: "no-clip",
+                  maskImage: "linear-gradient(black, black)",
+                })}
+              >
+                <HeaderContents
+                  getBreadcrumbs={getBreadcrumbs}
+                  breadcrumbs={breadcrumbs}
+                  setOpened={setOpened}
+                />
+              </Header>
+            </Box>
           )}
         </Transition>
       </Affix>

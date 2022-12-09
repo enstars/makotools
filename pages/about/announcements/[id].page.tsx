@@ -3,12 +3,14 @@ import { TypographyStylesProvider } from "@mantine/core";
 import { getLayout } from "../../../components/Layout";
 import PageTitle from "../../../components/sections/PageTitle";
 import Reactions from "../../../components/sections/Reactions";
-import { MkAnnouncement } from "../../../types/makotools";
+import { MakoPost, StrapiItem } from "../../../types/makotools";
 
-function Page({ post }: { post: MkAnnouncement }) {
+import { fetchOceans } from "services/makotools/posts";
+
+function Page({ post }: { post: StrapiItem<MakoPost> }) {
   return (
     <>
-      <PageTitle title={post.title.rendered} />
+      <PageTitle title={post.attributes.title} />
       <TypographyStylesProvider
         className="wordpress-style"
         sx={(theme) => ({
@@ -18,7 +20,7 @@ function Page({ post }: { post: MkAnnouncement }) {
           },
         })}
       >
-        <div dangerouslySetInnerHTML={{ __html: post.content.rendered }} />
+        <div dangerouslySetInnerHTML={{ __html: post.attributes.content }} />
       </TypographyStylesProvider>
       <Reactions />
     </>
@@ -34,15 +36,19 @@ export async function getServerSideProps({
   params: { id: string };
 }) {
   try {
-    const initRespose = await fetch(
-      `https://backend-stars.ensemble.moe/wp-main/wp-json/wp/v2/posts/${params.id}`
+    const { data: posts } = await fetchOceans<StrapiItem<MakoPost>[]>(
+      "/posts",
+      {
+        populate: "*",
+        filters: { slug: { $eq: params.id } },
+      }
     );
-    const post = await initRespose.json();
 
+    const post = posts[0];
     return {
       props: {
-        post,
-        meta: { title: post.title.rendered },
+        post: post,
+        meta: { title: post.attributes.title, desc: post.attributes.preview },
       },
     };
   } catch (e) {

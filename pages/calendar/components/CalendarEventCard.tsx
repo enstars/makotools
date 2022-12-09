@@ -63,9 +63,9 @@ function CalendarEventCard({
           href={
             event.type === "birthday"
               ? `/characters/${(event as BirthdayEvent).character_id}`
-              : (event as GameEvent).event_id
-              ? `/events/${(event as GameEvent).event_id}`
-              : `/scouts/${(event as ScoutEvent).gacha_id}`
+              : event.type === "scout" || event.type === "feature scout"
+              ? `/scouts/${(event as ScoutEvent).gacha_id}`
+              : `/events/${(event as GameEvent).event_id}`
           }
           sx={(theme) => ({
             borderRadius: theme.radius.sm,

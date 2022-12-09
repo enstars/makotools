@@ -34,7 +34,6 @@ function PicturePair({
           <Picture
             radius="sm"
             alt={card.title[0]}
-            withPlaceholder
             srcB2={`${url}${card.id}_${type}.png`}
             action="view"
             {...props}

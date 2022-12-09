@@ -11,6 +11,7 @@ import {
 import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
 import Link from "next/link";
+import useTranslation from "next-translate/useTranslation";
 
 import Picture from "components/core/Picture";
 import {
@@ -63,7 +64,14 @@ function EventImage({ event }: { event: GameEvent }) {
   );
 }
 
-function Countdown({ date, status }: { date: string; status: string }) {
+function Countdown({
+  date,
+  status,
+}: {
+  date: string;
+  status: "start" | "end";
+}) {
+  const { t } = useTranslation("home");
   const [countdownAmt, setCountdownAmt] = useState<string>();
   useEffect(() => {
     const interval = setInterval(() => {
@@ -74,13 +82,16 @@ function Countdown({ date, status }: { date: string; status: string }) {
   }, [date]);
   return (
     <Group>
-      <Text weight={600}>{status} in </Text>
+      <Text weight={600}>
+        {status === "start" ? t("event.start") : t("event.end")}
+      </Text>
       <Title order={4}>{countdownAmt}</Title>
     </Group>
   );
 }
 
 function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
+  const { t } = useTranslation("home");
   const { dayjs } = useDayjs();
 
   const [noWrap, setNoWrap] = useState<boolean>(true);
@@ -122,9 +133,11 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
   return (
     <Box>
       <Group align="end">
-        <Title order={2}>{currentEvent ? "Current Event" : "Next Event"}</Title>
+        <Title order={2}>
+          {currentEvent ? t("event.current") : t("event.next")}
+        </Title>
         <Link href="/events" className={classes.link}>
-          See all events
+          {t("event.seeAll")}
         </Link>
       </Group>
       <Paper
@@ -143,10 +156,10 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
                 <Title order={3} sx={{ maxWidth: "300px" }}>
                   {currentEvent.name[0]}
                 </Title>
-                <Countdown date={currentEvent.end_date} status="Ends" />
+                <Countdown date={currentEvent.end_date} status="end" />
               </Box>
               <Button color="indigo" disabled>
-                Event Calculator
+                {t("event.eventCalculator")}
               </Button>
             </Stack>
           </Group>
@@ -158,7 +171,7 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
                 <Title order={3} sx={{ maxWidth: "300px" }}>
                   {nextEvent.name[0]}
                 </Title>
-                <Countdown date={nextEvent.start_date} status="Starts" />
+                <Countdown date={nextEvent.start_date} status="start" />
               </Box>
               <Button color="indigo" disabled>
                 Event Calculator

@@ -8,6 +8,7 @@ import {
 } from "@mantine/core";
 // import Banner from "../assets/banner.png";
 import { useMemo } from "react";
+import useTranslation from "next-translate/useTranslation";
 
 import { getLayout } from "../components/Layout";
 import getServerSideUser from "../services/firebase/getServerSideUser";
@@ -25,8 +26,9 @@ import CurrentEventCountdown from "components/Homepage/CurrentEventCountdown";
 import CurrentScoutsCountdown from "components/Homepage/CurrentScoutsCountdown";
 import SiteAnnouncements from "components/Homepage/SiteAnnouncements";
 import UserVerification from "components/Homepage/UserVerification";
-import { QuerySuccess } from "types/makotools";
+import { MakoPost, QuerySuccess, StrapiItem } from "types/makotools";
 import { createBirthdayData } from "services/events";
+import { fetchOceans } from "services/makotools/posts";
 
 const useStyles = createStyles((theme, _params) => ({
   main: {
@@ -47,7 +49,7 @@ function SidePanel({
   ...props
 }: {
   events: (GameEvent | BirthdayEvent | ScoutEvent)[];
-  posts: any;
+  posts: StrapiItem<MakoPost>[];
   width?: number;
 }) {
   return (
@@ -76,13 +78,15 @@ function Page({
   gameEventsQuery,
   scoutsQuery,
 }: {
-  posts: any;
+  posts: StrapiItem<MakoPost>[];
   charactersQuery: QuerySuccess<GameCharacter[]>;
   gameEventsQuery: QuerySuccess<GameEvent[]>;
   scoutsQuery: QuerySuccess<ScoutEvent[]>;
 }) {
+  const { t } = useTranslation();
   const { classes } = useStyles();
 
+  console.log(t, t("common:test"));
   const characters: GameCharacter[] = useMemo(
     () => charactersQuery.data,
     [charactersQuery.data]
@@ -173,14 +177,15 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
   );
 
   try {
-    const initRespose = await fetch(
-      `https://backend-stars.ensemble.moe/wp-main/wp-json/wp/v2/posts?categories=5,6&per_page=5&page=1`
-    );
-    const initData = await initRespose.json();
+    const postResponses = await fetchOceans<StrapiItem<MakoPost>[]>("/posts", {
+      populate: "*",
+      sort: "date_created:desc",
+      pagination: { page: 1, pageSize: 8 },
+    });
 
     return {
       props: {
-        posts: initData,
+        posts: postResponses.data,
         charactersQuery: characters,
         gameEventsQuery: gameEvents,
         scoutsQuery: scouts,

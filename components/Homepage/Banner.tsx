@@ -3,6 +3,7 @@ import Autoplay from "embla-carousel-autoplay";
 import { Carousel } from "@mantine/carousel";
 import { Box, Button, createStyles, Stack, Text, Title } from "@mantine/core";
 import Link from "next/link";
+import useTranslation from "next-translate/useTranslation";
 
 import { BirthdayEvent, GameEvent, ScoutEvent } from "types/game";
 import { useDayjs } from "services/libraries/dayjs";
@@ -30,10 +31,10 @@ function Banner({
 }: {
   events: (BirthdayEvent | GameEvent | ScoutEvent)[];
 }) {
+  const { t } = useTranslation("home");
   const user = useUser();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const { dayjs } = useDayjs();
-
   const { classes } = useStyles();
   const pastEvents = events
     .filter(
@@ -49,8 +50,7 @@ function Banner({
     const currentBirthdays = events.filter(
       (event) =>
         event.type === "birthday" &&
-        dayjs(event.start_date).add(1, "day").format("MMDD") ===
-          dayjs().format("MMDD")
+        dayjs(event.start_date).format("MMDD") === dayjs().format("MMDD")
     );
 
     shownEvents.push(...currentBirthdays);
@@ -95,7 +95,7 @@ function Banner({
         />
         <Box className={classes.bannerOverlay}>
           <Stack spacing={4} align="start">
-            <Title order={2}>Welcome to MakoTools!</Title>
+            <Title order={2}>{t("welcome")}</Title>
             <Button
               variant="white"
               color="dark"
@@ -103,7 +103,7 @@ function Banner({
               href={user.loggedIn ? CONSTANTS.EXTERNAL_URLS.PATREON : "/login"}
               target="_blank"
             >
-              {user.loggedIn ? "Support us on Patreon!" : "Create an account!"}
+              {user.loggedIn ? t("supportOnPatreon") : t("createAccount")}
             </Button>
           </Stack>
         </Box>
@@ -126,11 +126,13 @@ function Banner({
                   : event.type === "tour"
                   ? event.name[0]
                   : event.type === "scout"
-                  ? `SCOUT! ${event.name[0]}`
+                  ? t("banner.scout", { name: event.name[0] })
                   : event.type === "feature scout"
-                  ? `Featured Scout: ${event.name[0]}`
+                  ? t("banner.fs", { name: event.name[0] })
                   : event.type === "birthday"
-                  ? `Happy birthday, ${event.name.split(" ")[0]}!`
+                  ? t("banner.birthday", {
+                      name: event.name,
+                    })
                   : event.name[0]}
               </Title>
               <Text weight={500} sx={{ opacity: 0.75 }}>

@@ -20,6 +20,8 @@ import EmoteSelector from "../utilities/emotes/EmoteSelector";
 import Emote from "../utilities/emotes/Emote";
 import { DbReaction, Reaction } from "../../types/makotools";
 
+import { CONSTANTS } from "services/makotools/constants";
+
 const useStyles = createStyles((theme) => ({
   wrapper: {
     transition: theme.other.transition,
@@ -31,7 +33,7 @@ const useStyles = createStyles((theme) => ({
 function Reactions() {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const { classes } = useStyles();
-  const { asPath } = useRouter();
+  const { asPath, ...router } = useRouter();
   const [reactions, setReactions] = useState<Reaction[]>([]);
   const [collapsed, setCollapsed] = useState<boolean>(true);
   const user = useUser();
@@ -53,55 +55,53 @@ function Reactions() {
 
   const currentPageId = asPath.replace(/\//g, "_");
   const addReaction = async (id: string) => {
-    if (user.loading || !user.loggedIn) return;
-    const captcha: any = await handleReCaptchaVerify();
-    fetch(
-      `https://backend-stars.ensemble.moe/db/reactions.php?page_id=${currentPageId}&content=${id}&name=${user.user.id}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "g-recaptcha-response": captcha,
+    if (!user.loggedIn) return;
+    const token = await user.user.getIdToken();
+    await fetch(`${CONSTANTS.EXTERNAL_URLS.BACKEND}/api/reactions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token || "",
+      },
+      body: JSON.stringify({
+        data: {
+          user: user.user.id,
+          type: "emote",
+          content: id,
+          page: currentPageId,
         },
-      }
-    )
-      .then((res) => {
-        fetchReactions();
-      })
-      .catch((e) => {
-        console.error(e);
-      });
+      }),
+    });
+
+    fetchReactions();
   };
   const fetchReactions = async () => {
-    const captcha: any = await handleReCaptchaVerify();
-    fetch(
-      `https://backend-stars.ensemble.moe/db/reactions.php?page_id=${currentPageId}`,
-      {
-        headers: {
-          "g-recaptcha-response": captcha,
-        },
-      }
-    )
-      .then((res) => res.json())
-      .then((data: DbReaction[]) => {
-        const reactions = data
-          .map((r) => {
-            const emote = emotes.find((e) => e.stringId === r.content);
-            if (emote) {
-              const reaction: Reaction = {
-                emote,
-                alt: emote.name,
-                id: r.submit_date,
-              };
-              return reaction;
-            }
-          })
-          .filter((e) => typeof e !== "undefined");
-        setReactions(reactions as Reaction[]);
+    const { data }: { data: DbReaction[] } = await (
+      await fetch(
+        `${CONSTANTS.EXTERNAL_URLS.BACKEND}/api/reactions?filters[page][$eq]=${currentPageId}&sort=createdAt:desc`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+    ).json();
+
+    const reactions = data
+      .map(({ attributes }) => {
+        const emote = emotes.find((e) => e.stringId === attributes.content);
+        if (emote) {
+          const reaction: Reaction = {
+            emote,
+            alt: emote.name,
+            id: attributes.createdAt,
+          };
+          return reaction;
+        }
       })
-      .catch((e) => {
-        console.error(e);
-      });
+      .filter((e) => typeof e !== "undefined");
+    setReactions(reactions as Reaction[]);
   };
 
   useEffect(() => {

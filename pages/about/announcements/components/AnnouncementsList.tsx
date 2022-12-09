@@ -2,47 +2,52 @@ import { Center, Loader, useMantineTheme } from "@mantine/core";
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import { MkAnnouncement } from "../../../../types/makotools";
+import { MakoPost, StrapiItem } from "../../../../types/makotools";
 
 import Announcement from "./Announcement";
+
+import { fetchOceans } from "services/makotools/posts";
 
 const PER_PAGE = 10; //max 100
 const CATEGORIES = [5, 6];
 
 function AnnouncementsList() {
   const theme = useMantineTheme();
-  const [announcements, setAnnouncements] = useState<MkAnnouncement[]>([]);
+  const [announcements, setAnnouncements] = useState<MakoPost[]>([]);
   const [allPagesCount, setAllPagesCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchAsync = async () => {
-      const initRespose = await fetch(
-        `https://backend-stars.ensemble.moe/wp-main/wp-json/wp/v2/posts?categories=${CATEGORIES.join(
-          ","
-        )}&per_page=${PER_PAGE}&page=1`
+      const postResponses = await fetchOceans<StrapiItem<MakoPost>[]>(
+        "/posts",
+        {
+          populate: "*",
+          sort: "date_created:desc",
+          pagination: { page: 1, pageSize: 25 },
+        }
       );
-
-      const initData = await initRespose.json();
-      const totalPagesString = initRespose.headers.get("X-WP-TotalPages");
-      if (totalPagesString) {
-        setAllPagesCount(parseInt(totalPagesString));
+      console.log(postResponses);
+      const totalPages = (postResponses.meta.pagination as any).pageCount;
+      if (totalPages) {
+        setAllPagesCount(totalPages);
       }
-      setAnnouncements(initData);
-      setCurrentPage(2);
+      setAnnouncements(postResponses.data.map((p) => p.attributes));
+      setCurrentPage(1);
     };
     fetchAsync();
   }, []);
 
   const loadMore = async () => {
-    const newLoad: MkAnnouncement[] = await (
-      await fetch(
-        `https://backend-stars.ensemble.moe/wp-main/wp-json/wp/v2/posts?categories=${CATEGORIES.join(
-          ","
-        )}&per_page=${PER_PAGE}&page=${currentPage}`
-      )
-    ).json();
-    setAnnouncements((a) => [...a, ...newLoad]);
+    const postResponses = await fetchOceans<StrapiItem<MakoPost>[]>("/posts", {
+      populate: "*",
+      sort: "date_created:desc",
+      pagination: { page: currentPage + 1, pageSize: 25 },
+    });
+    setAnnouncements((a) => [
+      ...a,
+      ...postResponses.data.map((p) => p.attributes),
+    ]);
     setCurrentPage((p) => p + 1);
   };
 
@@ -63,7 +68,7 @@ function AnnouncementsList() {
         }}
       >
         {announcements.map((a, i) => (
-          <Announcement key={a.id} announcement={a} i={i} />
+          <Announcement key={a.slug} announcement={a} i={i} />
         ))}
       </InfiniteScroll>
     </>

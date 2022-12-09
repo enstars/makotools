@@ -11,11 +11,16 @@ import {
   getDocs,
 } from "firebase/firestore";
 
-import { UserData, LoadingStatus } from "../../types/makotools";
+import {
+  UserData,
+  LoadingStatus,
+  UserPrivateData,
+} from "../../types/makotools";
 
 export function setFirestoreUserData(
   data: any,
-  callback: (s: { status: LoadingStatus }) => void
+  callback: (s: { status: LoadingStatus }) => void,
+  priv = false
 ) {
   const clientAuth = getAuth();
   const db = getFirestore();
@@ -23,9 +28,17 @@ export function setFirestoreUserData(
     callback({ status: "error" });
     return;
   }
-  setDoc(doc(db, "users", clientAuth?.currentUser?.uid), data, {
-    merge: true,
-  }).then(
+  setDoc(
+    doc(
+      db,
+      priv ? `users/${clientAuth.currentUser.uid}/private` : "users",
+      priv ? "values" : clientAuth.currentUser.uid
+    ),
+    data,
+    {
+      merge: true,
+    }
+  ).then(
     () => {
       callback({ status: "success" });
     },
@@ -49,6 +62,23 @@ export async function getFirestoreUserData(uid: string) {
   if (docSnap.exists()) {
     const data = docSnap.data();
     return data as UserData;
+  }
+  return undefined;
+}
+export async function getFirestorePrivateUserData(uid: string) {
+  const clientAuth = getAuth();
+  const db = getFirestore();
+
+  if (clientAuth.currentUser === null) {
+    return undefined;
+  }
+  const docSnap = await getDoc(
+    doc(db, `users/${uid || clientAuth?.currentUser?.uid}/private`, "values")
+  );
+
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    return data as UserPrivateData;
   }
   return undefined;
 }

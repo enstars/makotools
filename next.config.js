@@ -1,28 +1,7 @@
-const appLocales = [
-  // game languages
-  "en", // English
-  "ja", // Japanese
-  "zh", // Standard Mandarin / Simplified
-  "zh-TW", // Taiwanese Mandarin / Traditional
-  "ko", // Korean
-  // Oissu Statistics
-  "id", // Indonesian
-  "fil", // Filipino
-  "vi", // Vietnamese
-  "ru", // Russian
-  "ms", // Malaysian
-  "es", // Spanish
-  "pt", // Portugese
-  "pt-BR", // Brazilian Portugese
-  "fr", // French
-  "de", // German
-  "it", // Italian
-  "ar", // Arabic
-  "th", // Thai
-];
+const nextTranslate = require("next-translate");
 
-module.exports = {
-  webpack(config) {
+module.exports = nextTranslate({
+  webpack: (config) => {
     config.module.rules.push(
       {
         test: /\.svg$/i,
@@ -45,16 +24,6 @@ module.exports = {
     domains: ["uchuu.ensemble.moe", "assets.enstars.link"],
   },
 
-  compiler: {
-    // Enables the styled-components SWC transform
-    styledComponents: true,
-  },
-
-  i18n: {
-    locales: appLocales,
-    defaultLocale: "en",
-  },
-
   pageExtensions: ["page.tsx", "page.ts", "page.jsx", "page.js"],
 
   async redirects() {
@@ -66,4 +35,4 @@ module.exports = {
       },
     ];
   },
-};
+});

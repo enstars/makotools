@@ -94,7 +94,7 @@ function Page({
               <SectionTitle title="Event" id="event" Icon={IconMedal} />
               <PointsTable
                 id={event.event_id}
-                type={event.type}
+                type={scout.type}
                 eventName={event.name[0]}
                 scoutName={scout.name[0]}
                 banner={event.banner_id as ID}
@@ -153,6 +153,13 @@ export const getServerSideProps = getServerSideUser(
       "title",
       "type",
       "rarity",
+      "stats.ir.da",
+      "stats.ir.vo",
+      "stats.ir.pf",
+      "stats.ir4.da",
+      "stats.ir4.vo",
+      "stats.ir4.pf",
+      "character_id",
     ]);
 
     const scout: ScoutEvent = getScout.data;

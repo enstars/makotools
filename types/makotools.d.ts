@@ -1,7 +1,7 @@
 import { GetServerSidePropsContext } from "next";
 import { AuthUserContext } from "next-firebase-auth";
 import { StaticImageData } from "next/image";
-import { WP_REST_API_Post } from "wp-types";
+import { StrapiResponse } from "strapi-sdk-js";
 
 type LoadingStatus = "success" | "error";
 
@@ -11,20 +11,13 @@ type Locale =
   | "zh" // Standard Mandarin / Simplified
   | "zh-TW" // Taiwanese Mandarin / Traditional
   | "ko" // Korean
-  // Oissu Statistics
+  // MakoTools Statistics
   | "id" // Indonesian
   | "fil" // Filipino
-  | "vi" // Vietnamese
-  | "ru" // Russian
   | "ms" // Malaysian
-  | "es" // Spanish
-  | "pt" // Portugese
   | "pt-BR" // Brazilian Portugese
-  | "fr" // French
-  | "de" // German
-  | "it" // Italian
-  | "ar" // Arabic
-  | "th"; // Thai
+  | "th" // Thai
+  | "vi"; // Vietnamese
 
 interface PageMeta {
   title: string;
@@ -32,7 +25,27 @@ interface PageMeta {
   img: string;
 }
 
-interface MkAnnouncement extends WP_REST_API_Post {}
+interface MkAnnouncement {}
+type HTML = string;
+type RichText = HTML;
+
+interface StrapiItem<T> {
+  attributes: T;
+  id: number;
+}
+
+interface MakoPostCategory {
+  title: string;
+}
+
+interface MakoPost {
+  slug: string;
+  content: RichText;
+  title: string;
+  categories: StrapiResponse<StrapiItem<MakoPostCategory>[]>;
+  date_created: string;
+  preview?: string;
+}
 
 interface CollectedCard {
   id: ID;
@@ -51,11 +64,13 @@ interface UserData {
   suid: string;
   username: string;
   name?: string;
-  dark_mode: boolean;
   profile__banner?: number[];
   profile__bio?: string;
   profile__pronouns?: string;
   profile__start_playing?: string;
+
+  // private
+  dark_mode: boolean;
   setting__name_order?: NameOrder;
   setting__show_tl_badge?: ShowTlBadge;
   setting__game_region?: GameRegion;
@@ -63,7 +78,14 @@ interface UserData {
   readonly admin?: {
     disableTextFields?: boolean;
     patreon?: 0 | 1 | 2 | 3 | 4;
+    administrator?: boolean;
   };
+}
+interface UserPrivateData {
+  set(data: any, callback?: () => any): any;
+  friends__list?: UID[];
+  friends__sentRequests?: UID[];
+  friends__receivedRequests?: UID[];
 }
 
 interface UserLoading {
@@ -80,6 +102,8 @@ interface UserLoggedIn {
   loggedIn: true;
   user: AuthUserContext;
   db: UserData;
+  privateDb: UserPrivateData;
+  refreshData: () => void;
 }
 
 type User = UserLoading | UserLoggedOut | UserLoggedIn;
@@ -128,11 +152,13 @@ interface Emote {
 }
 
 interface DbReaction {
-  content: string;
   id: ID;
-  name: UID;
-  page_id: string;
-  submit_date: string;
+  attributes: {
+    content: string;
+    user: UID;
+    page: string;
+    createdAt: string;
+  };
 }
 
 interface Reaction {
