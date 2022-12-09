@@ -94,7 +94,7 @@ function Page({
               <SectionTitle title="Event" id="event" Icon={IconMedal} />
               <PointsTable
                 id={event.event_id}
-                type={event.type}
+                type={scout.type}
                 eventName={event.name[0]}
                 scoutName={scout.name[0]}
                 banner={event.banner_id as ID}
