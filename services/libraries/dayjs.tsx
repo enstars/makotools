@@ -13,7 +13,7 @@ import utc from "dayjs/plugin/utc";
 
 import "dayjs/locale/en";
 import "dayjs/locale/ja";
-import "dayjs/locale/zh";
+import "dayjs/locale/zh-cn";
 import "dayjs/locale/zh-tw";
 import "dayjs/locale/ko";
 import "dayjs/locale/id";
