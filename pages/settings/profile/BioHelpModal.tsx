@@ -248,7 +248,6 @@ function BioHelpModal({
           <Box sx={{ padding: "3px" }}>
             <Text className={classes.markdownInput}>&gt; Blockquote</Text>
             <Space h="lg" />
-            <Text className={classes.markdownInput}>*** or --- or ___</Text>
             <Text className={classes.markdownInput}>
               Try to put a blank line before...
             </Text>

@@ -77,7 +77,10 @@ function EventCard({
 
   let link = (event as BirthdayEvent).character_id
     ? `/characters/${(event as BirthdayEvent).character_id}`
-    : (event as GameEvent).event_id
+    : ((event as GameEvent).event_id && event.type === "song") ||
+      event.type === "shuffle" ||
+      event.type == "tour" ||
+      event.type === "anniversary"
     ? `/events/${(event as GameEvent).event_id}`
     : `/scouts/${(event as ScoutEvent).gacha_id}`;
 
