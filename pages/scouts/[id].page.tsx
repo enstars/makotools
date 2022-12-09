@@ -153,6 +153,13 @@ export const getServerSideProps = getServerSideUser(
       "title",
       "type",
       "rarity",
+      "stats.ir.da",
+      "stats.ir.vo",
+      "stats.ir.pf",
+      "stats.ir4.da",
+      "stats.ir4.vo",
+      "stats.ir4.pf",
+      "character_id",
     ]);
 
     const scout: ScoutEvent = getScout.data;
