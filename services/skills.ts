@@ -16,8 +16,8 @@ export function liveSkillParse(
 ) {
   const effect_values =
     skill?.effect_values || liveSkills[skill.duration]?.[rarity];
-  return `Increases the score by ${effect_values[level - 1][0]}% for ${
-    effect_values[level - 1][1]
+  return `Increases the score by ${effect_values[level - 1][1]}% for ${
+    effect_values[level - 1][0]
   } seconds.`;
 }
 
