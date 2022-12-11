@@ -77,7 +77,8 @@
     "lint": "next lint && yarn run check-types",
     "check-types": "tsc --noEmit",
     "tunnel": "cloudflared tunnel --url http://localhost:3000",
-    "upgrade": "yarn upgrade-interactive"
+    "upgrade": "yarn upgrade-interactive",
+    "extract-tl-keys": "npx i18next 'components/**' 'pages/**' -o 'extracted-tl-keys.json'"
   },
   "browserslist": {
     "production": [
@@ -104,6 +105,7 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-unused-imports": "^2.0.0",
+    "i18next-parser": "^7.0.3",
     "prettier": "^2.7.1",
     "raw-loader": "^4.0.2",
     "sass": "^1.56.1",
