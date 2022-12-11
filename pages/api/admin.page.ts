@@ -1,7 +1,7 @@
 import { getFirebaseAdmin } from "next-firebase-auth";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import { initAuthentication } from "../../services/firebase/authentication";
+import { initAuthentication } from "services/firebase/authentication";
 
 initAuthentication();
 

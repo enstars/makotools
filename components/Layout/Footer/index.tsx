@@ -10,11 +10,12 @@ import {
   Container,
 } from "@mantine/core";
 
-import { CONSTANTS } from "../../../services/makotools/constants";
-import Affiliates from "../../../assets/Affiliates/affiliates.svg";
+import Affiliates from "assets/Affiliates/affiliates.svg";
 
 import SvgBackground from "./mkt_bg.svg";
 import SupportBanner from "./SupportBanner";
+
+import { CONSTANTS } from "services/makotools/constants";
 
 function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
   const theme = useMantineTheme();

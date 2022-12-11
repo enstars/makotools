@@ -2,24 +2,24 @@ import React from "react";
 import { Group, AspectRatio, Badge, Divider } from "@mantine/core";
 import { IconStar } from "@tabler/icons";
 
-import {
-  getItemFromLocalizedDataArray,
-  getLocalizedDataArray,
-} from "../../services/data";
-import { getLayout } from "../../components/Layout";
-import PageTitle from "../../components/sections/PageTitle";
-import attributes from "../../data/attributes.json";
-import Reactions from "../../components/sections/Reactions";
-import NameOrder from "../../components/utilities/formatting/NameOrder";
-import getServerSideUser from "../../services/firebase/getServerSideUser";
-import { getLocalizedNumber } from "../../components/utilities/formatting/CardStatsNumber";
-import { QuerySuccess } from "../../types/makotools";
-import Picture from "../../components/core/Picture";
+import { getLayout } from "components/Layout";
+import PageTitle from "components/sections/PageTitle";
+import attributes from "data/attributes.json";
+import Reactions from "components/sections/Reactions";
+import NameOrder from "components/utilities/formatting/NameOrder";
+import { getLocalizedNumber } from "components/utilities/formatting/CardStatsNumber";
+import { QuerySuccess } from "types/makotools";
+import Picture from "components/core/Picture";
 
 import Stats, { sumStats } from "./components/Stats";
 import Skills from "./components/Skills";
 import Gallery from "./components/Gallery";
 
+import getServerSideUser from "services/firebase/getServerSideUser";
+import {
+  getItemFromLocalizedDataArray,
+  getLocalizedDataArray,
+} from "services/data";
 import { getNameOrder } from "services/game";
 import { getPreviewImageURL } from "services/makotools/preview";
 import { GameCard, GameCharacter } from "types/game";

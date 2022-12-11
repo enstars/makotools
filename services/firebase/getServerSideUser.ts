@@ -6,7 +6,7 @@ import {
   withAuthUserTokenSSR,
 } from "next-firebase-auth";
 
-import { UserData } from "../../types/makotools";
+import { UserData } from "types/makotools";
 
 export type GetServerSidePropsWithUser<
   P extends { [key: string]: any } = { [key: string]: any }

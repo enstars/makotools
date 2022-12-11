@@ -1,7 +1,8 @@
 import Head from "next/head";
 
-import { CONSTANTS } from "../../services/makotools/constants";
-import { PageMeta } from "../../types/makotools";
+import { PageMeta } from "types/makotools";
+
+import { CONSTANTS } from "services/makotools/constants";
 
 function Meta({ title, desc, img }: PageMeta) {
   const pageTitle = title

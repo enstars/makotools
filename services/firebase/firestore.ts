@@ -11,11 +11,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 
-import {
-  UserData,
-  LoadingStatus,
-  UserPrivateData,
-} from "../../types/makotools";
+import { UserData, LoadingStatus, UserPrivateData } from "types/makotools";
 
 export function setFirestoreUserData(
   data: any,

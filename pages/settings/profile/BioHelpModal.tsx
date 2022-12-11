@@ -13,8 +13,7 @@ import {
 } from "@mantine/core";
 import Link from "next/link";
 
-import emotes from "../../../services/makotools/emotes";
-
+import emotes from "services/makotools/emotes";
 import Emote from "components/utilities/emotes/Emote";
 
 const useStyles = createStyles((theme) => ({

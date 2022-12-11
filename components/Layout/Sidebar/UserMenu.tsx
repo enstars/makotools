@@ -16,7 +16,7 @@ import {
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-import useUser from "../../../services/firebase/user";
+import useUser from "services/firebase/user";
 
 function UserMenu({ trigger }: { trigger: any }) {
   const theme = useMantineTheme();

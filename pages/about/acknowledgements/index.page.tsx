@@ -1,7 +1,7 @@
 import { Anchor, Text, TypographyStylesProvider } from "@mantine/core";
 
-import { getLayout } from "../../../components/Layout";
-import PageTitle from "../../../components/sections/PageTitle";
+import { getLayout } from "components/Layout";
+import PageTitle from "components/sections/PageTitle";
 
 function Page() {
   return (

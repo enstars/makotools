@@ -5,7 +5,7 @@ import {
   GameEvent,
   ScoutEvent,
   GameCharacter,
-} from "../types/game";
+} from "types/game";
 
 import { useDayjs } from "./libraries/dayjs";
 

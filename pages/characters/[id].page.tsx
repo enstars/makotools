@@ -2,18 +2,18 @@ import { Text, Box, Alert } from "@mantine/core";
 import Confetti from "react-confetti";
 import { IconCake } from "@tabler/icons";
 
+import PageTitle from "components/sections/PageTitle";
+import Reactions from "components/sections/Reactions";
+import { getLayout } from "components/Layout";
+import Picture from "components/core/Picture";
+import { QuerySuccess } from "types/makotools";
+
+import getServerSideUser from "services/firebase/getServerSideUser";
 import {
   getData,
   getLocalizedDataArray,
   getItemFromLocalizedDataArray,
-} from "../../services/data";
-import PageTitle from "../../components/sections/PageTitle";
-import Reactions from "../../components/sections/Reactions";
-import getServerSideUser from "../../services/firebase/getServerSideUser";
-import { getLayout } from "../../components/Layout";
-import Picture from "../../components/core/Picture";
-import { QuerySuccess } from "../../types/makotools";
-
+} from "services/data";
 import { useDayjs } from "services/libraries/dayjs";
 import { GameCharacter } from "types/game";
 import { getNameOrder } from "services/game";

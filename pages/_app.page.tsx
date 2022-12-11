@@ -12,8 +12,8 @@ import "@fontsource/sora/variable.css";
 import "@fontsource/noto-sans-jp/japanese-400.css";
 import "@fontsource/noto-sans-jp/japanese-500.css";
 import "@fontsource/noto-sans-jp/japanese-700.css";
-import "../styles/inter.scss";
-import "../styles/wordpress.scss";
+import "styles/inter.scss";
+import "styles/wordpress.scss";
 import {
   startNavigationProgress,
   resetNavigationProgress,
@@ -24,10 +24,9 @@ import { Analytics } from "@vercel/analytics/react";
 import { AppProps } from "next/app";
 import { withAuthUser } from "next-firebase-auth";
 
-import { initAuthentication } from "../services/firebase/authentication";
-import { UserProvider } from "../services/firebase/user";
-import DayjsProvider from "../services/libraries/dayjs";
-
+import { initAuthentication } from "services/firebase/authentication";
+import { UserProvider } from "services/firebase/user";
+import DayjsProvider from "services/libraries/dayjs";
 import { CONSTANTS } from "services/makotools/constants";
 import { emotionCache } from "services/libraries/emotion";
 initAuthentication();

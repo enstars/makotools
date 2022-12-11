@@ -21,8 +21,7 @@ import {
 import Link from "next/link";
 import useTranslation from "next-translate/useTranslation";
 
-import { useDayjs } from "../../services/libraries/dayjs";
-
+import { useDayjs } from "services/libraries/dayjs";
 import { BirthdayEvent, GameEvent, ScoutEvent } from "types/game";
 import { retrieveClosestEvents } from "services/events";
 import Picture from "components/core/Picture";

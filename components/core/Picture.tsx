@@ -28,11 +28,10 @@ import {
   TransformWrapper,
 } from "@pronestor/react-zoom-pan-pinch";
 
-import { getAssetURL } from "../../services/data";
-import { downloadFromURL } from "../../services/utilities";
-import notify from "../../services/libraries/notify";
-import { CONSTANTS } from "../../services/makotools/constants";
-
+import { getAssetURL } from "services/data";
+import { downloadFromURL } from "services/utilities";
+import notify from "services/libraries/notify";
+import { CONSTANTS } from "services/makotools/constants";
 import useUser from "services/firebase/user";
 
 interface PictureProps extends NextMantineImageProps {

@@ -1,5 +1,5 @@
-import { getLayout } from "../../../components/Layout";
-import PageTitle from "../../../components/sections/PageTitle";
+import { getLayout } from "components/Layout";
+import PageTitle from "components/sections/PageTitle";
 
 import AnnouncementsList from "./components/AnnouncementsList";
 

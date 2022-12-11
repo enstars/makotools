@@ -2,7 +2,7 @@ import { Group, Box, Alert, Space, Paper, Table, Text } from "@mantine/core";
 import { IconStar } from "@tabler/icons";
 import Link from "next/link";
 
-import gachaCardEventBonus from "../../../data/gachaCardEventBonus.json";
+import gachaCardEventBonus from "data/gachaCardEventBonus.json";
 
 import Picture from "components/core/Picture";
 import { ID } from "types/game";

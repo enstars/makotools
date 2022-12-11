@@ -1,8 +1,8 @@
 import { ReactElement } from "react";
 
-import useUser from "../../../services/firebase/user";
-import { Locale } from "../../../types/makotools";
+import { Locale } from "types/makotools";
 
+import useUser from "services/firebase/user";
 import { getNameOrder } from "services/game";
 
 function NameOrder({

@@ -14,12 +14,12 @@ import { IconChevronDown, IconChevronUp, IconMoodSmile } from "@tabler/icons";
 import { Collapse } from "react-collapse";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
-import emotes from "../../services/makotools/emotes";
-import useUser from "../../services/firebase/user";
 import EmoteSelector from "../utilities/emotes/EmoteSelector";
 import Emote from "../utilities/emotes/Emote";
-import { DbReaction, Reaction } from "../../types/makotools";
+import { DbReaction, Reaction } from "types/makotools";
 
+import useUser from "services/firebase/user";
+import emotes from "services/makotools/emotes";
 import { CONSTANTS } from "services/makotools/constants";
 
 const useStyles = createStyles((theme) => ({

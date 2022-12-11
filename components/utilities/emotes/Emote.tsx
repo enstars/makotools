@@ -1,7 +1,7 @@
 import { MantineSize, Text, Tooltip, useMantineTheme } from "@mantine/core";
 import Image from "next/image";
 
-import { Emote } from "../../../types/makotools";
+import { Emote } from "types/makotools";
 
 const EMOTE_SIZE = 24;
 

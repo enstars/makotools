@@ -4,7 +4,6 @@ import {
   Card,
   createStyles,
   Group,
-  Image,
   Input,
   Select,
   Text,
@@ -14,9 +13,7 @@ import { IconTrash } from "@tabler/icons";
 import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
-import { getAssetURL } from "../../../services/data";
-import useUser from "../../../services/firebase/user";
-
+import useUser from "services/firebase/user";
 import { GameCard } from "types/game";
 import Picture from "components/core/Picture";
 
