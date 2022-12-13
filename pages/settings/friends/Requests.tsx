@@ -51,7 +51,7 @@ function Requests() {
                   ? Object.keys(newLoadedProfiles).slice(i, i + 10)
                   : Object.keys(newLoadedProfiles).slice(
                       i,
-                      Object.keys(newLoadedProfiles).length - 1
+                      Object.keys(newLoadedProfiles).length
                     )
               )
             )
