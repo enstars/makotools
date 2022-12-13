@@ -44,7 +44,16 @@ function Requests() {
           getDocs(
             query(
               collection(db, "users"),
-              where(documentId(), "in", [Object.keys(newLoadedProfiles)[i]])
+              where(
+                documentId(),
+                "in",
+                i + 10 < Object.keys(newLoadedProfiles).length
+                  ? Object.keys(newLoadedProfiles).slice(i, i + 10)
+                  : Object.keys(newLoadedProfiles).slice(
+                      i,
+                      Object.keys(newLoadedProfiles).length - 1
+                    )
+              )
             )
           ).then((usersQuery) => {
             usersQuery.forEach((doc) => {
@@ -52,7 +61,7 @@ function Requests() {
             });
             setLoadedProfiles(newLoadedProfiles);
           });
-          i++;
+          i += 10;
         }
       }
     }
