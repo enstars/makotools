@@ -2,7 +2,7 @@ import { AppShell, Container, Paper, useMantineTheme } from "@mantine/core";
 import { useToggle } from "@mantine/hooks";
 import { createContext, useContext } from "react";
 
-import { PageMeta } from "../../types/makotools";
+import { PageMeta } from "types/makotools";
 
 import ErrorBoundary from "./ErrorBoundary";
 import Meta from "./Meta";

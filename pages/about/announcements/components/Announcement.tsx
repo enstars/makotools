@@ -1,7 +1,7 @@
 import { Badge, Divider, Paper, Text } from "@mantine/core";
 import { useRouter } from "next/router";
 
-import { MakoPost } from "../../../../types/makotools";
+import { MakoPost } from "types/makotools";
 
 function Announcement({
   announcement,

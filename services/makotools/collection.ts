@@ -1,4 +1,4 @@
-import { CollectedCard } from "../../types/makotools";
+import { CollectedCard } from "types/makotools";
 
 import { ID } from "types/game";
 

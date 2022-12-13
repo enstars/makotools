@@ -1,8 +1,9 @@
 import { IconBadge, IconBadgeOff } from "@tabler/icons";
 import { Text, Tooltip } from "@mantine/core";
 
-import useUser from "../../../services/firebase/user";
-import { Lang } from "../../../types/makotools";
+import { Lang } from "types/makotools";
+
+import useUser from "services/firebase/user";
 
 function OfficialityBadge({ langData }: { langData: Lang }) {
   const user = useUser();

@@ -3,7 +3,7 @@ import { Anchor, Center, Box, Text, Button, Stack } from "@mantine/core";
 import Router from "next/router";
 import Image from "next/image";
 
-import Jun from "../../assets/ErrorBoundary/Jun.webp";
+import Jun from "assets/ErrorBoundary/Jun.webp";
 
 interface ErrorState {
   hasError: boolean;

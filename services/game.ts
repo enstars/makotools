@@ -1,4 +1,4 @@
-import { Lang, Locale, NameOrder, Query, UL } from "../types/makotools";
+import { Lang, Locale, NameOrder, Query, UL } from "types/makotools";
 
 import { CONSTANTS } from "./makotools/constants";
 import { DEFAULT_LOCALE } from "./makotools/locales";

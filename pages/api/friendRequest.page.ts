@@ -2,7 +2,7 @@ import { verifyIdToken, getFirebaseAdmin } from "next-firebase-auth";
 import { NextApiRequest, NextApiResponse } from "next";
 import { FieldValue } from "firebase-admin/firestore";
 
-import { initAuthentication } from "../../services/firebase/authentication";
+import { initAuthentication } from "services/firebase/authentication";
 
 initAuthentication();
 

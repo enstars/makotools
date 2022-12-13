@@ -1,8 +1,9 @@
 import { Group, Select, SelectProps, Text } from "@mantine/core";
 import { forwardRef, ReactElement } from "react";
 
-import useUser from "../../../services/firebase/user";
-import { UserData } from "../../../types/makotools";
+import { UserData } from "types/makotools";
+
+import useUser from "services/firebase/user";
 
 const SelectItemForwardRef = forwardRef<HTMLDivElement>(function SelectItem(
   { label, icon, ...props }: { label: string; icon: ReactElement },

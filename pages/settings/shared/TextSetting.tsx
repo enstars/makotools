@@ -9,8 +9,9 @@ import {
 } from "@mantine/core";
 import { IconCheck, IconX } from "@tabler/icons";
 
-import useUser from "../../../services/firebase/user";
-import { UserData } from "../../../types/makotools";
+import { UserData } from "types/makotools";
+
+import useUser from "services/firebase/user";
 
 function TextSetting<T = {}>({
   label,

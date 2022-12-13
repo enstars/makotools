@@ -26,23 +26,23 @@ module.exports = {
     // Official game languages
     "en", //      English
     "ja", //      Japanese
-    "zh", //      Standard Mandarin / Simplified
-    "zh-TW", //   Taiwanese Mandarin / Traditional
+    "zh-CN", //   Chinese (China)
+    "zh-TW", //   Chinese (Taiwan)
     "ko", //      Korean
 
     //  MakoTools statistics
     "id", //      Indonesian
-    "pt-BR", //   Brazilian Portugese
+    "pt-BR", //   Portuguese (Brazil)
     "es", //      Spanish
     "th", //      Thai
     "ru", //      Russian
-    // "it",  //  Italian
     // "fil", //  Filipino
     // "ms",  //  Malaysian
     // "vi",  //  Vietnamese
-    // "de",  //  German
-    // "pol", //  Polish
     // "fr",  //  French
+    // "de",  //  German
+    // "it",  //  Italian
+    // "pol", //  Polish
     // "pt",  //  Portugese
   ],
   defaultLocale: "en",

@@ -22,10 +22,8 @@ import {
 import dynamic from "next/dynamic";
 import Link from "next/link";
 
-import PageTitle from "../../components/sections/PageTitle";
-import getServerSideUser from "../../services/firebase/getServerSideUser";
-import { getLayout } from "../../components/Layout";
-import { getLocalizedDataArray } from "../../services/data";
+import PageTitle from "components/sections/PageTitle";
+import { getLayout } from "components/Layout";
 
 import Region from "./content/Region";
 import NameOrder from "./content/NameOrder";
@@ -41,6 +39,8 @@ import Banner from "./profile/Banner";
 import UseWebP from "./appearance/UseWebP";
 import Requests from "./friends/Requests";
 
+import { getLocalizedDataArray } from "services/data";
+import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCard } from "types/game";
 import useUser from "services/firebase/user";
 

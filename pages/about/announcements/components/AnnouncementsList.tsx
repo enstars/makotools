@@ -2,7 +2,7 @@ import { Center, Loader, useMantineTheme } from "@mantine/core";
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import { MakoPost, StrapiItem } from "../../../../types/makotools";
+import { MakoPost, StrapiItem } from "types/makotools";
 
 import Announcement from "./Announcement";
 

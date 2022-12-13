@@ -1,10 +1,11 @@
 import { ReactElement, useState } from "react";
 import { Popover, ActionIcon, Group, PopoverProps } from "@mantine/core";
 
-import emotes from "../../../services/makotools/emotes";
-import { Emote as EmoteType } from "../../../types/makotools";
+import { Emote as EmoteType } from "types/makotools";
 
 import Emote from "./Emote";
+
+import emotes from "services/makotools/emotes";
 
 function EmoteSelector({
   target,

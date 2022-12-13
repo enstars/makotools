@@ -34,15 +34,16 @@ import {
 import { useLocalStorage } from "@mantine/hooks";
 import { clamp } from "lodash";
 
-import MakotoolsLightComponent from "../../../assets/Logo/mkt_light_icon.svg";
-import MakotoolsDarkComponent from "../../../assets/Logo/mkt_dark_icon.svg";
-import MakotoolsTextLightComponent from "../../../assets/Logo/mkt_light_text.svg";
-import MakotoolsTextDarkComponent from "../../../assets/Logo/mkt_dark_text.svg";
-import useUser from "../../../services/firebase/user";
+import MakotoolsLightComponent from "assets/Logo/mkt_light_icon.svg";
+import MakotoolsDarkComponent from "assets/Logo/mkt_dark_icon.svg";
+import MakotoolsTextLightComponent from "assets/Logo/mkt_light_text.svg";
+import MakotoolsTextDarkComponent from "assets/Logo/mkt_dark_text.svg";
 import { useSidebarStatus } from "..";
 
 import UserMenu from "./UserMenu";
 import SearchResults from "./SearchResults";
+
+import useUser from "services/firebase/user";
 
 type LinkObject = {
   link: string;

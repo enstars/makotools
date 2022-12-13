@@ -37,20 +37,32 @@ function Requests() {
         }
       });
 
-      console.log(newLoadedProfiles);
       if (actuallyNewLoadedProfiles.length) {
         const db = getFirestore();
-        getDocs(
-          query(
-            collection(db, "users"),
-            where(documentId(), "in", Object.keys(newLoadedProfiles))
-          )
-        ).then((usersQuery) => {
-          usersQuery.forEach((doc) => {
-            newLoadedProfiles[doc.id] = doc.data();
+        let i = 0;
+        while (i < Object.keys(newLoadedProfiles).length) {
+          getDocs(
+            query(
+              collection(db, "users"),
+              where(
+                documentId(),
+                "in",
+                i + 10 < Object.keys(newLoadedProfiles).length
+                  ? Object.keys(newLoadedProfiles).slice(i, i + 10)
+                  : Object.keys(newLoadedProfiles).slice(
+                      i,
+                      Object.keys(newLoadedProfiles).length
+                    )
+              )
+            )
+          ).then((usersQuery) => {
+            usersQuery.forEach((doc) => {
+              newLoadedProfiles[doc.id] = doc.data();
+            });
+            setLoadedProfiles(newLoadedProfiles);
           });
-          setLoadedProfiles(newLoadedProfiles);
-        });
+          i += 10;
+        }
       }
     }
   }, [user, loadedProfiles]);

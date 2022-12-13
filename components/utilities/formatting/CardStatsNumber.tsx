@@ -1,8 +1,9 @@
 import { useRouter } from "next/router";
 import { ReactElement } from "react";
 
-import { DEFAULT_LOCALE } from "../../../services/makotools/locales";
-import { Locale } from "../../../types/makotools";
+import { Locale } from "types/makotools";
+
+import { DEFAULT_LOCALE } from "services/makotools/locales";
 
 function getLocalizedNumber(
   number: any,

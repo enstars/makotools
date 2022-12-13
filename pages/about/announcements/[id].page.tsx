@@ -1,9 +1,9 @@
 import { TypographyStylesProvider } from "@mantine/core";
 
-import { getLayout } from "../../../components/Layout";
-import PageTitle from "../../../components/sections/PageTitle";
-import Reactions from "../../../components/sections/Reactions";
-import { MakoPost, StrapiItem } from "../../../types/makotools";
+import { getLayout } from "components/Layout";
+import PageTitle from "components/sections/PageTitle";
+import Reactions from "components/sections/Reactions";
+import { MakoPost, StrapiItem } from "types/makotools";
 
 import { fetchOceans } from "services/makotools/posts";
 

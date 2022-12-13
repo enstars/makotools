@@ -24,13 +24,13 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import useUser from "../../services/firebase/user";
+import useUser from "services/firebase/user";
 import {
   signInWithGoogle,
   signInWithTwitter,
   signInWithEmail,
   signUpWithEmail,
-} from "../../services/firebase/authentication";
+} from "services/firebase/authentication";
 
 function Login() {
   const [isRegister, setIsRegister] = useState(false);

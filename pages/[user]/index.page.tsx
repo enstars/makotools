@@ -30,13 +30,13 @@ import { useRef, Fragment, useState, useEffect } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { useMediaQuery } from "@mantine/hooks";
 
-import { getLayout, useSidebarStatus } from "../../components/Layout";
-import getServerSideUser from "../../services/firebase/getServerSideUser";
-import { getAssetURL } from "../../services/data";
-import { parseStringify } from "../../services/utilities";
-import { useDayjs } from "../../services/libraries/dayjs";
-import { UserData } from "../../types/makotools";
+import { getLayout, useSidebarStatus } from "components/Layout";
+import { UserData } from "types/makotools";
 
+import getServerSideUser from "services/firebase/getServerSideUser";
+import { getAssetURL } from "services/data";
+import { parseStringify } from "services/utilities";
+import { useDayjs } from "services/libraries/dayjs";
 import useUser from "services/firebase/user";
 import BioDisplay from "components/sections/BioDisplay";
 import Picture from "components/core/Picture";

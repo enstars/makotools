@@ -9,14 +9,14 @@ import {
 } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
 
-import { getLocalizedDataArray } from "../../services/data";
-import PageTitle from "../../components/sections/PageTitle";
-import { getLayout } from "../../components/Layout";
-import getServerSideUser from "../../services/firebase/getServerSideUser";
-import { QuerySuccess } from "../../types/makotools";
+import PageTitle from "components/sections/PageTitle";
+import { getLayout } from "components/Layout";
+import { QuerySuccess } from "types/makotools";
 
 import CharacterCard from "./components/DisplayCard";
 
+import getServerSideUser from "services/firebase/getServerSideUser";
+import { getLocalizedDataArray } from "services/data";
 import { GameCharacter, GameUnit } from "types/game";
 
 type SortOption = "default" | "id" | "birthday";

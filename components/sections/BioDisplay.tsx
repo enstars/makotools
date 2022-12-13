@@ -12,11 +12,11 @@ import { marked } from "marked";
 import DOMPurify from "isomorphic-dompurify";
 import { useEffect, useRef, useState } from "react";
 import Frame, { FrameContextConsumer } from "react-frame-component";
-import NormalizeCSS from "raw-loader!../../styles/iFrameCSS.txt";
+import NormalizeCSS from "raw-loader!styles/iFrameCSS.txt";
 import { useViewportSize } from "@mantine/hooks";
 
-import { CONSTANTS } from "../../services/makotools/constants";
-import emotes from "../../services/makotools/emotes";
+import { CONSTANTS } from "services/makotools/constants";
+import emotes from "services/makotools/emotes";
 
 const emote = {
   name: "emote",

@@ -1,8 +1,8 @@
 import { Checkbox, Group, Input, Select } from "@mantine/core";
 import { useEffect, useState } from "react";
 
-import useUser from "../../../services/firebase/user";
-import { useDayjs } from "../../../services/libraries/dayjs";
+import useUser from "services/firebase/user";
+import { useDayjs } from "services/libraries/dayjs";
 
 const START_YEAR = 2015;
 const START_MONTH = 4;

@@ -3,10 +3,11 @@ import { IconPencil, IconTextCaption } from "@tabler/icons";
 import { useState } from "react";
 
 import TextSetting from "../shared/TextSetting";
-import useUser from "../../../services/firebase/user";
-import BioDisplay from "../../../components/sections/BioDisplay";
+import BioDisplay from "components/sections/BioDisplay";
 
 import BioHelpModal from "./BioHelpModal";
+
+import useUser from "services/firebase/user";
 
 function Name() {
   const user = useUser();

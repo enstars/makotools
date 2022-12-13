@@ -21,16 +21,16 @@ import {
 } from "@tabler/icons";
 import { useRouter } from "next/router";
 
-import attributes from "../../../data/attributes.json";
-import OfficialityBadge from "../../../components/utilities/formatting/OfficialityBadge";
-import CardStatsNumber from "../../../components/utilities/formatting/CardStatsNumber";
-import { addCard } from "../../../services/makotools/collection";
-import useUser from "../../../services/firebase/user";
-import Picture from "../../../components/core/Picture";
-import { Lang } from "../../../types/makotools";
+import attributes from "data/attributes.json";
+import OfficialityBadge from "components/utilities/formatting/OfficialityBadge";
+import CardStatsNumber from "components/utilities/formatting/CardStatsNumber";
+import Picture from "components/core/Picture";
+import { Lang } from "types/makotools";
 
 import { sumStats } from "./Stats";
 
+import useUser from "services/firebase/user";
+import { addCard } from "services/makotools/collection";
 import { GameCard } from "types/game";
 
 function RarityBadge({ card }: { card: GameCard }) {
