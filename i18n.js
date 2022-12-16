@@ -9,7 +9,7 @@ if (process.env.NODE_ENV === "development") {
 } else {
   workaround.defaultLoader = `async (lang, ns) => {
     try {
-      const res = await fetch(\`https://tl.stars.ensemble.moe/\${lang}/\${ns}.json\`);
+      const res = await fetch(\`https://tl.stars.ensemble.moe/\${lang?.replace("-","_")}/\${ns}.json\`);
       if (res.ok) return res.json();
       else throw new Error("no translation");
     }
