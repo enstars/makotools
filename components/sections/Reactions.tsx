@@ -9,15 +9,14 @@ import {
   Text,
   Tooltip,
 } from "@mantine/core";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IconChevronDown, IconChevronUp, IconMoodSmile } from "@tabler/icons";
 import { Collapse } from "react-collapse";
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 import EmoteSelector from "../utilities/emotes/EmoteSelector";
 import Emote from "../utilities/emotes/Emote";
-import { DbReaction, Reaction } from "types/makotools";
 
+import { DbReaction, Reaction } from "types/makotools";
 import useUser from "services/firebase/user";
 import emotes from "services/makotools/emotes";
 import { CONSTANTS } from "services/makotools/constants";
@@ -31,27 +30,13 @@ const useStyles = createStyles((theme) => ({
 }));
 
 function Reactions() {
-  const { executeRecaptcha } = useGoogleReCaptcha();
   const { classes } = useStyles();
-  const { asPath, ...router } = useRouter();
+  const { asPath } = useRouter();
   const [reactions, setReactions] = useState<Reaction[]>([]);
   const [collapsed, setCollapsed] = useState<boolean>(true);
   const user = useUser();
 
   const reactionsDisabled = user.loading || !user.loggedIn;
-
-  const handleReCaptchaVerify = useCallback(async () => {
-    if (!executeRecaptcha) {
-      return;
-    }
-
-    const token = await executeRecaptcha();
-    return token;
-  }, [executeRecaptcha]);
-
-  useEffect(() => {
-    handleReCaptchaVerify();
-  }, [handleReCaptchaVerify]);
 
   const currentPageId = asPath.replace(/\//g, "_");
   const addReaction = async (id: string) => {
@@ -106,7 +91,7 @@ function Reactions() {
 
   useEffect(() => {
     fetchReactions();
-  }, [asPath, handleReCaptchaVerify]);
+  }, [asPath]);
 
   return (
     <Paper my="sm" withBorder p={3} radius="md">

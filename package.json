@@ -32,7 +32,6 @@
     "cookies-next": "^2.1.1",
     "country-flag-icons": "^1.5.5",
     "dayjs": "^1.11.6",
-    "dompurify": "^2.4.1",
     "embla-carousel-autoplay": "^7.0.5",
     "embla-carousel-react": "^7.0.5",
     "firebase": "^9.14.0",
@@ -41,18 +40,15 @@
     "fuzzysort": "^2.0.3",
     "globalize": "^1.7.0",
     "iana-tz-data": "^2019.1.0",
-    "iframe-resizer-react": "^1.1.0",
     "inter-ui": "^3.19.3",
     "isomorphic-dompurify": "^0.24.0",
     "jsdom": "^20.0.2",
     "lodash": "^4.17.21",
-    "lodash.merge": "^4.6.2",
     "marked": "^4.2.2",
     "marked-react": "^1.3.1",
     "meilisearch": "^0.29.1",
     "next": "^13.0.3",
     "next-firebase-auth": "^1.0.0-canary.9",
-    "next-i18next": "^12.1.0",
     "next-translate": "^1.6.0",
     "normalize.css": "^8.0.1",
     "qs": "^6.11.0",
@@ -62,12 +58,8 @@
     "react-confetti": "^6.1.0",
     "react-dom": "^18.2.0",
     "react-frame-component": "^5.2.3",
-    "react-globalize": "^1.0.0",
-    "react-google-recaptcha-v3": "^1.10.0",
     "react-infinite-scroll-component": "^6.1.0",
-    "react-zoom-pan-pinch": "^2.1.3",
     "strapi-sdk-js": "^2.2.0",
-    "twitter_cldr": "^2.2.0",
     "use-debounce": "^8.0.4"
   },
   "scripts": {
@@ -77,8 +69,7 @@
     "lint": "next lint && yarn run check-types",
     "check-types": "tsc --noEmit",
     "tunnel": "cloudflared tunnel --url http://localhost:3000",
-    "upgrade": "yarn upgrade-interactive",
-    "extract-tl-keys": "npx i18next 'components/**' 'pages/**' -o 'extracted-tl-keys.json'"
+    "upgrade": "yarn upgrade-interactive"
   },
   "browserslist": {
     "production": [

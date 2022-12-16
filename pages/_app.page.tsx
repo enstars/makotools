@@ -18,7 +18,6 @@ import {
   resetNavigationProgress,
   NavigationProgress,
 } from "@mantine/nprogress";
-import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import { Analytics } from "@vercel/analytics/react";
 import { AppProps } from "next/app";
 import { withAuthUser } from "next-firebase-auth";
@@ -26,7 +25,6 @@ import { withAuthUser } from "next-firebase-auth";
 import { initAuthentication } from "services/firebase/authentication";
 import { UserProvider } from "services/firebase/user";
 import DayjsProvider from "services/libraries/dayjs";
-import { CONSTANTS } from "services/makotools/constants";
 import { emotionCache } from "services/libraries/emotion";
 initAuthentication();
 
@@ -82,112 +80,108 @@ function MakoTools({
   }, [router.asPath, router.events]);
 
   return (
-    <GoogleReCaptchaProvider reCaptchaKey={CONSTANTS.KEYS.CAPTCHA}>
-      <MantineProvider
-        emotionCache={emotionCache}
-        withGlobalStyles
-        withNormalizeCSS
-        theme={{
-          colorScheme,
-          components: {
-            NavLink: {
-              styles: (theme) => ({
-                root: {
-                  "& > *:last-child": {
-                    margin: 0,
-                  },
+    <MantineProvider
+      emotionCache={emotionCache}
+      withGlobalStyles
+      withNormalizeCSS
+      theme={{
+        colorScheme,
+        components: {
+          NavLink: {
+            styles: (theme) => ({
+              root: {
+                "& > *:last-child": {
+                  margin: 0,
                 },
-              }),
-            },
+              },
+            }),
           },
-          colors: {
-            dark: [
-              "#D3D6E0",
-              "#AAB1C2",
-              "#8E97AD",
-              "#5F6982",
-              "#3A4259",
-              "#2C3347",
-              "#212736",
-              "#191C27",
-              "#171921",
-              "#12141C",
-            ],
-            lightblue: [
-              "#e7f5ff",
-              "#d0ebff",
-              "#a5d8ff",
-              "#74c0fc",
-              "#4dabf7",
-              "#339af0",
-              "#228be6",
-              "#1c7ed6",
-              "#1971c2",
-              "#1864ab",
-            ],
-            blue: [
-              "#edf2ff",
-              "#dbe4ff",
-              "#bac8ff",
-              "#91a7ff",
-              "#748ffc",
-              "#5c7cfa",
-              "#4c6ef5",
-              "#4263eb",
-              "#3b5bdb",
-              "#364fc7",
-            ],
-          },
-          primaryShade: { light: 6, dark: 5 },
-          lineHeight: 1.5,
+        },
+        colors: {
+          dark: [
+            "#D3D6E0",
+            "#AAB1C2",
+            "#8E97AD",
+            "#5F6982",
+            "#3A4259",
+            "#2C3347",
+            "#212736",
+            "#191C27",
+            "#171921",
+            "#12141C",
+          ],
+          lightblue: [
+            "#e7f5ff",
+            "#d0ebff",
+            "#a5d8ff",
+            "#74c0fc",
+            "#4dabf7",
+            "#339af0",
+            "#228be6",
+            "#1c7ed6",
+            "#1971c2",
+            "#1864ab",
+          ],
+          blue: [
+            "#edf2ff",
+            "#dbe4ff",
+            "#bac8ff",
+            "#91a7ff",
+            "#748ffc",
+            "#5c7cfa",
+            "#4c6ef5",
+            "#4263eb",
+            "#3b5bdb",
+            "#364fc7",
+          ],
+        },
+        primaryShade: { light: 6, dark: 5 },
+        lineHeight: 1.5,
+        fontFamily:
+          "Inter var, Inter, system-ui, Noto Sans JP, IBM Plex Sans Thai, sans-serif",
+        headings: {
           fontFamily:
-            "Inter var, Inter, system-ui, Noto Sans JP, IBM Plex Sans Thai, sans-serif",
-          headings: {
-            fontFamily:
-              "SoraVariable, Sora, InterVariable, Inter, system-ui, Noto Sans JP, IBM Plex Sans Thai, sans-serif",
-            fontWeight: 800,
-          },
-          other: {
-            transition: "0.3s cubic-bezier(.19,.73,.37,.93)",
-            setAppColorScheme,
-            toggleAppColorScheme,
-            getDimmed,
-            getColor,
-          },
-        }}
-      >
-        <NavigationProgress />
-        <Head>
-          <meta name="viewport" content="initial-scale=1, width=device-width" />
-          {router.locale === "th" && (
-            <link
-              href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;700&display=swap"
-              rel="stylesheet"
-            />
-          )}
-        </Head>
-        <Analytics />
-        <NotificationsProvider position="top-center">
-          <UserProvider
-            setAppColorScheme={setAppColorScheme}
-            colorScheme={colorScheme}
-            serverData={{
-              user: pageProps?.__user
-                ? JSON.parse(pageProps.__user)
-                : undefined,
-              db: pageProps?.__db ? JSON.parse(pageProps.__db) : undefined,
-              privateDb: pageProps?.__privateDb
-                ? JSON.parse(pageProps.__privateDb)
-                : undefined,
-            }}
-          >
-            <DayjsProvider>
-              {getLayout(<Component {...pageProps} />, pageProps)}
-            </DayjsProvider>
-          </UserProvider>
-        </NotificationsProvider>
-      </MantineProvider>
-    </GoogleReCaptchaProvider>
+            "SoraVariable, Sora, InterVariable, Inter, system-ui, Noto Sans JP, IBM Plex Sans Thai, sans-serif",
+          fontWeight: 800,
+        },
+        other: {
+          transition: "0.3s cubic-bezier(.19,.73,.37,.93)",
+          setAppColorScheme,
+          toggleAppColorScheme,
+          getDimmed,
+          getColor,
+        },
+      }}
+    >
+      <NavigationProgress />
+      <Head>
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
+        {router.locale === "th" && (
+          <link
+            href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;700&display=swap"
+            rel="stylesheet"
+          />
+        )}
+      </Head>
+      <Analytics />
+      <NotificationsProvider position="top-center">
+        <UserProvider
+          setAppColorScheme={setAppColorScheme}
+          colorScheme={colorScheme}
+          serverData={{
+            user: pageProps?.__user ? JSON.parse(pageProps.__user) : undefined,
+            db: pageProps?.__db ? JSON.parse(pageProps.__db) : undefined,
+            privateDb: pageProps?.__privateDb
+              ? JSON.parse(pageProps.__privateDb)
+              : undefined,
+          }}
+        >
+          <DayjsProvider>
+            {getLayout(<Component {...pageProps} />, pageProps)}
+          </DayjsProvider>
+        </UserProvider>
+      </NotificationsProvider>
+    </MantineProvider>
   );
 }
 

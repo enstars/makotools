@@ -1449,7 +1449,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.14.5, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.18.9, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.18.9, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.18.9
   resolution: "@babel/runtime@npm:7.18.9"
   dependencies:
@@ -3454,7 +3454,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/hoist-non-react-statics@npm:*, @types/hoist-non-react-statics@npm:^3.3.0, @types/hoist-non-react-statics@npm:^3.3.1":
+"@types/hoist-non-react-statics@npm:*, @types/hoist-non-react-statics@npm:^3.3.0":
   version: 3.3.1
   resolution: "@types/hoist-non-react-statics@npm:3.3.1"
   dependencies:
@@ -4817,13 +4817,6 @@ __metadata:
   version: 3.24.0
   resolution: "core-js-pure@npm:3.24.0"
   checksum: 9ed3ec22e3c428ef346ab4a8f25fffe7938734513fbe738d4b46cc59735a2b98319ffd2f65e3e29fe5f1df5963faeb22e518d2576bf93efa02f49ef0f4d1a0ce
-  languageName: node
-  linkType: hard
-
-"core-js@npm:^3":
-  version: 3.24.0
-  resolution: "core-js@npm:3.24.0"
-  checksum: f1d1feef82bac7ecddd9e40e75b7126e7b5299a0d17aa046238bd8c78567d485b32c9c80b212704d9483ccc8b3f13b3ee35a5ec69fdca874377f654664068669
   languageName: node
   linkType: hard
 
@@ -6767,7 +6760,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globalize@npm:^1.0.0, globalize@npm:^1.7.0":
+"globalize@npm:^1.7.0":
   version: 1.7.0
   resolution: "globalize@npm:1.7.0"
   dependencies:
@@ -7053,15 +7046,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-parse-stringify@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "html-parse-stringify@npm:3.0.1"
-  dependencies:
-    void-elements: 3.1.0
-  checksum: 334fdebd4b5c355dba8e95284cead6f62bf865a2359da2759b039db58c805646350016d2017875718bc3c4b9bf81a0d11be5ee0cf4774a3a5a7b97cde21cfd67
-  languageName: node
-  linkType: hard
-
 "html-react-parser@npm:1.4.12":
   version: 1.4.12
   resolution: "html-react-parser@npm:1.4.12"
@@ -7159,13 +7143,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-fs-backend@npm:^1.1.5":
-  version: 1.1.5
-  resolution: "i18next-fs-backend@npm:1.1.5"
-  checksum: 71f6c4b0ff071676d69f1668675a68f2d72e1836dafcc8014123523bb584a78b0e4fccd16f83d7f37755b58d1dfcb4d6ad36c60b261833b509ccf20313419d9e
-  languageName: node
-  linkType: hard
-
 "i18next-parser@npm:^7.0.3":
   version: 7.0.3
   resolution: "i18next-parser@npm:7.0.3"
@@ -7193,15 +7170,6 @@ __metadata:
   bin:
     i18next: bin/cli.js
   checksum: f7e1e4d6e6e0f41babd5a20f8c9095ee34edd5cb0e68945c1fc079dedc21424e7a9a3c7471089534e11e3e025c11644f88a63cbd01188ab824cf0cc6629d96a8
-  languageName: node
-  linkType: hard
-
-"i18next@npm:^21.9.1":
-  version: 21.9.1
-  resolution: "i18next@npm:21.9.1"
-  dependencies:
-    "@babel/runtime": ^7.17.2
-  checksum: 1bc59c61fbb27385841f76436c7dd60e9f42a3fb326797db44a65dd165c489420e549b5370e3de75b85f8d61239f4869fc9fbcf63deae5f40ee606bc04916e6d
   languageName: node
   linkType: hard
 
@@ -7243,27 +7211,6 @@ __metadata:
   version: 7.0.1
   resolution: "idb@npm:7.0.1"
   checksum: 61526789562cc3518a1a030c7a06cc98edfcd62795700ff28c701d6f84c178aee4e98bedfc79e6c394ba26084aa4667d6594b1728e5868f305f9b34148662679
-  languageName: node
-  linkType: hard
-
-"iframe-resizer-react@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "iframe-resizer-react@npm:1.1.0"
-  dependencies:
-    iframe-resizer: ^4.3.0
-    warning: ^4.0.3
-  peerDependencies:
-    prop-types: ">=15.7.2"
-    react: ">=16.8.0"
-    react-dom: ">=16.8.0"
-  checksum: 64ddf99d0246da71c5ef34fd6a9b35d14e9346bda0ff0e9f0f011041822eb99f477b8b8167a82126efdfc3a84eb428262518f9ade7601f0f208b69d4cdadb9f7
-  languageName: node
-  linkType: hard
-
-"iframe-resizer@npm:^4.3.0":
-  version: 4.3.2
-  resolution: "iframe-resizer@npm:4.3.2"
-  checksum: 762d934f4fbe7e4b76c0f4574c2a47ef0e3fc6c82564f512ec41e62b62501052d271fb8ca5d268535509c0088132493c0ac78312af0fe3f11bf65cd964dd11a0
   languageName: node
   linkType: hard
 
@@ -8370,7 +8317,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loose-envify@npm:^1.0.0, loose-envify@npm:^1.1.0, loose-envify@npm:^1.4.0":
+"loose-envify@npm:^1.1.0, loose-envify@npm:^1.4.0":
   version: 1.4.0
   resolution: "loose-envify@npm:1.4.0"
   dependencies:
@@ -8480,7 +8427,6 @@ __metadata:
     country-flag-icons: ^1.5.5
     cz-emoji: ^1.3.2-canary.2
     dayjs: ^1.11.6
-    dompurify: ^2.4.1
     embla-carousel-autoplay: ^7.0.5
     embla-carousel-react: ^7.0.5
     eslint: ^8.27.0
@@ -8496,18 +8442,15 @@ __metadata:
     globalize: ^1.7.0
     i18next-parser: ^7.0.3
     iana-tz-data: ^2019.1.0
-    iframe-resizer-react: ^1.1.0
     inter-ui: ^3.19.3
     isomorphic-dompurify: ^0.24.0
     jsdom: ^20.0.2
     lodash: ^4.17.21
-    lodash.merge: ^4.6.2
     marked: ^4.2.2
     marked-react: ^1.3.1
     meilisearch: ^0.29.1
     next: ^13.0.3
     next-firebase-auth: ^1.0.0-canary.9
-    next-i18next: ^12.1.0
     next-translate: ^1.6.0
     normalize.css: ^8.0.1
     prettier: ^2.7.1
@@ -8519,14 +8462,10 @@ __metadata:
     react-confetti: ^6.1.0
     react-dom: ^18.2.0
     react-frame-component: ^5.2.3
-    react-globalize: ^1.0.0
-    react-google-recaptcha-v3: ^1.10.0
     react-infinite-scroll-component: ^6.1.0
-    react-zoom-pan-pinch: ^2.1.3
     sass: ^1.56.1
     sass-loader: ^13.2.0
     strapi-sdk-js: ^2.2.0
-    twitter_cldr: ^2.2.0
     typescript: ^4.9.3
     use-debounce: ^8.0.4
   languageName: unknown
@@ -8889,24 +8828,6 @@ __metadata:
     react-dom:
       optional: true
   checksum: 1efe667d67d9349e9a2feafff277ec38a65aa4973bb16be042b51cd65af3d1c88eb1b64d78b12fcb7e647ed37f7b3d230c175a7d3fed1f8dc7b985d4df902c2c
-  languageName: node
-  linkType: hard
-
-"next-i18next@npm:^12.1.0":
-  version: 12.1.0
-  resolution: "next-i18next@npm:12.1.0"
-  dependencies:
-    "@babel/runtime": ^7.18.9
-    "@types/hoist-non-react-statics": ^3.3.1
-    core-js: ^3
-    hoist-non-react-statics: ^3.3.2
-    i18next: ^21.9.1
-    i18next-fs-backend: ^1.1.5
-    react-i18next: ^11.18.4
-  peerDependencies:
-    next: ">= 10.0.0"
-    react: ">= 16.8.0"
-  checksum: 8c0e2f976437b222f32fdfdae604f6c247fae698f3c66feef7f9f663dfaa5bc86dcc5fcbf130b9fbb8651364d0df67c943eb2f0b24896adac132a5eee315d459
   languageName: node
   linkType: hard
 
@@ -9927,46 +9848,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-globalize@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "react-globalize@npm:1.0.0"
-  dependencies:
-    globalize: ^1.0.0
-    react: ^16.0.0
-  checksum: 01a7a6a76c77e0d172219e9d543c4b0c7c9e935e759f1d3cb1bdce2770c183c88d0d5a819c2bffa42bd4cb0ffb3fd90cb2223c4d5765f4658b402275c53b3218
-  languageName: node
-  linkType: hard
-
-"react-google-recaptcha-v3@npm:^1.10.0":
-  version: 1.10.0
-  resolution: "react-google-recaptcha-v3@npm:1.10.0"
-  dependencies:
-    hoist-non-react-statics: ^3.3.2
-  peerDependencies:
-    react: ^17.0 || ^18.0
-    react-dom: ^17.0 || ^18.0
-  checksum: 43b19eba4e4ebf96f6d9256fcb5a93aabe69878ce9fe4a6c73a3175d0ec9990abb39302c361ca99d7f20b2401353dce69236f299e64ee23a61fc71633b9107f3
-  languageName: node
-  linkType: hard
-
-"react-i18next@npm:^11.18.4":
-  version: 11.18.5
-  resolution: "react-i18next@npm:11.18.5"
-  dependencies:
-    "@babel/runtime": ^7.14.5
-    html-parse-stringify: ^3.0.1
-  peerDependencies:
-    i18next: ">= 19.0.0"
-    react: ">= 16.8.0"
-  peerDependenciesMeta:
-    react-dom:
-      optional: true
-    react-native:
-      optional: true
-  checksum: c5e4b5b8ecc49f799a93110cb4d99d91190a268cf3b14b48e005ac1453eefe75e10758952a7d01fef4cf55afc5a6e7170d23c41d602efaedc06d4d34a85cd725
-  languageName: node
-  linkType: hard
-
 "react-infinite-scroll-component@npm:^6.1.0":
   version: 6.1.0
   resolution: "react-infinite-scroll-component@npm:6.1.0"
@@ -10059,27 +9940,6 @@ __metadata:
     react: ">=16.6.0"
     react-dom: ">=16.6.0"
   checksum: b67bf5b3e86dbab72d658b9a52a3589e5960583ab28c7c66272427d8fe30d4c7de422d5046ae96bd2683cdf80cc3264b2516f5ce80cae1dbe6cf3ca6dda392c5
-  languageName: node
-  linkType: hard
-
-"react-zoom-pan-pinch@npm:^2.1.3":
-  version: 2.1.3
-  resolution: "react-zoom-pan-pinch@npm:2.1.3"
-  peerDependencies:
-    react: ^17.0.2
-    react-dom: ^17.0.2
-  checksum: 4694c63f32b7b9fbd71860b98e6ad5502617c66520bec747d88ef4c1db33cc2810b52ebb799f07128f128a0902d821ea1039b291fffb20f71530113ecd2f7c02
-  languageName: node
-  linkType: hard
-
-"react@npm:^16.0.0":
-  version: 16.14.0
-  resolution: "react@npm:16.14.0"
-  dependencies:
-    loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-    prop-types: ^15.6.2
-  checksum: 8484f3ecb13414526f2a7412190575fc134da785c02695eb92bb6028c930bfe1c238d7be2a125088fec663cc7cda0a3623373c46807cf2c281f49c34b79881ac
   languageName: node
   linkType: hard
 
@@ -11352,13 +11212,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"twitter_cldr@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "twitter_cldr@npm:2.2.0"
-  checksum: 79ed882dc3e6a9803c11e7951287cf66445ee3eb445691e5061a480bf5f952f52712d7a3e020f85d05b8858a1f52c5d168ddfad589970b9dc28ef498ae457c83
-  languageName: node
-  linkType: hard
-
 "type-check@npm:^0.4.0, type-check@npm:~0.4.0":
   version: 0.4.0
   resolution: "type-check@npm:0.4.0"
@@ -11795,13 +11648,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"void-elements@npm:3.1.0":
-  version: 3.1.0
-  resolution: "void-elements@npm:3.1.0"
-  checksum: 0390f818107fa8fce55bb0a5c3f661056001c1d5a2a48c28d582d4d847347c2ab5b7f8272314cac58acf62345126b6b09bea623a185935f6b1c3bbce0dfd7f7f
-  languageName: node
-  linkType: hard
-
 "vue-template-compiler@npm:^2.6.11":
   version: 2.7.14
   resolution: "vue-template-compiler@npm:2.7.14"
@@ -11830,15 +11676,6 @@ __metadata:
     matcher-collection: ^2.0.0
     minimatch: ^3.0.4
   checksum: e579b574f769977a739607d4feba40ded8931ff641f26964ea5a10a280d648d1c1aca260e9ab60288f16d69500ff33687d3ba5fa4dbd427090123189f0f0c9b6
-  languageName: node
-  linkType: hard
-
-"warning@npm:^4.0.3":
-  version: 4.0.3
-  resolution: "warning@npm:4.0.3"
-  dependencies:
-    loose-envify: ^1.0.0
-  checksum: 4f2cb6a9575e4faf71ddad9ad1ae7a00d0a75d24521c193fa464f30e6b04027bd97aa5d9546b0e13d3a150ab402eda216d59c1d0f2d6ca60124d96cd40dfa35c
   languageName: node
   linkType: hard
 
