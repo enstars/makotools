@@ -44,7 +44,7 @@ module.exports = {
   ],
   defaultLocale: "en",
   pages: {
-    "*": ["common"],
+    "*": ["common", "sidebar", "footer"],
     "/": ["home"],
     // "/about": ["about"],
   },

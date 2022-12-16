@@ -33,16 +33,17 @@ import {
 } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
 import { clamp } from "lodash";
+import useTranslation from "next-translate/useTranslation";
 
-import MakotoolsLightComponent from "assets/Logo/mkt_light_icon.svg";
-import MakotoolsDarkComponent from "assets/Logo/mkt_dark_icon.svg";
-import MakotoolsTextLightComponent from "assets/Logo/mkt_light_text.svg";
-import MakotoolsTextDarkComponent from "assets/Logo/mkt_dark_text.svg";
 import { useSidebarStatus } from "..";
 
 import UserMenu from "./UserMenu";
 import SearchResults from "./SearchResults";
 
+import MakotoolsLightComponent from "assets/Logo/mkt_light_icon.svg";
+import MakotoolsDarkComponent from "assets/Logo/mkt_dark_icon.svg";
+import MakotoolsTextLightComponent from "assets/Logo/mkt_light_text.svg";
+import MakotoolsTextDarkComponent from "assets/Logo/mkt_dark_text.svg";
 import useUser from "services/firebase/user";
 
 type LinkObject = {
@@ -123,6 +124,7 @@ const SidebarLink = forwardRef(function SbL(
 });
 
 function Sidebar(props: any) {
+  const { t } = useTranslation("sidebar");
   const location = useRouter();
 
   const theme = useMantineTheme();
@@ -148,43 +150,43 @@ function Sidebar(props: any) {
   const linkList: LinkObject[] = [
     {
       link: "/characters",
-      name: "Characters",
+      name: "characters",
       Icon: IconUsers,
     },
     {
       link: "/cards",
-      name: "Cards",
+      name: "cards",
       Icon: IconCards,
     },
     {
       link: "/events",
-      name: "Events",
+      name: "events",
       Icon: IconAward,
     },
     {
       link: "/scouts",
-      name: "Scouts",
+      name: "scouts",
       Icon: IconDiamond,
     },
     {
       link: "/stories",
-      name: "Stories",
+      name: "stories",
       Icon: IconBooks,
       disabled: true,
     },
     {
       link: "/calendar",
-      name: "Calendar",
+      name: "calendar",
       Icon: IconCalendar,
     },
     {
       link: "/about",
-      name: "About",
+      name: "about",
       Icon: IconInfoCircle,
     },
     {
       link: "https://www.patreon.com/makotools",
-      name: "Patreon",
+      name: "patreon",
       Icon: IconBrandPatreon,
     },
   ];
@@ -286,7 +288,7 @@ function Sidebar(props: any) {
               // variant="unstyled"
               value={searchValue}
               onChange={(event) => setSearchValue(event.currentTarget.value)}
-              placeholder="Search"
+              placeholder={t("searchbarMessage")}
               icon={<IconSearch size={18} />}
               iconWidth={38}
               rightSection={
@@ -340,7 +342,7 @@ function Sidebar(props: any) {
                   return (
                     <Tooltip
                       key={link.link}
-                      label={link.name}
+                      label={t(`links.${link.name}`)}
                       position="right"
                       disabled={!collapsed}
                       withinPortal
@@ -351,6 +353,7 @@ function Sidebar(props: any) {
                             collapsed={collapsed}
                             active={active}
                             {...link}
+                            name={t(`links.${link.name}`)}
                           />
                         ) : (
                           <SidebarLink
@@ -359,6 +362,7 @@ function Sidebar(props: any) {
                             collapsed={collapsed}
                             active={active}
                             {...link}
+                            name={t(`links.${link.name}`)}
                           />
                         )}
                       </div>
@@ -430,7 +434,7 @@ function Sidebar(props: any) {
                     <Text component={Group} color="dimmed" spacing={4}>
                       <IconChevronLeft size={16} />
                       <Text inline size="sm" weight={500}>
-                        Collapse
+                        {t("collapseSidebar")}
                       </Text>
                     </Text>
                   </ActionIcon>
