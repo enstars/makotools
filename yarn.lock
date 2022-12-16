@@ -8529,7 +8529,6 @@ __metadata:
     twitter_cldr: ^2.2.0
     typescript: ^4.9.3
     use-debounce: ^8.0.4
-    wp-types: ^3.61.0
   languageName: unknown
   linkType: soft
 
@@ -11406,16 +11405,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:>=3":
-  version: 4.8.2
-  resolution: "typescript@npm:4.8.2"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 7f5b81d0d558c9067f952c7af52ab7f19c2e70a916817929e4a5b256c93990bf3178eccb1ac8a850bc75df35f6781b6f4cb3370ce20d8b1ded92ed462348f628
-  languageName: node
-  linkType: hard
-
 "typescript@npm:^4.2.4":
   version: 4.9.4
   resolution: "typescript@npm:4.9.4"
@@ -11433,16 +11422,6 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 17b8f816050b412403e38d48eef0e893deb6be522d6dc7caf105e54a72e34daf6835c447735fd2b28b66784e72bfbf87f627abb4818a8e43d1fa8106396128dc
-  languageName: node
-  linkType: hard
-
-"typescript@patch:typescript@>=3#~builtin<compat/typescript>":
-  version: 4.8.2
-  resolution: "typescript@patch:typescript@npm%3A4.8.2#~builtin<compat/typescript>::version=4.8.2&hash=f456af"
-  bin:
-    tsc: bin/tsc
-    tsserver: bin/tsserver
-  checksum: 6f49363af8af2fe480da1d5fa68712644438785208b06690a3cbe5e7365fd652c3a0f1e587bc8684d78fb69de3dde4de185c0bad7bb4f3664ddfc813ce8caad6
   languageName: node
   linkType: hard
 
@@ -11977,15 +11956,6 @@ __metadata:
   version: 1.2.3
   resolution: "word-wrap@npm:1.2.3"
   checksum: 30b48f91fcf12106ed3186ae4fa86a6a1842416df425be7b60485de14bec665a54a68e4b5156647dec3a70f25e84d270ca8bc8cd23182ed095f5c7206a938c1f
-  languageName: node
-  linkType: hard
-
-"wp-types@npm:^3.61.0":
-  version: 3.61.0
-  resolution: "wp-types@npm:3.61.0"
-  dependencies:
-    typescript: ">=3"
-  checksum: e3c6b78ab12163dbdff732466202ed2b7f8b5fa20e22c0f28f9257958b28b9a5dcebdd85cbfdea86b25dc6b086476c8cc73cb69ae0aa3e8fbdc53c6c5c11a712
   languageName: node
   linkType: hard
 

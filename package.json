@@ -110,8 +110,7 @@
     "raw-loader": "^4.0.2",
     "sass": "^1.56.1",
     "sass-loader": "^13.2.0",
-    "typescript": "^4.9.3",
-    "wp-types": "^3.61.0"
+    "typescript": "^4.9.3"
   },
   "eslintConfig": {
     "extends": [
