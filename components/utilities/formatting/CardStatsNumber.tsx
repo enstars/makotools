@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import { ReactElement } from "react";
 
 import { Locale } from "types/makotools";
-
 import { DEFAULT_LOCALE } from "services/makotools/locales";
 
 function getLocalizedNumber(
@@ -13,26 +12,13 @@ function getLocalizedNumber(
   if (typeof number !== "number") {
     return number;
   }
-  let Globalize = require("globalize");
 
-  Globalize.load(
-    require("cldr-data/supplemental/likelySubtags"),
-    require("cldr-data/supplemental/numberingSystems"),
-    require("cldr-data/supplemental/plurals"),
-    require("cldr-data/supplemental/ordinals"),
-    require(`cldr-data/main/${locale}/numbers`),
-    require(`cldr-data/main/${locale}/units`)
-  );
+  const intlFormatter = Intl.NumberFormat(locale, {
+    notation: "compact",
+    maximumSignificantDigits: 3,
+  });
 
-  return Globalize(locale).numberFormatter(
-    short
-      ? {
-          compact: "short",
-          minimumSignificantDigits: number > 99999 ? 3 : 2,
-          maximumSignificantDigits: number > 99999 ? 3 : 2,
-        }
-      : {}
-  )(number);
+  return intlFormatter.format(number);
 }
 
 function CardStatsNumber({
