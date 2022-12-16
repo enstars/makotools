@@ -4,7 +4,6 @@ import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import Reactions from "components/sections/Reactions";
 import { MakoPost, StrapiItem } from "types/makotools";
-
 import { fetchOceans } from "services/makotools/posts";
 
 function Page({ post }: { post: StrapiItem<MakoPost> }) {
@@ -12,7 +11,6 @@ function Page({ post }: { post: StrapiItem<MakoPost> }) {
     <>
       <PageTitle title={post.attributes.title} />
       <TypographyStylesProvider
-        className="wordpress-style"
         sx={(theme) => ({
           figcaption: {
             fontSize: theme.fontSizes.xs,
