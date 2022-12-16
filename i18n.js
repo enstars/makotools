@@ -23,27 +23,24 @@ if (process.env.NODE_ENV === "development") {
 
 module.exports = {
   locales: [
-    // Official game languages
-    "en", //      English
-    "ja", //      Japanese
-    "zh-CN", //   Chinese (China)
-    "zh-TW", //   Chinese (Taiwan)
-    "ko", //      Korean
-
-    //  MakoTools statistics
-    "id", //      Indonesian
-    "pt-BR", //   Portuguese (Brazil)
-    "es", //      Spanish
-    "th", //      Thai
-    "ru", //      Russian
-    // "fil", //  Filipino
-    // "ms",  //  Malaysian
-    // "vi",  //  Vietnamese
-    // "fr",  //  French
-    // "de",  //  German
-    // "it",  //  Italian
-    // "pol", //  Polish
-    // "pt",  //  Portugese
+    "en", //     English
+    "ja", //     Japanese
+    "zh-CN", //  Chinese (China)
+    "zh-TW", //  Chinese (Taiwan)
+    "ko", //     Korean
+    "id", //     Indonesian
+    "th", //     Thai
+    "fil", //    Filipino
+    "ms", //     Malay
+    "vi", //     Vietnamese
+    "pt-BR", //  Portuguese (Brazil)
+    "es", //     Spanish
+    "ru", //     Russian
+    "fr", //     French
+    "de", //     German
+    "it", //     Italian
+    "pl", //     Polish
+    "pt", //     Portuguese
   ],
   defaultLocale: "en",
   pages: {

@@ -6,18 +6,24 @@ import { StrapiResponse } from "strapi-sdk-js";
 type LoadingStatus = "success" | "error";
 
 type Locale =
-  | "en" // English
-  | "ja" // Japanese
-  | "zh" // Standard Mandarin / Simplified
-  | "zh-TW" // Taiwanese Mandarin / Traditional
-  | "ko" // Korean
-  // MakoTools Statistics
-  | "id" // Indonesian
-  | "fil" // Filipino
-  | "ms" // Malaysian
-  | "pt-BR" // Brazilian Portugese
-  | "th" // Thai
-  | "vi"; // Vietnamese
+  | "en" //     English
+  | "ja" //     Japanese
+  | "zh-CN" //  Chinese (China)
+  | "zh-TW" //  Chinese (Taiwan)
+  | "ko" //     Korean
+  | "id" //     Indonesian
+  | "th" //     Thai
+  | "fil" //    Filipino
+  | "ms" //     Malay
+  | "vi" //     Vietnamese
+  | "pt-BR" //  Portuguese (Brazil)
+  | "es" //     Spanish
+  | "ru" //     Russian
+  | "fr" //     French
+  | "de" //     German
+  | "it" //     Italian
+  | "pl" //     Polish
+  | "pt"; //     Portuguese
 
 interface PageMeta {
   title: string;
