@@ -1,11 +1,9 @@
-import { Lang, Locale, NameOrder, Query, UL } from "types/makotools";
-
-import { CONSTANTS } from "./makotools/constants";
 import { DEFAULT_LOCALE } from "./makotools/locales";
-import { parseStringify } from "./utilities";
+
+import { Locale, NameOrder } from "types/makotools";
 
 // https://en.wikipedia.org/wiki/Personal_name#Eastern_name_order
-const lastFirstLocales: Locale[] = ["ja", "zh", "zh-TW", "ko"];
+const lastFirstLocales: Locale[] = ["ja", "zh-CN", "zh-TW", "ko"];
 export function getNameOrder(
   { first_name, last_name }: { first_name: string; last_name: string },
   setting?: NameOrder,
