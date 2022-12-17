@@ -14,7 +14,7 @@ function Page({ post }: { post: StrapiItem<MakoPost> }) {
         sx={(theme) => ({
           figcaption: {
             fontSize: theme.fontSizes.xs,
-            color: theme.other.getDimmed(theme),
+            color: theme.other.dimmed,
           },
         })}
       >

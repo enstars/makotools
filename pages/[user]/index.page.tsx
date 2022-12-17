@@ -32,7 +32,6 @@ import { useMediaQuery } from "@mantine/hooks";
 
 import { getLayout, useSidebarStatus } from "components/Layout";
 import { UserData } from "types/makotools";
-
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getAssetURL } from "services/data";
 import { parseStringify } from "services/utilities";

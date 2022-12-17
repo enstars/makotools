@@ -12,7 +12,6 @@ import {
 import { useState } from "react";
 
 import CardStatsNumber from "components/utilities/formatting/CardStatsNumber";
-
 import { GameCard, StatLevel, Stats } from "types/game";
 
 function LabelCell({ total, ...props }: BoxProps & { total?: any }) {

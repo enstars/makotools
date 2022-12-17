@@ -2,6 +2,10 @@ import React from "react";
 import { Group, AspectRatio, Badge, Divider } from "@mantine/core";
 import { IconStar } from "@tabler/icons";
 
+import Stats, { sumStats } from "./components/Stats";
+import Skills from "./components/Skills";
+import Gallery from "./components/Gallery";
+
 import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import attributes from "data/attributes.json";
@@ -10,11 +14,6 @@ import NameOrder from "components/utilities/formatting/NameOrder";
 import { getLocalizedNumber } from "components/utilities/formatting/CardStatsNumber";
 import { QuerySuccess } from "types/makotools";
 import Picture from "components/core/Picture";
-
-import Stats, { sumStats } from "./components/Stats";
-import Skills from "./components/Skills";
-import Gallery from "./components/Gallery";
-
 import getServerSideUser from "services/firebase/getServerSideUser";
 import {
   getItemFromLocalizedDataArray,

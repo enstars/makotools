@@ -4,14 +4,13 @@ import { IconAlertTriangle } from "@tabler/icons";
 import { useAuthUser } from "next-firebase-auth";
 import { ColorScheme } from "@mantine/core";
 
-import { User, UserData, UserLoading, UserPrivateData } from "types/makotools";
-
 import {
   getFirestorePrivateUserData,
   getFirestoreUserData,
   setFirestoreUserData,
 } from "./firestore";
 
+import { User, UserData, UserLoading, UserPrivateData } from "types/makotools";
 import notify from "services/libraries/notify";
 
 const loadingUser: UserLoading = {

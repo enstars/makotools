@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Box, Card, createStyles, Title } from "@mantine/core";
 
 import { twoStarIDs } from "data/characterIDtoCardID";
-
 import { getAssetURL } from "services/data";
 import NameOrder from "components/utilities/formatting/NameOrder";
 import { Lang } from "types/makotools";

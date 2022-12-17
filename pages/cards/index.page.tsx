@@ -26,12 +26,11 @@ import {
 } from "@tabler/icons";
 import fuzzysort from "fuzzysort";
 
+import CardCard from "./components/DisplayCard";
+
 import PageTitle from "components/sections/PageTitle";
 import { getLayout } from "components/Layout";
 import { QuerySuccess } from "types/makotools";
-
-import CardCard from "./components/DisplayCard";
-
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "services/data";
 import { CardRarity, GameCard, GameCharacter } from "types/game";

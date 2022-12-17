@@ -13,7 +13,6 @@ import useTranslation from "next-translate/useTranslation";
 import { getLayout } from "components/Layout";
 import UpcomingCampaigns from "components/Homepage/UpcomingCampaigns";
 import Banner from "components/Homepage/Banner";
-
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "services/data";
 import {

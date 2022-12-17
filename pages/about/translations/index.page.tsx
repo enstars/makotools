@@ -2,7 +2,6 @@ import { TypographyStylesProvider } from "@mantine/core";
 
 import PageTitle from "components/sections/PageTitle";
 import { getLayout } from "components/Layout";
-
 import { CONSTANTS } from "services/makotools/constants";
 
 function Page() {

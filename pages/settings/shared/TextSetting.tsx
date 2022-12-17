@@ -10,7 +10,6 @@ import {
 import { IconCheck, IconX } from "@tabler/icons";
 
 import { UserData } from "types/makotools";
-
 import useUser from "services/firebase/user";
 
 function TextSetting<T = {}>({

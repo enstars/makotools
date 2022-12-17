@@ -10,12 +10,11 @@ import {
 } from "@mantine/core";
 import { IconCalendar, IconList } from "@tabler/icons";
 
-import { getLayout } from "components/Layout";
-
 import CalendarGridView from "./components/CalendarGridView";
 import CalendarListView from "./components/CalendarListView";
 import CalendarHeader from "./components/CalendarHeader";
 
+import { getLayout } from "components/Layout";
 import { useDayjs } from "services/libraries/dayjs";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "services/data";

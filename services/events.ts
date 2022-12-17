@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { useDayjs } from "./libraries/dayjs";
+
 import {
   Event,
   BirthdayEvent,
@@ -6,8 +8,6 @@ import {
   ScoutEvent,
   GameCharacter,
 } from "types/game";
-
-import { useDayjs } from "./libraries/dayjs";
 
 function createBirthdayData(characters: GameCharacter[]): BirthdayEvent[] {
   let birthdays = [];

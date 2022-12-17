@@ -2,13 +2,13 @@ import { AppShell, Container, Paper, useMantineTheme } from "@mantine/core";
 import { useToggle } from "@mantine/hooks";
 import { createContext, useContext } from "react";
 
-import { PageMeta } from "types/makotools";
-
 import ErrorBoundary from "./ErrorBoundary";
 import Meta from "./Meta";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import Footer from "./Footer";
+
+import { PageMeta } from "types/makotools";
 
 const SidebarStatusContext = createContext<any>(null);
 export const useSidebarStatus = () => useContext(SidebarStatusContext);

@@ -7,7 +7,6 @@ import Reactions from "components/sections/Reactions";
 import { getLayout } from "components/Layout";
 import Picture from "components/core/Picture";
 import { QuerySuccess } from "types/makotools";
-
 import getServerSideUser from "services/firebase/getServerSideUser";
 import {
   getData,
