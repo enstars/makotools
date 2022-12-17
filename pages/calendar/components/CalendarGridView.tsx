@@ -21,9 +21,9 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
   week: {},
   today: {
-    border: `solid 2px ${theme.colors.blue[5]}`,
+    border: `solid 2px ${theme.colors.hokke[5]}`,
     // [`& .${getRef("dateLabel")}`]: {
-    //   backgroundColor: theme.colors.blue[5],
+    //   backgroundColor: theme.colors.hokke[5],
     //   alignSelf: "start",
     //   padding: "2px 3px",
     //   minWidth: 24,

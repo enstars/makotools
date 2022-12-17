@@ -73,7 +73,7 @@ function Skills({ card }: { card: GameCard }) {
         {[
           {
             type: "center",
-            color: "blue",
+            color: "hokke",
             description: <Text>{centerSkillParse(card.skills?.center)}</Text>,
           },
           {

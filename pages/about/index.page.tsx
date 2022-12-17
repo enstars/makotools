@@ -25,7 +25,9 @@ import Picture from "components/core/Picture";
 function Page() {
   const theme = useMantineTheme();
   const bannerBlue =
-    theme.colorScheme === "dark" ? theme.colors.blue[9] : theme.colors.blue[5];
+    theme.colorScheme === "dark"
+      ? theme.colors.hokke[9]
+      : theme.colors.hokke[5];
   const backgroundColor =
     theme.colorScheme === "dark"
       ? theme.colors.dark[8]

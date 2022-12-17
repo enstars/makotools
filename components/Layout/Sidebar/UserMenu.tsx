@@ -54,7 +54,7 @@ function UserMenu({ trigger }: { trigger: any }) {
           href={user.loggedIn ? `/@${user?.db?.username}` : "#"}
           icon={
             <Avatar
-              color="blue"
+              color="hokke"
               size="sm"
               radius="xl"
               sx={{ "*": { display: "flex" } }}

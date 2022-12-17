@@ -141,7 +141,7 @@ const tabs = [
     label: "Account",
     value: "account",
     icon: IconUserCircle,
-    color: "blue",
+    color: "hokke",
     contents: () => (
       <>
         <Stack>

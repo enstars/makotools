@@ -168,7 +168,7 @@ function Page({ profile, uid }: { profile: UserData; uid: string }) {
                     });
                   }}
                   size="lg"
-                  color="blue"
+                  color="hokke"
                   variant="light"
                 >
                   <IconLink size={18} />

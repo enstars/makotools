@@ -176,7 +176,7 @@ function Page({
                     }));
                   }}
                   variant="light"
-                  color="blue"
+                  color="hokke"
                 >
                   {view.sort.ascending ? (
                     <IconSortAscending size={16} />

@@ -57,7 +57,7 @@ function MantineTheme({
             "#1971c2",
             "#1864ab",
           ],
-          blue: [
+          hokke: [
             "#edf2ff",
             "#dbe4ff",
             "#bac8ff",
@@ -70,6 +70,7 @@ function MantineTheme({
             "#364fc7",
           ],
         },
+        primaryColor: "hokke",
         primaryShade: { light: 6, dark: 5 },
         lineHeight: 1.5,
         fontFamily:

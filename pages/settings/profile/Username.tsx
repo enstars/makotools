@@ -23,7 +23,7 @@ function Username() {
           <ActionIcon
             onClick={() => setUsernameModalOpen(true)}
             variant="filled"
-            color="blue"
+            color="hokke"
           >
             <IconPencil size={14} />
           </ActionIcon>

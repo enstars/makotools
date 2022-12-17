@@ -183,7 +183,7 @@ function Page({
                     }));
                   }}
                   variant="light"
-                  color="blue"
+                  color="hokke"
                 >
                   {viewOptions.sortDescending ? (
                     <IconSortAscending size={16} />

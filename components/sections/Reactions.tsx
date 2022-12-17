@@ -107,7 +107,7 @@ function Reactions() {
                   <Button
                     variant="light"
                     size="xs"
-                    color="blue"
+                    color="hokke"
                     onClick={onClick}
                     leftIcon={<IconMoodSmile size={16} />}
                     px="xs"
