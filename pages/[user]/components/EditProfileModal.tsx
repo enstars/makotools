@@ -3,6 +3,9 @@ import dynamic from "next/dynamic";
 import { Dispatch, SetStateAction } from "react";
 
 import Banner from "./Banner";
+import Name from "./Name";
+import Pronouns from "./Pronouns";
+import StartPlaying from "./StartPlaying";
 
 import { GameCard } from "types/game";
 
@@ -26,18 +29,23 @@ function EditProfileModal({
         openedFunction(false);
       }}
       size="lg"
+      title={<Title order={2}>Edit profile</Title>}
     >
-      <Group position="apart" sx={{ margin: 0 }}>
-        <Title order={1}>Edit profile</Title>
-        <Button
-          onClick={() => {
-            openedFunction(false);
-          }}
-        >
-          Save
-        </Button>
-      </Group>
       <Banner cards={cards} />
+      <Group sx={{ marginBottom: 20 }}>
+        <Name />
+        <Pronouns />
+      </Group>
+      <StartPlaying />
+      <Bio />
+      <Button
+        onClick={() => {
+          openedFunction(false);
+        }}
+        sx={{ marginTop: 20 }}
+      >
+        Save
+      </Button>
     </Modal>
   );
 }

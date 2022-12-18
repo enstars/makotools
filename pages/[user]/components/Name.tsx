@@ -1,6 +1,6 @@
 import React from "react";
 
-import TextSetting from "../shared/TextSetting";
+import TextSetting from "./TextSetting";
 
 function Name() {
   return (

@@ -3,7 +3,6 @@ import { IconPencil, IconTextCaption } from "@tabler/icons";
 import { useState } from "react";
 
 import TextSetting from "./TextSetting";
-
 import BioHelpModal from "./BioHelpModal";
 
 import BioDisplay from "components/sections/BioDisplay";
