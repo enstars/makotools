@@ -4,9 +4,11 @@ import {
   AspectRatio,
   Badge,
   Box,
+  Button,
   CopyButton,
   Group,
   Image,
+  Modal,
   Paper,
   Space,
   Text,
@@ -24,6 +26,7 @@ import {
   IconCopy,
   IconFlag,
   IconLink,
+  IconPencil,
   IconUserPlus,
 } from "@tabler/icons";
 import { useRef, Fragment, useState, useEffect } from "react";
@@ -72,6 +75,7 @@ function Page({ profile, uid }: { profile: UserData; uid: string }) {
   const shareURLFull = `https://enstars.link/@${profile.username}`;
 
   const [embla, setEmbla] = useState<Embla | null>(null);
+  const [openEditModal, setOpenEditModal] = useState<boolean>(false);
 
   const { collapsed } = useSidebarStatus();
   useEffect(() => {
@@ -79,6 +83,25 @@ function Page({ profile, uid }: { profile: UserData; uid: string }) {
   }, [embla, collapsed]);
   return (
     <>
+      <Modal
+        centered
+        opened={openEditModal}
+        onClose={() => {
+          setOpenEditModal(false);
+        }}
+        size="lg"
+      >
+        <Group position="apart" sx={{ margin: 0 }}>
+          <Title order={1}>Edit profile</Title>
+          <Button
+            onClick={() => {
+              setOpenEditModal(false);
+            }}
+          >
+            Save
+          </Button>
+        </Group>
+      </Modal>
       {profile?.profile__banner && profile.profile__banner?.length ? (
         <Box mt="sm" sx={{ marginLeft: "-100%", marginRight: "-100%" }}>
           <Carousel
@@ -144,6 +167,20 @@ function Page({ profile, uid }: { profile: UserData; uid: string }) {
           </Text>
         </Box>
         <Group spacing="xs">
+          {user.loggedIn && user.db.suid === profile.suid && (
+            <Tooltip label="Edit profile">
+              <ActionIcon
+                onClick={() => {
+                  setOpenEditModal(true);
+                }}
+                size="lg"
+                color="green"
+                variant="light"
+              >
+                <IconPencil size={18} />
+              </ActionIcon>
+            </Tooltip>
+          )}
           <CopyButton value={shareURLFull}>
             {({ copy }) => (
               <Tooltip label="Copy sharable URL">
