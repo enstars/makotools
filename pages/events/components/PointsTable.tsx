@@ -25,7 +25,9 @@ function PointsTable({
         <Box sx={{ "&&&": { flex: "1 1 40%", position: "relative" } }}>
           <Link
             href={`/${
-              type === "song" || type === "tour" ? "scouts" : "events"
+              type === "song" || type === "tour" || type === "shuffle"
+                ? "scouts"
+                : "events"
             }/${id}`}
           >
             <Picture
