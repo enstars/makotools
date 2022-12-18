@@ -2,7 +2,7 @@ import { Input, Tabs, Textarea, Text } from "@mantine/core";
 import { IconPencil, IconTextCaption } from "@tabler/icons";
 import { useState } from "react";
 
-import TextSetting from "../shared/TextSetting";
+import TextSetting from "./TextSetting";
 
 import BioHelpModal from "./BioHelpModal";
 

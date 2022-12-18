@@ -4,11 +4,9 @@ import {
   AspectRatio,
   Badge,
   Box,
-  Button,
   CopyButton,
   Group,
   Image,
-  Modal,
   Paper,
   Space,
   Text,
@@ -33,10 +31,12 @@ import { useRef, Fragment, useState, useEffect } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { useMediaQuery } from "@mantine/hooks";
 
+import EditProfileModal from "./components/EditProfileModal";
+
 import { getLayout, useSidebarStatus } from "components/Layout";
 import { UserData } from "types/makotools";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { getAssetURL } from "services/data";
+import { getAssetURL, getLocalizedDataArray } from "services/data";
 import { parseStringify } from "services/utilities";
 import { useDayjs } from "services/libraries/dayjs";
 import useUser from "services/firebase/user";
@@ -44,6 +44,7 @@ import BioDisplay from "components/sections/BioDisplay";
 import Picture from "components/core/Picture";
 import { CONSTANTS } from "services/makotools/constants";
 import notify from "services/libraries/notify";
+import { GameCard } from "types/game";
 
 function PatreonBanner({ profile }: { profile: UserData }) {
   if (profile?.admin?.patreon) {
@@ -65,7 +66,15 @@ function PatreonBanner({ profile }: { profile: UserData }) {
   return null;
 }
 
-function Page({ profile, uid }: { profile: UserData; uid: string }) {
+function Page({
+  profile,
+  uid,
+  cards,
+}: {
+  profile: UserData;
+  uid: string;
+  cards: GameCard[] | undefined;
+}) {
   const { dayjs } = useDayjs();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const theme = useMantineTheme();
@@ -83,25 +92,11 @@ function Page({ profile, uid }: { profile: UserData; uid: string }) {
   }, [embla, collapsed]);
   return (
     <>
-      <Modal
-        centered
+      <EditProfileModal
         opened={openEditModal}
-        onClose={() => {
-          setOpenEditModal(false);
-        }}
-        size="lg"
-      >
-        <Group position="apart" sx={{ margin: 0 }}>
-          <Title order={1}>Edit profile</Title>
-          <Button
-            onClick={() => {
-              setOpenEditModal(false);
-            }}
-          >
-            Save
-          </Button>
-        </Group>
-      </Modal>
+        openedFunction={setOpenEditModal}
+        cards={cards}
+      />
       {profile?.profile__banner && profile.profile__banner?.length ? (
         <Box mt="sm" sx={{ marginLeft: "-100%", marginRight: "-100%" }}>
           <Carousel
@@ -348,7 +343,16 @@ Page.getLayout = getLayout({ hideOverflow: true });
 export default Page;
 
 export const getServerSideProps = getServerSideUser(
-  async ({ params, admin }) => {
+  async ({ params, admin, locale }) => {
+    const cards = await getLocalizedDataArray<GameCard>("cards", locale, "id", [
+      "id",
+      "title",
+      "name",
+      "rarity",
+    ]);
+    if (cards.status === "error") return { props: { cards: undefined } };
+    const bannerIds = cards.data.filter((c) => c.rarity >= 4).map((c) => c.id);
+
     if (typeof params?.user !== "string" || !params.user.startsWith("@")) {
       return {
         notFound: true,
@@ -364,6 +368,7 @@ export const getServerSideProps = getServerSideUser(
       return {
         props: {
           profile,
+          cards: cards.data.filter((c) => bannerIds.includes(c.id)),
           uid: querySnap.docs[0].id,
           meta: {
             title: profile?.name
