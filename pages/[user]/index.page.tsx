@@ -85,6 +85,17 @@ function Page({
 
   const [embla, setEmbla] = useState<Embla | null>(null);
   const [openEditModal, setOpenEditModal] = useState<boolean>(false);
+  const [profileState, setProfileState] = useState({
+    profile__banner: profile.profile__banner,
+    name: profile.name,
+    profile__pronouns: profile.profile__pronouns,
+    profile__start_playing: profile.profile__start_playing,
+    profile__bio: profile.profile__bio,
+  });
+
+  useEffect(() => {
+    console.log(profileState);
+  }, [profileState]);
 
   const { collapsed } = useSidebarStatus();
   useEffect(() => {
@@ -96,6 +107,10 @@ function Page({
         opened={openEditModal}
         openedFunction={setOpenEditModal}
         cards={cards}
+        user={user}
+        profile={profile}
+        profileState={profileState}
+        setProfileState={setProfileState}
       />
       {profile?.profile__banner && profile.profile__banner?.length ? (
         <Box mt="sm" sx={{ marginLeft: "-100%", marginRight: "-100%" }}>

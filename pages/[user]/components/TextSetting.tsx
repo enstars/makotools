@@ -1,13 +1,16 @@
-import { useState, useMemo, useEffect, ChangeEvent } from "react";
-import { useDebouncedCallback } from "use-debounce";
+import {
+  useState,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+  ChangeEvent,
+} from "react";
 import {
   TextInput,
-  Loader,
   useMantineTheme,
   Text,
   TextInputProps,
 } from "@mantine/core";
-import { IconCheck, IconX } from "@tabler/icons";
 
 import { UserData } from "types/makotools";
 import useUser from "services/firebase/user";
@@ -18,6 +21,8 @@ function TextSetting<T = {}>({
   Component = TextInput,
   showCharCount = false,
   charLimit,
+  externalSetter,
+  profileState,
   ...props
 }: TextInputProps & {
   label: string;
@@ -25,6 +30,8 @@ function TextSetting<T = {}>({
   Component?: any;
   showCharCount?: boolean;
   charLimit: number;
+  externalSetter: Dispatch<SetStateAction<any>>;
+  profileState: any;
 } & T) {
   const theme = useMantineTheme();
   const user = useUser();
@@ -35,16 +42,16 @@ function TextSetting<T = {}>({
     user.loggedIn ? user.db?.[dataKey] : undefined
   );
 
-  const handleValueChange = useDebouncedCallback((value) => {
-    if (user.loggedIn && !user?.db?.admin?.disableTextFields) {
-      user.db.set({ [dataKey]: value });
-    }
-  }, 2000);
+  // const handleValueChange = useDebouncedCallback((value) => {
+  //   if (user.loggedIn && !user?.db?.admin?.disableTextFields) {
+  //     externalSetter(value);
+  //   }
+  // }, 2000);
 
-  const memoizedHandleValueChange = useMemo(
-    () => handleValueChange,
-    [handleValueChange]
-  );
+  // const memoizedHandleValueChange = useMemo(
+  //   () => handleValueChange,
+  //   [handleValueChange]
+  // );
 
   useEffect(() => {
     if (isFirestoreAccessible) setInputValue(user.db?.[dataKey]);
@@ -57,21 +64,19 @@ function TextSetting<T = {}>({
         label={label}
         onChange={(e: ChangeEvent<HTMLInputElement>) => {
           setInputValue(e.target.value);
-          if (e.target.value.length <= charLimit) {
-            memoizedHandleValueChange(e.target.value);
-          }
+          externalSetter({ ...profileState, [dataKey]: e.target.value });
+          console.log(e.target.value);
         }}
-        rightSection={
-          isFirestoreAccessible &&
-          inputValue?.length &&
-          (inputValue?.length > charLimit ? (
-            <IconX size={18} color={theme.colors.red[5]} />
-          ) : inputValue === user.db?.[dataKey] ? (
-            <IconCheck size={18} color={theme.colors.green[5]} />
-          ) : (
-            <Loader size="xs" />
-          ))
-        }
+        // rightSection={
+        //   inputValue?.length &&
+        //   (inputValue?.length > charLimit ? (
+        //     <IconX size={18} color={theme.colors.red[5]} />
+        //   ) : inputValue === user.db?.[dataKey] ? (
+        //     <IconCheck size={18} color={theme.colors.green[5]} />
+        //   ) : (
+        //     <Loader size="xs" />
+        //   ))
+        // }
         autosize
         {...props}
         error={

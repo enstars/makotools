@@ -1,5 +1,5 @@
 import { Checkbox, Group, Input, Select } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 import useUser from "services/firebase/user";
 import { useDayjs } from "services/libraries/dayjs";
@@ -43,7 +43,13 @@ years.forEach((year) => {
     });
 });
 
-function StartPlaying() {
+function StartPlaying({
+  externalSetter,
+  profileState,
+}: {
+  externalSetter: Dispatch<SetStateAction<any>>;
+  profileState: any;
+}) {
   const { dayjs } = useDayjs();
   const user = useUser();
 
@@ -88,7 +94,7 @@ function StartPlaying() {
       (typeof user.db?.profile__start_playing === "undefined" ||
         user.db.profile__start_playing !== resolvedData)
     ) {
-      user.db.set({ profile__start_playing: resolvedData });
+      externalSetter({ ...profileState, profile__start_playing: resolvedData });
     }
   }, [picked]);
 

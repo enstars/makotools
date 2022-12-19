@@ -8,6 +8,7 @@ import Pronouns from "./Pronouns";
 import StartPlaying from "./StartPlaying";
 
 import { GameCard } from "types/game";
+import { User, UserData } from "types/makotools";
 
 const Bio = dynamic(() => import("./Bio"), {
   ssr: false,
@@ -17,10 +18,18 @@ function EditProfileModal({
   opened,
   openedFunction,
   cards,
+  user,
+  profile,
+  profileState,
+  setProfileState,
 }: {
   opened: boolean;
   openedFunction: Dispatch<SetStateAction<boolean>>;
   cards: GameCard[] | undefined;
+  user: User;
+  profile: UserData;
+  profileState: any;
+  setProfileState: Dispatch<SetStateAction<any>>;
 }) {
   return (
     <Modal
@@ -29,23 +38,47 @@ function EditProfileModal({
         openedFunction(false);
       }}
       size="lg"
-      title={<Title order={2}>Edit profile</Title>}
+      title={
+        <Group align="center" position="apart">
+          <Title order={2}>Edit profile</Title>
+          <Button
+            onClick={() => {
+              if (user.loggedIn) {
+                user.db.set({
+                  profile__banner: profileState.profile__banner,
+                  name: profileState.name,
+                  profile__pronouns: profileState.profile__pronouns,
+                  profile__start_playing: profileState.profile__start_playing,
+                  profile__bio: profileState.profile__bio,
+                });
+              }
+              openedFunction(false);
+              location.reload();
+            }}
+            sx={{ marginTop: 20 }}
+          >
+            Save
+          </Button>
+        </Group>
+      }
     >
-      <Banner cards={cards} />
+      <Banner
+        cards={cards}
+        externalSetter={setProfileState}
+        profileState={profileState}
+      />
       <Group sx={{ marginBottom: 20 }}>
-        <Name />
-        <Pronouns />
+        <Name externalSetter={setProfileState} profileState={profileState} />
+        <Pronouns
+          externalSetter={setProfileState}
+          profileState={profileState}
+        />
       </Group>
-      <StartPlaying />
-      <Bio />
-      <Button
-        onClick={() => {
-          openedFunction(false);
-        }}
-        sx={{ marginTop: 20 }}
-      >
-        Save
-      </Button>
+      <StartPlaying
+        externalSetter={setProfileState}
+        profileState={profileState}
+      />
+      <Bio externalSetter={setProfileState} profileState={profileState} />
     </Modal>
   );
 }
