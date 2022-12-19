@@ -2,7 +2,7 @@ import { ActionIcon, Modal, TextInput } from "@mantine/core";
 import { IconAt, IconPencil } from "@tabler/icons";
 import { useState } from "react";
 
-import DebouncedUsernameInput from "../../[user]/components/DebouncedUsernameInput";
+import DebouncedUsernameInput from "./DebouncedUsernameInput";
 
 import useUser from "services/firebase/user";
 
