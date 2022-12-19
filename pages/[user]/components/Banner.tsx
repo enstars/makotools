@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { IconTrash } from "@tabler/icons";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 import useUser from "services/firebase/user";
@@ -43,7 +43,15 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-function Banner({ cards }: { cards: GameCard[] | undefined }) {
+function Banner({
+  cards,
+  externalSetter,
+  profileState,
+}: {
+  cards: GameCard[] | undefined;
+  externalSetter: Dispatch<SetStateAction<any>>;
+  profileState: any;
+}) {
   const user = useUser();
   const [acValue, setAcValue] = useState("");
 
@@ -58,7 +66,7 @@ function Banner({ cards }: { cards: GameCard[] | undefined }) {
       user.db?.profile__banner &&
       JSON.stringify(user.db.profile__banner) !== JSON.stringify(state)
     ) {
-      user.db.set({ profile__banner: state });
+      externalSetter({ ...profileState, profile__banner: state });
     }
   }, [state]);
 
@@ -150,8 +158,6 @@ function Banner({ cards }: { cards: GameCard[] | undefined }) {
         value={acValue}
         onChange={(value) => {
           if (value) handlers.append(parseInt(value));
-          if (user.loggedIn)
-            user.db.set({ profile__banner: [...state, value] });
         }}
         searchable
         limit={25}

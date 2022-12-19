@@ -24,16 +24,19 @@ import {
   IconCopy,
   IconFlag,
   IconLink,
+  IconPencil,
   IconUserPlus,
 } from "@tabler/icons";
 import { useRef, Fragment, useState, useEffect } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { useMediaQuery } from "@mantine/hooks";
 
+import EditProfileModal from "./components/EditProfileModal";
+
 import { getLayout, useSidebarStatus } from "components/Layout";
 import { UserData } from "types/makotools";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { getAssetURL } from "services/data";
+import { getAssetURL, getLocalizedDataArray } from "services/data";
 import { parseStringify } from "services/utilities";
 import { useDayjs } from "services/libraries/dayjs";
 import useUser from "services/firebase/user";
@@ -41,6 +44,7 @@ import BioDisplay from "components/sections/BioDisplay";
 import Picture from "components/core/Picture";
 import { CONSTANTS } from "services/makotools/constants";
 import notify from "services/libraries/notify";
+import { GameCard } from "types/game";
 
 function PatreonBanner({ profile }: { profile: UserData }) {
   if (profile?.admin?.patreon) {
@@ -62,7 +66,15 @@ function PatreonBanner({ profile }: { profile: UserData }) {
   return null;
 }
 
-function Page({ profile, uid }: { profile: UserData; uid: string }) {
+function Page({
+  profile,
+  uid,
+  cards,
+}: {
+  profile: UserData;
+  uid: string;
+  cards: GameCard[] | undefined;
+}) {
   const { dayjs } = useDayjs();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const theme = useMantineTheme();
@@ -72,6 +84,18 @@ function Page({ profile, uid }: { profile: UserData; uid: string }) {
   const shareURLFull = `https://enstars.link/@${profile.username}`;
 
   const [embla, setEmbla] = useState<Embla | null>(null);
+  const [openEditModal, setOpenEditModal] = useState<boolean>(false);
+  const [profileState, setProfileState] = useState({
+    profile__banner: profile.profile__banner,
+    name: profile.name,
+    profile__pronouns: profile.profile__pronouns,
+    profile__start_playing: profile.profile__start_playing,
+    profile__bio: profile.profile__bio,
+  });
+
+  useEffect(() => {
+    console.log(profileState);
+  }, [profileState]);
 
   const { collapsed } = useSidebarStatus();
   useEffect(() => {
@@ -79,6 +103,15 @@ function Page({ profile, uid }: { profile: UserData; uid: string }) {
   }, [embla, collapsed]);
   return (
     <>
+      <EditProfileModal
+        opened={openEditModal}
+        openedFunction={setOpenEditModal}
+        cards={cards}
+        user={user}
+        profile={profile}
+        profileState={profileState}
+        setProfileState={setProfileState}
+      />
       {profile?.profile__banner && profile.profile__banner?.length ? (
         <Box mt="sm" sx={{ marginLeft: "-100%", marginRight: "-100%" }}>
           <Carousel
@@ -144,6 +177,20 @@ function Page({ profile, uid }: { profile: UserData; uid: string }) {
           </Text>
         </Box>
         <Group spacing="xs">
+          {user.loggedIn && user.db.suid === profile.suid && (
+            <Tooltip label="Edit profile">
+              <ActionIcon
+                onClick={() => {
+                  setOpenEditModal(true);
+                }}
+                size="lg"
+                color="green"
+                variant="light"
+              >
+                <IconPencil size={18} />
+              </ActionIcon>
+            </Tooltip>
+          )}
           <CopyButton value={shareURLFull}>
             {({ copy }) => (
               <Tooltip label="Copy sharable URL">
@@ -311,7 +358,16 @@ Page.getLayout = getLayout({ hideOverflow: true });
 export default Page;
 
 export const getServerSideProps = getServerSideUser(
-  async ({ params, admin }) => {
+  async ({ params, admin, locale }) => {
+    const cards = await getLocalizedDataArray<GameCard>("cards", locale, "id", [
+      "id",
+      "title",
+      "name",
+      "rarity",
+    ]);
+    if (cards.status === "error") return { props: { cards: undefined } };
+    const bannerIds = cards.data.filter((c) => c.rarity >= 4).map((c) => c.id);
+
     if (typeof params?.user !== "string" || !params.user.startsWith("@")) {
       return {
         notFound: true,
@@ -327,6 +383,7 @@ export const getServerSideProps = getServerSideUser(
       return {
         props: {
           profile,
+          cards: cards.data.filter((c) => bannerIds.includes(c.id)),
           uid: querySnap.docs[0].id,
           meta: {
             title: profile?.name
