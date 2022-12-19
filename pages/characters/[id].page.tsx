@@ -24,6 +24,9 @@ function Page({
 }) {
   const { dayjs } = useDayjs();
   const { data: character } = characterQuery;
+  if (character.character_id === 74)
+    console.log("oh my god niki shiina from ensemble stars");
+  if (character.character_id === 13) console.log("no way it's makoto yuuki from makotools");
   return (
     <>
       {dayjs(character.birthday).year(new Date().getFullYear()).isToday() && (
