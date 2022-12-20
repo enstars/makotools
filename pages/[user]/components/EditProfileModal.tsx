@@ -1,4 +1,4 @@
-import { Modal, Group, Title, Button } from "@mantine/core";
+import { Modal, Group, Title, Button, Divider } from "@mantine/core";
 import dynamic from "next/dynamic";
 import { Dispatch, SetStateAction } from "react";
 
@@ -38,8 +38,18 @@ function EditProfileModal({
         openedFunction(false);
       }}
       size="lg"
+      styles={(theme) => ({
+        root: { marginBottom: 10, marginTop: -25 },
+        title: { width: "80%" },
+      })}
       title={
-        <Group align="center" position="apart">
+        <Group
+          noWrap
+          align="center"
+          position="left"
+          spacing="xl"
+          sx={{ width: "100%" }}
+        >
           <Title order={2}>Edit profile</Title>
           <Button
             onClick={() => {
@@ -55,7 +65,6 @@ function EditProfileModal({
               openedFunction(false);
               location.reload();
             }}
-            sx={{ marginTop: 20 }}
           >
             Save
           </Button>
@@ -67,6 +76,7 @@ function EditProfileModal({
         externalSetter={setProfileState}
         profileState={profileState}
       />
+      <Divider sx={{ margin: "20px 0px" }} />
       <Group sx={{ marginBottom: 20 }}>
         <Name externalSetter={setProfileState} profileState={profileState} />
         <Pronouns
@@ -78,6 +88,7 @@ function EditProfileModal({
         externalSetter={setProfileState}
         profileState={profileState}
       />
+      <Divider sx={{ margin: "20px 0px" }} />
       <Bio externalSetter={setProfileState} profileState={profileState} />
     </Modal>
   );
