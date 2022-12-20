@@ -4,10 +4,11 @@ import {
   createStyles,
   Input,
   Select,
+  Switch,
   Text,
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
-import { IconX } from "@tabler/icons";
+import { IconSun, IconSunOff, IconX } from "@tabler/icons";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { GridContextProvider, GridDropZone, GridItem } from "react-grid-drag";
 
@@ -81,75 +82,6 @@ function Banner({
       </Text>
     );
 
-  // const items = state.map((item, index) => (
-  //   <GridItem key={item}>
-  //     <Box sx={{ position: "relative" }}>
-  //       <ActionIcon sx={{ position: "absolute", top: 0, right: 0 }}>
-  //         <IconX />
-  //       </ActionIcon>
-  //       <Picture
-  //         alt={cards.find((c) => c.id === item)?.title[0] || "card"}
-  //         srcB2={`assets/card_still_full1_${item}_evolution.png`}
-  //         radius={4}
-  //       />
-  //     </Box>
-  //   </GridItem>
-  //   // <Draggable key={item} index={index} draggableId={item.toString()}>
-  //   //   {(provided, snapshot) => (
-  //   //     <Card
-  //   //       radius="sm"
-  //   //       p={0}
-  //   //       {...provided.draggableProps}
-  //   //       {...provided.dragHandleProps}
-  //   //       ref={provided.innerRef}
-  //   //       sx={{ overflow: "hidden", maxHeight: 64 }}
-  //   //       mt="xs"
-  //   //       shadow="sm"
-  //   //     >
-  //   //       <Group noWrap>
-  //   //         <Picture
-  //   //           alt={cards.find((c) => c.id === item)?.title[0] || "card"}
-  //   //           srcB2={`assets/card_still_full1_${item}_evolution.png`}
-  //   //           sx={{
-  //   //             width: 60,
-  //   //             height: 60,
-  //   //             margin: 2,
-  //   //           }}
-  //   //           radius={4}
-  //   //         />
-  //   //         <Box
-  //   //           sx={{
-  //   //             flexGrow: 1,
-  //   //             minWidth: 0,
-  //   //             flexBasis: 0,
-  //   //             maxWidth: "100%",
-  //   //             "& div": {
-  //   //               overflow: "hidden",
-  //   //               textOverflow: "ellipsis",
-  //   //               whiteSpace: "nowrap",
-  //   //             },
-  //   //           }}
-  //   //         >
-  //   //           <Text weight={700}>
-  //   //             {cards.find((c) => c.id === item)?.title[0]}
-  //   //           </Text>
-  //   //           <Text size="sm" color="dimmed">
-  //   //             {cards.find((c) => c.id === item)?.name?.[0]}
-  //   //           </Text>
-  //   //         </Box>
-  //   //         <ActionIcon
-  //   //           color="red"
-  //   //           onClick={() => handlers.remove(index)}
-  //   //           mr="md"
-  //   //         >
-  //   //           <IconTrash size={16} />
-  //   //         </ActionIcon>
-  //   //       </Group>
-  //   //     </Card>
-  //   //   )}
-  //   // </Draggable>
-  // ));
-
   return (
     <Input.Wrapper label="Banner Cards">
       <GridContextProvider
@@ -173,7 +105,7 @@ function Banner({
           }}
         >
           {state.map((item, index) => (
-            <GridItem key={item}>
+            <GridItem key={Math.abs(item)}>
               <Box
                 sx={{
                   position: "relative",
@@ -193,9 +125,39 @@ function Banner({
                     }}
                   />
                 </ActionIcon>
+                <Switch
+                  checked={item > 0}
+                  onLabel={<IconSun />}
+                  offLabel={<IconSunOff />}
+                  onChange={(event) =>
+                    handlers.applyWhere(
+                      (i) => i === item,
+                      (i) => i * -1
+                    )
+                  }
+                  size="lg"
+                  styles={(theme) => ({
+                    root: {
+                      position: "absolute",
+                      zIndex: 10,
+                      filter: "drop-shadow(0px 0px 1px rgb(0 0 0))",
+                      padding: 0,
+                    },
+                    body: {
+                      height: "100%",
+                    },
+                    track: {
+                      borderRadius: 0,
+                      borderBottomRightRadius: theme.radius.md,
+                      borderTopLeftRadius: theme.radius.sm,
+                    },
+                  })}
+                />
                 <Picture
                   alt={cards.find((c) => c.id === item)?.title[0] || "card"}
-                  srcB2={`assets/card_still_full1_${item}_evolution.png`}
+                  srcB2={`assets/card_still_full1_${Math.abs(item)}_${
+                    item > 0 ? "evolution" : "normal"
+                  }.png`}
                   radius={4}
                   sx={{
                     height: 100,

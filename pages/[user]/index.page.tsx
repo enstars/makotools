@@ -132,7 +132,9 @@ function Page({
                     <Carousel.Slide key={c}>
                       <Picture
                         alt={`Card ${c}`}
-                        srcB2={`assets/card_still_full1_${c}_evolution.png`}
+                        srcB2={`assets/card_still_full1_${Math.abs(c)}_${
+                          c > 0 ? "evolution" : "normal"
+                        }.png`}
                         sx={{
                           height: "100%",
                         }}
