@@ -30,11 +30,21 @@ import {
 import { useRef, Fragment, useState, useEffect } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { useMediaQuery } from "@mantine/hooks";
+import {
+  DocumentData,
+  QueryDocumentSnapshot,
+  collection,
+  documentId,
+  getDocs,
+  getFirestore,
+  query,
+  where,
+} from "firebase/firestore";
 
 import EditProfileModal from "./components/EditProfileModal";
 
 import { getLayout, useSidebarStatus } from "components/Layout";
-import { UserData } from "types/makotools";
+import { UserData, UserLoggedIn } from "types/makotools";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getAssetURL, getLocalizedDataArray } from "services/data";
 import { parseStringify } from "services/utilities";
@@ -85,6 +95,7 @@ function Page({
 
   const [embla, setEmbla] = useState<Embla | null>(null);
   const [openEditModal, setOpenEditModal] = useState<boolean>(false);
+  const [isFriend, setIsFriend] = useState<boolean>(false);
   const [profileState, setProfileState] = useState({
     profile__banner: profile.profile__banner,
     name: profile.name,
@@ -94,6 +105,42 @@ function Page({
   });
 
   const { collapsed } = useSidebarStatus();
+
+  const db = getFirestore();
+  let processedBitches: DocumentData[] = [];
+  const bitches = (user as UserLoggedIn).privateDb?.friends__list || [];
+  const cloutLevel: number =
+    (user as UserLoggedIn).privateDb?.friends__list.length || 0;
+  let i = 0;
+
+  while (i < cloutLevel) {
+    getDocs(
+      query(
+        collection(db, "users"),
+        where(
+          documentId(),
+          "in",
+          i + 10 < cloutLevel
+            ? bitches.slice(i, i + 10)
+            : bitches.slice(i, cloutLevel)
+        )
+      )
+    ).then((usersQuery) =>
+      usersQuery.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
+        processedBitches.push(doc.data());
+      })
+    );
+
+    i += 10;
+  }
+
+  useEffect(() => {
+    if (profile.suid !== user.db.suid && bitches.includes(profile)) {
+      setIsFriend(true);
+      console.log(isFriend);
+    }
+  }, [bitches]);
+
   useEffect(() => {
     embla?.reInit();
   }, [embla, collapsed]);
@@ -219,7 +266,6 @@ function Page({
               </Tooltip>
             )}
           </CopyButton>
-          {console.log(user.privateDb?.friends__list, user.db.uid)}
           {user.loggedIn && user.db.suid !== profile.suid && (
             <>
               <Tooltip label="Send friend request">

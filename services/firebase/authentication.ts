@@ -18,13 +18,12 @@ const parseKey = (key: string) => {
 
 // Config & Initialization
 const firebaseConfig = {
-  apiKey: "AIzaSyA530zKJVq_vi56gzta4J_jGWIxgCIJg2k",
-  authDomain: "ensemble-square.web.app",
-  projectId: "ensemble-square",
-  storageBucket: "ensemble-square.appspot.com",
-  messagingSenderId: "940403567905",
-  appId: "1:940403567905:web:51d666cacd10e979cb2260",
-  measurementId: "G-L1FLXJKQC5",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "",
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "",
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "",
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "",
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "",
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "",
 };
 
 const defaultCallback = console.error;
