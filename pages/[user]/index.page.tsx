@@ -7,6 +7,7 @@ import {
   CopyButton,
   Group,
   Image,
+  Loader,
   Paper,
   Space,
   Text,
@@ -45,6 +46,7 @@ import {
 } from "firebase/firestore";
 
 import EditProfileModal from "./components/EditProfileModal";
+import RemoveFriendModal from "./components/RemoveFriendModal";
 
 import { getLayout, useSidebarStatus } from "components/Layout";
 import { UserData, UserLoggedIn } from "types/makotools";
@@ -97,7 +99,10 @@ function Page({
   const shareURLFull = `https://enstars.link/@${profile.username}`;
 
   const [embla, setEmbla] = useState<Embla | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const [openEditModal, setOpenEditModal] = useState<boolean>(false);
+  const [openRemoveFriendModal, setRemoveFriendModal] =
+    useState<boolean>(false);
   const [isFriend, setIsFriend] = useState<boolean>(false);
   const [profileState, setProfileState] = useState({
     profile__banner: profile.profile__banner,
@@ -147,6 +152,7 @@ function Page({
       if (notUrProfile) {
         const friend = bitchesState.find((b) => b.suid === profile.suid);
         if (friend) setIsFriend(true);
+        setLoading(false);
       }
     }
   }, [bitchesState]);
@@ -164,6 +170,12 @@ function Page({
         profile={profile}
         profileState={profileState}
         setProfileState={setProfileState}
+      />
+      <RemoveFriendModal
+        opened={openRemoveFriendModal}
+        closeFunction={setRemoveFriendModal}
+        user={user}
+        profile={profile}
       />
       {profile?.profile__banner && profile.profile__banner?.length ? (
         <Box mt="sm" sx={{ marginLeft: "-100%", marginRight: "-100%" }}>
@@ -224,20 +236,20 @@ function Page({
       <Group position="apart">
         <Box>
           <Group align="center" spacing="xs">
-            {isFriend && (
-              <Tooltip
-                label={`${profile?.name || profile.username} is your friend!`}
-              >
-                <ActionIcon size="xl">
-                  <IconHearts />
-                </ActionIcon>
-              </Tooltip>
-            )}
             <Title order={1}>{profile?.name || profile.username}</Title>
             {profile.admin?.administrator && (
               <Tooltip label="This user is MakoTools verified.">
                 <ActionIcon color="indigo" size="lg">
                   <IconDiscountCheck size={30} />
+                </ActionIcon>
+              </Tooltip>
+            )}
+            {isFriend && (
+              <Tooltip
+                label={`${profile?.name || profile.username} is your friend!`}
+              >
+                <ActionIcon size="xl" color="pink">
+                  <IconHearts />
                 </ActionIcon>
               </Tooltip>
             )}
@@ -247,102 +259,111 @@ function Page({
             {profile?.profile__pronouns && ` · ${profile?.profile__pronouns}`}
           </Text>
         </Box>
-        <Group spacing="xs">
-          {user.loggedIn && user.db.suid === profile.suid && (
-            <Tooltip label="Edit profile">
-              <ActionIcon
-                onClick={() => {
-                  setOpenEditModal(true);
-                }}
-                size="lg"
-                color="green"
-                variant="light"
-              >
-                <IconPencil size={18} />
-              </ActionIcon>
-            </Tooltip>
-          )}
-          <CopyButton value={shareURLFull}>
-            {({ copy }) => (
-              <Tooltip label="Copy sharable URL">
+        {!loading ? (
+          <Group spacing="xs">
+            {user.loggedIn && user.db.suid === profile.suid && (
+              <Tooltip label="Edit profile">
                 <ActionIcon
                   onClick={() => {
-                    copy();
-                    notify("info", {
-                      icon: <IconCopy size={16} />,
-                      message: "Profile link copied",
-                      title: (
-                        <>
-                          <Text span>
-                            <Text span weight={400}>
-                              https://
-                            </Text>
-                            <Text span weight={700}>
-                              {shareURL}
-                            </Text>
-                          </Text>
-                        </>
-                      ),
-                    });
+                    setOpenEditModal(true);
                   }}
                   size="lg"
-                  color="hokke"
+                  color="green"
                   variant="light"
                 >
-                  <IconLink size={18} />
+                  <IconPencil size={18} />
                 </ActionIcon>
               </Tooltip>
             )}
-          </CopyButton>
-          {user.loggedIn && user.db.suid !== profile.suid && (
-            <>
-              {!isFriend && (
-                <Tooltip label="Send friend request">
+            <CopyButton value={shareURLFull}>
+              {({ copy }) => (
+                <Tooltip label="Copy sharable URL">
                   <ActionIcon
-                    onClick={async () => {
-                      const token = await user.user.getIdToken();
-                      await fetch("/api/friendRequest", {
-                        method: "POST",
-                        headers: {
-                          Authorization: token || "",
-                          "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({ friend: uid }),
+                    onClick={() => {
+                      copy();
+                      notify("info", {
+                        icon: <IconCopy size={16} />,
+                        message: "Profile link copied",
+                        title: (
+                          <>
+                            <Text span>
+                              <Text span weight={400}>
+                                https://
+                              </Text>
+                              <Text span weight={700}>
+                                {shareURL}
+                              </Text>
+                            </Text>
+                          </>
+                        ),
                       });
                     }}
                     size="lg"
-                    color="green"
+                    color="hokke"
                     variant="light"
                   >
-                    <IconUserPlus size={18} />
+                    <IconLink size={18} />
                   </ActionIcon>
                 </Tooltip>
               )}
-              {isFriend && (
-                <Tooltip label="Remove friend">
-                  <ActionIcon size="lg" color="red" variant="light">
-                    <IconUserX size={18} />
+            </CopyButton>
+            {user.loggedIn && user.db.suid !== profile.suid && (
+              <>
+                {!isFriend && (
+                  <Tooltip label="Send friend request">
+                    <ActionIcon
+                      onClick={async () => {
+                        const token = await user.user.getIdToken();
+                        await fetch("/api/friendRequest", {
+                          method: "POST",
+                          headers: {
+                            Authorization: token || "",
+                            "Content-Type": "application/json",
+                          },
+                          body: JSON.stringify({ friend: uid }),
+                        });
+                      }}
+                      size="lg"
+                      color="green"
+                      variant="light"
+                    >
+                      <IconUserPlus size={18} />
+                    </ActionIcon>
+                  </Tooltip>
+                )}
+                {isFriend && (
+                  <Tooltip label="Remove friend">
+                    <ActionIcon
+                      size="lg"
+                      color="red"
+                      variant="light"
+                      onClick={() => setRemoveFriendModal(true)}
+                    >
+                      <IconUserX size={18} />
+                    </ActionIcon>
+                  </Tooltip>
+                )}
+                <Tooltip label="Report profile">
+                  <ActionIcon
+                    component={Link}
+                    href={CONSTANTS.MODERATION.GET_REPORT_LINK(
+                      profile.username,
+                      profile.suid
+                    )}
+                    target="_blank"
+                    size="lg"
+                    color="orange"
+                    variant="light"
+                  >
+                    <IconFlag size={18} />
                   </ActionIcon>
                 </Tooltip>
-              )}
-              <Tooltip label="Report profile">
-                <ActionIcon
-                  component={Link}
-                  href={CONSTANTS.MODERATION.GET_REPORT_LINK(
-                    profile.username,
-                    profile.suid
-                  )}
-                  target="_blank"
-                  size="lg"
-                  color="orange"
-                  variant="light"
-                >
-                  <IconFlag size={18} />
-                </ActionIcon>
-              </Tooltip>
-            </>
-          )}
-        </Group>
+              </>
+            )}
+          </Group>
+        ) : (
+          <Loader size="md" variant="dots" />
+        )}
       </Group>
 
       <PatreonBanner profile={profile} />
