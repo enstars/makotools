@@ -111,13 +111,13 @@ function Page({
   const { collapsed } = useSidebarStatus();
   const bitches: DocumentData[] = [];
   const rawBitches = (user as UserLoggedIn).privateDb?.friends__list || [];
-  const cloutLevel: number = bitches.length || 0;
+  const cloutLevel: number = rawBitches.length || 0;
 
   useEffect(() => {
     const db = getFirestore();
     let i = 0;
-
     while (i < cloutLevel && user.loggedIn) {
+      console.log("hi");
       getDocs(
         query(
           collection(db, "users"),
@@ -133,6 +133,7 @@ function Page({
         usersQuery.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
           bitches.push(doc.data());
         });
+        console.log(bitches);
         setBitches(bitches);
       });
 
