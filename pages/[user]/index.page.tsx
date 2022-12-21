@@ -139,11 +139,10 @@ function Page({
           bitches.push(doc.data());
         });
         console.log(bitches);
-        setBitches(bitches);
       });
-
       i += 10;
     }
+    setBitches(bitches);
   }, [user]);
 
   useEffect(() => {

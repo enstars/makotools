@@ -1,4 +1,13 @@
-import { ActionIcon, Card, Group, Stack, Text, Title } from "@mantine/core";
+import {
+  ActionIcon,
+  Box,
+  Card,
+  Group,
+  Loader,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
 import { IconCheck, IconX } from "@tabler/icons";
 import {
   arrayRemove,
@@ -22,7 +31,8 @@ function Requests() {
   const [loadedProfiles, setLoadedProfiles] = useState<{
     [uid: string]: UserData;
   }>({});
-  console.log("cycle", loadedProfiles);
+  const [loading, setLoading] = useState<boolean>(true);
+  console.log("cycle", loadedProfiles, Object.keys(loadedProfiles).length);
   // only load profiles needed on this page
   useEffect(() => {
     if (user.loggedIn) {
@@ -41,6 +51,7 @@ function Requests() {
       if (actuallyNewLoadedProfiles.length) {
         const db = getFirestore();
         let i = 0;
+        console.log(Object.keys(newLoadedProfiles));
         while (i < Object.keys(newLoadedProfiles).length) {
           getDocs(
             query(
@@ -60,10 +71,11 @@ function Requests() {
             usersQuery.forEach((doc) => {
               newLoadedProfiles[doc.id] = doc.data();
             });
-            setLoadedProfiles(newLoadedProfiles);
           });
           i += 10;
         }
+        setLoadedProfiles(newLoadedProfiles);
+        setLoading(false);
       }
     }
   }, [user, loadedProfiles]);
@@ -71,90 +83,117 @@ function Requests() {
   return (
     <>
       <Title order={2}>Your friends</Title>
-      <Stack spacing="xs">
-        {user.privateDb.friends__list?.map((uid) => (
-          <Card key={uid} px="md" py="xs">
-            <Group spacing={0}>
-              <Text
-                weight={700}
-                component={Link}
-                href={`/@${loadedProfiles?.[uid]?.username}`}
-                sx={{ "&:hover": { textDecoration: "underline" } }}
-              >
-                {loadedProfiles?.[uid]?.name}
-              </Text>
-              <Text
-                ml={"xs"}
-                weight={500}
-                color="dimmed"
-                component={Link}
-                href={`/@${loadedProfiles?.[uid]?.username}`}
-                sx={{ "&:hover": { textDecoration: "underline" } }}
-              >
-                @{loadedProfiles?.[uid]?.username}
-              </Text>
-            </Group>
-          </Card>
-        ))}
-      </Stack>
+      {!loading ? (
+        <Stack spacing="xs">
+          {user.privateDb.friends__list?.map((uid) => (
+            <Card
+              key={uid}
+              px="md"
+              py="xs"
+              component={Link}
+              href={`/@${loadedProfiles?.[uid]?.username}`}
+            >
+              <Group spacing={0}>
+                <Text weight={700}>{loadedProfiles?.[uid]?.name}</Text>
+                <Text ml={"xs"} weight={500} color="dimmed">
+                  @{loadedProfiles?.[uid]?.username}
+                </Text>
+              </Group>
+            </Card>
+          ))}
+        </Stack>
+      ) : (
+        <Loader size="lg" variant="dots" />
+      )}
       {user.loggedIn && (
-        <>
+        <Box sx={{ marginTop: 20 }}>
           <Title order={2}>Friend Requests</Title>
-          <Stack>
-            {user.privateDb?.friends__receivedRequests?.map(
-              (uid) =>
-                loadedProfiles?.[uid]?.suid && (
-                  <Card key={uid} px="md" py="xs">
-                    <Group spacing={0}>
-                      <Text weight={700}>{loadedProfiles?.[uid]?.name}</Text>
-                      <Text
-                        ml={"xs"}
-                        weight={500}
-                        color="dimmed"
-                        sx={{ "&&&": { flexGrow: 1 } }}
-                      >
-                        @{loadedProfiles?.[uid]?.username}
-                      </Text>
-                      <ActionIcon
-                        color="green"
-                        onClick={async () => {
-                          const token = await user.user.getIdToken();
-                          const res = await fetch("/api/friendAccept", {
-                            method: "POST",
-                            headers: {
-                              Authorization: token || "",
-                              "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({ friend: uid }),
-                          });
-                          const status = await res.json();
-                          console.log(status);
-                          if (status?.success) {
+          {!loading ? (
+            <Stack>
+              {(!user.privateDb?.friends__receivedRequests ||
+                user.privateDb?.friends__receivedRequests?.length < 1) && (
+                <Box
+                  sx={{
+                    marginTop: 20,
+                    marginBottom: 30,
+                    padding: "10px 2px",
+                    position: "relative",
+                  }}
+                >
+                  <Text color="dimmed" sx={{ marginLeft: 30, marginTop: 10 }}>
+                    No friend requests. You&apos;re all up to date!
+                  </Text>
+                  <Box
+                    sx={{
+                      zIndex: -5,
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      margin: "-30px 0px 0px -10px",
+                      opacity: 0.05,
+                    }}
+                  >
+                    <IconCheck strokeWidth={5} size={100} />
+                  </Box>
+                </Box>
+              )}
+              {user.privateDb?.friends__receivedRequests?.map(
+                (uid) =>
+                  loadedProfiles?.[uid]?.suid && (
+                    <Card key={uid} px="md" py="xs">
+                      <Group spacing={0}>
+                        <Text weight={700}>{loadedProfiles?.[uid]?.name}</Text>
+                        <Text
+                          ml={"xs"}
+                          weight={500}
+                          color="dimmed"
+                          sx={{ "&&&": { flexGrow: 1 } }}
+                        >
+                          @{loadedProfiles?.[uid]?.username}
+                        </Text>
+                        <ActionIcon
+                          color="green"
+                          onClick={async () => {
+                            const token = await user.user.getIdToken();
+                            const res = await fetch("/api/friendAccept", {
+                              method: "POST",
+                              headers: {
+                                Authorization: token || "",
+                                "Content-Type": "application/json",
+                              },
+                              body: JSON.stringify({ friend: uid }),
+                            });
+                            const status = await res.json();
+                            console.log(status);
+                            if (status?.success) {
+                              user.privateDb.set({
+                                friends__receivedRequests: arrayRemove(uid),
+                                friends__list: arrayUnion(uid),
+                              });
+                            }
+                          }}
+                        >
+                          <IconCheck size={16} />
+                        </ActionIcon>
+                        <ActionIcon
+                          color="red"
+                          onClick={() => {
                             user.privateDb.set({
                               friends__receivedRequests: arrayRemove(uid),
-                              friends__list: arrayUnion(uid),
                             });
-                          }
-                        }}
-                      >
-                        <IconCheck size={16} />
-                      </ActionIcon>
-                      <ActionIcon
-                        color="red"
-                        onClick={() => {
-                          user.privateDb.set({
-                            friends__receivedRequests: arrayRemove(uid),
-                          });
-                        }}
-                      >
-                        <IconX size={16} />
-                      </ActionIcon>
-                    </Group>
-                  </Card>
-                )
-            )}
-          </Stack>
-        </>
+                          }}
+                        >
+                          <IconX size={16} />
+                        </ActionIcon>
+                      </Group>
+                    </Card>
+                  )
+              )}
+            </Stack>
+          ) : (
+            <Loader size="lg" variant="dots" />
+          )}
+        </Box>
       )}
     </>
   );
