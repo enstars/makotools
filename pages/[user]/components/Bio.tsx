@@ -37,7 +37,7 @@ function Name({
             Need help?
           </Text>
         </Input.Description>
-        <Tabs variant="pills" defaultValue="edit" mt="xs">
+        <Tabs variant="outline" defaultValue="edit" mt="xs">
           {!user.db?.admin?.disableTextFields && (
             <Tabs.List>
               <Tabs.Tab value="edit" icon={<IconPencil size={14} />}>

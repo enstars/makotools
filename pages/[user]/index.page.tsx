@@ -32,6 +32,7 @@ import Autoplay from "embla-carousel-autoplay";
 import { useMediaQuery } from "@mantine/hooks";
 
 import EditProfileModal from "./components/EditProfileModal";
+import MaoBanned from "./MaoBanned.png";
 
 import { getLayout, useSidebarStatus } from "components/Layout";
 import { UserData } from "types/makotools";
@@ -112,246 +113,280 @@ function Page({
         profileState={profileState}
         setProfileState={setProfileState}
       />
-      {profile?.profile__banner && profile.profile__banner?.length ? (
-        <Box mt="sm" sx={{ marginLeft: "-100%", marginRight: "-100%" }}>
-          <Carousel
-            slideSize="34%"
-            height={isMobile ? 150 : 250}
-            slideGap="xs"
-            loop
-            withControls={false}
-            plugins={[autoplay.current]}
-            getEmblaApi={setEmbla}
-            draggable={profile.profile__banner.length > 1}
-          >
-            {/* // doing this so we can surely have enough slides to loop in embla */}
-            {(profile.profile__banner.length > 1 ? [0, 1, 2, 3] : [0]).map(
-              (n) => (
-                <Fragment key={n}>
-                  {profile?.profile__banner?.map((c) => (
-                    <Carousel.Slide key={c}>
-                      <Picture
-                        alt={`Card ${c}`}
-                        srcB2={`assets/card_still_full1_${Math.abs(c)}_${
-                          c > 0 ? "evolution" : "normal"
-                        }.png`}
-                        sx={{
-                          height: "100%",
-                        }}
-                        radius="sm"
-                      />
-                    </Carousel.Slide>
-                  ))}
-                </Fragment>
-              )
-            )}
-          </Carousel>
-        </Box>
-      ) : null}
-      {user.loggedIn &&
-        user.db.suid === profile.suid &&
-        user.db?.admin?.disableTextFields && (
-          <Alert
-            icon={<IconAlertCircle size={16} />}
-            color="red"
-            sx={{ marginTop: "2vh" }}
-          >
-            You&apos;ve been restricted from editing your profile. You can
-            submit an appeal through our{" "}
-            <Text
-              component={Link}
-              href="/issues"
-              sx={{ textDecoration: "underline" }}
+      <Box sx={{ position: "relative" }}>
+        {profile?.profile__banner && profile.profile__banner?.length ? (
+          <Box mt="sm" sx={{ marginLeft: "-100%", marginRight: "-100%" }}>
+            <Carousel
+              slideSize="34%"
+              height={isMobile ? 150 : 250}
+              slideGap="xs"
+              loop
+              withControls={false}
+              plugins={[autoplay.current]}
+              getEmblaApi={setEmbla}
+              draggable={profile.profile__banner.length > 1}
             >
-              issues
-            </Text>{" "}
-            page.
-          </Alert>
-        )}
-      <Space h="lg" />
-
-      <Group position="apart">
-        <Box>
-          <Title order={1}>{profile?.name || profile.username}</Title>
-          <Text inline component="span" color="dimmed" weight={500} size="lg">
-            @{profile.username}
-            {profile?.profile__pronouns && ` · ${profile?.profile__pronouns}`}
-          </Text>
+              {/* // doing this so we can surely have enough slides to loop in embla */}
+              {(profile.profile__banner.length > 1 ? [0, 1, 2, 3] : [0]).map(
+                (n) => (
+                  <Fragment key={n}>
+                    {profile?.profile__banner?.map((c) => (
+                      <Carousel.Slide key={c}>
+                        <Picture
+                          alt={`Card ${c}`}
+                          srcB2={`assets/card_still_full1_${Math.abs(c)}_${
+                            c > 0 ? "evolution" : "normal"
+                          }.png`}
+                          sx={{
+                            height: "100%",
+                          }}
+                          radius="sm"
+                        />
+                      </Carousel.Slide>
+                    ))}
+                  </Fragment>
+                )
+              )}
+            </Carousel>
+          </Box>
+        ) : null}
+        <Box
+          sx={{
+            position: "absolute",
+            marginTop: -60,
+          }}
+        >
+          <Image
+            src={MaoBanned.src}
+            alt={profile.username}
+            width={120}
+            height={120}
+            styles={(theme) => ({
+              image: {
+                borderRadius: 60,
+                border: `5px solid ${
+                  theme.colorScheme === "dark"
+                    ? theme.colors.dark[9]
+                    : theme.colors.gray[0]
+                }`,
+              },
+            })}
+          />
         </Box>
-        <Group spacing="xs">
-          {user.loggedIn && user.db.suid === profile.suid && (
-            <Tooltip label="Edit profile">
-              <ActionIcon
-                onClick={() => {
-                  setOpenEditModal(true);
-                }}
-                size="lg"
-                color="green"
-                variant="light"
+        <Box sx={{ marginTop: 50 }}>
+          {user.loggedIn &&
+            user.db.suid === profile.suid &&
+            user.db?.admin?.disableTextFields && (
+              <Alert
+                icon={<IconAlertCircle size={16} />}
+                color="red"
+                sx={{ marginTop: "2vh" }}
               >
-                <IconPencil size={18} />
-              </ActionIcon>
-            </Tooltip>
+                You&apos;ve been restricted from editing your profile. You can
+                submit an appeal through our{" "}
+                <Text
+                  component={Link}
+                  href="/issues"
+                  sx={{ textDecoration: "underline" }}
+                >
+                  issues
+                </Text>{" "}
+                page.
+              </Alert>
+            )}
+          <Space h="lg" />
+
+          <Group position="apart">
+            <Box>
+              <Title order={1}>{profile?.name || profile.username}</Title>
+              <Text
+                inline
+                component="span"
+                color="dimmed"
+                weight={500}
+                size="lg"
+              >
+                @{profile.username}
+                {profile?.profile__pronouns &&
+                  ` · ${profile?.profile__pronouns}`}
+              </Text>
+            </Box>
+            <Group spacing="xs">
+              {user.loggedIn && user.db.suid === profile.suid && (
+                <Tooltip label="Edit profile">
+                  <ActionIcon
+                    onClick={() => {
+                      setOpenEditModal(true);
+                    }}
+                    size="lg"
+                    color="green"
+                    variant="light"
+                  >
+                    <IconPencil size={18} />
+                  </ActionIcon>
+                </Tooltip>
+              )}
+              <CopyButton value={shareURLFull}>
+                {({ copy }) => (
+                  <Tooltip label="Copy sharable URL">
+                    <ActionIcon
+                      onClick={() => {
+                        copy();
+                        notify("info", {
+                          icon: <IconCopy size={16} />,
+                          message: "Profile link copied",
+                          title: (
+                            <>
+                              <Text span>
+                                <Text span weight={400}>
+                                  https://
+                                </Text>
+                                <Text span weight={700}>
+                                  {shareURL}
+                                </Text>
+                              </Text>
+                            </>
+                          ),
+                        });
+                      }}
+                      size="lg"
+                      color="hokke"
+                      variant="light"
+                    >
+                      <IconLink size={18} />
+                    </ActionIcon>
+                  </Tooltip>
+                )}
+              </CopyButton>
+
+              {user.loggedIn && user.db.suid !== profile.suid && (
+                <>
+                  <Tooltip label="Send friend request">
+                    <ActionIcon
+                      onClick={async () => {
+                        const token = await user.user.getIdToken();
+                        await fetch("/api/friendRequest", {
+                          method: "POST",
+                          headers: {
+                            Authorization: token || "",
+                            "Content-Type": "application/json",
+                          },
+                          body: JSON.stringify({ friend: uid }),
+                        });
+                      }}
+                      size="lg"
+                      color="green"
+                      variant="light"
+                    >
+                      <IconUserPlus size={18} />
+                    </ActionIcon>
+                  </Tooltip>
+                  <Tooltip label="Report profile">
+                    <ActionIcon
+                      component={Link}
+                      href={CONSTANTS.MODERATION.GET_REPORT_LINK(
+                        profile.username,
+                        profile.suid
+                      )}
+                      target="_blank"
+                      size="lg"
+                      color="orange"
+                      variant="light"
+                    >
+                      <IconFlag size={18} />
+                    </ActionIcon>
+                  </Tooltip>
+                </>
+              )}
+            </Group>
+          </Group>
+
+          <PatreonBanner profile={profile} />
+
+          {profile?.profile__bio && (
+            <BioDisplay
+              rawBio={profile.profile__bio}
+              withBorder={false}
+              // p={0}
+              // sx={{ background: "transparent" }}
+              my="md"
+            />
           )}
-          <CopyButton value={shareURLFull}>
-            {({ copy }) => (
-              <Tooltip label="Copy sharable URL">
-                <ActionIcon
-                  onClick={() => {
-                    copy();
-                    notify("info", {
-                      icon: <IconCopy size={16} />,
-                      message: "Profile link copied",
-                      title: (
-                        <>
-                          <Text span>
-                            <Text span weight={400}>
-                              https://
-                            </Text>
-                            <Text span weight={700}>
-                              {shareURL}
+          {profile.profile__start_playing !== "0000-00-00" && (
+            <Group mt="xs" noWrap align="flex-start">
+              <ThemeIcon variant="light" color="yellow" sx={{ flexShrink: 0 }}>
+                <IconCalendar size={16} />
+              </ThemeIcon>
+              <Box>
+                <Text size="xs" weight={700} color="dimmed">
+                  Started Playing
+                </Text>
+                {profile.profile__start_playing &&
+                  dayjs(profile.profile__start_playing).format("MMMM YYYY")}
+              </Box>
+            </Group>
+          )}
+
+          <Title order={2} mt="md" mb="xs">
+            Card Collection
+          </Title>
+          {!profile?.collection?.length ? (
+            <Text color="dimmed" size="sm">
+              This user has no cards in their collection
+            </Text>
+          ) : (
+            <>
+              <Box
+                sx={(theme) => ({
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
+                  gap: theme.spacing.xs,
+                })}
+              >
+                {profile.collection
+                  .filter((c) => c.count)
+                  .sort((a, b) => b.count - a.count)
+                  .map((c) => (
+                    <Paper
+                      radius="sm"
+                      component={Link}
+                      key={c.id}
+                      href={`/cards/${c.id}`}
+                      withBorder
+                      sx={{ position: "relative" }}
+                    >
+                      <AspectRatio ratio={4 / 5}>
+                        <Image
+                          radius="sm"
+                          alt={"card image"}
+                          src={getAssetURL(
+                            `assets/card_rectangle4_${c.id}_evolution.png`
+                          )}
+                        />
+                      </AspectRatio>
+                      {c.count > 1 && (
+                        <Badge
+                          sx={{ position: "absolute", bottom: 4, left: 4 }}
+                          variant="filled"
+                        >
+                          <Text inline size="xs" weight="700">
+                            {c.count}
+                            <Text
+                              component="span"
+                              sx={{ verticalAlign: "-0.05em", lineHeight: 0 }}
+                            >
+                              ×
                             </Text>
                           </Text>
-                        </>
-                      ),
-                    });
-                  }}
-                  size="lg"
-                  color="hokke"
-                  variant="light"
-                >
-                  <IconLink size={18} />
-                </ActionIcon>
-              </Tooltip>
-            )}
-          </CopyButton>
-
-          {user.loggedIn && user.db.suid !== profile.suid && (
-            <>
-              <Tooltip label="Send friend request">
-                <ActionIcon
-                  onClick={async () => {
-                    const token = await user.user.getIdToken();
-                    await fetch("/api/friendRequest", {
-                      method: "POST",
-                      headers: {
-                        Authorization: token || "",
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify({ friend: uid }),
-                    });
-                  }}
-                  size="lg"
-                  color="green"
-                  variant="light"
-                >
-                  <IconUserPlus size={18} />
-                </ActionIcon>
-              </Tooltip>
-              <Tooltip label="Report profile">
-                <ActionIcon
-                  component={Link}
-                  href={CONSTANTS.MODERATION.GET_REPORT_LINK(
-                    profile.username,
-                    profile.suid
-                  )}
-                  target="_blank"
-                  size="lg"
-                  color="orange"
-                  variant="light"
-                >
-                  <IconFlag size={18} />
-                </ActionIcon>
-              </Tooltip>
+                        </Badge>
+                      )}
+                    </Paper>
+                  ))}
+              </Box>
             </>
           )}
-        </Group>
-      </Group>
-
-      <PatreonBanner profile={profile} />
-
-      {profile?.profile__bio && (
-        <BioDisplay
-          rawBio={profile.profile__bio}
-          withBorder={false}
-          // p={0}
-          // sx={{ background: "transparent" }}
-          my="md"
-        />
-      )}
-      {profile.profile__start_playing !== "0000-00-00" && (
-        <Group mt="xs" noWrap align="flex-start">
-          <ThemeIcon variant="light" color="yellow" sx={{ flexShrink: 0 }}>
-            <IconCalendar size={16} />
-          </ThemeIcon>
-          <Box>
-            <Text size="xs" weight={700} color="dimmed">
-              Started Playing
-            </Text>
-            {profile.profile__start_playing &&
-              dayjs(profile.profile__start_playing).format("MMMM YYYY")}
-          </Box>
-        </Group>
-      )}
-
-      <Title order={2} mt="md" mb="xs">
-        Card Collection
-      </Title>
-      {!profile?.collection?.length ? (
-        <Text color="dimmed" size="sm">
-          This user has no cards in their collection
-        </Text>
-      ) : (
-        <>
-          <Box
-            sx={(theme) => ({
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
-              gap: theme.spacing.xs,
-            })}
-          >
-            {profile.collection
-              .filter((c) => c.count)
-              .sort((a, b) => b.count - a.count)
-              .map((c) => (
-                <Paper
-                  radius="sm"
-                  component={Link}
-                  key={c.id}
-                  href={`/cards/${c.id}`}
-                  withBorder
-                  sx={{ position: "relative" }}
-                >
-                  <AspectRatio ratio={4 / 5}>
-                    <Image
-                      radius="sm"
-                      alt={"card image"}
-                      src={getAssetURL(
-                        `assets/card_rectangle4_${c.id}_evolution.png`
-                      )}
-                    />
-                  </AspectRatio>
-                  {c.count > 1 && (
-                    <Badge
-                      sx={{ position: "absolute", bottom: 4, left: 4 }}
-                      variant="filled"
-                    >
-                      <Text inline size="xs" weight="700">
-                        {c.count}
-                        <Text
-                          component="span"
-                          sx={{ verticalAlign: "-0.05em", lineHeight: 0 }}
-                        >
-                          ×
-                        </Text>
-                      </Text>
-                    </Badge>
-                  )}
-                </Paper>
-              ))}
-          </Box>
-        </>
-      )}
+        </Box>
+      </Box>
     </>
   );
 }
