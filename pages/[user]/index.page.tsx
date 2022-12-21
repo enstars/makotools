@@ -22,7 +22,9 @@ import {
   IconBrandPatreon,
   IconCalendar,
   IconCopy,
+  IconDiscountCheck,
   IconFlag,
+  IconHearts,
   IconLink,
   IconPencil,
   IconUserPlus,
@@ -115,7 +117,7 @@ function Page({
     const db = getFirestore();
     let i = 0;
 
-    while (i < cloutLevel) {
+    while (i < cloutLevel && user.loggedIn) {
       getDocs(
         query(
           collection(db, "users"),
@@ -131,7 +133,6 @@ function Page({
         usersQuery.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
           bitches.push(doc.data());
         });
-        console.log(bitches);
         setBitches(bitches);
       });
 
@@ -140,14 +141,12 @@ function Page({
   }, [user]);
 
   useEffect(() => {
-    const notUrProfile = profile.suid !== (user as UserLoggedIn).db.suid;
-    if (notUrProfile) {
-      console.log(bitchesState);
-      const friend = bitchesState.filter((b) => {
-        console.log(b);
-        return b.suid === profile.suid;
-      });
-      if (friend.length > 0) setIsFriend(true);
+    if (user.loggedIn) {
+      const notUrProfile = profile.suid !== (user as UserLoggedIn).db.suid;
+      if (notUrProfile) {
+        const friend = bitchesState.find((b) => b.suid === profile.suid);
+        if (friend) setIsFriend(true);
+      }
     }
   }, [bitchesState]);
 
@@ -223,7 +222,25 @@ function Page({
 
       <Group position="apart">
         <Box>
-          <Title order={1}>{profile?.name || profile.username}</Title>
+          <Group align="center" spacing="xs">
+            {isFriend && (
+              <Tooltip
+                label={`${profile?.name || profile.username} is your friend!`}
+              >
+                <ActionIcon size="xl">
+                  <IconHearts />
+                </ActionIcon>
+              </Tooltip>
+            )}
+            <Title order={1}>{profile?.name || profile.username}</Title>
+            {profile.admin?.administrator && (
+              <Tooltip label="This user is MakoTools verified.">
+                <ActionIcon color="indigo" size="lg">
+                  <IconDiscountCheck size={30} />
+                </ActionIcon>
+              </Tooltip>
+            )}
+          </Group>
           <Text inline component="span" color="dimmed" weight={500} size="lg">
             @{profile.username}
             {profile?.profile__pronouns && ` · ${profile?.profile__pronouns}`}
