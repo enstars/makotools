@@ -93,10 +93,6 @@ function Page({
     profile__bio: profile.profile__bio,
   });
 
-  useEffect(() => {
-    console.log(profileState);
-  }, [profileState]);
-
   const { collapsed } = useSidebarStatus();
   useEffect(() => {
     embla?.reInit();
@@ -223,7 +219,7 @@ function Page({
               </Tooltip>
             )}
           </CopyButton>
-
+          {console.log(user.privateDb?.friends__list, user.db.uid)}
           {user.loggedIn && user.db.suid !== profile.suid && (
             <>
               <Tooltip label="Send friend request">

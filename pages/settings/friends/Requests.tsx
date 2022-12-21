@@ -10,6 +10,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import useUser from "services/firebase/user";
@@ -74,8 +75,22 @@ function Requests() {
         {user.privateDb.friends__list?.map((uid) => (
           <Card key={uid} px="md" py="xs">
             <Group spacing={0}>
-              <Text weight={700}>{loadedProfiles?.[uid]?.name}</Text>
-              <Text ml={"xs"} weight={500} color="dimmed">
+              <Text
+                weight={700}
+                component={Link}
+                href={`/@${loadedProfiles?.[uid]?.username}`}
+                sx={{ "&:hover": { textDecoration: "underline" } }}
+              >
+                {loadedProfiles?.[uid]?.name}
+              </Text>
+              <Text
+                ml={"xs"}
+                weight={500}
+                color="dimmed"
+                component={Link}
+                href={`/@${loadedProfiles?.[uid]?.username}`}
+                sx={{ "&:hover": { textDecoration: "underline" } }}
+              >
                 @{loadedProfiles?.[uid]?.username}
               </Text>
             </Group>
