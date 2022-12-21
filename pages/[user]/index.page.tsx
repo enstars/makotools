@@ -26,6 +26,7 @@ import {
   IconLink,
   IconPencil,
   IconUserPlus,
+  IconUserX,
 } from "@tabler/icons";
 import { useRef, Fragment, useState, useEffect } from "react";
 import Autoplay from "embla-carousel-autoplay";
@@ -103,43 +104,52 @@ function Page({
     profile__start_playing: profile.profile__start_playing,
     profile__bio: profile.profile__bio,
   });
+  const [bitchesState, setBitches] = useState<DocumentData[]>([]);
 
   const { collapsed } = useSidebarStatus();
-
-  const db = getFirestore();
-  let processedBitches: DocumentData[] = [];
-  const bitches = (user as UserLoggedIn).privateDb?.friends__list || [];
-  const cloutLevel: number =
-    (user as UserLoggedIn).privateDb?.friends__list.length || 0;
-  let i = 0;
-
-  while (i < cloutLevel) {
-    getDocs(
-      query(
-        collection(db, "users"),
-        where(
-          documentId(),
-          "in",
-          i + 10 < cloutLevel
-            ? bitches.slice(i, i + 10)
-            : bitches.slice(i, cloutLevel)
-        )
-      )
-    ).then((usersQuery) =>
-      usersQuery.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
-        processedBitches.push(doc.data());
-      })
-    );
-
-    i += 10;
-  }
+  const bitches: DocumentData[] = [];
+  const rawBitches = (user as UserLoggedIn).privateDb?.friends__list || [];
+  const cloutLevel: number = bitches.length || 0;
 
   useEffect(() => {
-    if (profile.suid !== user.db.suid && bitches.includes(profile)) {
-      setIsFriend(true);
-      console.log(isFriend);
+    const db = getFirestore();
+    let i = 0;
+
+    while (i < cloutLevel) {
+      getDocs(
+        query(
+          collection(db, "users"),
+          where(
+            documentId(),
+            "in",
+            i + 10 < cloutLevel
+              ? rawBitches.slice(i, i + 10)
+              : rawBitches.slice(i, cloutLevel)
+          )
+        )
+      ).then((usersQuery) => {
+        usersQuery.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
+          bitches.push(doc.data());
+        });
+        console.log(bitches);
+        setBitches(bitches);
+      });
+
+      i += 10;
     }
-  }, [bitches]);
+  }, [user]);
+
+  useEffect(() => {
+    const notUrProfile = profile.suid !== (user as UserLoggedIn).db.suid;
+    if (notUrProfile) {
+      console.log(bitchesState);
+      const friend = bitchesState.filter((b) => {
+        console.log(b);
+        return b.suid === profile.suid;
+      });
+      if (friend.length > 0) setIsFriend(true);
+    }
+  }, [bitchesState]);
 
   useEffect(() => {
     embla?.reInit();
@@ -268,26 +278,35 @@ function Page({
           </CopyButton>
           {user.loggedIn && user.db.suid !== profile.suid && (
             <>
-              <Tooltip label="Send friend request">
-                <ActionIcon
-                  onClick={async () => {
-                    const token = await user.user.getIdToken();
-                    await fetch("/api/friendRequest", {
-                      method: "POST",
-                      headers: {
-                        Authorization: token || "",
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify({ friend: uid }),
-                    });
-                  }}
-                  size="lg"
-                  color="green"
-                  variant="light"
-                >
-                  <IconUserPlus size={18} />
-                </ActionIcon>
-              </Tooltip>
+              {!isFriend && (
+                <Tooltip label="Send friend request">
+                  <ActionIcon
+                    onClick={async () => {
+                      const token = await user.user.getIdToken();
+                      await fetch("/api/friendRequest", {
+                        method: "POST",
+                        headers: {
+                          Authorization: token || "",
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ friend: uid }),
+                      });
+                    }}
+                    size="lg"
+                    color="green"
+                    variant="light"
+                  >
+                    <IconUserPlus size={18} />
+                  </ActionIcon>
+                </Tooltip>
+              )}
+              {isFriend && (
+                <Tooltip label="Remove friend">
+                  <ActionIcon size="lg" color="red" variant="light">
+                    <IconUserX size={18} />
+                  </ActionIcon>
+                </Tooltip>
+              )}
               <Tooltip label="Report profile">
                 <ActionIcon
                   component={Link}
