@@ -73,12 +73,13 @@ function Requests() {
           ).then((usersQuery) => {
             usersQuery.forEach((doc) => {
               newLoadedProfiles[doc.id] = doc.data();
+              console.log(newLoadedProfiles);
             });
           });
           i += 10;
         }
+        console.log({ newLoadedProfiles });
         setLoadedProfiles(newLoadedProfiles);
-        console.log(loadedProfiles);
       }
     }
   }, [user, loadedProfiles]);
@@ -86,7 +87,9 @@ function Requests() {
   return (
     <>
       <Title order={2}>Your friends</Title>
-      {Object.keys(loadedProfiles).length === 0 && <Image alt="no friends :(" src={NoBitches} width={300} />}
+      {Object.keys(loadedProfiles).length === 0 && (
+        <Image alt="no friends :(" src={NoBitches} width={300} />
+      )}
       <Stack spacing="xs">
         {loadedProfiles &&
           Object.keys(loadedProfiles).map((uid) => {
