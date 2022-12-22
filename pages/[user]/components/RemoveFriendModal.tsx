@@ -1,15 +1,19 @@
 import { Button, Group, Modal, Title } from "@mantine/core";
+import { arrayRemove } from "firebase/firestore";
 import { Dispatch, SetStateAction } from "react";
 
+import notify from "services/libraries/notify";
 import { UserData, UserLoggedIn } from "types/makotools";
 
 function RemoveFriendModal({
   user,
+  uid,
   profile,
   opened,
   closeFunction,
 }: {
   user: UserLoggedIn;
+  uid: string;
   profile: UserData;
   opened: boolean;
   closeFunction: Dispatch<SetStateAction<boolean>>;
@@ -31,7 +35,7 @@ function RemoveFriendModal({
           onClick={async () => {
             const token = await user.user.getIdToken();
             const res = await fetch("/api/friendAccept", {
-              method: "POST",
+              method: "DELETE",
               headers: {
                 Authorization: token || "",
                 "Content-Type": "application/json",
@@ -41,7 +45,15 @@ function RemoveFriendModal({
             const status = await res.json();
             console.log(status);
             if (status?.success) {
-              // add something here
+              user.privateDb.set({
+                friends__list: arrayRemove(uid),
+              });
+            } else {
+              notify("error", {
+                title: "Error",
+                message:
+                  "There was an error removing this user from your friends list.",
+              });
             }
           }}
         >

@@ -8,6 +8,7 @@ import {
   Group,
   Image,
   Loader,
+  Menu,
   Paper,
   Space,
   Text,
@@ -20,6 +21,7 @@ import { Carousel, Embla } from "@mantine/carousel";
 import Link from "next/link";
 import {
   IconAlertCircle,
+  IconArrowsUpDown,
   IconBrandPatreon,
   IconCalendar,
   IconCopy,
@@ -30,11 +32,13 @@ import {
   IconPencil,
   IconUserPlus,
   IconUserX,
+  IconX,
 } from "@tabler/icons";
 import { useRef, Fragment, useState, useEffect } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { useMediaQuery } from "@mantine/hooks";
 import {
+  arrayRemove,
   DocumentData,
   QueryDocumentSnapshot,
   collection,
@@ -112,11 +116,18 @@ function Page({
     profile__bio: profile.profile__bio,
   });
   const [bitchesState, setBitches] = useState<DocumentData[]>([]);
+  const [pendingFriendReq, setPendingFriendReq] = useState<boolean>(false);
 
   const { collapsed } = useSidebarStatus();
   const bitches: DocumentData[] = [];
+  const soonToBeBitches: DocumentData[] = [];
   const rawBitches = (user as UserLoggedIn).privateDb?.friends__list || [];
-  const cloutLevel: number = rawBitches.length || 0;
+  const thirstList =
+    (user as UserLoggedIn).privateDb?.friends__sentRequests || [];
+  const totalRawBitches = [...rawBitches, ...thirstList];
+  const totalBitches: DocumentData[] = [];
+  console.log(thirstList, totalRawBitches);
+  const cloutLevel: number = totalRawBitches.length || 0;
 
   useEffect(() => {
     const loadFriends = async (user: UserLoggedIn) => {
@@ -130,14 +141,19 @@ function Page({
               documentId(),
               "in",
               i + 10 < cloutLevel
-                ? rawBitches.slice(i, i + 10)
-                : rawBitches.slice(i, cloutLevel)
+                ? totalRawBitches.slice(i, i + 10)
+                : totalRawBitches.slice(i, cloutLevel)
             )
           )
         );
         usersQuery.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
-          bitches.push(doc.data());
-          console.log(bitches);
+          console.log(rawBitches.includes(doc.id), thirstList.includes(doc.id));
+          if (rawBitches.includes(doc.id)) {
+            bitches.push(doc.data());
+          } else if (thirstList.includes(doc.id)) {
+            soonToBeBitches.push(doc.data());
+          }
+          totalBitches.push(doc.data());
         });
         i += 10;
       }
@@ -146,8 +162,9 @@ function Page({
         setLoading(false);
       } else {
         const friend = bitches.find((b) => b.suid === profile.suid);
+        const youSentReq = soonToBeBitches.find((b) => b.suid === profile.suid);
         if (friend) setIsFriend(true);
-        console.log(isFriend);
+        if (youSentReq) setPendingFriendReq(true);
         setLoading(false);
       }
     };
@@ -159,6 +176,7 @@ function Page({
   useEffect(() => {
     embla?.reInit();
   }, [embla, collapsed]);
+
   return (
     <>
       <EditProfileModal
@@ -173,7 +191,8 @@ function Page({
       <RemoveFriendModal
         opened={openRemoveFriendModal}
         closeFunction={setRemoveFriendModal}
-        user={user}
+        user={user as UserLoggedIn}
+        uid={uid}
         profile={profile}
       />
       {profile?.profile__banner && profile.profile__banner?.length ? (
@@ -308,12 +327,12 @@ function Page({
             </CopyButton>
             {user.loggedIn && user.db.suid !== profile.suid && (
               <>
-                {!isFriend && (
+                {!isFriend && !pendingFriendReq && (
                   <Tooltip label="Send friend request">
                     <ActionIcon
                       onClick={async () => {
                         const token = await user.user.getIdToken();
-                        await fetch("/api/friendRequest", {
+                        const res = await fetch("/api/friendRequest", {
                           method: "POST",
                           headers: {
                             Authorization: token || "",
@@ -321,6 +340,19 @@ function Page({
                           },
                           body: JSON.stringify({ friend: uid }),
                         });
+                        const status = await res.json();
+                        if (status?.success) {
+                          notify("success", {
+                            title: "Success",
+                            message: "Your friend request has been sent!",
+                          });
+                        } else {
+                          notify("error", {
+                            title: "Error",
+                            message:
+                              "There was an error processing your friend request.",
+                          });
+                        }
                       }}
                       size="lg"
                       color="green"
@@ -341,6 +373,32 @@ function Page({
                       <IconUserX size={18} />
                     </ActionIcon>
                   </Tooltip>
+                )}
+                {!isFriend && pendingFriendReq && (
+                  <Menu width={200} position="top">
+                    <Menu.Target>
+                      <Tooltip label="Pending friend request">
+                        <ActionIcon size="lg" variant="light">
+                          <IconArrowsUpDown size={18} />
+                        </ActionIcon>
+                      </Tooltip>
+                    </Menu.Target>
+                    <Menu.Dropdown>
+                      <Menu.Item
+                        color="red"
+                        icon={<IconX size={14} />}
+                        py={2}
+                        px={5}
+                        onClick={() => {
+                          user.privateDb.set({
+                            friends__sentRequests: arrayRemove(uid),
+                          });
+                        }}
+                      >
+                        <Text size="sm">Cancel friend request</Text>
+                      </Menu.Item>
+                    </Menu.Dropdown>
+                  </Menu>
                 )}
                 <Tooltip label="Report profile">
                   <ActionIcon
