@@ -28,7 +28,7 @@ import NoBitches from "./NoBitches.png";
 
 import useUser from "services/firebase/user";
 import { parseStringify } from "services/utilities";
-import { UserData } from "types/makotools";
+import { UserData, UserLoggedIn } from "types/makotools";
 
 function Requests() {
   const theme = useMantineTheme();
@@ -39,7 +39,7 @@ function Requests() {
   // console.log("cycle", loadedProfiles, Object.keys(loadedProfiles).length);
   // only load profiles needed on this page
   useEffect(() => {
-    if (user.loggedIn) {
+    const loadProfiles = async (user: UserLoggedIn) => {
       let newLoadedProfiles: any = parseStringify(loadedProfiles);
       let actuallyNewLoadedProfiles = [];
       [
@@ -56,7 +56,7 @@ function Requests() {
         const db = getFirestore();
         let i = 0;
         while (i < Object.keys(newLoadedProfiles).length) {
-          getDocs(
+          const usersQuery = await getDocs(
             query(
               collection(db, "users"),
               where(
@@ -70,16 +70,18 @@ function Requests() {
                     )
               )
             )
-          ).then((usersQuery) => {
-            usersQuery.forEach((doc) => {
-              newLoadedProfiles[doc.id] = doc.data();
-            });
+          );
+          usersQuery.forEach((doc) => {
+            newLoadedProfiles[doc.id] = doc.data();
           });
           i += 10;
         }
         console.log(newLoadedProfiles);
         setLoadedProfiles(newLoadedProfiles);
       }
+    };
+    if (user.loggedIn) {
+      loadProfiles(user);
     }
   }, [user, loadedProfiles]);
   if (!user.loggedIn) return null;
@@ -92,7 +94,11 @@ function Requests() {
       <Stack spacing="xs">
         {loadedProfiles &&
           Object.keys(loadedProfiles).map((uid) => {
-            console.log(Object.keys(loadedProfiles), uid, loadedProfiles[uid]);
+            console.log(
+              JSON.stringify(loadedProfiles),
+              uid,
+              loadedProfiles[uid]
+            );
             return Object.keys(loadedProfiles[uid]).length > 0 ? (
               <Card
                 key={uid}
