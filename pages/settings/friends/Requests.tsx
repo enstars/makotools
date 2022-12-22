@@ -36,6 +36,10 @@ function Requests() {
   const [loadedProfiles, setLoadedProfiles] = useState<{
     [uid: string]: UserData;
   }>({});
+  const yourBitches: string[] | undefined = (user as UserLoggedIn).privateDb
+    ?.friends__list;
+  const thirstyBitches: string[] | undefined = (user as UserLoggedIn).privateDb
+    ?.friends__receivedRequests;
   const [loading, setLoading] = useState<boolean>(true);
   // console.log("cycle", loadedProfiles, Object.keys(loadedProfiles).length);
   // only load profiles needed on this page
@@ -43,10 +47,7 @@ function Requests() {
     const loadProfiles = async (user: UserLoggedIn) => {
       let newLoadedProfiles: any = parseStringify(loadedProfiles);
       let actuallyNewLoadedProfiles = [];
-      [
-        ...(user.privateDb?.friends__list || []),
-        ...(user.privateDb?.friends__receivedRequests || []),
-      ].forEach((uid) => {
+      [...(yourBitches || []), ...(thirstyBitches || [])].forEach((uid) => {
         if (!Object.keys(newLoadedProfiles).includes(uid)) {
           newLoadedProfiles[uid] = {};
           actuallyNewLoadedProfiles.push(uid);
@@ -77,7 +78,6 @@ function Requests() {
           });
           i += 10;
         }
-        console.log(newLoadedProfiles);
         setLoadedProfiles(newLoadedProfiles);
         setLoading(false);
       }
@@ -91,28 +91,34 @@ function Requests() {
     <>
       <Title order={2}>Your friends</Title>
       {!loading ? (
-        Object.keys(loadedProfiles).length === 0 ? (
-          <Image alt="no friends :(" src={NoBitches} width={300} />
+        yourBitches && yourBitches.length === 0 ? (
+          <Box>
+            <Image alt="no friends :(" src={NoBitches} width={300} />
+            <Text sx={{ marginTop: 20 }} color="dimmed">
+              Uh oh, looks like someone needs to make some friends!
+            </Text>
+          </Box>
         ) : (
           <Stack spacing="xs">
-            {Object.keys(loadedProfiles).map((uid) => {
-              return (
-                <Card
-                  key={uid}
-                  px="md"
-                  py="xs"
-                  component={Link}
-                  href={`/@${loadedProfiles[uid].username}`}
-                >
-                  <Group spacing={0}>
-                    <Text weight={700}>{loadedProfiles?.[uid]?.name}</Text>
-                    <Text ml={"xs"} weight={500} color="dimmed">
-                      @{loadedProfiles[uid].username}
-                    </Text>
-                  </Group>
-                </Card>
-              );
-            })}
+            {yourBitches &&
+              yourBitches.map((uid) => {
+                return (
+                  <Card
+                    key={uid}
+                    px="md"
+                    py="xs"
+                    component={Link}
+                    href={`/@${loadedProfiles[uid].username}`}
+                  >
+                    <Group spacing={0}>
+                      <Text weight={700}>{loadedProfiles?.[uid]?.name}</Text>
+                      <Text ml={"xs"} weight={500} color="dimmed">
+                        @{loadedProfiles[uid].username}
+                      </Text>
+                    </Group>
+                  </Card>
+                );
+              })}
           </Stack>
         )
       ) : (
@@ -125,9 +131,8 @@ function Requests() {
       {user.loggedIn && (
         <Box sx={{ marginTop: 20 }}>
           <Title order={2}>Friend Requests</Title>
-          <Stack>
-            {(!user.privateDb?.friends__receivedRequests ||
-              user.privateDb?.friends__receivedRequests?.length < 1) && (
+          {!loading ? (
+            thirstyBitches && thirstyBitches.length === 0 ? (
               <Box
                 sx={{
                   marginTop: 20,
@@ -152,12 +157,11 @@ function Requests() {
                   <IconCheck strokeWidth={5} size={100} />
                 </Box>
               </Box>
-            )}
-            {user.privateDb?.friends__receivedRequests?.map(
-              (uid) =>
-                loadedProfiles && (
-                  <Card key={uid} px="md" py="xs">
-                    {!loading ? (
+            ) : (
+              <Stack>
+                {thirstyBitches &&
+                  thirstyBitches.map((uid) => (
+                    <Card key={uid} px="md" py="xs">
                       <Group spacing={0}>
                         <Text weight={700}>{loadedProfiles?.[uid]?.name}</Text>
                         <Text
@@ -203,17 +207,17 @@ function Requests() {
                           <IconX size={16} />
                         </ActionIcon>
                       </Group>
-                    ) : (
-                      <Loader
-                        color={theme.colorScheme === "dark" ? "dark" : "gray"}
-                        size="lg"
-                        variant="dots"
-                      />
-                    )}
-                  </Card>
-                )
-            )}
-          </Stack>
+                    </Card>
+                  ))}
+              </Stack>
+            )
+          ) : (
+            <Loader
+              color={theme.colorScheme === "dark" ? "dark" : "gray"}
+              size="lg"
+              variant="dots"
+            />
+          )}
         </Box>
       )}
     </>
