@@ -119,43 +119,40 @@ function Page({
   const cloutLevel: number = rawBitches.length || 0;
 
   useEffect(() => {
-    const db = getFirestore();
-    let i = 0;
-    while (i < cloutLevel) {
-      getDocs(
-        query(
-          collection(db, "users"),
-          where(
-            documentId(),
-            "in",
-            i + 10 < cloutLevel
-              ? rawBitches.slice(i, i + 10)
-              : rawBitches.slice(i, cloutLevel)
+    const loadFriends = async (user: UserLoggedIn) => {
+      const db = getFirestore();
+      let i = 0;
+      while (i < cloutLevel) {
+        const usersQuery = await getDocs(
+          query(
+            collection(db, "users"),
+            where(
+              documentId(),
+              "in",
+              i + 10 < cloutLevel
+                ? rawBitches.slice(i, i + 10)
+                : rawBitches.slice(i, cloutLevel)
+            )
           )
-        )
-      ).then((usersQuery) => {
+        );
         usersQuery.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
           bitches.push(doc.data());
           console.log(bitches);
         });
-      });
-      i += 10;
-    }
-    if (bitches.length > 0) setBitches(bitches);
-    console.log(bitches);
-  }, [user]);
-
-  useEffect(() => {
-    if (user.loggedIn) {
-      const notUrProfile = profile.suid !== (user as UserLoggedIn).db.suid;
+        i += 10;
+      }
+      const notUrProfile = profile.suid !== user.db.suid;
       if (notUrProfile) {
-        const friend = bitchesState.find((b) => b.suid === profile.suid);
+        const friend = bitches.find((b) => b.suid === profile.suid);
         if (friend) setIsFriend(true);
         console.log(isFriend);
         setLoading(false);
       }
+    };
+    if (user.loggedIn) {
+      loadFriends(user);
     }
-  }, [bitchesState]);
+  }, [user]);
 
   useEffect(() => {
     embla?.reInit();

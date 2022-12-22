@@ -157,7 +157,7 @@ function Requests() {
               (uid) =>
                 loadedProfiles && (
                   <Card key={uid} px="md" py="xs">
-                    {loadedProfiles?.[uid]?.username ? (
+                    {!loading ? (
                       <Group spacing={0}>
                         <Text weight={700}>{loadedProfiles?.[uid]?.name}</Text>
                         <Text
