@@ -86,7 +86,7 @@ function Requests() {
   return (
     <>
       <Title order={2}>Your friends</Title>
-      {!loadedProfiles && <Image alt="no friends :(" src={NoBitches} />}
+      {Object.keys(loadedProfiles).length === 0 && <Image alt="no friends :(" src={NoBitches} width={300} />}
       <Stack spacing="xs">
         {loadedProfiles &&
           Object.keys(loadedProfiles).map((uid) => {
