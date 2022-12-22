@@ -12,9 +12,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!authToken) throw Error("Unauthorized");
 
     const authUser = await verifyIdToken(authToken);
+    console.log(authUser.id);
     if (!authUser.id) throw Error("Token incorrect");
 
     const friendUID = req.body.friend;
+    console.log(friendUID);
     if (!friendUID) throw Error("Friend not provided");
 
     const db = getFirebaseAdmin().firestore();
@@ -28,12 +30,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (!(await db.collection("users").doc(friendUID).get()).data())
       throw Error("Friend error");
-
-    if (
-      !friendDocGet?.friends__sentRequests.includes(authUser.id) ||
-      !docGet?.friends__receivedRequests.includes(friendUID)
-    )
-      throw Error("Request doesn't exist");
 
     await docRef.set(
       {

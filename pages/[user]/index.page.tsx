@@ -133,7 +133,6 @@ function Page({
     (user as UserLoggedIn).privateDb?.friends__receivedRequests || [];
   const totalRawBitches = [...rawBitches, ...thirstList, ...rawFans];
   const totalBitches: DocumentData[] = [];
-  console.log(rawFans, totalRawBitches);
   const cloutLevel: number = totalRawBitches.length || 0;
 
   useEffect(() => {
@@ -154,7 +153,6 @@ function Page({
           )
         );
         usersQuery.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
-          console.log(rawFans.includes(doc.id));
           if (rawBitches.includes(doc.id)) {
             bitches.push(doc.data());
           } else if (thirstList.includes(doc.id)) {
