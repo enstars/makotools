@@ -142,7 +142,9 @@ function Page({
         i += 10;
       }
       const notUrProfile = profile.suid !== user.db.suid;
-      if (notUrProfile) {
+      if (!notUrProfile) {
+        setLoading(false);
+      } else {
         const friend = bitches.find((b) => b.suid === profile.suid);
         if (friend) setIsFriend(true);
         console.log(isFriend);
