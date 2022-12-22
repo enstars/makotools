@@ -36,6 +36,7 @@ function Requests() {
   const [loadedProfiles, setLoadedProfiles] = useState<{
     [uid: string]: UserData;
   }>({});
+  const [loading, setLoading] = useState<boolean>(true);
   // console.log("cycle", loadedProfiles, Object.keys(loadedProfiles).length);
   // only load profiles needed on this page
   useEffect(() => {
@@ -78,6 +79,7 @@ function Requests() {
         }
         console.log(newLoadedProfiles);
         setLoadedProfiles(newLoadedProfiles);
+        setLoading(false);
       }
     };
     if (user.loggedIn) {
@@ -88,43 +90,38 @@ function Requests() {
   return (
     <>
       <Title order={2}>Your friends</Title>
-      {Object.keys(loadedProfiles).length === 0 && (
-        <Image alt="no friends :(" src={NoBitches} width={300} />
+      {!loading ? (
+        Object.keys(loadedProfiles).length === 0 ? (
+          <Image alt="no friends :(" src={NoBitches} width={300} />
+        ) : (
+          <Stack spacing="xs">
+            {Object.keys(loadedProfiles).map((uid) => {
+              return (
+                <Card
+                  key={uid}
+                  px="md"
+                  py="xs"
+                  component={Link}
+                  href={`/@${loadedProfiles[uid].username}`}
+                >
+                  <Group spacing={0}>
+                    <Text weight={700}>{loadedProfiles?.[uid]?.name}</Text>
+                    <Text ml={"xs"} weight={500} color="dimmed">
+                      @{loadedProfiles[uid].username}
+                    </Text>
+                  </Group>
+                </Card>
+              );
+            })}
+          </Stack>
+        )
+      ) : (
+        <Loader
+          color={theme.colorScheme === "dark" ? "dark" : "gray"}
+          size="lg"
+          variant="dots"
+        />
       )}
-      <Stack spacing="xs">
-        {loadedProfiles &&
-          Object.keys(loadedProfiles).map((uid) => {
-            console.log(
-              JSON.stringify(loadedProfiles),
-              uid,
-              loadedProfiles[uid]
-            );
-            return Object.keys(loadedProfiles[uid]).length > 0 ? (
-              <Card
-                key={uid}
-                px="md"
-                py="xs"
-                component={Link}
-                href={`/@${loadedProfiles[uid].username}`}
-              >
-                <Group spacing={0}>
-                  <Text weight={700}>{loadedProfiles?.[uid]?.name}</Text>
-                  <Text ml={"xs"} weight={500} color="dimmed">
-                    @{loadedProfiles[uid].username}
-                  </Text>
-                </Group>
-              </Card>
-            ) : (
-              <Card key={uid} px="md" py="xs">
-                <Loader
-                  color={theme.colorScheme === "dark" ? "dark" : "gray"}
-                  size="lg"
-                  variant="dots"
-                />
-              </Card>
-            );
-          })}
-      </Stack>
       {user.loggedIn && (
         <Box sx={{ marginTop: 20 }}>
           <Title order={2}>Friend Requests</Title>
