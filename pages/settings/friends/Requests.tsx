@@ -79,8 +79,8 @@ function Requests() {
           i += 10;
         }
         setLoadedProfiles(newLoadedProfiles);
-        setLoading(false);
       }
+      setLoading(false);
     };
     if (user.loggedIn) {
       loadProfiles(user);
@@ -91,7 +91,7 @@ function Requests() {
     <>
       <Title order={2}>Your friends</Title>
       {!loading ? (
-        yourBitches && yourBitches.length === 0 ? (
+        !yourBitches || yourBitches.length === 0 ? (
           <Box>
             <Image alt="no friends :(" src={NoBitches} width={300} />
             <Text sx={{ marginTop: 20 }} color="dimmed">
@@ -132,7 +132,7 @@ function Requests() {
         <Box sx={{ marginTop: 20 }}>
           <Title order={2}>Friend Requests</Title>
           {!loading ? (
-            thirstyBitches && thirstyBitches.length === 0 ? (
+            !thirstyBitches || thirstyBitches.length === 0 ? (
               <Box
                 sx={{
                   marginTop: 20,

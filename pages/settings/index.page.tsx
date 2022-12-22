@@ -7,6 +7,7 @@ import {
   Tabs,
   Accordion,
   ThemeIcon,
+  Indicator,
 } from "@mantine/core";
 import {
   IconUserCircle,
@@ -161,7 +162,20 @@ function Page({ cards }: { cards: GameCard[] | undefined }) {
               <Tabs.Tab
                 key={value}
                 value={value}
-                icon={<props.icon size={14} />}
+                icon={
+                  <Indicator
+                    color="red"
+                    position="top-start"
+                    dot={
+                      value === "friends" &&
+                      user.privateDb?.friends__receivedRequests?.length !==
+                        undefined &&
+                      user.privateDb?.friends__receivedRequests?.length > 0
+                    }
+                  >
+                    <props.icon size={14} />
+                  </Indicator>
+                }
                 color={color}
               >
                 {label}

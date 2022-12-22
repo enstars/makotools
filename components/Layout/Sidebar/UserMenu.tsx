@@ -5,6 +5,7 @@ import {
   Switch,
   useMantineTheme,
   Box,
+  Indicator,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
@@ -128,7 +129,19 @@ function UserMenu({ trigger }: { trigger: any }) {
               id="sidebar-link-settings"
               component={Link}
               href="/settings"
-              icon={<IconSettings size={14} />}
+              icon={
+                <Indicator
+                  color="red"
+                  position="top-start"
+                  dot={
+                    user.privateDb?.friends__receivedRequests?.length !==
+                      undefined &&
+                    user.privateDb?.friends__receivedRequests?.length > 0
+                  }
+                >
+                  <IconSettings size={14} />
+                </Indicator>
+              }
             >
               {t("menu.settings")}
             </Menu.Item>
