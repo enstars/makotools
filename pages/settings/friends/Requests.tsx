@@ -23,6 +23,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { showNotification, updateNotification } from "@mantine/notifications";
 
 import NoBitches from "./NoBitches.png";
 
@@ -163,18 +164,33 @@ function Requests() {
                   thirstyBitches.map((uid) => (
                     <Card key={uid} px="md" py="xs">
                       <Group spacing={0}>
-                        <Text weight={700}>{loadedProfiles?.[uid]?.name}</Text>
+                        <Text
+                          weight={700}
+                          component={Link}
+                          href={`/@${loadedProfiles[uid].username}`}
+                        >
+                          {loadedProfiles?.[uid]?.name}
+                        </Text>
                         <Text
                           ml={"xs"}
                           weight={500}
                           color="dimmed"
                           sx={{ "&&&": { flexGrow: 1 } }}
+                          component={Link}
+                          href={`/@${loadedProfiles[uid].username}`}
                         >
                           @{loadedProfiles?.[uid]?.username}
                         </Text>
                         <ActionIcon
                           color="green"
                           onClick={async () => {
+                            showNotification({
+                              id: "addFriend",
+                              loading: true,
+                              message: "Processing your request...",
+                              disallowClose: true,
+                              autoClose: false,
+                            });
                             const token = await user.user.getIdToken();
                             const res = await fetch("/api/friendAccept", {
                               method: "POST",
@@ -190,6 +206,25 @@ function Requests() {
                               user.privateDb.set({
                                 friends__receivedRequests: arrayRemove(uid),
                                 friends__list: arrayUnion(uid),
+                              });
+                              updateNotification({
+                                id: "addFriend",
+                                loading: false,
+                                color: "lime",
+                                icon: <IconCheck size={24} />,
+                                message: `${
+                                  loadedProfiles[uid].name ||
+                                  loadedProfiles[uid].username
+                                } was successfully removed from your friends list!`,
+                              });
+                            } else {
+                              updateNotification({
+                                id: "addFriend",
+                                loading: false,
+                                color: "red",
+                                icon: <IconX size={24} />,
+                                message:
+                                  "There was an error updating your friends list",
                               });
                             }
                           }}

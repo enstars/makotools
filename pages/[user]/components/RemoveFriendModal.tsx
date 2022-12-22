@@ -1,8 +1,9 @@
 import { Button, Group, Modal, Title } from "@mantine/core";
+import { showNotification, updateNotification } from "@mantine/notifications";
+import { IconCheck, IconX } from "@tabler/icons";
 import { arrayRemove } from "firebase/firestore";
 import { Dispatch, SetStateAction } from "react";
 
-import notify from "services/libraries/notify";
 import { UserData, UserLoggedIn } from "types/makotools";
 
 function RemoveFriendModal({
@@ -33,9 +34,17 @@ function RemoveFriendModal({
         </Button>
         <Button
           onClick={async () => {
+            closeFunction(false);
+            showNotification({
+              id: "removeFriend",
+              loading: true,
+              message: "Processing your request...",
+              disallowClose: true,
+              autoClose: false,
+            });
             const token = await user.user.getIdToken();
-            const res = await fetch("/api/friendAccept", {
-              method: "DELETE",
+            const res = await fetch("/api/friendDelete", {
+              method: "POST",
               headers: {
                 Authorization: token || "",
                 "Content-Type": "application/json",
@@ -48,9 +57,22 @@ function RemoveFriendModal({
               user.privateDb.set({
                 friends__list: arrayRemove(uid),
               });
+              updateNotification({
+                id: "removeFriend",
+                loading: false,
+                color: "lime",
+                icon: <IconCheck size={24} />,
+                message: `${
+                  profile?.name || profile.username
+                } was successfully removed from your friends list!`,
+              });
             } else {
-              notify("error", {
-                title: "Error",
+              updateNotification({
+                id: "removeFriend",
+                loading: false,
+                color: "red",
+                icon: <IconX size={24} />,
+                title: "An error occured:",
                 message:
                   "There was an error removing this user from your friends list.",
               });

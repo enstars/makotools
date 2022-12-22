@@ -7,6 +7,7 @@ import {
   CopyButton,
   Group,
   Image,
+  Indicator,
   Loader,
   Menu,
   Paper,
@@ -24,12 +25,14 @@ import {
   IconArrowsUpDown,
   IconBrandPatreon,
   IconCalendar,
+  IconCheck,
   IconCopy,
   IconDiscountCheck,
   IconFlag,
   IconHearts,
   IconLink,
   IconPencil,
+  IconUserExclamation,
   IconUserPlus,
   IconUserX,
   IconX,
@@ -47,7 +50,9 @@ import {
   getFirestore,
   query,
   where,
+  arrayUnion,
 } from "firebase/firestore";
+import { showNotification, updateNotification } from "@mantine/notifications";
 
 import EditProfileModal from "./components/EditProfileModal";
 import RemoveFriendModal from "./components/RemoveFriendModal";
@@ -115,18 +120,20 @@ function Page({
     profile__start_playing: profile.profile__start_playing,
     profile__bio: profile.profile__bio,
   });
-  const [bitchesState, setBitches] = useState<DocumentData[]>([]);
   const [pendingFriendReq, setPendingFriendReq] = useState<boolean>(false);
-
+  const [isYourFan, setFanBehavior] = useState<boolean>(false);
   const { collapsed } = useSidebarStatus();
   const bitches: DocumentData[] = [];
   const soonToBeBitches: DocumentData[] = [];
+  const fans: DocumentData[] = [];
   const rawBitches = (user as UserLoggedIn).privateDb?.friends__list || [];
   const thirstList =
     (user as UserLoggedIn).privateDb?.friends__sentRequests || [];
-  const totalRawBitches = [...rawBitches, ...thirstList];
+  const rawFans =
+    (user as UserLoggedIn).privateDb?.friends__receivedRequests || [];
+  const totalRawBitches = [...rawBitches, ...thirstList, ...rawFans];
   const totalBitches: DocumentData[] = [];
-  console.log(thirstList, totalRawBitches);
+  console.log(rawFans, totalRawBitches);
   const cloutLevel: number = totalRawBitches.length || 0;
 
   useEffect(() => {
@@ -147,11 +154,13 @@ function Page({
           )
         );
         usersQuery.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
-          console.log(rawBitches.includes(doc.id), thirstList.includes(doc.id));
+          console.log(rawFans.includes(doc.id));
           if (rawBitches.includes(doc.id)) {
             bitches.push(doc.data());
           } else if (thirstList.includes(doc.id)) {
             soonToBeBitches.push(doc.data());
+          } else if (rawFans.includes(doc.id)) {
+            fans.push(doc.data());
           }
           totalBitches.push(doc.data());
         });
@@ -163,15 +172,17 @@ function Page({
       } else {
         const friend = bitches.find((b) => b.suid === profile.suid);
         const youSentReq = soonToBeBitches.find((b) => b.suid === profile.suid);
+        const findFan = fans.find((b) => b.suid === profile.suid);
         if (friend) setIsFriend(true);
         if (youSentReq) setPendingFriendReq(true);
+        if (findFan) setFanBehavior(true);
         setLoading(false);
       }
     };
     if (user.loggedIn) {
       loadFriends(user);
     }
-  }, [user]);
+  }, [user, totalBitches]);
 
   useEffect(() => {
     embla?.reInit();
@@ -327,10 +338,17 @@ function Page({
             </CopyButton>
             {user.loggedIn && user.db.suid !== profile.suid && (
               <>
-                {!isFriend && !pendingFriendReq && (
+                {!isFriend && !pendingFriendReq && !isYourFan && (
                   <Tooltip label="Send friend request">
                     <ActionIcon
                       onClick={async () => {
+                        showNotification({
+                          id: "friendReq",
+                          loading: true,
+                          message: "Processing your request...",
+                          disallowClose: true,
+                          autoClose: false,
+                        });
                         const token = await user.user.getIdToken();
                         const res = await fetch("/api/friendRequest", {
                           method: "POST",
@@ -340,17 +358,26 @@ function Page({
                           },
                           body: JSON.stringify({ friend: uid }),
                         });
+
                         const status = await res.json();
                         if (status?.success) {
-                          notify("success", {
-                            title: "Success",
-                            message: "Your friend request has been sent!",
+                          updateNotification({
+                            id: "friendReq",
+                            loading: false,
+                            color: "lime",
+                            icon: <IconCheck size={24} />,
+                            message:
+                              "Your friend request was sent successfully!",
                           });
                         } else {
-                          notify("error", {
-                            title: "Error",
+                          updateNotification({
+                            id: "friendReq",
+                            loading: false,
+                            color: "red",
+                            icon: <IconX size={24} />,
+                            title: "An error occured:",
                             message:
-                              "There was an error processing your friend request.",
+                              "Your friend request could not be processed.",
                           });
                         }
                       }}
@@ -373,6 +400,71 @@ function Page({
                       <IconUserX size={18} />
                     </ActionIcon>
                   </Tooltip>
+                )}
+                {!isFriend && isYourFan && (
+                  <Menu width={200} position="top">
+                    <Menu.Target>
+                      <Tooltip
+                        label={`${profile.name} sent you a friend request`}
+                      >
+                        <Indicator>
+                          <ActionIcon size="lg" variant="light">
+                            <IconUserExclamation size={18} />
+                          </ActionIcon>
+                        </Indicator>
+                      </Tooltip>
+                    </Menu.Target>
+                    <Menu.Dropdown>
+                      <Menu.Label>Friend request options</Menu.Label>
+                      <Menu.Item
+                        icon={<IconCheck size={14} />}
+                        px={5}
+                        onClick={async () => {
+                          const token = await user.user.getIdToken();
+                          const res = await fetch("/api/friendAccept", {
+                            method: "POST",
+                            headers: {
+                              Authorization: token || "",
+                              "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({ friend: uid }),
+                          });
+                          const status = await res.json();
+                          console.log(status);
+                          if (status?.success) {
+                            user.privateDb.set({
+                              friends__receivedRequests: arrayRemove(uid),
+                              friends__list: arrayUnion(uid),
+                            });
+                            notify("success", {
+                              title: "Success",
+                              message: "Request was accepted successfully",
+                            });
+                          } else {
+                            notify("error", {
+                              title: "Error",
+                              message:
+                                "There was an error processing the request",
+                            });
+                          }
+                        }}
+                      >
+                        Accept friend request
+                      </Menu.Item>
+                      <Menu.Item
+                        color="red"
+                        icon={<IconX size={14} />}
+                        px={5}
+                        onClick={() => {
+                          user.privateDb.set({
+                            friends__receivedRequests: arrayRemove(uid),
+                          });
+                        }}
+                      >
+                        <Text size="sm">Decline friend request</Text>
+                      </Menu.Item>
+                    </Menu.Dropdown>
+                  </Menu>
                 )}
                 {!isFriend && pendingFriendReq && (
                   <Menu width={200} position="top">
@@ -419,7 +511,11 @@ function Page({
             )}
           </Group>
         ) : (
-          <Loader size="md" variant="dots" />
+          <Loader
+            color={theme.colorScheme === "dark" ? "dark" : "gray"}
+            size="md"
+            variant="dots"
+          />
         )}
       </Group>
 
