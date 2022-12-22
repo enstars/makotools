@@ -7,6 +7,7 @@ import {
   Stack,
   Text,
   Title,
+  useMantineTheme,
 } from "@mantine/core";
 import { IconCheck, IconX } from "@tabler/icons";
 import {
@@ -19,20 +20,23 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+
+import NoBitches from "./NoBitches.png";
 
 import useUser from "services/firebase/user";
 import { parseStringify } from "services/utilities";
 import { UserData } from "types/makotools";
 
 function Requests() {
+  const theme = useMantineTheme();
   const user = useUser();
   const [loadedProfiles, setLoadedProfiles] = useState<{
     [uid: string]: UserData;
   }>({});
-  const [loading, setLoading] = useState<boolean>(true);
-  console.log("cycle", loadedProfiles, Object.keys(loadedProfiles).length);
+  // console.log("cycle", loadedProfiles, Object.keys(loadedProfiles).length);
   // only load profiles needed on this page
   useEffect(() => {
     if (user.loggedIn) {
@@ -51,7 +55,6 @@ function Requests() {
       if (actuallyNewLoadedProfiles.length) {
         const db = getFirestore();
         let i = 0;
-        console.log(Object.keys(newLoadedProfiles));
         while (i < Object.keys(newLoadedProfiles).length) {
           getDocs(
             query(
@@ -75,7 +78,7 @@ function Requests() {
           i += 10;
         }
         setLoadedProfiles(newLoadedProfiles);
-        setLoading(false);
+        console.log(loadedProfiles);
       }
     }
   }, [user, loadedProfiles]);
@@ -83,64 +86,73 @@ function Requests() {
   return (
     <>
       <Title order={2}>Your friends</Title>
-      {!loading ? (
-        <Stack spacing="xs">
-          {user.privateDb.friends__list?.map((uid) => (
-            <Card
-              key={uid}
-              px="md"
-              py="xs"
-              component={Link}
-              href={`/@${loadedProfiles?.[uid]?.username}`}
-            >
-              <Group spacing={0}>
-                <Text weight={700}>{loadedProfiles?.[uid]?.name}</Text>
-                <Text ml={"xs"} weight={500} color="dimmed">
-                  @{loadedProfiles?.[uid]?.username}
-                </Text>
-              </Group>
-            </Card>
-          ))}
-        </Stack>
-      ) : (
-        <Loader size="lg" variant="dots" />
-      )}
+      {!loadedProfiles && <Image alt="no friends :(" src={NoBitches} />}
+      <Stack spacing="xs">
+        {loadedProfiles &&
+          Object.keys(loadedProfiles).map((uid) => {
+            console.log(loadedProfiles[uid]);
+            return Object.keys(loadedProfiles[uid]).length > 0 ? (
+              <Card
+                key={uid}
+                px="md"
+                py="xs"
+                component={Link}
+                href={`/@${loadedProfiles[uid].username}`}
+              >
+                <Group spacing={0}>
+                  <Text weight={700}>{loadedProfiles?.[uid]?.name}</Text>
+                  <Text ml={"xs"} weight={500} color="dimmed">
+                    @{loadedProfiles[uid].username}
+                  </Text>
+                </Group>
+              </Card>
+            ) : (
+              <Card key={uid} px="md" py="xs">
+                <Loader
+                  color={theme.colorScheme === "dark" ? "dark" : "gray"}
+                  size="lg"
+                  variant="dots"
+                />
+              </Card>
+            );
+          })}
+      </Stack>
       {user.loggedIn && (
         <Box sx={{ marginTop: 20 }}>
           <Title order={2}>Friend Requests</Title>
-          {!loading ? (
-            <Stack>
-              {(!user.privateDb?.friends__receivedRequests ||
-                user.privateDb?.friends__receivedRequests?.length < 1) && (
+          <Stack>
+            {(!user.privateDb?.friends__receivedRequests ||
+              user.privateDb?.friends__receivedRequests?.length < 1) && (
+              <Box
+                sx={{
+                  marginTop: 20,
+                  marginBottom: 30,
+                  padding: "10px 2px",
+                  position: "relative",
+                }}
+              >
+                <Text color="dimmed" sx={{ marginLeft: 30, marginTop: 10 }}>
+                  No friend requests. You&apos;re all up to date!
+                </Text>
                 <Box
                   sx={{
-                    marginTop: 20,
-                    marginBottom: 30,
-                    padding: "10px 2px",
-                    position: "relative",
+                    zIndex: -5,
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    margin: "-30px 0px 0px -10px",
+                    opacity: 0.05,
                   }}
                 >
-                  <Text color="dimmed" sx={{ marginLeft: 30, marginTop: 10 }}>
-                    No friend requests. You&apos;re all up to date!
-                  </Text>
-                  <Box
-                    sx={{
-                      zIndex: -5,
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      margin: "-30px 0px 0px -10px",
-                      opacity: 0.05,
-                    }}
-                  >
-                    <IconCheck strokeWidth={5} size={100} />
-                  </Box>
+                  <IconCheck strokeWidth={5} size={100} />
                 </Box>
-              )}
-              {user.privateDb?.friends__receivedRequests?.map(
-                (uid) =>
-                  loadedProfiles?.[uid]?.suid && (
-                    <Card key={uid} px="md" py="xs">
+              </Box>
+            )}
+            {user.privateDb?.friends__receivedRequests?.map(
+              (uid) =>
+                loadedProfiles && (
+                  <Card key={uid} px="md" py="xs">
+                    {loadedProfiles?.[uid]?.username ? (
                       <Group spacing={0}>
                         <Text weight={700}>{loadedProfiles?.[uid]?.name}</Text>
                         <Text
@@ -186,13 +198,17 @@ function Requests() {
                           <IconX size={16} />
                         </ActionIcon>
                       </Group>
-                    </Card>
-                  )
-              )}
-            </Stack>
-          ) : (
-            <Loader size="lg" variant="dots" />
-          )}
+                    ) : (
+                      <Loader
+                        color={theme.colorScheme === "dark" ? "dark" : "gray"}
+                        size="lg"
+                        variant="dots"
+                      />
+                    )}
+                  </Card>
+                )
+            )}
+          </Stack>
         </Box>
       )}
     </>

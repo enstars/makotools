@@ -121,8 +121,7 @@ function Page({
   useEffect(() => {
     const db = getFirestore();
     let i = 0;
-    while (i < cloutLevel && user.loggedIn) {
-      console.log("hi");
+    while (i < cloutLevel) {
       getDocs(
         query(
           collection(db, "users"),
@@ -137,12 +136,13 @@ function Page({
       ).then((usersQuery) => {
         usersQuery.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
           bitches.push(doc.data());
+          console.log(bitches);
         });
-        console.log(bitches);
       });
       i += 10;
     }
-    setBitches(bitches);
+    if (bitches.length > 0) setBitches(bitches);
+    console.log(bitches);
   }, [user]);
 
   useEffect(() => {
@@ -151,6 +151,7 @@ function Page({
       if (notUrProfile) {
         const friend = bitchesState.find((b) => b.suid === profile.suid);
         if (friend) setIsFriend(true);
+        console.log(isFriend);
         setLoading(false);
       }
     }
