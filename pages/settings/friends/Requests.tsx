@@ -73,12 +73,11 @@ function Requests() {
           ).then((usersQuery) => {
             usersQuery.forEach((doc) => {
               newLoadedProfiles[doc.id] = doc.data();
-              console.log(newLoadedProfiles);
             });
           });
           i += 10;
         }
-        console.log({ newLoadedProfiles });
+        console.log(newLoadedProfiles);
         setLoadedProfiles(newLoadedProfiles);
       }
     }
@@ -93,7 +92,7 @@ function Requests() {
       <Stack spacing="xs">
         {loadedProfiles &&
           Object.keys(loadedProfiles).map((uid) => {
-            console.log(loadedProfiles[uid]);
+            console.log(Object.keys(loadedProfiles), uid, loadedProfiles[uid]);
             return Object.keys(loadedProfiles[uid]).length > 0 ? (
               <Card
                 key={uid}
