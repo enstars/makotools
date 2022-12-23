@@ -7,6 +7,7 @@ import {
   Box,
   Button,
   Stack,
+  useMantineTheme,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
@@ -35,17 +36,11 @@ const useStyles = createStyles((theme, _params) => ({
 
   link: {
     "&:link": {
-      color:
-        theme.colorScheme === "dark"
-          ? theme.colors.indigo[2]
-          : theme.colors.indigo[6],
+      color: theme.primaryColor,
       textDecoration: "none",
     },
     "&:visited": {
-      color:
-        theme.colorScheme === "dark"
-          ? theme.colors.indigo[2]
-          : theme.colors.indigo[6],
+      color: theme.primaryColor,
     },
   },
 }));
@@ -91,6 +86,7 @@ function Countdown({
 }
 
 function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
+  const theme = useMantineTheme();
   const { t } = useTranslation("home");
   const { dayjs } = useDayjs();
 
@@ -136,9 +132,17 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
         <Title order={2}>
           {currentEvent ? t("event.current") : t("event.next")}
         </Title>
-        <Link href="/events" className={classes.link}>
+        <Text
+          color={
+            theme.colorScheme === "dark"
+              ? theme.colors[theme.primaryColor][3]
+              : theme.colors[theme.primaryColor][6]
+          }
+          component={Link}
+          href="/events"
+        >
           {t("event.seeAll")}
-        </Link>
+        </Text>
       </Group>
       <Paper
         shadow="xs"

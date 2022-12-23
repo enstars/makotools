@@ -80,7 +80,7 @@ const tabs = [
     label: "Account",
     value: "account",
     icon: IconUserCircle,
-    color: "hokke",
+    color: "toya",
     contents: () => (
       <>
         <Stack>

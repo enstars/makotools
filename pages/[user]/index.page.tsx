@@ -326,7 +326,7 @@ function Page({
                       });
                     }}
                     size="lg"
-                    color="hokke"
+                    color={theme.primaryColor}
                     variant="light"
                   >
                     <IconLink size={18} />

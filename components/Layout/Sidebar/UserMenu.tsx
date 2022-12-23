@@ -6,6 +6,7 @@ import {
   useMantineTheme,
   Box,
   Indicator,
+  Select,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
@@ -13,10 +14,13 @@ import {
   IconLogin,
   IconLogout,
   IconMoonStars,
+  IconPalette,
 } from "@tabler/icons";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import useTranslation from "next-translate/useTranslation";
+
+import { themeColors } from "../../MantineTheme/index";
 
 import useUser from "services/firebase/user";
 
@@ -55,7 +59,7 @@ function UserMenu({ trigger }: { trigger: any }) {
           href={user.loggedIn ? `/@${user?.db?.username}` : "#"}
           icon={
             <Avatar
-              color="hokke"
+              color={theme.primaryColor}
               size="sm"
               radius="xl"
               sx={{ "*": { display: "flex" } }}
@@ -112,6 +116,24 @@ function UserMenu({ trigger }: { trigger: any }) {
           closeMenuOnClick={false}
         >
           {t("menu.darkMode")}
+        </Menu.Item>
+        <Menu.Item
+          id="sidebar-user-theme"
+          icon={<IconPalette size={14} />}
+          closeMenuOnClick={false}
+          rightSection={
+            <Select
+              placeholder="Choose user theme..."
+              value={theme.primaryColor}
+              onChange={(value) => user.db?.set({ user__theme: value })}
+              data={Object.keys(themeColors).map((color) => ({
+                value: color,
+                label: color,
+              }))}
+            />
+          }
+        >
+          {t("menu.colorScheme")}
         </Menu.Item>
         <Menu.Label id="sidebar-label-account">{t("menu.account")}</Menu.Label>
 
