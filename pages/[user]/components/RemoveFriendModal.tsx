@@ -43,7 +43,7 @@ function RemoveFriendModal({
               autoClose: false,
             });
             const token = await user.user.getIdToken();
-            const res = await fetch("/api/friendDelete", {
+            const res = await fetch("/api/friend/delete", {
               method: "POST",
               headers: {
                 Authorization: token || "",

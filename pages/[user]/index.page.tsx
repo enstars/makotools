@@ -348,7 +348,7 @@ function Page({
                           autoClose: false,
                         });
                         const token = await user.user.getIdToken();
-                        const res = await fetch("/api/friendRequest", {
+                        const res = await fetch("/api/friendRequest/add", {
                           method: "POST",
                           headers: {
                             Authorization: token || "",
@@ -418,8 +418,15 @@ function Page({
                         icon={<IconCheck size={14} />}
                         px={5}
                         onClick={async () => {
+                          showNotification({
+                            id: "addFriend",
+                            loading: true,
+                            message: "Processing your request...",
+                            disallowClose: true,
+                            autoClose: false,
+                          });
                           const token = await user.user.getIdToken();
-                          const res = await fetch("/api/friendAccept", {
+                          const res = await fetch("/api/friend/add", {
                             method: "POST",
                             headers: {
                               Authorization: token || "",
@@ -428,21 +435,28 @@ function Page({
                             body: JSON.stringify({ friend: uid }),
                           });
                           const status = await res.json();
-                          console.log(status);
                           if (status?.success) {
                             user.privateDb.set({
                               friends__receivedRequests: arrayRemove(uid),
                               friends__list: arrayUnion(uid),
                             });
-                            notify("success", {
-                              title: "Success",
-                              message: "Request was accepted successfully",
+                            updateNotification({
+                              id: "addFriend",
+                              loading: false,
+                              color: "lime",
+                              icon: <IconCheck size={24} />,
+                              message: `${
+                                profile.name || profile.username
+                              } is now your friend!`,
                             });
                           } else {
-                            notify("error", {
-                              title: "Error",
+                            updateNotification({
+                              id: "addFriend",
+                              loading: false,
+                              color: "red",
+                              icon: <IconX size={24} />,
                               message:
-                                "There was an error processing the request",
+                                "There was an error updating your friends list",
                             });
                           }
                         }}
@@ -453,10 +467,45 @@ function Page({
                         color="red"
                         icon={<IconX size={14} />}
                         px={5}
-                        onClick={() => {
-                          user.privateDb.set({
-                            friends__receivedRequests: arrayRemove(uid),
+                        onClick={async () => {
+                          showNotification({
+                            id: "removeReq",
+                            loading: true,
+                            message: "Processing your request...",
+                            disallowClose: true,
+                            autoClose: false,
                           });
+                          const token = await user.user.getIdToken();
+                          const res = await fetch("/api/friendRequest/delete", {
+                            method: "POST",
+                            headers: {
+                              Authorization: token || "",
+                              "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({ friend: uid }),
+                          });
+                          const status = await res.json();
+                          if (status?.success) {
+                            user.privateDb.set({
+                              friends__receivedRequests: arrayRemove(uid),
+                            });
+                            updateNotification({
+                              id: "removeReq",
+                              loading: false,
+                              color: "lime",
+                              icon: <IconCheck size={24} />,
+                              message: "This friend request has been deleted",
+                            });
+                          } else {
+                            updateNotification({
+                              id: "removeReq",
+                              loading: false,
+                              color: "red",
+                              icon: <IconX size={24} />,
+                              message:
+                                "There was an error removing this request",
+                            });
+                          }
                         }}
                       >
                         <Text size="sm">Decline friend request</Text>
@@ -479,10 +528,45 @@ function Page({
                         icon={<IconX size={14} />}
                         py={2}
                         px={5}
-                        onClick={() => {
-                          user.privateDb.set({
-                            friends__sentRequests: arrayRemove(uid),
+                        onClick={async () => {
+                          showNotification({
+                            id: "cancelReq",
+                            loading: true,
+                            message: "Processing your request...",
+                            disallowClose: true,
+                            autoClose: false,
                           });
+                          const token = await user.user.getIdToken();
+                          const res = await fetch("/api/friendRequest/cancel", {
+                            method: "POST",
+                            headers: {
+                              Authorization: token || "",
+                              "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({ friend: uid }),
+                          });
+                          const status = await res.json();
+                          if (status?.success) {
+                            user.privateDb.set({
+                              friends__sentRequests: arrayRemove(uid),
+                            });
+                            updateNotification({
+                              id: "cancelReq",
+                              loading: false,
+                              color: "lime",
+                              icon: <IconCheck size={24} />,
+                              message: `Your friend request has been cancelled`,
+                            });
+                          } else {
+                            updateNotification({
+                              id: "cancelReq",
+                              loading: false,
+                              color: "red",
+                              icon: <IconX size={24} />,
+                              message:
+                                "There was an error cancelling your friend request",
+                            });
+                          }
                         }}
                       >
                         <Text size="sm">Cancel friend request</Text>

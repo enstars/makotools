@@ -192,7 +192,7 @@ function Requests() {
                               autoClose: false,
                             });
                             const token = await user.user.getIdToken();
-                            const res = await fetch("/api/friendAccept", {
+                            const res = await fetch("/api/friend/add", {
                               method: "POST",
                               headers: {
                                 Authorization: token || "",
@@ -201,7 +201,6 @@ function Requests() {
                               body: JSON.stringify({ friend: uid }),
                             });
                             const status = await res.json();
-                            console.log(status);
                             if (status?.success) {
                               user.privateDb.set({
                                 friends__receivedRequests: arrayRemove(uid),
@@ -215,7 +214,7 @@ function Requests() {
                                 message: `${
                                   loadedProfiles[uid].name ||
                                   loadedProfiles[uid].username
-                                } was successfully removed from your friends list!`,
+                                } is now your friend!`,
                               });
                             } else {
                               updateNotification({
@@ -233,10 +232,48 @@ function Requests() {
                         </ActionIcon>
                         <ActionIcon
                           color="red"
-                          onClick={() => {
-                            user.privateDb.set({
-                              friends__receivedRequests: arrayRemove(uid),
+                          onClick={async () => {
+                            showNotification({
+                              id: "removeReq",
+                              loading: true,
+                              message: "Processing your request...",
+                              disallowClose: true,
+                              autoClose: false,
                             });
+                            const token = await user.user.getIdToken();
+                            const res = await fetch(
+                              "/api/friendRequest/delete",
+                              {
+                                method: "POST",
+                                headers: {
+                                  Authorization: token || "",
+                                  "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({ friend: uid }),
+                              }
+                            );
+                            const status = await res.json();
+                            if (status?.success) {
+                              user.privateDb.set({
+                                friends__receivedRequests: arrayRemove(uid),
+                              });
+                              updateNotification({
+                                id: "removeReq",
+                                loading: false,
+                                color: "lime",
+                                icon: <IconCheck size={24} />,
+                                message: "This friend request has been deleted",
+                              });
+                            } else {
+                              updateNotification({
+                                id: "removeReq",
+                                loading: false,
+                                color: "red",
+                                icon: <IconX size={24} />,
+                                message:
+                                  "There was an error removing this request",
+                              });
+                            }
                           }}
                         >
                           <IconX size={16} />
