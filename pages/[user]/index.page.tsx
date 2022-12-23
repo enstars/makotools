@@ -33,6 +33,7 @@ import { useMediaQuery } from "@mantine/hooks";
 
 import EditProfileModal from "./components/EditProfileModal";
 import MaoBanned from "./MaoBanned.png";
+import ProfilePicModal from "./components/ProfilePicModal";
 
 import { getLayout, useSidebarStatus } from "components/Layout";
 import { UserData } from "types/makotools";
@@ -86,6 +87,7 @@ function Page({
 
   const [embla, setEmbla] = useState<Embla | null>(null);
   const [openEditModal, setOpenEditModal] = useState<boolean>(false);
+  const [openPicModal, setOpenPicModal] = useState<boolean>(false);
   const [profileState, setProfileState] = useState({
     profile__banner: profile.profile__banner,
     name: profile.name,
@@ -104,9 +106,17 @@ function Page({
   }, [embla, collapsed]);
   return (
     <>
+      <ProfilePicModal
+        opened={openPicModal}
+        openedFunction={setOpenPicModal}
+        cards={cards as GameCard[]}
+        user={user}
+        profile={profile}
+      />
       <EditProfileModal
         opened={openEditModal}
         openedFunction={setOpenEditModal}
+        picModalFunction={setOpenPicModal}
         cards={cards}
         user={user}
         profile={profile}

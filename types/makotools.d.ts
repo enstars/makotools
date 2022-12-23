@@ -64,6 +64,15 @@ type NameOrder = "firstlast" | "lastfirst";
 type ShowTlBadge = "none" | "unofficial" | "all";
 type GameRegion = "jp" | "cn" | "kr" | "tw" | "en";
 type UID = ID;
+interface ProfilePicture {
+  id: number;
+  crop: {
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+  };
+}
 interface UserData {
   set(data: any, callback?: () => any): any;
   collection?: CollectedCard[];
@@ -74,7 +83,7 @@ interface UserData {
   profile__bio?: string;
   profile__pronouns?: string;
   profile__start_playing?: string;
-
+  profile__picture?: ProfilePicture;
   // private
   dark_mode: boolean;
   setting__name_order?: NameOrder;

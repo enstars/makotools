@@ -31,6 +31,7 @@ const Bio = dynamic(() => import("./Bio"), {
 function EditProfileModal({
   opened,
   openedFunction,
+  picModalFunction,
   cards,
   user,
   profile,
@@ -39,6 +40,7 @@ function EditProfileModal({
 }: {
   opened: boolean;
   openedFunction: Dispatch<SetStateAction<boolean>>;
+  picModalFunction: Dispatch<SetStateAction<boolean>>;
   cards: GameCard[] | undefined;
   user: User;
   profile: UserData;
@@ -54,7 +56,26 @@ function EditProfileModal({
       size="lg"
       styles={(theme) => ({
         root: { marginBottom: 10, marginTop: -25 },
+        modal: { maxHeight: "100%", height: "100%" },
         title: { width: "80%" },
+        // header: {
+        //   position: "sticky",
+        //   top: -10,
+        //   zIndex: 10,
+        //   background:
+        //     theme.colorScheme === "dark"
+        //       ? theme.colors.dark[7]
+        //       : theme.colors.gray[0],
+        //   height: 80,
+        // },
+        body: {
+          position: "relative",
+          width: "100%",
+          height: "95%",
+          maxHeight: "100%",
+          overflowY: "scroll",
+          scrollbarWidth: "none",
+        },
       })}
       title={
         <Group
@@ -108,6 +129,7 @@ function EditProfileModal({
               radius="xl"
               size="lg"
               p={4}
+              onClick={() => picModalFunction(true)}
             >
               <IconPencil size={28} />
             </ActionIcon>
