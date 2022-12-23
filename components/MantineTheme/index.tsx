@@ -7,7 +7,7 @@ import useUser from "services/firebase/user";
 import { emotionCache } from "services/libraries/emotion";
 
 export const themeColors = {
-  toya: [
+  toya_default: [
     "#edf2ff",
     "#dbe4ff",
     "#bac8ff",
@@ -19,7 +19,7 @@ export const themeColors = {
     "#3b5bdb",
     "#364fc7",
   ],
-  hokke: [
+  hokke_blue: [
     "#CCE2F3",
     "#AFD2EE",
     "#9FCEF2",
@@ -31,7 +31,7 @@ export const themeColors = {
     "#0068B7",
     "#005299",
   ],
-  subaru: [
+  subaru_orange: [
     "#FDECDC",
     "#FCE3CC",
     "#FBDCC0",
@@ -43,7 +43,7 @@ export const themeColors = {
     "#FB6B0B",
     "#DA560C",
   ],
-  makoto: [
+  makoto_green: [
     "#F1FDE8",
     "#EAF9DE",
     "#E3F7D4",
@@ -55,7 +55,7 @@ export const themeColors = {
     "#65AB31",
     "#4F8B23",
   ],
-  mao: [
+  mao_pink: [
     "#FEE0EE",
     "#FDD6E9",
     "#F9B8D7",
@@ -124,7 +124,7 @@ function MantineTheme({
             "#1971c2",
             "#1864ab",
           ],
-          toya: [
+          toya_default: [
             "#edf2ff",
             "#dbe4ff",
             "#bac8ff",
@@ -136,7 +136,7 @@ function MantineTheme({
             "#3b5bdb",
             "#364fc7",
           ],
-          hokke: [
+          hokke_blue: [
             "#CCE2F3",
             "#AFD2EE",
             "#9FCEF2",
@@ -148,7 +148,7 @@ function MantineTheme({
             "#0068B7",
             "#005299",
           ],
-          subaru: [
+          subaru_orange: [
             "#FDECDC",
             "#FCE3CC",
             "#FBDCC0",
@@ -160,7 +160,7 @@ function MantineTheme({
             "#FB6B0B",
             "#DA560C",
           ],
-          makoto: [
+          makoto_green: [
             "#F1FDE8",
             "#EAF9DE",
             "#E3F7D4",
@@ -172,7 +172,7 @@ function MantineTheme({
             "#65AB31",
             "#4F8B23",
           ],
-          mao: [
+          mao_pink: [
             "#FEE0EE",
             "#FDD6E9",
             "#F9B8D7",
@@ -186,7 +186,11 @@ function MantineTheme({
           ],
         },
         primaryColor:
-          user.loggedIn && user.db?.user__theme ? user.db?.user__theme : "toya",
+          user.loggedIn &&
+          user.db?.user__theme &&
+          Object.keys(themeColors).includes(user.db?.user__theme)
+            ? user.db?.user__theme
+            : "toya_default",
         primaryShade: { light: 6, dark: 5 },
         lineHeight: 1.5,
         fontFamily:

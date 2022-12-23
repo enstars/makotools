@@ -266,7 +266,7 @@ function Page({
             <Title order={1}>{profile?.name || profile.username}</Title>
             {profile.admin?.administrator && (
               <Tooltip label="This user is MakoTools verified.">
-                <ActionIcon color="indigo" size="lg">
+                <ActionIcon color={theme.primaryColor} size="lg">
                   <IconDiscountCheck size={30} />
                 </ActionIcon>
               </Tooltip>

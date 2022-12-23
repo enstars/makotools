@@ -121,7 +121,7 @@ function Page({
       <PageTitle title="Scouts" />
       <Alert
         icon={<IconAlertCircle size={16} strokeWidth={3} />}
-        color="indigo"
+        color={theme.primaryColor}
       >
         Scouts are gradually being added to MakoTools. We appreciate your
         patience!

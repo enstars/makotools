@@ -162,7 +162,7 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
                 </Title>
                 <Countdown date={currentEvent.end_date} status="end" />
               </Box>
-              <Button color="indigo" disabled>
+              <Button color={theme.primaryColor} disabled>
                 {t("event.eventCalculator")}
               </Button>
             </Stack>
@@ -177,8 +177,8 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
                 </Title>
                 <Countdown date={nextEvent.start_date} status="start" />
               </Box>
-              <Button color="indigo" disabled>
-                Event Calculator
+              <Button color={theme.primaryColor} disabled>
+                {t("event.eventCalculator")}
               </Button>
             </Stack>
           </Group>
