@@ -1,4 +1,6 @@
 import { MantineProvider } from "@mantine/core";
+import { NotificationsProvider } from "@mantine/notifications";
+import { NavigationProgress } from "@mantine/nprogress";
 import { ReactNode } from "react";
 
 import { emotionCache } from "services/libraries/emotion";
@@ -88,7 +90,10 @@ function MantineTheme({
         },
       }}
     >
-      {children}
+      <NotificationsProvider position="top-center">
+        <NavigationProgress />
+        {children}
+      </NotificationsProvider>
     </MantineProvider>
   );
 }
