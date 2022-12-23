@@ -1,4 +1,4 @@
-import { arrayRemove } from "firebase/firestore";
+import { FieldValue } from "firebase-admin/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
 import { verifyIdToken, getFirebaseAdmin } from "next-firebase-auth";
 
@@ -38,14 +38,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     await docRef.set(
       {
-        friends__receivedRequests: arrayRemove(friendUID),
+        friends__receivedRequests: FieldValue.arrayRemove(friendUID),
       },
       { merge: true }
     );
 
     await friendDocRef.set(
       {
-        friends__sentRequests: arrayRemove(authUser.id),
+        friends__sentRequests: FieldValue.arrayRemove(authUser.id),
       },
       { merge: true }
     );

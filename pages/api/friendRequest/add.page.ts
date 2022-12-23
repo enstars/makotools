@@ -29,6 +29,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!(await db.collection("users").doc(friendUID).get()).data())
       throw Error("Friend error");
 
+    if (friendDocGet?.friends__receivedRequests.includes(authUser.id))
+      throw Error("Duplicate request");
+
     await docRef.set(
       {
         friends__sentRequests: FieldValue.arrayUnion(friendUID),

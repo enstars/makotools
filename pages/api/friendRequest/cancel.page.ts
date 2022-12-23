@@ -1,4 +1,4 @@
-import { arrayRemove } from "firebase/firestore";
+import { FieldValue } from "firebase-admin/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
 import { verifyIdToken, getFirebaseAdmin } from "next-firebase-auth";
 
@@ -13,10 +13,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (!authToken) throw Error("Unauthorized");
 
     const authUser = await verifyIdToken(authToken);
-    if (!authUser.id) throw Error("Token incorrect");
+    console.log("auth user id: ", authUser.id);
+    if (!authUser.id) {
+      console.log("authUser error");
+      throw Error("Token incorrect");
+    }
 
     const friendUID = req.body.friend;
-    if (!friendUID) throw Error("Friend not provided");
+    console.log("friend uid: ", friendUID);
+    if (!friendUID) {
+      console.log("friend uid error");
+      throw Error("Friend not provided");
+    }
 
     const db = getFirebaseAdmin().firestore();
     const docCollection = db.collection(`users/${authUser.id}/private`);
@@ -27,25 +35,29 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const friendDocRef = friendDocCollection.doc("values");
     const friendDocGet = (await friendDocRef.get())?.data();
 
-    if (!(await db.collection("users").doc(friendUID).get()).data())
+    if (!(await db.collection("users").doc(friendUID).get()).data()) {
+      console.log("friend data error");
       throw Error("Friend error");
+    }
 
     if (
-      !friendDocGet?.friends__sentRequests.includes(authUser.id) ||
-      !docGet?.friends__receivedRequests.includes(friendUID)
-    )
+      !friendDocGet?.friends__receivedRequests.includes(authUser.id) ||
+      !docGet?.friends__sentRequests.includes(friendUID)
+    ) {
+      console.log("request doesnt exist error");
       throw Error("Request doesn't exist");
+    }
 
     await docRef.set(
       {
-        friends__sentRequests: arrayRemove(friendUID),
+        friends__sentRequests: FieldValue.arrayRemove(friendUID),
       },
       { merge: true }
     );
 
     await friendDocRef.set(
       {
-        friends__receivedRequests: arrayRemove(authUser.id),
+        friends__receivedRequests: FieldValue.arrayRemove(authUser.id),
       },
       { merge: true }
     );

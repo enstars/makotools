@@ -94,7 +94,19 @@ function Requests() {
       {!loading ? (
         !yourBitches || yourBitches.length === 0 ? (
           <Box>
-            <Image alt="no friends :(" src={NoBitches} width={300} />
+            <Image
+              alt="no friends :("
+              src={NoBitches}
+              width={300}
+              style={{
+                borderRadius: 5,
+                border: `1px solid ${
+                  theme.colorScheme === "dark"
+                    ? theme.colors.dark[3]
+                    : theme.colors.gray[3]
+                }`,
+              }}
+            />
             <Text sx={{ marginTop: 20 }} color="dimmed">
               Uh oh, looks like someone needs to make some friends!
             </Text>
