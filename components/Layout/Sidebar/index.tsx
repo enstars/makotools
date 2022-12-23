@@ -392,6 +392,8 @@ function Sidebar(props: any) {
                         color="red"
                         position="top-start"
                         dot={
+                          user.loggedIn &&
+                          user.privateDb?.friends__receivedRequests &&
                           user.privateDb?.friends__receivedRequests?.length > 0
                         }
                       >

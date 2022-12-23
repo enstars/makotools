@@ -168,8 +168,8 @@ function Page({ cards }: { cards: GameCard[] | undefined }) {
                     position="top-start"
                     dot={
                       value === "friends" &&
-                      user.privateDb?.friends__receivedRequests?.length !==
-                        undefined &&
+                      user.loggedIn &&
+                      user.privateDb?.friends__receivedRequests &&
                       user.privateDb?.friends__receivedRequests?.length > 0
                     }
                   >
