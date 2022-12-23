@@ -30,7 +30,7 @@ function Name({
             component="span"
             onClick={() => setOpened(true)}
             sx={(theme) => ({
-              color: theme.primaryColor,
+              color: theme.colors[theme.primaryColor][5],
               "&:hover": { cursor: "pointer" },
             })}
           >
