@@ -381,6 +381,11 @@ function Sidebar(props: any) {
               >
                 {!collapsed && <></>}
               </Group>
+              {console.log(
+                user.loggedIn &&
+                  user.privateDb?.friends__receivedRequests &&
+                  user.privateDb?.friends__receivedRequests?.length > 0
+              )}
               <UserMenu
                 trigger={
                   <SidebarLink
@@ -397,7 +402,7 @@ function Sidebar(props: any) {
                           user.privateDb?.friends__receivedRequests?.length > 0
                         }
                       >
-                        <IconUserCircle />
+                        <IconUserCircle size={20} />
                       </Indicator>
                     }
                     sx={{ "&&": { flex: "1 1 0" } }}

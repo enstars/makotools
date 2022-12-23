@@ -128,7 +128,7 @@ function UserMenu({ trigger }: { trigger: any }) {
               onChange={(value) => user.db?.set({ user__theme: value })}
               data={Object.keys(themeColors).map((color) => ({
                 value: color,
-                label: color,
+                label: color.charAt(0).toUpperCase() + color.slice(1),
               }))}
             />
           }
