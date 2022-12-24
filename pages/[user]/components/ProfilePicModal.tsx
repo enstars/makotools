@@ -14,7 +14,7 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { IconSun, IconSunOff } from "@tabler/icons";
 import Cropper from "react-easy-crop";
 import { Point, Area } from "react-easy-crop/types";
@@ -47,16 +47,32 @@ function ProfilePicModal({
 
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState<number>(1);
+  const [bloomed, setBloomed] = useState<boolean>(true);
 
   const previewRef = useRef(null);
 
-  const onCropComplete = useCallback((area: Area, areaPixels: Area) => {
-    console.log(area, areaPixels);
-    setPicObj({
-      id: picObj.id,
-      crop: { x: area.x, y: area.y, w: area.width, h: area.height },
-    });
-  }, []);
+  useEffect(() => {
+    if (picObj.id) {
+      let newId;
+      if (bloomed) newId = picObj.id > 0 ? picObj.id : picObj.id * -1;
+      else newId = picObj.id > 0 ? picObj.id * -1 : picObj.id;
+      setPicObj({ ...picObj, id: newId });
+    }
+  }, [bloomed]);
+
+  const onCropComplete = useCallback(
+    (area: Area, areaPixels: Area) => {
+      console.log("picObj.id: ", picObj.id);
+      if (picObj.id !== undefined) {
+        setPicObj({
+          ...picObj,
+          crop: { x: area.x, y: area.y, w: area.width, h: area.height },
+        });
+        // console.log("picObj 2: ", picObj);
+      }
+    },
+    [picObj]
+  );
 
   return (
     <Modal
@@ -102,8 +118,8 @@ function ProfilePicModal({
                 borderRadius: !picObj ? 60 : 0,
                 width: "auto",
                 height: "auto",
-                marginTop: picObj ? `${picObj.crop.y * -1}%` : 0,
-                marginLeft: picObj ? `${picObj.crop.x * -1}%` : 0,
+                marginTop: picObj.crop.y ? `${picObj.crop.y * -1}%` : 0,
+                marginLeft: picObj.crop.x ? `${picObj.crop.x * -1}%` : 0,
               },
             })}
           />
@@ -133,8 +149,10 @@ function ProfilePicModal({
               ]}
               onChange={(value) =>
                 setPicObj({
-                  id: parseInt(value as string) * -1,
-                  crop: picObj.crop,
+                  ...picObj,
+                  id: bloomed
+                    ? parseInt(value as string)
+                    : parseInt(value as string) * -1,
                 })
               }
             />
@@ -144,9 +162,9 @@ function ProfilePicModal({
               size="lg"
               sx={{ alignSelf: "center" }}
               onChange={() => {
-                setPicObj({ id: picObj.id * -1, crop: picObj.crop });
+                setBloomed(!bloomed);
               }}
-              defaultChecked={picObj.id > 0}
+              defaultChecked={bloomed}
               onLabel={<IconSun />}
               offLabel={<IconSunOff />}
               disabled={!picObj.id}
@@ -171,6 +189,7 @@ function ProfilePicModal({
             )}
             aspect={1}
             cropSize={{ width: 120, height: 120 }}
+            cropShape="round"
             crop={crop}
             zoom={zoom}
             onCropChange={setCrop}
