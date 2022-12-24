@@ -20,7 +20,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import useTranslation from "next-translate/useTranslation";
 
-import { themeColors } from "../../MantineTheme/index";
+import { characterColors } from "../../MantineTheme/index";
 
 import useUser from "services/firebase/user";
 
@@ -117,30 +117,26 @@ function UserMenu({ trigger }: { trigger: any }) {
         >
           {t("menu.darkMode")}
         </Menu.Item>
-        <Menu.Item
-          id="sidebar-user-theme"
-          icon={<IconPalette size={14} />}
-          closeMenuOnClick={false}
-          rightSection={
-            <Select
-              placeholder="Choose user theme..."
-              value={theme.primaryColor}
-              onChange={(value) => user.db?.set({ user__theme: value })}
-              data={Object.keys(themeColors).map((color) => ({
-                value: color,
-                label: `${
-                  color.split("_")[0].charAt(0).toUpperCase() +
-                  color.split("_")[0].slice(1)
-                } ${
-                  color.split("_")[1].charAt(0).toUpperCase() +
-                  color.split("_")[1].slice(1)
-                }`,
-              }))}
-            />
-          }
-        >
-          {t("menu.colorScheme")}
-        </Menu.Item>
+        {user.loggedIn && (
+          <Menu.Item
+            id="sidebar-user-theme"
+            icon={<IconPalette size={14} />}
+            closeMenuOnClick={false}
+            rightSection={
+              <Select
+                placeholder="Choose user theme..."
+                value={theme.primaryColor}
+                onChange={(value) => user.db?.set({ user__theme: value })}
+                data={characterColors.map((colorTheme) => ({
+                  value: colorTheme.name,
+                  label: colorTheme.display_name,
+                }))}
+              />
+            }
+          >
+            {t("menu.colorScheme")}
+          </Menu.Item>
+        )}
         <Menu.Label id="sidebar-label-account">{t("menu.account")}</Menu.Label>
 
         {user.loading ? (
