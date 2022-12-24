@@ -1,7 +1,73 @@
 import { MantineProvider } from "@mantine/core";
+import { NotificationsProvider } from "@mantine/notifications";
+import { NavigationProgress } from "@mantine/nprogress";
 import { ReactNode } from "react";
 
+import useUser from "services/firebase/user";
 import { emotionCache } from "services/libraries/emotion";
+
+export const themeColors = {
+  toya_default: [
+    "#edf2ff",
+    "#dbe4ff",
+    "#bac8ff",
+    "#91a7ff",
+    "#748ffc",
+    "#5c7cfa",
+    "#4c6ef5",
+    "#4263eb",
+    "#3b5bdb",
+    "#364fc7",
+  ],
+  hokke_blue: [
+    "#CCE2F3",
+    "#AFD2EE",
+    "#9FCEF2",
+    "#4DA6E9",
+    "#2E99EB",
+    "#0F8CEC",
+    "#097FD8",
+    "#0479D2",
+    "#0068B7",
+    "#005299",
+  ],
+  subaru_orange: [
+    "#FDECDC",
+    "#FCE3CC",
+    "#FBDCC0",
+    "#F9BE89",
+    "#F8B579",
+    "#F79D5D",
+    "#FA944B",
+    "#FB8434",
+    "#FB6B0B",
+    "#DA560C",
+  ],
+  makoto_green: [
+    "#F1FDE8",
+    "#EAF9DE",
+    "#E3F7D4",
+    "#C8ECAE",
+    "#B4E491",
+    "#9ED774",
+    "#8DCC60",
+    "#82C351",
+    "#65AB31",
+    "#4F8B23",
+  ],
+  mao_pink: [
+    "#FEE0EE",
+    "#FDD6E9",
+    "#F9B8D7",
+    "#F594C2",
+    "#EF76B0",
+    "#E95EA1",
+    "#DF4890",
+    "#CF3880",
+    "#B9266C",
+    "#941F57",
+  ],
+};
 
 function MantineTheme({
   colorScheme,
@@ -14,6 +80,7 @@ function MantineTheme({
   setAppColorScheme: (c: any) => void;
   toggleAppColorScheme: () => void;
 }) {
+  const user = useUser();
   return (
     <MantineProvider
       emotionCache={emotionCache}
@@ -57,7 +124,7 @@ function MantineTheme({
             "#1971c2",
             "#1864ab",
           ],
-          hokke: [
+          toya_default: [
             "#edf2ff",
             "#dbe4ff",
             "#bac8ff",
@@ -69,8 +136,61 @@ function MantineTheme({
             "#3b5bdb",
             "#364fc7",
           ],
+          hokke_blue: [
+            "#CCE2F3",
+            "#AFD2EE",
+            "#9FCEF2",
+            "#4DA6E9",
+            "#2E99EB",
+            "#0F8CEC",
+            "#097FD8",
+            "#0479D2",
+            "#0068B7",
+            "#005299",
+          ],
+          subaru_orange: [
+            "#FDECDC",
+            "#FCE3CC",
+            "#FBDCC0",
+            "#F9BE89",
+            "#F8B579",
+            "#F79D5D",
+            "#FA944B",
+            "#FB8434",
+            "#FB6B0B",
+            "#DA560C",
+          ],
+          makoto_green: [
+            "#F1FDE8",
+            "#EAF9DE",
+            "#E3F7D4",
+            "#C8ECAE",
+            "#B4E491",
+            "#9ED774",
+            "#8DCC60",
+            "#82C351",
+            "#65AB31",
+            "#4F8B23",
+          ],
+          mao_pink: [
+            "#FEE0EE",
+            "#FDD6E9",
+            "#F9B8D7",
+            "#F594C2",
+            "#EF76B0",
+            "#E95EA1",
+            "#DF4890",
+            "#CF3880",
+            "#B9266C",
+            "#941F57",
+          ],
         },
-        primaryColor: "hokke",
+        primaryColor:
+          user.loggedIn &&
+          user.db?.user__theme &&
+          Object.keys(themeColors).includes(user.db?.user__theme)
+            ? user.db?.user__theme
+            : "toya_default",
         primaryShade: { light: 6, dark: 5 },
         lineHeight: 1.5,
         fontFamily:
@@ -88,7 +208,10 @@ function MantineTheme({
         },
       }}
     >
-      {children}
+      <NotificationsProvider position="top-center">
+        <NavigationProgress />
+        {children}
+      </NotificationsProvider>
     </MantineProvider>
   );
 }

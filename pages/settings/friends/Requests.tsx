@@ -1,4 +1,14 @@
-import { ActionIcon, Card, Group, Stack, Text, Title } from "@mantine/core";
+import {
+  ActionIcon,
+  Box,
+  Card,
+  Group,
+  Loader,
+  Stack,
+  Text,
+  Title,
+  useMantineTheme,
+} from "@mantine/core";
 import { IconCheck, IconX } from "@tabler/icons";
 import {
   arrayRemove,
@@ -10,27 +20,35 @@ import {
   query,
   where,
 } from "firebase/firestore";
+import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import { showNotification, updateNotification } from "@mantine/notifications";
+
+import NoBitches from "./NoBitches.png";
 
 import useUser from "services/firebase/user";
 import { parseStringify } from "services/utilities";
-import { UserData } from "types/makotools";
+import { UserData, UserLoggedIn } from "types/makotools";
 
 function Requests() {
+  const theme = useMantineTheme();
   const user = useUser();
   const [loadedProfiles, setLoadedProfiles] = useState<{
     [uid: string]: UserData;
   }>({});
-  console.log("cycle", loadedProfiles);
+  const yourBitches: string[] | undefined = (user as UserLoggedIn).privateDb
+    ?.friends__list;
+  const thirstyBitches: string[] | undefined = (user as UserLoggedIn).privateDb
+    ?.friends__receivedRequests;
+  const [loading, setLoading] = useState<boolean>(true);
+  // console.log("cycle", loadedProfiles, Object.keys(loadedProfiles).length);
   // only load profiles needed on this page
   useEffect(() => {
-    if (user.loggedIn) {
+    const loadProfiles = async (user: UserLoggedIn) => {
       let newLoadedProfiles: any = parseStringify(loadedProfiles);
       let actuallyNewLoadedProfiles = [];
-      [
-        ...(user.privateDb?.friends__list || []),
-        ...(user.privateDb?.friends__receivedRequests || []),
-      ].forEach((uid) => {
+      [...(yourBitches || []), ...(thirstyBitches || [])].forEach((uid) => {
         if (!Object.keys(newLoadedProfiles).includes(uid)) {
           newLoadedProfiles[uid] = {};
           actuallyNewLoadedProfiles.push(uid);
@@ -41,7 +59,7 @@ function Requests() {
         const db = getFirestore();
         let i = 0;
         while (i < Object.keys(newLoadedProfiles).length) {
-          getDocs(
+          const usersQuery = await getDocs(
             query(
               collection(db, "users"),
               where(
@@ -55,91 +73,236 @@ function Requests() {
                     )
               )
             )
-          ).then((usersQuery) => {
-            usersQuery.forEach((doc) => {
-              newLoadedProfiles[doc.id] = doc.data();
-            });
-            setLoadedProfiles(newLoadedProfiles);
+          );
+          usersQuery.forEach((doc) => {
+            newLoadedProfiles[doc.id] = doc.data();
           });
           i += 10;
         }
+        setLoadedProfiles(newLoadedProfiles);
       }
+      setLoading(false);
+    };
+    if (user.loggedIn) {
+      loadProfiles(user);
     }
   }, [user, loadedProfiles]);
   if (!user.loggedIn) return null;
   return (
     <>
       <Title order={2}>Your friends</Title>
-      <Stack spacing="xs">
-        {user.privateDb.friends__list?.map((uid) => (
-          <Card key={uid} px="md" py="xs">
-            <Group spacing={0}>
-              <Text weight={700}>{loadedProfiles?.[uid]?.name}</Text>
-              <Text ml={"xs"} weight={500} color="dimmed">
-                @{loadedProfiles?.[uid]?.username}
-              </Text>
-            </Group>
-          </Card>
-        ))}
-      </Stack>
-      {user.loggedIn && (
-        <>
-          <Title order={2}>Friend Requests</Title>
-          <Stack>
-            {user.privateDb?.friends__receivedRequests?.map(
-              (uid) =>
-                loadedProfiles?.[uid]?.suid && (
-                  <Card key={uid} px="md" py="xs">
+      {!loading ? (
+        !yourBitches || yourBitches.length === 0 ? (
+          <Box>
+            <Image
+              alt="no friends :("
+              src={NoBitches}
+              width={300}
+              style={{
+                borderRadius: 5,
+                border: `1px solid ${
+                  theme.colorScheme === "dark"
+                    ? theme.colors.dark[3]
+                    : theme.colors.gray[3]
+                }`,
+              }}
+            />
+            <Text sx={{ marginTop: 20 }} color="dimmed">
+              Uh oh, looks like someone needs to make some friends!
+            </Text>
+          </Box>
+        ) : (
+          <Stack spacing="xs">
+            {yourBitches &&
+              yourBitches.map((uid) => {
+                return (
+                  <Card
+                    key={uid}
+                    px="md"
+                    py="xs"
+                    component={Link}
+                    href={`/@${loadedProfiles[uid].username}`}
+                  >
                     <Group spacing={0}>
                       <Text weight={700}>{loadedProfiles?.[uid]?.name}</Text>
-                      <Text
-                        ml={"xs"}
-                        weight={500}
-                        color="dimmed"
-                        sx={{ "&&&": { flexGrow: 1 } }}
-                      >
-                        @{loadedProfiles?.[uid]?.username}
+                      <Text ml={"xs"} weight={500} color="dimmed">
+                        @{loadedProfiles[uid].username}
                       </Text>
-                      <ActionIcon
-                        color="green"
-                        onClick={async () => {
-                          const token = await user.user.getIdToken();
-                          const res = await fetch("/api/friendAccept", {
-                            method: "POST",
-                            headers: {
-                              Authorization: token || "",
-                              "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({ friend: uid }),
-                          });
-                          const status = await res.json();
-                          console.log(status);
-                          if (status?.success) {
-                            user.privateDb.set({
-                              friends__receivedRequests: arrayRemove(uid),
-                              friends__list: arrayUnion(uid),
-                            });
-                          }
-                        }}
-                      >
-                        <IconCheck size={16} />
-                      </ActionIcon>
-                      <ActionIcon
-                        color="red"
-                        onClick={() => {
-                          user.privateDb.set({
-                            friends__receivedRequests: arrayRemove(uid),
-                          });
-                        }}
-                      >
-                        <IconX size={16} />
-                      </ActionIcon>
                     </Group>
                   </Card>
-                )
-            )}
+                );
+              })}
           </Stack>
-        </>
+        )
+      ) : (
+        <Loader
+          color={theme.colorScheme === "dark" ? "dark" : "gray"}
+          size="lg"
+          variant="dots"
+        />
+      )}
+      {user.loggedIn && (
+        <Box sx={{ marginTop: 20 }}>
+          <Title order={2}>Friend Requests</Title>
+          {!loading ? (
+            !thirstyBitches || thirstyBitches.length === 0 ? (
+              <Box
+                sx={{
+                  marginTop: 20,
+                  marginBottom: 30,
+                  padding: "10px 2px",
+                  position: "relative",
+                }}
+              >
+                <Text color="dimmed" sx={{ marginLeft: 30, marginTop: 10 }}>
+                  No friend requests. You&apos;re all up to date!
+                </Text>
+                <Box
+                  sx={{
+                    zIndex: -5,
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    margin: "-30px 0px 0px -10px",
+                    opacity: 0.05,
+                  }}
+                >
+                  <IconCheck strokeWidth={5} size={100} />
+                </Box>
+              </Box>
+            ) : (
+              <Stack>
+                {thirstyBitches &&
+                  thirstyBitches.map((uid) => (
+                    <Card key={uid} px="md" py="xs">
+                      <Group spacing={0}>
+                        <Text
+                          weight={700}
+                          component={Link}
+                          href={`/@${loadedProfiles[uid].username}`}
+                        >
+                          {loadedProfiles?.[uid]?.name}
+                        </Text>
+                        <Text
+                          ml={"xs"}
+                          weight={500}
+                          color="dimmed"
+                          sx={{ "&&&": { flexGrow: 1 } }}
+                          component={Link}
+                          href={`/@${loadedProfiles[uid].username}`}
+                        >
+                          @{loadedProfiles?.[uid]?.username}
+                        </Text>
+                        <ActionIcon
+                          color="green"
+                          onClick={async () => {
+                            showNotification({
+                              id: "addFriend",
+                              loading: true,
+                              message: "Processing your request...",
+                              disallowClose: true,
+                              autoClose: false,
+                            });
+                            const token = await user.user.getIdToken();
+                            const res = await fetch("/api/friend/add", {
+                              method: "POST",
+                              headers: {
+                                Authorization: token || "",
+                                "Content-Type": "application/json",
+                              },
+                              body: JSON.stringify({ friend: uid }),
+                            });
+                            const status = await res.json();
+                            if (status?.success) {
+                              user.privateDb.set({
+                                friends__receivedRequests: arrayRemove(uid),
+                                friends__list: arrayUnion(uid),
+                              });
+                              updateNotification({
+                                id: "addFriend",
+                                loading: false,
+                                color: "lime",
+                                icon: <IconCheck size={24} />,
+                                message: `${
+                                  loadedProfiles[uid].name ||
+                                  loadedProfiles[uid].username
+                                } is now your friend!`,
+                              });
+                            } else {
+                              updateNotification({
+                                id: "addFriend",
+                                loading: false,
+                                color: "red",
+                                icon: <IconX size={24} />,
+                                message:
+                                  "There was an error updating your friends list",
+                              });
+                            }
+                          }}
+                        >
+                          <IconCheck size={16} />
+                        </ActionIcon>
+                        <ActionIcon
+                          color="red"
+                          onClick={async () => {
+                            showNotification({
+                              id: "removeReq",
+                              loading: true,
+                              message: "Processing your request...",
+                              disallowClose: true,
+                              autoClose: false,
+                            });
+                            const token = await user.user.getIdToken();
+                            const res = await fetch(
+                              "/api/friendRequest/delete",
+                              {
+                                method: "POST",
+                                headers: {
+                                  Authorization: token || "",
+                                  "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({ friend: uid }),
+                              }
+                            );
+                            const status = await res.json();
+                            if (status?.success) {
+                              user.privateDb.set({
+                                friends__receivedRequests: arrayRemove(uid),
+                              });
+                              updateNotification({
+                                id: "removeReq",
+                                loading: false,
+                                color: "lime",
+                                icon: <IconCheck size={24} />,
+                                message: "This friend request has been deleted",
+                              });
+                            } else {
+                              updateNotification({
+                                id: "removeReq",
+                                loading: false,
+                                color: "red",
+                                icon: <IconX size={24} />,
+                                message:
+                                  "There was an error removing this request",
+                              });
+                            }
+                          }}
+                        >
+                          <IconX size={16} />
+                        </ActionIcon>
+                      </Group>
+                    </Card>
+                  ))}
+              </Stack>
+            )
+          ) : (
+            <Loader
+              color={theme.colorScheme === "dark" ? "dark" : "gray"}
+              size="lg"
+              variant="dots"
+            />
+          )}
+        </Box>
       )}
     </>
   );

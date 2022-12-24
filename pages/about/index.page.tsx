@@ -26,8 +26,8 @@ function Page() {
   const theme = useMantineTheme();
   const bannerBlue =
     theme.colorScheme === "dark"
-      ? theme.colors.hokke[9]
-      : theme.colors.hokke[5];
+      ? theme.colors[theme.primaryColor][9]
+      : theme.colors[theme.primaryColor][5];
   const backgroundColor =
     theme.colorScheme === "dark"
       ? theme.colors.dark[8]

@@ -1,4 +1,4 @@
-import { Text, Box, Alert } from "@mantine/core";
+import { Text, Box, Alert, useMantineTheme } from "@mantine/core";
 import Confetti from "react-confetti";
 import { IconCake } from "@tabler/icons";
 
@@ -22,8 +22,12 @@ function Page({
 }: {
   characterQuery: QuerySuccess<GameCharacter>;
 }) {
+  const theme = useMantineTheme();
   const { dayjs } = useDayjs();
   const { data: character } = characterQuery;
+  if (character.character_id === 74)
+    console.log("oh my god niki shiina from ensemble stars");
+  if (character.character_id === 13) console.log("no way it's makoto yuuki from makotools");
   return (
     <>
       {dayjs(character.birthday).year(new Date().getFullYear()).isToday() && (
@@ -36,7 +40,7 @@ function Page({
           />
           <Alert
             icon={<IconCake />}
-            color="indigo"
+            color={theme.primaryColor}
             sx={{ margin: "10px 0px", fontSize: "12pt" }}
           >
             Today is {character.first_name[0]}&apos;s birthday!

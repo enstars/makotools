@@ -1,4 +1,4 @@
-import { Group, Box, Alert, Space, Paper, Table, Text } from "@mantine/core";
+import { Group, Box, Alert, Space, Paper, Table, Text, useMantineTheme } from "@mantine/core";
 import { IconStar } from "@tabler/icons";
 import Link from "next/link";
 
@@ -19,6 +19,7 @@ function PointsTable({
   scoutName: string;
   banner: ID;
 }) {
+  const theme = useMantineTheme();
   return (
     <>
       <Group align="stretch">
@@ -39,7 +40,7 @@ function PointsTable({
           </Link>
         </Box>
         <Box sx={{ "&&&": { flex: "1 1 55%", minWidth: 240 } }}>
-          <Alert variant="outline" color="indigo" sx={{ minHeight: 100 }}>
+          <Alert variant="outline" color={theme.primaryColor} sx={{ minHeight: 100 }}>
             <Text size="md">
               Cards in the <strong>{scoutName}</strong> scout offer an event
               point bonus for <strong>{eventName}</strong>!

@@ -85,6 +85,7 @@ interface UserData {
   profile__start_playing?: string;
   profile__picture?: ProfilePicture;
   // private
+  user__theme?: string;
   dark_mode: boolean;
   setting__name_order?: NameOrder;
   setting__show_tl_badge?: ShowTlBadge;

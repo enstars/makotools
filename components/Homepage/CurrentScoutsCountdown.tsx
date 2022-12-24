@@ -8,6 +8,7 @@ import {
   Stack,
   Text,
   Title,
+  useMantineTheme,
 } from "@mantine/core";
 import useTranslation from "next-translate/useTranslation";
 import Link from "next/link";
@@ -24,21 +25,6 @@ const useStyles = createStyles((theme, _params) => ({
   },
   scoutsCards: {
     marginTop: "2vh",
-  },
-  link: {
-    "&:link": {
-      color:
-        theme.colorScheme === "dark"
-          ? theme.colors.indigo[2]
-          : theme.colors.indigo[6],
-      textDecoration: "none",
-    },
-    "&:visited": {
-      color:
-        theme.colorScheme === "dark"
-          ? theme.colors.indigo[2]
-          : theme.colors.indigo[6],
-    },
   },
 }));
 
@@ -121,6 +107,7 @@ function CurrentScoutsCards({ scouts }: { scouts: ScoutEvent[] }) {
 }
 
 function CurrentScoutsCountdown({ scouts }: { scouts: ScoutEvent[] }) {
+  const theme = useMantineTheme();
   const { t } = useTranslation("home");
   const { dayjs } = useDayjs();
   const { classes } = useStyles();
@@ -134,9 +121,17 @@ function CurrentScoutsCountdown({ scouts }: { scouts: ScoutEvent[] }) {
     <Container className={classes.scoutsContainer}>
       <Group align="end">
         <Title order={2}>{t("scout.current")}</Title>
-        <Link href="/scouts" className={classes.link}>
+        <Text
+          color={
+            theme.colorScheme === "dark"
+              ? theme.colors[theme.primaryColor][3]
+              : theme.colors[theme.primaryColor][6]
+          }
+          component={Link}
+          href="/scouts"
+        >
           {t("scout.seeAll")}
-        </Link>
+        </Text>
       </Group>
       <CurrentScoutsCards scouts={currentScouts} />
     </Container>
