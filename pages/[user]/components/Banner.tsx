@@ -63,8 +63,6 @@ function Banner({
   const ROW_HEIGHT = 106;
   const height = Math.ceil(state.length / NUM_COLS) * ROW_HEIGHT;
 
-  console.log({ NUM_COLS, ROW_HEIGHT, cards, height });
-
   useEffect(() => {
     if (
       user.loggedIn &&

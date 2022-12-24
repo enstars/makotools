@@ -58,18 +58,8 @@ function EditProfileModal({
       size="lg"
       styles={(theme) => ({
         root: { marginBottom: 10, marginTop: -25 },
-        modal: { maxHeight: "100%", height: "100%" },
+        modal: { maxHeight: "100%", height: "100%", padding: "5 0" },
         title: { width: "80%" },
-        // header: {
-        //   position: "sticky",
-        //   top: -10,
-        //   zIndex: 10,
-        //   background:
-        //     theme.colorScheme === "dark"
-        //       ? theme.colors.dark[7]
-        //       : theme.colors.gray[0],
-        //   height: 80,
-        // },
         body: {
           position: "relative",
           width: "100%",
