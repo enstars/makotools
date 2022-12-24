@@ -94,11 +94,12 @@ function Page({
     profile__pronouns: profile.profile__pronouns,
     profile__start_playing: profile.profile__start_playing,
     profile__bio: profile.profile__bio,
+    profile__picture: profile.profile__picture,
   });
 
-  useEffect(() => {
-    console.log(profileState);
-  }, [profileState]);
+  // useEffect(() => {
+  //   console.log(profileState);
+  // }, [profileState]);
 
   const { collapsed } = useSidebarStatus();
   useEffect(() => {
@@ -106,13 +107,6 @@ function Page({
   }, [embla, collapsed]);
   return (
     <>
-      <ProfilePicModal
-        opened={openPicModal}
-        openedFunction={setOpenPicModal}
-        cards={cards as GameCard[]}
-        user={user}
-        profile={profile}
-      />
       <EditProfileModal
         opened={openEditModal}
         openedFunction={setOpenEditModal}
@@ -122,6 +116,13 @@ function Page({
         profile={profile}
         profileState={profileState}
         setProfileState={setProfileState}
+      />
+      <ProfilePicModal
+        opened={openPicModal}
+        openedFunction={setOpenPicModal}
+        cards={cards as GameCard[]}
+        user={user}
+        profile={profile}
       />
       <Box sx={{ position: "relative" }}>
         {profile?.profile__banner && profile.profile__banner?.length ? (
@@ -166,22 +167,48 @@ function Page({
             marginTop: -60,
           }}
         >
-          <Image
-            src={MaoBanned.src}
-            alt={profile.username}
-            width={120}
-            height={120}
-            styles={(theme) => ({
-              image: {
-                borderRadius: 60,
-                border: `5px solid ${
-                  theme.colorScheme === "dark"
-                    ? theme.colors.dark[9]
-                    : theme.colors.gray[0]
-                }`,
-              },
-            })}
-          />
+          {profile.profile__picture ? (
+            <Picture
+              alt={profile.username}
+              srcB2={
+                profile.profile__picture.id
+                  ? `assets/card_still_full1_${Math.abs(
+                      profile.profile__picture.id
+                    )}_${
+                      profile.profile__picture.id > 0 ? "evolution" : "normal"
+                    }.webp`
+                  : undefined
+              }
+              styles={(theme) => ({
+                root: { width: 120, height: 120 },
+                image: {
+                  border: `5px solid ${
+                    theme.colorScheme === "dark"
+                      ? theme.colors.dark[9]
+                      : theme.colors.gray[0]
+                  }`,
+                },
+              })}
+              radius={60}
+            />
+          ) : (
+            <Image
+              src={MaoBanned.src}
+              alt={profile.username}
+              width={120}
+              height={120}
+              styles={(theme) => ({
+                image: {
+                  borderRadius: 60,
+                  border: `5px solid ${
+                    theme.colorScheme === "dark"
+                      ? theme.colors.dark[9]
+                      : theme.colors.gray[0]
+                  }`,
+                },
+              })}
+            />
+          )}
         </Box>
         <Box sx={{ marginTop: 50 }}>
           {user.loggedIn &&

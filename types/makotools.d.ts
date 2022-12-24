@@ -65,12 +65,12 @@ type ShowTlBadge = "none" | "unofficial" | "all";
 type GameRegion = "jp" | "cn" | "kr" | "tw" | "en";
 type UID = ID;
 interface ProfilePicture {
-  id: number;
+  id?: number;
   crop: {
-    x: number;
-    y: number;
-    w: number;
-    h: number;
+    x?: number;
+    y?: number;
+    w?: number;
+    h?: number;
   };
 }
 interface UserData {
