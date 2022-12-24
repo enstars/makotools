@@ -1,17 +1,16 @@
 import {
   ActionIcon,
   Box,
-  Card,
   createStyles,
-  Group,
   Input,
   Select,
+  Switch,
   Text,
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
-import { IconTrash } from "@tabler/icons";
+import { IconSun, IconSunOff, IconX } from "@tabler/icons";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { GridContextProvider, GridDropZone, GridItem } from "react-grid-drag";
 
 import useUser from "services/firebase/user";
 import { GameCard } from "types/game";
@@ -60,6 +59,12 @@ function Banner({
     (user.loggedIn && user.db?.profile__banner) || []
   );
 
+  const NUM_COLS = 3;
+  const ROW_HEIGHT = 106;
+  const height = Math.ceil(state.length / NUM_COLS) * ROW_HEIGHT;
+
+  console.log({ NUM_COLS, ROW_HEIGHT, cards, height });
+
   useEffect(() => {
     if (
       user.loggedIn &&
@@ -77,82 +82,95 @@ function Banner({
       </Text>
     );
 
-  const items = state.map((item, index) => (
-    <Draggable key={item} index={index} draggableId={item.toString()}>
-      {(provided, snapshot) => (
-        <Card
-          radius="sm"
-          p={0}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          ref={provided.innerRef}
-          sx={{ overflow: "hidden", maxHeight: 64 }}
-          mt="xs"
-          shadow="sm"
-        >
-          <Group noWrap>
-            <Picture
-              alt={cards.find((c) => c.id === item)?.title[0] || "card"}
-              srcB2={`assets/card_still_full1_${item}_evolution.png`}
-              sx={{
-                width: 60,
-                height: 60,
-                margin: 2,
-              }}
-              radius={4}
-            />
-            <Box
-              sx={{
-                flexGrow: 1,
-                minWidth: 0,
-                flexBasis: 0,
-                maxWidth: "100%",
-                "& div": {
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                },
-              }}
-            >
-              <Text weight={700}>
-                {cards.find((c) => c.id === item)?.title[0]}
-              </Text>
-              <Text size="sm" color="dimmed">
-                {cards.find((c) => c.id === item)?.name?.[0]}
-              </Text>
-            </Box>
-            <ActionIcon
-              color="red"
-              onClick={() => handlers.remove(index)}
-              mr="md"
-            >
-              <IconTrash size={16} />
-            </ActionIcon>
-          </Group>
-        </Card>
-      )}
-    </Draggable>
-  ));
-
   return (
     <Input.Wrapper label="Banner Cards">
-      <DragDropContext
-        onDragEnd={({ destination, source }) => {
-          handlers.reorder({
-            from: source.index,
-            to: destination?.index || 0,
-          });
+      <GridContextProvider
+        onChange={(
+          sourceId: string,
+          sourceIndex: number,
+          targetIndex: number,
+          targetId: string
+        ) => {
+          handlers.reorder({ from: sourceIndex, to: targetIndex });
         }}
       >
-        <Droppable droppableId="dnd-list" direction="vertical">
-          {(provided) => (
-            <div {...provided.droppableProps} ref={provided.innerRef}>
-              {items}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+        <GridDropZone
+          id="card-drop-zone"
+          boxesPerRow={NUM_COLS}
+          rowHeight={ROW_HEIGHT}
+          style={{
+            width: "100%",
+            height: height,
+            margin: "auto",
+          }}
+        >
+          {state.map((item, index) => (
+            <GridItem key={Math.abs(item)}>
+              <Box
+                sx={{
+                  position: "relative",
+                  margin: "3px 5px",
+                  "&:hover": { cursor: "grab" },
+                }}
+              >
+                <ActionIcon
+                  onClick={() => handlers.remove(index)}
+                  sx={{ position: "absolute", top: 0, right: 0, zIndex: 10 }}
+                >
+                  <IconX
+                    color="white"
+                    strokeWidth={3}
+                    style={{
+                      filter: "drop-shadow(0px 0px 1px rgb(0 0 0))",
+                    }}
+                  />
+                </ActionIcon>
+                <Switch
+                  checked={item > 0}
+                  onLabel={<IconSun />}
+                  offLabel={<IconSunOff />}
+                  onChange={(event) =>
+                    handlers.applyWhere(
+                      (i) => i === item,
+                      (i) => i * -1
+                    )
+                  }
+                  size="lg"
+                  styles={(theme) => ({
+                    root: {
+                      position: "absolute",
+                      zIndex: 10,
+                      filter: "drop-shadow(0px 0px 1px rgb(0 0 0))",
+                      padding: 0,
+                    },
+                    body: {
+                      height: "100%",
+                    },
+                    track: {
+                      borderRadius: 0,
+                      borderBottomRightRadius: theme.radius.md,
+                      borderTopLeftRadius: theme.radius.sm,
+                    },
+                  })}
+                />
+                <Picture
+                  alt={cards.find((c) => c.id === item)?.title[0] || "card"}
+                  srcB2={`assets/card_still_full1_${Math.abs(item)}_${
+                    item > 0 ? "evolution" : "normal"
+                  }.png`}
+                  radius={4}
+                  sx={{
+                    height: 100,
+                    img: {
+                      pointerEvents: "none",
+                    },
+                  }}
+                />
+              </Box>
+            </GridItem>
+          ))}
+        </GridDropZone>
+      </GridContextProvider>
       <Select
         placeholder="Type to search for a card"
         value={acValue}

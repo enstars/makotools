@@ -1458,6 +1458,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.3.1":
+  version: 7.20.6
+  resolution: "@babel/runtime@npm:7.20.6"
+  dependencies:
+    regenerator-runtime: ^0.13.11
+  checksum: 42a8504db21031b1859fbc0f52d698a3d2f5ada9519eb76c6f96a7e657d8d555732a18fe71ef428a67cc9fc81ca0d3562fb7afdc70549c5fec343190cbaa9b03
+  languageName: node
+  linkType: hard
+
 "@babel/template@npm:^7.18.10":
   version: 7.18.10
   resolution: "@babel/template@npm:7.18.10"
@@ -3628,6 +3637,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-dom@npm:^16.8.3":
+  version: 16.9.17
+  resolution: "@types/react-dom@npm:16.9.17"
+  dependencies:
+    "@types/react": ^16
+  checksum: c9246eb4d35993463608de61111f2bdae5afbd22556c8b9918081516b67eafd1a9ef141c3ed459dd4c753dd7ea037b6a375a856e677c2586396c23732772831d
+  languageName: node
+  linkType: hard
+
 "@types/react-dom@npm:^18.0.9":
   version: 18.0.9
   resolution: "@types/react-dom@npm:18.0.9"
@@ -3657,6 +3675,17 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: e22cc388d1c145aa184787e44dc28db4789976c704cd5db475c170bb76a560eb81def5f346cfe750949bb3d43ad88822b8cbb9f19b1286e3795892a8263e7715
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:^16, @types/react@npm:^16.8.10":
+  version: 16.14.34
+  resolution: "@types/react@npm:16.14.34"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/scheduler": "*"
+    csstype: ^3.0.2
+  checksum: a1a105c131bd7fd5cae693c641b3a05eb03c079875fe8e780e616afc54d86e3fa1e8c6433e7a30d2a7f8a1a7681cf1a4f652e9eb48b6abe1f80f7cafe858ebf2
   languageName: node
   linkType: hard
 
@@ -4404,6 +4433,13 @@ __metadata:
   version: 1.1.1
   resolution: "clsx@npm:1.1.1"
   checksum: ff052650329773b9b245177305fc4c4dc3129f7b2be84af4f58dc5defa99538c61d4207be7419405a5f8f3d92007c954f4daba5a7b74e563d5de71c28c830063
+  languageName: node
+  linkType: hard
+
+"clsx@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "clsx@npm:1.2.1"
+  checksum: 30befca8019b2eb7dbad38cff6266cf543091dae2825c856a62a8ccf2c3ab9c2907c4d12b288b73101196767f66812365400a227581484a05f968b0307cfaf12
   languageName: node
   linkType: hard
 
@@ -7416,7 +7452,12 @@ __metadata:
     react-collapse: ^5.1.1
     react-confetti: ^6.1.0
     react-dom: ^18.2.0
+    react-easy-crop: ^4.6.3
+    react-firebase-hooks: ^5.1.1
     react-frame-component: ^5.2.3
+    react-gesture-responder: ^2.1.0
+    react-grid-drag: ^1.0.0
+    react-image-crop: ^10.0.9
     react-infinite-scroll-component: ^6.1.0
     sass: ^1.56.2
     sass-loader: ^13.2.0
@@ -7905,6 +7946,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"normalize-wheel@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "normalize-wheel@npm:1.0.1"
+  checksum: 00b32efa040bad9438e732385a4ca27f8532fa2c8c06b54be43b9f75b2da6642bf41a0b4f81e542639dc8d682cde8b059b0a02ae0723fb8ebc3c8f036c8e51d8
+  languageName: node
+  linkType: hard
+
 "normalize.css@npm:^8.0.1":
   version: 8.0.1
   resolution: "normalize.css@npm:8.0.1"
@@ -8309,7 +8357,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.5.8, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -8564,6 +8612,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-easy-crop@npm:^4.6.3":
+  version: 4.6.3
+  resolution: "react-easy-crop@npm:4.6.3"
+  dependencies:
+    normalize-wheel: ^1.0.1
+    tslib: 2.0.1
+  peerDependencies:
+    react: ">=16.4.0"
+    react-dom: ">=16.4.0"
+  checksum: 33fae1e0be8e336e5304b66b88cbcc025ba1423ddd367e2bcce9fb5db9bc2cfedb0eeb0391ae4ac874bb8738303dffe08d55acfed5708ea03e935585e5ed19d5
+  languageName: node
+  linkType: hard
+
+"react-firebase-hooks@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "react-firebase-hooks@npm:5.1.1"
+  peerDependencies:
+    firebase: ">= 9.0.0"
+    react: ">= 16.8.0"
+  checksum: f7dbc42202082e35a4bbd60e6b729cf7a1a14ca300850f35dbcbda3fe3ecef0c1f8157c5dec711edfd3d6e021f2626e768241296598896731a56ce768bab829b
+  languageName: node
+  linkType: hard
+
 "react-frame-component@npm:^5.2.3":
   version: 5.2.3
   resolution: "react-frame-component@npm:5.2.3"
@@ -8572,6 +8643,48 @@ __metadata:
     react: ">= 16.3"
     react-dom: ">= 16.3"
   checksum: 1843c48dce41a0af03590dd7351baaf8a68ecac4e850d9819d093517a34d1097668c2b2cd809a8f5cd70791c011c6f2dcaf90d43b6e773b33c212f1f4cf17f55
+  languageName: node
+  linkType: hard
+
+"react-gesture-responder@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "react-gesture-responder@npm:2.1.0"
+  dependencies:
+    "@types/react": ^16.8.10
+    "@types/react-dom": ^16.8.3
+    tslib: ^1.9.3
+  peerDependencies:
+    react: ^16.8.6
+    react-dom: ^16.8.6
+  checksum: dd03de8b68cfb41f343dbf893b7660ecf5a0b26e94c5c2bdc5d5e676903cb911ad7f93ade287929d01bb97d2477a27f48995c240e859965bc10375f96911a7a8
+  languageName: node
+  linkType: hard
+
+"react-grid-drag@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "react-grid-drag@npm:1.0.0"
+  dependencies:
+    "@types/react": ^16.8.10
+    "@types/react-dom": ^16.8.3
+    react-spring: 9.0.0-beta.8
+    resize-observer-polyfill: ^1.5.1
+    tslib: ^1.9.3
+  peerDependencies:
+    react: ^16.8.6
+    react-dom: ^16.8.6
+    react-gesture-responder: ^2.1.0
+  checksum: 39775235c19075cc42972076c9b54188ec12d24ee772bd4bd03d471caac353fe868c425edcc2e66c08da7ff9e0719af7f21566638c19658c967f32b15da83ba5
+  languageName: node
+  linkType: hard
+
+"react-image-crop@npm:^10.0.9":
+  version: 10.0.9
+  resolution: "react-image-crop@npm:10.0.9"
+  dependencies:
+    clsx: ^1.2.1
+  peerDependencies:
+    react: ">=16.13.1"
+  checksum: 52f2644f727851b323b62f333943b9537a626c7d4e1874441f5b5df0946aa3440d37159de260060556c42468c84d60db66ee8f2c4507c74127531dde68c7d5e4
   languageName: node
   linkType: hard
 
@@ -8639,6 +8752,19 @@ __metadata:
     react-native:
       optional: true
   checksum: ecf1933e91013f2d41bfc781515b536bf81eb1f70ff228607841094c8330fe77d522372b359687e51c0b52b9888dba73db9ac0486aace1896ab9eb9daec102d5
+  languageName: node
+  linkType: hard
+
+"react-spring@npm:9.0.0-beta.8":
+  version: 9.0.0-beta.8
+  resolution: "react-spring@npm:9.0.0-beta.8"
+  dependencies:
+    "@babel/runtime": ^7.3.1
+    prop-types: ^15.5.8
+  peerDependencies:
+    react: ">= 16.8.0"
+    react-dom: ">= 16.8.0"
+  checksum: 972e1374b8a887e7b430d036e97dde6e5b49edf2c6dd8290ac89c64d65752e671d9c77b640a3623dd63dcccc52cf284044b7909854c9ee916170cd629f4b08b1
   languageName: node
   linkType: hard
 
@@ -8751,6 +8877,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"regenerator-runtime@npm:^0.13.11":
+  version: 0.13.11
+  resolution: "regenerator-runtime@npm:0.13.11"
+  checksum: 27481628d22a1c4e3ff551096a683b424242a216fee44685467307f14d58020af1e19660bf2e26064de946bad7eff28950eae9f8209d55723e2d9351e632bbb4
+  languageName: node
+  linkType: hard
+
 "regenerator-runtime@npm:^0.13.4":
   version: 0.13.9
   resolution: "regenerator-runtime@npm:0.13.9"
@@ -8837,6 +8970,13 @@ __metadata:
   dependencies:
     lodash: ^4.17.14
   checksum: b1b27c6ad16a2621d4cdb57cd44f01d302974df60f84f94b4d9d313dfe1d375e5b1a12f46010929fe508e83c40696a2105d38c1d1906c228500ac72b23a0d0c6
+  languageName: node
+  linkType: hard
+
+"resize-observer-polyfill@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "resize-observer-polyfill@npm:1.5.1"
+  checksum: 57e7f79489867b00ba43c9c051524a5c8f162a61d5547e99333549afc23e15c44fd43f2f318ea0261ea98c0eb3158cca261e6f48d66e1ed1cd1f340a43977094
   languageName: node
   linkType: hard
 
@@ -9618,7 +9758,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^1.0.0, tslib@npm:^1.8.1":
+"tslib@npm:2.0.1":
+  version: 2.0.1
+  resolution: "tslib@npm:2.0.1"
+  checksum: 507f32fc24a614c5097d414b622373b6cbb99e305413517e7fd49bef1e63570c0dd15b417ae68152088c3496218e82a5d8c7cd6b48c7a32dcee1a3f7191fff74
+  languageName: node
+  linkType: hard
+
+"tslib@npm:^1.0.0, tslib@npm:^1.8.1, tslib@npm:^1.9.3":
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
   checksum: dbe628ef87f66691d5d2959b3e41b9ca0045c3ee3c7c7b906cc1e328b39f199bb1ad9e671c39025bd56122ac57dfbf7385a94843b1cc07c60a4db74795829acd

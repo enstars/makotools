@@ -50,7 +50,12 @@
     "react-collapse": "^5.1.1",
     "react-confetti": "^6.1.0",
     "react-dom": "^18.2.0",
+    "react-easy-crop": "^4.6.3",
+    "react-firebase-hooks": "^5.1.1",
     "react-frame-component": "^5.2.3",
+    "react-gesture-responder": "^2.1.0",
+    "react-grid-drag": "^1.0.0",
+    "react-image-crop": "^10.0.9",
     "react-infinite-scroll-component": "^6.1.0",
     "strapi-sdk-js": "^2.2.0",
     "use-debounce": "^9.0.2"

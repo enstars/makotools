@@ -55,6 +55,8 @@ import {
 import { showNotification, updateNotification } from "@mantine/notifications";
 
 import EditProfileModal from "./components/EditProfileModal";
+import MaoBanned from "./MaoBanned.png";
+import ProfilePicModal from "./components/ProfilePicModal";
 import RemoveFriendModal from "./components/RemoveFriendModal";
 
 import { getLayout, useSidebarStatus } from "components/Layout";
@@ -110,6 +112,7 @@ function Page({
   const [embla, setEmbla] = useState<Embla | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [openEditModal, setOpenEditModal] = useState<boolean>(false);
+  const [openPicModal, setOpenPicModal] = useState<boolean>(false);
   const [openRemoveFriendModal, setRemoveFriendModal] =
     useState<boolean>(false);
   const [isFriend, setIsFriend] = useState<boolean>(false);
@@ -119,6 +122,7 @@ function Page({
     profile__pronouns: profile.profile__pronouns,
     profile__start_playing: profile.profile__start_playing,
     profile__bio: profile.profile__bio,
+    profile__picture: profile.profile__picture,
   });
   const [pendingFriendReq, setPendingFriendReq] = useState<boolean>(false);
   const [isYourFan, setFanBehavior] = useState<boolean>(false);
@@ -191,11 +195,19 @@ function Page({
       <EditProfileModal
         opened={openEditModal}
         openedFunction={setOpenEditModal}
+        picModalFunction={setOpenPicModal}
         cards={cards}
         user={user}
         profile={profile}
         profileState={profileState}
         setProfileState={setProfileState}
+      />
+      <ProfilePicModal
+        opened={openPicModal}
+        openedFunction={setOpenPicModal}
+        cards={cards as GameCard[]}
+        user={user}
+        profile={profile}
       />
       <RemoveFriendModal
         opened={openRemoveFriendModal}
@@ -204,63 +216,116 @@ function Page({
         uid={uid}
         profile={profile}
       />
-      {profile?.profile__banner && profile.profile__banner?.length ? (
-        <Box mt="sm" sx={{ marginLeft: "-100%", marginRight: "-100%" }}>
-          <Carousel
-            slideSize="34%"
-            height={isMobile ? 150 : 250}
-            slideGap="xs"
-            loop
-            withControls={false}
-            plugins={[autoplay.current]}
-            getEmblaApi={setEmbla}
-            draggable={profile.profile__banner.length > 1}
-          >
-            {/* // doing this so we can surely have enough slides to loop in embla */}
-            {(profile.profile__banner.length > 1 ? [0, 1, 2, 3] : [0]).map(
-              (n) => (
-                <Fragment key={n}>
-                  {profile?.profile__banner?.map((c) => (
-                    <Carousel.Slide key={c}>
-                      <Picture
-                        alt={`Card ${c}`}
-                        srcB2={`assets/card_still_full1_${c}_evolution.png`}
-                        sx={{
-                          height: "100%",
-                        }}
-                        radius="sm"
-                      />
-                    </Carousel.Slide>
-                  ))}
-                </Fragment>
-              )
-            )}
-          </Carousel>
-        </Box>
-      ) : null}
-      {user.loggedIn &&
-        user.db.suid === profile.suid &&
-        user.db?.admin?.disableTextFields && (
-          <Alert
-            icon={<IconAlertCircle size={16} />}
-            color="red"
-            sx={{ marginTop: "2vh" }}
-          >
-            You&apos;ve been restricted from editing your profile. You can
-            submit an appeal through our{" "}
-            <Text
-              component={Link}
-              href="/issues"
-              sx={{ textDecoration: "underline" }}
+      <Box sx={{ position: "relative" }}>
+        {profile?.profile__banner && profile.profile__banner?.length ? (
+          <Box mt="sm" sx={{ marginLeft: "-100%", marginRight: "-100%" }}>
+            <Carousel
+              slideSize="34%"
+              height={isMobile ? 150 : 250}
+              slideGap="xs"
+              loop
+              withControls={false}
+              plugins={[autoplay.current]}
+              getEmblaApi={setEmbla}
+              draggable={profile.profile__banner.length > 1}
             >
-              issues
-            </Text>{" "}
-            page.
-          </Alert>
-        )}
-      <Space h="lg" />
+              {/* // doing this so we can surely have enough slides to loop in embla */}
+              {(profile.profile__banner.length > 1 ? [0, 1, 2, 3] : [0]).map(
+                (n) => (
+                  <Fragment key={n}>
+                    {profile?.profile__banner?.map((c) => (
+                      <Carousel.Slide key={c}>
+                        <Picture
+                          alt={`Card ${c}`}
+                          srcB2={`assets/card_still_full1_${Math.abs(c)}_${
+                            c > 0 ? "evolution" : "normal"
+                          }.png`}
+                          sx={{
+                            height: "100%",
+                          }}
+                          radius="sm"
+                        />
+                      </Carousel.Slide>
+                    ))}
+                  </Fragment>
+                )
+              )}
+            </Carousel>
+          </Box>
+        ) : null}
+        <Box
+          sx={{
+            position: "absolute",
+            marginTop: -60,
+          }}
+        >
+          {profile.profile__picture ? (
+            <Picture
+              alt={profile.username}
+              srcB2={
+                profile.profile__picture.id
+                  ? `assets/card_still_full1_${Math.abs(
+                      profile.profile__picture.id
+                    )}_${
+                      profile.profile__picture.id > 0 ? "evolution" : "normal"
+                    }.webp`
+                  : undefined
+              }
+              styles={(theme) => ({
+                root: { width: 120, height: 120 },
+                image: {
+                  border: `5px solid ${
+                    theme.colorScheme === "dark"
+                      ? theme.colors.dark[9]
+                      : theme.colors.gray[0]
+                  }`,
+                },
+              })}
+              radius={60}
+            />
+          ) : (
+            <Image
+              src={MaoBanned.src}
+              alt={profile.username}
+              width={120}
+              height={120}
+              styles={(theme) => ({
+                image: {
+                  borderRadius: 60,
+                  border: `5px solid ${
+                    theme.colorScheme === "dark"
+                      ? theme.colors.dark[9]
+                      : theme.colors.gray[0]
+                  }`,
+                },
+              })}
+            />
+          )}
+        </Box>
+        <Box sx={{ marginTop: 50 }}>
+          {user.loggedIn &&
+            user.db.suid === profile.suid &&
+            user.db?.admin?.disableTextFields && (
+              <Alert
+                icon={<IconAlertCircle size={16} />}
+                color="red"
+                sx={{ marginTop: "2vh" }}
+              >
+                You&apos;ve been restricted from editing your profile. You can
+                submit an appeal through our{" "}
+                <Text
+                  component={Link}
+                  href="/issues"
+                  sx={{ textDecoration: "underline" }}
+                >
+                  issues
+                </Text>{" "}
+                page.
+              </Alert>
+            )}
+          <Space h="lg" />
 
-      <Group position="apart">
+          <Group position="apart">
         <Box>
           <Group align="center" spacing="xs">
             <Title order={1}>{profile?.name || profile.username}</Title>
@@ -600,91 +665,134 @@ function Page({
           />
         )}
       </Group>
-
-      <PatreonBanner profile={profile} />
-
-      {profile?.profile__bio && (
-        <BioDisplay
-          rawBio={profile.profile__bio}
-          withBorder={false}
-          // p={0}
-          // sx={{ background: "transparent" }}
-          my="md"
-        />
-      )}
-      {profile.profile__start_playing !== "0000-00-00" && (
-        <Group mt="xs" noWrap align="flex-start">
-          <ThemeIcon variant="light" color="yellow" sx={{ flexShrink: 0 }}>
-            <IconCalendar size={16} />
-          </ThemeIcon>
-          <Box>
-            <Text size="xs" weight={700} color="dimmed">
-              Started Playing
-            </Text>
-            {profile.profile__start_playing &&
-              dayjs(profile.profile__start_playing).format("MMMM YYYY")}
-          </Box>
-        </Group>
-      )}
-
-      <Title order={2} mt="md" mb="xs">
-        Card Collection
-      </Title>
-      {!profile?.collection?.length ? (
-        <Text color="dimmed" size="sm">
-          This user has no cards in their collection
-        </Text>
-      ) : (
-        <>
-          <Box
-            sx={(theme) => ({
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
-              gap: theme.spacing.xs,
-            })}
-          >
-            {profile.collection
-              .filter((c) => c.count)
-              .sort((a, b) => b.count - a.count)
-              .map((c) => (
-                <Paper
-                  radius="sm"
-                  component={Link}
-                  key={c.id}
-                  href={`/cards/${c.id}`}
-                  withBorder
-                  sx={{ position: "relative" }}
-                >
-                  <AspectRatio ratio={4 / 5}>
-                    <Image
-                      radius="sm"
-                      alt={"card image"}
-                      src={getAssetURL(
-                        `assets/card_rectangle4_${c.id}_evolution.png`
-                      )}
-                    />
-                  </AspectRatio>
-                  {c.count > 1 && (
-                    <Badge
-                      sx={{ position: "absolute", bottom: 4, left: 4 }}
-                      variant="filled"
+              {user.loggedIn && user.db.suid !== profile.suid && (
+                <>
+                  <Tooltip label="Send friend request">
+                    <ActionIcon
+                      onClick={async () => {
+                        const token = await user.user.getIdToken();
+                        await fetch("/api/friendRequest", {
+                          method: "POST",
+                          headers: {
+                            Authorization: token || "",
+                            "Content-Type": "application/json",
+                          },
+                          body: JSON.stringify({ friend: uid }),
+                        });
+                      }}
+                      size="lg"
+                      color="green"
+                      variant="light"
                     >
-                      <Text inline size="xs" weight="700">
-                        {c.count}
-                        <Text
-                          component="span"
-                          sx={{ verticalAlign: "-0.05em", lineHeight: 0 }}
+                      <IconUserPlus size={18} />
+                    </ActionIcon>
+                  </Tooltip>
+                  <Tooltip label="Report profile">
+                    <ActionIcon
+                      component={Link}
+                      href={CONSTANTS.MODERATION.GET_REPORT_LINK(
+                        profile.username,
+                        profile.suid
+                      )}
+                      target="_blank"
+                      size="lg"
+                      color="orange"
+                      variant="light"
+                    >
+                      <IconFlag size={18} />
+                    </ActionIcon>
+                  </Tooltip>
+                </>
+              )}
+            </Group>
+          </Group>
+
+          <PatreonBanner profile={profile} />
+
+          {profile?.profile__bio && (
+            <BioDisplay
+              rawBio={profile.profile__bio}
+              withBorder={false}
+              // p={0}
+              // sx={{ background: "transparent" }}
+              my="md"
+            />
+          )}
+          {profile.profile__start_playing !== "0000-00-00" && (
+            <Group mt="xs" noWrap align="flex-start">
+              <ThemeIcon variant="light" color="yellow" sx={{ flexShrink: 0 }}>
+                <IconCalendar size={16} />
+              </ThemeIcon>
+              <Box>
+                <Text size="xs" weight={700} color="dimmed">
+                  Started Playing
+                </Text>
+                {profile.profile__start_playing &&
+                  dayjs(profile.profile__start_playing).format("MMMM YYYY")}
+              </Box>
+            </Group>
+          )}
+
+          <Title order={2} mt="md" mb="xs">
+            Card Collection
+          </Title>
+          {!profile?.collection?.length ? (
+            <Text color="dimmed" size="sm">
+              This user has no cards in their collection
+            </Text>
+          ) : (
+            <>
+              <Box
+                sx={(theme) => ({
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
+                  gap: theme.spacing.xs,
+                })}
+              >
+                {profile.collection
+                  .filter((c) => c.count)
+                  .sort((a, b) => b.count - a.count)
+                  .map((c) => (
+                    <Paper
+                      radius="sm"
+                      component={Link}
+                      key={c.id}
+                      href={`/cards/${c.id}`}
+                      withBorder
+                      sx={{ position: "relative" }}
+                    >
+                      <AspectRatio ratio={4 / 5}>
+                        <Image
+                          radius="sm"
+                          alt={"card image"}
+                          src={getAssetURL(
+                            `assets/card_rectangle4_${c.id}_evolution.png`
+                          )}
+                        />
+                      </AspectRatio>
+                      {c.count > 1 && (
+                        <Badge
+                          sx={{ position: "absolute", bottom: 4, left: 4 }}
+                          variant="filled"
                         >
-                          ×
-                        </Text>
-                      </Text>
-                    </Badge>
-                  )}
-                </Paper>
-              ))}
-          </Box>
-        </>
-      )}
+                          <Text inline size="xs" weight="700">
+                            {c.count}
+                            <Text
+                              component="span"
+                              sx={{ verticalAlign: "-0.05em", lineHeight: 0 }}
+                            >
+                              ×
+                            </Text>
+                          </Text>
+                        </Badge>
+                      )}
+                    </Paper>
+                  ))}
+              </Box>
+            </>
+          )}
+        </Box>
+      </Box>
     </>
   );
 }
