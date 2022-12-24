@@ -4948,6 +4948,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dotenv@npm:^16.0.3":
+  version: 16.0.3
+  resolution: "dotenv@npm:16.0.3"
+  checksum: afcf03f373d7a6d62c7e9afea6328e62851d627a4e73f2e12d0a8deae1cd375892004f3021883f8aec85932cd2834b091f568ced92b4774625b321db83b827f8
+  languageName: node
+  linkType: hard
+
 "duplexer2@npm:^0.1.2":
   version: 0.1.4
   resolution: "duplexer2@npm:0.1.4"
@@ -7420,6 +7427,7 @@ __metadata:
     cookies-next: ^2.1.1
     country-flag-icons: ^1.5.5
     dayjs: ^1.11.7
+    dotenv: ^16.0.3
     embla-carousel-autoplay: ^7.0.5
     embla-carousel-react: ^7.0.5
     eslint: ^8.29.0

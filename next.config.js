@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const nextTranslate = require("next-translate");
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true",
