@@ -14,7 +14,8 @@
   "menu": {
     "quickSettings": "Quick Settings",
     "darkMode": "Dark Mode",
-    "userTheme": "User Theme",
+    "userTheme": "Theme",
+    "locale": "Language",
     "account": "Account",
     "settings": "Settings",
     "logout": "Log out",
