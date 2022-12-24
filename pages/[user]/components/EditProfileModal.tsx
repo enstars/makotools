@@ -9,6 +9,7 @@ import {
   Text,
   Stack,
   ActionIcon,
+  useMantineTheme,
 } from "@mantine/core";
 import dynamic from "next/dynamic";
 import { Dispatch, SetStateAction } from "react";
@@ -47,6 +48,7 @@ function EditProfileModal({
   profileState: any;
   setProfileState: Dispatch<SetStateAction<any>>;
 }) {
+  const theme = useMantineTheme();
   return (
     <Modal
       opened={opened}
@@ -118,7 +120,7 @@ function EditProfileModal({
           <Box sx={{ position: "relative" }}>
             <ActionIcon
               variant="filled"
-              color="indigo"
+              color={theme.primaryColor}
               sx={{
                 position: "absolute",
                 right: 0,
@@ -141,7 +143,7 @@ function EditProfileModal({
               styles={(theme) => ({
                 image: {
                   borderRadius: 60,
-                  border: `3px solid ${theme.colors.indigo[4]}`,
+                  border: `3px solid ${theme.colors[theme.primaryColor][4]}`,
                 },
               })}
             />
