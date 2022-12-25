@@ -1,4 +1,5 @@
-import { Image } from "@mantine/core";
+import { Box, Image, useMantineTheme } from "@mantine/core";
+import { IconUser } from "@tabler/icons";
 
 /** Type defining the width, height, x-coordinate, and y-coordinate of a crop
  * @param {number} x - x-coordinate
@@ -27,6 +28,8 @@ function ProfileAvatar({
   crop?: Crop | undefined;
   border?: string;
 }) {
+  const theme = useMantineTheme();
+
   const scale: number = crop ? 100 / crop.width : 100;
 
   const transform = {
@@ -41,12 +44,32 @@ function ProfileAvatar({
     transform: `translate(${transform.x}, ${transform.y}) scale(${transform.scale},${transform.scale})`,
   };
 
+  const placeholder = (
+    <Box
+      sx={{
+        position: "relative",
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        background: theme.colors[theme.primaryColor][1],
+        border: border,
+        textAlign: "center",
+      }}
+    >
+      <IconUser
+        size={100}
+        color={theme.colors[theme.primaryColor][3]}
+        style={{ marginTop: 3 }}
+      />
+    </Box>
+  );
+
   const image = (
     <Image
       src={src}
       alt="avatar"
-      width={crop ? transform.width : 120}
-      height={crop ? transform.height : 120}
+      width={transform.width}
+      height={transform.height}
       styles={(theme) => ({
         root: {
           width: "120px !important",
@@ -61,18 +84,18 @@ function ProfileAvatar({
           border: border || "none",
         },
         image: {
-          position: crop ? "absolute" : "static",
-          top: crop ? 0 : undefined,
-          left: crop ? 0 : undefined,
-          transform: crop ? style.transform : undefined,
-          transformOrigin: crop ? "top left" : undefined,
+          position: "absolute",
+          top: 0,
+          left: 0,
+          transform: style.transform,
+          transformOrigin: "top left",
           pointerEvents: "none",
         },
       })}
     />
   );
 
-  return image;
+  return src && crop ? image : placeholder;
 }
 
 export default ProfileAvatar;
