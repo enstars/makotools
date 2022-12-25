@@ -58,6 +58,7 @@ import EditProfileModal from "./components/EditProfileModal";
 import MaoBanned from "./MaoBanned.png";
 import ProfilePicModal from "./components/ProfilePicModal";
 import RemoveFriendModal from "./components/RemoveFriendModal";
+import ProfileAvatar from "./components/ProfileAvatar";
 
 import { getLayout, useSidebarStatus } from "components/Layout";
 import { UserData, UserLoggedIn } from "types/makotools";
@@ -208,6 +209,8 @@ function Page({
         cards={cards as GameCard[]}
         user={user}
         profile={profile}
+        profileState={profileState}
+        externalSetter={setProfileState}
       />
       <RemoveFriendModal
         opened={openRemoveFriendModal}
@@ -259,7 +262,7 @@ function Page({
             marginTop: -60,
           }}
         >
-          {profile.profile__picture ? (
+          {/* {profile.profile__picture ? (
             <Picture
               alt={profile.username}
               srcB2={
@@ -300,7 +303,30 @@ function Page({
                 },
               })}
             />
-          )}
+          )} */}
+          <ProfileAvatar
+            src={
+              profile.profile__picture && profile.profile__picture.id
+                ? getAssetURL(
+                    `assets/card_still_full1_${Math.abs(
+                      profile.profile__picture.id
+                    )}_${
+                      profile.profile__picture.id > 0 ? "evolution" : "normal"
+                    }.png`
+                  )
+                : MaoBanned.src
+            }
+            crop={
+              profile.profile__picture && profile.profile__picture.crop
+                ? profile.profile__picture.crop
+                : undefined
+            }
+            border={`5px solid ${
+              theme.colorScheme === "dark"
+                ? theme.colors.dark[9]
+                : theme.colors.gray[0]
+            }`}
+          />
         </Box>
         <Box sx={{ marginTop: 50 }}>
           {user.loggedIn &&

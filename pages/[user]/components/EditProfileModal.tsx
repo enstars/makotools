@@ -3,7 +3,6 @@ import {
   Group,
   Title,
   Button,
-  Image,
   Divider,
   Box,
   Text,
@@ -21,9 +20,11 @@ import Banner from "./Banner";
 import Name from "./Name";
 import Pronouns from "./Pronouns";
 import StartPlaying from "./StartPlaying";
+import ProfileAvatar from "./ProfileAvatar";
 
 import { GameCard } from "types/game";
 import { User, UserData } from "types/makotools";
+import { getAssetURL } from "services/data";
 
 const Bio = dynamic(() => import("./Bio"), {
   ssr: false,
@@ -87,6 +88,7 @@ function EditProfileModal({
                   profile__pronouns: profileState.profile__pronouns,
                   profile__start_playing: profileState.profile__start_playing,
                   profile__bio: profileState.profile__bio,
+                  profile__picture: profileState.profile__picture,
                 });
               }
               openedFunction(false);
@@ -125,17 +127,26 @@ function EditProfileModal({
             >
               <IconPencil size={28} />
             </ActionIcon>
-            <Image
-              src={MaoBanned.src}
-              alt={profile.username}
-              width={120}
-              height={120}
-              styles={(theme) => ({
-                image: {
-                  borderRadius: 60,
-                  border: `3px solid ${theme.colors[theme.primaryColor][4]}`,
-                },
-              })}
+            <ProfileAvatar
+              src={
+                profileState.profile__picture
+                  ? getAssetURL(
+                      `assets/card_still_full1_${Math.abs(
+                        profileState.profile__picture.id
+                      )}_${
+                        profileState.profile__picture.id > 0
+                          ? "evolution"
+                          : "normal"
+                      }.png`
+                    )
+                  : MaoBanned.src
+              }
+              crop={
+                profileState.profile__picture
+                  ? profileState.profile__picture.crop
+                  : undefined
+              }
+              border={`5px solid ${theme.colors[theme.primaryColor][4]}`}
             />
           </Box>
         </Box>

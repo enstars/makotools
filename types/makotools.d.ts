@@ -66,11 +66,11 @@ type GameRegion = "jp" | "cn" | "kr" | "tw" | "en";
 type UID = ID;
 interface ProfilePicture {
   id?: number;
-  crop: {
-    x?: number;
-    y?: number;
-    w?: number;
-    h?: number;
+  crop?: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
   };
 }
 interface UserData {

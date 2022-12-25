@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import {
   Box,
+  Button,
   Container,
   Divider,
   Group,
@@ -13,10 +14,10 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { useCallback, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { IconSun, IconSunOff } from "@tabler/icons";
 import Cropper from "react-easy-crop";
-import { Point, Area } from "react-easy-crop/types";
+import { Point } from "react-easy-crop/types";
 
 import MaoBanned from "../MaoBanned.png";
 
@@ -32,17 +33,21 @@ function ProfilePicModal({
   cards,
   user,
   profile,
+  externalSetter,
+  profileState,
 }: {
   opened: boolean;
   openedFunction: any;
   cards: GameCard[];
   user: User;
   profile: UserData;
+  externalSetter: Dispatch<SetStateAction<any>>;
+  profileState: any;
 }) {
   const [picObj, setPicObj] = useState<ProfilePicture>(
     (user.loggedIn && user.db?.profile__picture) || {
       id: undefined,
-      crop: { x: undefined, y: undefined, w: undefined, h: undefined },
+      crop: undefined,
     }
   );
 
@@ -59,31 +64,28 @@ function ProfilePicModal({
     }
   }, [bloomed]);
 
-  const onCropComplete = useCallback(
-    (area: Area, areaPixels: Area) => {
-      const pictureArea = areaPixels;
-      if (picObj.id !== undefined) {
-        setPicObj({
-          ...picObj,
-          crop: {
-            x: pictureArea.x,
-            y: pictureArea.y,
-            w: pictureArea.width,
-            h: pictureArea.height,
-          },
-        });
-        console.log(picObj.crop);
-      }
-    },
-    [picObj]
-  );
-
   return (
     <Modal
       opened={opened}
       size="lg"
       onClose={() => openedFunction(false)}
-      title={<Title order={2}>Update avatar</Title>}
+      title={
+        <Group>
+          <Title order={2}>Update avatar</Title>{" "}
+          <Button
+            sx={{
+              visibility: picObj.crop ? "visible" : "hidden",
+              marginTop: 10,
+            }}
+            onClick={() => {
+              externalSetter({ ...profileState, profile__picture: picObj });
+              openedFunction(false);
+            }}
+          >
+            Save
+          </Button>
+        </Group>
+      }
       styles={(theme) => ({
         modal: { height: "100%", minHeight: "100%" },
       })}
@@ -93,39 +95,6 @@ function ProfilePicModal({
       </Text>
       <Group align="flex-start">
         <Box sx={{ flex: "0 1 120" }}>
-          {/* <Image
-            ref={previewRef}
-            src={
-              picObj && picObj.id
-                ? getAssetURL(
-                    `assets/card_still_full1_${Math.abs(picObj.id)}_${
-                      picObj.id > 0 ? "evolution" : "normal"
-                    }.webp`
-                  )
-                : MaoBanned.src
-            }
-            alt={"User avatar"}
-            fit="none"
-            width={picObj.id ? "auto" : 120}
-            height={picObj.id ? "auto" : 120}
-            radius={60}
-            styles={(theme) => ({
-              imageWrapper: {
-                position: "relative",
-                width: 120,
-                height: 120,
-                overflow: !picObj ? "visible" : "hidden",
-                borderRadius: 60,
-              },
-              image: {
-                position: "absolute",
-                width: picObj.crop.w || "auto",
-                height: picObj.crop.h || "auto",
-                marginTop: picObj.crop.y ? picObj.crop.y * -1 : 0,
-                marginLeft: picObj.crop.x ? picObj.crop.x * -1 : 0,
-              },
-            })}
-          /> */}
           <ProfileAvatar
             src={
               picObj && picObj.id
@@ -208,8 +177,13 @@ function ProfilePicModal({
             crop={crop}
             zoom={zoom}
             onCropChange={setCrop}
-            onCropComplete={onCropComplete}
             onZoomChange={setZoom}
+            onCropAreaChange={(croppedArea) => {
+              setPicObj({
+                ...picObj,
+                crop: croppedArea,
+              });
+            }}
           />
         </Container>
       )}
