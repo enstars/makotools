@@ -4,7 +4,6 @@ import {
   Container,
   Divider,
   Group,
-  Image,
   Input,
   Modal,
   Select,
@@ -14,12 +13,14 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IconSun, IconSunOff } from "@tabler/icons";
 import Cropper from "react-easy-crop";
 import { Point, Area } from "react-easy-crop/types";
 
 import MaoBanned from "../MaoBanned.png";
+
+import ProfileAvatar from "./ProfileAvatar";
 
 import { GameCard } from "types/game";
 import { ProfilePicture, User, UserData } from "types/makotools";
@@ -49,8 +50,6 @@ function ProfilePicModal({
   const [zoom, setZoom] = useState<number>(1);
   const [bloomed, setBloomed] = useState<boolean>(true);
 
-  const previewRef = useRef(null);
-
   useEffect(() => {
     if (picObj.id) {
       let newId;
@@ -62,13 +61,18 @@ function ProfilePicModal({
 
   const onCropComplete = useCallback(
     (area: Area, areaPixels: Area) => {
-      console.log("picObj.id: ", picObj.id);
+      const pictureArea = areaPixels;
       if (picObj.id !== undefined) {
         setPicObj({
           ...picObj,
-          crop: { x: area.x, y: area.y, w: area.width, h: area.height },
+          crop: {
+            x: pictureArea.x,
+            y: pictureArea.y,
+            w: pictureArea.width,
+            h: pictureArea.height,
+          },
         });
-        // console.log("picObj 2: ", picObj);
+        console.log(picObj.crop);
       }
     },
     [picObj]
@@ -89,7 +93,7 @@ function ProfilePicModal({
       </Text>
       <Group align="flex-start">
         <Box sx={{ flex: "0 1 120" }}>
-          <Image
+          {/* <Image
             ref={previewRef}
             src={
               picObj && picObj.id
@@ -110,18 +114,29 @@ function ProfilePicModal({
                 position: "relative",
                 width: 120,
                 height: 120,
-                overflow: !picObj ? "visible" : "clip",
+                overflow: !picObj ? "visible" : "hidden",
                 borderRadius: 60,
               },
               image: {
                 position: "absolute",
-                borderRadius: !picObj ? 60 : 0,
-                width: "auto",
-                height: "auto",
-                marginTop: picObj.crop.y ? `${picObj.crop.y * -1}%` : 0,
-                marginLeft: picObj.crop.x ? `${picObj.crop.x * -1}%` : 0,
+                width: picObj.crop.w || "auto",
+                height: picObj.crop.h || "auto",
+                marginTop: picObj.crop.y ? picObj.crop.y * -1 : 0,
+                marginLeft: picObj.crop.x ? picObj.crop.x * -1 : 0,
               },
             })}
+          /> */}
+          <ProfileAvatar
+            src={
+              picObj && picObj.id
+                ? getAssetURL(
+                    `assets/card_still_full1_${Math.abs(picObj.id)}_${
+                      picObj.id > 0 ? "evolution" : "normal"
+                    }.webp`
+                  )
+                : MaoBanned.src
+            }
+            crop={picObj.crop}
           />
         </Box>
         <Stack sx={{ flex: "1 0 30%" }}>

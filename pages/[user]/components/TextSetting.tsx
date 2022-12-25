@@ -65,7 +65,6 @@ function TextSetting<T = {}>({
         onChange={(e: ChangeEvent<HTMLInputElement>) => {
           setInputValue(e.target.value);
           externalSetter({ ...profileState, [dataKey]: e.target.value });
-          console.log(e.target.value);
         }}
         // rightSection={
         //   inputValue?.length &&
