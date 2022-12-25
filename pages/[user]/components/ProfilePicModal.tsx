@@ -81,7 +81,13 @@ function ProfilePicModal({
       size="lg"
       onClose={() => openedFunction(false)}
       title={
-        <Group>
+        <Group
+          noWrap
+          align="center"
+          position="left"
+          spacing="xl"
+          sx={{ width: "100%" }}
+        >
           <Title order={2}>Update avatar</Title>{" "}
           <Button
             sx={{
