@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import {
-  Box,
+  ActionIcon,
   Button,
   Container,
   Divider,
@@ -15,7 +15,7 @@ import {
   Title,
 } from "@mantine/core";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { IconSun, IconSunOff } from "@tabler/icons";
+import { IconSun, IconSunOff, IconTrash } from "@tabler/icons";
 import Cropper from "react-easy-crop";
 import { Point } from "react-easy-crop/types";
 
@@ -44,16 +44,27 @@ function ProfilePicModal({
   externalSetter: Dispatch<SetStateAction<any>>;
   profileState: any;
 }) {
-  const [picObj, setPicObj] = useState<ProfilePicture>(
-    (user.loggedIn && user.db?.profile__picture) || {
-      id: undefined,
-      crop: undefined,
-    }
+  const [currentPic, setCurrentPic] = useState<ProfilePicture>(
+    user.loggedIn && user.db?.profile__picture
+      ? user.db.profile__picture
+      : {
+          id: undefined,
+          crop: undefined,
+        }
   );
+  const [picObj, setPicObj] = useState<ProfilePicture>({
+    id: undefined,
+    crop: undefined,
+  });
 
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState<number>(1);
   const [bloomed, setBloomed] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (user.loggedIn && user.db && user.db.profile__picture)
+      setCurrentPic(user.db.profile__picture);
+  }, [user]);
 
   useEffect(() => {
     if (picObj.id) {
@@ -94,7 +105,14 @@ function ProfilePicModal({
         Choose an image
       </Text>
       <Group align="flex-start">
-        <Box sx={{ flex: "0 1 120" }}>
+        <Input.Wrapper
+          description="Current avatar"
+          sx={{ flex: "0 1 120" }}
+          inputWrapperOrder={["input", "description"]}
+          styles={(theme) => ({
+            description: { textAlign: "center", marginTop: 5 },
+          })}
+        >
           <ProfileAvatar
             src={
               picObj && picObj.id
@@ -103,11 +121,17 @@ function ProfilePicModal({
                       picObj.id > 0 ? "evolution" : "normal"
                     }.png`
                   )
+                : currentPic && currentPic.id
+                ? getAssetURL(
+                    `assets/card_still_full1_${Math.abs(currentPic.id)}_${
+                      currentPic.id > 0 ? "evolution" : "normal"
+                    }.png`
+                  )
                 : MaoBanned.src
             }
-            crop={picObj.crop}
+            crop={picObj.crop ? picObj.crop : currentPic.crop}
           />
-        </Box>
+        </Input.Wrapper>
         <Stack sx={{ flex: "1 0 30%" }}>
           <Input.Wrapper label="Avatar image">
             <Select
@@ -141,19 +165,33 @@ function ProfilePicModal({
               }
             />
           </Input.Wrapper>
-          <Input.Wrapper label="Bloomed?">
-            <Switch
-              size="lg"
-              sx={{ alignSelf: "center" }}
-              onChange={() => {
-                setBloomed(!bloomed);
-              }}
-              defaultChecked={bloomed}
-              onLabel={<IconSun />}
-              offLabel={<IconSunOff />}
-              disabled={!picObj.id}
-            />
-          </Input.Wrapper>
+          <Group>
+            <Input.Wrapper label="Bloomed?">
+              <Switch
+                size="lg"
+                sx={{ alignSelf: "center" }}
+                onChange={() => {
+                  setBloomed(!bloomed);
+                }}
+                defaultChecked={bloomed}
+                onLabel={<IconSun />}
+                offLabel={<IconSunOff />}
+                disabled={!picObj.id}
+              />
+            </Input.Wrapper>
+            <Input.Wrapper label="Reset avatar">
+              <ActionIcon
+                onClick={() => {
+                  setCurrentPic({ id: undefined, crop: undefined });
+                  setPicObj({ id: undefined, crop: undefined });
+                }}
+                color="red"
+                variant="light"
+              >
+                <IconTrash />
+              </ActionIcon>
+            </Input.Wrapper>
+          </Group>
         </Stack>
       </Group>
       <Space h="xl" />

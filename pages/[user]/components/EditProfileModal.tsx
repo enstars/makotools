@@ -30,6 +30,16 @@ const Bio = dynamic(() => import("./Bio"), {
   ssr: false,
 });
 
+/** Modal for editing the profile
+ * @param {boolean} opened - Whether the modal is currently opened or not
+ * @param {Dispatch<SetStateAction<boolean>} openedFunction - The function that toggles the opened parameter
+ * @param {Dispatch<SetStateAction<boolean>} picModalFunction - Function that opens and closes ProfilePicModal
+ * @param {GameCard[]} cards - Array of available cards in game for the profile banner
+ * @param {User} user - Object for the currently logged-in user
+ * @param {UserData} profile - The profile that is currently being viewed
+ * @param {any} profileState - The state of the current profile that is being edited
+ * @param {Dispatch<SetStateAction<any>>} - The setter function that updates profileState
+ */
 function EditProfileModal({
   opened,
   openedFunction,
@@ -43,7 +53,7 @@ function EditProfileModal({
   opened: boolean;
   openedFunction: Dispatch<SetStateAction<boolean>>;
   picModalFunction: Dispatch<SetStateAction<boolean>>;
-  cards: GameCard[] | undefined;
+  cards?: GameCard[] | undefined;
   user: User;
   profile: UserData;
   profileState: any;
@@ -92,7 +102,6 @@ function EditProfileModal({
                 });
               }
               openedFunction(false);
-              location.reload();
             }}
           >
             Save

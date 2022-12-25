@@ -262,48 +262,6 @@ function Page({
             marginTop: -60,
           }}
         >
-          {/* {profile.profile__picture ? (
-            <Picture
-              alt={profile.username}
-              srcB2={
-                profile.profile__picture.id
-                  ? `assets/card_still_full1_${Math.abs(
-                      profile.profile__picture.id
-                    )}_${
-                      profile.profile__picture.id > 0 ? "evolution" : "normal"
-                    }.webp`
-                  : undefined
-              }
-              styles={(theme) => ({
-                root: { width: 120, height: 120 },
-                image: {
-                  border: `5px solid ${
-                    theme.colorScheme === "dark"
-                      ? theme.colors.dark[9]
-                      : theme.colors.gray[0]
-                  }`,
-                },
-              })}
-              radius={60}
-            />
-          ) : (
-            <Image
-              src={MaoBanned.src}
-              alt={profile.username}
-              width={120}
-              height={120}
-              styles={(theme) => ({
-                image: {
-                  borderRadius: 60,
-                  border: `5px solid ${
-                    theme.colorScheme === "dark"
-                      ? theme.colors.dark[9]
-                      : theme.colors.gray[0]
-                  }`,
-                },
-              })}
-            />
-          )} */}
           <ProfileAvatar
             src={
               profile.profile__picture && profile.profile__picture.id

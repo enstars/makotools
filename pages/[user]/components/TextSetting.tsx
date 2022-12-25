@@ -76,7 +76,6 @@ function TextSetting<T = {}>({
         //     <Loader size="xs" />
         //   ))
         // }
-        autosize
         {...props}
         error={
           inputValue?.length > charLimit

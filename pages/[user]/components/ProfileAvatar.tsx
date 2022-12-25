@@ -1,5 +1,11 @@
 import { Image } from "@mantine/core";
 
+/** Type defining the width, height, x-coordinate, and y-coordinate of a crop
+ * @param {number} x - x-coordinate
+ * @param {number} y - y-coordinate
+ * @param {number} width - width
+ * @param {number} height - height
+ */
 interface Crop {
   x: number;
   y: number;
@@ -7,6 +13,11 @@ interface Crop {
   height: number;
 }
 
+/** Component defining a profile picture referenced in ProfilePicModal, EditProfileModal, and the profile page
+ * @param {string} src - The image source
+ * @param {Crop} crop? - The image crop
+ * @param {string} border? - If the image needs a border, input the border style here
+ */
 function ProfileAvatar({
   src,
   crop,
