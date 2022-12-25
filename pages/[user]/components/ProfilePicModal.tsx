@@ -132,7 +132,7 @@ function ProfilePicModal({
                 ? getAssetURL(
                     `assets/card_still_full1_${Math.abs(picObj.id)}_${
                       picObj.id > 0 ? "evolution" : "normal"
-                    }.webp`
+                    }.png`
                   )
                 : MaoBanned.src
             }

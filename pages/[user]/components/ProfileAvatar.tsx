@@ -8,6 +8,7 @@ interface Crop {
 }
 
 function ProfileAvatar({ src, crop }: { src: string; crop: Crop }) {
+  console.log(src);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -18,6 +19,7 @@ function ProfileAvatar({ src, crop }: { src: string; crop: Crop }) {
       context.translate(60, 60);
 
       const image = new Image();
+      image.crossOrigin = "Anonymous";
       image.src = src;
 
       image.onload = () => {
@@ -31,12 +33,9 @@ function ProfileAvatar({ src, crop }: { src: string; crop: Crop }) {
         crop.h || 120
       );
 
-      canvas.width = crop.w || 120;
-      canvas.height = crop.h || 120;
-
       context.putImageData(data, 0, 0);
     }
-  }, []);
+  }, [src, crop]);
 
   return <canvas id="profilePic" ref={canvasRef} width={120} height={120} />;
 }
