@@ -42,17 +42,6 @@ function TextSetting<T = {}>({
     user.loggedIn ? user.db?.[dataKey] : undefined
   );
 
-  // const handleValueChange = useDebouncedCallback((value) => {
-  //   if (user.loggedIn && !user?.db?.admin?.disableTextFields) {
-  //     externalSetter(value);
-  //   }
-  // }, 2000);
-
-  // const memoizedHandleValueChange = useMemo(
-  //   () => handleValueChange,
-  //   [handleValueChange]
-  // );
-
   useEffect(() => {
     if (isFirestoreAccessible) setInputValue(user.db?.[dataKey]);
   }, [isFirestoreAccessible, user, dataKey]);
@@ -66,16 +55,6 @@ function TextSetting<T = {}>({
           setInputValue(e.target.value);
           externalSetter({ ...profileState, [dataKey]: e.target.value });
         }}
-        // rightSection={
-        //   inputValue?.length &&
-        //   (inputValue?.length > charLimit ? (
-        //     <IconX size={18} color={theme.colors.red[5]} />
-        //   ) : inputValue === user.db?.[dataKey] ? (
-        //     <IconCheck size={18} color={theme.colors.green[5]} />
-        //   ) : (
-        //     <Loader size="xs" />
-        //   ))
-        // }
         {...props}
         error={
           inputValue?.length > charLimit

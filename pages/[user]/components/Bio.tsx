@@ -56,6 +56,7 @@ function Name({
               placeholder="Say something about yourself!"
               charLimit={3640}
               Component={Textarea}
+              autosize={true}
               minRows={2}
               maxRows={8}
               externalSetter={externalSetter}
