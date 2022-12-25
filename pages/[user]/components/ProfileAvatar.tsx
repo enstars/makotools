@@ -66,6 +66,7 @@ function ProfileAvatar({
           left: crop ? 0 : undefined,
           transform: crop ? style.transform : undefined,
           transformOrigin: crop ? "top left" : undefined,
+          pointerEvents: "none",
         },
       })}
     />
