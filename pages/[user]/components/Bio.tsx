@@ -23,7 +23,7 @@ function Name({
     <>
       <BioHelpModal opened={opened} openFunction={setOpened} />
 
-      <Input.Wrapper label="Bio">
+      <Input.Wrapper>
         <Input.Description>
           You can use markdown in your bio (GFM){" "}
           <Text

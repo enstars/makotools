@@ -3,12 +3,12 @@ import {
   Group,
   Title,
   Button,
-  Divider,
   Box,
   Text,
   Stack,
   ActionIcon,
   useMantineTheme,
+  Accordion,
 } from "@mantine/core";
 import dynamic from "next/dynamic";
 import { Dispatch, SetStateAction } from "react";
@@ -109,70 +109,100 @@ function EditProfileModal({
         </Group>
       }
     >
-      <Banner
-        cards={cards}
-        externalSetter={setProfileState}
-        profileState={profileState}
-      />
-      <Divider sx={{ margin: "20px 0px" }} />
-      <Group position="apart" spacing="xl" sx={{ marginBottom: 20 }}>
-        <Box sx={{ flex: "0 0 120px" }}>
-          <Text align="center">Avatar</Text>
-          <Box sx={{ position: "relative" }}>
-            <ActionIcon
-              variant="filled"
-              color={theme.primaryColor}
-              sx={{
-                position: "absolute",
-                right: 0,
-                marginRight: 5,
-                marginTop: 5,
-                zIndex: 10,
-              }}
-              radius="xl"
-              size="lg"
-              p={4}
-              onClick={() => picModalFunction(true)}
-            >
-              <IconPencil size={28} />
-            </ActionIcon>
-            <ProfileAvatar
-              src={
-                profileState.profile__picture
-                  ? getAssetURL(
-                      `assets/card_still_full1_${Math.abs(
-                        profileState.profile__picture.id
-                      )}_${
-                        profileState.profile__picture.id > 0
-                          ? "evolution"
-                          : "normal"
-                      }.png`
-                    )
-                  : MaoBanned.src
-              }
-              crop={
-                profileState.profile__picture
-                  ? profileState.profile__picture.crop
-                  : undefined
-              }
-              border={`5px solid ${theme.colors[theme.primaryColor][4]}`}
+      <Accordion defaultValue={["details"]} multiple>
+        <Accordion.Item value="banner">
+          <Accordion.Control>
+            <Text size="xl" weight={700}>
+              Banner cards
+            </Text>
+          </Accordion.Control>
+          <Accordion.Panel>
+            <Banner
+              cards={cards}
+              externalSetter={setProfileState}
+              profileState={profileState}
             />
-          </Box>
-        </Box>
-        <Stack sx={{ flex: "1 0 25%" }}>
-          <Name externalSetter={setProfileState} profileState={profileState} />
-          <Pronouns
-            externalSetter={setProfileState}
-            profileState={profileState}
-          />
-        </Stack>
-      </Group>
-      <StartPlaying
-        externalSetter={setProfileState}
-        profileState={profileState}
-      />
-      <Divider sx={{ margin: "20px 0px" }} />
-      <Bio externalSetter={setProfileState} profileState={profileState} />
+          </Accordion.Panel>
+        </Accordion.Item>
+        <Accordion.Item value="details">
+          <Accordion.Control>
+            <Text size="xl" weight={700}>
+              Profile details
+            </Text>
+          </Accordion.Control>
+          <Accordion.Panel>
+            <Group position="apart" spacing="xl" sx={{ marginBottom: 20 }}>
+              <Box sx={{ flex: "0 0 120px" }}>
+                <Text align="center">Avatar</Text>
+                <Box sx={{ position: "relative" }}>
+                  <ActionIcon
+                    variant="filled"
+                    color={theme.primaryColor}
+                    sx={{
+                      position: "absolute",
+                      right: 0,
+                      marginRight: 5,
+                      marginTop: 5,
+                      zIndex: 10,
+                    }}
+                    radius="xl"
+                    size="lg"
+                    p={4}
+                    onClick={() => picModalFunction(true)}
+                  >
+                    <IconPencil size={28} />
+                  </ActionIcon>
+                  <ProfileAvatar
+                    src={
+                      profileState.profile__picture
+                        ? getAssetURL(
+                            `assets/card_still_full1_${Math.abs(
+                              profileState.profile__picture.id
+                            )}_${
+                              profileState.profile__picture.id > 0
+                                ? "evolution"
+                                : "normal"
+                            }.png`
+                          )
+                        : MaoBanned.src
+                    }
+                    crop={
+                      profileState.profile__picture
+                        ? profileState.profile__picture.crop
+                        : undefined
+                    }
+                    border={`5px solid ${theme.colors[theme.primaryColor][4]}`}
+                  />
+                </Box>
+              </Box>
+              <Stack sx={{ flex: "1 0 25%" }}>
+                <Name
+                  externalSetter={setProfileState}
+                  profileState={profileState}
+                />
+                <Pronouns
+                  externalSetter={setProfileState}
+                  profileState={profileState}
+                />
+              </Stack>
+            </Group>
+            <StartPlaying
+              externalSetter={setProfileState}
+              profileState={profileState}
+            />
+          </Accordion.Panel>
+        </Accordion.Item>
+        <Accordion.Item value="bio">
+          <Accordion.Control>
+            <Text size="xl" weight={700}>
+              Bio
+            </Text>
+          </Accordion.Control>
+          <Accordion.Panel>
+            <Bio externalSetter={setProfileState} profileState={profileState} />
+          </Accordion.Panel>
+        </Accordion.Item>
+      </Accordion>
     </Modal>
   );
 }

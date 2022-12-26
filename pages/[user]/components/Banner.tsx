@@ -81,7 +81,7 @@ function Banner({
     );
 
   return (
-    <Input.Wrapper label="Banner Cards">
+    <Input.Wrapper label="Current banner cards">
       <GridContextProvider
         onChange={(
           sourceId: string,
