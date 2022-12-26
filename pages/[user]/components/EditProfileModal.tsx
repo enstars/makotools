@@ -109,7 +109,7 @@ function EditProfileModal({
         </Group>
       }
     >
-      <Accordion defaultValue={["details"]} multiple>
+      <Accordion defaultValue={"details"}>
         <Accordion.Item value="banner">
           <Accordion.Control>
             <Text size="xl" weight={700}>

@@ -10,7 +10,6 @@ import {
   Paper,
   Space,
   Text,
-  ThemeIcon,
   Title,
   Tooltip,
   useMantineTheme,
@@ -20,7 +19,6 @@ import Link from "next/link";
 import {
   IconAlertCircle,
   IconBrandPatreon,
-  IconCalendar,
   IconDiscountCheck,
   IconHearts,
 } from "@tabler/icons";
@@ -44,6 +42,7 @@ import ProfilePicModal from "./components/ProfilePicModal";
 import RemoveFriendModal from "./components/RemoveFriendModal";
 import ProfileAvatar from "./components/ProfileAvatar";
 import ProfileButtons from "./components/ProfileButtons";
+import ProfileStats from "./components/ProfileStats";
 
 import { getLayout, useSidebarStatus } from "components/Layout";
 import { UserData, UserLoggedIn } from "types/makotools";
@@ -350,20 +349,7 @@ function Page({
             )}
           </Group>
           <PatreonBanner profile={profile} />
-          {profile.profile__start_playing !== "0000-00-00" && (
-            <Group mt="xs" noWrap align="flex-start">
-              <ThemeIcon variant="light" color="yellow" sx={{ flexShrink: 0 }}>
-                <IconCalendar size={16} />
-              </ThemeIcon>
-              <Box>
-                <Text size="xs" weight={700} color="dimmed">
-                  Started Playing
-                </Text>
-                {profile.profile__start_playing &&
-                  dayjs(profile.profile__start_playing).format("MMMM YYYY")}
-              </Box>
-            </Group>
-          )}
+          <ProfileStats profile={profile} />
           {profile?.profile__bio && (
             <BioDisplay
               rawBio={profile.profile__bio}
