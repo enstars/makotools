@@ -6,6 +6,7 @@ import {
   Box,
   Group,
   Image,
+  Loader,
   Paper,
   Space,
   Text,
@@ -266,16 +267,24 @@ function Page({
                   ` · ${profile?.profile__pronouns}`}
               </Text>
             </Box>
-            <ProfileButtons
-              user={user}
-              uid={uid}
-              profile={profile}
-              isFriend={isFriend}
-              isIncomingReq={isIncomingFriendReq}
-              isOutgoingReq={isOutgoingFriendReq}
-              setOpenEditModal={setOpenEditModal}
-              setRemoveFriendModal={setRemoveFriendModal}
-            />
+            {!user.loading ? (
+              <ProfileButtons
+                user={user}
+                uid={uid}
+                profile={profile}
+                isFriend={isFriend}
+                isIncomingReq={isIncomingFriendReq}
+                isOutgoingReq={isOutgoingFriendReq}
+                setOpenEditModal={setOpenEditModal}
+                setRemoveFriendModal={setRemoveFriendModal}
+              />
+            ) : (
+              <Loader
+                color={theme.colorScheme === "dark" ? "dark" : "gray"}
+                size="md"
+                variant="dots"
+              />
+            )}
           </Group>
           <PatreonBanner profile={profile} />
           <ProfileStats profile={profile} />
