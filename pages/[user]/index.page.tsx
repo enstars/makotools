@@ -22,7 +22,7 @@ import {
   IconDiscountCheck,
   IconHearts,
 } from "@tabler/icons";
-import { useRef, Fragment, useState, useEffect } from "react";
+import { useRef, Fragment, useState, useEffect, useMemo } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { useMediaQuery } from "@mantine/hooks";
 import {
@@ -45,7 +45,7 @@ import ProfileButtons from "./components/ProfileButtons";
 import ProfileStats from "./components/ProfileStats";
 
 import { getLayout, useSidebarStatus } from "components/Layout";
-import { UserData, UserLoggedIn } from "types/makotools";
+import { Locale, QuerySuccess, UserData, UserLoggedIn } from "types/makotools";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getAssetURL, getLocalizedDataArray } from "services/data";
 import { parseStringify } from "services/utilities";
@@ -54,7 +54,7 @@ import useUser from "services/firebase/user";
 import BioDisplay from "components/sections/BioDisplay";
 import Picture from "components/core/Picture";
 import { CONSTANTS } from "services/makotools/constants";
-import { GameCard } from "types/game";
+import { GameCard, GameCharacter } from "types/game";
 
 function PatreonBanner({ profile }: { profile: UserData }) {
   if (profile?.admin?.patreon) {
@@ -80,11 +80,19 @@ function Page({
   profile,
   uid,
   cards,
+  charactersQuery,
+  locale,
 }: {
   profile: UserData;
   uid: string;
   cards: GameCard[] | undefined;
+  charactersQuery: QuerySuccess<GameCharacter[]>;
+  locale: Locale;
 }) {
+  const characters: GameCharacter[] = useMemo(
+    () => charactersQuery.data,
+    [charactersQuery.data]
+  );
   // hooks
   const { dayjs } = useDayjs();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
@@ -106,6 +114,7 @@ function Page({
     profile__start_playing: profile.profile__start_playing,
     profile__bio: profile.profile__bio,
     profile__picture: profile.profile__picture,
+    profile__fave_charas: profile.profile__fave_charas,
   });
 
   // friend Variables
@@ -187,6 +196,8 @@ function Page({
         profile={profile}
         profileState={profileState}
         setProfileState={setProfileState}
+        characters={characters}
+        locale={locale}
       />
       <ProfilePicModal
         opened={openPicModal}
@@ -349,7 +360,7 @@ function Page({
             )}
           </Group>
           <PatreonBanner profile={profile} />
-          <ProfileStats profile={profile} />
+          <ProfileStats profile={profile} characters={characters} />
           {profile?.profile__bio && (
             <BioDisplay
               rawBio={profile.profile__bio}
@@ -435,7 +446,13 @@ export const getServerSideProps = getServerSideUser(
       "name",
       "rarity",
     ]);
-    if (cards.status === "error") return { props: { cards: undefined } };
+    const charactersQuery = await getLocalizedDataArray<GameCharacter>(
+      "characters",
+      locale,
+      "character_id"
+    );
+    if (cards.status === "error" || charactersQuery.status === "error")
+      return { props: { cards: undefined } };
     const bannerIds = cards.data.filter((c) => c.rarity >= 4).map((c) => c.id);
 
     if (typeof params?.user !== "string" || !params.user.startsWith("@")) {
@@ -454,7 +471,9 @@ export const getServerSideProps = getServerSideUser(
         props: {
           profile,
           cards: cards.data.filter((c) => bannerIds.includes(c.id)),
+          charactersQuery: charactersQuery,
           uid: querySnap.docs[0].id,
+          locale: locale as Locale,
           meta: {
             title: profile?.name
               ? `${profile.name} (@${profile.username})`

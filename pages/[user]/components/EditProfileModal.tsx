@@ -21,9 +21,10 @@ import Name from "./Name";
 import Pronouns from "./Pronouns";
 import StartPlaying from "./StartPlaying";
 import ProfileAvatar from "./ProfileAvatar";
+import FavoriteCharacters from "./FavoriteCharacters";
 
-import { GameCard } from "types/game";
-import { User, UserData } from "types/makotools";
+import { GameCard, GameCharacter } from "types/game";
+import { Locale, User, UserData } from "types/makotools";
 import { getAssetURL } from "services/data";
 
 const Bio = dynamic(() => import("./Bio"), {
@@ -49,6 +50,8 @@ function EditProfileModal({
   profile,
   profileState,
   setProfileState,
+  characters,
+  locale,
 }: {
   opened: boolean;
   openedFunction: Dispatch<SetStateAction<boolean>>;
@@ -58,6 +61,8 @@ function EditProfileModal({
   profile: UserData;
   profileState: any;
   setProfileState: Dispatch<SetStateAction<any>>;
+  characters: GameCharacter[];
+  locale: Locale;
 }) {
   const theme = useMantineTheme();
   return (
@@ -99,6 +104,7 @@ function EditProfileModal({
                   profile__start_playing: profileState.profile__start_playing,
                   profile__bio: profileState.profile__bio,
                   profile__picture: profileState.profile__picture,
+                  profile__fave_charas: profileState.profile__fave_charas,
                 });
               }
               openedFunction(false);
@@ -189,6 +195,13 @@ function EditProfileModal({
             <StartPlaying
               externalSetter={setProfileState}
               profileState={profileState}
+            />
+            <FavoriteCharacters
+              characters={characters}
+              profile={profile}
+              externalSetter={setProfileState}
+              profileState={profileState}
+              locale={locale}
             />
           </Accordion.Panel>
         </Accordion.Item>

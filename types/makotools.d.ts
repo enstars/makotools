@@ -84,6 +84,7 @@ interface UserData {
   profile__pronouns?: string;
   profile__start_playing?: string;
   profile__picture?: ProfilePicture;
+  profile__fave_charas?: number[];
   // private
   user__theme?: string;
   dark_mode: boolean;
