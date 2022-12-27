@@ -53,6 +53,7 @@
     "react-frame-component": "^5.2.3",
     "react-infinite-scroll-component": "^6.1.0",
     "strapi-sdk-js": "^2.2.0",
+    "swr": "^2.0.0",
     "use-debounce": "^9.0.2"
   },
   "scripts": {
