@@ -1,4 +1,4 @@
-import { ActionIcon, Modal, TextInput } from "@mantine/core";
+import { ActionIcon, Modal, TextInput, useMantineTheme } from "@mantine/core";
 import { IconAt, IconPencil } from "@tabler/icons";
 import { useState } from "react";
 
@@ -8,6 +8,7 @@ import useUser from "services/firebase/user";
 
 function Username() {
   const user = useUser();
+  const theme = useMantineTheme();
   const [usernameModalOpen, setUsernameModalOpen] = useState(false);
 
   return (
@@ -23,7 +24,7 @@ function Username() {
           <ActionIcon
             onClick={() => setUsernameModalOpen(true)}
             variant="filled"
-            color="hokke"
+            color={theme.primaryColor}
           >
             <IconPencil size={14} />
           </ActionIcon>

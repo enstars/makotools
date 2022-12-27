@@ -30,6 +30,7 @@ import {
   NavLinkProps,
   ActionIcon,
   TextInput,
+  Indicator,
 } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
 import { clamp } from "lodash";
@@ -386,7 +387,20 @@ function Sidebar(props: any) {
                     collapsed={collapsed}
                     active={true}
                     name="User"
-                    Icon={IconUserCircle}
+                    Icon={
+                      <Indicator
+                        color="red"
+                        position="top-start"
+                        dot={
+                          user.loggedIn &&
+                          user.privateDb?.friends__receivedRequests?.length !==
+                            undefined &&
+                          user.privateDb?.friends__receivedRequests?.length > 0
+                        }
+                      >
+                        <IconUserCircle size={20} />
+                      </Indicator>
+                    }
                     sx={{ "&&": { flex: "1 1 0" } }}
                     props={{ variant: "subtle" }}
                   />

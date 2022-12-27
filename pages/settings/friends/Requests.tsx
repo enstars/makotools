@@ -24,6 +24,7 @@ import Image from "next/image";
 import Link from "next/link";
 import useSWR from "swr";
 import { chunk } from "lodash";
+import { showNotification, updateNotification } from "@mantine/notifications";
 
 import NoBitches from "./NoBitches.png";
 
@@ -35,21 +36,19 @@ import { UserData, UserLoggedIn } from "types/makotools";
 function Requests() {
   const theme = useMantineTheme();
   const user = useUser();
+  const yourBitches: string[] | undefined = (user as UserLoggedIn).privateDb
+    ?.friends__list;
+  const thirstyBitches: string[] | undefined = (user as UserLoggedIn).privateDb
+    ?.friends__receivedRequests;
   // only load profiles needed on this page
   const { data: profiles = {}, isLoading } = useSWR(
-    user.loggedIn ? { key: "/settings/friends/Requests.tsx", user } : null,
-    async (params: {
-      user: UserLoggedIn;
-    }): Promise<{
+    user.loggedIn ? "/settings/friends/Requests" : null,
+    async (): Promise<{
       [uid: string]: UserData;
     }> => {
-      const { user } = params;
       let loadedProfiles: any = parseStringify(profiles);
       let profileIdsToLoad: string[] = [];
-      [
-        ...(user.privateDb?.friends__list || []),
-        ...(user.privateDb?.friends__receivedRequests || []),
-      ].forEach((uid) => {
+      [...(yourBitches || []), ...(thirstyBitches || [])].forEach((uid) => {
         if (!Object.keys(loadedProfiles).includes(uid)) {
           profileIdsToLoad.push(uid);
         }
@@ -83,28 +82,46 @@ function Requests() {
     <>
       <Title order={2}>Your friends</Title>
       {!isLoading ? (
-        Object.keys(profiles).length === 0 ? (
-          <Image alt="no friends :(" src={NoBitches} width={300} />
+        !yourBitches || yourBitches.length === 0 ? (
+          <Box>
+            <Image
+              alt="no friends :("
+              src={NoBitches}
+              width={300}
+              style={{
+                borderRadius: 5,
+                border: `1px solid ${
+                  theme.colorScheme === "dark"
+                    ? theme.colors.dark[3]
+                    : theme.colors.gray[3]
+                }`,
+              }}
+            />
+            <Text sx={{ marginTop: 20 }} color="dimmed">
+              Uh oh, looks like someone needs to make some friends!
+            </Text>
+          </Box>
         ) : (
           <Stack spacing="xs">
-            {Object.keys(profiles).map((uid) => {
-              return (
-                <Card
-                  key={uid}
-                  px="md"
-                  py="xs"
-                  component={Link}
-                  href={`/@${profiles[uid].username}`}
-                >
-                  <Group spacing={0}>
-                    <Text weight={700}>{profiles?.[uid]?.name}</Text>
-                    <Text ml={"xs"} weight={500} color="dimmed">
-                      @{profiles[uid].username}
-                    </Text>
-                  </Group>
-                </Card>
-              );
-            })}
+            {yourBitches &&
+              yourBitches.map((uid) => {
+                return (
+                  <Card
+                    key={uid}
+                    px="md"
+                    py="xs"
+                    component={Link}
+                    href={`/@${profiles[uid].username}`}
+                  >
+                    <Group spacing={0}>
+                      <Text weight={700}>{profiles?.[uid]?.name}</Text>
+                      <Text ml={"xs"} weight={500} color="dimmed">
+                        @{profiles[uid].username}
+                      </Text>
+                    </Group>
+                  </Card>
+                );
+              })}
           </Stack>
         )
       ) : (
@@ -117,9 +134,8 @@ function Requests() {
       {user.loggedIn && (
         <Box sx={{ marginTop: 20 }}>
           <Title order={2}>Friend Requests</Title>
-          <Stack>
-            {(!user.privateDb?.friends__receivedRequests ||
-              user.privateDb?.friends__receivedRequests?.length < 1) && (
+          {!isLoading ? (
+            !thirstyBitches || thirstyBitches.length === 0 ? (
               <Box
                 sx={{
                   marginTop: 20,
@@ -144,27 +160,41 @@ function Requests() {
                   <IconCheck strokeWidth={5} size={100} />
                 </Box>
               </Box>
-            )}
-            {user.privateDb?.friends__receivedRequests?.map(
-              (uid) =>
-                profiles && (
-                  <Card key={uid} px="md" py="xs">
-                    {!isLoading ? (
+            ) : (
+              <Stack>
+                {thirstyBitches &&
+                  thirstyBitches.map((uid) => (
+                    <Card key={uid} px="md" py="xs">
                       <Group spacing={0}>
-                        <Text weight={700}>{profiles?.[uid]?.name}</Text>
+                        <Text
+                          weight={700}
+                          component={Link}
+                          href={`/@${profiles[uid].username}`}
+                        >
+                          {profiles?.[uid]?.name}
+                        </Text>
                         <Text
                           ml={"xs"}
                           weight={500}
                           color="dimmed"
                           sx={{ "&&&": { flexGrow: 1 } }}
+                          component={Link}
+                          href={`/@${profiles[uid].username}`}
                         >
                           @{profiles?.[uid]?.username}
                         </Text>
                         <ActionIcon
                           color="green"
                           onClick={async () => {
+                            showNotification({
+                              id: "addFriend",
+                              loading: true,
+                              message: "Processing your request...",
+                              disallowClose: true,
+                              autoClose: false,
+                            });
                             const token = await user.user.getIdToken();
-                            const res = await fetch("/api/friendAccept", {
+                            const res = await fetch("/api/friend/add", {
                               method: "POST",
                               headers: {
                                 Authorization: token || "",
@@ -173,11 +203,28 @@ function Requests() {
                               body: JSON.stringify({ friend: uid }),
                             });
                             const status = await res.json();
-                            console.log(status);
                             if (status?.success) {
                               user.privateDb.set({
                                 friends__receivedRequests: arrayRemove(uid),
                                 friends__list: arrayUnion(uid),
+                              });
+                              updateNotification({
+                                id: "addFriend",
+                                loading: false,
+                                color: "lime",
+                                icon: <IconCheck size={24} />,
+                                message: `${
+                                  profiles[uid].name || profiles[uid].username
+                                } is now your friend!`,
+                              });
+                            } else {
+                              updateNotification({
+                                id: "addFriend",
+                                loading: false,
+                                color: "red",
+                                icon: <IconX size={24} />,
+                                message:
+                                  "There was an error updating your friends list",
                               });
                             }
                           }}
@@ -186,26 +233,64 @@ function Requests() {
                         </ActionIcon>
                         <ActionIcon
                           color="red"
-                          onClick={() => {
-                            user.privateDb.set({
-                              friends__receivedRequests: arrayRemove(uid),
+                          onClick={async () => {
+                            showNotification({
+                              id: "removeReq",
+                              loading: true,
+                              message: "Processing your request...",
+                              disallowClose: true,
+                              autoClose: false,
                             });
+                            const token = await user.user.getIdToken();
+                            const res = await fetch(
+                              "/api/friendRequest/delete",
+                              {
+                                method: "POST",
+                                headers: {
+                                  Authorization: token || "",
+                                  "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({ friend: uid }),
+                              }
+                            );
+                            const status = await res.json();
+                            if (status?.success) {
+                              user.privateDb.set({
+                                friends__receivedRequests: arrayRemove(uid),
+                              });
+                              updateNotification({
+                                id: "removeReq",
+                                loading: false,
+                                color: "lime",
+                                icon: <IconCheck size={24} />,
+                                message: "This friend request has been deleted",
+                              });
+                            } else {
+                              updateNotification({
+                                id: "removeReq",
+                                loading: false,
+                                color: "red",
+                                icon: <IconX size={24} />,
+                                message:
+                                  "There was an error removing this request",
+                              });
+                            }
                           }}
                         >
                           <IconX size={16} />
                         </ActionIcon>
                       </Group>
-                    ) : (
-                      <Loader
-                        color={theme.colorScheme === "dark" ? "dark" : "gray"}
-                        size="lg"
-                        variant="dots"
-                      />
-                    )}
-                  </Card>
-                )
-            )}
-          </Stack>
+                    </Card>
+                  ))}
+              </Stack>
+            )
+          ) : (
+            <Loader
+              color={theme.colorScheme === "dark" ? "dark" : "gray"}
+              size="lg"
+              variant="dots"
+            />
+          )}
         </Box>
       )}
     </>

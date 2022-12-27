@@ -1,10 +1,11 @@
-import { Group, Box, Stack, Title, Text } from "@mantine/core";
+import { Group, Box, Stack, Title, Text, useMantineTheme } from "@mantine/core";
 import Link from "next/link";
 
 import Picture from "components/core/Picture";
 import { GameEvent, ScoutEvent } from "types/game";
 
 function Stories({ content }: { content: GameEvent | ScoutEvent }) {
+  const theme = useMantineTheme();
   return (
     <>
       <Group align="flex-start">
@@ -31,7 +32,7 @@ function Stories({ content }: { content: GameEvent | ScoutEvent }) {
                   {
                     <Text
                       component={Link}
-                      color="indigo"
+                      color={theme.primaryColor}
                       href={`https://twitter.com/${content.intro_lines_tl_credit[0]}`}
                       target="_blank"
                     >

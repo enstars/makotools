@@ -23,21 +23,21 @@ function Name({
     <>
       <BioHelpModal opened={opened} openFunction={setOpened} />
 
-      <Input.Wrapper label="Bio">
+      <Input.Wrapper>
         <Input.Description>
           You can use markdown in your bio (GFM){" "}
           <Text
             component="span"
             onClick={() => setOpened(true)}
             sx={(theme) => ({
-              color: theme.colors.indigo[5],
+              color: theme.colors[theme.primaryColor][5],
               "&:hover": { cursor: "pointer" },
             })}
           >
             Need help?
           </Text>
         </Input.Description>
-        <Tabs variant="pills" defaultValue="edit" mt="xs">
+        <Tabs variant="outline" defaultValue="edit" mt="xs">
           {!user.db?.admin?.disableTextFields && (
             <Tabs.List>
               <Tabs.Tab value="edit" icon={<IconPencil size={14} />}>
@@ -56,6 +56,7 @@ function Name({
               placeholder="Say something about yourself!"
               charLimit={3640}
               Component={Textarea}
+              autosize={true}
               minRows={2}
               maxRows={8}
               externalSetter={externalSetter}

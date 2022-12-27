@@ -8,6 +8,7 @@ import {
   Paper,
   Text,
   Tooltip,
+  useMantineTheme,
 } from "@mantine/core";
 import { useState } from "react";
 import { IconChevronDown, IconChevronUp, IconMoodSmile } from "@tabler/icons";
@@ -95,6 +96,7 @@ function Reactions() {
     `${CONSTANTS.EXTERNAL_URLS.BACKEND}/api/reactions?filters[page][$eq]=${currentPageId}&sort=createdAt:desc`,
     fetchReactions
   );
+  const theme = useMantineTheme();
 
   const reactionsDisabled = user.loading || !user.loggedIn;
 
@@ -112,7 +114,7 @@ function Reactions() {
                   <Button
                     variant="light"
                     size="xs"
-                    color="hokke"
+                    color={theme.primaryColor}
                     onClick={onClick}
                     leftIcon={<IconMoodSmile size={16} />}
                     px="xs"

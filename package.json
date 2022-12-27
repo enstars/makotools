@@ -26,6 +26,7 @@
     "cookies-next": "^2.1.1",
     "country-flag-icons": "^1.5.5",
     "dayjs": "^1.11.7",
+    "dotenv": "^16.0.3",
     "embla-carousel-autoplay": "^7.0.5",
     "embla-carousel-react": "^7.0.5",
     "firebase": "^9.15.0",
@@ -50,7 +51,12 @@
     "react-collapse": "^5.1.1",
     "react-confetti": "^6.1.0",
     "react-dom": "^18.2.0",
+    "react-easy-crop": "^4.6.3",
+    "react-firebase-hooks": "^5.1.1",
     "react-frame-component": "^5.2.3",
+    "react-gesture-responder": "^2.1.0",
+    "react-grid-drag": "^1.0.0",
+    "react-image-crop": "^10.0.9",
     "react-infinite-scroll-component": "^6.1.0",
     "strapi-sdk-js": "^2.2.0",
     "swr": "^2.0.0",
@@ -78,6 +84,7 @@
     ]
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^13.1.0",
     "@types/dompurify": "^2.4.0",
     "@types/jsdom": "^20.0.1",
     "@types/lodash": "^4.14.191",

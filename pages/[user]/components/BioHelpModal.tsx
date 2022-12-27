@@ -65,7 +65,10 @@ function BioHelpModal({
         <Link
           href="https://markdownguide.org"
           target="_blank"
-          style={{ color: theme.colors.indigo[5], textDecoration: "none" }}
+          style={{
+            color: theme.colors[theme.primaryColor][5],
+            textDecoration: "none",
+          }}
         >
           The Markdown Guide
         </Link>{" "}
@@ -73,7 +76,10 @@ function BioHelpModal({
         <Link
           href="https://rentry.co"
           target="_blank"
-          style={{ color: theme.colors.indigo[5], textDecoration: "none" }}
+          style={{
+            color: theme.colors[theme.primaryColor][5],
+            textDecoration: "none",
+          }}
         >
           Rentry&apos;s markdown guide
         </Link>
@@ -301,7 +307,7 @@ function BioHelpModal({
               component={Link}
               href="https://www.youtube.com/watch?v=dxrm5TvnOqY"
               target="_blank"
-              sx={{ color: theme.colors.indigo[5] }}
+              sx={{ color: theme.colors[theme.primaryColor][5] }}
             >
               Link Text
             </Text>
@@ -320,7 +326,7 @@ function BioHelpModal({
           href="https://twitter.com/neeneemi"
           target="_blank"
           style={{
-            color: theme.colors.indigo[5],
+            color: theme.colors[theme.primaryColor][5],
             textDecoration: "none",
           }}
         >

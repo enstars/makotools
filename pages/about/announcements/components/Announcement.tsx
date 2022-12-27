@@ -35,7 +35,7 @@ function Announcement({
               ? "orange"
               : c.attributes.title === "Beta"
               ? "purple"
-              : "hokke"
+              : "toya"
           }
         >
           {c.attributes.title}

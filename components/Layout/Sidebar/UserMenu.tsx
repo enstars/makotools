@@ -5,6 +5,8 @@ import {
   Switch,
   useMantineTheme,
   Box,
+  Indicator,
+  Select,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
@@ -12,12 +14,17 @@ import {
   IconLogin,
   IconLogout,
   IconMoonStars,
+  IconPalette,
+  IconGlobe,
 } from "@tabler/icons";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import useTranslation from "next-translate/useTranslation";
 
+import { characterColors } from "../../MantineTheme/index";
+
 import useUser from "services/firebase/user";
+import { LOCALES } from "services/makotools/locales";
 
 function UserMenu({ trigger }: { trigger: any }) {
   const { t } = useTranslation("sidebar");
@@ -25,7 +32,7 @@ function UserMenu({ trigger }: { trigger: any }) {
   const dark = theme.colorScheme === "dark";
   const [opened, handlers] = useDisclosure(false);
   const user = useUser();
-  const { push } = useRouter();
+  const { push, pathname, asPath, query, locale } = useRouter();
 
   return (
     <Menu
@@ -54,7 +61,7 @@ function UserMenu({ trigger }: { trigger: any }) {
           href={user.loggedIn ? `/@${user?.db?.username}` : "#"}
           icon={
             <Avatar
-              color="hokke"
+              color={theme.primaryColor}
               size="sm"
               radius="xl"
               sx={{ "*": { display: "flex" } }}
@@ -112,6 +119,89 @@ function UserMenu({ trigger }: { trigger: any }) {
         >
           {t("menu.darkMode")}
         </Menu.Item>
+        {user.loggedIn && (
+          <Menu.Item
+            id="sidebar-user-theme"
+            icon={<IconPalette size={14} />}
+            closeMenuOnClick={false}
+            rightSection={
+              <Select
+                placeholder="Choose user theme..."
+                value={theme.primaryColor}
+                onChange={(value) => user.db?.set({ user__theme: value })}
+                data={characterColors.map((colorTheme) => ({
+                  value: colorTheme.name,
+                  label: colorTheme.display_name,
+                }))}
+                rightSectionWidth={0}
+                rightSection={<></>}
+                styles={(theme) => ({
+                  root: {
+                    marginRight: -12,
+                  },
+                  input: {
+                    padding: 0,
+                    textAlign: "right",
+                    border: "none",
+                    background: "none",
+                    height: "auto",
+                    minHeight: 0,
+                    lineHeight: 1,
+                    color: theme.other.dimmed,
+                    paddingRight: 12,
+                  },
+                  item: {
+                    textAlign: "right",
+                    padding: "6px 12px",
+                  },
+                })}
+              />
+            }
+          >
+            {t("menu.userTheme")}
+          </Menu.Item>
+        )}
+        <Menu.Item
+          icon={<IconGlobe size={14} />}
+          closeMenuOnClick={false}
+          rightSection={
+            <Select
+              value={locale}
+              onChange={(value) => {
+                if (value && value !== locale)
+                  push({ pathname, query }, asPath, { locale: value });
+              }}
+              data={LOCALES.map((locale) => ({
+                value: locale.code,
+                label: locale.name,
+              }))}
+              rightSectionWidth={0}
+              rightSection={<></>}
+              styles={(theme) => ({
+                root: {
+                  marginRight: -12,
+                },
+                input: {
+                  padding: 0,
+                  textAlign: "right",
+                  border: "none",
+                  background: "none",
+                  height: "auto",
+                  minHeight: 0,
+                  lineHeight: 1,
+                  color: theme.other.dimmed,
+                  paddingRight: 12,
+                },
+                item: {
+                  textAlign: "right",
+                  padding: "6px 12px",
+                },
+              })}
+            />
+          }
+        >
+          {t("menu.locale")}
+        </Menu.Item>
         <Menu.Label id="sidebar-label-account">{t("menu.account")}</Menu.Label>
 
         {user.loading ? (
@@ -128,7 +218,19 @@ function UserMenu({ trigger }: { trigger: any }) {
               id="sidebar-link-settings"
               component={Link}
               href="/settings"
-              icon={<IconSettings size={14} />}
+              icon={
+                <Indicator
+                  color="red"
+                  position="top-start"
+                  dot={
+                    user.privateDb?.friends__receivedRequests?.length !==
+                      undefined &&
+                    user.privateDb?.friends__receivedRequests?.length > 0
+                  }
+                >
+                  <IconSettings size={14} />
+                </Indicator>
+              }
             >
               {t("menu.settings")}
             </Menu.Item>

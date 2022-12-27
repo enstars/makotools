@@ -10,6 +10,7 @@ import {
   Text,
   TextInput,
   Tooltip,
+  useMantineTheme,
 } from "@mantine/core";
 import {
   IconArrowsSort,
@@ -55,6 +56,7 @@ function Page({
   unitsQuery: QuerySuccess<GameUnit[]>;
   charactersQuery: QuerySuccess<GameCharacter[]>;
 }) {
+  const theme = useMantineTheme();
   const { locale } = useRouter();
   const events = useMemo(() => eventsQuery.data, [eventsQuery.data]);
   const cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
@@ -181,7 +183,7 @@ function Page({
                     }));
                   }}
                   variant="light"
-                  color="hokke"
+                  color={theme.primaryColor}
                 >
                   {view.sort.ascending ? (
                     <IconSortAscending size={16} />

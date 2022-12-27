@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import Head from "next/head";
 import { getCookie, setCookie } from "cookies-next";
 import { ColorScheme } from "@mantine/core";
-import { NotificationsProvider } from "@mantine/notifications";
 import "@fontsource/sora/400.css";
 import "@fontsource/sora/500.css";
 import "@fontsource/sora/700.css";
@@ -16,9 +14,8 @@ import "styles/inter.scss";
 import {
   startNavigationProgress,
   resetNavigationProgress,
-  NavigationProgress,
 } from "@mantine/nprogress";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics as VercelAnalytics } from "@vercel/analytics/react";
 import { AppProps } from "next/app";
 import { withAuthUser } from "next-firebase-auth";
 
@@ -72,40 +69,28 @@ function MakoTools({
 
   return (
     <>
-      <NavigationProgress />
-      <Head>
-        <meta name="viewport" content="initial-scale=1, width=device-width" />
-        {router.locale === "th" && (
-          <link
-            href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;700&display=swap"
-            rel="stylesheet"
-          />
-        )}
-      </Head>
-      <Analytics />
-      <NotificationsProvider position="top-center">
-        <UserProvider
-          setAppColorScheme={setAppColorScheme}
-          colorScheme={colorScheme}
-          serverData={{
-            user: pageProps?.__user ? JSON.parse(pageProps.__user) : undefined,
-            db: pageProps?.__db ? JSON.parse(pageProps.__db) : undefined,
-            privateDb: pageProps?.__privateDb
-              ? JSON.parse(pageProps.__privateDb)
-              : undefined,
-          }}
-        >
-          <DayjsProvider>
-            <MantineTheme
-              colorScheme={colorScheme}
-              setAppColorScheme={setAppColorScheme}
-              toggleAppColorScheme={toggleAppColorScheme}
-            >
-              {getLayout(<Component {...pageProps} />, pageProps)}
-            </MantineTheme>
-          </DayjsProvider>
-        </UserProvider>
-      </NotificationsProvider>
+      <VercelAnalytics />
+      <UserProvider
+        setAppColorScheme={setAppColorScheme}
+        colorScheme={colorScheme}
+        serverData={{
+          user: pageProps?.__user ? JSON.parse(pageProps.__user) : undefined,
+          db: pageProps?.__db ? JSON.parse(pageProps.__db) : undefined,
+          privateDb: pageProps?.__privateDb
+            ? JSON.parse(pageProps.__privateDb)
+            : undefined,
+        }}
+      >
+        <DayjsProvider>
+          <MantineTheme
+            colorScheme={colorScheme}
+            setAppColorScheme={setAppColorScheme}
+            toggleAppColorScheme={toggleAppColorScheme}
+          >
+            {getLayout(<Component {...pageProps} />, pageProps)}
+          </MantineTheme>
+        </DayjsProvider>
+      </UserProvider>
     </>
   );
 }
