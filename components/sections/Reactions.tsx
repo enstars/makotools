@@ -9,14 +9,15 @@ import {
   Text,
   Tooltip,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IconChevronDown, IconChevronUp, IconMoodSmile } from "@tabler/icons";
 import { Collapse } from "react-collapse";
+import useSWR from "swr";
 
 import EmoteSelector from "../utilities/emotes/EmoteSelector";
 import Emote from "../utilities/emotes/Emote";
 
-import { DbReaction, Reaction } from "types/makotools";
+import { DbReaction, Reaction, User } from "types/makotools";
 import useUser from "services/firebase/user";
 import emotes from "services/makotools/emotes";
 import { CONSTANTS } from "services/makotools/constants";
@@ -29,69 +30,73 @@ const useStyles = createStyles((theme) => ({
   content: {},
 }));
 
+const fetchReactions = async (url: string) => {
+  const { data }: { data: DbReaction[] } = await (
+    await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+  ).json();
+
+  const reactions = data
+    .map(({ attributes }) => {
+      const emote = emotes.find((e) => e.stringId === attributes.content);
+      if (emote) {
+        const reaction: Reaction = {
+          emote,
+          alt: emote.name,
+          id: attributes.createdAt,
+        };
+        return reaction;
+      }
+    })
+    .filter((e) => typeof e !== "undefined");
+
+  return reactions as Reaction[];
+};
+
+const addReaction = async (params: {
+  id: string;
+  currentPageId: string;
+  user: User;
+  onRefetch: () => any;
+}) => {
+  const { id, currentPageId, user, onRefetch } = params;
+  if (!user.loggedIn) return;
+  const token = await user.user.getIdToken();
+  await fetch(`${CONSTANTS.EXTERNAL_URLS.BACKEND}/api/reactions`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token || "",
+    },
+    body: JSON.stringify({
+      data: {
+        user: user.user.id,
+        type: "emote",
+        content: id,
+        page: currentPageId,
+      },
+    }),
+  });
+
+  onRefetch();
+};
+
 function Reactions() {
   const { classes } = useStyles();
   const { asPath } = useRouter();
-  const [reactions, setReactions] = useState<Reaction[]>([]);
   const [collapsed, setCollapsed] = useState<boolean>(true);
   const user = useUser();
+  const currentPageId = asPath.replace(/\//g, "_");
+  const { data: reactions = [], mutate } = useSWR(
+    `${CONSTANTS.EXTERNAL_URLS.BACKEND}/api/reactions?filters[page][$eq]=${currentPageId}&sort=createdAt:desc`,
+    fetchReactions
+  );
 
   const reactionsDisabled = user.loading || !user.loggedIn;
-
-  const currentPageId = asPath.replace(/\//g, "_");
-  const addReaction = async (id: string) => {
-    if (!user.loggedIn) return;
-    const token = await user.user.getIdToken();
-    await fetch(`${CONSTANTS.EXTERNAL_URLS.BACKEND}/api/reactions`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token || "",
-      },
-      body: JSON.stringify({
-        data: {
-          user: user.user.id,
-          type: "emote",
-          content: id,
-          page: currentPageId,
-        },
-      }),
-    });
-
-    fetchReactions();
-  };
-  const fetchReactions = async () => {
-    const { data }: { data: DbReaction[] } = await (
-      await fetch(
-        `${CONSTANTS.EXTERNAL_URLS.BACKEND}/api/reactions?filters[page][$eq]=${currentPageId}&sort=createdAt:desc`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-    ).json();
-
-    const reactions = data
-      .map(({ attributes }) => {
-        const emote = emotes.find((e) => e.stringId === attributes.content);
-        if (emote) {
-          const reaction: Reaction = {
-            emote,
-            alt: emote.name,
-            id: attributes.createdAt,
-          };
-          return reaction;
-        }
-      })
-      .filter((e) => typeof e !== "undefined");
-    setReactions(reactions as Reaction[]);
-  };
-
-  useEffect(() => {
-    fetchReactions();
-  }, [asPath]);
 
   return (
     <Paper my="sm" withBorder p={3} radius="md">
@@ -120,7 +125,12 @@ function Reactions() {
             );
           }}
           callback={(emote) => {
-            addReaction(emote.stringId);
+            addReaction({
+              id: emote.stringId,
+              currentPageId,
+              user,
+              onRefetch: mutate,
+            });
           }}
           disabled={user.loading || !user.loggedIn}
         >
