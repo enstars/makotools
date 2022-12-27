@@ -20,6 +20,7 @@ import {
   GameCharacter,
   GameEvent,
   ScoutEvent,
+  GameCard,
 } from "types/game";
 import CurrentEventCountdown from "components/Homepage/CurrentEventCountdown";
 import CurrentScoutsCountdown from "components/Homepage/CurrentScoutsCountdown";
@@ -28,6 +29,8 @@ import UserVerification from "components/Homepage/UserVerification";
 import { MakoPost, QuerySuccess, StrapiItem } from "types/makotools";
 import { createBirthdayData } from "services/events";
 import { fetchOceans } from "services/makotools/posts";
+import RecommendedCountdown from "components/Homepage/RecommendedCountdown";
+import useUser from "services/firebase/user";
 
 const useStyles = createStyles((theme, _params) => ({
   main: {
@@ -76,14 +79,22 @@ function Page({
   charactersQuery,
   gameEventsQuery,
   scoutsQuery,
+  cardsQuery,
 }: {
   posts: StrapiItem<MakoPost>[];
   charactersQuery: QuerySuccess<GameCharacter[]>;
   gameEventsQuery: QuerySuccess<GameEvent[]>;
   scoutsQuery: QuerySuccess<ScoutEvent[]>;
+  cardsQuery: QuerySuccess<GameCard[]>;
 }) {
+  const user = useUser();
   const { t } = useTranslation();
   const { classes } = useStyles();
+
+  const faveCharas =
+    user.loggedIn && user.db && user.db.profile__fave_charas
+      ? user.db.profile__fave_charas
+      : [];
 
   console.log(t, t("common:test"));
   const characters: GameCharacter[] = useMemo(
@@ -108,6 +119,36 @@ function Page({
     ...gameEvents,
     ...scouts,
   ];
+
+  const cards: GameCard[] = useMemo(() => cardsQuery.data, [cardsQuery.data]);
+
+  // go thru each event/scout
+  // go thru each card in the event/scout
+  // check if the card id has the character id you're looking for
+
+  const filterRecommendedEvents = (
+    e: GameEvent | ScoutEvent | BirthdayEvent
+  ): boolean => {
+    if (faveCharas.length > 0) {
+      if ((e as BirthdayEvent).character_id) {
+        // if this is a birthday event
+        console.log(faveCharas.includes((e as BirthdayEvent).character_id));
+        return faveCharas.includes((e as BirthdayEvent).character_id);
+      } else {
+        const eventCards = e.cards;
+        const relevantCards = cards.filter(
+          (card) => faveCharas.includes(card.character_id) && card.rarity === 5
+        );
+        return (
+          eventCards?.some(
+            (r) => relevantCards.filter((c) => c.id === r).length > 0
+          ) || false
+        );
+      }
+    } else {
+      return false;
+    }
+  };
 
   return (
     <Group
@@ -139,6 +180,15 @@ function Page({
               }
             />
             <CurrentScoutsCountdown scouts={scouts} />
+            {user.loggedIn && (
+              <RecommendedCountdown
+                events={events.filter(
+                  (e: GameEvent | ScoutEvent | BirthdayEvent) => {
+                    return filterRecommendedEvents(e);
+                  }
+                )}
+              />
+            )}
           </Box>
           <MediaQuery largerThan="md" styles={{ display: "none" }}>
             <SidePanel events={events} posts={posts} />
@@ -175,6 +225,13 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     "gacha_id"
   );
 
+  const cardsQuery = await getLocalizedDataArray<GameCard>(
+    "cards",
+    locale,
+    "id",
+    ["id", "character_id", "rarity"]
+  );
+
   try {
     const postResponses = await fetchOceans<StrapiItem<MakoPost>[]>("/posts", {
       populate: "*",
@@ -188,6 +245,7 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
         charactersQuery: characters,
         gameEventsQuery: gameEvents,
         scoutsQuery: scouts,
+        cardsQuery: cardsQuery,
       },
     };
   } catch (e) {

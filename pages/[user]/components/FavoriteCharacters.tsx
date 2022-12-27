@@ -47,6 +47,7 @@ function FavoriteCharacters({
       <MultiSelect
         searchable
         placeholder="Type to search for a character"
+        defaultValue={selected.map((id) => id.toString())}
         data={[
           {
             value: "-",
