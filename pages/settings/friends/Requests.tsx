@@ -22,92 +22,84 @@ import {
 } from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import useSWR from "swr";
+import { chunk } from "lodash";
 
 import NoBitches from "./NoBitches.png";
 
 import useUser from "services/firebase/user";
 import { parseStringify } from "services/utilities";
+import { FIRESTORE_MAXIMUM_CONCURRENT_ACCESS_CALLS } from "services/firebase/firestore";
 import { UserData, UserLoggedIn } from "types/makotools";
 
 function Requests() {
   const theme = useMantineTheme();
   const user = useUser();
-  const [loadedProfiles, setLoadedProfiles] = useState<{
-    [uid: string]: UserData;
-  }>({});
-  const [loading, setLoading] = useState<boolean>(true);
-  // console.log("cycle", loadedProfiles, Object.keys(loadedProfiles).length);
   // only load profiles needed on this page
-  useEffect(() => {
-    const loadProfiles = async (user: UserLoggedIn) => {
-      let newLoadedProfiles: any = parseStringify(loadedProfiles);
-      let actuallyNewLoadedProfiles = [];
+  const { data: profiles = {}, isLoading } = useSWR(
+    user.loggedIn ? { key: "/settings/friends/Requests.tsx", user } : null,
+    async (params: {
+      user: UserLoggedIn;
+    }): Promise<{
+      [uid: string]: UserData;
+    }> => {
+      const { user } = params;
+      let loadedProfiles: any = parseStringify(profiles);
+      let profileIdsToLoad: string[] = [];
       [
         ...(user.privateDb?.friends__list || []),
         ...(user.privateDb?.friends__receivedRequests || []),
       ].forEach((uid) => {
-        if (!Object.keys(newLoadedProfiles).includes(uid)) {
-          newLoadedProfiles[uid] = {};
-          actuallyNewLoadedProfiles.push(uid);
+        if (!Object.keys(loadedProfiles).includes(uid)) {
+          profileIdsToLoad.push(uid);
         }
       });
 
-      if (actuallyNewLoadedProfiles.length) {
+      if (profileIdsToLoad.length) {
         const db = getFirestore();
-        let i = 0;
-        while (i < Object.keys(newLoadedProfiles).length) {
-          const usersQuery = await getDocs(
-            query(
-              collection(db, "users"),
-              where(
-                documentId(),
-                "in",
-                i + 10 < Object.keys(newLoadedProfiles).length
-                  ? Object.keys(newLoadedProfiles).slice(i, i + 10)
-                  : Object.keys(newLoadedProfiles).slice(
-                      i,
-                      Object.keys(newLoadedProfiles).length
-                    )
-              )
-            )
-          );
-          usersQuery.forEach((doc) => {
-            newLoadedProfiles[doc.id] = doc.data();
-          });
-          i += 10;
-        }
-        console.log(newLoadedProfiles);
-        setLoadedProfiles(newLoadedProfiles);
-        setLoading(false);
+        const profileIdChunks = chunk(
+          profileIdsToLoad,
+          FIRESTORE_MAXIMUM_CONCURRENT_ACCESS_CALLS
+        );
+        await Promise.all(
+          profileIdChunks.map(async (ids) => {
+            const usersQuery = await getDocs(
+              query(collection(db, "users"), where(documentId(), "in", ids))
+            );
+            usersQuery.forEach((doc) => {
+              loadedProfiles[doc.id] = doc.data();
+            });
+          })
+        );
       }
-    };
-    if (user.loggedIn) {
-      loadProfiles(user);
+
+      return loadedProfiles;
     }
-  }, [user, loadedProfiles]);
+  );
+
   if (!user.loggedIn) return null;
+
   return (
     <>
       <Title order={2}>Your friends</Title>
-      {!loading ? (
-        Object.keys(loadedProfiles).length === 0 ? (
+      {!isLoading ? (
+        Object.keys(profiles).length === 0 ? (
           <Image alt="no friends :(" src={NoBitches} width={300} />
         ) : (
           <Stack spacing="xs">
-            {Object.keys(loadedProfiles).map((uid) => {
+            {Object.keys(profiles).map((uid) => {
               return (
                 <Card
                   key={uid}
                   px="md"
                   py="xs"
                   component={Link}
-                  href={`/@${loadedProfiles[uid].username}`}
+                  href={`/@${profiles[uid].username}`}
                 >
                   <Group spacing={0}>
-                    <Text weight={700}>{loadedProfiles?.[uid]?.name}</Text>
+                    <Text weight={700}>{profiles?.[uid]?.name}</Text>
                     <Text ml={"xs"} weight={500} color="dimmed">
-                      @{loadedProfiles[uid].username}
+                      @{profiles[uid].username}
                     </Text>
                   </Group>
                 </Card>
@@ -155,18 +147,18 @@ function Requests() {
             )}
             {user.privateDb?.friends__receivedRequests?.map(
               (uid) =>
-                loadedProfiles && (
+                profiles && (
                   <Card key={uid} px="md" py="xs">
-                    {!loading ? (
+                    {!isLoading ? (
                       <Group spacing={0}>
-                        <Text weight={700}>{loadedProfiles?.[uid]?.name}</Text>
+                        <Text weight={700}>{profiles?.[uid]?.name}</Text>
                         <Text
                           ml={"xs"}
                           weight={500}
                           color="dimmed"
                           sx={{ "&&&": { flexGrow: 1 } }}
                         >
-                          @{loadedProfiles?.[uid]?.username}
+                          @{profiles?.[uid]?.username}
                         </Text>
                         <ActionIcon
                           color="green"
