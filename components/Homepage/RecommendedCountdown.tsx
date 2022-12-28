@@ -105,7 +105,7 @@ function RecommendedCard({
             : event.name[0]}
         </Title>
         <Group>
-          <Badge leftSection={<IconCalendarDue size={14} />}>
+          <Badge leftSection={<IconCalendarDue size={19} />}>
             {countdownAmt}
           </Badge>
           <Badge

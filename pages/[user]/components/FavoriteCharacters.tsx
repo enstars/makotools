@@ -36,7 +36,6 @@ function FavoriteCharacters({
   return (
     <Input.Wrapper
       label="Favorite Characters"
-      description="Choose up to three characters"
       my={10}
       styles={(theme) => ({
         description: {
@@ -63,7 +62,6 @@ function FavoriteCharacters({
             ),
           })),
         ]}
-        maxSelectedValues={3}
         onChange={(values) => {
           if (values) {
             const intValues = values.map((val) => {
