@@ -11,7 +11,7 @@ import {
   Group,
   Stack,
 } from "@mantine/core";
-import { IconCalendarDue, IconExclamationMark, IconStar } from "@tabler/icons";
+import { IconCalendarDue, IconHeart, IconStar } from "@tabler/icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import useTranslation from "next-translate/useTranslation";
@@ -46,6 +46,7 @@ function RecommendedCard({
   const { dayjs } = useDayjs();
   const user = useUser();
   const { t } = useTranslation("home");
+  const theme = useMantineTheme();
   const [countdownAmt, setCountdownAmt] = useState<string>();
   useEffect(() => {
     const interval = setInterval(() => {
@@ -112,13 +113,40 @@ function RecommendedCard({
           <Text weight={600}>{t("event.start")}</Text>
           <Text weight={600}>{countdownAmt}</Text>
         </Group>
-        <Alert icon={<IconExclamationMark />} p={5}>
+        <Alert
+          icon={
+            <IconStar
+              fill={
+                theme.colorScheme === "dark"
+                  ? theme.colors.yellow[3]
+                  : theme.colors.yellow[5]
+              }
+              stroke={0}
+              size={18}
+            />
+          }
+          p={5}
+          color={theme.colorScheme === "dark" ? "dark" : "yellow"}
+          variant="outline"
+        >
           <Text size="sm">
             Because you like{" "}
-            {getNameOrder(
-              nameObj,
-              (user as UserLoggedIn).db.setting__name_order
-            )}
+            <Text
+              color={
+                theme.colorScheme === "dark"
+                  ? theme.colors.yellow[3]
+                  : theme.colors.yellow[6]
+              }
+              display="inline"
+              weight={700}
+              component={Link}
+              href={`/characters/${fave}`}
+            >
+              {getNameOrder(
+                nameObj,
+                (user as UserLoggedIn).db.setting__name_order
+              )}
+            </Text>
           </Text>
         </Alert>
       </Stack>
@@ -155,7 +183,7 @@ function RecommendedCountdown({
   return (
     <Container my="3vh">
       <Title order={2}>Recommended Campaigns</Title>
-      <Alert my={3} icon={<IconStar />}>
+      <Alert my={3} icon={<IconHeart />}>
         Recommendations are based on the favorite characters listed in your
         profile.
       </Alert>
@@ -194,7 +222,10 @@ function RecommendedCountdown({
           ]}
           my={15}
         >
-          {retrieveClosestEvents(getOnlyEvents(events), 15)
+          {retrieveClosestEvents(
+            getOnlyEvents(events),
+            events.length > 15 ? 15 : events.length
+          )
             .filter((e) => dayjs(e.start_date).isAfter(dayjs()))
             .map((e: GameEvent | ScoutEvent | BirthdayEvent, i) => (
               <Carousel.Slide key={i}>
