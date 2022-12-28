@@ -13,14 +13,11 @@ import {
 } from "@mantine/core";
 import { IconCalendarDue, IconHeart, IconStar } from "@tabler/icons";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useTranslation from "next-translate/useTranslation";
+import Autoplay from "embla-carousel-autoplay";
 
-import {
-  countdown,
-  retrieveClosestEvents,
-  toCountdownReadable,
-} from "services/events";
+import { countdown, retrieveClosestEvents } from "services/events";
 import useUser from "services/firebase/user";
 import {
   BirthdayEvent,
@@ -51,7 +48,8 @@ function RecommendedCard({
   useEffect(() => {
     const interval = setInterval(() => {
       let ctdwn = countdown(new Date(event.start_date), new Date());
-      setCountdownAmt(toCountdownReadable(ctdwn));
+      const days = `${Math.floor(ctdwn / 86400000)} days`;
+      setCountdownAmt(days);
     }, 1000);
     return () => clearInterval(interval);
   }, [event.start_date]);
@@ -83,14 +81,14 @@ function RecommendedCard({
           )}
           radius="sm"
         />
-        <Text weight={700} my={3}>
+        <Title order={4}>
           {typeof event.name === "string"
             ? `${event.name}'s Birthday`
             : event.name[0]}
-        </Text>
+        </Title>
         <Group>
           <Badge leftSection={<IconCalendarDue size={14} />}>
-            {dayjs(event.start_date).format("MM-DD-YYYY")}
+            {countdownAmt}
           </Badge>
           <Badge
             variant="filled"
@@ -110,8 +108,18 @@ function RecommendedCard({
           </Badge>
         </Group>
         <Group spacing="xs">
-          <Text weight={600}>{t("event.start")}</Text>
-          <Text weight={600}>{countdownAmt}</Text>
+          <Text weight={600}>Starts on</Text>
+          <Text
+            weight={600}
+            py={1}
+            px={15}
+            sx={{
+              background: `${theme.colors.yellow[6]}33`,
+              borderRadius: theme.radius.lg,
+            }}
+          >
+            {dayjs(event.start_date).format("MM-DD-YYYY")}
+          </Text>
         </Group>
         <Alert
           icon={
@@ -167,6 +175,7 @@ function RecommendedCountdown({
   const { dayjs } = useDayjs();
   const user = useUser();
   const theme = useMantineTheme();
+  const autoplay = useRef(Autoplay({ delay: 5000 }));
 
   const getOnlyEvents = (
     events: any[]
@@ -212,6 +221,9 @@ function RecommendedCountdown({
       ) : (
         <Carousel
           align="start"
+          plugins={[autoplay.current]}
+          onMouseEnter={autoplay.current.stop}
+          onMouseLeave={autoplay.current.reset}
           loop
           draggable={false}
           slideSize="33.333333%"
@@ -221,6 +233,24 @@ function RecommendedCountdown({
             { maxWidth: "sm", slideSize: "100%", slideGap: 0 },
           ]}
           my={15}
+          styles={(theme) => ({
+            controls: {
+              width: "107%",
+              marginLeft: "-3.5%",
+              padding: 0,
+            },
+            control: {
+              backgroundColor:
+                theme.colorScheme === "dark"
+                  ? theme.colors[theme.primaryColor][4]
+                  : theme.colors[theme.primaryColor][2],
+              borderColor:
+                theme.colorScheme === "dark"
+                  ? theme.colors[theme.primaryColor][5]
+                  : theme.colors[theme.primaryColor][3],
+              color: theme.colors.gray[0],
+            },
+          })}
         >
           {retrieveClosestEvents(
             getOnlyEvents(events),
