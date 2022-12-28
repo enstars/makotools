@@ -2,9 +2,9 @@ import { Group, Box, Stack, Title, Text, useMantineTheme } from "@mantine/core";
 import Link from "next/link";
 
 import Picture from "components/core/Picture";
-import { GameEvent, ScoutEvent } from "types/game";
+import { Event, Scout } from "types/game";
 
-function Stories({ content }: { content: GameEvent | ScoutEvent }) {
+function Stories({ content }: { content: Event | Scout }) {
   const theme = useMantineTheme();
   return (
     <>

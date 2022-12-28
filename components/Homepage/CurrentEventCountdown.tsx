@@ -22,7 +22,7 @@ import {
   toCountdownReadable,
 } from "services/events";
 import { useDayjs } from "services/libraries/dayjs";
-import { GameEvent } from "types/game";
+import { Event } from "types/game";
 
 const useStyles = createStyles((theme, _params) => ({
   eventContainer: {
@@ -45,7 +45,7 @@ const useStyles = createStyles((theme, _params) => ({
   },
 }));
 
-function EventImage({ event }: { event: GameEvent }) {
+function EventImage({ event }: { event: Event }) {
   const { classes } = useStyles();
   return (
     <Link href={`/events/${event.event_id}`}>
@@ -85,7 +85,7 @@ function Countdown({
   );
 }
 
-function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
+function CurrentEventCountdown({ events }: { events: Event[] }) {
   const theme = useMantineTheme();
   const { t } = useTranslation("home");
   const { dayjs } = useDayjs();
@@ -99,15 +99,15 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
 
   const { classes } = useStyles();
 
-  let currentEvent: GameEvent = events.filter((event) => {
+  let currentEvent: Event = events.filter((event) => {
     return dayjs(new Date()).isBetween(
       dayjs(event.start_date),
       dayjs(event.end_date)
     );
   })[0];
 
-  let nextEvent: GameEvent | null = !currentEvent
-    ? (retrieveClosestEvents(events, 1)[0] as GameEvent)
+  let nextEvent: Event | null = !currentEvent
+    ? (retrieveClosestEvents(events, 1)[0] as Event)
     : null;
 
   useEffect(() => {

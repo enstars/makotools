@@ -1,26 +1,29 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useDayjs } from "./libraries/dayjs";
+import { getNameOrder } from "./game";
 
 import {
+  CampaignInfo,
+  Birthday,
   Event,
-  BirthdayEvent,
-  GameEvent,
-  ScoutEvent,
+  Scout,
   GameCharacter,
+  DateRange,
+  Campaign,
 } from "types/game";
 
-function createBirthdayData(characters: GameCharacter[]): BirthdayEvent[] {
+function createBirthdayData(characters: GameCharacter[]): Birthday[] {
   let birthdays = [];
   for (const character of characters) {
-    let birthdayEvent: BirthdayEvent = {
+    let birthdayEvent: Birthday = {
       character_id: character.character_id,
-      name: `${character.first_name[0]}${
-        character.last_name[0] ? " " + character.last_name[0] : ""
-      }`,
+      name: character.first_name.map((c, i) =>
+        getNameOrder({ first_name: c, last_name: character.last_name[i] })
+      ),
       start_date: character.birthday,
       end_date: character.birthday,
       type: "birthday",
-      banner_id: character.renders?.fs1_5 | 0,
+      banner_id: [character.renders?.fs1_5],
       horoscope: character.horoscope,
     };
 
@@ -31,17 +34,15 @@ function createBirthdayData(characters: GameCharacter[]): BirthdayEvent[] {
 }
 
 function retrieveClosestEvents(
-  events: (BirthdayEvent | GameEvent | ScoutEvent)[],
+  events: Campaign[],
   numOfEvents: number
-): (Event | BirthdayEvent | GameEvent | ScoutEvent)[] {
+): (CampaignInfo | Birthday | Event | Scout)[] {
   const { dayjs } = useDayjs();
 
   let thisYear = new Date().getFullYear();
-  const todaysDate: Event = {
-    name: "",
+  const todaysDate: DateRange = {
     start_date: dayjs.utc().format("YYYY-MM-DDTHH:mm:ss"),
     end_date: dayjs.utc().format("YYYY-MM-DDTHH:mm:ss"),
-    type: "other",
   };
 
   // add proper years to the bdays
@@ -61,8 +62,8 @@ function retrieveClosestEvents(
   // sort array by date
   sortedEvents.sort(
     (
-      a: BirthdayEvent | GameEvent | ScoutEvent | Event,
-      b: BirthdayEvent | GameEvent | ScoutEvent | Event
+      a: Birthday | Event | Scout | CampaignInfo,
+      b: Birthday | Event | Scout | CampaignInfo
     ) => {
       return a.start_date < b.start_date
         ? -1
@@ -75,11 +76,11 @@ function retrieveClosestEvents(
   // find today's date in array and retrieve the next amount of dates
   let todayIndex = sortedEvents.indexOf(todaysDate) + 1;
 
-  let newArray: (BirthdayEvent | GameEvent | ScoutEvent | Event)[] = [];
+  let newArray: (Birthday | Event | Scout | CampaignInfo)[] = [];
 
   while (newArray.length < numOfEvents) {
     if (numOfEvents === 1) {
-      if ((sortedEvents[todayIndex] as GameEvent).event_id) {
+      if ((sortedEvents[todayIndex] as Event).event_id) {
         newArray.push(sortedEvents[todayIndex]);
       }
     } else {
@@ -95,11 +96,11 @@ function retrieveClosestEvents(
 }
 
 function localizeEventTimes(
-  events: (BirthdayEvent | GameEvent | ScoutEvent)[]
-): (BirthdayEvent | GameEvent | ScoutEvent)[] {
+  events: (Birthday | Event | Scout)[]
+): (Birthday | Event | Scout)[] {
   const { dayjs } = useDayjs();
   // localize the events to user time
-  events.forEach((event: BirthdayEvent | GameEvent | ScoutEvent) => {
+  events.forEach((event: Birthday | Event | Scout) => {
     if (event.type !== "birthday" && event.type !== "anniversary") {
       // birthday events do not need to be localzied as they are static dates
       event.start_date = dayjs(Date.parse(event.start_date)).format(

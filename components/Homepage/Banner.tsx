@@ -5,7 +5,7 @@ import { Box, Button, createStyles, Stack, Text, Title } from "@mantine/core";
 import Link from "next/link";
 import useTranslation from "next-translate/useTranslation";
 
-import { BirthdayEvent, GameEvent, ScoutEvent } from "types/game";
+import { Birthday, Event, Scout } from "types/game";
 import { useDayjs } from "services/libraries/dayjs";
 import Picture from "components/core/Picture";
 import { CONSTANTS } from "services/makotools/constants";
@@ -26,11 +26,7 @@ const useStyles = createStyles((theme) => ({
     color: theme.white,
   },
 }));
-function Banner({
-  events,
-}: {
-  events: (BirthdayEvent | GameEvent | ScoutEvent)[];
-}) {
+function Banner({ events }: { events: (Birthday | Event | Scout)[] }) {
   const { t } = useTranslation("home");
   const user = useUser();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
@@ -45,7 +41,7 @@ function Banner({
     .sort((a, b) => dayjs(a.start_date).unix() - dayjs(b.start_date).unix());
 
   const banners = useMemo(() => {
-    const shownEvents: (GameEvent | ScoutEvent | BirthdayEvent)[] = [];
+    const shownEvents: (Event | Scout | Birthday)[] = [];
 
     const currentBirthdays = events.filter(
       (event) =>
@@ -58,13 +54,13 @@ function Banner({
     const pastGameEvents = pastEvents.filter((event) =>
       ["tour", "song"].includes(event.type)
     );
-    shownEvents.push(pastGameEvents[pastGameEvents.length - 1] as GameEvent);
+    shownEvents.push(pastGameEvents[pastGameEvents.length - 1] as Event);
 
     const pastScouts = pastEvents.filter((event) => event.type === "scout");
-    shownEvents.push(pastScouts[pastScouts.length - 1] as ScoutEvent);
+    shownEvents.push(pastScouts[pastScouts.length - 1] as Scout);
 
     const pastFs = pastEvents.filter((event) => event.type === "feature scout");
-    shownEvents.push(pastFs[pastFs.length - 1] as ScoutEvent);
+    shownEvents.push(pastFs[pastFs.length - 1] as Scout);
 
     return shownEvents;
   }, [dayjs, events, pastEvents]);

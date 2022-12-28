@@ -4,7 +4,7 @@ import { IconHistory, IconHourglassHigh } from "@tabler/icons";
 
 import Picture from "components/core/Picture";
 import { useDayjs } from "services/libraries/dayjs";
-import { ScoutEvent } from "types/game";
+import { Scout } from "types/game";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   scoutInfo: {
@@ -21,7 +21,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 }));
 
-function ScoutCard({ scout }: { scout: ScoutEvent }) {
+function ScoutCard({ scout }: { scout: Scout }) {
   const { dayjs } = useDayjs();
   const { classes } = useStyles();
 

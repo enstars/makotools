@@ -10,7 +10,7 @@ import {
 import CalendarListEventCard from "./CalendarListEventCard";
 
 import { useDayjs } from "services/libraries/dayjs";
-import { BirthdayEvent, GameEvent, ScoutEvent } from "types/game";
+import { Birthday, Event, Scout } from "types/game";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   listBody: {
@@ -48,7 +48,7 @@ function CalendarListDay({
   events,
 }: {
   date: string;
-  events: (BirthdayEvent | GameEvent | ScoutEvent)[];
+  events: (Birthday | Event | Scout)[];
 }) {
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
@@ -102,20 +102,19 @@ function CalendarListView({
   events,
 }: {
   calendarTime: string;
-  events: (BirthdayEvent | GameEvent | ScoutEvent)[];
+  events: (Birthday | Event | Scout)[];
 }) {
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
   let calendarTimeDate: Date = dayjs(calendarTime).toDate();
   // get events happening in the active month
-  const filteredEvents = events.filter(
-    (event: BirthdayEvent | GameEvent | ScoutEvent) =>
-      event.type === "birthday" || event.type === "anniversary"
-        ? dayjs(calendarTime)
-            .year(2000)
-            .isSame(dayjs(event.start_date).year(2000), "month")
-        : dayjs(calendarTime).isSame(event.start_date, "month") ||
-          dayjs(calendarTime).isSame(event.end_date, "month")
+  const filteredEvents = events.filter((event: Birthday | Event | Scout) =>
+    event.type === "birthday" || event.type === "anniversary"
+      ? dayjs(calendarTime)
+          .year(2000)
+          .isSame(dayjs(event.start_date).year(2000), "month")
+      : dayjs(calendarTime).isSame(event.start_date, "month") ||
+        dayjs(calendarTime).isSame(event.end_date, "month")
   );
 
   let allEventDays: string[] = [];
@@ -159,7 +158,7 @@ function CalendarListView({
               key={i}
               date={date}
               events={filteredEvents.filter(
-                (event: BirthdayEvent | GameEvent | ScoutEvent) =>
+                (event: Birthday | Event | Scout) =>
                   dayjs(date)
                     .year(2000)
                     .isSame(dayjs(event.start_date).year(2000), "day") ||

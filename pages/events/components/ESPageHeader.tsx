@@ -9,13 +9,13 @@ import dayjs from "dayjs";
 
 import IconEnstars from "components/core/IconEnstars";
 import Picture from "components/core/Picture";
-import { GameEvent, GameUnit, ScoutEvent } from "types/game";
+import { Event, GameUnit, Scout } from "types/game";
 
 function ESPageHeader({
   content,
   units,
 }: {
-  content: GameEvent | ScoutEvent;
+  content: Event | Scout;
   units?: GameUnit[];
 }) {
   return (

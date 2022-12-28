@@ -14,12 +14,7 @@ import Link from "next/link";
 
 import Picture from "components/core/Picture";
 import { useDayjs } from "services/libraries/dayjs";
-import {
-  BirthdayEvent,
-  GameEvent,
-  GameEventStatus,
-  ScoutEvent,
-} from "types/game";
+import { Birthday, Event, GameEventStatus, Scout } from "types/game";
 
 // const useStyles = createStyles((theme, _params, getRef) => ({
 
@@ -38,7 +33,7 @@ function CalendarListEventCard({
 }: {
   index: number;
   eventsAmt: number;
-  event: BirthdayEvent | GameEvent | ScoutEvent;
+  event: Birthday | Event | Scout;
   status: GameEventStatus;
 }) {
   // const { classes } = useStyles();
@@ -56,10 +51,10 @@ function CalendarListEventCard({
       // className={classes.listCard}
       href={
         event.type === "birthday"
-          ? `/characters/${(event as BirthdayEvent).character_id}`
-          : (event as GameEvent).event_id
-          ? `/events/${(event as GameEvent).event_id}`
-          : `/scouts/${(event as ScoutEvent).gacha_id}`
+          ? `/characters/${(event as Birthday).character_id}`
+          : (event as Event).event_id
+          ? `/events/${(event as Event).event_id}`
+          : `/scouts/${(event as Scout).gacha_id}`
       }
       mb="xs"
       sx={{

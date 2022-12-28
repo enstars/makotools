@@ -4,12 +4,7 @@ import { getMonthDays } from "@mantine/dates";
 import CalendarEventCard from "./CalendarEventCard";
 
 import { useDayjs } from "services/libraries/dayjs";
-import {
-  BirthdayEvent,
-  GameEvent,
-  GameEventStatus,
-  ScoutEvent,
-} from "types/game";
+import { Birthday, Event, GameEventStatus, Scout } from "types/game";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   calendar: {},
@@ -88,7 +83,7 @@ function CalendarDay({
 }: {
   day: Date;
   active: boolean;
-  events: (BirthdayEvent | GameEvent | ScoutEvent)[];
+  events: (Birthday | Event | Scout)[];
 }) {
   const { classes, cx } = useStyles();
   const { dayjs } = useDayjs();
@@ -138,7 +133,7 @@ function CalendarWeek({
 }: {
   calendarTime: string;
   week: Date[];
-  events: (GameEvent | BirthdayEvent | ScoutEvent)[];
+  events: (Event | Birthday | Scout)[];
 }) {
   const { dayjs } = useDayjs();
   return (
@@ -170,7 +165,7 @@ function CalendarGridView({
   events,
 }: {
   calendarTime: string;
-  events: (BirthdayEvent | GameEvent | ScoutEvent)[];
+  events: (Birthday | Event | Scout)[];
 }) {
   const { classes } = useStyles();
   const { dayjs } = useDayjs();

@@ -174,49 +174,67 @@ interface GameCard<T = string[]> extends GameCardRegional<T> {
   };
 }
 
+type GameEventTypes = "song" | "tour" | "shuffle";
+type ScoutTypes = "scout" | "feature scout";
 type EventType =
   | "birthday"
-  | "scout"
-  | "feature scout"
-  | "song"
-  | "tour"
-  | "shuffle"
   | "anniversary"
-  | "other";
-export type GameEventStatus = "start" | "end" | undefined;
+  | "other"
+  | ScoutTypes
+  | GameEventTypes;
+export type GameEventStatus = "start" | "end";
 
-export interface Event {
-  name: string;
+export interface DateRange {
   start_date: string;
   end_date: string;
+}
+
+export interface CampaignStrings<T> {
+  name: T;
+}
+
+export interface CampaignInfo<T = string[]> extends DateRange {
+  banner_id: ID[];
   type: EventType;
-  story_name?: string;
-  story_author?: string;
-  story_season?: string;
-  banner_id?: ID | ID[];
-  cards?: ID[];
 }
 
-export interface GameEvent extends Event {
+export interface EventStrings<T> extends CampaignStrings<T> {
+  intro_lines?: T;
+  intro_lines_tl_credit?: T;
+  song_name?: T;
+}
+
+export interface Event<T = string[]> extends CampaignInfo, EventStrings<T> {
   event_id: ID;
-  event_gacha?: string;
-  gacha_id?: ID;
-  intro_lines?: string;
-  intro_lines_tl_credit?: string;
-  song_name?: string;
+  gacha_id: ID;
   unit_id?: ID[];
+  cards: ID[];
+  type: GameEventTypes;
 }
 
-export interface ScoutEvent extends Event {
+export interface ScoutStrings<T> extends CampaignStrings<T> {
+  intro_lines?: T;
+  intro_lines_tl_credit?: T;
+}
+
+export interface Scout<T = string[]> extends CampaignInfo, ScoutStrings<T> {
   gacha_id: ID;
   event_id?: ID;
-  intro_lines?: string;
-  intro_lines_tl_credit?: string;
+  cards: ID[];
+  type: ScoutTypes;
 }
 
-export interface BirthdayEvent extends Event {
+export interface Birthday<T = string[]>
+  extends CampaignInfo,
+    CampaignStrings<T> {
   character_id: ID;
-  horoscope?: ID;
+  horoscope: ID;
+  type: "birthday";
 }
 
-export type EventType = BirthdayEvent | GameEvent | ScoutEvent;
+export type Campaign = Event | Scout | Birthday;
+
+export interface RecommendedEvents {
+  event: GameCampaign;
+  charId: ID;
+}

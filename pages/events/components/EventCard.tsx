@@ -14,7 +14,7 @@ import Link from "next/link";
 import { IconArrowsShuffle2, IconBus, IconDiamond } from "@tabler/icons";
 
 import Picture from "components/core/Picture";
-import { GameEvent, GameUnit } from "types/game";
+import { Event, GameUnit } from "types/game";
 import { useDayjs } from "services/libraries/dayjs";
 import IconEnstars from "components/core/IconEnstars";
 
@@ -53,7 +53,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-function EventCard({ event, units }: { event: GameEvent; units: GameUnit[] }) {
+function EventCard({ event, units }: { event: Event; units: GameUnit[] }) {
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
 
