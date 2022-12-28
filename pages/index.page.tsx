@@ -122,17 +122,12 @@ function Page({
 
   const cards: GameCard[] = useMemo(() => cardsQuery.data, [cardsQuery.data]);
 
-  // go thru each event/scout
-  // go thru each card in the event/scout
-  // check if the card id has the character id you're looking for
-
   const filterRecommendedEvents = (
     e: GameEvent | ScoutEvent | BirthdayEvent
   ): boolean => {
     if (faveCharas.length > 0) {
       if ((e as BirthdayEvent).character_id) {
         // if this is a birthday event
-        console.log(faveCharas.includes((e as BirthdayEvent).character_id));
         return faveCharas.includes((e as BirthdayEvent).character_id);
       } else {
         const eventCards = e.cards;
@@ -149,6 +144,43 @@ function Page({
       return false;
     }
   };
+
+  function createEvents(): {
+    event: GameEvent | ScoutEvent | BirthdayEvent;
+    charId: number;
+  }[] {
+    let listOfEvents: any[] = [];
+    const filteredEvents = events.filter((e) => {
+      return filterRecommendedEvents(e);
+    });
+    if (faveCharas.length > 0) {
+      filteredEvents.forEach((e) => {
+        if ((e as BirthdayEvent).character_id) {
+          listOfEvents.push({
+            event: e,
+            charId: (e as BirthdayEvent).character_id,
+          });
+        } else {
+          const eventCards = e.cards;
+          const relevantCards = cards.filter((card) =>
+            eventCards?.includes(card.id)
+          );
+          console.log(relevantCards);
+          let charId;
+          relevantCards.forEach((card) => {
+            faveCharas.forEach((fave) => {
+              if (fave == card.character_id && card.rarity === 5) {
+                charId = card.character_id;
+              }
+            });
+          });
+          listOfEvents.push({ event: e, charId: charId });
+        }
+      });
+    }
+
+    return listOfEvents;
+  }
 
   return (
     <Group
@@ -182,11 +214,8 @@ function Page({
             <CurrentScoutsCountdown scouts={scouts} />
             {user.loggedIn && (
               <RecommendedCountdown
-                events={events.filter(
-                  (e: GameEvent | ScoutEvent | BirthdayEvent) => {
-                    return filterRecommendedEvents(e);
-                  }
-                )}
+                events={createEvents()}
+                characters={characters}
               />
             )}
           </Box>
