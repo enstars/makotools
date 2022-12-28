@@ -1,4 +1,3 @@
-import { Carousel } from "@mantine/carousel";
 import {
   Alert,
   Container,
@@ -13,9 +12,8 @@ import {
 } from "@mantine/core";
 import { IconCalendarDue, IconHeart, IconStar } from "@tabler/icons";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import useTranslation from "next-translate/useTranslation";
-import Autoplay from "embla-carousel-autoplay";
 
 import { countdown, retrieveClosestEvents } from "services/events";
 import useUser from "services/firebase/user";
@@ -29,6 +27,7 @@ import { getAssetURL } from "services/data";
 import { useDayjs } from "services/libraries/dayjs";
 import { getNameOrder } from "services/game";
 import { UserLoggedIn } from "types/makotools";
+import ResponsiveGrid from "components/core/ResponsiveGrid";
 
 function RecommendedCard({
   event,
@@ -81,6 +80,25 @@ function RecommendedCard({
           )}
           radius="sm"
         />
+        <Group spacing="xs" align="center" position="left">
+          <IconStar size={14} />
+          <Text size="xs" color="dimmed">
+            Because you like{" "}
+            <Text
+              size="xs"
+              color="dimmed"
+              display="inline"
+              component={Link}
+              href={`/characters/${fave}`}
+              weight={700}
+            >
+              {getNameOrder(
+                nameObj,
+                (user as UserLoggedIn).db.setting__name_order
+              )}
+            </Text>
+          </Text>
+        </Group>
         <Title order={4}>
           {typeof event.name === "string"
             ? `${event.name}'s Birthday`
@@ -121,42 +139,6 @@ function RecommendedCard({
             {dayjs(event.start_date).format("MM-DD-YYYY")}
           </Text>
         </Group>
-        <Alert
-          icon={
-            <IconStar
-              fill={
-                theme.colorScheme === "dark"
-                  ? theme.colors.yellow[3]
-                  : theme.colors.yellow[5]
-              }
-              stroke={0}
-              size={18}
-            />
-          }
-          p={5}
-          color={theme.colorScheme === "dark" ? "dark" : "yellow"}
-          variant="outline"
-        >
-          <Text size="sm">
-            Because you like{" "}
-            <Text
-              color={
-                theme.colorScheme === "dark"
-                  ? theme.colors.yellow[3]
-                  : theme.colors.yellow[6]
-              }
-              display="inline"
-              weight={700}
-              component={Link}
-              href={`/characters/${fave}`}
-            >
-              {getNameOrder(
-                nameObj,
-                (user as UserLoggedIn).db.setting__name_order
-              )}
-            </Text>
-          </Text>
-        </Alert>
       </Stack>
     </Paper>
   );
@@ -175,7 +157,6 @@ function RecommendedCountdown({
   const { dayjs } = useDayjs();
   const user = useUser();
   const theme = useMantineTheme();
-  const autoplay = useRef(Autoplay({ delay: 5000 }));
 
   const getOnlyEvents = (
     events: any[]
@@ -219,58 +200,25 @@ function RecommendedCountdown({
           <Text>There are no upcoming recommended campaigns available.</Text>
         </Paper>
       ) : (
-        <Carousel
-          align="start"
-          plugins={[autoplay.current]}
-          onMouseEnter={autoplay.current.stop}
-          onMouseLeave={autoplay.current.reset}
-          loop
-          draggable={false}
-          slideSize="33.333333%"
-          slideGap="md"
-          breakpoints={[
-            { maxWidth: "md", slideSize: "50%" },
-            { maxWidth: "sm", slideSize: "100%", slideGap: 0 },
-          ]}
-          my={15}
-          styles={(theme) => ({
-            controls: {
-              width: "107%",
-              marginLeft: "-3.5%",
-              padding: 0,
-            },
-            control: {
-              backgroundColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors[theme.primaryColor][4]
-                  : theme.colors[theme.primaryColor][2],
-              borderColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors[theme.primaryColor][5]
-                  : theme.colors[theme.primaryColor][3],
-              color: theme.colors.gray[0],
-            },
-          })}
-        >
+        <ResponsiveGrid width={230} my={5}>
           {retrieveClosestEvents(
             getOnlyEvents(events),
-            events.length > 15 ? 15 : events.length
+            events.length >= 6 ? 6 : events.length
           )
             .filter((e) => dayjs(e.start_date).isAfter(dayjs()))
             .map((e: GameEvent | ScoutEvent | BirthdayEvent, i) => (
-              <Carousel.Slide key={i}>
-                <RecommendedCard
-                  event={
-                    events[events.findIndex((ev: any) => ev.event === e)].event
-                  }
-                  fave={
-                    events[events.findIndex((ev: any) => ev.event === e)].charId
-                  }
-                  characters={characters}
-                />
-              </Carousel.Slide>
+              <RecommendedCard
+                key={i}
+                event={
+                  events[events.findIndex((ev: any) => ev.event === e)].event
+                }
+                fave={
+                  events[events.findIndex((ev: any) => ev.event === e)].charId
+                }
+                characters={characters}
+              />
             ))}
-        </Carousel>
+        </ResponsiveGrid>
       )}
     </Container>
   );
