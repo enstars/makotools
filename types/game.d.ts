@@ -202,6 +202,7 @@ export interface EventStrings<T> extends CampaignStrings<T> {
   intro_lines?: T;
   intro_lines_tl_credit?: T;
   song_name?: T;
+  story_name: T;
 }
 
 export interface Event<T = string[]> extends CampaignInfo, EventStrings<T> {

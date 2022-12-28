@@ -116,7 +116,7 @@ function EventCard({ event, units }: { event: Event; units: GameUnit[] }) {
                   event.type === "song"
                     ? "grape"
                     : event.type === "shuffle"
-                    ? "toya"
+                    ? "toya_default"
                     : "teal"
                 }
                 leftSection={

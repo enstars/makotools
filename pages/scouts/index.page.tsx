@@ -171,7 +171,7 @@ function Page({
                     }));
                   }}
                   variant="light"
-                  color="toya"
+                  color="toya_default"
                 >
                   {view.sort.ascending ? (
                     <IconSortAscending size={16} />

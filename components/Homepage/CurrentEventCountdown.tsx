@@ -18,9 +18,8 @@ import Picture from "components/core/Picture";
 import {
   countdown,
   isItYippeeTime,
-  retrieveClosestEvents,
   toCountdownReadable,
-} from "services/events";
+} from "services/campaigns";
 import { useDayjs } from "services/libraries/dayjs";
 import { Event } from "types/game";
 
@@ -99,38 +98,31 @@ function CurrentEventCountdown({ events }: { events: Event[] }) {
 
   const { classes } = useStyles();
 
-  let currentEvent: Event = events.filter((event) => {
-    return dayjs(new Date()).isBetween(
-      dayjs(event.start_date),
-      dayjs(event.end_date)
-    );
+  const shownEvent = events.filter((event) => {
+    return dayjs().isBefore(event.end_date);
   })[0];
-
-  let nextEvent: Event | null = !currentEvent
-    ? (retrieveClosestEvents(events, 1)[0] as Event)
-    : null;
+  const isNextEvent = dayjs().isBefore(shownEvent.start_date);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (currentEvent) {
+      if (isNextEvent) {
         setYippeeTime(
-          isItYippeeTime(new Date(currentEvent.end_date), new Date(), dayjs)
+          isItYippeeTime(new Date(shownEvent.start_date), new Date(), dayjs)
         );
-      }
-      if (nextEvent) {
+      } else {
         setYippeeTime(
-          isItYippeeTime(new Date(nextEvent.start_date), new Date(), dayjs)
+          isItYippeeTime(new Date(shownEvent.end_date), new Date(), dayjs)
         );
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, [currentEvent, nextEvent, dayjs]);
+  }, [shownEvent, dayjs, isNextEvent]);
 
   return (
     <Box>
       <Group align="end">
         <Title order={2}>
-          {currentEvent ? t("event.current") : t("event.next")}
+          {isNextEvent ? t("event.next") : t("event.current")}
         </Title>
         <Text
           color={
@@ -152,41 +144,25 @@ function CurrentEventCountdown({ events }: { events: Event[] }) {
         className={classes.eventContainer}
       >
         {yippeeTime && <Confetti recycle={false} />}
-        {currentEvent ? (
-          <Group noWrap={noWrap} align="flex-start" spacing="xl">
-            <EventImage event={currentEvent} />
-            <Stack justify="space-around">
-              <Box>
-                <Title order={3} sx={{ maxWidth: "300px" }}>
-                  {currentEvent.name[0]}
-                </Title>
-                <Countdown date={currentEvent.end_date} status="end" />
-              </Box>
-              <Button color={theme.primaryColor} disabled>
-                {t("event.eventCalculator")}
-              </Button>
-            </Stack>
-          </Group>
-        ) : nextEvent ? (
-          <Group noWrap={noWrap} align="flex-start" spacing="xl">
-            <EventImage event={nextEvent} />
-            <Stack justify="space-around">
-              <Box>
-                <Title order={3} sx={{ maxWidth: "300px" }}>
-                  {nextEvent.name[0]}
-                </Title>
-                <Countdown date={nextEvent.start_date} status="start" />
-              </Box>
-              <Button color={theme.primaryColor} disabled>
-                {t("event.eventCalculator")}
-              </Button>
-            </Stack>
-          </Group>
-        ) : (
-          <Text size="lg" weight={600}>
-            No upcoming events.
-          </Text>
-        )}
+        <Group noWrap={noWrap} align="flex-start" spacing="xl">
+          <EventImage event={shownEvent} />
+          <Stack justify="space-around">
+            <Box>
+              <Title order={3} sx={{ maxWidth: "300px" }}>
+                {shownEvent.name[0]}
+              </Title>
+
+              {isNextEvent ? (
+                <Countdown date={shownEvent.start_date} status="start" />
+              ) : (
+                <Countdown date={shownEvent.end_date} status="end" />
+              )}
+            </Box>
+            <Button color={theme.primaryColor} disabled>
+              {t("event.eventCalculator")}
+            </Button>
+          </Stack>
+        </Group>
       </Paper>
     </Box>
   );

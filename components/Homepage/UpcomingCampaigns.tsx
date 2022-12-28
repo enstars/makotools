@@ -16,14 +16,13 @@ import {
   IconCalendarTime,
   IconDiamond,
   IconShirt,
-  IconStar,
 } from "@tabler/icons";
 import Link from "next/link";
 import useTranslation from "next-translate/useTranslation";
 
 import { useDayjs } from "services/libraries/dayjs";
-import { Birthday, Event, Scout } from "types/game";
-import { retrieveClosestEvents } from "services/events";
+import { Birthday, Campaign, Event, Scout } from "types/game";
+import { retrieveNextCampaigns } from "services/campaigns";
 import Picture from "components/core/Picture";
 
 /* END FUNCTION */
@@ -74,8 +73,7 @@ function EventCard({ event }: { event: Birthday | Event | Scout }) {
     ? `/characters/${(event as Birthday).character_id}`
     : ((event as Event).event_id && event.type === "song") ||
       event.type === "shuffle" ||
-      event.type == "tour" ||
-      event.type === "anniversary"
+      event.type == "tour"
     ? `/events/${(event as Event).event_id}`
     : `/scouts/${(event as Scout).gacha_id}`;
 
@@ -138,9 +136,7 @@ function EventCard({ event }: { event: Birthday | Event | Scout }) {
             className={classes.eventType}
             variant="filled"
             color={
-              event.type === "anniversary"
-                ? "yellow"
-                : event.type === "birthday"
+              event.type === "birthday"
                 ? "cyan"
                 : event.type === "feature scout"
                 ? "lightblue"
@@ -153,8 +149,6 @@ function EventCard({ event }: { event: Birthday | Event | Scout }) {
               <Text inline mt={0}>
                 {event.type === "birthday" ? (
                   <IconCake size={12} strokeWidth={3} />
-                ) : event.type === "anniversary" ? (
-                  <IconStar size={12} strokeWidth={3} />
                 ) : event.type === "feature scout" ? (
                   <IconShirt size={12} strokeWidth={3} />
                 ) : event.type === "scout" ? (
@@ -171,7 +165,7 @@ function EventCard({ event }: { event: Birthday | Event | Scout }) {
           </Badge>
         </Box>
         <Picture
-          alt={event.name}
+          alt={event.name[0]}
           srcB2={`assets/card_still_full1_${event.banner_id}_normal.webp`}
           radius="sm"
           sx={(theme) => ({
@@ -196,11 +190,7 @@ function EventCard({ event }: { event: Birthday | Event | Scout }) {
   );
 }
 
-function UpcomingCampaigns({
-  events,
-}: {
-  events: (Birthday | Event | Scout)[];
-}) {
+function UpcomingCampaigns({ events }: { events: Campaign[] }) {
   const { t } = useTranslation("home");
   const { dayjs } = useDayjs();
   const { classes } = useStyles();
@@ -214,11 +204,9 @@ function UpcomingCampaigns({
       </Accordion.Control>
 
       <Accordion.Panel className={classes.panel} px={0}>
-        {retrieveClosestEvents(events, 8).map(
-          (e: Birthday | Event | Scout, index) => {
-            return <EventCard key={index} event={e} />;
-          }
-        )}
+        {retrieveNextCampaigns(events, 8).map((e, index) => {
+          return <EventCard key={index} event={e} />;
+        })}
         <Box mt="xs">
           <Anchor component={Link} href="/calendar" size="sm">
             {t("upcomingCampaigns.seeAll")}

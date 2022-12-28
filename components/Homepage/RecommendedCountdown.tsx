@@ -15,7 +15,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import useTranslation from "next-translate/useTranslation";
 
-import { countdown, retrieveClosestEvents } from "services/events";
+import { countdown, retrieveNextCampaigns } from "services/campaigns";
 import useUser from "services/firebase/user";
 import { Birthday, GameCharacter, Event, Scout } from "types/game";
 import { getAssetURL } from "services/data";
@@ -59,15 +59,14 @@ function RecommendedCard({
     ? `/characters/${(event as Birthday).character_id}`
     : ((event as Event).event_id && event.type === "song") ||
       event.type === "shuffle" ||
-      event.type == "tour" ||
-      event.type === "anniversary"
+      event.type == "tour"
     ? `/events/${(event as Event).event_id}`
     : `/scouts/${(event as Scout).gacha_id}`;
   return (
     <Paper p={5} withBorder shadow="xs" component={Link} href={link}>
       <Stack>
         <Image
-          alt={event.type === "birthday" ? event.name : event.name[0]}
+          alt={event.name[0]}
           src={getAssetURL(
             `assets/card_still_full1_${event.banner_id}_${
               event.type === "birthday" ? "normal" : "evolution"
@@ -194,7 +193,7 @@ function RecommendedCountdown({
         </Paper>
       ) : (
         <ResponsiveGrid width={230} my={5}>
-          {retrieveClosestEvents(
+          {retrieveNextCampaigns(
             getOnlyEvents(events),
             events.length >= 6 ? 6 : events.length
           )

@@ -29,7 +29,7 @@ import CurrentScoutsCountdown from "components/Homepage/CurrentScoutsCountdown";
 import SiteAnnouncements from "components/Homepage/SiteAnnouncements";
 import UserVerification from "components/Homepage/UserVerification";
 import { MakoPost, QuerySuccess, StrapiItem } from "types/makotools";
-import { createBirthdayData } from "services/events";
+import { createBirthdayData } from "services/campaigns";
 import { fetchOceans } from "services/makotools/posts";
 import RecommendedCountdown from "components/Homepage/RecommendedCountdown";
 import useUser from "services/firebase/user";

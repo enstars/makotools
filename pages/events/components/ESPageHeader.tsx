@@ -84,7 +84,7 @@ function ESPageHeader({
                 content.type === "song"
                   ? "grape"
                   : content.type === "shuffle"
-                  ? "toya"
+                  ? "toya_default"
                   : content.type === "tour"
                   ? "teal"
                   : content.type === "scout"

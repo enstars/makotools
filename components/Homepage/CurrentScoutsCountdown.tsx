@@ -15,7 +15,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 
 import Picture from "components/core/Picture";
-import { countdown, toCountdownReadable } from "services/events";
+import { countdown, toCountdownReadable } from "services/campaigns";
 import { useDayjs } from "services/libraries/dayjs";
 import { Scout } from "types/game";
 

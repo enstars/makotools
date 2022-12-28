@@ -18,7 +18,7 @@ import { getLayout } from "components/Layout";
 import { useDayjs } from "services/libraries/dayjs";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "services/data";
-import { createBirthdayData } from "services/events";
+import { createBirthdayData } from "services/campaigns";
 import { GameCharacter, Event, Scout, Birthday } from "types/game";
 import { QuerySuccess } from "types/makotools";
 

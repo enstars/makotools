@@ -16,9 +16,9 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
   week: {},
   today: {
-    border: `solid 2px ${theme.colors.toya[5]}`,
+    border: `solid 2px ${theme.colors.toya_default[5]}`,
     // [`& .${getRef("dateLabel")}`]: {
-    //   backgroundColor: theme.colors.toya[5],
+    //   backgroundColor: theme.colors.toya_default[5],
     //   alignSelf: "start",
     //   padding: "2px 3px",
     //   minWidth: 24,
