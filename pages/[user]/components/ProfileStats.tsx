@@ -46,7 +46,7 @@ function ProfileStats({
   characters: GameCharacter[];
 }) {
   return (
-    <Group my={5} noWrap spacing="xl">
+    <Group my={7} noWrap spacing="xl" align="flex-start">
       {profile.profile__start_playing !== "0000-00-00" && (
         <StatContainer
           icon={<IconCalendar size={16} />}
@@ -76,7 +76,7 @@ function ProfileStats({
                         characters.filter((c) => c.character_id === chara)[0]
                           .first_name[0]
                       }
-                      sx={{ width: 50, height: 50 }}
+                      sx={{ width: 50, height: 50, pointerEvents: "none" }}
                     />
                   );
                 })}
