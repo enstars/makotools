@@ -37,28 +37,28 @@ function ESPageHeader({
           <Group>
             <Box sx={{ flex: "1 1 0", minWidth: 200 }}>
               <Text size="sm" color="dimmed" weight={700}>
-                Start ({dayjs(content.start.jp).format("z")})
+                Start ({dayjs(content.start.en).format("z")})
               </Text>
               <Text size="lg" weight={500}>
-                {dayjs(content.start.jp).format("lll")}
+                {dayjs(content.start.en).format("lll")}
               </Text>
             </Box>
             <Box sx={{ flex: "1 1 0", minWidth: 200 }}>
               <Text size="sm" color="dimmed" weight={700}>
-                End ({dayjs(content.end.jp).format("z")})
+                End ({dayjs(content.end.en).format("z")})
               </Text>
               <Text size="lg" weight={500}>
-                {dayjs(content.end.jp).format("lll")}
+                {dayjs(content.end.en).format("lll")}
               </Text>
             </Box>
           </Group>
           <Space h="md" />
           <Group noWrap>
-            {dayjs(content.end.jp).isBefore(dayjs()) ? (
+            {dayjs(content.end.en).isBefore(dayjs()) ? (
               <Badge color="gray">Past</Badge>
             ) : dayjs().isBetween(
-                dayjs(content.start.jp),
-                dayjs(content.end.jp)
+                dayjs(content.start.en),
+                dayjs(content.end.en)
               ) ? (
               <Badge color="yellow">Ongoing</Badge>
             ) : (

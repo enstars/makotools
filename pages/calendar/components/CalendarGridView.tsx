@@ -112,7 +112,7 @@ function CalendarDay({
             events.map((event, i) => {
               let status: GameEventStatus | undefined;
               if (event.type !== "birthday") {
-                status = dayjs(day).isSame(event.start.jp, "day")
+                status = dayjs(day).isSame(event.start.en, "day")
                   ? "start"
                   : "end";
               }
@@ -143,9 +143,9 @@ function CalendarWeek({
           event.type === "birthday"
             ? dayjs(day)
                 .year(2000)
-                .isSame(dayjs(event.start.jp).year(2000), "day")
-            : dayjs(day).isSame(event.start.jp, "day") ||
-              dayjs(day).isSame(event.end.jp, "day")
+                .isSame(dayjs(event.start.en).year(2000), "day")
+            : dayjs(day).isSame(event.start.en, "day") ||
+              dayjs(day).isSame(event.end.en, "day")
         );
         return (
           <CalendarDay

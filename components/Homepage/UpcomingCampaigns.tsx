@@ -66,8 +66,8 @@ function EventCard({ event }: { event: Birthday | Event | Scout }) {
   const { t } = useTranslation("home");
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
-  const formattedMonth = dayjs(event.start.jp).format("MMM");
-  const formattedDate = dayjs(event.start.jp).format("D");
+  const formattedMonth = dayjs(event.start.en).format("MMM");
+  const formattedDate = dayjs(event.start.en).format("D");
 
   let link = (event as Birthday).character_id
     ? `/characters/${(event as Birthday).character_id}`

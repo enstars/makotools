@@ -32,7 +32,7 @@ function ScoutCard({ scout }: { scout: Scout }) {
         href={`/scouts/${scout.gacha_id}`}
         sx={{ position: "relative" }}
       >
-        {dayjs(scout.end.jp).isBefore(dayjs()) && (
+        {dayjs(scout.end.en).isBefore(dayjs()) && (
           <Paper
             component={Box}
             sx={(theme) => ({
@@ -70,7 +70,7 @@ function ScoutCard({ scout }: { scout: Scout }) {
             </Text>
           </Paper>
         )}
-        {dayjs().isBetween(dayjs(scout.start.jp), dayjs(scout.end.jp)) && (
+        {dayjs().isBetween(dayjs(scout.start.en), dayjs(scout.end.en)) && (
           <Paper
             component={Box}
             sx={(theme) => ({
@@ -121,9 +121,9 @@ function ScoutCard({ scout }: { scout: Scout }) {
       >
         <Text weight={700}>{scout.name[0]}</Text>
         <Text size="xs" weight={500} color="dimmed">
-          {dayjs(scout.start.jp).format("ll")}
+          {dayjs(scout.start.en).format("ll")}
           {" - "}
-          {dayjs(scout.end.jp).format("ll")}
+          {dayjs(scout.end.en).format("ll")}
         </Text>
       </Card.Section>
     </Card>

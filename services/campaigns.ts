@@ -14,9 +14,11 @@ function createBirthdayData(characters: GameCharacter[]): Birthday[] {
       ),
       start: {
         jp: character.birthday,
+        en: character.birthday,
       },
       end: {
         jp: character.birthday,
+        en: character.birthday,
       },
 
       type: "birthday",
@@ -36,18 +38,18 @@ function retrieveNextCampaigns(campaigns: Campaign[], count = -1) {
   // add proper years to the bdays
   campaigns.forEach((event) => {
     // if the year is 2000, it means the event is a birthday
-    if (dayjs(event.start.jp).year() === 2000) {
+    if (dayjs(event.start.en).year() === 2000) {
       // if the birthday this year is before today, add a year to it
-      let year = dayjs(event.start.jp).year(dayjs().year()).isBefore(dayjs())
+      let year = dayjs(event.start.en).year(dayjs().year()).isBefore(dayjs())
         ? dayjs().year() + 1
         : dayjs().year();
-      event.start.jp = dayjs(event.start.jp).year(year).format();
+      event.start.en = dayjs(event.start.en).year(year).format();
     }
   });
 
   let sortedCampaigns = campaigns
-    .filter((e) => dayjs().isBefore(e.start.jp))
-    .sort((a, b) => dayjs(a.start.jp).unix() - dayjs(b.start.jp).unix());
+    .filter((e) => dayjs().isBefore(e.start.en))
+    .sort((a, b) => dayjs(a.start.en).unix() - dayjs(b.start.en).unix());
 
   if (count !== -1) {
     sortedCampaigns = sortedCampaigns.slice(0, count);

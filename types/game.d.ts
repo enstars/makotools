@@ -7,7 +7,7 @@ type HexColorWithTag = string;
 type GameRegion = "jp" | "en" | "cn" | "kr" | "tw";
 interface ForEachRegion<T> {
   jp: T;
-  en?: T;
+  en: T;
   cn?: T;
   kr?: T;
   tw?: T;

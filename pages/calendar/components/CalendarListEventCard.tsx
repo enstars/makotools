@@ -150,7 +150,7 @@ function CalendarListEventCard({
             : event.name[0]}
         </Text>
         <Text size="sm" color="dimmed" weight={500}>
-          {dayjs(status === "end" ? event.end.jp : event.start.jp).format(
+          {dayjs(status === "end" ? event.end.en : event.start.en).format(
             "LT z"
           )}
         </Text>

@@ -109,7 +109,7 @@ function Page({
           label: "Start Date",
           value: "date",
           function: (a: Event, b: Event) =>
-            dayjs(a.start.jp).unix() - dayjs(b.start.jp).unix(),
+            dayjs(a.start.en).unix() - dayjs(b.start.en).unix(),
         },
       ],
       baseSort: "id",
