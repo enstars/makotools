@@ -25,16 +25,6 @@ import {
 import { useRef, Fragment, useState, useEffect, useMemo } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { useMediaQuery } from "@mantine/hooks";
-import {
-  DocumentData,
-  QueryDocumentSnapshot,
-  collection,
-  documentId,
-  getDocs,
-  getFirestore,
-  query,
-  where,
-} from "firebase/firestore";
 
 import EditProfileModal from "./components/EditProfileModal";
 import MaoBanned from "./MaoBanned.png";
@@ -101,7 +91,6 @@ function Page({
   const user = useUser();
 
   const [embla, setEmbla] = useState<Embla | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
   const [openEditModal, setOpenEditModal] = useState<boolean>(false);
   const [openPicModal, setOpenPicModal] = useState<boolean>(false);
   const [openRemoveFriendModal, setRemoveFriendModal] =
@@ -116,70 +105,21 @@ function Page({
     profile__picture: profile.profile__picture,
     profile__fave_charas: profile.profile__fave_charas,
   });
+  const { collapsed } = useSidebarStatus();
+  const isOwnProfile = user.loggedIn && user.db.suid === profile.suid;
 
   // friend Variables
-  const [isFriend, setIsFriend] = useState<boolean>(false);
-  const [isOutgoingFriendReq, setOutgoingFriendReq] = useState<boolean>(false);
-  const [isIncomingFriendReq, setIncomingFriendReq] = useState<boolean>(false);
-  const { collapsed } = useSidebarStatus();
-  const friends: DocumentData[] = [];
-  const outgoingReqs: DocumentData[] = [];
-  const incomingReqs: DocumentData[] = [];
   const friendsData = (user as UserLoggedIn).privateDb?.friends__list || [];
   const outgoingData =
     (user as UserLoggedIn).privateDb?.friends__sentRequests || [];
   const incomingData =
     (user as UserLoggedIn).privateDb?.friends__receivedRequests || [];
-  const totalFriendsData = [...friendsData, ...outgoingData, ...incomingData];
-  const totalFriends: DocumentData[] = [];
-  const friendCount: number = totalFriendsData.length || 0;
-
-  useEffect(() => {
-    const loadFriends = async (user: UserLoggedIn) => {
-      const db = getFirestore();
-      let i = 0;
-      while (i < friendCount) {
-        const usersQuery = await getDocs(
-          query(
-            collection(db, "users"),
-            where(
-              documentId(),
-              "in",
-              i + 10 < friendCount
-                ? totalFriendsData.slice(i, i + 10)
-                : totalFriendsData.slice(i, friendCount)
-            )
-          )
-        );
-        usersQuery.forEach((doc: QueryDocumentSnapshot<DocumentData>) => {
-          if (friendsData.includes(doc.id)) {
-            friends.push(doc.data());
-          } else if (outgoingData.includes(doc.id)) {
-            outgoingReqs.push(doc.data());
-          } else if (incomingData.includes(doc.id)) {
-            incomingReqs.push(doc.data());
-          }
-          totalFriends.push(doc.data());
-        });
-        i += 10;
-      }
-      const notUrProfile = profile.suid !== user.db.suid;
-      if (!notUrProfile) {
-        setLoading(false);
-      } else {
-        const friend = friends.find((b) => b.suid === profile.suid);
-        const youSentReq = outgoingReqs.find((b) => b.suid === profile.suid);
-        const findFan = incomingReqs.find((b) => b.suid === profile.suid);
-        if (friend) setIsFriend(true);
-        if (youSentReq) setOutgoingFriendReq(true);
-        if (findFan) setIncomingFriendReq(true);
-        setLoading(false);
-      }
-    };
-    if (user.loggedIn) {
-      loadFriends(user);
-    }
-  }, [user, totalFriends]);
+  const isFriend =
+    !!user.loggedIn && !isOwnProfile && friendsData.includes(uid);
+  const isOutgoingFriendReq =
+    !!user.loggedIn && !isOwnProfile && outgoingData.includes(uid);
+  const isIncomingFriendReq =
+    !!user.loggedIn && !isOwnProfile && incomingData.includes(uid);
 
   useEffect(() => {
     embla?.reInit();
@@ -283,26 +223,24 @@ function Page({
           />
         </Box>
         <Box sx={{ marginTop: 50 }}>
-          {user.loggedIn &&
-            user.db.suid === profile.suid &&
-            user.db?.admin?.disableTextFields && (
-              <Alert
-                icon={<IconAlertCircle size={16} />}
-                color="red"
-                sx={{ marginTop: "2vh" }}
+          {isOwnProfile && user.db?.admin?.disableTextFields && (
+            <Alert
+              icon={<IconAlertCircle size={16} />}
+              color="red"
+              sx={{ marginTop: "2vh" }}
+            >
+              You&apos;ve been restricted from editing your profile. You can
+              submit an appeal through our{" "}
+              <Text
+                component={Link}
+                href="/issues"
+                sx={{ textDecoration: "underline" }}
               >
-                You&apos;ve been restricted from editing your profile. You can
-                submit an appeal through our{" "}
-                <Text
-                  component={Link}
-                  href="/issues"
-                  sx={{ textDecoration: "underline" }}
-                >
-                  issues
-                </Text>{" "}
-                page.
-              </Alert>
-            )}
+                issues
+              </Text>{" "}
+              page.
+            </Alert>
+          )}
           <Space h="lg" />
 
           <Group position="apart">
@@ -340,7 +278,7 @@ function Page({
                   ` · ${profile?.profile__pronouns}`}
               </Text>
             </Box>
-            {!loading ? (
+            {!user.loading ? (
               <ProfileButtons
                 user={user}
                 uid={uid}

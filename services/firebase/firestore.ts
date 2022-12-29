@@ -13,6 +13,13 @@ import {
 
 import { UserData, LoadingStatus, UserPrivateData } from "types/makotools";
 
+/**
+ * When querying documents, only 10 documents can
+ * be requested at a time in one request
+ * https://firebase.google.com/docs/firestore/quotas#security_rules
+ */
+export const FIRESTORE_MAXIMUM_CONCURRENT_ACCESS_CALLS = 10;
+
 export function setFirestoreUserData(
   data: any,
   callback: (s: { status: LoadingStatus }) => void,

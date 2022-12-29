@@ -22,76 +22,66 @@ import {
 } from "firebase/firestore";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import useSWR from "swr";
+import { chunk } from "lodash";
 import { showNotification, updateNotification } from "@mantine/notifications";
 
 import NoBitches from "./NoBitches.png";
 
 import useUser from "services/firebase/user";
 import { parseStringify } from "services/utilities";
+import { FIRESTORE_MAXIMUM_CONCURRENT_ACCESS_CALLS } from "services/firebase/firestore";
 import { UserData, UserLoggedIn } from "types/makotools";
 
 function Requests() {
   const theme = useMantineTheme();
   const user = useUser();
-  const [loadedProfiles, setLoadedProfiles] = useState<{
-    [uid: string]: UserData;
-  }>({});
   const yourBitches: string[] | undefined = (user as UserLoggedIn).privateDb
     ?.friends__list;
   const thirstyBitches: string[] | undefined = (user as UserLoggedIn).privateDb
     ?.friends__receivedRequests;
-  const [loading, setLoading] = useState<boolean>(true);
-  // console.log("cycle", loadedProfiles, Object.keys(loadedProfiles).length);
   // only load profiles needed on this page
-  useEffect(() => {
-    const loadProfiles = async (user: UserLoggedIn) => {
-      let newLoadedProfiles: any = parseStringify(loadedProfiles);
-      let actuallyNewLoadedProfiles = [];
+  const { data: profiles = {}, isLoading } = useSWR(
+    user.loggedIn ? "/settings/friends/Requests" : null,
+    async (): Promise<{
+      [uid: string]: UserData;
+    }> => {
+      let loadedProfiles: any = parseStringify(profiles);
+      let profileIdsToLoad: string[] = [];
       [...(yourBitches || []), ...(thirstyBitches || [])].forEach((uid) => {
-        if (!Object.keys(newLoadedProfiles).includes(uid)) {
-          newLoadedProfiles[uid] = {};
-          actuallyNewLoadedProfiles.push(uid);
+        if (!Object.keys(loadedProfiles).includes(uid)) {
+          profileIdsToLoad.push(uid);
         }
       });
 
-      if (actuallyNewLoadedProfiles.length) {
+      if (profileIdsToLoad.length) {
         const db = getFirestore();
-        let i = 0;
-        while (i < Object.keys(newLoadedProfiles).length) {
-          const usersQuery = await getDocs(
-            query(
-              collection(db, "users"),
-              where(
-                documentId(),
-                "in",
-                i + 10 < Object.keys(newLoadedProfiles).length
-                  ? Object.keys(newLoadedProfiles).slice(i, i + 10)
-                  : Object.keys(newLoadedProfiles).slice(
-                      i,
-                      Object.keys(newLoadedProfiles).length
-                    )
-              )
-            )
-          );
-          usersQuery.forEach((doc) => {
-            newLoadedProfiles[doc.id] = doc.data();
-          });
-          i += 10;
-        }
-        setLoadedProfiles(newLoadedProfiles);
+        const profileIdChunks = chunk(
+          profileIdsToLoad,
+          FIRESTORE_MAXIMUM_CONCURRENT_ACCESS_CALLS
+        );
+        await Promise.all(
+          profileIdChunks.map(async (ids) => {
+            const usersQuery = await getDocs(
+              query(collection(db, "users"), where(documentId(), "in", ids))
+            );
+            usersQuery.forEach((doc) => {
+              loadedProfiles[doc.id] = doc.data();
+            });
+          })
+        );
       }
-      setLoading(false);
-    };
-    if (user.loggedIn) {
-      loadProfiles(user);
+
+      return loadedProfiles;
     }
-  }, [user, loadedProfiles]);
+  );
+
   if (!user.loggedIn) return null;
+
   return (
     <>
       <Title order={2}>Your friends</Title>
-      {!loading ? (
+      {!isLoading ? (
         !yourBitches || yourBitches.length === 0 ? (
           <Box>
             <Image
@@ -121,12 +111,12 @@ function Requests() {
                     px="md"
                     py="xs"
                     component={Link}
-                    href={`/@${loadedProfiles[uid].username}`}
+                    href={`/@${profiles[uid].username}`}
                   >
                     <Group spacing={0}>
-                      <Text weight={700}>{loadedProfiles?.[uid]?.name}</Text>
+                      <Text weight={700}>{profiles?.[uid]?.name}</Text>
                       <Text ml={"xs"} weight={500} color="dimmed">
-                        @{loadedProfiles[uid].username}
+                        @{profiles[uid].username}
                       </Text>
                     </Group>
                   </Card>
@@ -144,7 +134,7 @@ function Requests() {
       {user.loggedIn && (
         <Box sx={{ marginTop: 20 }}>
           <Title order={2}>Friend Requests</Title>
-          {!loading ? (
+          {!isLoading ? (
             !thirstyBitches || thirstyBitches.length === 0 ? (
               <Box
                 sx={{
@@ -179,9 +169,9 @@ function Requests() {
                         <Text
                           weight={700}
                           component={Link}
-                          href={`/@${loadedProfiles[uid].username}`}
+                          href={`/@${profiles[uid].username}`}
                         >
-                          {loadedProfiles?.[uid]?.name}
+                          {profiles?.[uid]?.name}
                         </Text>
                         <Text
                           ml={"xs"}
@@ -189,9 +179,9 @@ function Requests() {
                           color="dimmed"
                           sx={{ "&&&": { flexGrow: 1 } }}
                           component={Link}
-                          href={`/@${loadedProfiles[uid].username}`}
+                          href={`/@${profiles[uid].username}`}
                         >
-                          @{loadedProfiles?.[uid]?.username}
+                          @{profiles?.[uid]?.username}
                         </Text>
                         <ActionIcon
                           color="green"
@@ -224,8 +214,7 @@ function Requests() {
                                 color: "lime",
                                 icon: <IconCheck size={24} />,
                                 message: `${
-                                  loadedProfiles[uid].name ||
-                                  loadedProfiles[uid].username
+                                  profiles[uid].name || profiles[uid].username
                                 } is now your friend!`,
                               });
                             } else {
