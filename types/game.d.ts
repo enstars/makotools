@@ -6,7 +6,11 @@ type HexColorWithTag = string;
 
 type GameRegion = "jp" | "en" | "cn" | "kr" | "tw";
 interface ForEachRegion<T> {
-  [region in GameRegion]: T;
+  jp: T;
+  en?: T;
+  cn?: T;
+  kr?: T;
+  tw?: T;
 }
 
 // CHARACTERS
@@ -295,9 +299,9 @@ type CampaignType =
   | GameEventTypes;
 export type GameEventStatus = "start" | "end";
 
-export interface DateRange {
-  start_date: ForEachRegion<string>;
-  end_date: ForEachRegion<string>;
+export interface RegionalTimeRange {
+  start: ForEachRegion<string>;
+  end: ForEachRegion<string>;
 }
 
 export interface CampaignStrings<T> {
@@ -305,7 +309,7 @@ export interface CampaignStrings<T> {
   name: T;
 }
 
-export interface CampaignInfo<T = string[]> extends DateRange {
+export interface CampaignInfo<T = string[]> extends RegionalTimeRange {
   /** Card ID for the event's main card */
   banner_id: ID[];
 

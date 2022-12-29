@@ -35,10 +35,10 @@ function Banner({ events }: { events: (Birthday | Event | Scout)[] }) {
   const pastEvents = events
     .filter(
       (event) =>
-        dayjs().isAfter(event.start_date) &&
+        dayjs().isAfter(event.start.jp) &&
         ["scout", "feature scout", "tour", "song"].includes(event.type)
     )
-    .sort((a, b) => dayjs(a.start_date).unix() - dayjs(b.start_date).unix());
+    .sort((a, b) => dayjs(a.start.jp).unix() - dayjs(b.start.jp).unix());
 
   const banners = useMemo(() => {
     const shownEvents: (Event | Scout | Birthday)[] = [];
@@ -46,7 +46,7 @@ function Banner({ events }: { events: (Birthday | Event | Scout)[] }) {
     const currentBirthdays = events.filter(
       (event) =>
         event.type === "birthday" &&
-        dayjs(event.start_date).format("MMDD") === dayjs().format("MMDD")
+        dayjs(event.start.jp).format("MMDD") === dayjs().format("MMDD")
     );
 
     shownEvents.push(...currentBirthdays);
@@ -133,10 +133,10 @@ function Banner({ events }: { events: (Birthday | Event | Scout)[] }) {
               </Title>
               <Text weight={500} sx={{ opacity: 0.75 }}>
                 {event.type !== "birthday"
-                  ? dayjs(event.start_date).format("lll") +
+                  ? dayjs(event.start.jp).format("lll") +
                     " – " +
-                    dayjs(event.end_date).format("lll z")
-                  : dayjs(event.start_date).format("MMMM D")}
+                    dayjs(event.end.jp).format("lll z")
+                  : dayjs(event.start.jp).format("MMMM D")}
               </Text>
             </Stack>
           </Box>

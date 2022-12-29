@@ -93,7 +93,7 @@ function Page({
           label: "Start Date",
           value: "date",
           function: (a: Scout, b: Scout) =>
-            dayjs(a.start_date).unix() - dayjs(b.start_date).unix(),
+            dayjs(a.start.jp).unix() - dayjs(b.start.jp).unix(),
         },
       ],
       baseSort: "id",

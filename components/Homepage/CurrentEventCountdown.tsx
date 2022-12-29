@@ -99,19 +99,19 @@ function CurrentEventCountdown({ events }: { events: Event[] }) {
   const { classes } = useStyles();
 
   const shownEvent = events.filter((event) => {
-    return dayjs().isBefore(event.end_date);
+    return dayjs().isBefore(event.end.jp);
   })[0];
-  const isNextEvent = dayjs().isBefore(shownEvent.start_date);
+  const isNextEvent = dayjs().isBefore(shownEvent.start.jp);
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (isNextEvent) {
         setYippeeTime(
-          isItYippeeTime(new Date(shownEvent.start_date), new Date(), dayjs)
+          isItYippeeTime(new Date(shownEvent.start.jp), new Date(), dayjs)
         );
       } else {
         setYippeeTime(
-          isItYippeeTime(new Date(shownEvent.end_date), new Date(), dayjs)
+          isItYippeeTime(new Date(shownEvent.end.jp), new Date(), dayjs)
         );
       }
     }, 1000);
@@ -153,9 +153,9 @@ function CurrentEventCountdown({ events }: { events: Event[] }) {
               </Title>
 
               {isNextEvent ? (
-                <Countdown date={shownEvent.start_date} status="start" />
+                <Countdown date={shownEvent.start.jp} status="start" />
               ) : (
-                <Countdown date={shownEvent.end_date} status="end" />
+                <Countdown date={shownEvent.end.jp} status="end" />
               )}
             </Box>
             <Button color={theme.primaryColor} disabled>

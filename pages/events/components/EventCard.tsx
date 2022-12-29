@@ -61,10 +61,10 @@ function EventCard({ event, units }: { event: Event; units: GameUnit[] }) {
     return event.unit_id ? event.unit_id?.includes(unit.id) : false;
   });
 
-  const isEstimatedDate = dayjs(event.start_date).isAfter(dayjs());
+  const isEstimatedDate = dayjs(event.start.jp).isAfter(dayjs());
   const isOngoing = dayjs().isBetween(
-    dayjs(event.start_date),
-    dayjs(event.end_date)
+    dayjs(event.start.jp),
+    dayjs(event.end.jp)
   );
 
   return (
@@ -155,17 +155,15 @@ function EventCard({ event, units }: { event: Event; units: GameUnit[] }) {
             >
               <Box sx={{ flex: "1 1 0", minWidth: 185 }}>
                 <Text size="xs" color="dimmed" weight={700}>
-                  Start ({dayjs(event.start_date).format("z")})
+                  Start ({dayjs(event.start.jp).format("z")})
                 </Text>
-                <Text weight={500}>
-                  {dayjs(event.start_date).format("lll")}
-                </Text>
+                <Text weight={500}>{dayjs(event.start.jp).format("lll")}</Text>
               </Box>
               <Box sx={{ flex: "1 1 0", minWidth: 185 }}>
                 <Text size="xs" color="dimmed" weight={700}>
-                  End ({dayjs(event.end_date).format("z")})
+                  End ({dayjs(event.end.jp).format("z")})
                 </Text>
-                <Text weight={500}>{dayjs(event.end_date).format("lll")}</Text>
+                <Text weight={500}>{dayjs(event.end.jp).format("lll")}</Text>
               </Box>
             </Group>
 

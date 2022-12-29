@@ -83,7 +83,7 @@ function ScoutCard({ scout }: { scout: Scout }) {
               {scout.type === "scout" ? "event scout" : scout.type}
             </Badge>
           </Group>
-          <Countdown endDate={scout.end_date} />
+          <Countdown endDate={scout.end.jp} />
         </Stack>
       </Group>
     </Paper>
@@ -113,8 +113,8 @@ function CurrentScoutsCountdown({ scouts }: { scouts: Scout[] }) {
   const { classes } = useStyles();
   const currentScouts: Scout[] = scouts.filter((scout) => {
     return dayjs(new Date()).isBetween(
-      dayjs(scout.start_date),
-      dayjs(scout.end_date)
+      dayjs(scout.start.jp),
+      dayjs(scout.end.jp)
     );
   });
   return (

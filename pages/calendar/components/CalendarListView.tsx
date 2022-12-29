@@ -85,7 +85,7 @@ function CalendarListDay({
               status={
                 event.type === "birthday"
                   ? undefined
-                  : dayjs(date).isSame(event.start_date, "day")
+                  : dayjs(date).isSame(event.start.jp, "day")
                   ? "start"
                   : "end"
               }
@@ -112,9 +112,9 @@ function CalendarListView({
     event.type === "birthday"
       ? dayjs(calendarTime)
           .year(2000)
-          .isSame(dayjs(event.start_date).year(2000), "month")
-      : dayjs(calendarTime).isSame(event.start_date, "month") ||
-        dayjs(calendarTime).isSame(event.end_date, "month")
+          .isSame(dayjs(event.start.jp).year(2000), "month")
+      : dayjs(calendarTime).isSame(event.start.jp, "month") ||
+        dayjs(calendarTime).isSame(event.end.jp, "month")
   );
 
   let allEventDays: string[] = [];
@@ -123,23 +123,23 @@ function CalendarListView({
     // getting all the days in the month that have events
     if (
       !allEventDays.some((day) =>
-        dayjs(day).isSame(dayjs(event.start_date).startOf("day"))
+        dayjs(day).isSame(dayjs(event.start.jp).startOf("day"))
       ) &&
-      dayjs(calendarTime).month() === dayjs(event.start_date).month()
+      dayjs(calendarTime).month() === dayjs(event.start.jp).month()
     ) {
       allEventDays.push(
-        dayjs(event.start_date).year(dayjs().year()).startOf("day").format()
+        dayjs(event.start.jp).year(dayjs().year()).startOf("day").format()
       );
     }
 
     if (
       !allEventDays.some((day) =>
-        dayjs(calendarTime).isSame(dayjs(event.end_date).startOf("day"))
+        dayjs(calendarTime).isSame(dayjs(event.end.jp).startOf("day"))
       ) &&
-      dayjs(calendarTime).month() === dayjs(event.end_date).month()
+      dayjs(calendarTime).month() === dayjs(event.end.jp).month()
     ) {
       allEventDays.push(
-        dayjs(event.end_date).year(dayjs().year()).startOf("day").format()
+        dayjs(event.end.jp).year(dayjs().year()).startOf("day").format()
       );
     }
   });
@@ -161,10 +161,10 @@ function CalendarListView({
                 (event: Birthday | Event | Scout) =>
                   dayjs(date)
                     .year(2000)
-                    .isSame(dayjs(event.start_date).year(2000), "day") ||
+                    .isSame(dayjs(event.start.jp).year(2000), "day") ||
                   dayjs(date)
                     .year(2000)
-                    .isSame(dayjs(event.end_date).year(2000), "day")
+                    .isSame(dayjs(event.end.jp).year(2000), "day")
               )}
             />
           );

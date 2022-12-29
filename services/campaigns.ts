@@ -12,8 +12,13 @@ function createBirthdayData(characters: GameCharacter[]): Birthday[] {
       name: character.first_name.map((c, i) =>
         getNameOrder({ first_name: c, last_name: character.last_name[i] })
       ),
-      start_date: character.birthday,
-      end_date: character.birthday,
+      start: {
+        jp: character.birthday,
+      },
+      end: {
+        jp: character.birthday,
+      },
+
       type: "birthday",
       banner_id: [character.renders?.fs1_5],
       horoscope: character.horoscope,
@@ -31,18 +36,18 @@ function retrieveNextCampaigns(campaigns: Campaign[], count = -1) {
   // add proper years to the bdays
   campaigns.forEach((event) => {
     // if the year is 2000, it means the event is a birthday
-    if (dayjs(event.start_date).year() === 2000) {
+    if (dayjs(event.start.jp).year() === 2000) {
       // if the birthday this year is before today, add a year to it
-      let year = dayjs(event.start_date).year(dayjs().year()).isBefore(dayjs())
+      let year = dayjs(event.start.jp).year(dayjs().year()).isBefore(dayjs())
         ? dayjs().year() + 1
         : dayjs().year();
-      event.start_date = dayjs(event.start_date).year(year).format();
+      event.start.jp = dayjs(event.start.jp).year(year).format();
     }
   });
 
   let sortedCampaigns = campaigns
-    .filter((e) => dayjs().isBefore(e.start_date))
-    .sort((a, b) => dayjs(a.start_date).unix() - dayjs(b.start_date).unix());
+    .filter((e) => dayjs().isBefore(e.start.jp))
+    .sort((a, b) => dayjs(a.start.jp).unix() - dayjs(b.start.jp).unix());
 
   if (count !== -1) {
     sortedCampaigns = sortedCampaigns.slice(0, count);

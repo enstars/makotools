@@ -41,12 +41,12 @@ function RecommendedCard({
   const [countdownAmt, setCountdownAmt] = useState<string>();
   useEffect(() => {
     const interval = setInterval(() => {
-      let ctdwn = countdown(new Date(event.start_date), new Date());
+      let ctdwn = countdown(new Date(event.start.jp), new Date());
       const days = `${Math.floor(ctdwn / 86400000)} days`;
       setCountdownAmt(days);
     }, 1000);
     return () => clearInterval(interval);
-  }, [event.start_date]);
+  }, [event.start.jp]);
 
   const getCharaObj = characters.filter((c) => c.character_id === fave)[0];
 
@@ -130,7 +130,7 @@ function RecommendedCard({
               borderRadius: theme.radius.lg,
             }}
           >
-            {dayjs(event.start_date).format("MM-DD-YYYY")}
+            {dayjs(event.start.jp).format("MM-DD-YYYY")}
           </Text>
         </Group>
       </Stack>
@@ -197,7 +197,7 @@ function RecommendedCountdown({
             getOnlyEvents(events),
             events.length >= 6 ? 6 : events.length
           )
-            .filter((e) => dayjs(e.start_date).isAfter(dayjs()))
+            .filter((e) => dayjs(e.start.jp).isAfter(dayjs()))
             .map((e: Event | Scout | Birthday, i) => (
               <RecommendedCard
                 key={i}
