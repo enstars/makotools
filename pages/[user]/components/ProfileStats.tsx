@@ -8,6 +8,7 @@ import {
 import { IconCalendar, IconHeart } from "@tabler/icons";
 import dayjs from "dayjs";
 
+import Picture from "components/core/Picture";
 import { GameCharacter } from "types/game";
 import { UserData } from "types/makotools";
 
@@ -64,18 +65,22 @@ function ProfileStats({
             title={"Favorites"}
           >
             {profile.profile__fave_charas && (
-              <Text>
+              <Group spacing={0}>
                 {profile.profile__fave_charas.map((chara, index) => {
-                  return profile.profile__fave_charas &&
-                    index === profile.profile__fave_charas.length - 1
-                    ? characters.filter((c) => c.character_id === chara)[0]
-                        .first_name[0]
-                    : `${
+                  return (
+                    <Picture
+                      transparent
+                      key={chara}
+                      srcB2={`assets/character_sd_square1_${chara}.png`}
+                      alt={
                         characters.filter((c) => c.character_id === chara)[0]
                           .first_name[0]
-                      }, `;
+                      }
+                      sx={{ width: 50, height: 50 }}
+                    />
+                  );
                 })}
-              </Text>
+              </Group>
             )}
           </StatContainer>
         )}
