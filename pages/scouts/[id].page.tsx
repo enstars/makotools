@@ -8,7 +8,7 @@ import {
   getLocalizedDataArray,
 } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { GameCard, GameCharacter, Event, ID, Scout } from "types/game";
+import { GameCard, GameCharacter, Event, Scout } from "types/game";
 import { QuerySuccess } from "types/makotools";
 import { getLayout } from "components/Layout";
 import CardCard from "pages/cards/components/DisplayCard";
@@ -97,7 +97,7 @@ function Page({
                 type={scout.type}
                 eventName={event.name[0]}
                 scoutName={scout.name[0]}
-                banner={event.banner_id as ID}
+                banner={event.banner_id[0]}
               />
             </>
           )}

@@ -78,12 +78,12 @@ function CalendarListDay({
         {events.map((event, i) => {
           return (
             <CalendarListEventCard
-              key={event.name}
+              key={event.name[0]}
               index={i}
               eventsAmt={events.length}
               event={event}
               status={
-                event.type === "birthday" || event.type === "anniversary"
+                event.type === "birthday"
                   ? undefined
                   : dayjs(date).isSame(event.start_date, "day")
                   ? "start"
@@ -109,7 +109,7 @@ function CalendarListView({
   let calendarTimeDate: Date = dayjs(calendarTime).toDate();
   // get events happening in the active month
   const filteredEvents = events.filter((event: Birthday | Event | Scout) =>
-    event.type === "birthday" || event.type === "anniversary"
+    event.type === "birthday"
       ? dayjs(calendarTime)
           .year(2000)
           .isSame(dayjs(event.start_date).year(2000), "month")

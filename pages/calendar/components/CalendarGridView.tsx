@@ -110,8 +110,8 @@ function CalendarDay({
           </Text>
           {active &&
             events.map((event, i) => {
-              let status: GameEventStatus;
-              if (event.type !== "birthday" && event.type !== "anniversary") {
+              let status: GameEventStatus | undefined;
+              if (event.type !== "birthday") {
                 status = dayjs(day).isSame(event.start_date, "day")
                   ? "start"
                   : "end";
@@ -140,7 +140,7 @@ function CalendarWeek({
     <>
       {week.map((day: Date, i: number) => {
         const filteredEvents = events.filter((event) =>
-          event.type === "birthday" || event.type === "anniversary"
+          event.type === "birthday"
             ? dayjs(day)
                 .year(2000)
                 .isSame(dayjs(event.start_date).year(2000), "day")

@@ -109,7 +109,7 @@ function ScoutCard({ scout }: { scout: Scout }) {
           </Paper>
         )}
         <Picture
-          alt={scout.name}
+          alt={scout.name[0]}
           srcB2={`assets/card_still_full1_${scout.banner_id}_evolution.png`}
           sx={{ height: 100 }}
         />

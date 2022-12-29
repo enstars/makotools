@@ -7,7 +7,6 @@ import {
   IconExclamationMark,
   IconPlayerPlay,
   IconShirt,
-  IconStar,
 } from "@tabler/icons";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -34,7 +33,7 @@ function CalendarListEventCard({
   index: number;
   eventsAmt: number;
   event: Birthday | Event | Scout;
-  status: GameEventStatus;
+  status?: GameEventStatus;
 }) {
   // const { classes } = useStyles();
   const { dayjs } = useDayjs();
@@ -71,7 +70,7 @@ function CalendarListEventCard({
             ? event.banner_id + "_normal"
             : event.banner_id + "_evolution"
         }.png`}
-        alt={event.name}
+        alt={event.name[0]}
         sx={{
           width: "100%",
           height: 120,
@@ -92,9 +91,7 @@ function CalendarListEventCard({
           <Badge
             variant="filled"
             color={
-              event.type === "anniversary"
-                ? "yellow"
-                : event.type === "birthday"
+              event.type === "birthday"
                 ? "cyan"
                 : event.type === "feature scout"
                 ? "lightblue"
@@ -107,8 +104,6 @@ function CalendarListEventCard({
               <Box mt={4}>
                 {event.type === "birthday" ? (
                   <IconCake size={12} strokeWidth={3} />
-                ) : event.type === "anniversary" ? (
-                  <IconStar size={12} strokeWidth={3} />
                 ) : event.type === "feature scout" ? (
                   <IconShirt size={12} strokeWidth={3} />
                 ) : event.type === "scout" ? (
@@ -121,9 +116,7 @@ function CalendarListEventCard({
               </Box>
             }
           >
-            {event.type === "anniversary"
-              ? "Anniversary"
-              : event.type === "birthday"
+            {event.type === "birthday"
               ? "Birthday"
               : event.type === "feature scout"
               ? "Feature Scout"

@@ -76,7 +76,7 @@ function EventCard({ event, units }: { event: Event; units: GameUnit[] }) {
     >
       <Box sx={{ position: "relative", flex: "1 1 30%", minWidth: 175 }}>
         <Picture
-          alt={event.name}
+          alt={event.name[0]}
           srcB2={`assets/card_still_full1_${event.banner_id}_evolution.png`}
           sx={(theme) => ({
             height: "100%",

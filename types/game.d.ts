@@ -223,6 +223,7 @@ export interface Scout<T = string[]> extends CampaignInfo, ScoutStrings<T> {
   event_id?: ID;
   cards: ID[];
   type: ScoutTypes;
+  story_name: T;
 }
 
 export interface Birthday<T = string[]>

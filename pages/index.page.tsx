@@ -22,7 +22,7 @@ import {
   Scout,
   GameCard,
   RecommendedEvents,
-  EventType,
+  Campaign,
 } from "types/game";
 import CurrentEventCountdown from "components/Homepage/CurrentEventCountdown";
 import CurrentScoutsCountdown from "components/Homepage/CurrentScoutsCountdown";
@@ -103,23 +103,21 @@ function Page({
   );
 
   const birthdays: Birthday[] = createBirthdayData(characters);
-
   const gameEvents: Event[] = useMemo(
     () => gameEventsQuery.data,
     [gameEventsQuery.data]
   );
-
   const scouts: Scout[] = useMemo(() => scoutsQuery.data, [scoutsQuery.data]);
 
-  const events: EventType[] = [...birthdays, ...gameEvents, ...scouts];
+  const events: Campaign[] = [...birthdays, ...gameEvents, ...scouts];
 
   const cards: GameCard[] = useMemo(() => cardsQuery.data, [cardsQuery.data]);
 
   const containsLikedCharacter = (e: Event | Scout | Birthday): boolean => {
     if (faveCharas.length > 0) {
-      if ((e as Birthday).character_id) {
+      if (e.type === "birthday") {
         // if this is a birthday event
-        return faveCharas.includes((e as Birthday).character_id);
+        return faveCharas.includes(e.character_id);
       } else {
         const eventCards = e.cards;
         const relevantCards = cards.filter(
@@ -141,25 +139,20 @@ function Page({
     const filteredEvents = events.filter(containsLikedCharacter);
     if (faveCharas.length > 0) {
       filteredEvents.forEach((e) => {
-        if ((e as Birthday).character_id) {
+        if (e.type === "birthday") {
           listOfEvents.push({
             event: e,
-            charId: (e as Birthday).character_id,
+            charId: e.character_id,
           });
         } else {
           const eventCards = e.cards;
-          const relevantCards = cards.filter((card) =>
-            eventCards?.includes(card.id)
+          const relevantCards = cards.filter(
+            (card) =>
+              eventCards?.includes(card.id) &&
+              card.rarity === 5 &&
+              faveCharas.includes(card.character_id)
           );
-          console.log(relevantCards);
-          let charId;
-          relevantCards.forEach((card) => {
-            faveCharas.forEach((fave) => {
-              if (fave == card.character_id && card.rarity === 5) {
-                charId = card.character_id;
-              }
-            });
-          });
+          let charId = relevantCards[0].character_id;
           listOfEvents.push({ event: e, charId });
         }
       });

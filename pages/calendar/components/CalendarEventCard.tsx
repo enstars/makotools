@@ -24,7 +24,7 @@ function CalendarEventCard({
   status,
 }: {
   event: Campaign;
-  status: GameEventStatus;
+  status?: GameEventStatus;
 }) {
   const { classes } = useStyles();
   const { dayjs } = useDayjs();

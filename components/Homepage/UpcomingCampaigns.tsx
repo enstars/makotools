@@ -128,7 +128,7 @@ function EventCard({ event }: { event: Birthday | Event | Scout }) {
           }}
         >
           <Title order={3} weight={700} size="md" sx={{ lineHeight: 1.2 }}>
-            {event.type !== "birthday" ? event.name[0] : event.name}
+            {event.name[0]}
           </Title>
 
           <Badge

@@ -21,7 +21,7 @@ import {
 } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { useDayjs } from "services/libraries/dayjs";
-import { GameCard, Event, GameUnit, ID, Scout } from "types/game";
+import { GameCard, Event, GameUnit, Scout } from "types/game";
 import { QuerySuccess } from "types/makotools";
 import CardCard from "pages/cards/components/DisplayCard";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
@@ -118,7 +118,7 @@ function Page({
             type={event.type}
             eventName={event.name[0]}
             scoutName={scout.name[0]}
-            banner={scout.banner_id as ID}
+            banner={scout.banner_id[0]}
           />
         </>
       )}
