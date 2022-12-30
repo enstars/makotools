@@ -5,6 +5,8 @@ import {
   Switch,
   useMantineTheme,
   Box,
+  Indicator,
+  Select,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
@@ -12,18 +14,25 @@ import {
   IconLogin,
   IconLogout,
   IconMoonStars,
+  IconPalette,
+  IconGlobe,
 } from "@tabler/icons";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import useTranslation from "next-translate/useTranslation";
 
-import useUser from "../../../services/firebase/user";
+import { characterColors } from "../../MantineTheme/index";
+
+import useUser from "services/firebase/user";
+import { LOCALES } from "services/makotools/locales";
 
 function UserMenu({ trigger }: { trigger: any }) {
+  const { t } = useTranslation("sidebar");
   const theme = useMantineTheme();
   const dark = theme.colorScheme === "dark";
   const [opened, handlers] = useDisclosure(false);
   const user = useUser();
-  const { push } = useRouter();
+  const { push, pathname, asPath, query, locale } = useRouter();
 
   return (
     <Menu
@@ -52,7 +61,7 @@ function UserMenu({ trigger }: { trigger: any }) {
           href={user.loggedIn ? `/@${user?.db?.username}` : "#"}
           icon={
             <Avatar
-              color="blue"
+              color={theme.primaryColor}
               size="sm"
               radius="xl"
               sx={{ "*": { display: "flex" } }}
@@ -61,42 +70,36 @@ function UserMenu({ trigger }: { trigger: any }) {
         >
           {user.loading ? (
             <Text size="sm" color="dimmed">
-              Loading
+              {t("menu.loading")}
             </Text>
           ) : user.loggedIn ? (
-            user.db ? (
-              <Box
-                sx={{
-                  "*": {
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                  },
-                }}
-              >
-                {user.db?.name && (
-                  <Text id="sidebar-user-name" size="sm" weight={500}>
-                    {user.db.name}
-                  </Text>
-                )}
-                <Text id="sidebar-user-email" size="xs" color="dimmed" mt={-2}>
-                  @{user?.db?.username}
+            <Box
+              sx={{
+                "*": {
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                },
+              }}
+            >
+              {user.db?.name && (
+                <Text id="sidebar-user-name" size="sm" weight={500}>
+                  {user.db.name}
                 </Text>
-              </Box>
-            ) : (
-              <Text size="sm" color="dimmed">
-                Unable to load user data
+              )}
+              <Text id="sidebar-user-email" size="xs" color="dimmed" mt={-2}>
+                @{user?.db?.username}
               </Text>
-            )
+            </Box>
           ) : (
             <Text size="sm" color="dimmed">
-              Not Logged In
+              {t("menu.notLoggedIn")}
             </Text>
           )}
         </Menu.Item>
         <Menu.Divider />
         <Menu.Label id="sidebar-label-quick-settings">
-          Quick Settings
+          {t("menu.quickSettings")}
         </Menu.Label>
         <Menu.Item
           id="sidebar-dark-mode"
@@ -114,9 +117,92 @@ function UserMenu({ trigger }: { trigger: any }) {
           }
           closeMenuOnClick={false}
         >
-          Dark Mode
+          {t("menu.darkMode")}
         </Menu.Item>
-        <Menu.Label id="sidebar-label-account">Account</Menu.Label>
+        {user.loggedIn && (
+          <Menu.Item
+            id="sidebar-user-theme"
+            icon={<IconPalette size={14} />}
+            closeMenuOnClick={false}
+            rightSection={
+              <Select
+                placeholder="Choose user theme..."
+                value={theme.primaryColor}
+                onChange={(value) => user.db?.set({ user__theme: value })}
+                data={characterColors.map((colorTheme) => ({
+                  value: colorTheme.name,
+                  label: colorTheme.display_name,
+                }))}
+                rightSectionWidth={0}
+                rightSection={<></>}
+                styles={(theme) => ({
+                  root: {
+                    marginRight: -12,
+                  },
+                  input: {
+                    padding: 0,
+                    textAlign: "right",
+                    border: "none",
+                    background: "none",
+                    height: "auto",
+                    minHeight: 0,
+                    lineHeight: 1,
+                    color: theme.other.dimmed,
+                    paddingRight: 12,
+                  },
+                  item: {
+                    textAlign: "right",
+                    padding: "6px 12px",
+                  },
+                })}
+              />
+            }
+          >
+            {t("menu.userTheme")}
+          </Menu.Item>
+        )}
+        <Menu.Item
+          icon={<IconGlobe size={14} />}
+          closeMenuOnClick={false}
+          rightSection={
+            <Select
+              value={locale}
+              onChange={(value) => {
+                if (value && value !== locale)
+                  push({ pathname, query }, asPath, { locale: value });
+              }}
+              data={LOCALES.map((locale) => ({
+                value: locale.code,
+                label: locale.name,
+              }))}
+              rightSectionWidth={0}
+              rightSection={<></>}
+              styles={(theme) => ({
+                root: {
+                  marginRight: -12,
+                },
+                input: {
+                  padding: 0,
+                  textAlign: "right",
+                  border: "none",
+                  background: "none",
+                  height: "auto",
+                  minHeight: 0,
+                  lineHeight: 1,
+                  color: theme.other.dimmed,
+                  paddingRight: 12,
+                },
+                item: {
+                  textAlign: "right",
+                  padding: "6px 12px",
+                },
+              })}
+            />
+          }
+        >
+          {t("menu.locale")}
+        </Menu.Item>
+        <Menu.Label id="sidebar-label-account">{t("menu.account")}</Menu.Label>
 
         {user.loading ? (
           <Menu.Item
@@ -124,7 +210,7 @@ function UserMenu({ trigger }: { trigger: any }) {
             icon={<IconLogin size={14} />}
             disabled
           >
-            Log In
+            {t("menu.login")}
           </Menu.Item>
         ) : user.loggedIn ? (
           <>
@@ -132,9 +218,21 @@ function UserMenu({ trigger }: { trigger: any }) {
               id="sidebar-link-settings"
               component={Link}
               href="/settings"
-              icon={<IconSettings size={14} />}
+              icon={
+                <Indicator
+                  color="red"
+                  position="top-start"
+                  dot={
+                    user.privateDb?.friends__receivedRequests?.length !==
+                      undefined &&
+                    user.privateDb?.friends__receivedRequests?.length > 0
+                  }
+                >
+                  <IconSettings size={14} />
+                </Indicator>
+              }
             >
-              Settings
+              {t("menu.settings")}
             </Menu.Item>
             <Menu.Item
               id="sidebar-link-logout"
@@ -145,7 +243,7 @@ function UserMenu({ trigger }: { trigger: any }) {
               }}
               icon={<IconLogout size={14} />}
             >
-              Logout
+              {t("menu.logout")}
             </Menu.Item>
           </>
         ) : (
@@ -156,7 +254,7 @@ function UserMenu({ trigger }: { trigger: any }) {
               href="/login"
               icon={<IconLogin size={14} />}
             >
-              Log In
+              {t("menu.login")}
             </Menu.Item>
           </>
         )}

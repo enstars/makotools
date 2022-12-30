@@ -1,7 +1,7 @@
-import { getLayout } from "../../../components/Layout";
-import PageTitle from "../../../components/sections/PageTitle";
-
 import AnnouncementsList from "./components/AnnouncementsList";
+
+import { getLayout } from "components/Layout";
+import PageTitle from "components/sections/PageTitle";
 
 function Page() {
   return (

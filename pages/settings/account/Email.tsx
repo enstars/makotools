@@ -1,13 +1,11 @@
 import { Box, Button, Group, Text, TextInput } from "@mantine/core";
 
-import useUser from "../../../services/firebase/user";
-
+import useUser from "services/firebase/user";
 import { sendVerificationEmail } from "services/firebase/firestore";
 import { UserLoggedIn } from "types/makotools";
 
 function Email() {
   const user = useUser() as UserLoggedIn;
-  console.log(user);
   if (user.user.email !== null) {
     return (
       <Box>

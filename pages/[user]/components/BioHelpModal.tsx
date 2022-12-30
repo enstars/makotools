@@ -13,8 +13,7 @@ import {
 } from "@mantine/core";
 import Link from "next/link";
 
-import emotes from "../../../services/makotools/emotes";
-
+import emotes from "services/makotools/emotes";
 import Emote from "components/utilities/emotes/Emote";
 
 const useStyles = createStyles((theme) => ({
@@ -66,7 +65,10 @@ function BioHelpModal({
         <Link
           href="https://markdownguide.org"
           target="_blank"
-          style={{ color: theme.colors.indigo[5], textDecoration: "none" }}
+          style={{
+            color: theme.colors[theme.primaryColor][5],
+            textDecoration: "none",
+          }}
         >
           The Markdown Guide
         </Link>{" "}
@@ -74,7 +76,10 @@ function BioHelpModal({
         <Link
           href="https://rentry.co"
           target="_blank"
-          style={{ color: theme.colors.indigo[5], textDecoration: "none" }}
+          style={{
+            color: theme.colors[theme.primaryColor][5],
+            textDecoration: "none",
+          }}
         >
           Rentry&apos;s markdown guide
         </Link>
@@ -248,7 +253,6 @@ function BioHelpModal({
           <Box sx={{ padding: "3px" }}>
             <Text className={classes.markdownInput}>&gt; Blockquote</Text>
             <Space h="lg" />
-            <Text className={classes.markdownInput}>*** or --- or ___</Text>
             <Text className={classes.markdownInput}>
               Try to put a blank line before...
             </Text>
@@ -303,7 +307,7 @@ function BioHelpModal({
               component={Link}
               href="https://www.youtube.com/watch?v=dxrm5TvnOqY"
               target="_blank"
-              sx={{ color: theme.colors.indigo[5] }}
+              sx={{ color: theme.colors[theme.primaryColor][5] }}
             >
               Link Text
             </Text>
@@ -322,7 +326,7 @@ function BioHelpModal({
           href="https://twitter.com/neeneemi"
           target="_blank"
           style={{
-            color: theme.colors.indigo[5],
+            color: theme.colors[theme.primaryColor][5],
             textDecoration: "none",
           }}
         >

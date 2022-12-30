@@ -14,7 +14,7 @@ import Link from "next/link";
 import { IconArrowsShuffle2, IconBus, IconDiamond } from "@tabler/icons";
 
 import Picture from "components/core/Picture";
-import { GameEvent, GameUnit } from "types/game";
+import { Event, GameUnit } from "types/game";
 import { useDayjs } from "services/libraries/dayjs";
 import IconEnstars from "components/core/IconEnstars";
 
@@ -53,7 +53,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-function EventCard({ event, units }: { event: GameEvent; units: GameUnit[] }) {
+function EventCard({ event, units }: { event: Event; units: GameUnit[] }) {
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
 
@@ -61,10 +61,10 @@ function EventCard({ event, units }: { event: GameEvent; units: GameUnit[] }) {
     return event.unit_id ? event.unit_id?.includes(unit.id) : false;
   });
 
-  const isEstimatedDate = dayjs(event.start_date).isAfter(dayjs());
+  const isEstimatedDate = dayjs(event.start.en).isAfter(dayjs());
   const isOngoing = dayjs().isBetween(
-    dayjs(event.start_date),
-    dayjs(event.end_date)
+    dayjs(event.start.en),
+    dayjs(event.end.en)
   );
 
   return (
@@ -76,7 +76,7 @@ function EventCard({ event, units }: { event: GameEvent; units: GameUnit[] }) {
     >
       <Box sx={{ position: "relative", flex: "1 1 30%", minWidth: 175 }}>
         <Picture
-          alt={event.name}
+          alt={event.name[0]}
           srcB2={`assets/card_still_full1_${event.banner_id}_evolution.png`}
           sx={(theme) => ({
             height: "100%",
@@ -116,7 +116,7 @@ function EventCard({ event, units }: { event: GameEvent; units: GameUnit[] }) {
                   event.type === "song"
                     ? "grape"
                     : event.type === "shuffle"
-                    ? "blue"
+                    ? "toya_default"
                     : "teal"
                 }
                 leftSection={
@@ -155,17 +155,15 @@ function EventCard({ event, units }: { event: GameEvent; units: GameUnit[] }) {
             >
               <Box sx={{ flex: "1 1 0", minWidth: 185 }}>
                 <Text size="xs" color="dimmed" weight={700}>
-                  Start ({dayjs(event.start_date).format("z")})
+                  Start ({dayjs(event.start.en).format("z")})
                 </Text>
-                <Text weight={500}>
-                  {dayjs(event.start_date).format("lll")}
-                </Text>
+                <Text weight={500}>{dayjs(event.start.en).format("lll")}</Text>
               </Box>
               <Box sx={{ flex: "1 1 0", minWidth: 185 }}>
                 <Text size="xs" color="dimmed" weight={700}>
-                  End ({dayjs(event.end_date).format("z")})
+                  End ({dayjs(event.end.en).format("z")})
                 </Text>
-                <Text weight={500}>{dayjs(event.end_date).format("lll")}</Text>
+                <Text weight={500}>{dayjs(event.end.en).format("lll")}</Text>
               </Box>
             </Group>
 

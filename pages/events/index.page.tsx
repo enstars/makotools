@@ -10,6 +10,7 @@ import {
   Text,
   TextInput,
   Tooltip,
+  useMantineTheme,
 } from "@mantine/core";
 import {
   IconArrowsSort,
@@ -27,7 +28,7 @@ import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import { getLocalizedDataArray } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { GameCard, GameCharacter, GameEvent, GameUnit } from "types/game";
+import { GameCard, GameCharacter, Event, GameUnit } from "types/game";
 import { QuerySuccess } from "types/makotools";
 import useFSSList from "services/makotools/search";
 
@@ -50,11 +51,12 @@ function Page({
   unitsQuery,
   charactersQuery,
 }: {
-  eventsQuery: QuerySuccess<GameEvent[]>;
+  eventsQuery: QuerySuccess<Event[]>;
   cardsQuery: QuerySuccess<GameCard[]>;
   unitsQuery: QuerySuccess<GameUnit[]>;
   charactersQuery: QuerySuccess<GameCharacter[]>;
 }) {
+  const theme = useMantineTheme();
   const { locale } = useRouter();
   const events = useMemo(() => eventsQuery.data, [eventsQuery.data]);
   const cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
@@ -64,14 +66,14 @@ function Page({
     [charactersQuery.data]
   );
 
-  const fssOptions = useMemo<FSSOptions<GameEvent, typeof defaultView.filters>>(
+  const fssOptions = useMemo<FSSOptions<Event, typeof defaultView.filters>>(
     () => ({
       filters: [
         {
           type: "units",
           values: [],
           function: (view) => {
-            return (c: GameEvent) =>
+            return (c: Event) =>
               view.filters.units.filter((value) => c.unit_id?.includes(value))
                 .length === view.filters.units.length;
           },
@@ -80,7 +82,7 @@ function Page({
           type: "characters",
           values: [],
           function: (view) => {
-            return (c: GameEvent) =>
+            return (c: Event) =>
               view.filters.characters.filter((value: number) => {
                 return cards
                   .filter((card) => c.cards?.includes(card.id))
@@ -101,13 +103,13 @@ function Page({
         {
           label: "Event ID",
           value: "id",
-          function: (a: GameEvent, b: GameEvent) => a.event_id - b.event_id,
+          function: (a: Event, b: Event) => a.event_id - b.event_id,
         },
         {
           label: "Start Date",
           value: "date",
-          function: (a: GameEvent, b: GameEvent) =>
-            dayjs(a.start_date).unix() - dayjs(b.start_date).unix(),
+          function: (a: Event, b: Event) =>
+            dayjs(a.start.en).unix() - dayjs(b.start.en).unix(),
         },
       ],
       baseSort: "id",
@@ -119,7 +121,7 @@ function Page({
     []
   );
   const { results, view, setView } = useFSSList<
-    GameEvent,
+    Event,
     typeof defaultView.filters
   >(events, fssOptions);
 
@@ -181,7 +183,7 @@ function Page({
                     }));
                   }}
                   variant="light"
-                  color="blue"
+                  color={theme.primaryColor}
                 >
                   {view.sort.ascending ? (
                     <IconSortAscending size={16} />
@@ -293,7 +295,7 @@ function Page({
 }
 
 export const getServerSideProps = getServerSideUser(async ({ locale }) => {
-  const eventsQuery: any = await getLocalizedDataArray<GameEvent>(
+  const eventsQuery: any = await getLocalizedDataArray<Event>(
     "events",
     locale,
     "event_id"
@@ -319,12 +321,12 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     "id"
   );
 
-  // const events: GameEvent[] = retrieveEvents(
+  // const events: Event[] = retrieveEvents(
   //   {
   //     gameEvents: getEvents.data,
   //   },
   //   locale
-  // ) as GameEvent[];
+  // ) as Event[];
 
   return {
     props: {

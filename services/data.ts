@@ -1,9 +1,8 @@
-import { Lang, Locale, Query, UL } from "../types/makotools";
-
 import { CONSTANTS } from "./makotools/constants";
 import { DEFAULT_LOCALE } from "./makotools/locales";
 import { parseStringify } from "./utilities";
 
+import { Lang, Locale, Query, UL } from "types/makotools";
 import { ID } from "types/game";
 
 const flatten = require("flat");

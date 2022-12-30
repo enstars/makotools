@@ -26,14 +26,13 @@ import {
 } from "@tabler/icons";
 import fuzzysort from "fuzzysort";
 
-import { getLocalizedDataArray } from "../../services/data";
-import PageTitle from "../../components/sections/PageTitle";
-import { getLayout } from "../../components/Layout";
-import getServerSideUser from "../../services/firebase/getServerSideUser";
-import { QuerySuccess } from "../../types/makotools";
-
 import CardCard from "./components/DisplayCard";
 
+import PageTitle from "components/sections/PageTitle";
+import { getLayout } from "components/Layout";
+import { QuerySuccess } from "types/makotools";
+import getServerSideUser from "services/firebase/getServerSideUser";
+import { getLocalizedDataArray } from "services/data";
 import { CardRarity, GameCard, GameCharacter } from "types/game";
 type SortOption = "id" | "character";
 
@@ -184,7 +183,7 @@ function Page({
                     }));
                   }}
                   variant="light"
-                  color="blue"
+                  color={theme.primaryColor}
                 >
                   {viewOptions.sortDescending ? (
                     <IconSortAscending size={16} />

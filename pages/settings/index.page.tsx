@@ -5,46 +5,34 @@ import {
   Stack,
   useMantineTheme,
   Tabs,
-  Alert,
   Accordion,
   ThemeIcon,
-  Group,
-  Text,
+  Indicator,
 } from "@mantine/core";
 import {
   IconUserCircle,
   IconDeviceGamepad2,
   IconPalette,
-  IconPencil,
-  IconAlertCircle,
+  IconFriends,
 } from "@tabler/icons";
-import dynamic from "next/dynamic";
-import Link from "next/link";
-
-import PageTitle from "../../components/sections/PageTitle";
-import getServerSideUser from "../../services/firebase/getServerSideUser";
-import { getLayout } from "../../components/Layout";
-import { getLocalizedDataArray } from "../../services/data";
 
 import Region from "./content/Region";
 import NameOrder from "./content/NameOrder";
 import DarkMode from "./appearance/DarkMode";
 import ShowTlBadge from "./appearance/ShowTlBadge";
-import Name from "./profile/Name";
-import Pronouns from "./profile/Pronouns";
-import Username from "./profile/Username";
+import Username from "./account/Username";
 import ColorCode from "./account/ColorCode";
-import StartPlaying from "./profile/StartPlaying";
 import Email from "./account/Email";
-import Banner from "./profile/Banner";
 import UseWebP from "./appearance/UseWebP";
+import Requests from "./friends/Requests";
 
+import { getLayout } from "components/Layout";
+import PageTitle from "components/sections/PageTitle";
+import { getLocalizedDataArray } from "services/data";
+import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCard } from "types/game";
 import useUser from "services/firebase/user";
 
-const Bio = dynamic(() => import("./profile/Bio"), {
-  ssr: false,
-});
 const tabs = [
   {
     label: "Content",
@@ -76,49 +64,14 @@ const tabs = [
     ),
   },
   {
-    label: "Profile",
-    value: "profile",
-    icon: IconPencil,
-    color: "lightblue",
-    contents: ({
-      cards,
-      user,
-    }: {
-      cards: GameCard[] | undefined;
-      user: any;
-    }) => (
+    label: "Friends",
+    value: "friends",
+    icon: IconFriends,
+    color: "green",
+    contents: () => (
       <>
         <Stack>
-          {user.db?.admin?.disableTextFields ? (
-            <Alert
-              icon={<IconAlertCircle size={16} />}
-              color="red"
-              sx={{ marginTop: "2vh" }}
-            >
-              You&apos;ve been restricted from editing your profile. You can
-              submit an appeal through our{" "}
-              <Text
-                component={Link}
-                href="/issues"
-                sx={{ textDecoration: "underline" }}
-              >
-                issues
-              </Text>{" "}
-              page.
-            </Alert>
-          ) : (
-            <Alert color="yellow">
-              These are publicly accessible from your profile page, so make sure
-              to follow our community guidelines.
-            </Alert>
-          )}
-          <Group>
-            <Name />
-            <Pronouns />
-          </Group>
-          <Bio />
-          {cards && <Banner cards={cards} />}
-          <StartPlaying />
+          <Requests />
         </Stack>
       </>
     ),
@@ -127,7 +80,7 @@ const tabs = [
     label: "Account",
     value: "account",
     icon: IconUserCircle,
-    color: "blue",
+    color: "toya_default",
     contents: () => (
       <>
         <Stack>
@@ -184,7 +137,7 @@ function Page({ cards }: { cards: GameCard[] | undefined }) {
                 {t.label}
               </Accordion.Control>
               <Accordion.Panel>
-                <t.contents cards={cards} user={user} />
+                <t.contents />
               </Accordion.Panel>
             </Accordion.Item>
           ))}
@@ -209,7 +162,20 @@ function Page({ cards }: { cards: GameCard[] | undefined }) {
               <Tabs.Tab
                 key={value}
                 value={value}
-                icon={<props.icon size={14} />}
+                icon={
+                  <Indicator
+                    color="red"
+                    position="top-start"
+                    dot={
+                      value === "friends" &&
+                      user.loggedIn &&
+                      user.privateDb?.friends__receivedRequests &&
+                      user.privateDb?.friends__receivedRequests?.length > 0
+                    }
+                  >
+                    <props.icon size={14} />
+                  </Indicator>
+                }
                 color={color}
               >
                 {label}
@@ -219,7 +185,7 @@ function Page({ cards }: { cards: GameCard[] | undefined }) {
 
           {tabs.map(({ value, ...t }) => (
             <Tabs.Panel key={value} value={value}>
-              <t.contents cards={cards} user={user} />
+              <t.contents />
             </Tabs.Panel>
           ))}
         </Tabs>

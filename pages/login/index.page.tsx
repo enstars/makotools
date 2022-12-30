@@ -1,9 +1,9 @@
 import { AuthAction } from "next-firebase-auth";
 
-import getServerSideUser from "../../services/firebase/getServerSideUser";
-import { getLayout } from "../../components/Layout";
-
 import Login from "./Login";
+
+import { getLayout } from "components/Layout";
+import getServerSideUser from "services/firebase/getServerSideUser";
 
 function Page() {
   return <Login />;

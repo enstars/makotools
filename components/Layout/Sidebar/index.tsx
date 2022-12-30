@@ -1,4 +1,4 @@
-import React, { forwardRef, ReactElement } from "react";
+import React, { forwardRef, ReactElement, SyntheticEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import {
@@ -14,6 +14,8 @@ import {
   IconInfoCircle,
   IconChevronRight,
   IconChevronLeft,
+  IconSearch,
+  IconX,
 } from "@tabler/icons";
 import {
   Navbar,
@@ -27,16 +29,23 @@ import {
   Stack,
   NavLinkProps,
   ActionIcon,
+  TextInput,
+  Indicator,
 } from "@mantine/core";
+import { useLocalStorage } from "@mantine/hooks";
+import { clamp } from "lodash";
+import useTranslation from "next-translate/useTranslation";
 
-import MakotoolsLightComponent from "../../../assets/Logo/mkt_light_icon.svg";
-import MakotoolsDarkComponent from "../../../assets/Logo/mkt_dark_icon.svg";
-import MakotoolsTextLightComponent from "../../../assets/Logo/mkt_light_text.svg";
-import MakotoolsTextDarkComponent from "../../../assets/Logo/mkt_dark_text.svg";
-import useUser from "../../../services/firebase/user";
 import { useSidebarStatus } from "..";
 
 import UserMenu from "./UserMenu";
+import SearchResults from "./SearchResults";
+
+import MakotoolsLightComponent from "assets/Logo/mkt_light_icon.svg";
+import MakotoolsDarkComponent from "assets/Logo/mkt_dark_icon.svg";
+import MakotoolsTextLightComponent from "assets/Logo/mkt_light_text.svg";
+import MakotoolsTextDarkComponent from "assets/Logo/mkt_dark_text.svg";
+import useUser from "services/firebase/user";
 
 type LinkObject = {
   link: string;
@@ -48,7 +57,7 @@ type LinkObject = {
 
 const SidebarLink = forwardRef(function SbL(
   {
-    collapsed,
+    collapsed = false,
     name,
     Icon,
     disabled,
@@ -60,7 +69,7 @@ const SidebarLink = forwardRef(function SbL(
     NavLinkProps & {
       name?: any;
       active?: boolean;
-      collapsed: boolean;
+      collapsed?: boolean;
       component?: any;
       href?: string;
     },
@@ -99,7 +108,7 @@ const SidebarLink = forwardRef(function SbL(
         maxWidth: "100%",
         minWidth: 0,
         padding: theme.spacing.xs,
-        lineHeight: 1,
+        lineHeight: 1.25,
         borderRadius: theme.radius.sm,
         ...sx,
       })}
@@ -116,55 +125,69 @@ const SidebarLink = forwardRef(function SbL(
 });
 
 function Sidebar(props: any) {
+  const { t } = useTranslation("sidebar");
   const location = useRouter();
 
   const theme = useMantineTheme();
   const dark = theme.colorScheme === "dark";
   const user = useUser();
-
+  const [searchValue, setSearchValue] = useLocalStorage<string>({
+    defaultValue: "",
+    key: "sidebarSearch",
+  });
+  const DEFAULT_WIDTH = 200;
+  const [width, setWidth] = useLocalStorage<number>({
+    defaultValue: DEFAULT_WIDTH,
+    key: "sidebarWidth",
+  });
+  let mouseDown = false;
   const { collapsed, toggleCollapsed } = useSidebarStatus();
   if (props.permanentlyExpanded && collapsed) toggleCollapsed();
+
+  function resize(event: MouseEvent) {
+    setWidth(clamp(width + (event.pageX - width), 175, 300));
+  }
 
   const linkList: LinkObject[] = [
     {
       link: "/characters",
-      name: "Characters",
+      name: "characters",
       Icon: IconUsers,
     },
     {
       link: "/cards",
-      name: "Cards",
+      name: "cards",
       Icon: IconCards,
     },
     {
       link: "/events",
-      name: "Events",
+      name: "events",
       Icon: IconAward,
     },
     {
       link: "/scouts",
-      name: "Scouts",
+      name: "scouts",
       Icon: IconDiamond,
     },
     {
       link: "/stories",
-      name: "Stories",
+      name: "stories",
       Icon: IconBooks,
       disabled: true,
     },
     {
       link: "/calendar",
-      name: "Calendar",
+      name: "calendar",
       Icon: IconCalendar,
     },
     {
       link: "/about",
-      name: "About",
+      name: "about",
       Icon: IconInfoCircle,
     },
     {
       link: "https://www.patreon.com/makotools",
-      name: "Patreon",
+      name: "patreon",
       Icon: IconBrandPatreon,
     },
   ];
@@ -173,7 +196,7 @@ function Sidebar(props: any) {
       position={{ top: 0, left: 0 }}
       width={{
         base: 0,
-        xs: collapsed ? 50 : 200,
+        xs: collapsed ? 50 : width,
       }}
       hidden={true}
       hiddenBreakpoint="xs"
@@ -235,8 +258,54 @@ function Sidebar(props: any) {
             )
           }
         />
+        {user.loggedIn &&
+          ((user.db.admin?.patreon && user.db.admin?.patreon >= 1) ||
+            user.db.admin?.administrator) &&
+          (collapsed ? (
+            <TextInput
+              styles={(theme) => ({
+                input: {
+                  padding: theme.spacing.xs,
+                  paddingRight: 0,
+                },
+              })}
+              // variant="filled"
+              value=""
+              icon={<IconSearch size={18} />}
+              iconWidth={38}
+              onClick={() => {
+                toggleCollapsed();
+                if (props?.onCollapse) props.onCollapse();
+              }}
+            />
+          ) : (
+            <TextInput
+              styles={(theme) => ({
+                input: {
+                  padding: theme.spacing.xs,
+                },
+              })}
+              // variant="unstyled"
+              value={searchValue}
+              onChange={(event) => setSearchValue(event.currentTarget.value)}
+              placeholder={t("searchbarMessage")}
+              icon={<IconSearch size={18} />}
+              iconWidth={38}
+              rightSection={
+                searchValue && (
+                  <ActionIcon
+                    size="xs"
+                    onClick={() => {
+                      setSearchValue("");
+                    }}
+                  >
+                    <IconX size={14} />
+                  </ActionIcon>
+                )
+              }
+            />
+          ))}
       </Navbar.Section>
-
       <Navbar.Section
         grow
         component={ScrollArea}
@@ -261,108 +330,156 @@ function Sidebar(props: any) {
             minWidth: 0,
           })}
         >
-          {linkList
-            .filter((l: LinkObject) => l.link)
-            .map((link: LinkObject) => {
-              const active = `/${location.asPath.split("/")[1]}` === link.link;
-              return (
-                <Tooltip
-                  key={link.link}
-                  label={link.name}
-                  position="right"
-                  disabled={!collapsed}
-                  withinPortal
-                >
-                  <div>
-                    {link.disabled ? (
-                      <SidebarLink
-                        collapsed={collapsed}
-                        active={active}
-                        {...link}
-                      />
-                    ) : (
-                      <SidebarLink
-                        component={Link}
-                        href={link.link}
-                        collapsed={collapsed}
-                        active={active}
-                        {...link}
-                      />
-                    )}
-                  </div>
-                </Tooltip>
-              );
-            })}
-
-          <Group
-            sx={(theme) => ({
-              padding: theme.spacing.xs / 2,
-              gap: 0,
-            })}
-            position="center"
-            p={0}
-          >
-            {!collapsed && <></>}
-          </Group>
-          <UserMenu
-            trigger={
-              <SidebarLink
-                collapsed={collapsed}
-                active={true}
-                name="User"
-                Icon={IconUserCircle}
-                sx={{ "&&": { flex: "1 1 0" } }}
-                props={{ variant: "subtle" }}
-              />
-            }
-          />
-          {collapsed ? (
-            <Group position="right" p={0}>
-              <ActionIcon
-                size={40}
-                radius="sm"
-                onClick={() => {
-                  toggleCollapsed();
-                  if (props?.onCollapse) props.onCollapse();
-                }}
-                // variant="light"
-              >
-                <Text inline color="dimmed">
-                  <IconChevronRight size={20} />
-                </Text>
-              </ActionIcon>
-            </Group>
+          {searchValue ? (
+            <SearchResults {...{ searchValue, setSearchValue }} />
           ) : (
-            <Group position="right" p={0}>
-              <ActionIcon
-                size={40}
-                // radius="sm"
-                onClick={() => {
-                  toggleCollapsed();
-                  if (props?.onCollapse) props.onCollapse();
-                }}
-                variant="default"
-                mr={-6}
-                sx={(theme) => ({
-                  borderRadius: 0,
-                  borderTopLeftRadius: theme.radius.md,
-                  borderBottomLeftRadius: theme.radius.md,
-                  width: 100,
+            <>
+              {linkList
+                .filter((l: LinkObject) => l.link)
+                .map((link: LinkObject) => {
+                  const active =
+                    `/${location.asPath.split("/")[1]}` === link.link;
+                  return (
+                    <Tooltip
+                      key={link.link}
+                      label={t(`links.${link.name}`)}
+                      position="right"
+                      disabled={!collapsed}
+                      withinPortal
+                    >
+                      <div>
+                        {link.disabled ? (
+                          <SidebarLink
+                            collapsed={collapsed}
+                            active={active}
+                            {...link}
+                            name={t(`links.${link.name}`)}
+                          />
+                        ) : (
+                          <SidebarLink
+                            component={Link}
+                            href={link.link}
+                            collapsed={collapsed}
+                            active={active}
+                            {...link}
+                            name={t(`links.${link.name}`)}
+                          />
+                        )}
+                      </div>
+                    </Tooltip>
+                  );
                 })}
+
+              <Group
+                sx={(theme) => ({
+                  padding: theme.spacing.xs / 2,
+                  gap: 0,
+                })}
+                position="center"
+                p={0}
               >
-                <Text component={Group} color="dimmed" spacing={4}>
-                  <IconChevronLeft size={16} />
-                  <Text inline size="sm" weight={500}>
-                    Collapse
-                  </Text>
-                </Text>
-              </ActionIcon>
-            </Group>
+                {!collapsed && <></>}
+              </Group>
+              <UserMenu
+                trigger={
+                  <SidebarLink
+                    collapsed={collapsed}
+                    active={true}
+                    name="User"
+                    Icon={
+                      <Indicator
+                        color="red"
+                        position="top-start"
+                        dot={
+                          user.loggedIn &&
+                          user.privateDb?.friends__receivedRequests?.length !==
+                            undefined &&
+                          user.privateDb?.friends__receivedRequests?.length > 0
+                        }
+                      >
+                        <IconUserCircle size={20} />
+                      </Indicator>
+                    }
+                    sx={{ "&&": { flex: "1 1 0" } }}
+                    props={{ variant: "subtle" }}
+                  />
+                }
+              />
+              {collapsed ? (
+                <Group position="right" p={0}>
+                  <ActionIcon
+                    size={40}
+                    radius="sm"
+                    onClick={() => {
+                      toggleCollapsed();
+                      if (props?.onCollapse) props.onCollapse();
+                    }}
+                    // variant="light"
+                  >
+                    <Text inline color="dimmed">
+                      <IconChevronRight size={20} />
+                    </Text>
+                  </ActionIcon>
+                </Group>
+              ) : (
+                <Group position="right" p={0}>
+                  <ActionIcon
+                    size={40}
+                    // radius="sm"
+                    onClick={() => {
+                      toggleCollapsed();
+                      if (props?.onCollapse) props.onCollapse();
+                    }}
+                    variant="default"
+                    mr={-5}
+                    sx={(theme) => ({
+                      borderRadius: 0,
+                      borderTopLeftRadius: theme.radius.md,
+                      borderBottomLeftRadius: theme.radius.md,
+                      borderRightWidth: 0,
+                      width: 100,
+                      borderColor:
+                        theme.colorScheme === "dark"
+                          ? theme.colors.dark[5]
+                          : theme.colors.gray[2],
+                    })}
+                  >
+                    <Text component={Group} color="dimmed" spacing={4}>
+                      <IconChevronLeft size={16} />
+                      <Text inline size="sm" weight={500}>
+                        {t("collapseSidebar")}
+                      </Text>
+                    </Text>
+                  </ActionIcon>
+                </Group>
+              )}
+            </>
           )}
         </Stack>
       </Navbar.Section>
+      {!collapsed && !props.disableResize && (
+        <Box
+          sx={{
+            position: "absolute",
+            right: -3,
+            width: 6,
+            height: "100%",
+            zIndex: 5,
+            "&:hover": { cursor: "ew-resize" },
+          }}
+          onMouseDown={(event: SyntheticEvent) => {
+            event.preventDefault();
+            mouseDown = true;
+            window.addEventListener("mousemove", resize);
+            window.addEventListener("mouseup", (e) => {
+              window.removeEventListener("mousemove", resize);
+            });
+          }}
+        />
+      )}
     </Navbar>
   );
 }
 
 export default Sidebar;
+export { SidebarLink };

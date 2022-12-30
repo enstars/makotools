@@ -1,69 +1,45 @@
-const appLocales = [
-  // game languages
-  "en", // English
-  "ja", // Japanese
-  "zh", // Standard Mandarin / Simplified
-  "zh-TW", // Taiwanese Mandarin / Traditional
-  "ko", // Korean
-  // Oissu Statistics
-  "id", // Indonesian
-  "fil", // Filipino
-  "vi", // Vietnamese
-  "ru", // Russian
-  "ms", // Malaysian
-  "es", // Spanish
-  "pt", // Portugese
-  "pt-BR", // Brazilian Portugese
-  "fr", // French
-  "de", // German
-  "it", // Italian
-  "ar", // Arabic
-  "th", // Thai
-];
+require("dotenv").config();
 
-module.exports = {
-  webpack(config) {
-    config.module.rules.push(
-      {
-        test: /\.svg$/i,
-        type: "asset",
-        resourceQuery: /url/, // *.svg?url
-      },
-      {
-        test: /\.svg$/i,
-        issuer: /\.[jt]sx?$/,
-        resourceQuery: { not: [/url/] }, // exclude react component if *.svg?url
-        use: ["@svgr/webpack"],
-      }
-    );
-    config.resolve.alias["cldr$"] = "cldrjs";
-    config.resolve.alias["cldr"] = "cldrjs/dist/cldr";
+const nextTranslate = require("next-translate");
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
+});
 
-    return config;
-  },
-  images: {
-    domains: ["uchuu.ensemble.moe", "assets.enstars.link"],
-  },
+module.exports = withBundleAnalyzer(
+  nextTranslate({
+    webpack: (config) => {
+      config.module.rules.push(
+        {
+          test: /\.svg$/i,
+          type: "asset",
+          resourceQuery: /url/, // *.svg?url
+        },
+        {
+          test: /\.svg$/i,
+          issuer: /\.[jt]sx?$/,
+          resourceQuery: { not: [/url/] }, // exclude react component if *.svg?url
+          use: ["@svgr/webpack"],
+        }
+      );
+      config.resolve.alias["cldr$"] = "cldrjs";
+      config.resolve.alias["cldr"] = "cldrjs/dist/cldr";
 
-  compiler: {
-    // Enables the styled-components SWC transform
-    styledComponents: true,
-  },
+      return config;
+    },
+    images: {
+      domains: ["uchuu.ensemble.moe", "assets.enstars.link"],
+    },
 
-  i18n: {
-    locales: appLocales,
-    defaultLocale: "en",
-  },
+    pageExtensions: ["page.tsx", "page.ts", "page.jsx", "page.js"],
 
-  pageExtensions: ["page.tsx", "page.ts", "page.jsx", "page.js"],
-
-  async redirects() {
-    return [
-      {
-        source: "/issues/form",
-        destination: "https://forms.gle/W2oLnbUeTBJm647R9",
-        permanent: false,
-      },
-    ];
-  },
-};
+    async redirects() {
+      return [
+        {
+          source: "/issues/form",
+          destination: "https://forms.gle/W2oLnbUeTBJm647R9",
+          permanent: false,
+        },
+      ];
+    },
+  })
+);

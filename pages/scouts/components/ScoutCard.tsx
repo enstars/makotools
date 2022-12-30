@@ -4,7 +4,7 @@ import { IconHistory, IconHourglassHigh } from "@tabler/icons";
 
 import Picture from "components/core/Picture";
 import { useDayjs } from "services/libraries/dayjs";
-import { ScoutEvent } from "types/game";
+import { Scout } from "types/game";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   scoutInfo: {
@@ -21,7 +21,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 }));
 
-function ScoutCard({ scout }: { scout: ScoutEvent }) {
+function ScoutCard({ scout }: { scout: Scout }) {
   const { dayjs } = useDayjs();
   const { classes } = useStyles();
 
@@ -32,7 +32,7 @@ function ScoutCard({ scout }: { scout: ScoutEvent }) {
         href={`/scouts/${scout.gacha_id}`}
         sx={{ position: "relative" }}
       >
-        {dayjs(scout.end_date).isBefore(dayjs()) && (
+        {dayjs(scout.end.en).isBefore(dayjs()) && (
           <Paper
             component={Box}
             sx={(theme) => ({
@@ -70,7 +70,7 @@ function ScoutCard({ scout }: { scout: ScoutEvent }) {
             </Text>
           </Paper>
         )}
-        {dayjs().isBetween(dayjs(scout.start_date), dayjs(scout.end_date)) && (
+        {dayjs().isBetween(dayjs(scout.start.en), dayjs(scout.end.en)) && (
           <Paper
             component={Box}
             sx={(theme) => ({
@@ -109,7 +109,7 @@ function ScoutCard({ scout }: { scout: ScoutEvent }) {
           </Paper>
         )}
         <Picture
-          alt={scout.name}
+          alt={scout.name[0]}
           srcB2={`assets/card_still_full1_${scout.banner_id}_evolution.png`}
           sx={{ height: 100 }}
         />
@@ -121,9 +121,9 @@ function ScoutCard({ scout }: { scout: ScoutEvent }) {
       >
         <Text weight={700}>{scout.name[0]}</Text>
         <Text size="xs" weight={500} color="dimmed">
-          {dayjs(scout.start_date).format("ll")}
+          {dayjs(scout.start.en).format("ll")}
           {" - "}
-          {dayjs(scout.end_date).format("ll")}
+          {dayjs(scout.end.en).format("ll")}
         </Text>
       </Card.Section>
     </Card>

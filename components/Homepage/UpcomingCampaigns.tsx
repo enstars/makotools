@@ -16,14 +16,13 @@ import {
   IconCalendarTime,
   IconDiamond,
   IconShirt,
-  IconStar,
 } from "@tabler/icons";
 import Link from "next/link";
+import useTranslation from "next-translate/useTranslation";
 
-import { useDayjs } from "../../services/libraries/dayjs";
-
-import { BirthdayEvent, GameEvent, ScoutEvent } from "types/game";
-import { retrieveClosestEvents } from "services/events";
+import { useDayjs } from "services/libraries/dayjs";
+import { Birthday, Campaign, Event, Scout } from "types/game";
+import { retrieveNextCampaigns } from "services/campaigns";
 import Picture from "components/core/Picture";
 
 /* END FUNCTION */
@@ -63,21 +62,20 @@ const useStyles = createStyles((theme, _params) => ({
 }));
 
 // create individual event card
-function EventCard({
-  event,
-}: {
-  event: BirthdayEvent | GameEvent | ScoutEvent;
-}) {
+function EventCard({ event }: { event: Birthday | Event | Scout }) {
+  const { t } = useTranslation("home");
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
-  const formattedMonth = dayjs(event.start_date).format("MMM");
-  const formattedDate = dayjs(event.start_date).format("D");
+  const formattedMonth = dayjs(event.start.en).format("MMM");
+  const formattedDate = dayjs(event.start.en).format("D");
 
-  let link = (event as BirthdayEvent).character_id
-    ? `/characters/${(event as BirthdayEvent).character_id}`
-    : (event as GameEvent).event_id
-    ? `/events/${(event as GameEvent).event_id}`
-    : `/scouts/${(event as ScoutEvent).gacha_id}`;
+  let link = (event as Birthday).character_id
+    ? `/characters/${(event as Birthday).character_id}`
+    : ((event as Event).event_id && event.type === "song") ||
+      event.type === "shuffle" ||
+      event.type == "tour"
+    ? `/events/${(event as Event).event_id}`
+    : `/scouts/${(event as Scout).gacha_id}`;
 
   return (
     <Card
@@ -130,7 +128,7 @@ function EventCard({
           }}
         >
           <Title order={3} weight={700} size="md" sx={{ lineHeight: 1.2 }}>
-            {event.type !== "birthday" ? event.name[0] : event.name}
+            {event.name[0]}
           </Title>
 
           <Badge
@@ -138,9 +136,7 @@ function EventCard({
             className={classes.eventType}
             variant="filled"
             color={
-              event.type === "anniversary"
-                ? "yellow"
-                : event.type === "birthday"
+              event.type === "birthday"
                 ? "cyan"
                 : event.type === "feature scout"
                 ? "lightblue"
@@ -153,8 +149,6 @@ function EventCard({
               <Text inline mt={0}>
                 {event.type === "birthday" ? (
                   <IconCake size={12} strokeWidth={3} />
-                ) : event.type === "anniversary" ? (
-                  <IconStar size={12} strokeWidth={3} />
                 ) : event.type === "feature scout" ? (
                   <IconShirt size={12} strokeWidth={3} />
                 ) : event.type === "scout" ? (
@@ -171,7 +165,7 @@ function EventCard({
           </Badge>
         </Box>
         <Picture
-          alt={event.name}
+          alt={event.name[0]}
           srcB2={`assets/card_still_full1_${event.banner_id}_normal.webp`}
           radius="sm"
           sx={(theme) => ({
@@ -196,11 +190,8 @@ function EventCard({
   );
 }
 
-function UpcomingCampaigns({
-  events,
-}: {
-  events: (BirthdayEvent | GameEvent | ScoutEvent)[];
-}) {
+function UpcomingCampaigns({ events }: { events: Campaign[] }) {
+  const { t } = useTranslation("home");
   const { dayjs } = useDayjs();
   const { classes } = useStyles();
 
@@ -208,19 +199,17 @@ function UpcomingCampaigns({
     <Accordion.Item value="birthday">
       <Accordion.Control icon={<IconCalendarTime size={18} />}>
         <Text inline weight={500}>
-          Upcoming Campaigns
+          {t("upcomingCampaigns.title")}
         </Text>
       </Accordion.Control>
 
       <Accordion.Panel className={classes.panel} px={0}>
-        {retrieveClosestEvents(events, 8).map(
-          (e: BirthdayEvent | GameEvent | ScoutEvent, index) => {
-            return <EventCard key={index} event={e} />;
-          }
-        )}
+        {retrieveNextCampaigns(events, 8).map((e, index) => {
+          return <EventCard key={index} event={e} />;
+        })}
         <Box mt="xs">
           <Anchor component={Link} href="/calendar" size="sm">
-            See full calendar
+            {t("upcomingCampaigns.seeAll")}
           </Anchor>
         </Box>
       </Accordion.Panel>

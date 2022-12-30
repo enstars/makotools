@@ -1,4 +1,4 @@
-import Flags from "country-flag-icons/react/3x2";
+import { CN, GB, JP, KR, TW } from "country-flag-icons/react/3x2";
 
 import SelectSetting from "../shared/SelectSetting";
 
@@ -6,27 +6,27 @@ const gameRegions = [
   {
     value: "jp",
     label: "Japan",
-    icon: <Flags.JP height={16} style={{ borderRadius: 3 }} />,
+    icon: <JP height={16} style={{ borderRadius: 3 }} />,
   },
   {
     value: "cn",
     label: "Mainland China",
-    icon: <Flags.CN height={16} style={{ borderRadius: 3 }} />,
+    icon: <CN height={16} style={{ borderRadius: 3 }} />,
   },
   {
     value: "kr",
     label: "Korea",
-    icon: <Flags.KR height={16} style={{ borderRadius: 3 }} />,
+    icon: <KR height={16} style={{ borderRadius: 3 }} />,
   },
   {
     value: "tw",
     label: "Taiwan",
-    icon: <Flags.TW height={16} style={{ borderRadius: 3 }} />,
+    icon: <TW height={16} style={{ borderRadius: 3 }} />,
   },
   {
     value: "en",
     label: "Global (English)",
-    icon: <Flags.GB height={16} style={{ borderRadius: 3 }} />,
+    icon: <GB height={16} style={{ borderRadius: 3 }} />,
   },
 ];
 

@@ -1,30 +1,29 @@
 import { GetServerSidePropsContext } from "next";
 import { AuthUserContext } from "next-firebase-auth";
 import { StaticImageData } from "next/image";
-import { WP_REST_API_Post } from "wp-types";
+import { StrapiResponse } from "strapi-sdk-js";
 
 type LoadingStatus = "success" | "error";
 
 type Locale =
-  | "en" // English
-  | "ja" // Japanese
-  | "zh" // Standard Mandarin / Simplified
-  | "zh-TW" // Taiwanese Mandarin / Traditional
-  | "ko" // Korean
-  // Oissu Statistics
-  | "id" // Indonesian
-  | "fil" // Filipino
-  | "vi" // Vietnamese
-  | "ru" // Russian
-  | "ms" // Malaysian
-  | "es" // Spanish
-  | "pt" // Portugese
-  | "pt-BR" // Brazilian Portugese
-  | "fr" // French
-  | "de" // German
-  | "it" // Italian
-  | "ar" // Arabic
-  | "th"; // Thai
+  | "en" //     English
+  | "ja" //     Japanese
+  | "zh-CN" //  Chinese (China)
+  | "zh-TW" //  Chinese (Taiwan)
+  | "ko" //     Korean
+  | "id" //     Indonesian
+  | "th" //     Thai
+  | "fil" //    Filipino
+  | "ms" //     Malay
+  | "vi" //     Vietnamese
+  | "pt-BR" //  Portuguese (Brazil)
+  | "es" //     Spanish
+  | "ru" //     Russian
+  | "fr" //     French
+  | "de" //     German
+  | "it" //     Italian
+  | "pl" //     Polish
+  | "pt"; //     Portuguese
 
 interface PageMeta {
   title: string;
@@ -32,7 +31,27 @@ interface PageMeta {
   img: string;
 }
 
-interface MkAnnouncement extends WP_REST_API_Post {}
+interface MkAnnouncement {}
+type HTML = string;
+type RichText = HTML;
+
+interface StrapiItem<T> {
+  attributes: T;
+  id: number;
+}
+
+interface MakoPostCategory {
+  title: string;
+}
+
+interface MakoPost {
+  slug: string;
+  content: RichText;
+  title: string;
+  categories: StrapiResponse<StrapiItem<MakoPostCategory>[]>;
+  date_created: string;
+  preview?: string;
+}
 
 interface CollectedCard {
   id: ID;
@@ -67,17 +86,30 @@ type NameOrder = "firstlast" | "lastfirst";
 type ShowTlBadge = "none" | "unofficial" | "all";
 type GameRegion = "jp" | "cn" | "kr" | "tw" | "en";
 type UID = ID;
+interface ProfilePicture {
+  id?: number;
+  crop?: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+}
 interface UserData {
   set(data: any, callback?: () => any): any;
   collection?: CollectedCard[];
   suid: string;
   username: string;
   name?: string;
-  dark_mode: boolean;
   profile__banner?: number[];
   profile__bio?: string;
   profile__pronouns?: string;
   profile__start_playing?: string;
+  profile__picture?: ProfilePicture;
+  profile__fave_charas?: number[];
+  // private
+  user__theme?: string;
+  dark_mode: boolean;
   setting__name_order?: NameOrder;
   setting__show_tl_badge?: ShowTlBadge;
   setting__game_region?: GameRegion;
@@ -85,7 +117,14 @@ interface UserData {
   readonly admin?: {
     disableTextFields?: boolean;
     patreon?: 0 | 1 | 2 | 3 | 4;
+    administrator?: boolean;
   };
+}
+interface UserPrivateData {
+  set(data: any, callback?: () => any): any;
+  friends__list?: UID[];
+  friends__sentRequests?: UID[];
+  friends__receivedRequests?: UID[];
 }
 
 interface UserLoading {
@@ -102,6 +141,8 @@ interface UserLoggedIn {
   loggedIn: true;
   user: AuthUserContext;
   db: UserData;
+  privateDb: UserPrivateData;
+  refreshData: () => void;
 }
 
 type User = UserLoading | UserLoggedOut | UserLoggedIn;

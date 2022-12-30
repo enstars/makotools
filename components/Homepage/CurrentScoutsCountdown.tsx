@@ -1,21 +1,23 @@
 import {
   Badge,
-  Card,
   Container,
   createStyles,
   Group,
-  Image,
+  Paper,
   SimpleGrid,
+  Stack,
   Text,
   Title,
+  useMantineTheme,
 } from "@mantine/core";
+import useTranslation from "next-translate/useTranslation";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
-import { getAssetURL } from "services/data";
-import { countdown, toCountdownReadable } from "services/events";
+import Picture from "components/core/Picture";
+import { countdown, toCountdownReadable } from "services/campaigns";
 import { useDayjs } from "services/libraries/dayjs";
-import { ScoutEvent } from "types/game";
+import { Scout } from "types/game";
 
 const useStyles = createStyles((theme, _params) => ({
   scoutsContainer: {
@@ -24,24 +26,10 @@ const useStyles = createStyles((theme, _params) => ({
   scoutsCards: {
     marginTop: "2vh",
   },
-  link: {
-    "&:link": {
-      color:
-        theme.colorScheme === "dark"
-          ? theme.colors.indigo[2]
-          : theme.colors.indigo[6],
-      textDecoration: "none",
-    },
-    "&:visited": {
-      color:
-        theme.colorScheme === "dark"
-          ? theme.colors.indigo[2]
-          : theme.colors.indigo[6],
-    },
-  },
 }));
 
 function Countdown({ endDate }: { endDate: string }) {
+  const { t } = useTranslation("home");
   const [countdownAmt, setCountdownAmt] = useState<string>();
   useEffect(() => {
     const interval = setInterval(() => {
@@ -52,49 +40,57 @@ function Countdown({ endDate }: { endDate: string }) {
   }, [endDate]);
   return (
     <Group>
-      <Text weight={500}>Ends in </Text>
+      <Text weight={500}>{t("scout.end")}</Text>
       <Text weight={700}>{countdownAmt}</Text>
     </Group>
   );
 }
 
-function ScoutCard({ scout }: { scout: ScoutEvent }) {
+function ScoutCard({ scout }: { scout: Scout }) {
+  const { t } = useTranslation("home");
   const { classes } = useStyles();
   return (
-    <Card
-      shadow="xs"
-      p="md"
-      radius="md"
+    <Paper
       withBorder
       component={Link}
       href={`/scouts/${scout.gacha_id}`}
+      shadow="xs"
+      radius="md"
+      p="md"
     >
-      <Card.Section>
-        <Image
+      <Group noWrap>
+        <Picture
           alt={scout.name[0]}
-          src={getAssetURL(
-            `assets/card_still_full1_${scout.banner_id}_evolution.webp`
-          )}
+          srcB2={`assets/card_still_full1_${scout.banner_id}_evolution.webp`}
+          sx={{
+            width: 100,
+            height: 100,
+            maxHeight: 100,
+          }}
+          radius="xl"
         />
-      </Card.Section>
-      <Group sx={{ padding: "5px" }}>
-        <Title order={4}>
-          {scout.type === "scout" ? "SCOUT! " : ""}
-          {scout.name[0]}
-        </Title>
-        <Badge
-          variant="filled"
-          color={scout.type === "scout" ? "violet" : "lightblue"}
-        >
-          {scout.type === "scout" ? "event scout" : scout.type}
-        </Badge>
+        <Stack>
+          <Group>
+            <Title order={4}>
+              {scout.type === "scout"
+                ? t("scout.scout", { name: scout.name[0] })
+                : t("scout.fs", { name: scout.name[0] })}
+            </Title>
+            <Badge
+              variant="filled"
+              color={scout.type === "scout" ? "violet" : "lightblue"}
+            >
+              {scout.type === "scout" ? "event scout" : scout.type}
+            </Badge>
+          </Group>
+          <Countdown endDate={scout.end.en} />
+        </Stack>
       </Group>
-      <Countdown endDate={scout.end_date} />
-    </Card>
+    </Paper>
   );
 }
 
-function CurrentScoutsCards({ scouts }: { scouts: ScoutEvent[] }) {
+function CurrentScoutsCards({ scouts }: { scouts: Scout[] }) {
   const { classes } = useStyles();
 
   return (
@@ -103,29 +99,39 @@ function CurrentScoutsCards({ scouts }: { scouts: ScoutEvent[] }) {
       className={classes.scoutsCards}
       breakpoints={[{ maxWidth: 755, cols: 1, spacing: "sm" }]}
     >
-      {scouts.map((scout: ScoutEvent) => (
+      {scouts.map((scout: Scout) => (
         <ScoutCard key={scout.gacha_id} scout={scout} />
       ))}
     </SimpleGrid>
   );
 }
 
-function CurrentScoutsCountdown({ scouts }: { scouts: ScoutEvent[] }) {
+function CurrentScoutsCountdown({ scouts }: { scouts: Scout[] }) {
+  const theme = useMantineTheme();
+  const { t } = useTranslation("home");
   const { dayjs } = useDayjs();
   const { classes } = useStyles();
-  const currentScouts: ScoutEvent[] = scouts.filter((scout) => {
+  const currentScouts: Scout[] = scouts.filter((scout) => {
     return dayjs(new Date()).isBetween(
-      dayjs(scout.start_date),
-      dayjs(scout.end_date)
+      dayjs(scout.start.en),
+      dayjs(scout.end.en)
     );
   });
   return (
     <Container className={classes.scoutsContainer}>
       <Group align="end">
-        <Title order={2}>Current Scouts</Title>
-        <Link href="/scouts" className={classes.link}>
-          See all scouts
-        </Link>
+        <Title order={2}>{t("scout.current")}</Title>
+        <Text
+          color={
+            theme.colorScheme === "dark"
+              ? theme.colors[theme.primaryColor][3]
+              : theme.colors[theme.primaryColor][6]
+          }
+          component={Link}
+          href="/scouts"
+        >
+          {t("scout.seeAll")}
+        </Text>
       </Group>
       <CurrentScoutsCards scouts={currentScouts} />
     </Container>

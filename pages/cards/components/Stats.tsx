@@ -11,8 +11,7 @@ import {
 } from "@mantine/core";
 import { useState } from "react";
 
-import CardStatsNumber from "../../../components/utilities/formatting/CardStatsNumber";
-
+import CardStatsNumber from "components/utilities/formatting/CardStatsNumber";
 import { GameCard, StatLevel, Stats } from "types/game";
 
 function LabelCell({ total, ...props }: BoxProps & { total?: any }) {
@@ -150,8 +149,9 @@ function Stats({ card }: { card: GameCard }) {
             <tbody>
               {["min", "max", "ir", "ir1", "ir2", "ir3", "ir4"].map(
                 (p: StatLevel) => {
-                  if (card?.stats?.[p]?.da) {
-                    const { da, vo, pf } = card?.stats?.[p];
+                  const stats = card.stats?.[p];
+                  if (stats) {
+                    const { da, vo, pf } = stats;
                     const sum = da + vo + pf;
                     return (
                       <tr key={p}>

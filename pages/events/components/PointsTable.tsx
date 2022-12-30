@@ -1,9 +1,8 @@
-import { Group, Box, Alert, Space, Paper, Table, Text } from "@mantine/core";
+import { Group, Box, Alert, Space, Paper, Table, Text, useMantineTheme } from "@mantine/core";
 import { IconStar } from "@tabler/icons";
 import Link from "next/link";
 
-import gachaCardEventBonus from "../../../data/gachaCardEventBonus.json";
-
+import gachaCardEventBonus from "data/gachaCardEventBonus.json";
 import Picture from "components/core/Picture";
 import { ID } from "types/game";
 
@@ -20,13 +19,16 @@ function PointsTable({
   scoutName: string;
   banner: ID;
 }) {
+  const theme = useMantineTheme();
   return (
     <>
       <Group align="stretch">
         <Box sx={{ "&&&": { flex: "1 1 40%", position: "relative" } }}>
           <Link
             href={`/${
-              type === "song" || type === "tour" ? "scouts" : "events"
+              type === "song" || type === "tour" || type === "shuffle"
+                ? "scouts"
+                : "events"
             }/${id}`}
           >
             <Picture
@@ -38,7 +40,7 @@ function PointsTable({
           </Link>
         </Box>
         <Box sx={{ "&&&": { flex: "1 1 55%", minWidth: 240 } }}>
-          <Alert variant="outline" color="indigo" sx={{ minHeight: 100 }}>
+          <Alert variant="outline" color={theme.primaryColor} sx={{ minHeight: 100 }}>
             <Text size="md">
               Cards in the <strong>{scoutName}</strong> scout offer an event
               point bonus for <strong>{eventName}</strong>!

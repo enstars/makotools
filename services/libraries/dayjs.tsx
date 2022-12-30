@@ -13,7 +13,7 @@ import utc from "dayjs/plugin/utc";
 
 import "dayjs/locale/en";
 import "dayjs/locale/ja";
-import "dayjs/locale/zh";
+import "dayjs/locale/zh-cn";
 import "dayjs/locale/zh-tw";
 import "dayjs/locale/ko";
 import "dayjs/locale/id";
@@ -30,21 +30,22 @@ import "dayjs/locale/it";
 import "dayjs/locale/ar";
 import "dayjs/locale/th";
 
+dayjs.extend(Timezone);
+dayjs.extend(AdvancedFormat);
+dayjs.extend(LocalizedFormat);
+dayjs.extend(localeData);
+dayjs.extend(isSameOrBefore);
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isToday);
+dayjs.extend(isBetween);
+dayjs.extend(utc);
+
 const DayjsContext = createContext({ dayjs });
 export const useDayjs = () => useContext(DayjsContext);
 
 function DayjsProvider({ children }: { children: ReactElement }) {
   const { locale } = useRouter();
   dayjs.locale(locale || "en");
-  dayjs.extend(Timezone);
-  dayjs.extend(AdvancedFormat);
-  dayjs.extend(LocalizedFormat);
-  dayjs.extend(localeData);
-  dayjs.extend(isSameOrBefore);
-  dayjs.extend(isSameOrAfter);
-  dayjs.extend(isToday);
-  dayjs.extend(isBetween);
-  dayjs.extend(utc);
 
   return (
     <DayjsContext.Provider value={{ dayjs }}>{children}</DayjsContext.Provider>

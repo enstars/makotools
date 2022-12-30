@@ -2,31 +2,31 @@ import React from "react";
 import { Group, AspectRatio, Badge, Divider } from "@mantine/core";
 import { IconStar } from "@tabler/icons";
 
+import Stats, { sumStats } from "./components/Stats";
+import Skills from "./components/Skills";
+import Gallery from "./components/Gallery";
+
+import { getLayout } from "components/Layout";
+import PageTitle from "components/sections/PageTitle";
+import attributes from "data/attributes.json";
+import Reactions from "components/sections/Reactions";
+import NameOrder from "components/utilities/formatting/NameOrder";
+import { getLocalizedNumber } from "components/utilities/formatting/CardStatsNumber";
+import { QuerySuccess } from "types/makotools";
+import Picture from "components/core/Picture";
+import getServerSideUser from "services/firebase/getServerSideUser";
 import {
   getItemFromLocalizedDataArray,
   getLocalizedDataArray,
-} from "../../services/data";
-import { getLayout } from "../../components/Layout";
-import PageTitle from "../../components/sections/PageTitle";
-import attributes from "../../data/attributes.json";
-import Reactions from "../../components/sections/Reactions";
-import NameOrder from "../../components/utilities/formatting/NameOrder";
-import getServerSideUser from "../../services/firebase/getServerSideUser";
-import { getLocalizedNumber } from "../../components/utilities/formatting/CardStatsNumber";
-import { QuerySuccess } from "../../types/makotools";
-import Picture from "../../components/core/Picture";
-
-import Stats, { sumStats } from "./components/Stats";
-import Skills, {
-  centerSkillParse,
-  liveSkillParse,
-  supportSkillParse,
-} from "./components/Skills";
-import Gallery from "./components/Gallery";
-
+} from "services/data";
 import { getNameOrder } from "services/game";
 import { getPreviewImageURL } from "services/makotools/preview";
 import { GameCard, GameCharacter } from "types/game";
+import {
+  centerSkillParse,
+  liveSkillParse,
+  supportSkillParse,
+} from "services/skills";
 
 function Page({
   characterQuery,
@@ -76,7 +76,6 @@ function Page({
             <Picture
               radius="md"
               alt={card.title[0]}
-              withPlaceholder
               srcB2={`assets/card_rectangle4_${card.id}_${type}.png`}
               action="view"
             />
@@ -182,10 +181,10 @@ export const getServerSideProps = getServerSideUser(
               ? centerSkillParse(cardData.skills.center)
               : "",
             skill2desc: cardData?.skills?.live?.type_id
-              ? liveSkillParse(cardData.skills.live)
+              ? liveSkillParse(cardData.skills.live, cardData.rarity)
               : "",
             skill3desc: cardData?.skills?.support?.type_id
-              ? supportSkillParse(cardData.skills.support)
+              ? supportSkillParse(cardData.skills.support, cardData.rarity)
               : "",
           }),
           desc: `View ${title}'s stats, skills, and more on MakoTools!`,

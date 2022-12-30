@@ -1,0 +1,36 @@
+diff --git a/lib/cjs/plugin/loader.js b/lib/cjs/plugin/loader.js
+index 4a27801e12b644fce4b7217a9e39cd364a47b8b1..45b231b8dcb35ae966b353de8a73199ad98b808b 100644
+--- a/lib/cjs/plugin/loader.js
++++ b/lib/cjs/plugin/loader.js
+@@ -27,11 +27,11 @@ function loader(rawCode) {
+         return rawCode;
+     }
+     if (hasGetInitialPropsOnAppJs) {
+-        return pageNoExt === '/_app'
++        return pageNoExt.startsWith('/_app')
+             ? (0, templateWithHoc_1.default)(rawCode, { typescript: typescript, hasLoadLocaleFrom: hasLoadLocaleFrom })
+             : rawCode;
+     }
+-    if (pageNoExt === '/_app') {
++    if (pageNoExt.startsWith('/_app')) {
+         return (0, templateWithHoc_1.default)(rawCode, {
+             skipInitialProps: true,
+             typescript: typescript,
+diff --git a/lib/esm/plugin/loader.js b/lib/esm/plugin/loader.js
+index df646381e15f8382fb468a83207d49251b632d2e..49c338384867a48bc13fb8ceda709fc245f24d7f 100644
+--- a/lib/esm/plugin/loader.js
++++ b/lib/esm/plugin/loader.js
+@@ -22,11 +22,11 @@ export default function loader(rawCode) {
+         return rawCode;
+     }
+     if (hasGetInitialPropsOnAppJs) {
+-        return pageNoExt === '/_app'
++        return pageNoExt.startsWith('/_app')
+             ? templateWithHoc(rawCode, { typescript: typescript, hasLoadLocaleFrom: hasLoadLocaleFrom })
+             : rawCode;
+     }
+-    if (pageNoExt === '/_app') {
++    if (pageNoExt.startsWith('/_app')) {
+         return templateWithHoc(rawCode, {
+             skipInitialProps: true,
+             typescript: typescript,

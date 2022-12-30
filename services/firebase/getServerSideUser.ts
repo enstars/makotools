@@ -1,13 +1,12 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import {
   AuthUser,
-  AuthUserContext,
   FirebaseAdminType,
   getFirebaseAdmin,
   withAuthUserTokenSSR,
 } from "next-firebase-auth";
 
-import { UserData } from "../../types/makotools";
+import { UserData } from "types/makotools";
 
 export type GetServerSidePropsWithUser<
   P extends { [key: string]: any } = { [key: string]: any }
@@ -47,9 +46,16 @@ export default function getServerSideUser(
           const db = admin.firestore();
           const docRef = db.collection("users").doc(AuthUser.id);
           const firestore = await (await docRef.get()).data();
+          const firestorePrivate = await (
+            await db
+              .collection(`users/${AuthUser.id}/private`)
+              .doc("values")
+              .get()
+          ).data();
 
           firebaseContext = {
             db: firestore,
+            privateDb: firestorePrivate,
             user,
             admin,
           };
@@ -72,6 +78,7 @@ export default function getServerSideUser(
             ...renderData.props,
             __user: JSON.stringify(firebaseContext.user || null),
             __db: JSON.stringify(firebaseContext.db || null),
+            __privateDb: JSON.stringify(firebaseContext.privateDb || null),
           };
         } catch {}
 

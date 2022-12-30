@@ -27,7 +27,7 @@ function SectionTitle({
           bottom: -20,
           left: -32,
           transform: "rotate(-5deg)",
-          color: theme.colors.blue[5],
+          color: theme.colors[theme.primaryColor][5],
         })}
       >
         <Icon strokeWidth={1.25} size={64} style={{ opacity: 1 }} />

@@ -1,10 +1,11 @@
-import { Group, Box, Stack, Title, Text } from "@mantine/core";
+import { Group, Box, Stack, Title, Text, useMantineTheme } from "@mantine/core";
 import Link from "next/link";
 
 import Picture from "components/core/Picture";
-import { GameEvent, ScoutEvent } from "types/game";
+import { Event, Scout } from "types/game";
 
-function Stories({ content }: { content: GameEvent | ScoutEvent }) {
+function Stories({ content }: { content: Event | Scout }) {
+  const theme = useMantineTheme();
   return (
     <>
       <Group align="flex-start">
@@ -24,21 +25,22 @@ function Stories({ content }: { content: GameEvent | ScoutEvent }) {
             <Text color="dimmed">
               {content.intro_lines && content.intro_lines[0]}
             </Text>
-            {content.intro_lines_tl_credit && content.intro_lines_tl_credit[0] && (
-              <Text align="right" color="dimmed" size="sm">
-                Summary translated by{" "}
-                {
-                  <Text
-                    component={Link}
-                    color="indigo"
-                    href={`https://twitter.com/${content.intro_lines_tl_credit[0]}`}
-                    target="_blank"
-                  >
-                    @{content.intro_lines_tl_credit[0]}
-                  </Text>
-                }
-              </Text>
-            )}
+            {content.intro_lines_tl_credit &&
+              content.intro_lines_tl_credit[0] && (
+                <Text align="right" color="dimmed" size="sm">
+                  Summary translated by{" "}
+                  {
+                    <Text
+                      component={Link}
+                      color={theme.primaryColor}
+                      href={`https://twitter.com/${content.intro_lines_tl_credit[0]}`}
+                      target="_blank"
+                    >
+                      @{content.intro_lines_tl_credit[0]}
+                    </Text>
+                  }
+                </Text>
+              )}
           </Stack>
         </Box>
       </Group>
