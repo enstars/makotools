@@ -25,6 +25,7 @@ const CONSTANTS = {
   },
   EXTERNAL_URLS: {
     // ASSETS: "https://f002.backblazeb2.com/file/ensemble-square/",
+    INTERNAL_APIS: "https://stars.ensemble.moe/api",
     ASSETS: "https://assets.enstars.link/",
     DATA: "https://data.ensemble.moe/",
     DATA_TL: "https://tl.data.ensemble.moe/",

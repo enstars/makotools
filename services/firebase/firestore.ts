@@ -11,7 +11,12 @@ import {
   getDocs,
 } from "firebase/firestore";
 
-import { UserData, LoadingStatus, UserPrivateData } from "types/makotools";
+import {
+  UserData,
+  LoadingStatus,
+  UserPrivateData,
+  User,
+} from "types/makotools";
 
 /**
  * When querying documents, only 10 documents can
@@ -105,23 +110,49 @@ export async function sendVerificationEmail() {
   }
 }
 
-export async function getFirestoreUserCollection() {
-  return async (collectionAddress: string) => {
-    const clientAuth = getAuth();
-    const db = getFirestore();
+export async function getFirestoreUserCollection([collectionAddress, user]: [
+  string,
+  User
+]) {
+  // return async () => {
+  const clientAuth = getAuth();
+  const db = getFirestore();
 
-    if (clientAuth.currentUser === null) {
-      return undefined;
-    }
-    const querySnap = await getDocs(collection(db, collectionAddress));
+  if (clientAuth.currentUser === null) {
+    return undefined;
+  }
 
-    const userCollection: any[] = [];
-    querySnap.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      userCollection.push(doc.data());
-    });
-    return userCollection;
-  };
+  const profileUID = collectionAddress.split("/")[1];
+  const accessiblePrivacyLevel = user.loggedIn
+    ? user.user.id === profileUID
+      ? 3
+      : user.privateDb.friends__list?.includes(profileUID)
+      ? 2
+      : 1
+    : 0;
+
+  console.log(collectionAddress, accessiblePrivacyLevel);
+  let querySnap;
+  try {
+    querySnap = await getDocs(
+      query(
+        collection(db, collectionAddress),
+        where("privacyLevel", "<=", accessiblePrivacyLevel)
+      )
+    );
+  } catch (e) {
+    console.error(e);
+  }
+  console.log("snap", querySnap);
+
+  const userCollection: any[] = [];
+  querySnap.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    userCollection.push(doc.data());
+  });
+  console.log("UC", userCollection);
+  return userCollection;
+  // };
 }
 
 export async function getFirestoreUserDocument(

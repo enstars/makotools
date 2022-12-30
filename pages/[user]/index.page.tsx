@@ -3,15 +3,11 @@ import {
   Alert,
   Box,
   Group,
-  Image,
   Loader,
-  Menu,
-  Paper,
   Space,
   Text,
   Title,
   Tooltip,
-  ThemeIcon,
   useMantineTheme,
 } from "@mantine/core";
 import { Carousel, Embla } from "@mantine/carousel";
@@ -33,7 +29,6 @@ import RemoveFriendModal from "./components/RemoveFriendModal";
 import ProfileAvatar from "./components/ProfileAvatar";
 import ProfileButtons from "./components/ProfileButtons";
 import ProfileStats from "./components/ProfileStats";
-
 import CardCollections from "./components/CardCollections";
 
 import { getLayout, useSidebarStatus } from "components/Layout";
@@ -46,10 +41,7 @@ import useUser from "services/firebase/user";
 import BioDisplay from "components/sections/BioDisplay";
 import Picture from "components/core/Picture";
 import { CONSTANTS } from "services/makotools/constants";
-import { GameCard, GameCharacter } from "types/game";
-import notify from "services/libraries/notify";
-import { getLocalizedDataArray } from "services/data";
-import { GameCard, GameUnit } from "types/game";
+import { GameCard, GameCharacter, GameUnit } from "types/game";
 
 function PatreonBanner({ profile }: { profile: UserData }) {
   if (profile?.admin?.patreon) {
@@ -77,6 +69,7 @@ function Page({
   cards,
   cardsQuery,
   charactersQuery,
+  unitsQuery,
   locale,
 }: {
   profile: UserData;
@@ -84,8 +77,13 @@ function Page({
   cards: GameCard[] | undefined;
   cardsQuery: QuerySuccess<GameCard[]>;
   charactersQuery: QuerySuccess<GameCharacter[]>;
+  unitsQuery: QuerySuccess<GameUnit[]>;
   locale: Locale;
 }) {
+  const cardsData: GameCard[] = useMemo(
+    () => cardsQuery.data,
+    [cardsQuery.data]
+  );
   const characters: GameCharacter[] = useMemo(
     () => charactersQuery.data,
     [charactersQuery.data]
@@ -316,14 +314,13 @@ function Page({
               my="md"
             />
           )}
-        </Group>
-      </Paper>
-      <Divider my="xs" />
+        </Box>
+      </Box>
+
       <CardCollections
-        user={user}
         profile={profile}
         uid={uid}
-        cards={cards}
+        cards={cardsData}
         units={units}
       />
     </>
@@ -341,10 +338,23 @@ export const getServerSideProps = getServerSideUser(
       "name",
       "rarity",
     ]);
+
+    const cardsQuery: any = await getLocalizedDataArray<GameCard>(
+      "cards",
+      locale,
+      "id",
+      ["id", "character_id", "rarity"]
+    );
     const charactersQuery = await getLocalizedDataArray<GameCharacter>(
       "characters",
       locale,
       "character_id"
+    );
+    const unitsQuery: any = await getLocalizedDataArray<GameUnit>(
+      "units",
+      locale,
+      "id",
+      ["id", "image_color"]
     );
     if (cards.status === "error" || charactersQuery.status === "error")
       return { props: { cards: undefined } };
@@ -362,6 +372,26 @@ export const getServerSideProps = getServerSideUser(
       .get();
     if (!querySnap.empty) {
       const profile = parseStringify(querySnap.docs[0].data());
+
+      if (profile.migrated !== true) {
+        await fetch(
+          `${
+            process.env.NODE_ENV === "development"
+              ? "http://localhost:3000/api"
+              : CONSTANTS.EXTERNAL_URLS.INTERNAL_APIS
+          }/collections/migrate`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userUID: querySnap.docs[0].id,
+              existingCollection: profile.collection,
+            }),
+          }
+        );
+      }
       return {
         props: {
           profile,

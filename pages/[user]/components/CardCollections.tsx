@@ -28,26 +28,30 @@ import CollectionFolder from "./CollectionFolder";
 import EditCollectionFolder from "./EditCollectionFolder";
 import EditCollectionCards from "./EditCollectionCards";
 
-import { CardCollection, User, UserData } from "types/makotools";
+import { CardCollection, UserData } from "types/makotools";
 import { CONSTANTS } from "services/makotools/constants";
 import { getFirestoreUserCollection } from "services/firebase/firestore";
 import IconEnstars from "components/core/IconEnstars";
 import { GameCard, GameUnit } from "types/game";
+import useUser from "services/firebase/user";
 function CardCollections({
-  user,
   profile,
   uid: profileUid,
   cards,
   units,
 }: {
-  user: User;
   profile: UserData;
   uid: string;
   cards: GameCard[];
   units: GameUnit[];
 }) {
-  const { profileCollections, error } = useSWR(
-    `users/${profileUid}/collections`,
+  const user = useUser();
+  const {
+    data: profileCollections,
+    error,
+    isLoading,
+  } = useSWR<CardCollection[]>(
+    [`users/${profileUid}/card_collections`, user],
     getFirestoreUserCollection
   );
 
@@ -74,7 +78,7 @@ function CardCollections({
     )
   );
 
-  console.log(profileCollections);
+  console.log("collections", profileUid, user.user.id, profileCollections);
 
   const PROFILE_COLLECTIONS: CardCollection[] = [
     {
@@ -89,7 +93,7 @@ function CardCollections({
 
   const [editMode, setEditMode] = useState<boolean>(false);
   const [collections, handlers] =
-    useListState<CardCollection>(PROFILE_COLLECTIONS);
+    useListState<CardCollection>(profileCollections);
   const isYourProfile = user.loggedIn && user.db.suid === profile.suid;
   const [editCards, setEditCards] = useState<boolean>(false);
   const [currentCollection, setCurrentCollection] =
@@ -97,6 +101,10 @@ function CardCollections({
   const [defaultCollection, setDefault] = useState<CardCollection | null>(
     collections.filter((collection) => collection.default)[0]
   );
+
+  useEffect(() => {
+    if (!isLoading && profileCollections) handlers.setState(profileCollections);
+  }, [profileCollections, isLoading, handlers]);
 
   function createEditFolders(collections: CardCollection[]) {
     return collections.map((collection, index) => (
