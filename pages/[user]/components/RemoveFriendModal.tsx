@@ -52,7 +52,6 @@ function RemoveFriendModal({
               body: JSON.stringify({ friend: uid }),
             });
             const status = await res.json();
-            console.log(status);
             if (status?.success) {
               user.privateDb.set({
                 friends__list: arrayRemove(uid),

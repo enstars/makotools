@@ -99,10 +99,8 @@ function CurrentEventCountdown({ events }: { events: Event[] }) {
   const { classes } = useStyles();
 
   const shownEvent = events.filter((event) => {
-    console.log(event.start);
     return dayjs().isBefore(event.end.en);
   })[0];
-  console.log("shownEventLog", shownEvent);
   const isNextEvent = dayjs().isBefore(shownEvent.start.en);
 
   useEffect(() => {

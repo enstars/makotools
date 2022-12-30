@@ -11,7 +11,6 @@ function Announcement({
   i: number;
 }) {
   const router = useRouter();
-  // console.log(announcement);
   return (
     <Paper
       sx={{

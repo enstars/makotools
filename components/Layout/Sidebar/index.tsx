@@ -274,7 +274,6 @@ function Sidebar(props: any) {
               icon={<IconSearch size={18} />}
               iconWidth={38}
               onClick={() => {
-                console.log("hi");
                 toggleCollapsed();
                 if (props?.onCollapse) props.onCollapse();
               }}
@@ -471,7 +470,6 @@ function Sidebar(props: any) {
           onMouseDown={(event: SyntheticEvent) => {
             event.preventDefault();
             mouseDown = true;
-            console.log("down");
             window.addEventListener("mousemove", resize);
             window.addEventListener("mouseup", (e) => {
               window.removeEventListener("mousemove", resize);

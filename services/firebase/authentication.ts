@@ -77,7 +77,6 @@ export function initAuthentication() {
         // If the user is authed, call login to set a cookie.
         if (authUser.id) {
           const userToken = (await authUser.getIdToken()) || "";
-          // console.log("token", userToken);
           response = await fetch(loginAPIEndpoint, {
             method: "POST",
             headers: [["Authorization", userToken]],

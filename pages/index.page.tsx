@@ -96,7 +96,6 @@ function Page({
       ? user.db.profile__fave_charas
       : [];
 
-  console.log(t, t("common:test"));
   const characters: GameCharacter[] = useMemo(
     () => charactersQuery.data,
     [charactersQuery.data]
