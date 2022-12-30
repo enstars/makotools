@@ -4,12 +4,7 @@ import { getMonthDays } from "@mantine/dates";
 import CalendarEventCard from "./CalendarEventCard";
 
 import { useDayjs } from "services/libraries/dayjs";
-import {
-  BirthdayEvent,
-  GameEvent,
-  GameEventStatus,
-  ScoutEvent,
-} from "types/game";
+import { Birthday, Event, GameEventStatus, Scout } from "types/game";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   calendar: {},
@@ -21,9 +16,9 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
   week: {},
   today: {
-    border: `solid 2px ${theme.colors.toya[5]}`,
+    border: `solid 2px ${theme.colors.toya_default[5]}`,
     // [`& .${getRef("dateLabel")}`]: {
-    //   backgroundColor: theme.colors.toya[5],
+    //   backgroundColor: theme.colors.toya_default[5],
     //   alignSelf: "start",
     //   padding: "2px 3px",
     //   minWidth: 24,
@@ -88,7 +83,7 @@ function CalendarDay({
 }: {
   day: Date;
   active: boolean;
-  events: (BirthdayEvent | GameEvent | ScoutEvent)[];
+  events: (Birthday | Event | Scout)[];
 }) {
   const { classes, cx } = useStyles();
   const { dayjs } = useDayjs();
@@ -115,9 +110,9 @@ function CalendarDay({
           </Text>
           {active &&
             events.map((event, i) => {
-              let status: GameEventStatus;
-              if (event.type !== "birthday" && event.type !== "anniversary") {
-                status = dayjs(day).isSame(event.start_date, "day")
+              let status: GameEventStatus | undefined;
+              if (event.type !== "birthday") {
+                status = dayjs(day).isSame(event.start.en, "day")
                   ? "start"
                   : "end";
               }
@@ -138,19 +133,19 @@ function CalendarWeek({
 }: {
   calendarTime: string;
   week: Date[];
-  events: (GameEvent | BirthdayEvent | ScoutEvent)[];
+  events: (Event | Birthday | Scout)[];
 }) {
   const { dayjs } = useDayjs();
   return (
     <>
       {week.map((day: Date, i: number) => {
         const filteredEvents = events.filter((event) =>
-          event.type === "birthday" || event.type === "anniversary"
+          event.type === "birthday"
             ? dayjs(day)
                 .year(2000)
-                .isSame(dayjs(event.start_date).year(2000), "day")
-            : dayjs(day).isSame(event.start_date, "day") ||
-              dayjs(day).isSame(event.end_date, "day")
+                .isSame(dayjs(event.start.en).year(2000), "day")
+            : dayjs(day).isSame(event.start.en, "day") ||
+              dayjs(day).isSame(event.end.en, "day")
         );
         return (
           <CalendarDay
@@ -170,7 +165,7 @@ function CalendarGridView({
   events,
 }: {
   calendarTime: string;
-  events: (BirthdayEvent | GameEvent | ScoutEvent)[];
+  events: (Birthday | Event | Scout)[];
 }) {
   const { classes } = useStyles();
   const { dayjs } = useDayjs();

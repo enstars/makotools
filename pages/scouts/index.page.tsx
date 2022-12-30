@@ -30,7 +30,7 @@ import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import { getLocalizedDataArray } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { GameCard, GameCharacter, ScoutEvent } from "types/game";
+import { GameCard, GameCharacter, Scout } from "types/game";
 import { QuerySuccess } from "types/makotools";
 import { useDayjs } from "services/libraries/dayjs";
 import useFSSList from "services/makotools/search";
@@ -52,26 +52,21 @@ function Page({
   cardsQuery,
   charactersQuery,
 }: {
-  scoutsQuery: QuerySuccess<ScoutEvent[]>;
+  scoutsQuery: QuerySuccess<Scout[]>;
   cardsQuery: QuerySuccess<GameCard[]>;
   charactersQuery: QuerySuccess<GameCharacter[]>;
 }) {
   const { dayjs } = useDayjs();
   const theme = useMantineTheme();
 
-  const scouts: ScoutEvent[] = useMemo(
-    () => scoutsQuery.data,
-    [scoutsQuery.data]
-  );
+  const scouts: Scout[] = useMemo(() => scoutsQuery.data, [scoutsQuery.data]);
   const cards: GameCard[] = useMemo(() => cardsQuery.data, [cardsQuery.data]);
   const characters = useMemo(
     () => charactersQuery.data,
     [charactersQuery.data]
   );
 
-  const fssOptions = useMemo<
-    FSSOptions<ScoutEvent, typeof defaultView.filters>
-  >(
+  const fssOptions = useMemo<FSSOptions<Scout, typeof defaultView.filters>>(
     () => ({
       filters: [
         {
@@ -92,13 +87,13 @@ function Page({
         {
           label: "Scout ID",
           value: "id",
-          function: (a: ScoutEvent, b: ScoutEvent) => a.gacha_id - b.gacha_id,
+          function: (a: Scout, b: Scout) => a.gacha_id - b.gacha_id,
         },
         {
           label: "Start Date",
           value: "date",
-          function: (a: ScoutEvent, b: ScoutEvent) =>
-            dayjs(a.start_date).unix() - dayjs(b.start_date).unix(),
+          function: (a: Scout, b: Scout) =>
+            dayjs(a.start.en).unix() - dayjs(b.start.en).unix(),
         },
       ],
       baseSort: "id",
@@ -110,7 +105,7 @@ function Page({
     []
   );
   const { results, view, setView } = useFSSList<
-    ScoutEvent,
+    Scout,
     typeof defaultView.filters
   >(scouts, fssOptions);
 
@@ -176,7 +171,7 @@ function Page({
                     }));
                   }}
                   variant="light"
-                  color="toya"
+                  color="toya_default"
                 >
                   {view.sort.ascending ? (
                     <IconSortAscending size={16} />
@@ -269,7 +264,7 @@ function Page({
           >
             {results
               .filter((scout) => scout.type === "scout")
-              .map((scout: ScoutEvent) => (
+              .map((scout: Scout) => (
                 <ScoutCard key={scout.gacha_id} scout={scout} />
               ))}
           </ResponsiveGrid>
@@ -282,7 +277,7 @@ function Page({
           >
             {results
               .filter((scout) => scout.type === "feature scout")
-              .map((scout: ScoutEvent) => (
+              .map((scout: Scout) => (
                 <ScoutCard key={scout.gacha_id} scout={scout} />
               ))}
           </ResponsiveGrid>
@@ -293,7 +288,7 @@ function Page({
 }
 
 export const getServerSideProps = getServerSideUser(async ({ locale }) => {
-  const getScouts: any = await getLocalizedDataArray<ScoutEvent>(
+  const getScouts: any = await getLocalizedDataArray<Scout>(
     "scouts",
     locale,
     "gacha_id"

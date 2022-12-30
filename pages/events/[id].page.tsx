@@ -21,7 +21,7 @@ import {
 } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { useDayjs } from "services/libraries/dayjs";
-import { GameCard, GameEvent, GameUnit, ID, ScoutEvent } from "types/game";
+import { GameCard, Event, GameUnit, Scout } from "types/game";
 import { QuerySuccess } from "types/makotools";
 import CardCard from "pages/cards/components/DisplayCard";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
@@ -34,8 +34,8 @@ function Page({
   cardsQuery,
   unitsQuery,
 }: {
-  event: GameEvent;
-  scout: ScoutEvent;
+  event: Event;
+  scout: Scout;
   cardsQuery: QuerySuccess<GameCard[]>;
   unitsQuery: QuerySuccess<GameUnit[]>;
 }) {
@@ -118,7 +118,7 @@ function Page({
             type={event.type}
             eventName={event.name[0]}
             scoutName={scout.name[0]}
-            banner={scout.banner_id as ID}
+            banner={scout.banner_id[0]}
           />
         </>
       )}
@@ -130,13 +130,13 @@ export const getServerSideProps = getServerSideUser(
   async ({ res, locale, params }) => {
     if (!params?.id || Array.isArray(params?.id)) return { notFound: true };
 
-    const getEvents: any = await getLocalizedDataArray<GameEvent>(
+    const getEvents: any = await getLocalizedDataArray<Event>(
       "events",
       locale,
       "event_id"
     );
 
-    const getEvent: any = getItemFromLocalizedDataArray<GameEvent>(
+    const getEvent: any = getItemFromLocalizedDataArray<Event>(
       getEvents,
       parseInt(params.id),
       "event_id"
@@ -144,13 +144,13 @@ export const getServerSideProps = getServerSideUser(
 
     if (getEvent.status === "error") return { notFound: true };
 
-    const getScouts: any = await getLocalizedDataArray<ScoutEvent>(
+    const getScouts: any = await getLocalizedDataArray<Scout>(
       "scouts",
       locale,
       "gacha_id"
     );
 
-    const getScout = getItemFromLocalizedDataArray<ScoutEvent>(
+    const getScout = getItemFromLocalizedDataArray<Scout>(
       getScouts,
       getEvent.data.gacha_id as number,
       "gacha_id"

@@ -8,7 +8,7 @@ import {
   getLocalizedDataArray,
 } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { GameCard, GameCharacter, GameEvent, ID, ScoutEvent } from "types/game";
+import { GameCard, GameCharacter, Event, Scout } from "types/game";
 import { QuerySuccess } from "types/makotools";
 import { getLayout } from "components/Layout";
 import CardCard from "pages/cards/components/DisplayCard";
@@ -24,8 +24,8 @@ function Page({
   charactersQuery,
   cardsQuery,
 }: {
-  scout: ScoutEvent;
-  event: GameEvent | null;
+  scout: Scout;
+  event: Event | null;
   charactersQuery: QuerySuccess<GameCharacter[]>;
   cardsQuery: QuerySuccess<GameCard[]>;
 }) {
@@ -97,7 +97,7 @@ function Page({
                 type={scout.type}
                 eventName={event.name[0]}
                 scoutName={scout.name[0]}
-                banner={event.banner_id as ID}
+                banner={event.banner_id[0]}
               />
             </>
           )}
@@ -111,13 +111,13 @@ export const getServerSideProps = getServerSideUser(
   async ({ res, locale, params }) => {
     if (!params?.id || Array.isArray(params?.id)) return { notFound: true };
 
-    const getScouts = await getLocalizedDataArray<ScoutEvent>(
+    const getScouts = await getLocalizedDataArray<Scout>(
       "scouts",
       locale,
       "gacha_id"
     );
 
-    const getScout = getItemFromLocalizedDataArray<ScoutEvent>(
+    const getScout = getItemFromLocalizedDataArray<Scout>(
       getScouts,
       parseInt(params.id),
       "gacha_id"
@@ -128,13 +128,13 @@ export const getServerSideProps = getServerSideUser(
     let getEvents, getEvent;
 
     if (getScout.data.event_id) {
-      getEvents = await getLocalizedDataArray<GameEvent>(
+      getEvents = await getLocalizedDataArray<Event>(
         "events",
         locale,
         "event_id"
       );
 
-      getEvent = getItemFromLocalizedDataArray<GameEvent>(
+      getEvent = getItemFromLocalizedDataArray<Event>(
         getEvents,
         getScout.data.event_id,
         "event_id"
@@ -162,8 +162,8 @@ export const getServerSideProps = getServerSideUser(
       "character_id",
     ]);
 
-    const scout: ScoutEvent = getScout.data;
-    const event: GameEvent | null = getEvent?.data || null;
+    const scout: Scout = getScout.data;
+    const event: Event | null = getEvent?.data || null;
     const title = scout.name[0];
     const breadcrumbs = ["scouts", title];
 

@@ -15,14 +15,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import useTranslation from "next-translate/useTranslation";
 
-import { countdown, retrieveClosestEvents } from "services/events";
+import { countdown, retrieveNextCampaigns } from "services/campaigns";
 import useUser from "services/firebase/user";
-import {
-  BirthdayEvent,
-  GameCharacter,
-  GameEvent,
-  ScoutEvent,
-} from "types/game";
+import { Birthday, GameCharacter, Event, Scout } from "types/game";
 import { getAssetURL } from "services/data";
 import { useDayjs } from "services/libraries/dayjs";
 import { getNameOrder } from "services/game";
@@ -34,7 +29,7 @@ function RecommendedCard({
   fave,
   characters,
 }: {
-  event: GameEvent | ScoutEvent | BirthdayEvent;
+  event: Event | Scout | Birthday;
   fave: number;
   characters: GameCharacter[];
 }) {
@@ -46,12 +41,12 @@ function RecommendedCard({
   const [countdownAmt, setCountdownAmt] = useState<string>();
   useEffect(() => {
     const interval = setInterval(() => {
-      let ctdwn = countdown(new Date(event.start_date), new Date());
+      let ctdwn = countdown(new Date(event.start.en), new Date());
       const days = `${Math.floor(ctdwn / 86400000)} days`;
       setCountdownAmt(days);
     }, 1000);
     return () => clearInterval(interval);
-  }, [event.start_date]);
+  }, [event.start.en]);
 
   const getCharaObj = characters.filter((c) => c.character_id === fave)[0];
 
@@ -60,19 +55,18 @@ function RecommendedCard({
     last_name: getCharaObj.last_name[0],
   };
 
-  let link = (event as BirthdayEvent).character_id
-    ? `/characters/${(event as BirthdayEvent).character_id}`
-    : ((event as GameEvent).event_id && event.type === "song") ||
+  let link = (event as Birthday).character_id
+    ? `/characters/${(event as Birthday).character_id}`
+    : ((event as Event).event_id && event.type === "song") ||
       event.type === "shuffle" ||
-      event.type == "tour" ||
-      event.type === "anniversary"
-    ? `/events/${(event as GameEvent).event_id}`
-    : `/scouts/${(event as ScoutEvent).gacha_id}`;
+      event.type == "tour"
+    ? `/events/${(event as Event).event_id}`
+    : `/scouts/${(event as Scout).gacha_id}`;
   return (
     <Paper p={5} withBorder shadow="xs" component={Link} href={link}>
       <Stack>
         <Image
-          alt={event.type === "birthday" ? event.name : event.name[0]}
+          alt={event.name[0]}
           src={getAssetURL(
             `assets/card_still_full1_${event.banner_id}_${
               event.type === "birthday" ? "normal" : "evolution"
@@ -136,7 +130,7 @@ function RecommendedCard({
               borderRadius: theme.radius.lg,
             }}
           >
-            {dayjs(event.start_date).format("MM-DD-YYYY")}
+            {dayjs(event.start.en).format("MM-DD-YYYY")}
           </Text>
         </Group>
       </Stack>
@@ -149,20 +143,18 @@ function RecommendedCountdown({
   characters,
 }: {
   events: {
-    events: { event: GameEvent | ScoutEvent | BirthdayEvent };
+    event: Event | Scout | Birthday;
     charId: number;
   }[];
   characters: GameCharacter[];
-}[]) {
+}) {
   const { dayjs } = useDayjs();
   const user = useUser();
   const theme = useMantineTheme();
 
-  const getOnlyEvents = (
-    events: any[]
-  ): (GameEvent | ScoutEvent | BirthdayEvent)[] => {
+  const getOnlyEvents = (events: any[]): (Event | Scout | Birthday)[] => {
     let entries = Object.entries(events);
-    let returnArray: (GameEvent | ScoutEvent | BirthdayEvent)[] = [];
+    let returnArray: (Event | Scout | Birthday)[] = [];
 
     entries.forEach((entry) => returnArray.push(entry[1].event));
     return returnArray;
@@ -201,12 +193,12 @@ function RecommendedCountdown({
         </Paper>
       ) : (
         <ResponsiveGrid width={230} my={5}>
-          {retrieveClosestEvents(
+          {retrieveNextCampaigns(
             getOnlyEvents(events),
             events.length >= 6 ? 6 : events.length
           )
-            .filter((e) => dayjs(e.start_date).isAfter(dayjs()))
-            .map((e: GameEvent | ScoutEvent | BirthdayEvent, i) => (
+            .filter((e) => dayjs(e.start.en).isAfter(dayjs()))
+            .map((e: Event | Scout | Birthday, i) => (
               <RecommendedCard
                 key={i}
                 event={

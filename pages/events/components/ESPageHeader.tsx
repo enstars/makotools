@@ -9,13 +9,13 @@ import dayjs from "dayjs";
 
 import IconEnstars from "components/core/IconEnstars";
 import Picture from "components/core/Picture";
-import { GameEvent, GameUnit, ScoutEvent } from "types/game";
+import { Event, GameUnit, Scout } from "types/game";
 
 function ESPageHeader({
   content,
   units,
 }: {
-  content: GameEvent | ScoutEvent;
+  content: Event | Scout;
   units?: GameUnit[];
 }) {
   return (
@@ -37,28 +37,28 @@ function ESPageHeader({
           <Group>
             <Box sx={{ flex: "1 1 0", minWidth: 200 }}>
               <Text size="sm" color="dimmed" weight={700}>
-                Start ({dayjs(content.start_date).format("z")})
+                Start ({dayjs(content.start.en).format("z")})
               </Text>
               <Text size="lg" weight={500}>
-                {dayjs(content.start_date).format("lll")}
+                {dayjs(content.start.en).format("lll")}
               </Text>
             </Box>
             <Box sx={{ flex: "1 1 0", minWidth: 200 }}>
               <Text size="sm" color="dimmed" weight={700}>
-                End ({dayjs(content.end_date).format("z")})
+                End ({dayjs(content.end.en).format("z")})
               </Text>
               <Text size="lg" weight={500}>
-                {dayjs(content.end_date).format("lll")}
+                {dayjs(content.end.en).format("lll")}
               </Text>
             </Box>
           </Group>
           <Space h="md" />
           <Group noWrap>
-            {dayjs(content.end_date).isBefore(dayjs()) ? (
+            {dayjs(content.end.en).isBefore(dayjs()) ? (
               <Badge color="gray">Past</Badge>
             ) : dayjs().isBetween(
-                dayjs(content.start_date),
-                dayjs(content.end_date)
+                dayjs(content.start.en),
+                dayjs(content.end.en)
               ) ? (
               <Badge color="yellow">Ongoing</Badge>
             ) : (
@@ -84,7 +84,7 @@ function ESPageHeader({
                 content.type === "song"
                   ? "grape"
                   : content.type === "shuffle"
-                  ? "toya"
+                  ? "toya_default"
                   : content.type === "tour"
                   ? "teal"
                   : content.type === "scout"

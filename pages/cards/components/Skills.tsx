@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { ReactElement, useState } from "react";
 
-import { GameCard, SkillType } from "types/game";
+import { GameCard } from "types/game";
 import {
   centerSkillParse,
   liveSkillParse,
@@ -73,7 +73,7 @@ function Skills({ card }: { card: GameCard }) {
         {[
           {
             type: "center",
-            color: "toya",
+            color: "toya_default",
             description: <Text>{centerSkillParse(card.skills?.center)}</Text>,
           },
           {
@@ -122,7 +122,7 @@ function Skills({ card }: { card: GameCard }) {
           },
         ].map(
           (s: {
-            type: SkillType;
+            type: "center" | "live" | "support";
             color: string;
             description: ReactElement;
           }) => (

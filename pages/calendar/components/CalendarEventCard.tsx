@@ -5,18 +5,12 @@ import {
   IconCake,
   IconDiamond,
   IconShirt,
-  IconStar,
 } from "@tabler/icons";
 import Link from "next/link";
 
 import Picture from "components/core/Picture";
 import { useDayjs } from "services/libraries/dayjs";
-import {
-  BirthdayEvent,
-  GameEvent,
-  GameEventStatus,
-  ScoutEvent,
-} from "types/game";
+import { Birthday, Campaign, Event, GameEventStatus, Scout } from "types/game";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   eventCard: {
@@ -29,8 +23,8 @@ function CalendarEventCard({
   event,
   status,
 }: {
-  event: BirthdayEvent | GameEvent | ScoutEvent;
-  status: GameEventStatus;
+  event: Campaign;
+  status?: GameEventStatus;
 }) {
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
@@ -48,9 +42,7 @@ function CalendarEventCard({
           fullWidth
           variant="filled"
           color={
-            event.type === "anniversary"
-              ? "yellow"
-              : event.type === "birthday"
+            event.type === "birthday"
               ? "cyan"
               : event.type === "feature scout"
               ? "lightblue"
@@ -62,10 +54,10 @@ function CalendarEventCard({
           component={Link}
           href={
             event.type === "birthday"
-              ? `/characters/${(event as BirthdayEvent).character_id}`
+              ? `/characters/${(event as Birthday).character_id}`
               : event.type === "scout" || event.type === "feature scout"
-              ? `/scouts/${(event as ScoutEvent).gacha_id}`
-              : `/events/${(event as GameEvent).event_id}`
+              ? `/scouts/${(event as Scout).gacha_id}`
+              : `/events/${(event as Event).event_id}`
           }
           sx={(theme) => ({
             borderRadius: theme.radius.sm,
@@ -83,8 +75,6 @@ function CalendarEventCard({
             <Box mt={4}>
               {event.type === "birthday" ? (
                 <IconCake size={12} strokeWidth={3} />
-              ) : event.type === "anniversary" ? (
-                <IconStar size={12} strokeWidth={3} />
               ) : event.type === "feature scout" ? (
                 <IconShirt size={12} strokeWidth={3} />
               ) : event.type === "scout" ? (
@@ -98,13 +88,13 @@ function CalendarEventCard({
           }
         >
           {event.type === "birthday"
-            ? event.name.split(" ")[0] + "'s birthday"
+            ? event.name[0].split(" ")[0] + "'s birthday"
             : event.type === "feature scout"
             ? event.name[0].split(" ")[0] + " FS"
             : event.type === "scout"
             ? "SC! " + event.name[0]
             : event.type === "song" || event.type === "tour"
-            ? event.story_name && event.story_name[0]
+            ? event?.story_name[0]
             : event.name[0]}
         </Badge>
       </HoverCard.Target>
@@ -115,7 +105,7 @@ function CalendarEventCard({
               ? event.banner_id + "_normal"
               : event.banner_id + "_evolution"
           }.png`}
-          alt={event.name}
+          alt={event.name[0]}
           sx={{
             width: 200,
             height: 80,
@@ -136,11 +126,11 @@ function CalendarEventCard({
             : event.type === "feature scout"
             ? `Featured Scout: ${event.name[0]}`
             : event.type === "birthday"
-            ? `${event.name}'s Birthday`
+            ? `${event.name[0]}'s Birthday`
             : event.name[0]}
         </Text>
         <Text size="sm" color="dimmed" weight={500}>
-          {dayjs(status === "end" ? event.end_date : event.start_date).format(
+          {dayjs(status === "end" ? event.end.en : event.start.en).format(
             "LT z"
           )}
         </Text>

@@ -18,13 +18,8 @@ import { getLayout } from "components/Layout";
 import { useDayjs } from "services/libraries/dayjs";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "services/data";
-import { createBirthdayData } from "services/events";
-import {
-  GameCharacter,
-  GameEvent,
-  ScoutEvent,
-  BirthdayEvent,
-} from "types/game";
+import { createBirthdayData } from "services/campaigns";
+import { GameCharacter, Event, Scout, Birthday } from "types/game";
 import { QuerySuccess } from "types/makotools";
 
 /**
@@ -43,8 +38,8 @@ function Page({
   scoutsQuery,
 }: {
   charactersQuery: QuerySuccess<GameCharacter[]>;
-  gameEventsQuery: QuerySuccess<GameEvent[]>;
-  scoutsQuery: QuerySuccess<ScoutEvent[]>;
+  gameEventsQuery: QuerySuccess<Event[]>;
+  scoutsQuery: QuerySuccess<Scout[]>;
 }) {
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
@@ -53,16 +48,13 @@ function Page({
     () => charactersQuery.data,
     [charactersQuery.data]
   );
-  const gameEvents: GameEvent[] = useMemo(
+  const gameEvents: Event[] = useMemo(
     () => gameEventsQuery.data,
     [gameEventsQuery.data]
   );
-  const scouts: ScoutEvent[] = useMemo(
-    () => scoutsQuery.data,
-    [scoutsQuery.data]
-  );
+  const scouts: Scout[] = useMemo(() => scoutsQuery.data, [scoutsQuery.data]);
 
-  const birthdays: BirthdayEvent[] = createBirthdayData(characters);
+  const birthdays: Birthday[] = createBirthdayData(characters);
 
   const events = [...birthdays, ...gameEvents, ...scouts];
 
@@ -180,7 +172,7 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
     "event_id"
   );
 
-  const scouts = await getLocalizedDataArray<ScoutEvent>(
+  const scouts = await getLocalizedDataArray<Scout>(
     "scouts",
     locale,
     "gacha_id"

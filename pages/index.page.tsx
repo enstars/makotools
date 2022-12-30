@@ -16,18 +16,20 @@ import Banner from "components/Homepage/Banner";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "services/data";
 import {
-  BirthdayEvent,
+  Birthday,
   GameCharacter,
-  GameEvent,
-  ScoutEvent,
+  Event,
+  Scout,
   GameCard,
+  RecommendedEvents,
+  Campaign,
 } from "types/game";
 import CurrentEventCountdown from "components/Homepage/CurrentEventCountdown";
 import CurrentScoutsCountdown from "components/Homepage/CurrentScoutsCountdown";
 import SiteAnnouncements from "components/Homepage/SiteAnnouncements";
 import UserVerification from "components/Homepage/UserVerification";
 import { MakoPost, QuerySuccess, StrapiItem } from "types/makotools";
-import { createBirthdayData } from "services/events";
+import { createBirthdayData } from "services/campaigns";
 import { fetchOceans } from "services/makotools/posts";
 import RecommendedCountdown from "components/Homepage/RecommendedCountdown";
 import useUser from "services/firebase/user";
@@ -50,7 +52,7 @@ function SidePanel({
   width = 250,
   ...props
 }: {
-  events: (GameEvent | BirthdayEvent | ScoutEvent)[];
+  events: (Event | Birthday | Scout)[];
   posts: StrapiItem<MakoPost>[];
   width?: number;
 }) {
@@ -65,9 +67,7 @@ function SidePanel({
         multiple
         sx={{ flexBasis: 300, flexGrow: 1, minWidth: 0, width: "100%" }}
       >
-        <UpcomingCampaigns
-          events={events as (BirthdayEvent | ScoutEvent | GameEvent)[]}
-        />
+        <UpcomingCampaigns events={events as (Birthday | Scout | Event)[]} />
         <SiteAnnouncements posts={posts} />
       </Accordion>
     </Box>
@@ -83,8 +83,8 @@ function Page({
 }: {
   posts: StrapiItem<MakoPost>[];
   charactersQuery: QuerySuccess<GameCharacter[]>;
-  gameEventsQuery: QuerySuccess<GameEvent[]>;
-  scoutsQuery: QuerySuccess<ScoutEvent[]>;
+  gameEventsQuery: QuerySuccess<Event[]>;
+  scoutsQuery: QuerySuccess<Scout[]>;
   cardsQuery: QuerySuccess<GameCard[]>;
 }) {
   const user = useUser();
@@ -102,33 +102,22 @@ function Page({
     [charactersQuery.data]
   );
 
-  const birthdays: BirthdayEvent[] = createBirthdayData(characters);
-
-  const gameEvents: GameEvent[] = useMemo(
+  const birthdays: Birthday[] = createBirthdayData(characters);
+  const gameEvents: Event[] = useMemo(
     () => gameEventsQuery.data,
     [gameEventsQuery.data]
   );
+  const scouts: Scout[] = useMemo(() => scoutsQuery.data, [scoutsQuery.data]);
 
-  const scouts: ScoutEvent[] = useMemo(
-    () => scoutsQuery.data,
-    [scoutsQuery.data]
-  );
-
-  const events: (BirthdayEvent | GameEvent | ScoutEvent)[] = [
-    ...birthdays,
-    ...gameEvents,
-    ...scouts,
-  ];
+  const events: Campaign[] = [...birthdays, ...gameEvents, ...scouts];
 
   const cards: GameCard[] = useMemo(() => cardsQuery.data, [cardsQuery.data]);
 
-  const filterRecommendedEvents = (
-    e: GameEvent | ScoutEvent | BirthdayEvent
-  ): boolean => {
+  const containsLikedCharacter = (e: Event | Scout | Birthday): boolean => {
     if (faveCharas.length > 0) {
-      if ((e as BirthdayEvent).character_id) {
+      if (e.type === "birthday") {
         // if this is a birthday event
-        return faveCharas.includes((e as BirthdayEvent).character_id);
+        return faveCharas.includes(e.character_id);
       } else {
         const eventCards = e.cards;
         const relevantCards = cards.filter(
@@ -145,36 +134,26 @@ function Page({
     }
   };
 
-  function createEvents(): {
-    event: GameEvent | ScoutEvent | BirthdayEvent;
-    charId: number;
-  }[] {
-    let listOfEvents: any[] = [];
-    const filteredEvents = events.filter((e) => {
-      return filterRecommendedEvents(e);
-    });
+  function createEvents(): RecommendedEvents[] {
+    let listOfEvents: RecommendedEvents[] = [];
+    const filteredEvents = events.filter(containsLikedCharacter);
     if (faveCharas.length > 0) {
       filteredEvents.forEach((e) => {
-        if ((e as BirthdayEvent).character_id) {
+        if (e.type === "birthday") {
           listOfEvents.push({
             event: e,
-            charId: (e as BirthdayEvent).character_id,
+            charId: e.character_id,
           });
         } else {
           const eventCards = e.cards;
-          const relevantCards = cards.filter((card) =>
-            eventCards?.includes(card.id)
+          const relevantCards = cards.filter(
+            (card) =>
+              eventCards?.includes(card.id) &&
+              card.rarity === 5 &&
+              faveCharas.includes(card.character_id)
           );
-          console.log(relevantCards);
-          let charId;
-          relevantCards.forEach((card) => {
-            faveCharas.forEach((fave) => {
-              if (fave == card.character_id && card.rarity === 5) {
-                charId = card.character_id;
-              }
-            });
-          });
-          listOfEvents.push({ event: e, charId: charId });
+          let charId = relevantCards[0].character_id;
+          listOfEvents.push({ event: e, charId });
         }
       });
     }
@@ -205,10 +184,10 @@ function Page({
             <CurrentEventCountdown
               events={
                 events.filter(
-                  (event: GameEvent) =>
+                  (event: Event) =>
                     event.event_id &&
                     (event.type === "song" || event.type === "tour")
-                ) as GameEvent[]
+                ) as Event[]
               }
             />
             <CurrentScoutsCountdown scouts={scouts} />
@@ -248,7 +227,7 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     "event_id"
   );
 
-  const scouts = await getLocalizedDataArray<ScoutEvent>(
+  const scouts = await getLocalizedDataArray<Scout>(
     "scouts",
     locale,
     "gacha_id"
