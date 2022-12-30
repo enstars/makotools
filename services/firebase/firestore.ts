@@ -104,3 +104,46 @@ export async function sendVerificationEmail() {
     sendEmailVerification(clientAuth.currentUser);
   }
 }
+
+export async function getFirestoreUserCollection() {
+  return async (collectionAddress: string) => {
+    const clientAuth = getAuth();
+    const db = getFirestore();
+
+    if (clientAuth.currentUser === null) {
+      return undefined;
+    }
+    const querySnap = await getDocs(collection(db, collectionAddress));
+
+    const userCollection: any[] = [];
+    querySnap.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      userCollection.push(doc.data());
+    });
+    return userCollection;
+  };
+}
+
+export async function getFirestoreUserDocument(
+  collection: string,
+  document: string,
+  fallback?: any,
+  customUid?: string
+) {
+  const clientAuth = getAuth();
+  const db = getFirestore();
+
+  if (clientAuth.currentUser === null) {
+    return undefined;
+  }
+  const uid = customUid || clientAuth.currentUser.uid;
+  const docSnap = await getDoc(doc(db, `users/${uid}/${collection}`, document));
+
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    return data as UserData;
+  }
+  if (typeof fallback !== undefined) return fallback;
+  throw new Error("nonexistent and no fallback");
+  return undefined;
+}

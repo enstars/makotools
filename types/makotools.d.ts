@@ -56,7 +56,29 @@ interface MakoPost {
 interface CollectedCard {
   id: ID;
   count: number;
+  dateAdded?: string;
 }
+
+/**
+ * 0: completely public collection
+ *
+ * 1: collection is only visible to logged in users
+ *
+ * 2: collection is only visible to friends/following
+ *
+ * 3: collection is completely private
+ */
+type CollectionPrivacyLevel = 0 | 1 | 2 | 3;
+
+interface CardCollection {
+  id: number;
+  name: string;
+  privacyLevel: CollectionPrivacyLevel | number;
+  default: boolean;
+  icon?: number;
+  cards: CollectedCard[];
+}
+
 // USER
 
 type UseWebP = "use" | "dont-use";

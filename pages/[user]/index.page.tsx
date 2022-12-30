@@ -1,17 +1,17 @@
 import {
   ActionIcon,
   Alert,
-  AspectRatio,
-  Badge,
   Box,
   Group,
   Image,
   Loader,
+  Menu,
   Paper,
   Space,
   Text,
   Title,
   Tooltip,
+  ThemeIcon,
   useMantineTheme,
 } from "@mantine/core";
 import { Carousel, Embla } from "@mantine/carousel";
@@ -34,6 +34,8 @@ import ProfileAvatar from "./components/ProfileAvatar";
 import ProfileButtons from "./components/ProfileButtons";
 import ProfileStats from "./components/ProfileStats";
 
+import CardCollections from "./components/CardCollections";
+
 import { getLayout, useSidebarStatus } from "components/Layout";
 import { Locale, QuerySuccess, UserData, UserLoggedIn } from "types/makotools";
 import getServerSideUser from "services/firebase/getServerSideUser";
@@ -45,6 +47,9 @@ import BioDisplay from "components/sections/BioDisplay";
 import Picture from "components/core/Picture";
 import { CONSTANTS } from "services/makotools/constants";
 import { GameCard, GameCharacter } from "types/game";
+import notify from "services/libraries/notify";
+import { getLocalizedDataArray } from "services/data";
+import { GameCard, GameUnit } from "types/game";
 
 function PatreonBanner({ profile }: { profile: UserData }) {
   if (profile?.admin?.patreon) {
@@ -70,12 +75,14 @@ function Page({
   profile,
   uid,
   cards,
+  cardsQuery,
   charactersQuery,
   locale,
 }: {
   profile: UserData;
   uid: string;
   cards: GameCard[] | undefined;
+  cardsQuery: QuerySuccess<GameCard[]>;
   charactersQuery: QuerySuccess<GameCharacter[]>;
   locale: Locale;
 }) {
@@ -85,6 +92,7 @@ function Page({
   );
   // hooks
   const { dayjs } = useDayjs();
+  const units = useMemo(() => unitsQuery.data, [unitsQuery.data]);
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.xs}px)`);
@@ -308,67 +316,16 @@ function Page({
               my="md"
             />
           )}
-
-          <Title order={2} mt="md" mb="xs">
-            Card Collection
-          </Title>
-          {!profile?.collection?.length ? (
-            <Text color="dimmed" size="sm">
-              This user has no cards in their collection
-            </Text>
-          ) : (
-            <>
-              <Box
-                sx={(theme) => ({
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
-                  gap: theme.spacing.xs,
-                })}
-              >
-                {profile.collection
-                  .filter((c) => c.count)
-                  .sort((a, b) => b.count - a.count)
-                  .map((c) => (
-                    <Paper
-                      radius="sm"
-                      component={Link}
-                      key={c.id}
-                      href={`/cards/${c.id}`}
-                      withBorder
-                      sx={{ position: "relative" }}
-                    >
-                      <AspectRatio ratio={4 / 5}>
-                        <Image
-                          radius="sm"
-                          alt={"card image"}
-                          src={getAssetURL(
-                            `assets/card_rectangle4_${c.id}_evolution.png`
-                          )}
-                        />
-                      </AspectRatio>
-                      {c.count > 1 && (
-                        <Badge
-                          sx={{ position: "absolute", bottom: 4, left: 4 }}
-                          variant="filled"
-                        >
-                          <Text inline size="xs" weight="700">
-                            {c.count}
-                            <Text
-                              component="span"
-                              sx={{ verticalAlign: "-0.05em", lineHeight: 0 }}
-                            >
-                              ×
-                            </Text>
-                          </Text>
-                        </Badge>
-                      )}
-                    </Paper>
-                  ))}
-              </Box>
-            </>
-          )}
-        </Box>
-      </Box>
+        </Group>
+      </Paper>
+      <Divider my="xs" />
+      <CardCollections
+        user={user}
+        profile={profile}
+        uid={uid}
+        cards={cards}
+        units={units}
+      />
     </>
   );
 }
@@ -411,7 +368,8 @@ export const getServerSideProps = getServerSideUser(
           cards: cards.data.filter((c) => bannerIds.includes(c.id)),
           charactersQuery: charactersQuery,
           uid: querySnap.docs[0].id,
-          locale: locale as Locale,
+          cardsQuery: cardsQuery,
+          unitsQuery: unitsQuery,
           meta: {
             title: profile?.name
               ? `${profile.name} (@${profile.username})`
