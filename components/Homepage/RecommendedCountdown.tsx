@@ -33,7 +33,6 @@ function RecommendedCard({
   fave: number;
   characters: GameCharacter[];
 }) {
-  console.log(event);
   const { dayjs } = useDayjs();
   const user = useUser();
   const { t } = useTranslation("home");
@@ -159,8 +158,6 @@ function RecommendedCountdown({
     entries.forEach((entry) => returnArray.push(entry[1].event));
     return returnArray;
   };
-
-  console.log(getOnlyEvents(events));
 
   return (
     <Container my="3vh">
