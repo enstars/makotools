@@ -2,8 +2,8 @@
 const workaround = require("next-translate/lib/cjs/plugin/utils.js");
 
 if (process.env.NODE_ENV === "development") {
+  console.log("next-translate (i18n.js): Using local translations");
   workaround.defaultLoader = `async (lang, ns) => {
-    console.log("next-translate (i18n.js): Using local translations");
     return import(\`/locales/\${lang}/\${ns}.json\`).then((m) => m.default);
   }`;
 } else {
