@@ -23,7 +23,7 @@ import StartPlaying from "./StartPlaying";
 import ProfileAvatar from "./ProfileAvatar";
 import FavoriteCharacters from "./FavoriteCharacters";
 
-import { GameCard, GameCharacter } from "types/game";
+import { GameCard, GameCharacter, GameUnit } from "types/game";
 import { Locale, User, UserData } from "types/makotools";
 import { getAssetURL } from "services/data";
 
@@ -51,6 +51,7 @@ function EditProfileModal({
   profileState,
   setProfileState,
   characters,
+  units,
   locale,
 }: {
   opened: boolean;
@@ -62,6 +63,7 @@ function EditProfileModal({
   profileState: any;
   setProfileState: Dispatch<SetStateAction<any>>;
   characters: GameCharacter[];
+  units: GameUnit[];
   locale: Locale;
 }) {
   const theme = useMantineTheme();
@@ -198,6 +200,7 @@ function EditProfileModal({
             />
             <FavoriteCharacters
               characters={characters}
+              units={units}
               profile={profile}
               externalSetter={setProfileState}
               profileState={profileState}

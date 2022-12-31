@@ -3,17 +3,19 @@ import { useListState } from "@mantine/hooks";
 import { Dispatch, SetStateAction, useEffect } from "react";
 
 import { getNameOrder } from "services/game";
-import { GameCharacter } from "types/game";
+import { GameCharacter, GameUnit } from "types/game";
 import { Locale, UserData } from "types/makotools";
 
 function FavoriteCharacters({
   characters,
+  units,
   profile,
   profileState,
   externalSetter,
   locale,
 }: {
   characters: GameCharacter[];
+  units: GameUnit[];
   profile: UserData;
   profileState: any;
   externalSetter: Dispatch<SetStateAction<any>>;
@@ -35,7 +37,7 @@ function FavoriteCharacters({
 
   return (
     <Input.Wrapper
-      label="Favorite Characters"
+      label="Favorites"
       my={10}
       styles={(theme) => ({
         description: {
@@ -45,14 +47,9 @@ function FavoriteCharacters({
     >
       <MultiSelect
         searchable
-        placeholder="Type to search for a character"
+        placeholder="Type to search for a character or unit"
         defaultValue={selected.map((id) => id.toString())}
         data={[
-          {
-            value: "-",
-            label: "Start typing to search for a character...",
-            disabled: true,
-          },
           ...characters.map((chara) => ({
             value: chara.character_id.toString(),
             label: getNameOrder(
@@ -60,6 +57,12 @@ function FavoriteCharacters({
               profile.setting__name_order,
               locale
             ),
+            group: "Characters",
+          })),
+          ...units.map((unit) => ({
+            value: `2${unit.id.toString()}`,
+            label: unit.name[0],
+            group: "Units",
           })),
         ]}
         onChange={(values) => {

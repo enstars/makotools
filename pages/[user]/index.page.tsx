@@ -44,7 +44,7 @@ import useUser from "services/firebase/user";
 import BioDisplay from "components/sections/BioDisplay";
 import Picture from "components/core/Picture";
 import { CONSTANTS } from "services/makotools/constants";
-import { GameCard, GameCharacter } from "types/game";
+import { GameCard, GameCharacter, GameUnit } from "types/game";
 
 function PatreonBanner({ profile }: { profile: UserData }) {
   if (profile?.admin?.patreon) {
@@ -71,18 +71,21 @@ function Page({
   uid,
   cards,
   charactersQuery,
+  unitsQuery,
   locale,
 }: {
   profile: UserData;
   uid: string;
   cards: GameCard[] | undefined;
   charactersQuery: QuerySuccess<GameCharacter[]>;
+  unitsQuery: QuerySuccess<GameUnit[]>;
   locale: Locale;
 }) {
   const characters: GameCharacter[] = useMemo(
     () => charactersQuery.data,
     [charactersQuery.data]
   );
+  const units: GameUnit[] = useMemo(() => unitsQuery.data, [unitsQuery.data]);
   // hooks
   const { dayjs } = useDayjs();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
@@ -137,6 +140,7 @@ function Page({
         profileState={profileState}
         setProfileState={setProfileState}
         characters={characters}
+        units={units}
         locale={locale}
       />
       <ProfilePicModal
@@ -389,6 +393,12 @@ export const getServerSideProps = getServerSideUser(
       locale,
       "character_id"
     );
+    const unitsQuery = await getLocalizedDataArray<GameUnit>(
+      "units",
+      locale,
+      "id",
+      ["id", "name", "order"]
+    );
     if (cards.status === "error" || charactersQuery.status === "error")
       return { props: { cards: undefined } };
     const bannerIds = cards.data.filter((c) => c.rarity >= 4).map((c) => c.id);
@@ -410,6 +420,7 @@ export const getServerSideProps = getServerSideUser(
           profile,
           cards: cards.data.filter((c) => bannerIds.includes(c.id)),
           charactersQuery: charactersQuery,
+          unitsQuery: unitsQuery,
           uid: querySnap.docs[0].id,
           locale: locale as Locale,
           meta: {
