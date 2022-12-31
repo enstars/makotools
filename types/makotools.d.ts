@@ -85,6 +85,7 @@ interface UserData {
   profile__start_playing?: string;
   profile__picture?: ProfilePicture;
   profile__fave_charas?: number[];
+  profile__show_faves?: boolean;
   // private
   user__theme?: string;
   dark_mode: boolean;

@@ -23,6 +23,7 @@ import { useDayjs } from "services/libraries/dayjs";
 import { getNameOrder } from "services/game";
 import { UserLoggedIn } from "types/makotools";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
+import ToyaDed from "assets/ToyaDed.png";
 
 function RecommendedCard({
   event,
@@ -183,6 +184,21 @@ function RecommendedCountdown({
             </Text>
             !
           </Text>
+        </Paper>
+      ) : user.db.profile__fave_charas &&
+        user.db.profile__fave_charas[0] === -1 ? (
+        <Paper p={20} my={10}>
+          <Text>
+            Well, since you hate Ensemble Stars so much, we won&apos;t show you
+            any recommendations. How does that sound?
+          </Text>
+          <Image
+            src={ToyaDed.src}
+            alt="He doesn't know what to do."
+            width={100}
+            sx={{ pointerEvents: "none" }}
+            mt={5}
+          />
         </Paper>
       ) : events.length === 0 ? (
         <Paper p={5} my={10}>

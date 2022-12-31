@@ -38,6 +38,44 @@ function StatContainer({
   );
 }
 
+function DisplayFaves({
+  favesList,
+  characters,
+}: {
+  favesList: number[];
+  characters: GameCharacter[];
+}) {
+  console.log(favesList);
+  if (favesList.length <= 1 && favesList[0] === 0) {
+    return <Text>Everyone &lt;3</Text>;
+  } else if (favesList.length <= 1 && favesList[0] === -1) {
+    return <Text>I hate Ensemble Stars.</Text>;
+  } else {
+    return (
+      <Group>
+        {favesList.map((chara: number, index) => {
+          return (
+            <Picture
+              transparent
+              key={chara}
+              srcB2={
+                chara > 100
+                  ? `assets/unit_logo_${chara.toString().substring(2)}.png`
+                  : `assets/character_sd_square1_${chara}.png`
+              }
+              alt={
+                characters.filter((c) => c.character_id === chara)[0]
+                  .first_name[0]
+              }
+              sx={{ width: 50, height: 50, pointerEvents: "none" }}
+            />
+          );
+        })}
+      </Group>
+    );
+  }
+}
+
 function ProfileStats({
   profile,
   characters,
@@ -65,22 +103,10 @@ function ProfileStats({
             title={"Favorites"}
           >
             {profile.profile__fave_charas && (
-              <Group spacing={0}>
-                {profile.profile__fave_charas.map((chara, index) => {
-                  return (
-                    <Picture
-                      transparent
-                      key={chara}
-                      srcB2={`assets/character_sd_square1_${chara}.png`}
-                      alt={
-                        characters.filter((c) => c.character_id === chara)[0]
-                          .first_name[0]
-                      }
-                      sx={{ width: 50, height: 50, pointerEvents: "none" }}
-                    />
-                  );
-                })}
-              </Group>
+              <DisplayFaves
+                favesList={profile.profile__fave_charas}
+                characters={characters}
+              />
             )}
           </StatContainer>
         )}

@@ -107,6 +107,7 @@ function Page({
     profile__bio: profile.profile__bio,
     profile__picture: profile.profile__picture,
     profile__fave_charas: profile.profile__fave_charas,
+    profile__show_faves: profile.profile__show_faves,
   });
   const { collapsed } = useSidebarStatus();
   const isOwnProfile = user.loggedIn && user.db.suid === profile.suid;

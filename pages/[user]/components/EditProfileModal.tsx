@@ -107,6 +107,7 @@ function EditProfileModal({
                   profile__bio: profileState.profile__bio,
                   profile__picture: profileState.profile__picture,
                   profile__fave_charas: profileState.profile__fave_charas,
+                  profile__show_faves: profileState.profile__show_faves,
                 });
               }
               openedFunction(false);
@@ -179,7 +180,7 @@ function EditProfileModal({
                         ? profileState.profile__picture.crop
                         : undefined
                     }
-                    border={`5px solid ${theme.colors[theme.primaryColor][4]}`}
+                    border={`5px solid ${theme.colors[theme.primaryColor][5]}`}
                   />
                 </Box>
               </Box>

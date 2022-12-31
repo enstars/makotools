@@ -113,7 +113,7 @@ function Page({
   const cards: GameCard[] = useMemo(() => cardsQuery.data, [cardsQuery.data]);
 
   const containsLikedCharacter = (e: Event | Scout | Birthday): boolean => {
-    if (faveCharas.length > 0) {
+    if (faveCharas.length > 0 && faveCharas[0] !== 0 && faveCharas[0] !== -1) {
       if (e.type === "birthday") {
         // if this is a birthday event
         return faveCharas.includes(e.character_id);
