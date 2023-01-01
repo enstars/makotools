@@ -23,7 +23,7 @@ import Pronouns from "./Pronouns";
 import Name from "./Name";
 import Banner from "./Banner";
 
-import { GameCard, GameCharacter } from "types/game";
+import { GameCard, GameCharacter, GameUnit } from "types/game";
 import { Locale, User, UserData } from "types/makotools";
 import { getAssetURL } from "services/data";
 
@@ -51,6 +51,7 @@ function EditProfileModal({
   profileState,
   setProfileState,
   characters,
+  units,
   locale,
 }: {
   opened: boolean;
@@ -62,6 +63,7 @@ function EditProfileModal({
   profileState: any;
   setProfileState: Dispatch<SetStateAction<any>>;
   characters: GameCharacter[];
+  units: GameUnit[];
   locale: Locale;
 }) {
   const theme = useMantineTheme();
@@ -105,6 +107,7 @@ function EditProfileModal({
                   profile__bio: profileState.profile__bio,
                   profile__picture: profileState.profile__picture,
                   profile__fave_charas: profileState.profile__fave_charas,
+                  profile__show_faves: profileState.profile__show_faves,
                 });
               }
               openedFunction(false);
@@ -177,7 +180,7 @@ function EditProfileModal({
                         ? profileState.profile__picture.crop
                         : undefined
                     }
-                    border={`5px solid ${theme.colors[theme.primaryColor][4]}`}
+                    border={`5px solid ${theme.colors[theme.primaryColor][5]}`}
                   />
                 </Box>
               </Box>
@@ -198,6 +201,7 @@ function EditProfileModal({
             />
             <FavoriteCharacters
               characters={characters}
+              units={units}
               profile={profile}
               externalSetter={setProfileState}
               profileState={profileState}
