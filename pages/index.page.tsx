@@ -21,7 +21,6 @@ import {
   Event,
   Scout,
   GameCard,
-  RecommendedEvents,
   Campaign,
   GameUnit,
 } from "types/game";
@@ -117,6 +116,58 @@ function Page({
 
   const cards: GameCard[] = useMemo(() => cardsQuery.data, [cardsQuery.data]);
 
+  interface RecommendedCampaign {
+    event: Campaign;
+    charId?: number;
+    unitId?: number;
+  }
+
+  function getRecommendedCampaigns(): RecommendedCampaign[] {
+    let faveCharas = user.db.profile__fave_charas;
+    let faveUnits = user.db.profile__fave_units;
+    let recommendedCampaigns: RecommendedCampaign[] = [];
+    events.forEach((event: Campaign) => {
+      if (event.type === "birthday") {
+        // only check favorite characters
+        if (faveCharas.includes(event.character_id))
+          recommendedCampaigns.push({
+            event: event,
+            charId: event.character_id,
+          });
+      } else {
+        if (event.type === "song" || event.type === "tour") {
+          // these events should check for units
+          if (event.unit_id?.some((uid) => faveUnits.includes(uid))) {
+            recommendedCampaigns.push({
+              event: event,
+              unitId: event.unit_id.find((uid) => faveUnits.includes(uid)),
+            });
+          }
+          // check if the event includes a relevant character card
+          let eventCards: GameCard[] = cards.filter((card) =>
+            event.cards.includes(card.id)
+          );
+          eventCards.forEach((card: GameCard) => {
+            if (
+              faveCharas.includes(card.character_id) &&
+              (card.rarity === 5 || card.rarity || 4)
+            ) {
+              // only include 5* or 4* features
+              if (!recommendedCampaigns.find((c) => c.event === event)) {
+                // no duplicate events
+                recommendedCampaigns.push({
+                  event: event,
+                  charId: card.character_id,
+                });
+              }
+            }
+          });
+        }
+      }
+    });
+    return recommendedCampaigns;
+  }
+
   return (
     <Group
       align="flex-start"
@@ -147,7 +198,15 @@ function Page({
               }
             />
             <CurrentScoutsCountdown scouts={scouts} />
+            {user.loggedIn && (
+              <RecommendedCountdown
+                events={getRecommendedCampaigns()}
+                characters={characters}
+                units={units}
+              />
+            )}
           </Box>
+
           <MediaQuery largerThan="md" styles={{ display: "none" }}>
             <SidePanel events={events} posts={posts} />
           </MediaQuery>

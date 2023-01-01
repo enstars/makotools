@@ -17,22 +17,30 @@ import useTranslation from "next-translate/useTranslation";
 
 import { countdown, retrieveNextCampaigns } from "services/campaigns";
 import useUser from "services/firebase/user";
-import { Birthday, GameCharacter, Event, Scout, GameUnit } from "types/game";
+import {
+  Birthday,
+  GameCharacter,
+  Event,
+  Scout,
+  GameUnit,
+  Campaign,
+} from "types/game";
 import { getAssetURL } from "services/data";
 import { useDayjs } from "services/libraries/dayjs";
 import { getNameOrder } from "services/game";
-import { UserLoggedIn } from "types/makotools";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 import ToyaDed from "assets/ToyaDed.png";
 
 function RecommendedCard({
   event,
-  fave,
+  faveChar,
+  faveUnit,
   characters,
   units,
 }: {
   event: Event | Scout | Birthday;
-  fave: number;
+  faveChar?: number;
+  faveUnit?: number;
   characters: GameCharacter[];
   units: GameUnit[];
 }) {
@@ -61,21 +69,16 @@ function RecommendedCard({
     return () => clearInterval(interval);
   }, [event.start.en]);
 
-  function returnCharOrUnitName(id: number): string {
-    if (id < 100) {
-      const getCharaObj = characters.filter((c) => c.character_id === fave)[0];
-
-      const nameObj = {
-        first_name: getCharaObj.first_name[0],
-        last_name: getCharaObj.last_name[0],
+  function returnCharOrUnitName(): string {
+    if (faveChar) {
+      let char = characters.filter((c) => c.character_id === faveChar)[0];
+      let nameObj = {
+        first_name: char.first_name[0],
+        last_name: char.last_name[0],
       };
-
-      return getNameOrder(
-        nameObj,
-        (user as UserLoggedIn).db.setting__name_order
-      );
+      return getNameOrder(nameObj, user.db?.setting__name_order);
     } else {
-      return units.filter((u) => parseInt(`10${u.id}`) === fave)[0].name[0];
+      return units.filter((u) => u.id === faveUnit)[0].name[0];
     }
   }
 
@@ -102,15 +105,8 @@ function RecommendedCard({
           <IconStar size={14} />
           <Text size="xs" color="dimmed">
             Because you like{" "}
-            <Text
-              size="xs"
-              color="dimmed"
-              display="inline"
-              component={Link}
-              href={`/characters/${fave}`}
-              weight={700}
-            >
-              {returnCharOrUnitName(fave)}
+            <Text weight={700} component="span">
+              {returnCharOrUnitName()}
             </Text>
           </Text>
         </Group>
@@ -165,8 +161,9 @@ function RecommendedCountdown({
   units,
 }: {
   events: {
-    event: Event | Scout | Birthday;
-    charId: number;
+    event: Campaign;
+    charId?: number;
+    unitId?: number;
   }[];
   characters: GameCharacter[];
   units: GameUnit[];
@@ -240,8 +237,11 @@ function RecommendedCountdown({
                 event={
                   events[events.findIndex((ev: any) => ev.event === e)].event
                 }
-                fave={
+                faveChar={
                   events[events.findIndex((ev: any) => ev.event === e)].charId
+                }
+                faveUnit={
+                  events[events.findIndex((ev: any) => ev.event === e)].unitId
                 }
                 characters={characters}
                 units={units}
