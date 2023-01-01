@@ -6,6 +6,7 @@ import {
   Group,
   Loader,
   Title,
+  useMantineTheme,
 } from "@mantine/core";
 import { IconDeviceFloppy, IconPencil, IconX } from "@tabler/icons";
 import { useEffect, useState } from "react";
@@ -35,6 +36,7 @@ function CardCollections({
   units: GameUnit[];
 }) {
   const user = useUser();
+  const theme = useMantineTheme();
   const {
     data: profileCollections,
     error,
@@ -209,7 +211,7 @@ function CardCollections({
             )
           ) : (
             <Button
-              color="indigo"
+              color={theme.primaryColor}
               radius="xl"
               variant="subtle"
               leftIcon={<IconPencil />}
