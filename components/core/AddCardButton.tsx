@@ -29,7 +29,15 @@ function EditCollectionRow({
 
   return (
     <>
-      <Text size="xs" sx={{ paddingRight: "20px" }}>
+      <Text
+        size="xs"
+        sx={{
+          paddingRight: "20px",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          maxWidth: "200px",
+        }}
+      >
         {collection.name}
       </Text>
       <ActionIcon
