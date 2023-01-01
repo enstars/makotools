@@ -14,14 +14,14 @@ import dynamic from "next/dynamic";
 import { Dispatch, SetStateAction } from "react";
 import { IconPencil } from "@tabler/icons";
 
-import MaoBanned from "../MaoBanned.png";
+import MaoBanned from "../../assets/MaoBanned.png";
+import StartPlaying from "../StartPlaying";
+import ProfileAvatar from "../profilePicture/ProfileAvatar";
+import FavoriteCharacters from "../FavoriteCharacters";
 
-import Banner from "./Banner";
-import Name from "./Name";
 import Pronouns from "./Pronouns";
-import StartPlaying from "./StartPlaying";
-import ProfileAvatar from "./ProfileAvatar";
-import FavoriteCharacters from "./FavoriteCharacters";
+import Name from "./Name";
+import Banner from "./Banner";
 
 import { GameCard, GameCharacter, GameUnit } from "types/game";
 import { Locale, User, UserData } from "types/makotools";

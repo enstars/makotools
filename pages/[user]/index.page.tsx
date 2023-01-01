@@ -22,14 +22,14 @@ import { useRef, Fragment, useState, useEffect, useMemo } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { useMediaQuery } from "@mantine/hooks";
 
-import EditProfileModal from "./components/EditProfileModal";
-import MaoBanned from "./MaoBanned.png";
-import ProfilePicModal from "./components/ProfilePicModal";
+import EditProfileModal from "./components/customization/EditProfileModal";
+import MaoBanned from "./assets/MaoBanned.png";
+import ProfilePicModal from "./components/profilePicture/ProfilePicModal";
 import RemoveFriendModal from "./components/RemoveFriendModal";
-import ProfileAvatar from "./components/ProfileAvatar";
+import ProfileAvatar from "./components/profilePicture/ProfileAvatar";
 import ProfileButtons from "./components/ProfileButtons";
 import ProfileStats from "./components/ProfileStats";
-import CardCollections from "./components/CardCollections";
+import CardCollections from "./components/collections/CardCollections";
 
 import { getLayout, useSidebarStatus } from "components/Layout";
 import { Locale, QuerySuccess, UserData, UserLoggedIn } from "types/makotools";
@@ -404,7 +404,6 @@ export const getServerSideProps = getServerSideUser(
           unitsQuery: unitsQuery,
           uid: querySnap.docs[0].id,
           cardsQuery: cardsQuery,
-          unitsQuery: unitsQuery,
           meta: {
             title: profile?.name
               ? `${profile.name} (@${profile.username})`

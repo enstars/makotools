@@ -71,12 +71,13 @@ interface CollectedCard {
 type CollectionPrivacyLevel = 0 | 1 | 2 | 3;
 
 interface CardCollection {
-  id: number;
+  id: string;
   name: string;
-  privacyLevel: CollectionPrivacyLevel | number;
+  privacyLevel: CollectionPrivacyLevel;
   default: boolean;
   icon?: number;
   cards: CollectedCard[];
+  order: number;
 }
 
 // USER
