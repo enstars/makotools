@@ -117,75 +117,6 @@ function Page({
 
   const cards: GameCard[] = useMemo(() => cardsQuery.data, [cardsQuery.data]);
 
-  const containsLikedCharacter = (e: Event | Scout | Birthday): boolean => {
-    if (faveCharas.length > 0 && faveCharas[0] !== -1) {
-      if (e.type === "birthday") {
-        // if this is a birthday event
-        return faveCharas.includes(e.character_id);
-      } else {
-        const eventCards = e.cards;
-        const relevantCards = cards.filter(
-          (card) => faveCharas.includes(card.character_id) && card.rarity === 5
-        );
-        return (
-          eventCards?.some(
-            (r) => relevantCards.filter((c) => c.id === r).length > 0
-          ) || false
-        );
-      }
-    } else {
-      return false;
-    }
-  };
-
-  function createEvents(): RecommendedEvents[] {
-    let listOfEvents: RecommendedEvents[] = [];
-    const filteredCharaEvents = events.filter(containsLikedCharacter);
-    const filteredUnitEvents = events.filter((e) => {
-      let isRelevant = false;
-      (e as Event).unit_id &&
-        (e as Event).unit_id.forEach((uid) => {
-          if (faveCharas.includes(parseInt(`10${uid}`))) isRelevant = true;
-        });
-      return isRelevant;
-    });
-    const filteredEvents = Array.from(
-      new Set([...filteredCharaEvents, ...filteredUnitEvents])
-    );
-    console.log(filteredEvents);
-    if (faveCharas.length > 0) {
-      if (faveCharas[0] === 0) faveCharas.shift();
-      filteredEvents.forEach((e) => {
-        if (e.type === "birthday") {
-          listOfEvents.push({
-            event: e,
-            charId: e.character_id,
-          });
-        } else {
-          faveCharas.forEach((char) => {
-            if (char > 100) {
-              // if this is a unit
-              if (parseInt(`10${e.unit_id}`) === char) {
-                listOfEvents.push({ event: e, charId: char });
-              }
-            }
-          });
-          const eventCards = e.cards;
-          const relevantCards = cards.filter(
-            (card) =>
-              eventCards?.includes(card.id) &&
-              card.rarity === 5 &&
-              faveCharas.includes(card.character_id)
-          );
-          let charId = relevantCards[0] && relevantCards[0].character_id;
-          listOfEvents.push({ event: e, charId });
-        }
-      });
-    }
-
-    return listOfEvents;
-  }
-
   return (
     <Group
       align="flex-start"
@@ -216,13 +147,6 @@ function Page({
               }
             />
             <CurrentScoutsCountdown scouts={scouts} />
-            {user.loggedIn && (
-              <RecommendedCountdown
-                events={createEvents()}
-                characters={characters}
-                units={units}
-              />
-            )}
           </Box>
           <MediaQuery largerThan="md" styles={{ display: "none" }}>
             <SidePanel events={events} posts={posts} />
