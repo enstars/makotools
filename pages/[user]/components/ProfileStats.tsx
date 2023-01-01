@@ -11,6 +11,7 @@ import dayjs from "dayjs";
 import Picture from "components/core/Picture";
 import { GameCharacter, GameUnit } from "types/game";
 import { UserData } from "types/makotools";
+import IconEnstars from "components/core/IconEnstars";
 
 function StatContainer({
   icon,
@@ -39,46 +40,55 @@ function StatContainer({
 }
 
 function DisplayFaves({
-  favesList,
+  faveCharas,
+  faveUnits,
   characters,
   units,
 }: {
-  favesList: number[];
+  faveCharas: number[];
+  faveUnits: number[];
   characters: GameCharacter[];
   units: GameUnit[];
 }) {
-  console.log(favesList);
-  if (favesList[0] === 0) {
+  if (faveCharas[0] === 0 && faveUnits[0] === 0) {
     return <Text>Everyone &lt;3</Text>;
-  } else if (favesList[0] === -1) {
+  } else if (faveCharas[0] === -1 && faveUnits[0] === -1) {
     return <Text>I hate Ensemble Stars.</Text>;
   } else {
     return (
       <Group>
-        {favesList.map((chara: number, index) => {
-          return (
-            <Picture
-              transparent
-              key={chara}
-              srcB2={
-                chara > 100
-                  ? `assets/unit_logo_${chara.toString().substring(2)}.png`
-                  : `assets/character_sd_square1_${chara}.png`
-              }
-              alt={
-                chara < 100
-                  ? characters.filter((c) => c.character_id === chara)[0]
-                      .first_name[0]
-                  : units.filter((u) => parseInt(`10${u.id}`) === chara)[0]
-                      .name[0]
-              }
-              fill={false}
-              width={50}
-              height={50}
-              sx={{ pointerEvents: "none" }}
-            />
-          );
-        })}
+        <Group spacing={0}>
+          {faveCharas.map((chara: number) => {
+            return (
+              <Picture
+                transparent
+                key={chara}
+                srcB2={`assets/character_sd_square1_${chara}.png`}
+                alt={
+                  characters.find((c) => c.character_id === chara)
+                    ?.first_name[0]
+                }
+                fill={false}
+                width={50}
+                height={50}
+                sx={{ pointerEvents: "none" }}
+              />
+            );
+          })}
+        </Group>
+        <Group>
+          {faveUnits.map((unit: number) => {
+            return (
+              <ThemeIcon
+                key={unit}
+                color={units.find((u) => u.id === unit)?.image_color}
+                variant="outline"
+              >
+                <IconEnstars unit={unit} size={100} />
+              </ThemeIcon>
+            );
+          })}
+        </Group>
       </Group>
     );
   }
@@ -114,7 +124,8 @@ function ProfileStats({
           >
             {profile.profile__fave_charas && (
               <DisplayFaves
-                favesList={profile.profile__fave_charas}
+                faveCharas={profile.profile__fave_charas}
+                faveUnits={profile.profile__fave_units}
                 characters={characters}
                 units={units}
               />
