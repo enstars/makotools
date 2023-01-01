@@ -46,8 +46,12 @@ function EditCollectionCards({
   );
 
   useEffect(() => {
+    cardHandlers.setState(collection.cards || []);
+  }, [collection]);
+
+  useEffect(() => {
     handlers.setItemProp(index, "cards", cards);
-  }, [cards]);
+  }, [cards, index]);
 
   const NUM_COLS =
     window.innerWidth < 768
@@ -58,7 +62,7 @@ function EditCollectionCards({
 
   const ROW_HEIGHT = 200;
 
-  const height = Math.ceil(collection.cards.length / NUM_COLS) * ROW_HEIGHT;
+  const height = Math.ceil(cards.length / NUM_COLS) * ROW_HEIGHT;
 
   return (
     <Box>
@@ -73,7 +77,7 @@ function EditCollectionCards({
         <Title order={3}>Edit {collection.name} cards</Title>
       </Group>
       <Space h="md" />
-      {collection.cards.length > 1 && (
+      {cards.length > 1 && (
         <Select
           placeholder="Sort by..."
           data={[
@@ -145,7 +149,7 @@ function EditCollectionCards({
         />
       )}
       <Space h="lg" />
-      {collection.cards && collection.cards.length > 0 ? (
+      {cards && cards.length > 0 ? (
         <Box sx={{ width: "100%", height: "100%" }}>
           <GridContextProvider
             onChange={(
@@ -155,6 +159,7 @@ function EditCollectionCards({
               targetId: string
             ) => {
               cardHandlers.reorder({ from: sourceIndex, to: targetIndex });
+              console.log([...cards].map((c) => c.id));
             }}
           >
             <GridDropZone
@@ -166,7 +171,7 @@ function EditCollectionCards({
                 height: height,
               }}
             >
-              {collection.cards
+              {cards
                 .filter((c: CollectedCard) => c.count)
                 .map((c: CollectedCard, index: number) => (
                   <GridItem key={c.id}>

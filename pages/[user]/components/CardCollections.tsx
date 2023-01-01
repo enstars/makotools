@@ -108,12 +108,6 @@ function CardCollections({
     });
   }, [defaultCollection]);
 
-  console.log(
-    "collections\n",
-    editingCollections.map((c) => `${c.id}: ${c.order}`).join("\n"),
-    `\n\n`,
-    tempCollectionsWhileReordering.map((c) => `${c.id}: ${c.order}`).join("\n")
-  );
   const saveReorder = async () => {
     if (!user.loggedIn) return;
     const db = getFirestore();
