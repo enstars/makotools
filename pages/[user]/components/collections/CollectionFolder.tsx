@@ -6,30 +6,22 @@ import {
   Stack,
   Text,
   ThemeIcon,
-  Title,
   Tooltip,
   useMantineTheme,
 } from "@mantine/core";
 import Link from "next/link";
-import {
-  IconUsers,
-  IconHeart,
-  IconEyeOff,
-  IconEye,
-  IconCheck,
-} from "@tabler/icons";
+import { IconUsers, IconHeart, IconEyeOff, IconEye } from "@tabler/icons";
 
 import CollectionCard from "./CollectionCard";
+import { ICONS } from "./icons";
 
 import { CardCollection, CollectedCard } from "types/makotools";
 
 function CollectionFolder({
   collection,
-  icons,
   isYourProfile,
 }: {
   collection: CardCollection;
-  icons: JSX.Element[];
   isYourProfile: boolean | undefined;
 }) {
   const theme = useMantineTheme();
@@ -38,12 +30,23 @@ function CollectionFolder({
     borderRadius: theme.radius.lg,
   };
 
+  const icon = ICONS[collection.icon || 0];
+
   return (
-    <Accordion.Item value={collection.name}>
-      <Accordion.Control>
+    <Accordion.Item value={collection.id}>
+      <Accordion.Control py="xs" px="md">
         <Group noWrap>
-          {icons[collection.icon || 0]}
-          <Title order={4}>{collection.name}</Title>
+          <Text color={icon.color} inline>
+            <icon.component {...icon.props} />
+          </Text>
+          <Box>
+            <Text size="md" weight={800}>
+              {collection.name}
+            </Text>
+            <Text size="xs" weight={500} color="dimmed">
+              {collection.cards.length} cards in collection
+            </Text>
+          </Box>
           {isYourProfile &&
             (collection.privacyLevel === 1 ? (
               <Tooltip
@@ -76,18 +79,6 @@ function CollectionFolder({
                 </ThemeIcon>
               </Tooltip>
             ))}
-          {isYourProfile && collection.default && (
-            <Tooltip
-              multiline
-              width={200}
-              label="This is your default collection. It will be automatically open when someone visits your profile"
-              withArrow
-            >
-              <ThemeIcon color="green" sx={ICON_STYLE}>
-                <IconCheck size={20} />
-              </ThemeIcon>
-            </Tooltip>
-          )}
         </Group>
       </Accordion.Control>
       <Accordion.Panel>

@@ -6,6 +6,7 @@ import {
   Group,
   Menu,
   Modal,
+  Paper,
   Select,
   Space,
   Stack,
@@ -18,7 +19,6 @@ import {
 import { useListState, UseListStateHandlers } from "@mantine/hooks";
 import {
   IconArrowsSort,
-  IconCheck,
   IconChevronLeft,
   IconChevronUp,
   IconDots,
@@ -28,10 +28,11 @@ import {
   IconTrash,
   IconX,
 } from "@tabler/icons";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { GridContextProvider, GridDropZone, GridItem } from "react-grid-drag";
 
 import CollectionCard from "./CollectionCard";
+import { ICONS } from "./icons";
 
 import { useDayjs } from "services/libraries/dayjs";
 import {
@@ -48,19 +49,15 @@ function EditCollectionCards({
   handlers,
   index,
   setFunction,
-  icons,
-  defaultCollection,
-  defaultFunction,
+  width,
 }: {
   collection: CardCollection;
   units: GameUnit[];
   allCards: GameCard[];
   handlers: UseListStateHandlers<CardCollection>;
   index: number;
-  setFunction: Dispatch<SetStateAction<CardCollection | undefined>>;
-  icons: JSX.Element[];
-  defaultCollection: CardCollection | null;
-  defaultFunction: Dispatch<SetStateAction<CardCollection | null>>;
+  setFunction: () => void;
+  width: number;
 }) {
   const theme = useMantineTheme();
 
@@ -71,28 +68,20 @@ function EditCollectionCards({
   const [cards, cardHandlers] = useListState<CollectedCard>(
     collection.cards || []
   );
-
-  useEffect(() => {
-    cardHandlers.setState(collection.cards || []);
-  }, [collection]);
-
   useEffect(() => {
     handlers.setItemProp(index, "cards", cards);
   }, [cards, index]);
 
-  const NUM_COLS =
-    window.innerWidth < 768
-      ? 2
-      : window.innerWidth > 786 && window.innerWidth < 900
-      ? 4
-      : 5;
+  const NUM_COLS = Math.floor((width - 40) / 120);
 
-  const ROW_HEIGHT = 200;
-
+  const ROW_HEIGHT = (((width - 40) / NUM_COLS - 10) * 5) / 4 + 10;
+  console.log(NUM_COLS, ROW_HEIGHT);
   const height = Math.ceil(cards.length / NUM_COLS) * ROW_HEIGHT;
 
+  const icon = ICONS[collection.icon || 0];
+  console.log(cards.map((c) => c?.id));
   return (
-    <>
+    <Paper p="lg" withBorder>
       <Modal
         opened={openDeleteModal}
         onClose={() => setOpenDeleteModal(false)}
@@ -124,7 +113,7 @@ function EditCollectionCards({
       <Group>
         <ActionIcon
           onClick={() => {
-            setFunction(undefined);
+            setFunction();
           }}
         >
           <IconChevronLeft size={40} strokeWidth={3} />
@@ -136,7 +125,10 @@ function EditCollectionCards({
           <Menu.Target>
             <ActionIcon>
               <Box sx={{ display: "flex", flexFlow: "row no-wrap" }}>
-                {icons[collection.icon || 0]} <IconChevronUp size={20} />
+                <Text color={icon.color}>
+                  <icon.component {...icon.props} />
+                </Text>
+                <IconChevronUp size={20} />
               </Box>
             </ActionIcon>
           </Menu.Target>
@@ -144,17 +136,20 @@ function EditCollectionCards({
             <Menu.Label sx={{ textAlign: "center" }}>
               Choose a collection icon
             </Menu.Label>
-            {icons.map((icon, i) => (
+            {ICONS.map((icon, i) => (
               <Menu.Item
-                key={icon.key}
+                key={icon.name}
                 component="button"
                 onClick={() => {
                   console.log(index, i);
                   handlers.setItemProp(index, "icon", i);
+                  console.log(collection);
                 }}
                 sx={{ width: "auto", display: "inline" }}
               >
-                {icon}
+                <Text color={icon.color}>
+                  <icon.component {...icon.props} />
+                </Text>
               </Menu.Item>
             ))}
           </Menu.Dropdown>
@@ -185,18 +180,6 @@ function EditCollectionCards({
           <Menu.Dropdown>
             <Menu.Label>Collection options</Menu.Label>
             <Menu.Item
-              icon={<IconCheck />}
-              disabled={
-                defaultCollection?.id === collection.id ||
-                collection.privacyLevel > 0
-              }
-              onClick={() => {
-                defaultFunction(collection);
-              }}
-            >
-              Set collection as default
-            </Menu.Item>
-            <Menu.Item
               icon={<IconEye />}
               component="div"
               sx={{ alignItems: "flex-start" }}
@@ -218,13 +201,6 @@ function EditCollectionCards({
                       "privacyLevel",
                       parseInt(value as string) as CollectionPrivacyLevel
                     );
-                    if (
-                      parseInt(value as string) > 0 &&
-                      defaultCollection?.id === collection.id
-                    ) {
-                      handlers.setItemProp(index, "default", false);
-                      defaultFunction(null);
-                    }
                   }}
                 />
               </Stack>
@@ -314,31 +290,39 @@ function EditCollectionCards({
       )}
       <Space h="lg" />
       {cards && cards.length > 0 ? (
-        <Box sx={{ width: "100%", height: "100%" }}>
-          <GridContextProvider
-            onChange={(
-              sourceId: string,
-              sourceIndex: number,
-              targetIndex: number,
-              targetId: string
-            ) => {
-              cardHandlers.reorder({ from: sourceIndex, to: targetIndex });
-              console.log([...cards].map((c) => c.id));
-            }}
-          >
-            <GridDropZone
-              id="card-drop-zone"
-              boxesPerRow={NUM_COLS}
-              rowHeight={ROW_HEIGHT}
-              style={{
-                width: "100%",
-                height: height,
+        <Box
+          sx={(theme) => ({
+            margin: -theme.spacing.xs / 2,
+          })}
+        >
+          <Box sx={{ width: "100%", height: "100%" }}>
+            <GridContextProvider
+              onChange={(
+                sourceId?: string,
+                sourceIndex?: number,
+                targetIndex?: number,
+                targetId?: string
+              ) => {
+                if (
+                  sourceIndex === targetIndex ||
+                  typeof sourceIndex === "undefined" ||
+                  typeof targetIndex === "undefined"
+                )
+                  return;
+                cardHandlers.reorder({ from: sourceIndex, to: targetIndex });
               }}
             >
-              {cards
-                .filter((c: CollectedCard) => c.count)
-                .map((c: CollectedCard, index: number) => (
-                  <GridItem key={c.id}>
+              <GridDropZone
+                id="card-drop-zone"
+                boxesPerRow={NUM_COLS}
+                rowHeight={ROW_HEIGHT}
+                style={{
+                  width: "100%",
+                  height: height,
+                }}
+              >
+                {cards.map((c: CollectedCard, index: number) => (
+                  <GridItem key={Math.abs(c.id)}>
                     <CollectionCard
                       card={c}
                       editing={true}
@@ -348,13 +332,14 @@ function EditCollectionCards({
                     />
                   </GridItem>
                 ))}
-            </GridDropZone>
-          </GridContextProvider>
+              </GridDropZone>
+            </GridContextProvider>
+          </Box>
         </Box>
       ) : (
         <Text color="dimmed">This collection is empty.</Text>
       )}
-    </>
+    </Paper>
   );
 }
 
