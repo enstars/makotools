@@ -91,7 +91,6 @@ function Page({
   const units: GameUnit[] = useMemo(() => unitsQuery.data, [unitsQuery.data]);
   // hooks
   const { dayjs } = useDayjs();
-  const units = useMemo(() => unitsQuery.data, [unitsQuery.data]);
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.xs}px)`);
@@ -407,7 +406,6 @@ export const getServerSideProps = getServerSideUser(
           unitsQuery: unitsQuery,
           uid: querySnap.docs[0].id,
           cardsQuery: cardsQuery,
-          unitsQuery: unitsQuery,
           meta: {
             title: profile?.name
               ? `${profile.name} (@${profile.username})`

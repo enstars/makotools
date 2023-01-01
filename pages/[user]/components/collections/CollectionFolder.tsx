@@ -38,8 +38,6 @@ function CollectionFolder({
     borderRadius: theme.radius.lg,
   };
 
-  console.log(isYourProfile);
-
   return (
     <Accordion.Item value={collection.name}>
       <Accordion.Control>
