@@ -2,8 +2,10 @@ import {
   Group,
   ThemeIcon,
   Box,
+  Image,
   Text,
   DefaultMantineColor,
+  Stack,
 } from "@mantine/core";
 import { IconCalendar, IconHeart } from "@tabler/icons";
 import dayjs from "dayjs";
@@ -11,7 +13,7 @@ import dayjs from "dayjs";
 import Picture from "components/core/Picture";
 import { GameCharacter, GameUnit } from "types/game";
 import { UserData } from "types/makotools";
-import IconEnstars from "components/core/IconEnstars";
+import { getAssetURL } from "services/data";
 
 function StatContainer({
   icon,
@@ -56,7 +58,7 @@ function DisplayFaves({
     return <Text>I hate Ensemble Stars.</Text>;
   } else {
     return (
-      <Group>
+      <Stack>
         <Group spacing={0}>
           {faveCharas.map((chara: number) => {
             return (
@@ -79,17 +81,17 @@ function DisplayFaves({
         <Group>
           {faveUnits.map((unit: number) => {
             return (
-              <ThemeIcon
+              <Image
                 key={unit}
-                color={units.filter((u) => u.id === unit)[0].image_color}
-                variant="light"
-              >
-                <IconEnstars unit={unit} size={100} />
-              </ThemeIcon>
+                src={getAssetURL(`assets/unit_logo_${unit}.png`)}
+                alt={units.filter((u) => u.id === unit)[0].name[0]}
+                width={50}
+                sx={{ pointerEvents: "none" }}
+              />
             );
           })}
         </Group>
-      </Group>
+      </Stack>
     );
   }
 }
