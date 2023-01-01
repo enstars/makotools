@@ -16,6 +16,7 @@ import {
   LoadingStatus,
   UserPrivateData,
   User,
+  CardCollection,
 } from "types/makotools";
 
 /**
@@ -132,7 +133,8 @@ export async function getFirestoreUserCollection([collectionAddress, user]: [
     : 0;
 
   console.log(collectionAddress, accessiblePrivacyLevel);
-  let querySnap;
+  let querySnap,
+    userCollection: CardCollection[] = [];
   try {
     querySnap = await getDocs(
       query(
@@ -140,16 +142,16 @@ export async function getFirestoreUserCollection([collectionAddress, user]: [
         where("privacyLevel", "<=", accessiblePrivacyLevel)
       )
     );
+
+    querySnap.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      userCollection.push(doc.data() as CardCollection);
+    });
   } catch (e) {
     console.error(e);
   }
   console.log("snap", querySnap);
 
-  const userCollection: any[] = [];
-  querySnap.forEach((doc) => {
-    // doc.data() is never undefined for query doc snapshots
-    userCollection.push(doc.data());
-  });
   console.log("UC", userCollection);
   return userCollection;
   // };
