@@ -30,7 +30,7 @@ import NoBitches from "./NoBitches.png";
 
 import useUser from "services/firebase/user";
 import { parseStringify } from "services/utilities";
-import { FIRESTORE_MAXIMUM_CONCURRENT_ACCESS_CALLS } from "services/firebase/firestore";
+import { FIRESTORE_MAXIMUM_WHERE_VALUES } from "services/firebase/firestore";
 import { UserData, UserLoggedIn } from "types/makotools";
 
 function Requests() {
@@ -58,7 +58,7 @@ function Requests() {
         const db = getFirestore();
         const profileIdChunks = chunk(
           profileIdsToLoad,
-          FIRESTORE_MAXIMUM_CONCURRENT_ACCESS_CALLS
+          FIRESTORE_MAXIMUM_WHERE_VALUES
         );
         await Promise.all(
           profileIdChunks.map(async (ids) => {

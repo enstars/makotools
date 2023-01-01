@@ -88,6 +88,7 @@ function Page({
     () => charactersQuery.data,
     [charactersQuery.data]
   );
+  const units: GameUnit[] = useMemo(() => unitsQuery.data, [unitsQuery.data]);
   // hooks
   const { dayjs } = useDayjs();
   const units = useMemo(() => unitsQuery.data, [unitsQuery.data]);
@@ -110,6 +111,7 @@ function Page({
     profile__bio: profile.profile__bio,
     profile__picture: profile.profile__picture,
     profile__fave_charas: profile.profile__fave_charas,
+    profile__show_faves: profile.profile__show_faves,
   });
   const { collapsed } = useSidebarStatus();
   const isOwnProfile = user.loggedIn && user.db.suid === profile.suid;
@@ -143,6 +145,7 @@ function Page({
         profileState={profileState}
         setProfileState={setProfileState}
         characters={characters}
+        units={units}
         locale={locale}
       />
       <ProfilePicModal
@@ -304,7 +307,11 @@ function Page({
             )}
           </Group>
           <PatreonBanner profile={profile} />
-          <ProfileStats profile={profile} characters={characters} />
+          <ProfileStats
+            profile={profile}
+            characters={characters}
+            units={units}
+          />
           {profile?.profile__bio && (
             <BioDisplay
               rawBio={profile.profile__bio}
@@ -350,11 +357,11 @@ export const getServerSideProps = getServerSideUser(
       locale,
       "character_id"
     );
-    const unitsQuery: any = await getLocalizedDataArray<GameUnit>(
+    const unitsQuery = await getLocalizedDataArray<GameUnit>(
       "units",
       locale,
       "id",
-      ["id", "image_color"]
+      ["id", "name", "order"]
     );
     if (cards.status === "error" || charactersQuery.status === "error")
       return { props: { cards: undefined } };
@@ -397,6 +404,7 @@ export const getServerSideProps = getServerSideUser(
           profile,
           cards: cards.data.filter((c) => bannerIds.includes(c.id)),
           charactersQuery: charactersQuery,
+          unitsQuery: unitsQuery,
           uid: querySnap.docs[0].id,
           cardsQuery: cardsQuery,
           unitsQuery: unitsQuery,
