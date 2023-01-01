@@ -1,5 +1,5 @@
 import React, { SyntheticEvent, useState } from "react";
-import { Box, Text, ActionIcon, Popover } from "@mantine/core";
+import { Box, Text, ActionIcon, Popover, Divider, Button } from "@mantine/core";
 import {
   IconMinus,
   IconPlaylistAdd,
@@ -35,7 +35,7 @@ function EditCollectionRow({
           paddingRight: "20px",
           overflow: "hidden",
           textOverflow: "ellipsis",
-          maxWidth: "200px",
+          maxWidth: "140px",
         }}
       >
         {collection.name}
@@ -70,6 +70,16 @@ function EditCollectionRow({
         <IconPlus size={16} />
       </ActionIcon>
     </>
+  );
+}
+
+function AddCollectionRow() {
+  return (
+    <Box sx={{ padding: "8px" }}>
+      <Button compact size="xs" onClick={() => {}}>
+        + New collection
+      </Button>
+    </Box>
   );
 }
 
@@ -156,6 +166,8 @@ export default function AddCardButton({
               </React.Fragment>
             ))}
           </Box>
+          <Divider />
+          <AddCollectionRow />
         </Popover.Dropdown>
       </Popover>
     </Box>
