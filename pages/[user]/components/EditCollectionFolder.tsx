@@ -35,7 +35,6 @@ function EditCollectionFolder({
   icons,
   handlers,
   defaultCollection,
-  cardsFunction,
   setFunction,
   defaultFunction,
 }: {
@@ -44,7 +43,6 @@ function EditCollectionFolder({
   icons: JSX.Element[];
   handlers: UseListStateHandlers<CardCollection>;
   defaultCollection: CardCollection | null;
-  cardsFunction: Dispatch<SetStateAction<boolean>>;
   setFunction: Dispatch<SetStateAction<CardCollection>>;
   defaultFunction: Dispatch<SetStateAction<CardCollection | null>>;
 }) {
@@ -197,7 +195,6 @@ function EditCollectionFolder({
           <Button
             variant="subtle"
             onClick={() => {
-              cardsFunction(true);
               setFunction(collection);
             }}
             color="gray"

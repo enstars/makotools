@@ -2,6 +2,7 @@ import { getFirebaseAdmin } from "next-firebase-auth";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { initAuthentication } from "services/firebase/authentication";
+import { generateUUID } from "services/utilities";
 
 initAuthentication();
 
@@ -26,11 +27,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const newCollection = await db
       .collection(`users/${userUID}/card_collections`)
       .add({
+        id: generateUUID(),
         name: "Collection",
         icon: 0,
         privacyLevel: 0,
         default: true,
         cards: existingCollection || [],
+        order: 0,
       });
 
     await db.collection("users").doc(userUID).set(

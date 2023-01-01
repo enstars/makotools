@@ -23,6 +23,8 @@ import { useEffect, useState } from "react";
 import { useListState } from "@mantine/hooks";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import useSWR from "swr";
+import { doc, getFirestore, setDoc, writeBatch } from "firebase/firestore";
+import { isEqual } from "lodash";
 
 import CollectionFolder from "./CollectionFolder";
 import EditCollectionFolder from "./EditCollectionFolder";
@@ -34,6 +36,7 @@ import { getFirestoreUserCollection } from "services/firebase/firestore";
 import IconEnstars from "components/core/IconEnstars";
 import { GameCard, GameUnit } from "types/game";
 import useUser from "services/firebase/user";
+import { generateUUID } from "services/utilities";
 function CardCollections({
   profile,
   uid: profileUid,
@@ -50,6 +53,7 @@ function CardCollections({
     data: profileCollections,
     error,
     isLoading,
+    mutate,
   } = useSWR<CardCollection[]>(
     [`users/${profileUid}/card_collections`, user],
     getFirestoreUserCollection
@@ -78,65 +82,25 @@ function CardCollections({
     )
   );
 
-  console.log("collections", profileUid, user.user.id, profileCollections);
-
-  const PROFILE_COLLECTIONS: CardCollection[] = [
-    {
-      id: 1,
-      name: "Collection",
-      icon: 0,
-      privacyLevel: 0,
-      default: true,
-      cards: profile.collection || [],
-    },
-  ];
-
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [collections, handlers] =
+  const [isReordering, setIsReordering] = useState<boolean>(false);
+  const [collections, collectionHandlers] =
     useListState<CardCollection>(profileCollections);
+  const [editingCollections, editingHandlers] = useListState<CardCollection>();
+  const [tempCollectionsWhileReordering, tempHandlersWhileReordering] =
+    useListState<CardCollection>([]);
   const isYourProfile = user.loggedIn && user.db.suid === profile.suid;
-  const [editCards, setEditCards] = useState<boolean>(false);
-  const [currentCollection, setCurrentCollection] =
-    useState<CardCollection | null>(null);
+  const [currentCollection, setCurrentCollection] = useState<
+    CardCollection | undefined
+  >(undefined);
   const [defaultCollection, setDefault] = useState<CardCollection | null>(
     collections.filter((collection) => collection.default)[0]
   );
 
   useEffect(() => {
-    if (!isLoading && profileCollections) handlers.setState(profileCollections);
-  }, [profileCollections, isLoading, handlers]);
-
-  function createEditFolders(collections: CardCollection[]) {
-    return collections.map((collection, index) => (
-      <Draggable key={collection.id} index={index} draggableId={`${index}`}>
-        {(provided, snapshot) => (
-          <Box
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            ref={provided.innerRef}
-            sx={{ marginBottom: "10px" }}
-          >
-            <EditCollectionFolder
-              collection={collection}
-              index={index}
-              icons={ICONS}
-              handlers={handlers}
-              defaultCollection={defaultCollection}
-              cardsFunction={setEditCards}
-              setFunction={setCurrentCollection}
-              defaultFunction={setDefault}
-            />
-          </Box>
-        )}
-      </Draggable>
-    ));
-  }
-
-  let collectionFolders = createEditFolders(collections);
-
-  useEffect(() => {
-    let collectionFolders = createEditFolders(collections);
-  }, [collections]);
+    if (!isLoading && profileCollections)
+      collectionHandlers.setState(profileCollections);
+  }, [profileCollections, isLoading, collectionHandlers]);
 
   useEffect(() => {
     collections.forEach((collection) => {
@@ -144,6 +108,44 @@ function CardCollections({
     });
   }, [defaultCollection]);
 
+  console.log(
+    "collections\n",
+    editingCollections.map((c) => `${c.id}: ${c.order}`).join("\n"),
+    `\n\n`,
+    tempCollectionsWhileReordering.map((c) => `${c.id}: ${c.order}`).join("\n")
+  );
+  const saveReorder = async () => {
+    if (!user.loggedIn) return;
+    const db = getFirestore();
+    // Get a new write batch
+    const batch = writeBatch(db);
+
+    tempCollectionsWhileReordering.forEach((collection, index) => {
+      editingHandlers.setItemProp(
+        editingCollections.indexOf(
+          editingCollections.find(
+            (c) => c.id === collection.id
+          ) as CardCollection
+        ),
+        "order",
+        index
+      );
+      tempCollectionsWhileReordering[index].order = index;
+      const collectionRef = doc(
+        db,
+        `users/${user.user.id}/card_collections`,
+        collection.id
+      );
+      batch.update(collectionRef, { order: index });
+    });
+
+    // Commit the batch
+    await batch.commit();
+
+    mutate(tempCollectionsWhileReordering);
+  };
+
+  const saveChanges = async () => {};
   return (
     <Box>
       <Group>
@@ -152,42 +154,106 @@ function CardCollections({
         </Title>
         {isYourProfile &&
           (editMode ? (
-            <Group>
-              <Button
-                color="indigo"
-                radius="xl"
-                variant="subtle"
-                leftIcon={<IconDeviceFloppy />}
-                onClick={() => {
-                  setEditMode(false);
-                  setCurrentCollection(null);
-                  setEditCards(false);
-                }}
-              >
-                Save
-              </Button>
-              <Button
-                color="indigo"
-                radius="xl"
-                variant="subtle"
-                leftIcon={<IconX />}
-                onClick={() => {
-                  setEditMode(false);
-                  setCurrentCollection(null);
-                  setEditCards(false);
-                  handlers.setState(PROFILE_COLLECTIONS);
-                }}
-              >
-                Cancel
-              </Button>
-            </Group>
+            isReordering ? (
+              <>
+                <Button
+                  onClick={() => {
+                    saveReorder();
+                    setIsReordering(false);
+                  }}
+                >
+                  Save
+                </Button>
+                <Button
+                  leftIcon={<IconX />}
+                  onClick={() => {
+                    setIsReordering(false);
+                    tempHandlersWhileReordering.setState(collections);
+                  }}
+                >
+                  Cancel
+                </Button>
+              </>
+            ) : (
+              <Group>
+                <Button
+                  leftIcon={<IconDeviceFloppy />}
+                  onClick={async () => {
+                    setEditMode(false);
+                    setCurrentCollection(undefined);
+
+                    const db = getFirestore();
+
+                    // Get a new write batch
+                    const batch = writeBatch(db);
+
+                    collections.forEach((originalCollection) => {
+                      const newCollection = editingCollections.find(
+                        (c) => c.id === originalCollection.id
+                      );
+                      if (newCollection) {
+                        if (!isEqual(originalCollection, newCollection)) {
+                          const collectionRef = doc(
+                            db,
+                            `users/${user.user.id}/card_collections`,
+                            newCollection.id
+                          );
+                          batch.set(collectionRef, newCollection, {
+                            merge: true,
+                          });
+                        }
+                      } else {
+                        const collectionRef = doc(
+                          db,
+                          `users/${user.user.id}/card_collections`,
+                          originalCollection.id
+                        );
+                        batch.delete(collectionRef);
+                      }
+                    });
+
+                    await batch.commit();
+
+                    mutate(editingCollections);
+                  }}
+                >
+                  Save All Changes
+                </Button>
+                <Button
+                  leftIcon={<IconX />}
+                  onClick={() => {
+                    setEditMode(false);
+                    setCurrentCollection(undefined);
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  color="indigo"
+                  radius="xl"
+                  variant="subtle"
+                  leftIcon={<IconX />}
+                  onClick={() => {
+                    setIsReordering(true);
+                    tempHandlersWhileReordering.setState(
+                      collections.sort((a, b) => a.order - b.order)
+                    );
+                  }}
+                >
+                  Reorder
+                </Button>
+              </Group>
+            )
           ) : (
             <Button
               color="indigo"
               radius="xl"
               variant="subtle"
               leftIcon={<IconPencil />}
-              onClick={() => setEditMode(true)}
+              onClick={() => {
+                setEditMode(true);
+                editingHandlers.setState(collections);
+              }}
             >
               Edit
             </Button>
@@ -205,7 +271,7 @@ function CardCollections({
         </Text>
       ) : (
         <Stack align="stretch">
-          {editMode && !editCards ? (
+          {user.loggedIn && editMode && !currentCollection ? (
             <>
               {collections.length <
                 CONSTANTS.PATREON.TIERS[profile.admin?.patreon || 0]
@@ -214,46 +280,101 @@ function CardCollections({
                   color="indigo"
                   variant="outline"
                   leftIcon={<IconPlus />}
-                  onClick={() => {
-                    handlers.prepend({
-                      id: collections.length + 1,
-                      name: `Collection #${collections.length}`,
+                  onClick={async () => {
+                    const newCollection: CardCollection = {
+                      id: generateUUID(),
+                      name: `Untitled Collection`,
                       icon: 0,
-                      privacyLevel: 0,
+                      privacyLevel: 1,
                       default: false,
                       cards: [],
-                    });
+                      order: collections.length,
+                    };
+                    const db = getFirestore();
+                    await setDoc(
+                      doc(
+                        db,
+                        `users/${user.user.id}/card_collections`,
+                        newCollection.id
+                      ),
+                      newCollection,
+                      { merge: true }
+                    );
+                    mutate();
                   }}
                 >
                   Add collection
                 </Button>
               )}
-              <DragDropContext
-                onDragEnd={({ destination, source }) => {
-                  handlers.reorder({
-                    from: source.index,
-                    to: destination?.index || 0,
-                  });
-                }}
-              >
-                <Droppable droppableId="dnd-list" direction="vertical">
-                  {(provided) => (
-                    <div {...provided.droppableProps} ref={provided.innerRef}>
-                      {collectionFolders}
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              </DragDropContext>
+              {isReordering ? (
+                <DragDropContext
+                  onDragEnd={async ({ destination, source }) => {
+                    const db = getFirestore();
+                    const from = source.index,
+                      to = destination?.index || 0;
+                    tempHandlersWhileReordering.reorder({ from, to });
+                  }}
+                >
+                  <Droppable droppableId="dnd-list" direction="vertical">
+                    {(provided) => (
+                      <div {...provided.droppableProps} ref={provided.innerRef}>
+                        {tempCollectionsWhileReordering.map(
+                          (collection, index) => (
+                            <Draggable
+                              key={collection.id}
+                              index={index}
+                              draggableId={collection.id}
+                            >
+                              {(provided, snapshot) => (
+                                <Box
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  ref={provided.innerRef}
+                                  sx={{ marginBottom: "10px" }}
+                                >
+                                  <EditCollectionFolder
+                                    collection={collection}
+                                    index={index}
+                                    icons={ICONS}
+                                    handlers={editingHandlers}
+                                    defaultCollection={defaultCollection}
+                                    setFunction={setCurrentCollection}
+                                    defaultFunction={setDefault}
+                                  />
+                                </Box>
+                              )}
+                            </Draggable>
+                          )
+                        )}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </DragDropContext>
+              ) : (
+                editingCollections
+                  .sort((a, b) => a.order - b.order)
+                  .map((collection, index) => (
+                    <EditCollectionFolder
+                      key={collection.id}
+                      collection={collection}
+                      index={index}
+                      icons={ICONS}
+                      handlers={editingHandlers}
+                      defaultCollection={defaultCollection}
+                      setFunction={setCurrentCollection}
+                      defaultFunction={setDefault}
+                    />
+                  ))
+              )}
             </>
-          ) : editMode && editCards && currentCollection ? (
+          ) : user.loggedIn && editMode && currentCollection ? (
             <EditCollectionCards
               collection={currentCollection}
               units={units}
               allCards={cards}
-              handlers={handlers}
+              handlers={editingHandlers}
               index={collections.indexOf(currentCollection)}
-              cardsFunction={setEditCards}
               setFunction={setCurrentCollection}
             />
           ) : (
@@ -261,14 +382,16 @@ function CardCollections({
               variant="contained"
               defaultValue={defaultCollection?.name || null}
             >
-              {collections.map((collection) => (
-                <CollectionFolder
-                  key={collection.id}
-                  collection={collection}
-                  icons={ICONS}
-                  isYourProfile={isYourProfile}
-                />
-              ))}
+              {collections
+                .sort((a, b) => a.order - b.order)
+                .map((collection) => (
+                  <CollectionFolder
+                    key={collection.id}
+                    collection={collection}
+                    icons={ICONS}
+                    isYourProfile={isYourProfile}
+                  />
+                ))}
             </Accordion>
           )}
         </Stack>

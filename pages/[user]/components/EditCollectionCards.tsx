@@ -30,7 +30,6 @@ function EditCollectionCards({
   allCards,
   handlers,
   index,
-  cardsFunction,
   setFunction,
 }: {
   collection: CardCollection;
@@ -38,8 +37,7 @@ function EditCollectionCards({
   allCards: GameCard[];
   handlers: UseListStateHandlers<CardCollection>;
   index: number;
-  cardsFunction: Dispatch<SetStateAction<boolean>>;
-  setFunction: Dispatch<SetStateAction<CardCollection | null>>;
+  setFunction: Dispatch<SetStateAction<CardCollection | undefined>>;
 }) {
   const { dayjs } = useDayjs();
   const [asc, setAsc] = useState<boolean>(true);
@@ -67,8 +65,7 @@ function EditCollectionCards({
       <Group>
         <ActionIcon
           onClick={() => {
-            cardsFunction(false);
-            setFunction(null);
+            setFunction(undefined);
           }}
         >
           <IconChevronLeft size={40} strokeWidth={3} />

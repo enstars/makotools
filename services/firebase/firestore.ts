@@ -115,13 +115,7 @@ export async function getFirestoreUserCollection([collectionAddress, user]: [
   string,
   User
 ]) {
-  // return async () => {
-  const clientAuth = getAuth();
   const db = getFirestore();
-
-  if (clientAuth.currentUser === null) {
-    return undefined;
-  }
 
   const profileUID = collectionAddress.split("/")[1];
   const accessiblePrivacyLevel = user.loggedIn
@@ -132,7 +126,6 @@ export async function getFirestoreUserCollection([collectionAddress, user]: [
       : 1
     : 0;
 
-  console.log(collectionAddress, accessiblePrivacyLevel);
   let querySnap,
     userCollection: CardCollection[] = [];
   try {
@@ -150,9 +143,6 @@ export async function getFirestoreUserCollection([collectionAddress, user]: [
   } catch (e) {
     console.error(e);
   }
-  console.log("snap", querySnap);
-
-  console.log("UC", userCollection);
   return userCollection;
   // };
 }
