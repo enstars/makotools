@@ -23,6 +23,7 @@ import {
   GameCard,
   RecommendedEvents,
   Campaign,
+  GameUnit,
 } from "types/game";
 import CurrentEventCountdown from "components/Homepage/CurrentEventCountdown";
 import CurrentScoutsCountdown from "components/Homepage/CurrentScoutsCountdown";
@@ -80,12 +81,14 @@ function Page({
   gameEventsQuery,
   scoutsQuery,
   cardsQuery,
+  unitsQuery,
 }: {
   posts: StrapiItem<MakoPost>[];
   charactersQuery: QuerySuccess<GameCharacter[]>;
   gameEventsQuery: QuerySuccess<Event[]>;
   scoutsQuery: QuerySuccess<Scout[]>;
   cardsQuery: QuerySuccess<GameCard[]>;
+  unitsQuery: QuerySuccess<GameUnit[]>;
 }) {
   const user = useUser();
   const { t } = useTranslation();
@@ -101,6 +104,8 @@ function Page({
     [charactersQuery.data]
   );
 
+  const units: GameUnit[] = useMemo(() => unitsQuery.data, [unitsQuery.data]);
+
   const birthdays: Birthday[] = createBirthdayData(characters);
   const gameEvents: Event[] = useMemo(
     () => gameEventsQuery.data,
@@ -113,7 +118,7 @@ function Page({
   const cards: GameCard[] = useMemo(() => cardsQuery.data, [cardsQuery.data]);
 
   const containsLikedCharacter = (e: Event | Scout | Birthday): boolean => {
-    if (faveCharas.length > 0 && faveCharas[0] !== 0 && faveCharas[0] !== -1) {
+    if (faveCharas.length > 0 && faveCharas[0] !== -1) {
       if (e.type === "birthday") {
         // if this is a birthday event
         return faveCharas.includes(e.character_id);
@@ -135,8 +140,21 @@ function Page({
 
   function createEvents(): RecommendedEvents[] {
     let listOfEvents: RecommendedEvents[] = [];
-    const filteredEvents = events.filter(containsLikedCharacter);
+    const filteredCharaEvents = events.filter(containsLikedCharacter);
+    const filteredUnitEvents = events.filter((e) => {
+      let isRelevant = false;
+      (e as Event).unit_id &&
+        (e as Event).unit_id.forEach((uid) => {
+          if (faveCharas.includes(parseInt(`10${uid}`))) isRelevant = true;
+        });
+      return isRelevant;
+    });
+    const filteredEvents = Array.from(
+      new Set([...filteredCharaEvents, ...filteredUnitEvents])
+    );
+    console.log(filteredEvents);
     if (faveCharas.length > 0) {
+      if (faveCharas[0] === 0) faveCharas.shift();
       filteredEvents.forEach((e) => {
         if (e.type === "birthday") {
           listOfEvents.push({
@@ -144,6 +162,14 @@ function Page({
             charId: e.character_id,
           });
         } else {
+          faveCharas.forEach((char) => {
+            if (char > 100) {
+              // if this is a unit
+              if (parseInt(`10${e.unit_id}`) === char) {
+                listOfEvents.push({ event: e, charId: char });
+              }
+            }
+          });
           const eventCards = e.cards;
           const relevantCards = cards.filter(
             (card) =>
@@ -151,7 +177,7 @@ function Page({
               card.rarity === 5 &&
               faveCharas.includes(card.character_id)
           );
-          let charId = relevantCards[0].character_id;
+          let charId = relevantCards[0] && relevantCards[0].character_id;
           listOfEvents.push({ event: e, charId });
         }
       });
@@ -194,6 +220,7 @@ function Page({
               <RecommendedCountdown
                 events={createEvents()}
                 characters={characters}
+                units={units}
               />
             )}
           </Box>
@@ -239,6 +266,12 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     ["id", "character_id", "rarity"]
   );
 
+  const unitsQuery = await getLocalizedDataArray<GameUnit>(
+    "units",
+    locale,
+    "id"
+  );
+
   try {
     const postResponses = await fetchOceans<StrapiItem<MakoPost>[]>("/posts", {
       populate: "*",
@@ -253,6 +286,7 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
         gameEventsQuery: gameEvents,
         scoutsQuery: scouts,
         cardsQuery: cardsQuery,
+        unitsQuery: unitsQuery,
       },
     };
   } catch (e) {

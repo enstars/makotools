@@ -104,16 +104,15 @@ function FavoriteCharacters({
           <Button.Group>
             <Button
               onClick={() => {
+                let arr = [0];
                 characters.forEach((chara) => {
                   selectedHandlers.append(chara.character_id);
+                  arr.push(chara.character_id);
                 });
-                units.forEach((unit) => {
-                  selectedHandlers.append(parseInt(`10${unit.id.toString()}`));
-                });
-                faveHandlers.setState([0]);
+                faveHandlers.setState(arr);
               }}
               variant="light"
-              disabled={faves.length === 1 && faves[0] === 0}
+              disabled={faves[0] === 0}
             >
               I love everyone!
             </Button>

@@ -9,7 +9,7 @@ import { IconCalendar, IconHeart } from "@tabler/icons";
 import dayjs from "dayjs";
 
 import Picture from "components/core/Picture";
-import { GameCharacter } from "types/game";
+import { GameCharacter, GameUnit } from "types/game";
 import { UserData } from "types/makotools";
 
 function StatContainer({
@@ -41,14 +41,16 @@ function StatContainer({
 function DisplayFaves({
   favesList,
   characters,
+  units,
 }: {
   favesList: number[];
   characters: GameCharacter[];
+  units: GameUnit[];
 }) {
   console.log(favesList);
-  if (favesList.length <= 1 && favesList[0] === 0) {
+  if (favesList[0] === 0) {
     return <Text>Everyone &lt;3</Text>;
-  } else if (favesList.length <= 1 && favesList[0] === -1) {
+  } else if (favesList[0] === -1) {
     return <Text>I hate Ensemble Stars.</Text>;
   } else {
     return (
@@ -64,10 +66,16 @@ function DisplayFaves({
                   : `assets/character_sd_square1_${chara}.png`
               }
               alt={
-                characters.filter((c) => c.character_id === chara)[0]
-                  .first_name[0]
+                chara < 100
+                  ? characters.filter((c) => c.character_id === chara)[0]
+                      .first_name[0]
+                  : units.filter((u) => parseInt(`10${u.id}`) === chara)[0]
+                      .name[0]
               }
-              sx={{ width: 50, height: 50, pointerEvents: "none" }}
+              fill={false}
+              width={50}
+              height={50}
+              sx={{ pointerEvents: "none" }}
             />
           );
         })}
@@ -79,9 +87,11 @@ function DisplayFaves({
 function ProfileStats({
   profile,
   characters,
+  units,
 }: {
   profile: UserData;
   characters: GameCharacter[];
+  units: GameUnit[];
 }) {
   return (
     <Group my={7} noWrap spacing="xl" align="flex-start">
@@ -106,6 +116,7 @@ function ProfileStats({
               <DisplayFaves
                 favesList={profile.profile__fave_charas}
                 characters={characters}
+                units={units}
               />
             )}
           </StatContainer>

@@ -303,7 +303,11 @@ function Page({
             )}
           </Group>
           <PatreonBanner profile={profile} />
-          <ProfileStats profile={profile} characters={characters} />
+          <ProfileStats
+            profile={profile}
+            characters={characters}
+            units={units}
+          />
           {profile?.profile__bio && (
             <BioDisplay
               rawBio={profile.profile__bio}

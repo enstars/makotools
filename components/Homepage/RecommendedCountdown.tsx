@@ -17,7 +17,7 @@ import useTranslation from "next-translate/useTranslation";
 
 import { countdown, retrieveNextCampaigns } from "services/campaigns";
 import useUser from "services/firebase/user";
-import { Birthday, GameCharacter, Event, Scout } from "types/game";
+import { Birthday, GameCharacter, Event, Scout, GameUnit } from "types/game";
 import { getAssetURL } from "services/data";
 import { useDayjs } from "services/libraries/dayjs";
 import { getNameOrder } from "services/game";
@@ -29,10 +29,12 @@ function RecommendedCard({
   event,
   fave,
   characters,
+  units,
 }: {
   event: Event | Scout | Birthday;
   fave: number;
   characters: GameCharacter[];
+  units: GameUnit[];
 }) {
   const { dayjs } = useDayjs();
   const user = useUser();
@@ -42,18 +44,40 @@ function RecommendedCard({
   useEffect(() => {
     const interval = setInterval(() => {
       let ctdwn = countdown(new Date(event.start.en), new Date());
-      const days = `${Math.floor(ctdwn / 86400000)} days`;
-      setCountdownAmt(days);
+      const d = Math.floor(ctdwn / 86400000);
+      const h = Math.floor((ctdwn % 86400000) / 3600000);
+      const m = Math.floor(((ctdwn % 86400000) % 3600000) / 60000);
+      const s = Math.floor((((ctdwn % 86400000) % 3600000) % 60000) / 1000);
+      setCountdownAmt(
+        d === 0 && h === 0 && m === 0
+          ? `${s} secs`
+          : d === 0 && h === 0
+          ? `${m} mins`
+          : d === 0
+          ? `${h} hrs`
+          : `${d} days`
+      );
     }, 1000);
     return () => clearInterval(interval);
   }, [event.start.en]);
 
-  const getCharaObj = characters.filter((c) => c.character_id === fave)[0];
+  function returnCharOrUnitName(id: number): string {
+    if (id < 100) {
+      const getCharaObj = characters.filter((c) => c.character_id === fave)[0];
 
-  const nameObj = {
-    first_name: getCharaObj.first_name[0],
-    last_name: getCharaObj.last_name[0],
-  };
+      const nameObj = {
+        first_name: getCharaObj.first_name[0],
+        last_name: getCharaObj.last_name[0],
+      };
+
+      return getNameOrder(
+        nameObj,
+        (user as UserLoggedIn).db.setting__name_order
+      );
+    } else {
+      return units.filter((u) => parseInt(`10${u.id}`) === fave)[0].name[0];
+    }
+  }
 
   let link = (event as Birthday).character_id
     ? `/characters/${(event as Birthday).character_id}`
@@ -86,16 +110,13 @@ function RecommendedCard({
               href={`/characters/${fave}`}
               weight={700}
             >
-              {getNameOrder(
-                nameObj,
-                (user as UserLoggedIn).db.setting__name_order
-              )}
+              {returnCharOrUnitName(fave)}
             </Text>
           </Text>
         </Group>
         <Title order={4}>
-          {typeof event.name === "string"
-            ? `${event.name}'s Birthday`
+          {event.type === "birthday"
+            ? `${event.name[0]}'s Birthday`
             : event.name[0]}
         </Title>
         <Group>
@@ -141,12 +162,14 @@ function RecommendedCard({
 function RecommendedCountdown({
   events,
   characters,
+  units,
 }: {
   events: {
     event: Event | Scout | Birthday;
     charId: number;
   }[];
   characters: GameCharacter[];
+  units: GameUnit[];
 }) {
   const { dayjs } = useDayjs();
   const user = useUser();
@@ -164,17 +187,17 @@ function RecommendedCountdown({
     <Container my="3vh">
       <Title order={2}>Recommended Campaigns</Title>
       <Alert my={3} icon={<IconHeart />}>
-        Recommendations are based on the favorite characters listed in your
-        profile.
+        Recommendations are based on the favorite characters and units listed in
+        your profile.
       </Alert>
       {user.loggedIn &&
       user.db &&
       (!user.db.profile__fave_charas ||
         user.db.profile__fave_charas.length === 0) ? (
-        <Paper p={5} my={10}>
+        <Paper p={20} my={10}>
           <Text>
             There are no recommended campaigns available. Perhaps you should add
-            your favorite characters to{" "}
+            your favorite characters or units to{" "}
             <Text
               color={theme.colors[theme.primaryColor][4]}
               component={Link}
@@ -201,7 +224,7 @@ function RecommendedCountdown({
           />
         </Paper>
       ) : events.length === 0 ? (
-        <Paper p={5} my={10}>
+        <Paper p={20} my={10}>
           <Text>There are no upcoming recommended campaigns available.</Text>
         </Paper>
       ) : (
@@ -221,6 +244,7 @@ function RecommendedCountdown({
                   events[events.findIndex((ev: any) => ev.event === e)].charId
                 }
                 characters={characters}
+                units={units}
               />
             ))}
         </ResponsiveGrid>
