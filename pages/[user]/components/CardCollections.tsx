@@ -34,6 +34,7 @@ import { getFirestoreUserCollection } from "services/firebase/firestore";
 import IconEnstars from "components/core/IconEnstars";
 import { GameCard, GameUnit } from "types/game";
 import useUser from "services/firebase/user";
+
 function CardCollections({
   profile,
   uid: profileUid,
@@ -46,11 +47,7 @@ function CardCollections({
   units: GameUnit[];
 }) {
   const user = useUser();
-  const {
-    data: profileCollections,
-    error,
-    isLoading,
-  } = useSWR<CardCollection[]>(
+  const { data: profileCollections, isLoading } = useSWR<CardCollection[]>(
     [`users/${profileUid}/card_collections`, user],
     getFirestoreUserCollection
   );

@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useState } from "react";
+import React, { useState } from "react";
 import {
   Card,
   Paper,
@@ -8,20 +8,12 @@ import {
   Divider,
   Tooltip,
   useMantineTheme,
-  ActionIcon,
-  Popover,
-  Stack,
 } from "@mantine/core";
-import {
-  IconMinus,
-  IconPlaylistAdd,
-  IconPlus,
-  IconStar,
-  IconSum,
-} from "@tabler/icons";
+import { IconStar, IconSum } from "@tabler/icons";
 import { useRouter } from "next/router";
 
 import { sumStats } from "./Stats";
+import AddCardButton from "./AddCardButton";
 
 import attributes from "data/attributes.json";
 import OfficialityBadge from "components/utilities/formatting/OfficialityBadge";
@@ -29,7 +21,6 @@ import CardStatsNumber from "components/utilities/formatting/CardStatsNumber";
 import Picture from "components/core/Picture";
 import { Lang } from "types/makotools";
 import useUser from "services/firebase/user";
-import { addCard } from "services/makotools/collection";
 import { GameCard } from "types/game";
 
 function RarityBadge({ card }: { card: GameCard }) {
@@ -89,6 +80,7 @@ export default function CardCard({
   const statsIR = sumStats(card.stats?.ir);
   const statsIR4 = sumStats(card.stats?.ir4);
 
+  console.log(user);
   const collection = (user.loggedIn && user.db?.collection) || [];
   const thisColItem = collection?.find((c) => c.id === card.id);
   const [collectionOpened, setCollectionOpened] = useState(false);
@@ -173,88 +165,14 @@ export default function CardCard({
       >
         <Group spacing={0} noWrap>
           {!user.loading && user.loggedIn && (
-            <Group>
-              <Box
-                sx={(theme) => ({
-                  marginLeft: theme.spacing.xs / 2,
-                })}
-                onClick={(e: SyntheticEvent) => {
-                  e.stopPropagation();
-                  if (!thisColItem) {
-                    const newCollection = addCard(collection, card.id, 1);
-                    user.db.set({ collection: newCollection });
-                  } else {
-                    setCollectionOpened((o) => !o);
-                  }
-                }}
-              >
-                <Popover
-                  offset={4}
-                  opened={collectionOpened}
-                  onChange={setCollectionOpened}
-                  styles={{ dropdown: { padding: 0 } }}
-                  position="right"
-                  withinPortal
-                >
-                  <Popover.Target>
-                    <ActionIcon
-                      variant="light"
-                      {...(thisColItem && thisColItem?.count > 0
-                        ? { color: "orange" }
-                        : {})}
-                    >
-                      {thisColItem && thisColItem?.count > 0 ? (
-                        <Text inline size="xs" weight="700">
-                          {thisColItem.count}
-                          <Text
-                            component="span"
-                            sx={{ verticalAlign: "-0.05em", lineHeight: 0 }}
-                          >
-                            ×
-                          </Text>
-                        </Text>
-                      ) : (
-                        <IconPlaylistAdd size={16} />
-                      )}
-                    </ActionIcon>
-                  </Popover.Target>
-                  <Popover.Dropdown>
-                    <Stack spacing={0}>
-                      <ActionIcon
-                        variant="subtle"
-                        color="green"
-                        onClick={(e: SyntheticEvent) => {
-                          e.stopPropagation();
-
-                          const newCollection = addCard(collection, card.id, 1);
-                          user.db.set({ collection: newCollection });
-                        }}
-                        disabled={thisColItem && thisColItem?.count >= 5}
-                      >
-                        <IconPlus size={16} />
-                      </ActionIcon>
-                      <ActionIcon
-                        variant="subtle"
-                        color="red"
-                        onClick={(e: SyntheticEvent) => {
-                          e.stopPropagation();
-
-                          const newCollection = addCard(
-                            collection,
-                            card.id,
-                            -1
-                          );
-                          user.db.set({ collection: newCollection });
-                        }}
-                        disabled={!thisColItem || thisColItem?.count <= 0}
-                      >
-                        <IconMinus size={16} />
-                      </ActionIcon>
-                    </Stack>
-                  </Popover.Dropdown>
-                </Popover>
-              </Box>
-            </Group>
+            <AddCardButton
+              thisColItem={thisColItem}
+              collection={collection}
+              card={card}
+              user={user}
+              setCollectionOpened={setCollectionOpened}
+              collectionOpened={collectionOpened}
+            />
           )}
           <Group
             px="sm"
