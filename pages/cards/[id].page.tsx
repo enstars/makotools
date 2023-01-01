@@ -2,10 +2,11 @@ import React from "react";
 import { Group, AspectRatio, Badge, Divider } from "@mantine/core";
 import { IconStar } from "@tabler/icons";
 
-import Stats, { sumStats } from "./components/Stats";
+import Stats from "./components/Stats";
 import Skills from "./components/Skills";
 import Gallery from "./components/Gallery";
 
+import { sumStats } from "services/game";
 import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import attributes from "data/attributes.json";

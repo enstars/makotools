@@ -12,9 +12,9 @@ import {
 import { IconStar, IconSum } from "@tabler/icons";
 import { useRouter } from "next/router";
 
-import { sumStats } from "./Stats";
 import AddCardButton from "./AddCardButton";
 
+import { sumStats } from "services/game";
 import attributes from "data/attributes.json";
 import OfficialityBadge from "components/utilities/formatting/OfficialityBadge";
 import CardStatsNumber from "components/utilities/formatting/CardStatsNumber";

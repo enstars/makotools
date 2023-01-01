@@ -26,8 +26,7 @@ import {
 } from "@tabler/icons";
 import fuzzysort from "fuzzysort";
 
-import CardCard from "./components/CardCard";
-
+import CardCard from "components/core/CardCard";
 import PageTitle from "components/sections/PageTitle";
 import { getLayout } from "components/Layout";
 import { QuerySuccess } from "types/makotools";
