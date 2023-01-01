@@ -26,7 +26,7 @@ import {
 } from "@tabler/icons";
 import fuzzysort from "fuzzysort";
 
-import CardCard from "./components/DisplayCard";
+import CardCard from "./components/CardCard";
 
 import PageTitle from "components/sections/PageTitle";
 import { getLayout } from "components/Layout";

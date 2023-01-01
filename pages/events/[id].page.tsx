@@ -23,7 +23,7 @@ import getServerSideUser from "services/firebase/getServerSideUser";
 import { useDayjs } from "services/libraries/dayjs";
 import { GameCard, Event, GameUnit, Scout } from "types/game";
 import { QuerySuccess } from "types/makotools";
-import CardCard from "pages/cards/components/DisplayCard";
+import CardCard from "pages/cards/components/CardCard";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 
 type Colors = "red" | "blue" | "yellow" | "green";
