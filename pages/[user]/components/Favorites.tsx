@@ -28,6 +28,7 @@ function Favorites({
   externalSetter: Dispatch<SetStateAction<any>>;
   locale: Locale;
 }) {
+  console.log(profileState.profile__show_faves);
   const [selectedCharas, selectedCharasHandlers] = useListState<number>(
     profileState.profile__fave_charas || []
   );
@@ -41,7 +42,9 @@ function Favorites({
     profileState.profile__fave_units || []
   );
   const [isMobile, setIsMobile] = useState<boolean>(false);
-  const [hideFaves, setHideFaves] = useState<boolean>(false);
+  const [showFaves, setShowFaves] = useState<boolean>(
+    profileState.profile__show_faves
+  );
 
   const nameObj = (chara: GameCharacter) => {
     return {
@@ -55,9 +58,9 @@ function Favorites({
       ...profileState,
       profile__fave_charas: faveCharas,
       profile__fave_units: faveUnits,
-      profile__show_faves: hideFaves,
+      profile__show_faves: showFaves,
     });
-  }, [faveCharas, faveUnits, hideFaves]);
+  }, [faveCharas, faveUnits, showFaves]);
 
   useEffect(() => {
     if (window.innerWidth < 768) setIsMobile(true);
@@ -167,8 +170,9 @@ function Favorites({
           </Button>
         </Input.Wrapper>
         <Checkbox
-          label="Hide favorites from your profile"
-          onChange={(e) => setHideFaves(e.target.checked)}
+          label="Show favorites on your profile"
+          defaultChecked={showFaves}
+          onChange={(e) => setShowFaves(e.target.checked)}
         />
       </Group>
     </Stack>

@@ -65,8 +65,8 @@ function DisplayFaves({
                 key={chara}
                 srcB2={`assets/character_sd_square1_${chara}.png`}
                 alt={
-                  characters.find((c) => c.character_id === chara)
-                    ?.first_name[0]
+                  characters.filter((c) => c.character_id === chara)[0]
+                    .first_name[0]
                 }
                 fill={false}
                 width={50}
@@ -81,8 +81,8 @@ function DisplayFaves({
             return (
               <ThemeIcon
                 key={unit}
-                color={units.find((u) => u.id === unit)?.image_color}
-                variant="outline"
+                color={units.filter((u) => u.id === unit)[0].image_color}
+                variant="light"
               >
                 <IconEnstars unit={unit} size={100} />
               </ThemeIcon>
@@ -115,8 +115,11 @@ function ProfileStats({
             dayjs(profile.profile__start_playing).format("MMMM YYYY")}
         </StatContainer>
       )}
-      {profile.profile__fave_charas &&
-        profile.profile__fave_charas.length > 0 && (
+      {profile.profile__show_faves &&
+        profile.profile__fave_charas &&
+        profile.profile__fave_units &&
+        (profile.profile__fave_charas.length > 0 ||
+          profile.profile__fave_units.length > 0) && (
           <StatContainer
             icon={<IconHeart size={16} />}
             iconColor={"pink"}

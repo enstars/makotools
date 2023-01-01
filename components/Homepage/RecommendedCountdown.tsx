@@ -30,6 +30,7 @@ import { useDayjs } from "services/libraries/dayjs";
 import { getNameOrder } from "services/game";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 import ToyaDed from "assets/ToyaDed.png";
+import { UserLoggedIn } from "types/makotools";
 
 function RecommendedCard({
   event,
@@ -76,7 +77,10 @@ function RecommendedCard({
         first_name: char.first_name[0],
         last_name: char.last_name[0],
       };
-      return getNameOrder(nameObj, user.db?.setting__name_order);
+      return getNameOrder(
+        nameObj,
+        (user as UserLoggedIn).db?.setting__name_order
+      );
     } else {
       return units.filter((u) => u.id === faveUnit)[0].name[0];
     }
@@ -205,8 +209,8 @@ function RecommendedCountdown({
             !
           </Text>
         </Paper>
-      ) : user.db.profile__fave_charas &&
-        user.db.profile__fave_charas[0] === -1 ? (
+      ) : (user as UserLoggedIn).db.profile__fave_charas &&
+        (user as UserLoggedIn).db.profile__fave_charas[0] === -1 ? (
         <Paper p={20} my={10}>
           <Text>
             Well, since you hate Ensemble Stars so much, we won&apos;t show you
