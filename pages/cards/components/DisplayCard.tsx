@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Card,
   Paper,
@@ -80,10 +80,7 @@ export default function CardCard({
   const statsIR = sumStats(card.stats?.ir);
   const statsIR4 = sumStats(card.stats?.ir4);
 
-  console.log(user);
   const collection = (user.loggedIn && user.db?.collection) || [];
-  const thisColItem = collection?.find((c) => c.id === card.id);
-  const [collectionOpened, setCollectionOpened] = useState(false);
 
   return (
     <Card
@@ -165,14 +162,7 @@ export default function CardCard({
       >
         <Group spacing={0} noWrap>
           {!user.loading && user.loggedIn && (
-            <AddCardButton
-              thisColItem={thisColItem}
-              collection={collection}
-              card={card}
-              user={user}
-              setCollectionOpened={setCollectionOpened}
-              collectionOpened={collectionOpened}
-            />
+            <AddCardButton collection={collection} card={card} user={user} />
           )}
           <Group
             px="sm"

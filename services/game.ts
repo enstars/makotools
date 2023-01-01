@@ -2,6 +2,8 @@ import { DEFAULT_LOCALE } from "./makotools/locales";
 
 import { Locale, NameOrder } from "types/makotools";
 
+export const MAX_CARD_COPIES = 5;
+
 // https://en.wikipedia.org/wiki/Personal_name#Eastern_name_order
 const lastFirstLocales: Locale[] = ["ja", "zh-CN", "zh-TW", "ko"];
 export function getNameOrder(

@@ -1,17 +1,102 @@
-import React, { SyntheticEvent } from "react";
-import { Box, Text, ActionIcon, Popover, Stack } from "@mantine/core";
-import { IconMinus, IconPlaylistAdd, IconPlus } from "@tabler/icons";
+import React, { SyntheticEvent, useState } from "react";
+import { Box, Text, ActionIcon, Popover } from "@mantine/core";
+import {
+  IconMinus,
+  IconPlaylistAdd,
+  IconPlus,
+  IconChecklist,
+} from "@tabler/icons";
 
-import { addCard } from "services/makotools/collection";
+import { editCardInCollection } from "services/makotools/collection";
+import { CardCollection, UserLoggedIn } from "types/makotools";
+import { MAX_CARD_COPIES } from "services/game";
+import { GameCard, ID } from "types/game";
 
-export default function AddCardButton({
-  thisColItem,
+function EditCollectionRow({
   collection,
   card,
-  user,
-  setCollectionOpened,
-  collectionOpened,
+  onUpdate,
+}: {
+  collection: CardCollection;
+  card: GameCard;
+  onUpdate: (params: {
+    collectionId: number;
+    cardId: ID;
+    numCopies: number;
+  }) => any;
 }) {
+  const collectedCardData = collection.cards.find((c) => c.id === card.id);
+
+  return (
+    <>
+      <Text size="xs" sx={{ paddingRight: "20px" }}>
+        {collection.name}
+      </Text>
+      <ActionIcon
+        variant="subtle"
+        color="red"
+        onClick={(e: SyntheticEvent) => {
+          e.stopPropagation();
+          const numCopies = collectedCardData ? collectedCardData.count - 1 : 0;
+          onUpdate({ collectionId: collection.id, cardId: card.id, numCopies });
+        }}
+        disabled={!collectedCardData || collectedCardData?.count <= 0}
+      >
+        <IconMinus size={16} />
+      </ActionIcon>
+      <Text size="xs" sx={{ padding: "0 8px" }}>
+        {collectedCardData ? collectedCardData.count : 0}
+      </Text>
+      <ActionIcon
+        variant="subtle"
+        color="green"
+        onClick={(e: SyntheticEvent) => {
+          e.stopPropagation();
+          const numCopies = collectedCardData ? collectedCardData.count + 1 : 1;
+          onUpdate({ collectionId: collection.id, cardId: card.id, numCopies });
+        }}
+        disabled={
+          collectedCardData && collectedCardData?.count >= MAX_CARD_COPIES
+        }
+      >
+        <IconPlus size={16} />
+      </ActionIcon>
+    </>
+  );
+}
+
+export default function AddCardButton({
+  collection: collections,
+  card,
+  user,
+}: {
+  collection: CardCollection[];
+  card: GameCard;
+  user: UserLoggedIn;
+}) {
+  const [collectionMenuOpened, setCollectionMenuOpened] = useState(false);
+
+  const isInACollection = collections.some((collection) =>
+    collection.cards?.some((c) => c.id === card.id)
+  );
+
+  const handleUpdateCollection = ({
+    collectionId,
+    cardId,
+    numCopies,
+  }: {
+    collectionId: number;
+    cardId: ID;
+    numCopies: number;
+  }) => {
+    const newCollections = [...collections];
+    const collectionToUpdate = collections.find(
+      (collection) => collection.id === collectionId
+    );
+    editCardInCollection(collectionToUpdate!, cardId, numCopies);
+    user.db.set({ collection: newCollections });
+  };
+
   return (
     <Box
       sx={(theme) => ({
@@ -19,18 +104,13 @@ export default function AddCardButton({
       })}
       onClick={(e: SyntheticEvent) => {
         e.stopPropagation();
-        if (!thisColItem) {
-          const newCollection = addCard(collection, card.id, 1);
-          user.db.set({ collection: newCollection });
-        } else {
-          setCollectionOpened((o) => !o);
-        }
+        setCollectionMenuOpened((o) => !o);
       }}
     >
       <Popover
         offset={4}
-        opened={collectionOpened}
-        onChange={setCollectionOpened}
+        opened={collectionMenuOpened}
+        onChange={setCollectionMenuOpened}
         styles={{ dropdown: { padding: 0 } }}
         position="right"
         withinPortal
@@ -38,54 +118,36 @@ export default function AddCardButton({
         <Popover.Target>
           <ActionIcon
             variant="light"
-            {...(thisColItem && thisColItem?.count > 0
-              ? { color: "orange" }
-              : {})}
+            color={isInACollection ? "green" : undefined}
           >
-            {thisColItem && thisColItem?.count > 0 ? (
-              <Text inline size="xs" weight="700">
-                {thisColItem.count}
-                <Text
-                  component="span"
-                  sx={{ verticalAlign: "-0.05em", lineHeight: 0 }}
-                >
-                  ×
-                </Text>
-              </Text>
+            {isInACollection ? (
+              <IconChecklist size={16} />
             ) : (
               <IconPlaylistAdd size={16} />
             )}
           </ActionIcon>
         </Popover.Target>
         <Popover.Dropdown>
-          <Stack spacing={0}>
-            <ActionIcon
-              variant="subtle"
-              color="green"
-              onClick={(e: SyntheticEvent) => {
-                e.stopPropagation();
-
-                const newCollection = addCard(collection, card.id, 1);
-                user.db.set({ collection: newCollection });
-              }}
-              disabled={thisColItem && thisColItem?.count >= 5}
-            >
-              <IconPlus size={16} />
-            </ActionIcon>
-            <ActionIcon
-              variant="subtle"
-              color="red"
-              onClick={(e: SyntheticEvent) => {
-                e.stopPropagation();
-
-                const newCollection = addCard(collection, card.id, -1);
-                user.db.set({ collection: newCollection });
-              }}
-              disabled={!thisColItem || thisColItem?.count <= 0}
-            >
-              <IconMinus size={16} />
-            </ActionIcon>
-          </Stack>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns:
+                "1fr fit-content(100px) fit-content(100px) fit-content(100px)",
+              alignItems: "center",
+              padding: "8px",
+              rowGap: "8px",
+            }}
+          >
+            {collections.map((collection) => (
+              <React.Fragment key={collection.name}>
+                <EditCollectionRow
+                  collection={collection}
+                  card={card}
+                  onUpdate={handleUpdateCollection}
+                />
+              </React.Fragment>
+            ))}
+          </Box>
         </Popover.Dropdown>
       </Popover>
     </Box>
