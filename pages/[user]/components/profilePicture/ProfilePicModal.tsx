@@ -19,7 +19,7 @@ import { IconSun, IconSunOff, IconTrash } from "@tabler/icons";
 import Cropper from "react-easy-crop";
 import { Point } from "react-easy-crop/types";
 
-import MaoBanned from "../MaoBanned.png";
+import MaoBanned from "../../assets/MaoBanned.png";
 
 import ProfileAvatar from "./ProfileAvatar";
 

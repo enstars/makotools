@@ -1,13 +1,9 @@
 import {
   ActionIcon,
   Alert,
-  AspectRatio,
-  Badge,
   Box,
   Group,
-  Image,
   Loader,
-  Paper,
   Space,
   Text,
   Title,
@@ -26,13 +22,14 @@ import { useRef, Fragment, useState, useEffect, useMemo } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { useMediaQuery } from "@mantine/hooks";
 
-import EditProfileModal from "./components/EditProfileModal";
-import MaoBanned from "./MaoBanned.png";
-import ProfilePicModal from "./components/ProfilePicModal";
+import EditProfileModal from "./components/customization/EditProfileModal";
+import MaoBanned from "./assets/MaoBanned.png";
+import ProfilePicModal from "./components/profilePicture/ProfilePicModal";
 import RemoveFriendModal from "./components/RemoveFriendModal";
-import ProfileAvatar from "./components/ProfileAvatar";
+import ProfileAvatar from "./components/profilePicture/ProfileAvatar";
 import ProfileButtons from "./components/ProfileButtons";
 import ProfileStats from "./components/ProfileStats";
+import CardCollections from "./components/collections/CardCollections";
 
 import { getLayout, useSidebarStatus } from "components/Layout";
 import { Locale, QuerySuccess, UserData, UserLoggedIn } from "types/makotools";
@@ -70,6 +67,7 @@ function Page({
   profile,
   uid,
   cards,
+  cardsQuery,
   charactersQuery,
   unitsQuery,
   locale,
@@ -77,10 +75,15 @@ function Page({
   profile: UserData;
   uid: string;
   cards: GameCard[] | undefined;
+  cardsQuery: QuerySuccess<GameCard[]>;
   charactersQuery: QuerySuccess<GameCharacter[]>;
   unitsQuery: QuerySuccess<GameUnit[]>;
   locale: Locale;
 }) {
+  const cardsData: GameCard[] = useMemo(
+    () => cardsQuery.data,
+    [cardsQuery.data]
+  );
   const characters: GameCharacter[] = useMemo(
     () => charactersQuery.data,
     [charactersQuery.data]
@@ -88,6 +91,7 @@ function Page({
   const units: GameUnit[] = useMemo(() => unitsQuery.data, [unitsQuery.data]);
   // hooks
   const { dayjs } = useDayjs();
+  const units = useMemo(() => unitsQuery.data, [unitsQuery.data]);
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.xs}px)`);
@@ -317,67 +321,15 @@ function Page({
               my="md"
             />
           )}
-
-          <Title order={2} mt="md" mb="xs">
-            Card Collection
-          </Title>
-          {!profile?.collection?.length ? (
-            <Text color="dimmed" size="sm">
-              This user has no cards in their collection
-            </Text>
-          ) : (
-            <>
-              <Box
-                sx={(theme) => ({
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
-                  gap: theme.spacing.xs,
-                })}
-              >
-                {profile.collection
-                  .filter((c) => c.count)
-                  .sort((a, b) => b.count - a.count)
-                  .map((c) => (
-                    <Paper
-                      radius="sm"
-                      component={Link}
-                      key={c.id}
-                      href={`/cards/${c.id}`}
-                      withBorder
-                      sx={{ position: "relative" }}
-                    >
-                      <AspectRatio ratio={4 / 5}>
-                        <Image
-                          radius="sm"
-                          alt={"card image"}
-                          src={getAssetURL(
-                            `assets/card_rectangle4_${c.id}_evolution.png`
-                          )}
-                        />
-                      </AspectRatio>
-                      {c.count > 1 && (
-                        <Badge
-                          sx={{ position: "absolute", bottom: 4, left: 4 }}
-                          variant="filled"
-                        >
-                          <Text inline size="xs" weight="700">
-                            {c.count}
-                            <Text
-                              component="span"
-                              sx={{ verticalAlign: "-0.05em", lineHeight: 0 }}
-                            >
-                              ×
-                            </Text>
-                          </Text>
-                        </Badge>
-                      )}
-                    </Paper>
-                  ))}
-              </Box>
-            </>
-          )}
         </Box>
       </Box>
+
+      <CardCollections
+        profile={profile}
+        uid={uid}
+        cards={cardsData}
+        units={units}
+      />
     </>
   );
 }
@@ -393,6 +345,13 @@ export const getServerSideProps = getServerSideUser(
       "name",
       "rarity",
     ]);
+
+    const cardsQuery: any = await getLocalizedDataArray<GameCard>(
+      "cards",
+      locale,
+      "id",
+      ["id", "character_id", "rarity"]
+    );
     const charactersQuery = await getLocalizedDataArray<GameCharacter>(
       "characters",
       locale,
@@ -420,6 +379,26 @@ export const getServerSideProps = getServerSideUser(
       .get();
     if (!querySnap.empty) {
       const profile = parseStringify(querySnap.docs[0].data());
+
+      if (profile.migrated !== true) {
+        await fetch(
+          `${
+            process.env.NODE_ENV === "development"
+              ? "http://localhost:3000/api"
+              : CONSTANTS.EXTERNAL_URLS.INTERNAL_APIS
+          }/collections/migrate`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userUID: querySnap.docs[0].id,
+              existingCollection: profile.collection,
+            }),
+          }
+        );
+      }
       return {
         props: {
           profile,
@@ -427,7 +406,8 @@ export const getServerSideProps = getServerSideUser(
           charactersQuery: charactersQuery,
           unitsQuery: unitsQuery,
           uid: querySnap.docs[0].id,
-          locale: locale as Locale,
+          cardsQuery: cardsQuery,
+          unitsQuery: unitsQuery,
           meta: {
             title: profile?.name
               ? `${profile.name} (@${profile.username})`
