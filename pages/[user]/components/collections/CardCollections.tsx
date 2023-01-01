@@ -329,10 +329,10 @@ function CardCollections({
                                   <EditCollectionFolder
                                     collection={collection}
                                     index={index}
-                                    icons={ICONS}
                                     handlers={editingHandlers}
-                                    defaultCollection={defaultCollection}
                                     setFunction={setCurrentCollection}
+                                    icons={ICONS}
+                                    defaultCollection={defaultCollection}
                                     defaultFunction={setDefault}
                                   />
                                 </Box>
@@ -370,6 +370,9 @@ function CardCollections({
               handlers={editingHandlers}
               index={collections.indexOf(currentCollection)}
               setFunction={setCurrentCollection}
+              icons={ICONS}
+              defaultCollection={defaultCollection}
+              defaultFunction={setDefault}
             />
           ) : (
             <Accordion
