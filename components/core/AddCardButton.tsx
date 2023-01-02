@@ -9,7 +9,7 @@ import {
   NumberInput,
 } from "@mantine/core";
 import { IconPlaylistAdd, IconChecklist } from "@tabler/icons";
-import { inRange, isNil } from "lodash";
+import { inRange, isNil, sortBy } from "lodash";
 
 import { CardCollection } from "types/makotools";
 import { MAX_CARD_COPIES } from "services/game";
@@ -154,7 +154,7 @@ export default function AddCardButton({
               overflow: "auto",
             }}
           >
-            {collections.map((collection) => (
+            {sortBy(collections, "order").map((collection) => (
               <React.Fragment key={collection.id}>
                 <EditCollectionRow
                   collection={collection}
