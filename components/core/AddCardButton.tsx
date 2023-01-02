@@ -1,11 +1,15 @@
 import React, { SyntheticEvent, useState } from "react";
-import { Box, Text, ActionIcon, Popover, Divider, Button } from "@mantine/core";
 import {
-  IconMinus,
-  IconPlaylistAdd,
-  IconPlus,
-  IconChecklist,
-} from "@tabler/icons";
+  Box,
+  Text,
+  ActionIcon,
+  Popover,
+  Divider,
+  Button,
+  NumberInput,
+} from "@mantine/core";
+import { IconPlaylistAdd, IconChecklist } from "@tabler/icons";
+import { inRange, isNil } from "lodash";
 
 import { CardCollection } from "types/makotools";
 import { MAX_CARD_COPIES } from "services/game";
@@ -38,43 +42,30 @@ function EditCollectionRow({
       >
         {collection.name}
       </Text>
-      <ActionIcon
-        variant="subtle"
-        color="red"
+      {/* Needed to stop input events from closing Popover */}
+      <Box
         onClick={(e: SyntheticEvent) => {
           e.stopPropagation();
-          const numCopies = collectedCardData ? collectedCardData.count - 1 : 0;
-          onEditCollection({
-            collectionId: collection.id,
-            cardId: card.id,
-            numCopies,
-          });
         }}
-        disabled={!collectedCardData || collectedCardData?.count <= 0}
       >
-        <IconMinus size={16} />
-      </ActionIcon>
-      <Text size="xs" sx={{ padding: "0 8px" }}>
-        {collectedCardData ? collectedCardData.count : 0}
-      </Text>
-      <ActionIcon
-        variant="subtle"
-        color="green"
-        onClick={(e: SyntheticEvent) => {
-          e.stopPropagation();
-          const numCopies = collectedCardData ? collectedCardData.count + 1 : 1;
-          onEditCollection({
-            collectionId: collection.id,
-            cardId: card.id,
-            numCopies,
-          });
-        }}
-        disabled={
-          collectedCardData && collectedCardData?.count >= MAX_CARD_COPIES
-        }
-      >
-        <IconPlus size={16} />
-      </ActionIcon>
+        <NumberInput
+          value={collectedCardData ? collectedCardData.count : 0}
+          min={0}
+          max={5}
+          onChange={(value) => {
+            if (isNil(value) || !inRange(value, 0, MAX_CARD_COPIES + 1)) {
+              return;
+            }
+            onEditCollection({
+              collectionId: collection.id,
+              cardId: card.id,
+              numCopies: value,
+            });
+          }}
+          size="xs"
+          sx={{ maxWidth: "48px" }}
+        />
+      </Box>
     </>
   );
 }
@@ -142,8 +133,7 @@ export default function AddCardButton({
           <Box
             sx={{
               display: "grid",
-              gridTemplateColumns:
-                "1fr fit-content(100px) fit-content(100px) fit-content(100px)",
+              gridTemplateColumns: "1fr fit-content(100px)",
               alignItems: "center",
               padding: "8px",
               rowGap: "8px",
