@@ -48,6 +48,8 @@ function EditCollectionRow({
           e.stopPropagation();
         }}
       >
+        {/* TODO: Instead of showing NumberInput with 0,
+        show a + icon? Don't know if 0 implies not in collection */}
         <NumberInput
           value={collectedCardData ? collectedCardData.count : 0}
           min={0}
@@ -70,7 +72,7 @@ function EditCollectionRow({
   );
 }
 
-function AddCollectionRow({ onAddCollection }: { onAddCollection: () => any }) {
+function NewCollectionRow({ onNewCollection }: { onNewCollection: () => any }) {
   return (
     <Box sx={{ padding: "8px" }}>
       <Button
@@ -78,10 +80,10 @@ function AddCollectionRow({ onAddCollection }: { onAddCollection: () => any }) {
         size="xs"
         onClick={(e: SyntheticEvent) => {
           e.stopPropagation();
-          onAddCollection();
+          onNewCollection();
         }}
       >
-        + Add collection
+        + New collection
       </Button>
     </Box>
   );
@@ -91,7 +93,7 @@ export default function AddCardButton({
   card,
   collections,
   onEditCollection,
-  onAddCollection,
+  onNewCollection,
 }: {
   collections: CardCollection[];
   card: GameCard;
@@ -100,7 +102,7 @@ export default function AddCardButton({
     cardId: ID;
     numCopies: number;
   }) => any;
-  onAddCollection: () => any;
+  onNewCollection: () => any;
 }) {
   const [collectionMenuOpened, setCollectionMenuOpened] = useState(false);
 
@@ -147,6 +149,9 @@ export default function AddCardButton({
               padding: "8px",
               rowGap: "8px",
               maxWidth: "250px",
+              // Show at most 5 collections before scrolling
+              maxHeight: `${36 * 5 + 8 * 6}px`,
+              overflow: "auto",
             }}
           >
             {collections.map((collection) => (
@@ -160,10 +165,10 @@ export default function AddCardButton({
             ))}
           </Box>
           <Divider />
-          <AddCollectionRow
-            onAddCollection={() => {
+          <NewCollectionRow
+            onNewCollection={() => {
               setCollectionMenuOpened(false);
-              onAddCollection();
+              onNewCollection();
             }}
           />
         </Popover.Dropdown>

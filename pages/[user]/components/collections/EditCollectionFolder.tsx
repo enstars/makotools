@@ -1,8 +1,7 @@
 import { Paper, Group, Button, Text, Box } from "@mantine/core";
 import { IconMenu2, IconPencil } from "@tabler/icons";
 
-import { ICONS } from "./icons";
-
+import { CollectionIcons } from "components/collections/CollectionIcons";
 import { CardCollection } from "types/makotools";
 
 function EditCollectionFolder({
@@ -14,7 +13,7 @@ function EditCollectionFolder({
   setFunction: (c: CardCollection) => void;
   reordering?: boolean;
 }) {
-  const icon = ICONS[collection.icon || 0];
+  const icon = CollectionIcons[collection.icon || 0];
   return (
     <>
       <Paper

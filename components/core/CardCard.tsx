@@ -69,7 +69,7 @@ export default function CardCard({
   collections,
   lang,
   onEditCollection,
-  onAddCollection,
+  onNewCollection,
 }: {
   card: GameCard;
   cardOptions: any;
@@ -80,7 +80,7 @@ export default function CardCard({
     cardId: ID;
     numCopies: number;
   }) => any;
-  onAddCollection: () => any;
+  onNewCollection: () => any;
 }) {
   const router = useRouter();
   const theme = useMantineTheme();
@@ -174,7 +174,7 @@ export default function CardCard({
               card={card}
               collections={collections}
               onEditCollection={onEditCollection}
-              onAddCollection={onAddCollection}
+              onNewCollection={onNewCollection}
             />
           )}
           <Group

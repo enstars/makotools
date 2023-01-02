@@ -13,7 +13,8 @@ import Link from "next/link";
 import { IconUsers, IconHeart, IconEyeOff, IconEye } from "@tabler/icons";
 
 import CollectionCard from "./CollectionCard";
-import { ICONS } from "./icons";
+
+import { CollectionIcons } from "components/collections/CollectionIcons";
 
 import { CardCollection, CollectedCard } from "types/makotools";
 
@@ -30,7 +31,7 @@ function CollectionFolder({
     borderRadius: theme.radius.lg,
   };
 
-  const icon = ICONS[collection.icon || 0];
+  const icon = CollectionIcons[collection.icon || 0];
 
   return (
     <Accordion.Item value={collection.id}>

@@ -28,7 +28,7 @@ import fuzzysort from "fuzzysort";
 import useSWR from "swr";
 import { doc, getFirestore, setDoc } from "firebase/firestore";
 
-import AddCollectionModal from "./components/AddCollectionModal";
+import NewCollectionModal from "./components/NewCollectionModal";
 
 import CardCard from "components/core/CardCard";
 import PageTitle from "components/sections/PageTitle";
@@ -38,7 +38,10 @@ import getServerSideUser from "services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "services/data";
 import { CardRarity, GameCard, GameCharacter, ID } from "types/game";
 import useUser from "services/firebase/user";
-import { editCardInCollection } from "services/makotools/collection";
+import {
+  createNewCollectionObject,
+  editCardInCollection,
+} from "services/makotools/collection";
 import { getFirestoreUserCollection } from "services/firebase/firestore";
 
 type SortOption = "id" | "character";
@@ -89,7 +92,7 @@ function Page({
     },
   });
   const [search, setSearch] = useState("");
-  const [addCollectionModalOpened, setAddCollectionModalOpened] =
+  const [newCollectionModalOpened, setNewCollectionModalOpened] =
     useState<boolean>(false);
   const [debouncedSearch] = useDebouncedValue(search, 200);
   const { data: collections, mutate: mutateCollections } = useSWR<
@@ -183,6 +186,30 @@ function Page({
       ),
       newCollection,
       { merge: true }
+    );
+    mutateCollections();
+  };
+
+  const onNewCollection = async ({
+    name,
+    privacyLevel,
+    icon,
+  }: Pick<CardCollection, "name" | "privacyLevel" | "icon">) => {
+    const newCollection = createNewCollectionObject({
+      name,
+      order: collections!.length,
+      privacyLevel,
+      icon,
+    });
+    const db = getFirestore();
+    await setDoc(
+      doc(
+        db,
+        `users/${(user as UserLoggedIn).user.id}/card_collections/${
+          newCollection.id
+        }`
+      ),
+      newCollection
     );
     mutateCollections();
   };
@@ -343,7 +370,7 @@ function Page({
                 collections={collections}
                 lang={cardsQuery.lang}
                 onEditCollection={onEditCollection}
-                onAddCollection={() => setAddCollectionModalOpened(true)}
+                onNewCollection={() => setNewCollectionModalOpened(true)}
               />
             ))}
           </InfiniteScroll>
@@ -353,9 +380,12 @@ function Page({
           No cards found.
         </Text>
       )}
-      <AddCollectionModal
-        opened={addCollectionModalOpened}
-        onClose={() => setAddCollectionModalOpened(false)}
+      <NewCollectionModal
+        // use key to reset internal form state on close
+        key={JSON.stringify(newCollectionModalOpened)}
+        opened={newCollectionModalOpened}
+        onClose={() => setNewCollectionModalOpened(false)}
+        onNewCollection={onNewCollection}
       />
     </>
   );

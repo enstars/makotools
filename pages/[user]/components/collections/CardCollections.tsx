@@ -22,7 +22,7 @@ import { CardCollection, UserData } from "types/makotools";
 import { getFirestoreUserCollection } from "services/firebase/firestore";
 import { GameCard, GameUnit } from "types/game";
 import useUser from "services/firebase/user";
-import { generateUUID } from "services/utilities";
+import { createNewCollectionObject } from "services/makotools/collection";
 
 function CardCollections({
   profile,
@@ -99,14 +99,9 @@ function CardCollections({
 
   const addNewCollection = async () => {
     if (!user.loggedIn) return;
-    const newCollection: CardCollection = {
-      id: generateUUID(),
-      name: `Untitled Collection`,
-      icon: 0,
-      privacyLevel: 1,
-      cards: [],
+    const newCollection = createNewCollectionObject({
       order: collections.length,
-    };
+    });
     const db = getFirestore();
     await setDoc(
       doc(db, `users/${user.user.id}/card_collections`, newCollection.id),

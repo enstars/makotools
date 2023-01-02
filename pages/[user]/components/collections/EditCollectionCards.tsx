@@ -20,7 +20,6 @@ import { useListState, UseListStateHandlers } from "@mantine/hooks";
 import {
   IconArrowsSort,
   IconChevronLeft,
-  IconChevronUp,
   IconDots,
   IconEye,
   IconSortAscending,
@@ -32,7 +31,6 @@ import { useEffect, useState } from "react";
 import { GridContextProvider, GridDropZone, GridItem } from "react-grid-drag";
 
 import CollectionCard from "./CollectionCard";
-import { ICONS } from "./icons";
 
 import { useDayjs } from "services/libraries/dayjs";
 import {
@@ -41,7 +39,11 @@ import {
   CollectionPrivacyLevel,
 } from "types/makotools";
 import { GameCard, GameUnit } from "types/game";
-import { MAX_COLLECTION_NAME_LENGTH } from "services/makotools/collection";
+import {
+  COLLECTION_PRIVACY_LEVEL_DESCRIPTION,
+  MAX_COLLECTION_NAME_LENGTH,
+} from "services/makotools/collection";
+import CollectionIconMenu from "components/collections/CollectionIconMenu";
 
 function EditCollectionCards({
   collection,
@@ -79,7 +81,6 @@ function EditCollectionCards({
   console.log(NUM_COLS, ROW_HEIGHT);
   const height = Math.ceil(cards.length / NUM_COLS) * ROW_HEIGHT;
 
-  const icon = ICONS[collection.icon || 0];
   console.log(cards.map((c) => c?.id));
   return (
     <Paper p="lg" withBorder>
@@ -122,39 +123,12 @@ function EditCollectionCards({
         <Title order={3}>Edit {collection.name} cards</Title>
       </Group>
       <Group noWrap p="md">
-        <Menu position="top">
-          <Menu.Target>
-            <ActionIcon>
-              <Box sx={{ display: "flex", flexFlow: "row no-wrap" }}>
-                <Text color={icon.color}>
-                  <icon.component {...icon.props} />
-                </Text>
-                <IconChevronUp size={20} />
-              </Box>
-            </ActionIcon>
-          </Menu.Target>
-          <Menu.Dropdown sx={{ width: "auto", maxWidth: "260px" }}>
-            <Menu.Label sx={{ textAlign: "center" }}>
-              Choose a collection icon
-            </Menu.Label>
-            {ICONS.map((icon, i) => (
-              <Menu.Item
-                key={icon.name}
-                component="button"
-                onClick={() => {
-                  console.log(index, i);
-                  handlers.setItemProp(index, "icon", i);
-                  console.log(collection);
-                }}
-                sx={{ width: "auto", display: "inline" }}
-              >
-                <Text color={icon.color}>
-                  <icon.component {...icon.props} />
-                </Text>
-              </Menu.Item>
-            ))}
-          </Menu.Dropdown>
-        </Menu>
+        <CollectionIconMenu
+          value={collection.icon}
+          onChange={(i) => {
+            handlers.setItemProp(index, "icon", i);
+          }}
+        />
         <TextInput
           id="field-0"
           aria-label="Input collection name"
@@ -194,10 +168,22 @@ function EditCollectionCards({
                 <Text>Set Privacy Level</Text>
                 <Select
                   data={[
-                    { value: "0", label: "Public to everyone" },
-                    { value: "1", label: "Visible to logged in users" },
-                    { value: "2", label: "Visible only to friends" },
-                    { value: "3", label: "Completely private" },
+                    {
+                      value: "0",
+                      label: COLLECTION_PRIVACY_LEVEL_DESCRIPTION[0],
+                    },
+                    {
+                      value: "1",
+                      label: COLLECTION_PRIVACY_LEVEL_DESCRIPTION[1],
+                    },
+                    {
+                      value: "2",
+                      label: COLLECTION_PRIVACY_LEVEL_DESCRIPTION[2],
+                    },
+                    {
+                      value: "3",
+                      label: COLLECTION_PRIVACY_LEVEL_DESCRIPTION[3],
+                    },
                   ]}
                   defaultValue={`${collection.privacyLevel}`}
                   onChange={(value) => {
