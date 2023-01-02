@@ -1,9 +1,13 @@
 import { clamp, remove } from "lodash";
+import useSWR from "swr";
+import { doc, getFirestore, setDoc } from "firebase/firestore";
 
-import { CardCollection } from "types/makotools";
+import { CardCollection, UserLoggedIn } from "types/makotools";
 import { ID } from "types/game";
 import { MAX_CARD_COPIES } from "services/game";
 import { generateUUID } from "services/utilities";
+import useUser from "services/firebase/user";
+import { getFirestoreUserCollection } from "services/firebase/firestore";
 
 export const MAX_COLLECTION_NAME_LENGTH = 50;
 
@@ -60,5 +64,78 @@ export function createNewCollectionObject({
     privacyLevel: privacyLevel || 1,
     cards: [],
     order: order || 0,
+  };
+}
+
+export function useCollections() {
+  const user = useUser();
+
+  const {
+    data: collections,
+    isLoading: loadingCollections,
+    mutate: mutateCollections,
+  } = useSWR<CardCollection[]>(
+    user.loggedIn ? [`users/${user.user.id}/card_collections`, user] : null,
+    getFirestoreUserCollection
+  );
+
+  const onEditCollection = async ({
+    collectionId,
+    cardId,
+    numCopies,
+  }: {
+    collectionId: CardCollection["id"];
+    cardId: ID;
+    numCopies: number;
+  }) => {
+    const collectionToUpdate = collections!.find(
+      (collection) => collection.id === collectionId
+    );
+    const newCollection = { ...collectionToUpdate! };
+    editCardInCollection(newCollection, cardId, numCopies);
+    const db = getFirestore();
+    await setDoc(
+      doc(
+        db,
+        `users/${(user as UserLoggedIn).user.id}/card_collections/${
+          newCollection.id
+        }`
+      ),
+      newCollection,
+      { merge: true }
+    );
+    mutateCollections();
+  };
+
+  const onNewCollection = async ({
+    name,
+    privacyLevel,
+    icon,
+  }: Pick<CardCollection, "name" | "privacyLevel" | "icon">) => {
+    const newCollection = createNewCollectionObject({
+      name,
+      order: collections!.length,
+      privacyLevel,
+      icon,
+    });
+    const db = getFirestore();
+    await setDoc(
+      doc(
+        db,
+        `users/${(user as UserLoggedIn).user.id}/card_collections/${
+          newCollection.id
+        }`
+      ),
+      newCollection
+    );
+    mutateCollections();
+  };
+
+  return {
+    collections,
+    loadingCollections,
+    mutateCollections,
+    onEditCollection,
+    onNewCollection,
   };
 }

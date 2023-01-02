@@ -25,24 +25,17 @@ import {
   IconSortDescending,
 } from "@tabler/icons";
 import fuzzysort from "fuzzysort";
-import useSWR from "swr";
-import { doc, getFirestore, setDoc } from "firebase/firestore";
 
 import NewCollectionModal from "./components/NewCollectionModal";
 
 import CardCard from "components/core/CardCard";
 import PageTitle from "components/sections/PageTitle";
 import { getLayout } from "components/Layout";
-import { CardCollection, QuerySuccess, UserLoggedIn } from "types/makotools";
+import { QuerySuccess } from "types/makotools";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "services/data";
-import { CardRarity, GameCard, GameCharacter, ID } from "types/game";
-import useUser from "services/firebase/user";
-import {
-  createNewCollectionObject,
-  editCardInCollection,
-} from "services/makotools/collection";
-import { getFirestoreUserCollection } from "services/firebase/firestore";
+import { CardRarity, GameCard, GameCharacter } from "types/game";
+import { useCollections } from "services/makotools/collection";
 
 type SortOption = "id" | "character";
 
@@ -76,7 +69,6 @@ function Page({
     [charactersQuery.data]
   );
 
-  const user = useUser();
   const theme = useMantineTheme();
   const [count, setCount] = useState<number>(CARD_LIST_INITIAL_COUNT);
   const [cardsList, setCardsList] = useState<GameCard[]>([]);
@@ -95,12 +87,7 @@ function Page({
   const [newCollectionModalOpened, setNewCollectionModalOpened] =
     useState<boolean>(false);
   const [debouncedSearch] = useDebouncedValue(search, 200);
-  const { data: collections, mutate: mutateCollections } = useSWR<
-    CardCollection[]
-  >(
-    user.loggedIn ? [`users/${user.user.id}/card_collections`, user] : null,
-    getFirestoreUserCollection
-  );
+  const { collections, onEditCollection, onNewCollection } = useCollections();
 
   let characterIDtoSort: { [key: number]: number } = {};
   characters.forEach((c) => {
@@ -159,58 +146,6 @@ function Page({
   const loadMore = () => {
     const newCount = count + CARD_LIST_INITIAL_COUNT;
     setCount(newCount);
-  };
-
-  const onEditCollection = async ({
-    collectionId,
-    cardId,
-    numCopies,
-  }: {
-    collectionId: CardCollection["id"];
-    cardId: ID;
-    numCopies: number;
-  }) => {
-    const collectionToUpdate = collections!.find(
-      (collection) => collection.id === collectionId
-    );
-    const newCollection = { ...collectionToUpdate! };
-    editCardInCollection(newCollection, cardId, numCopies);
-    const db = getFirestore();
-    await setDoc(
-      doc(
-        db,
-        `users/${(user as UserLoggedIn).user.id}/card_collections/${
-          newCollection.id
-        }`
-      ),
-      newCollection,
-      { merge: true }
-    );
-    mutateCollections();
-  };
-
-  const onNewCollection = async ({
-    name,
-    privacyLevel,
-    icon,
-  }: Pick<CardCollection, "name" | "privacyLevel" | "icon">) => {
-    const newCollection = createNewCollectionObject({
-      name,
-      order: collections!.length,
-      privacyLevel,
-      icon,
-    });
-    const db = getFirestore();
-    await setDoc(
-      doc(
-        db,
-        `users/${(user as UserLoggedIn).user.id}/card_collections/${
-          newCollection.id
-        }`
-      ),
-      newCollection
-    );
-    mutateCollections();
   };
 
   return (
