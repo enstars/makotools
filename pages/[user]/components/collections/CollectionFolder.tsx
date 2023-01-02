@@ -12,7 +12,7 @@ import Link from "next/link";
 import CollectionCard from "./CollectionCard";
 
 import PRIVACY_LEVELS from "components/collections/privacyLevels";
-import { COLLECTION_ICONS } from "components/collections/collectionIcons";
+import { COLLECTION_ICONS } from "components/collections/collectionsIcons";
 import { CardCollection, CollectedCard } from "types/makotools";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 
