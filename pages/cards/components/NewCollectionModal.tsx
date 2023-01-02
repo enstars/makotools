@@ -45,8 +45,6 @@ export default function NewCollectionModal({
     validateInputOnChange: true,
   });
 
-  console.log(form.values);
-
   return (
     <Modal opened={opened} onClose={onClose}>
       <form

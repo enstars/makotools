@@ -101,7 +101,6 @@ function Page({
     user.loggedIn ? [`users/${user.user.id}/card_collections`, user] : null,
     getFirestoreUserCollection
   );
-  console.log({ user, collections });
 
   let characterIDtoSort: { [key: number]: number } = {};
   characters.forEach((c) => {
