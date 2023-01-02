@@ -47,7 +47,6 @@ function DisplayFaves({
   characters: GameCharacter[];
   units: GameUnit[];
 }) {
-  console.log(favesList);
   if (favesList[0] === 0) {
     return <Text>Everyone &lt;3</Text>;
   } else if (favesList[0] === -1) {

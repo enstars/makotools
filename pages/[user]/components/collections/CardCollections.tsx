@@ -8,14 +8,14 @@ import {
   Title,
   useMantineTheme,
 } from "@mantine/core";
-import { IconDeviceFloppy, IconPencil, IconX } from "@tabler/icons";
+import { IconPencil } from "@tabler/icons";
 import { useEffect, useState } from "react";
 import { useListState } from "@mantine/hooks";
 import useSWR from "swr";
-import { doc, getFirestore, setDoc, writeBatch } from "firebase/firestore";
+import { doc, getFirestore, writeBatch } from "firebase/firestore";
 import { isEqual } from "lodash";
 
-import EditAllCollections from "./EditAllCollections";
+import EditCollections from "./EditCollections";
 import CollectionFolder from "./CollectionFolder";
 
 import { CardCollection, UserData } from "types/makotools";
@@ -108,13 +108,8 @@ function CardCollections({
       cards: [],
       order: collections.length,
     };
-    const db = getFirestore();
-    await setDoc(
-      doc(db, `users/${user.user.id}/card_collections`, newCollection.id),
-      newCollection,
-      { merge: true }
-    );
-    mutate();
+    setCurrentCollection(editingCollections.length);
+    editingHandlers.append(newCollection);
   };
 
   const saveAllChanges = async () => {
@@ -127,10 +122,13 @@ function CardCollections({
     // Get a new write batch
     const batch = writeBatch(db);
 
+    const toUpdateCollections: CardCollection[] = [...editingCollections];
+    const updatedCollections: CardCollection[] = [];
     collections.forEach((originalCollection) => {
-      const newCollection = editingCollections.find(
+      const newCollection = toUpdateCollections.find(
         (c) => c.id === originalCollection.id
       );
+
       if (newCollection) {
         if (!isEqual(originalCollection, newCollection)) {
           const collectionRef = doc(
@@ -142,6 +140,12 @@ function CardCollections({
             merge: true,
           });
         }
+
+        toUpdateCollections.splice(
+          toUpdateCollections.indexOf(newCollection),
+          1
+        );
+        updatedCollections.push(newCollection);
       } else {
         const collectionRef = doc(
           db,
@@ -152,9 +156,27 @@ function CardCollections({
       }
     });
 
+    if (toUpdateCollections.length > 0) {
+      toUpdateCollections.forEach((collectionToCreate) => {
+        const collectionRef = doc(
+          db,
+          `users/${user.user.id}/card_collections`,
+          collectionToCreate.id
+        );
+        batch.set(collectionRef, collectionToCreate, {
+          merge: true,
+        });
+        updatedCollections.push(collectionToCreate);
+      });
+    }
     await batch.commit();
 
-    mutate(editingCollections);
+    mutate(updatedCollections);
+  };
+
+  const discardAllChanges = () => {
+    setEditMode(false);
+    setCurrentCollection(undefined);
   };
 
   return (
@@ -163,66 +185,18 @@ function CardCollections({
         <Title order={2} mt="md" mb="xs">
           Collections
         </Title>
-        {isYourProfile &&
-          (editMode ? (
-            isReordering ? (
-              <Group>
-                <Button
-                  variant="subtle"
-                  color="red"
-                  leftIcon={<IconX size={16} />}
-                  onClick={() => {
-                    setIsReordering(false);
-                    tempHandlersWhileReordering.setState(collections);
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  leftIcon={<IconDeviceFloppy size={16} />}
-                  onClick={() => {
-                    saveReorder();
-                    setIsReordering(false);
-                  }}
-                >
-                  Save
-                </Button>
-              </Group>
-            ) : (
-              <Group>
-                <Button
-                  variant="subtle"
-                  color="red"
-                  leftIcon={<IconX size={16} />}
-                  onClick={() => {
-                    setEditMode(false);
-                    setCurrentCollection(undefined);
-                  }}
-                >
-                  Discard Changes
-                </Button>
-                <Button
-                  leftIcon={<IconDeviceFloppy size={16} />}
-                  onClick={saveAllChanges}
-                >
-                  Save
-                </Button>
-              </Group>
-            )
-          ) : (
-            <Button
-              color={theme.primaryColor}
-              radius="xl"
-              variant="subtle"
-              leftIcon={<IconPencil />}
-              onClick={() => {
-                setEditMode(true);
-                editingHandlers.setState(collections);
-              }}
-            >
-              Edit
-            </Button>
-          ))}
+        {isYourProfile && !editMode && (
+          <Button
+            variant="subtle"
+            leftIcon={<IconPencil size={16} />}
+            onClick={() => {
+              setEditMode(true);
+              editingHandlers.setState(collections);
+            }}
+          >
+            Edit
+          </Button>
+        )}
       </Group>
       {isLoading && !editMode ? (
         <Box>
@@ -231,8 +205,7 @@ function CardCollections({
           </Center>
         </Box>
       ) : editMode ? (
-        <EditAllCollections
-          editMode={editMode}
+        <EditCollections
           currentCollection={currentCollection}
           isReordering={isReordering}
           setCurrentCollection={setCurrentCollection}
@@ -245,6 +218,9 @@ function CardCollections({
           tempHandlersWhileReordering={tempHandlersWhileReordering}
           editingCollections={editingCollections}
           profile={profile}
+          saveReorder={saveReorder}
+          saveAllChanges={saveAllChanges}
+          discardAllChanges={discardAllChanges}
         />
       ) : (
         <Accordion

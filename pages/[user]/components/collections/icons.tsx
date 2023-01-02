@@ -1,4 +1,4 @@
-import { IconCircle, IconHeart, IconMoodCry, IconStar } from "@tabler/icons";
+import { IconCards, IconHeart, IconMoodCry, IconStar } from "@tabler/icons";
 
 import IconEnstars from "components/core/IconEnstars";
 
@@ -12,7 +12,7 @@ const ICONS: {
   {
     id: "default",
     name: "Default",
-    component: IconCircle,
+    component: IconCards,
     color: "dimmed",
   },
   {
