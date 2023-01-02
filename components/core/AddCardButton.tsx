@@ -8,7 +8,7 @@ import {
   Button,
   NumberInput,
 } from "@mantine/core";
-import { IconPlaylistAdd, IconChecklist } from "@tabler/icons";
+import { IconPlaylistAdd, IconChecklist, IconPlus } from "@tabler/icons";
 import { inRange, isNil, sortBy } from "lodash";
 
 import { CardCollection } from "types/makotools";
@@ -29,6 +29,7 @@ function EditCollectionRow({
   }) => any;
 }) {
   const collectedCardData = collection.cards.find((c) => c.id === card.id);
+  const isInCollection = !!collectedCardData;
 
   return (
     <>
@@ -47,26 +48,45 @@ function EditCollectionRow({
         onClick={(e: SyntheticEvent) => {
           e.stopPropagation();
         }}
+        sx={{ display: "flex", justifyContent: "end" }}
       >
-        {/* TODO: Instead of showing NumberInput with 0,
-        show a + icon? Don't know if 0 implies not in collection */}
-        <NumberInput
-          value={collectedCardData ? collectedCardData.count : 0}
-          min={0}
-          max={5}
-          onChange={(value) => {
-            if (isNil(value) || !inRange(value, 0, MAX_CARD_COPIES + 1)) {
-              return;
+        {isInCollection ? (
+          <NumberInput
+            value={collectedCardData.count}
+            min={0}
+            max={5}
+            onChange={(value) => {
+              if (isNil(value) || !inRange(value, 0, MAX_CARD_COPIES + 1)) {
+                return;
+              }
+              onEditCollection({
+                collectionId: collection.id,
+                cardId: card.id,
+                numCopies: value,
+              });
+            }}
+            size="xs"
+            sx={{ maxWidth: "48px" }}
+          />
+        ) : (
+          <ActionIcon
+            // Same height as NumberInput
+            // so that height of row doesn't change when switching over
+            // to NumberInput
+            size={30}
+            variant="light"
+            color="green"
+            onClick={() =>
+              onEditCollection({
+                collectionId: collection.id,
+                cardId: card.id,
+                numCopies: 1,
+              })
             }
-            onEditCollection({
-              collectionId: collection.id,
-              cardId: card.id,
-              numCopies: value,
-            });
-          }}
-          size="xs"
-          sx={{ maxWidth: "48px" }}
-        />
+          >
+            <IconPlus size={16} />
+          </ActionIcon>
+        )}
       </Box>
     </>
   );
@@ -106,7 +126,7 @@ export default function AddCardButton({
 }) {
   const [collectionMenuOpened, setCollectionMenuOpened] = useState(false);
 
-  const isInACollection = collections.some((collection) =>
+  const isInAnyCollection = collections.some((collection) =>
     collection.cards?.some((c) => c.id === card.id)
   );
 
@@ -131,9 +151,9 @@ export default function AddCardButton({
         <Popover.Target>
           <ActionIcon
             variant="light"
-            color={isInACollection ? "green" : undefined}
+            color={isInAnyCollection ? "green" : undefined}
           >
-            {isInACollection ? (
+            {isInAnyCollection ? (
               <IconChecklist size={16} />
             ) : (
               <IconPlaylistAdd size={16} />
