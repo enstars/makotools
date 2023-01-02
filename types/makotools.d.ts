@@ -74,8 +74,7 @@ interface CardCollection {
   id: string;
   name: string;
   privacyLevel: CollectionPrivacyLevel;
-  default: boolean;
-  icon?: number;
+  icon: number;
   cards: CollectedCard[];
   order: number;
 }

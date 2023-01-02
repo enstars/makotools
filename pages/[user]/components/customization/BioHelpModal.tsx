@@ -5,16 +5,16 @@ import {
   Text,
   useMantineTheme,
   Space,
-  SimpleGrid,
   Stack,
-  Box,
-  Blockquote,
-  Divider,
+  Group,
+  Paper,
+  TypographyStylesProvider,
 } from "@mantine/core";
 import Link from "next/link";
 
 import emotes from "services/makotools/emotes";
 import Emote from "components/utilities/emotes/Emote";
+import ResponsiveGrid from "components/core/ResponsiveGrid";
 
 const useStyles = createStyles((theme) => ({
   tableCell: {
@@ -29,6 +29,83 @@ const useStyles = createStyles((theme) => ({
     },
   },
 }));
+
+function SamplePreview({
+  markdown,
+  result,
+}: {
+  markdown: React.ReactNode;
+  result: React.ReactNode;
+}) {
+  const theme = useMantineTheme();
+  const { classes } = useStyles();
+  const shadeColor =
+    theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[1];
+  const borderColor =
+    theme.colorScheme === "dark" ? theme.colors.dark[6] : theme.colors.gray[2];
+  return (
+    <Group
+      align="stretch+"
+      sx={(theme) => ({
+        "&&&&&": {
+          flexWrap: "wrap",
+        },
+        "& > *": {
+          flex: "1 1 0",
+          ["@media (max-width: 768px)"]: {
+            flex: "1 1 100%",
+          },
+        },
+      })}
+      spacing={0}
+      mb={6}
+    >
+      <Paper
+        sx={{
+          background: shadeColor,
+          border: `1px solid ${borderColor}`,
+          borderRight: "none",
+          borderTopRightRadius: 0,
+          borderBottomRightRadius: 0,
+
+          ["@media (max-width: 768px)"]: {
+            borderBottom: "none",
+            borderRight: `1px solid ${borderColor}`,
+            borderTopLeftRadius: theme.radius.xs,
+            borderTopRightRadius: theme.radius.xs,
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
+          },
+        }}
+        px="xs"
+        py={6}
+      >
+        {markdown}
+      </Paper>
+      <Paper
+        sx={(theme) => ({
+          border: `1px solid ${borderColor}`,
+          borderTopLeftRadius: 0,
+          borderBottomLeftRadius: 0,
+          borderLeft: "none",
+
+          ["@media (max-width: 768px)"]: {
+            borderTop: "none",
+            borderLeft: `1px solid ${borderColor}`,
+            borderTopLeftRadius: 0,
+            borderTopRightRadius: 0,
+            borderBottomLeftRadius: theme.radius.xs,
+            borderBottomRightRadius: theme.radius.xs,
+          },
+        })}
+        px="xs"
+        py={6}
+      >
+        {result}
+      </Paper>
+    </Group>
+  );
+}
 
 function BioHelpModal({
   opened,
@@ -46,11 +123,6 @@ function BioHelpModal({
       size="xl"
       onClose={() => openFunction(false)}
       overflow="inside"
-      overlayColor={
-        theme.colorScheme === "dark"
-          ? theme.colors.dark[9]
-          : theme.colors.gray[3]
-      }
       overlayOpacity={0.8}
       overlayBlur={5}
       title={<Title order={3}>Markdown Guide</Title>}
@@ -87,237 +159,87 @@ function BioHelpModal({
       </Text>
       <Space h="xl" />
       <Title order={4}>Basic Markdown</Title>
-      <SimpleGrid
-        cols={2}
-        breakpoints={[{ maxWidth: 768, cols: 1 }]}
-        spacing={0}
-        sx={{
-          borderRadius: "5px",
-          border: `1px solid ${
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[4]
-              : theme.colors.gray[4]
-          }`,
-          marginTop: "5px",
-        }}
-      >
-        <Stack>
-          <Box
-            sx={{
-              background:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[4]
-                  : theme.colors.gray[2],
-              borderTopLeftRadius: "4px",
-              padding: "3px",
-            }}
-          >
-            <Text weight={600}>Type...</Text>
-          </Box>
-          <Box sx={{ padding: "3px" }}>
-            <Text className={classes.markdownInput}>**Bold Text**</Text>
-            <Text className={classes.markdownInput}>*Italicized Text*</Text>
-            <Text className={classes.markdownInput}>
-              ***Bold and Italicized Text***
-            </Text>
-            <Text className={classes.markdownInput}>
-              ~~Strikethrough Text~~
-            </Text>
-          </Box>
-        </Stack>
-        <Stack>
-          <Box
-            sx={{
-              background:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[4]
-                  : theme.colors.gray[2],
-              padding: "3px",
-
-              ["@media (min-width: 768px)"]: {
-                borderTopRightRadius: "4px",
-              },
-            }}
-          >
-            <Text weight={600}>To render...</Text>
-          </Box>
-          <Box sx={{ padding: "3px" }}>
-            <Text>
-              <strong>Bold Text</strong>
-            </Text>
-            <Text>
-              <i>Italicized Text</i>
-            </Text>
-            <Text>
-              <strong>
-                <i>Bold and Italicized Text</i>
-              </strong>
-            </Text>
-            <Text>
-              <s>Strikethrough Text</s>
-            </Text>
-          </Box>
-        </Stack>
-      </SimpleGrid>
+      <SamplePreview markdown={"**Bold Text**"} result={<b>Bold Text</b>} />
+      <SamplePreview
+        markdown={"*Italicized Text*"}
+        result={<i>Italicized Text</i>}
+      />
+      <SamplePreview
+        markdown={"***Bold and Italicized Text***"}
+        result={
+          <b>
+            <i>Bold and Italicized Text</i>
+          </b>
+        }
+      />
+      <SamplePreview
+        markdown={"~~Strikethrough Text~~"}
+        result={<s>Strikethrough Text</s>}
+      />
       <Space h="xl" />
       <Title order={4}>Headings</Title>
-      <SimpleGrid
-        cols={2}
-        breakpoints={[{ maxWidth: 768, cols: 1 }]}
-        spacing={0}
-        sx={{
-          borderRadius: "5px",
-          border: `1px solid ${
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[4]
-              : theme.colors.gray[4]
-          }`,
-          marginTop: "5px",
-        }}
-      >
-        <Stack>
-          <Box
-            sx={{
-              background:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[4]
-                  : theme.colors.gray[2],
-              borderTopLeftRadius: "4px",
-              padding: "3px",
-            }}
-          >
-            <Text weight={600}>Type...</Text>
-          </Box>
-          <Box sx={{ padding: "3px" }}>
-            <Text className={classes.markdownInput}># Heading Level 1</Text>
-            <Text className={classes.markdownInput}>## Heading Level 2</Text>
-            <Text className={classes.markdownInput}>...</Text>
-            <Text className={classes.markdownInput}>
-              ###### Heading Level 6
-            </Text>
-          </Box>
-        </Stack>
-        <Stack>
-          <Box
-            sx={{
-              background:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[4]
-                  : theme.colors.gray[2],
-              padding: "3px",
-
-              ["@media (min-width: 768px)"]: {
-                borderTopRightRadius: "4px",
-              },
-            }}
-          >
-            <Text weight={600}>To render...</Text>
-          </Box>
-          <Box sx={{ padding: "3px" }}>
-            <h1 style={{ margin: 0 }}>Heading Level 1</h1>
-            <h2 style={{ margin: 0 }}>Heading Level 2</h2>
-            <Text>...</Text>
-            <h6 style={{ margin: 0 }}>Heading Level 6</h6>
-          </Box>
-        </Stack>
-      </SimpleGrid>
+      <SamplePreview
+        markdown={"# Heading Level 1"}
+        result={<h1 style={{ margin: 0 }}>Heading Level 1</h1>}
+      />
+      <SamplePreview
+        markdown={"## Heading Level 2"}
+        result={<h2 style={{ margin: 0 }}>Heading Level 2</h2>}
+      />
+      <SamplePreview
+        markdown={"### Heading Level 3"}
+        result={<h3 style={{ margin: 0 }}>Heading Level 3</h3>}
+      />
       <Space h="xl" />
       <Title order={4}>Miscellaneous</Title>
-      <SimpleGrid
-        cols={2}
-        breakpoints={[{ maxWidth: 768, cols: 1 }]}
-        spacing={0}
-        sx={{
-          borderRadius: "5px",
-          border: `1px solid ${
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[4]
-              : theme.colors.gray[4]
-          }`,
-          marginTop: "5px",
-        }}
-      >
-        <Stack>
-          <Box
-            sx={{
-              background:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[4]
-                  : theme.colors.gray[2],
-              borderTopLeftRadius: "4px",
-              padding: "3px",
-            }}
-          >
-            <Text weight={600}>Type...</Text>
-          </Box>
-          <Box sx={{ padding: "3px" }}>
-            <Text className={classes.markdownInput}>&gt; Blockquote</Text>
-            <Space h="lg" />
-            <Text className={classes.markdownInput}>
-              Try to put a blank line before...
-            </Text>
-            <Text className={classes.markdownInput}>---</Text>
-            <Text className={classes.markdownInput}>
-              ... and after a horizontal rule.
-            </Text>
-            <Space h="lg" />
-            <Text className={classes.markdownInput}>
-              [Link Text](https://linkurl.com)
-            </Text>
-            <Space h="lg" />
-            <Text className={classes.markdownInput}>
-              {`<span style="color:pink">Colored Text!</span>`}
-            </Text>
-            <Space h="lg" />
-            <Text className={classes.markdownInput}>
-              {`<span style="text-decoration:underline">Underlined Text</span>`}
-            </Text>
-            <Text size="sm" color="dimmed">
-              (It&apos;s not markdown, but it&apos;s nice to know.)
-            </Text>
-          </Box>
-        </Stack>
-        <Stack>
-          <Box
-            sx={{
-              background:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[4]
-                  : theme.colors.gray[2],
-              padding: "3px",
-
-              ["@media (min-width: 768px)"]: {
-                borderTopRightRadius: "4px",
-              },
-            }}
-          >
-            <Text weight={600}>To render...</Text>
-          </Box>
-          <Box sx={{ padding: "3px" }}>
-            <Blockquote icon={<></>}>Blockquote</Blockquote>
-            <Space h="lg" />
-            <Box sx={{ width: "80%", margin: "auto" }}>
-              <Text>Try to put a blank line before...</Text>
-              <Divider />
-              <Text>... and after a horizontal rule.</Text>
-            </Box>
-
-            <Space h="lg" />
-            <Text
-              component={Link}
-              href="https://www.youtube.com/watch?v=dxrm5TvnOqY"
+      <SamplePreview
+        markdown={"> Blockquote"}
+        result={
+          <TypographyStylesProvider>
+            <blockquote style={{ margin: 0 }}>Blockquote</blockquote>
+          </TypographyStylesProvider>
+        }
+      />
+      <SamplePreview
+        markdown={
+          <>
+            Three dashes make...
+            <br />
+            ---
+            <br />
+            ...a dividing line.
+          </>
+        }
+        result={
+          <TypographyStylesProvider>
+            Three dashes make...
+            <hr />
+            ...a dividing line.
+          </TypographyStylesProvider>
+        }
+      />
+      <SamplePreview
+        markdown={`[Link Text](https://example.com)`}
+        result={
+          <TypographyStylesProvider>
+            <a
               target="_blank"
-              sx={{ color: theme.colors[theme.primaryColor][5] }}
+              href="https://www.youtube.com/watch?v=dxrm5TvnOqY"
+              rel="noreferrer"
             >
               Link Text
-            </Text>
-            <Space h="lg" />
-            <Text sx={{ color: "pink" }}>Colored Text!</Text>
-            <Space h="lg" />
-            <Text sx={{ textDecoration: "underline" }}>Underlined Text</Text>
-          </Box>
-        </Stack>
-      </SimpleGrid>
+            </a>
+          </TypographyStylesProvider>
+        }
+      />
+      <SamplePreview
+        markdown={`<span style="color:pink;">Isara Mao!</span>`}
+        result={<span style={{ color: "pink" }}>Isara Mao!</span>}
+      />
+      <SamplePreview
+        markdown={`<span style="text-decoration:underline">Underlined Text</span>`}
+        result={<u>Underlined Text</u>}
+      />
       <Space h="xl" />
       <Title order={4}>You can also use our custom emojis in your bio!</Title>
       <Text color="dimmed" size="sm">
@@ -332,23 +254,19 @@ function BioHelpModal({
         >
           @neeneemi
         </Link>
+        ! Check them out!
       </Text>
       <Space h="xl" />
-      <SimpleGrid
-        spacing="xs"
-        cols={5}
-        breakpoints={[{ maxWidth: 768, cols: 2 }]}
-      >
+      <ResponsiveGrid width={120}>
         {emotes.map((emote) => (
           <Stack key={emote.id} spacing="xs" align="center">
             <Emote emote={emote} size={60} />
             <Text className={classes.markdownInput} size="sm">
-              {" "}
               :{emote.name.replaceAll(" ", "").toLowerCase()}:{" "}
             </Text>
           </Stack>
         ))}
-      </SimpleGrid>
+      </ResponsiveGrid>
     </Modal>
   );
 }
