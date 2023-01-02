@@ -13,7 +13,7 @@ import {
 import { useForm } from "@mantine/form";
 import { IconChevronUp } from "@tabler/icons";
 
-import { COLLECTION_ICONS } from "components/collections/CollectionIcons";
+import { COLLECTION_ICONS } from "components/collections/collectionIcons";
 import CollectionIconsMenu from "components/collections/CollectionIconsMenu";
 import PRIVACY_LEVELS from "components/collections/privacyLevels";
 import { MAX_COLLECTION_NAME_LENGTH } from "services/makotools/collection";

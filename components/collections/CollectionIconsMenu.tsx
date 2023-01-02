@@ -1,7 +1,7 @@
 import { AspectRatio, Menu, Text } from "@mantine/core";
 import { ReactNode } from "react";
 
-import { COLLECTION_ICONS } from "./CollectionIcons";
+import { COLLECTION_ICONS } from "./collectionIcons";
 
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 
