@@ -31,7 +31,7 @@ import { GridContextProvider, GridDropZone, GridItem } from "react-grid-drag";
 import EditCollectionCard from "./EditCollectionCard";
 
 import PRIVACY_LEVELS from "components/collections/privacyLevels";
-import { COLLECTION_ICONS } from "components/collections/collectionsIcons";
+import { COLLECTION_ICONS } from "components/collections/collectionIcons";
 import { useDayjs } from "services/libraries/dayjs";
 import { CardCollection, CollectedCard } from "types/makotools";
 import { GameCard, GameUnit } from "types/game";
