@@ -108,6 +108,7 @@ function Page({
     profile__bio: profile.profile__bio,
     profile__picture: profile.profile__picture,
     profile__fave_charas: profile.profile__fave_charas,
+    profile__fave_units: profile.profile__fave_units,
     profile__show_faves: profile.profile__show_faves,
   });
   const { collapsed } = useSidebarStatus();

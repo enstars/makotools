@@ -1,10 +1,12 @@
-import { Paper, Group, Button, Text, Box } from "@mantine/core";
+import { Paper, Group, Button, Text, Box, Tooltip } from "@mantine/core";
 import { IconMenu2, IconPencil } from "@tabler/icons";
 
-import { CollectionIcons } from "components/collections/CollectionIcons";
+import { ICONS } from "./icons";
+import PRIVACY_LEVELS from "./privacyLevels";
+
 import { CardCollection } from "types/makotools";
 
-function EditCollectionFolder({
+function EditCollectionRow({
   collection,
   setFunction,
   reordering = false,
@@ -13,7 +15,8 @@ function EditCollectionFolder({
   setFunction: (c: CardCollection) => void;
   reordering?: boolean;
 }) {
-  const icon = CollectionIcons[collection.icon || 0];
+  const icon = ICONS[collection.icon || 0];
+  const privacy = PRIVACY_LEVELS[collection.privacyLevel];
   return (
     <>
       <Paper
@@ -32,6 +35,25 @@ function EditCollectionFolder({
             <Box>
               <Text size="md" weight={800}>
                 {collection.name}
+                <Tooltip
+                  label={
+                    <Text size="xs" weight={500}>
+                      {privacy.description}
+                    </Text>
+                  }
+                  position="top"
+                  withinPortal
+                >
+                  <Text
+                    inline
+                    span
+                    ml="xs"
+                    sx={{ verticalAlign: -2 }}
+                    color="dimmed"
+                  >
+                    <privacy.icon size={16} />
+                  </Text>
+                </Tooltip>
               </Text>
               <Text size="xs" weight={500} color="dimmed">
                 {collection.cards.length} cards in collection
@@ -59,4 +81,4 @@ function EditCollectionFolder({
   );
 }
 
-export default EditCollectionFolder;
+export default EditCollectionRow;

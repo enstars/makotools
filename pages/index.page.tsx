@@ -21,7 +21,6 @@ import {
   Event,
   Scout,
   GameCard,
-  RecommendedEvents,
   Campaign,
   GameUnit,
 } from "types/game";
@@ -29,7 +28,12 @@ import CurrentEventCountdown from "components/Homepage/CurrentEventCountdown";
 import CurrentScoutsCountdown from "components/Homepage/CurrentScoutsCountdown";
 import SiteAnnouncements from "components/Homepage/SiteAnnouncements";
 import UserVerification from "components/Homepage/UserVerification";
-import { MakoPost, QuerySuccess, StrapiItem } from "types/makotools";
+import {
+  MakoPost,
+  QuerySuccess,
+  StrapiItem,
+  UserLoggedIn,
+} from "types/makotools";
 import { createBirthdayData } from "services/campaigns";
 import { fetchOceans } from "services/makotools/posts";
 import RecommendedCountdown from "components/Homepage/RecommendedCountdown";
@@ -117,6 +121,64 @@ function Page({
 
   const cards: GameCard[] = useMemo(() => cardsQuery.data, [cardsQuery.data]);
 
+  interface RecommendedCampaign {
+    event: Campaign;
+    charId?: number;
+    unitId?: number;
+  }
+
+  function getRecommendedCampaigns(): RecommendedCampaign[] {
+    let faveCharas = (user as UserLoggedIn).db.profile__fave_charas;
+    let faveUnits = (user as UserLoggedIn).db.profile__fave_units;
+    let recommendedCampaigns: RecommendedCampaign[] = [];
+    events.forEach((event: Campaign) => {
+      if (event.type === "birthday") {
+        // only check favorite characters
+        if (faveCharas && faveCharas.includes(event.character_id))
+          recommendedCampaigns.push({
+            event: event,
+            charId: event.character_id,
+          });
+      } else {
+        if (event.type === "song" || event.type === "tour") {
+          // these events should check for units
+          if (
+            event.unit_id?.some((uid) => faveUnits && faveUnits.includes(uid))
+          ) {
+            recommendedCampaigns.push({
+              event: event,
+              unitId: event.unit_id.find(
+                (uid) => faveUnits && faveUnits.includes(uid)
+              ),
+            });
+          }
+        }
+        // check if the event includes a relevant character card
+        let eventCards: GameCard[] = cards.filter((card) =>
+          event.cards.includes(card.id)
+        );
+        eventCards.forEach((card: GameCard) => {
+          if (
+            faveCharas &&
+            faveCharas.includes(card.character_id) &&
+            (card.rarity === 5 || card.rarity === 4)
+          ) {
+            // only include 5* or 4* features
+            if (!recommendedCampaigns.find((c) => c.event === event)) {
+              // no duplicate events
+              recommendedCampaigns.push({
+                event: event,
+                charId: card.character_id,
+              });
+            }
+          }
+        });
+      }
+    });
+    console.log(recommendedCampaigns);
+    return recommendedCampaigns;
+  }
+
   return (
     <Group
       align="flex-start"
@@ -147,7 +209,15 @@ function Page({
               }
             />
             <CurrentScoutsCountdown scouts={scouts} />
+            {user.loggedIn && (
+              <RecommendedCountdown
+                events={getRecommendedCampaigns()}
+                characters={characters}
+                units={units}
+              />
+            )}
           </Box>
+
           <MediaQuery largerThan="md" styles={{ display: "none" }}>
             <SidePanel events={events} posts={posts} />
           </MediaQuery>

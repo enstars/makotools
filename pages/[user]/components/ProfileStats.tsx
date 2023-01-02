@@ -2,8 +2,10 @@ import {
   Group,
   ThemeIcon,
   Box,
+  Image,
   Text,
   DefaultMantineColor,
+  Stack,
 } from "@mantine/core";
 import { IconCalendar, IconHeart } from "@tabler/icons";
 import dayjs from "dayjs";
@@ -11,6 +13,7 @@ import dayjs from "dayjs";
 import Picture from "components/core/Picture";
 import { GameCharacter, GameUnit } from "types/game";
 import { UserData } from "types/makotools";
+import { getAssetURL } from "services/data";
 
 function StatContainer({
   icon,
@@ -39,47 +42,74 @@ function StatContainer({
 }
 
 function DisplayFaves({
-  favesList,
+  faveCharas,
+  faveUnits,
   characters,
   units,
 }: {
-  favesList: number[];
+  faveCharas: number[];
+  faveUnits: number[];
   characters: GameCharacter[];
   units: GameUnit[];
 }) {
-  console.log(favesList);
-  if (favesList[0] === 0) {
+  if (faveCharas[0] === 0 && faveUnits[0] === 0) {
     return <Text>Everyone &lt;3</Text>;
-  } else if (favesList[0] === -1) {
+  } else if (faveCharas[0] === -1 && faveUnits[0] === -1) {
     return <Text>I hate Ensemble Stars.</Text>;
   } else {
     return (
-      <Group>
-        {favesList.map((chara: number, index) => {
-          return (
-            <Picture
-              transparent
-              key={chara}
-              srcB2={
-                chara > 100
-                  ? `assets/unit_logo_${chara.toString().substring(2)}.png`
-                  : `assets/character_sd_square1_${chara}.png`
-              }
-              alt={
-                chara < 100
-                  ? characters.filter((c) => c.character_id === chara)[0]
-                      .first_name[0]
-                  : units.filter((u) => parseInt(`10${u.id}`) === chara)[0]
-                      .name[0]
-              }
-              fill={false}
-              width={50}
-              height={50}
-              sx={{ pointerEvents: "none" }}
-            />
-          );
-        })}
-      </Group>
+      <Stack spacing={0}>
+        <Group spacing={0}>
+          <Text size="sm" color="dimmed">
+            Char.
+          </Text>
+          {faveCharas.map((chara: number, index: number) => {
+            let opacity = faveCharas.length / (faveCharas.length * (index + 1));
+            return (
+              <Picture
+                transparent
+                key={chara}
+                srcB2={`assets/character_sd_square1_${chara}.png`}
+                alt={
+                  characters.filter((c) => c.character_id === chara)[0]
+                    .first_name[0]
+                }
+                fill={false}
+                width={50}
+                height={50}
+                sx={{
+                  pointerEvents: "none",
+                  marginLeft: index > 0 ? -20 : 0,
+                  zIndex: -index,
+                  opacity: opacity,
+                }}
+              />
+            );
+          })}
+        </Group>
+        <Group spacing={0}>
+          <Text size="sm" color="dimmed" mr={5}>
+            Units
+          </Text>
+          {faveUnits.map((unit: number, index: number) => {
+            let opacity = faveUnits.length / (faveUnits.length * (index + 1));
+            return (
+              <Image
+                key={unit}
+                src={getAssetURL(`assets/unit_logo_${unit}.png`)}
+                alt={units.filter((u) => u.id === unit)[0].name[0]}
+                width={50}
+                sx={{
+                  pointerEvents: "none",
+                  marginLeft: index > 0 ? -5 : 0,
+                  zIndex: -index,
+                  opacity: opacity,
+                }}
+              />
+            );
+          })}
+        </Group>
+      </Stack>
     );
   }
 }
@@ -105,8 +135,11 @@ function ProfileStats({
             dayjs(profile.profile__start_playing).format("MMMM YYYY")}
         </StatContainer>
       )}
-      {profile.profile__fave_charas &&
-        profile.profile__fave_charas.length > 0 && (
+      {profile.profile__show_faves &&
+        profile.profile__fave_charas &&
+        profile.profile__fave_units &&
+        (profile.profile__fave_charas.length > 0 ||
+          profile.profile__fave_units.length > 0) && (
           <StatContainer
             icon={<IconHeart size={16} />}
             iconColor={"pink"}
@@ -114,7 +147,8 @@ function ProfileStats({
           >
             {profile.profile__fave_charas && (
               <DisplayFaves
-                favesList={profile.profile__fave_charas}
+                faveCharas={profile.profile__fave_charas}
+                faveUnits={profile.profile__fave_units}
                 characters={characters}
                 units={units}
               />

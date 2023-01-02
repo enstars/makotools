@@ -21,6 +21,7 @@ import { getLocalizedDataArray } from "services/data";
 import { createBirthdayData } from "services/campaigns";
 import { GameCharacter, Event, Scout, Birthday } from "types/game";
 import { QuerySuccess } from "types/makotools";
+import useTranslation from "next-translate/useTranslation";
 
 /**
  * If the user is viewing from a mobile phone, the default view should be the list view. Otherwise, it should be the traditional calendar.
@@ -41,6 +42,7 @@ function Page({
   gameEventsQuery: QuerySuccess<Event[]>;
   scoutsQuery: QuerySuccess<Scout[]>;
 }) {
+  const { t } = useTranslation("calendar");
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
 
@@ -88,7 +90,7 @@ function Page({
               label: (
                 <Center>
                   <IconCalendar size={16} />
-                  <Text ml="xs">Monthly</Text>
+                  <Text ml="xs">{t("calendar.month")}</Text>
                 </Center>
               ),
               value: "cal",
@@ -97,7 +99,7 @@ function Page({
               label: (
                 <Center>
                   <IconList size={16} />
-                  <Text ml="xs">Daily</Text>
+                  <Text ml="xs">{t("calendar.day")}</Text>
                 </Center>
               ),
               value: "list",
@@ -124,7 +126,7 @@ function Page({
                   label: (
                     <Center>
                       <IconCalendar size={16} />
-                      <Text ml="xs">Month</Text>
+                      <Text ml="xs">{t("calendar.month")}</Text>
                     </Center>
                   ),
                   value: "cal",
@@ -133,7 +135,7 @@ function Page({
                   label: (
                     <Center>
                       <IconList size={16} />
-                      <Text ml="xs">Day</Text>
+                      <Text ml="xs">{t("calendar.day")}</Text>
                     </Center>
                   ),
                   value: "list",

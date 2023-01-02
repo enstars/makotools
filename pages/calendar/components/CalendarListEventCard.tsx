@@ -14,6 +14,7 @@ import Link from "next/link";
 import Picture from "components/core/Picture";
 import { useDayjs } from "services/libraries/dayjs";
 import { Birthday, Event, GameEventStatus, Scout } from "types/game";
+import useTranslation from "next-translate/useTranslation";
 
 // const useStyles = createStyles((theme, _params, getRef) => ({
 
@@ -35,6 +36,7 @@ function CalendarListEventCard({
   event: Birthday | Event | Scout;
   status?: GameEventStatus;
 }) {
+  const { t } = useTranslation("calendar");
   // const { classes } = useStyles();
   const { dayjs } = useDayjs();
   const [isMobile, setMobile] = useState<boolean>(true);
@@ -116,15 +118,7 @@ function CalendarListEventCard({
               </Box>
             }
           >
-            {event.type === "birthday"
-              ? "Birthday"
-              : event.type === "feature scout"
-              ? "Feature Scout"
-              : event.type === "scout"
-              ? "Scout"
-              : event.type === "song"
-              ? "Unit Song Event"
-              : "Tour Event"}
+            {t("game__campaignTypes:" + event.type)}
           </Badge>
           {status === "start" ? (
             <Badge variant="filled" color="green" px={4} pt={3}>
@@ -137,16 +131,22 @@ function CalendarListEventCard({
           ) : undefined}
         </Group>
         <Text size="md" weight={700}>
-          {event.type === "song"
-            ? event.name[0]
-            : event.type === "tour"
-            ? event.name[0]
+          {event.type === "song" || event.type === "tour"
+            ? t("eventNames.event", {
+                name: event.name[0],
+              })
             : event.type === "scout"
-            ? `SCOUT! ${event.name[0]}`
+            ? t("eventNames.scout", {
+                name: event.name[0],
+              })
             : event.type === "feature scout"
-            ? `Featured Scout: ${event.name[0]}`
+            ? t("eventNames.fs", {
+                name: event.name[0],
+              })
             : event.type === "birthday"
-            ? `${event.name}'s Birthday`
+            ? t("eventNames.birthday", {
+                name: event.name[0],
+              })
             : event.name[0]}
         </Text>
         <Text size="sm" color="dimmed" weight={500}>

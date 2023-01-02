@@ -46,6 +46,14 @@ module.exports = {
   pages: {
     "*": ["common", "sidebar", "footer"],
     "/": ["home"],
-    // "/about": ["about"],
+    "/about": ["about"],
+    "/about/*": ["about"],
+    "/about/announcements": ["about"],
+    "/about/acknowledgements": ["about__acknowledgements"],
+    "/about/guidelines": ["about__guidelines"],
+    "/about/privacy": ["about__privacy"],
+    "/about/terms": ["about__terms"],
+    "/about/translations": ["about__translations"],
+    "/calendar": ["calendar", "game__campaignTypes"],
   },
 };

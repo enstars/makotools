@@ -21,8 +21,10 @@ import Link from "next/link";
 import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import Picture from "components/core/Picture";
+import useTranslation from "next-translate/useTranslation";
 
 function Page() {
+  const { t } = useTranslation("about");
   const theme = useMantineTheme();
   const bannerBlue =
     theme.colorScheme === "dark"
@@ -96,7 +98,7 @@ function Page() {
           <Stack sx={{ height: "100%" }}>
             <Box sx={{ flexGrow: 1 }} />
             <PageTitle
-              title={<>About MakoTools</>}
+              title={t("title")}
               space={16}
               sx={{
                 overflow: "visible",
@@ -107,41 +109,33 @@ function Page() {
         </Box>
       </Box>
       <Blockquote icon={<IconBook2 />} pt={0}>
-        <Text size="xl">
-          MakoTools is a website containing information, tools, and a lot more
-          to aid you in playing Ensemble Stars!! Music English.
-        </Text>
+        <Text size="xl">{t("tagline")}</Text>
       </Blockquote>
-      {/* <Text>
-        MakoTools is a collaboration project in development since November 2021.
-      </Text> */}
 
-      <Box
-        sx={(theme) => ({
-          display: "grid",
-          // gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr));",
-          // gap: theme.spacing.xs,
-        })}
-      >
+      <Stack spacing={0}>
         {[
-          { link: "announcements", name: "Site Announcements", icon: IconNews },
+          {
+            link: "announcements",
+            name: t("linkNames.announcements"),
+            icon: IconNews,
+          },
           {
             link: "guidelines",
-            name: "Community Guidelines",
+            name: t("linkNames.guidelines"),
             icon: IconHeartHandshake,
           },
           {
             link: "translations",
-            name: "About Translations",
+            name: t("linkNames.translations"),
             icon: IconLanguageHiragana,
           },
           {
             link: "acknowledgements",
-            name: "Acknowledgements",
+            name: t("linkNames.acknowledgements"),
             icon: IconHeart,
           },
-          { link: "privacy", name: "Privacy Policy", icon: IconSpy },
-          { link: "terms", name: "Terms of Service", icon: IconGavel },
+          { link: "privacy", name: t("linkNames.privacy"), icon: IconSpy },
+          { link: "terms", name: t("linkNames.terms"), icon: IconGavel },
         ].map((l) => (
           <NavLink
             component={Link}
@@ -158,7 +152,7 @@ function Page() {
             sx={(theme) => ({ borderRadius: theme.radius.sm })}
           />
         ))}
-      </Box>
+      </Stack>
     </>
   );
 }

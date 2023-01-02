@@ -3,32 +3,26 @@ import { TypographyStylesProvider } from "@mantine/core";
 import PageTitle from "components/sections/PageTitle";
 import { getLayout } from "components/Layout";
 import { CONSTANTS } from "services/makotools/constants";
+import useTranslation from "next-translate/useTranslation";
+import Trans from "next-translate/Trans";
 
 function Page() {
+  const { t } = useTranslation("about__translations");
   return (
     <>
-      <PageTitle title="About Translations" />
+      <PageTitle title={t("title")} />
       <TypographyStylesProvider>
+        <p>{t("text.main")}</p>
+        <p>{t("text.sub")}</p>
+        <h2>{t("incorrectTls")}</h2>
         <p>
-          MakoTools contains translated content both from volunteers, and from
-          official sources.
+          <Trans
+            i18nKey="about__translations:incorrect.unofficial"
+            values={{ email: CONSTANTS.MAKOTOOLS.EMAIL }}
+            components={[<a href={`mailto:${CONSTANTS.MAKOTOOLS.EMAIL}`} />]}
+          />
         </p>
-        <p>
-          Volunteer translations (unofficial / fan translations) are not
-          approved by Happy Elements, and are not official content.
-          Additionally, these may be different from official translations used
-          in official media, or in-game.
-        </p>
-        <h2>Incorrect Translations</h2>
-        <p>
-          If you believe any of the unofficial translations on this website are
-          incorrect, feel free to contact us at{" "}
-          <a href={CONSTANTS.MAKOTOOLS.EMAIL}>{CONSTANTS.MAKOTOOLS.EMAIL}</a>.
-        </p>
-        <p>
-          We cannot provide help for incorrect official translations. In those
-          cases, we recommend you contact Happy Elements directly yourself.
-        </p>
+        <p>{t("incorrect.official")}</p>
       </TypographyStylesProvider>
     </>
   );
