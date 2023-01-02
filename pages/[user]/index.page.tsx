@@ -203,8 +203,16 @@ function Page({
         ) : null}
         <Box
           sx={{
-            position: "absolute",
-            marginTop: -60,
+            position:
+              profile.profile__banner && profile.profile__banner?.length
+                ? "absolute"
+                : "static",
+            marginTop:
+              profile.profile__banner && profile.profile__banner?.length
+                ? -60
+                : isMobile
+                ? 150
+                : 250,
           }}
         >
           <ProfileAvatar
@@ -231,7 +239,14 @@ function Page({
             }`}
           />
         </Box>
-        <Box sx={{ marginTop: 50 }}>
+        <Box
+          sx={{
+            marginTop:
+              profile.profile__banner && profile.profile__banner?.length
+                ? 50
+                : 0,
+          }}
+        >
           {isOwnProfile && user.db?.admin?.disableTextFields && (
             <Alert
               icon={<IconAlertCircle size={16} />}
