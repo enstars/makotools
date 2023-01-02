@@ -1,45 +1,59 @@
-import { Paper, Group, Button, Title } from "@mantine/core";
-import { UseListStateHandlers } from "@mantine/hooks";
-import { IconChevronRight } from "@tabler/icons";
-import { Dispatch, SetStateAction } from "react";
+import { Paper, Group, Button, Text, Box } from "@mantine/core";
+import { IconMenu2, IconPencil } from "@tabler/icons";
+
+import { ICONS } from "./icons";
 
 import { CardCollection } from "types/makotools";
 
 function EditCollectionFolder({
   collection,
-  index,
-  handlers,
   setFunction,
-  icons,
-  defaultCollection,
-  defaultFunction,
+  reordering = false,
 }: {
   collection: CardCollection;
-  index: number;
-  handlers: UseListStateHandlers<CardCollection>;
-  setFunction: Dispatch<SetStateAction<CardCollection>>;
-  icons: JSX.Element[];
-  defaultCollection: CardCollection | null;
-  defaultFunction: Dispatch<SetStateAction<CardCollection | null>>;
+  setFunction: (c: CardCollection) => void;
+  reordering?: boolean;
 }) {
+  const icon = ICONS[collection.icon || 0];
   return (
     <>
-      <Paper withBorder>
+      <Paper
+        withBorder
+        py="xs"
+        px="md"
+        sx={{
+          boxSizing: "border-box",
+        }}
+      >
         <Group position="apart">
-          {collection.name}
-          <Button
-            variant="subtle"
-            onClick={() => {
-              setFunction(collection);
-            }}
-            color="gray"
-            sx={{ "&:hover": { background: "transparent" } }}
-          >
-            <Group>
-              <Title order={4}>Edit cards</Title>
-              <IconChevronRight strokeWidth={3} />
-            </Group>
-          </Button>
+          <Group>
+            <Text color={icon.color} inline>
+              <icon.component {...icon.props} />
+            </Text>
+            <Box>
+              <Text size="md" weight={800}>
+                {collection.name}
+              </Text>
+              <Text size="xs" weight={500} color="dimmed">
+                {collection.cards.length} cards in collection
+              </Text>
+            </Box>
+          </Group>
+          {reordering ? (
+            <Text color="dimmed">
+              <IconMenu2 size={16} />
+            </Text>
+          ) : (
+            <Button
+              onClick={() => {
+                setFunction(collection);
+              }}
+              variant="default"
+              rightIcon={<IconPencil size={16} />}
+            >
+              <Text>Edit</Text>
+            </Button>
+          )}
         </Group>
       </Paper>
     </>

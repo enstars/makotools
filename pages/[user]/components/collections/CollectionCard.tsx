@@ -5,48 +5,26 @@ import {
   AspectRatio,
   Badge,
   Image,
-  Switch,
   Text,
   NumberInput,
   createStyles,
 } from "@mantine/core";
 import { UseListStateHandlers } from "@mantine/hooks";
-import { IconX } from "@tabler/icons";
+import { IconFlower, IconFlowerOff, IconTrash } from "@tabler/icons";
 import Link from "next/link";
 import { useState } from "react";
 
 import { getAssetURL } from "services/data";
 import { CardCollection, CollectedCard } from "types/makotools";
 
-const useStyles = createStyles((theme) => ({
-  switchRoot: {
-    height: "30px",
-    position: "relative",
+const useStyles = createStyles((theme, params, getRef) => ({
+  cardSwitched: {
+    [`& .${getRef("card")}`]: {
+      transform: "rotateY(180deg)",
+    },
   },
-
-  switchInput: {
-    display: "none",
-  },
-
-  switchBody: {
-    width: "100%",
-    height: "100%",
-    position: "absolute",
-    top: 0,
-  },
-
-  switchTrack: {
-    width: "100%",
-    borderRadius: `0px 0px ${theme.radius.sm}px ${theme.radius.sm}px`,
-  },
-
-  switchTrackLabel: {
-    fontSize: "9pt",
-  },
-
-  switchThumb: {
-    borderRadius: theme.radius.sm,
-    fontWeight: 400,
+  card: {
+    ref: getRef("card"),
   },
 }));
 
@@ -61,41 +39,74 @@ function EditCard({
   handlers: UseListStateHandlers<CollectedCard>;
   index: number;
 }) {
-  const { classes } = useStyles();
+  const { classes, cx } = useStyles();
   const [checked, setChecked] = useState<boolean>(card.id > 0);
 
   return (
     <Box
-      sx={{
+      sx={(theme) => ({
         position: "relative",
         width: "100%",
         height: "100%",
-        padding: 4,
+        padding: theme.spacing.xs / 2,
         "&:hover": { cursor: "grab" },
-      }}
+      })}
     >
-      <Box
-        sx={{
+      <ActionIcon
+        variant="filled"
+        color="dark"
+        radius="sm"
+        onClick={() => handlers.remove(index)}
+        size="sm"
+        sx={(theme) => ({
           position: "absolute",
-          top: 7,
-          right: 7,
+          top: theme.spacing.xs,
+          right: theme.spacing.xs,
           zIndex: 3,
-        }}
+        })}
       >
-        <ActionIcon
-          variant="filled"
-          color="dark"
-          radius="lg"
-          onClick={() => handlers.remove(index)}
+        <IconTrash size={12} />
+      </ActionIcon>
+      <ActionIcon
+        variant="filled"
+        color={card.id > 0 ? "mao_pink" : "gray"}
+        radius="sm"
+        onClick={() => {
+          const flip = card.id < 0 ? 1 : -1;
+          handlers.setItemProp(index, "id", Math.abs(card.id) * flip);
+        }}
+        size="sm"
+        sx={(theme) => ({
+          position: "absolute",
+          bottom: theme.spacing.xs,
+          right: theme.spacing.xs,
+          zIndex: 3,
+        })}
+      >
+        <Box
+          sx={(theme) => ({
+            position: "absolute",
+            transform:
+              card.id > 0 ? "scale(1) rotate(180deg)" : "scale(0) rotate(0deg)",
+            transition: theme.other.transition,
+          })}
         >
-          <IconX />
-        </ActionIcon>
-      </Box>
+          <IconFlower size={12} />
+        </Box>
+        <Box
+          sx={(theme) => ({
+            opacity: card.id > 0 ? 0 : 1,
+            transition: theme.other.transition,
+          })}
+        >
+          <IconFlowerOff size={12} />
+        </Box>
+      </ActionIcon>
       <Box
         sx={{
           width: "50%",
           position: "absolute",
-          bottom: 42,
+          bottom: 8,
           left: 8,
           zIndex: 3,
         }}
@@ -110,64 +121,68 @@ function EditCard({
           }
         />
       </Box>
-      <Paper radius="sm" withBorder sx={{ position: "relative" }}>
-        <AspectRatio ratio={4 / 5}>
-          <Box sx={{ position: "relative" }}>
-            <Image
-              alt={"card image"}
-              withPlaceholder
-              src={getAssetURL(
-                `assets/card_rectangle4_${Math.abs(card.id)}_normal.png`
-              )}
+      <Box sx={{ position: "relative" }}>
+        <AspectRatio
+          ratio={4 / 5}
+          sx={{ "& > *": { overflow: "visible !important" } }}
+          // className={cx(classes.cardSwitched)}
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              perspective: 500,
+              width: "100%",
+              height: "100%",
+            }}
+            className={card.id < 0 ? cx(classes.cardSwitched) : undefined}
+          >
+            <Box
+              className={cx(classes.card)}
               sx={{
                 position: "absolute",
-                top: 0,
-                left: card.id < 0 ? "auto" : 150,
-                borderRadius: "4px 4px 0px 0px",
-                transition: "left 0.2s linear",
-                MozTransition: "left 0.2s linear",
-              }}
-            />
-            <Image
-              alt={"card image"}
-              withPlaceholder
-              src={getAssetURL(
-                `assets/card_rectangle4_${Math.abs(card.id)}_evolution.png`
-              )}
-              sx={{
-                position: "absolute",
-                top: 0,
-                right: card.id > 0 ? "auto" : 150,
-                borderRadius: "4px 4px 0px 0px",
-                transition: "right 0.2s linear",
-                MozTransition: "right 0.2s linear",
                 img: {
                   pointerEvents: "none",
                 },
+                width: "100%",
+                height: "100%",
+                transition: "transform 0.5s",
+                transformStyle: "preserve-3d",
               }}
-            />
+            >
+              <Image
+                id="bloomed"
+                alt={"card image"}
+                withPlaceholder
+                src={getAssetURL(
+                  `assets/card_rectangle4_${Math.abs(card.id)}_evolution.png`
+                )}
+                sx={{
+                  position: "absolute",
+                  // top: 0,
+                  backfaceVisibility: "hidden",
+                  background: "transparent",
+                }}
+                radius="sm"
+              />
+              <Image
+                alt={"card image"}
+                withPlaceholder
+                src={getAssetURL(
+                  `assets/card_rectangle4_${Math.abs(card.id)}_normal.png`
+                )}
+                sx={{
+                  position: "absolute",
+                  // top: 0,
+                  transform: "rotateY(180deg)",
+                  backfaceVisibility: "hidden",
+                  background: "transparent",
+                }}
+                radius="sm"
+              />
+            </Box>
           </Box>
         </AspectRatio>
-        <Switch
-          checked={checked}
-          aria-label="Set bloomed"
-          onLabel="Bloomed"
-          offLabel="Unbloomed"
-          size="lg"
-          onChange={(event) => {
-            setChecked(event.currentTarget.checked);
-            handlers.setItemProp(index, "id", card.id * -1);
-          }}
-          classNames={{
-            root: classes.switchRoot,
-            input: classes.switchInput,
-            body: classes.switchBody,
-            track: classes.switchTrack,
-            trackLabel: classes.switchTrackLabel,
-            thumb: classes.switchThumb,
-          }}
-        />
-      </Paper>
+      </Box>
     </Box>
   );
 }
