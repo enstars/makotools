@@ -1,8 +1,7 @@
 import { Paper, Group, Button, Text, Box, Tooltip } from "@mantine/core";
 import { IconMenu2, IconPencil } from "@tabler/icons";
 
-import PRIVACY_LEVELS from "./privacyLevels";
-
+import PRIVACY_LEVELS from "components/collections/privacyLevels";
 import { COLLECTION_ICONS } from "components/collections/CollectionIcons";
 import { CardCollection } from "types/makotools";
 
