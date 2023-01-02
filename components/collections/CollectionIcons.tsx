@@ -2,7 +2,7 @@ import { IconCards, IconHeart, IconMoodCry, IconStar } from "@tabler/icons";
 
 import IconEnstars from "components/core/IconEnstars";
 
-export const CollectionIcons: {
+export const COLLECTION_ICONS: {
   id: string;
   name: string;
   component: React.FC;

@@ -12,7 +12,7 @@ import Link from "next/link";
 import CollectionCard from "./CollectionCard";
 import PRIVACY_LEVELS from "./privacyLevels";
 
-import { CollectionIcons } from "components/collections/CollectionIcons";
+import { COLLECTION_ICONS } from "components/collections/CollectionIcons";
 import { CardCollection, CollectedCard } from "types/makotools";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 
@@ -23,7 +23,7 @@ function CollectionFolder({
   collection: CardCollection;
   isYourProfile: boolean | undefined;
 }) {
-  const icon = CollectionIcons[collection.icon || 0];
+  const icon = COLLECTION_ICONS[collection.icon || 0];
   const privacy = PRIVACY_LEVELS[collection.privacyLevel];
 
   return (

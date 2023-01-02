@@ -1,16 +1,20 @@
 import {
+  ActionIcon,
   Box,
   Button,
   Group,
   Modal,
   Select,
   Stack,
+  Text,
   TextInput,
   Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { IconChevronUp } from "@tabler/icons";
 
-import CollectionIconMenu from "components/collections/CollectionIconMenu";
+import { COLLECTION_ICONS } from "components/collections/CollectionIcons";
+import CollectionIconsMenu from "components/collections/CollectionIconsMenu";
 import {
   COLLECTION_PRIVACY_LEVEL_DESCRIPTION,
   MAX_COLLECTION_NAME_LENGTH,
@@ -45,6 +49,8 @@ export default function NewCollectionModal({
     validateInputOnChange: true,
   });
 
+  const icon = COLLECTION_ICONS[form.values.icon || 0];
+
   return (
     <Modal opened={opened} onClose={onClose}>
       <form
@@ -57,7 +63,26 @@ export default function NewCollectionModal({
           <Title order={4}>Create new collection</Title>
           <Group spacing="md">
             <Box sx={{ marginTop: "26px" }}>
-              <CollectionIconMenu {...form.getInputProps("icon")} />
+              <CollectionIconsMenu
+                target={
+                  <ActionIcon
+                    sx={{
+                      display: "flex",
+                      flexFlow: "row no-wrap",
+                      alignItems: "center",
+                      width: "auto",
+                      height: "auto",
+                      minHeight: 0,
+                    }}
+                  >
+                    <Text color={icon.color}>
+                      <icon.component {...icon.props} />
+                    </Text>
+                    <IconChevronUp size={16} />
+                  </ActionIcon>
+                }
+                {...form.getInputProps("icon")}
+              />
             </Box>
             <TextInput
               label="Collection name"
