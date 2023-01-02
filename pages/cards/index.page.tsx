@@ -28,6 +28,8 @@ import fuzzysort from "fuzzysort";
 import useSWR from "swr";
 import { doc, getFirestore, setDoc } from "firebase/firestore";
 
+import AddCollectionModal from "./components/AddCollectionModal";
+
 import CardCard from "components/core/CardCard";
 import PageTitle from "components/sections/PageTitle";
 import { getLayout } from "components/Layout";
@@ -87,6 +89,8 @@ function Page({
     },
   });
   const [search, setSearch] = useState("");
+  const [addCollectionModalOpened, setAddCollectionModalOpened] =
+    useState<boolean>(false);
   const [debouncedSearch] = useDebouncedValue(search, 200);
   const { data: collections, mutate: mutateCollections } = useSWR<
     CardCollection[]
@@ -339,6 +343,7 @@ function Page({
                 collections={collections}
                 lang={cardsQuery.lang}
                 onEditCollection={onEditCollection}
+                onAddCollection={() => setAddCollectionModalOpened(true)}
               />
             ))}
           </InfiniteScroll>
@@ -348,6 +353,10 @@ function Page({
           No cards found.
         </Text>
       )}
+      <AddCollectionModal
+        opened={addCollectionModalOpened}
+        onClose={() => setAddCollectionModalOpened(false)}
+      />
     </>
   );
 }

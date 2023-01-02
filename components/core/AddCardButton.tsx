@@ -70,10 +70,17 @@ function EditCollectionRow({
   );
 }
 
-function AddCollectionRow() {
+function AddCollectionRow({ onAddCollection }: { onAddCollection: () => any }) {
   return (
     <Box sx={{ padding: "8px" }}>
-      <Button compact size="xs" onClick={() => {}}>
+      <Button
+        compact
+        size="xs"
+        onClick={(e: SyntheticEvent) => {
+          e.stopPropagation();
+          onAddCollection();
+        }}
+      >
         + Add collection
       </Button>
     </Box>
@@ -84,6 +91,7 @@ export default function AddCardButton({
   card,
   collections,
   onEditCollection,
+  onAddCollection,
 }: {
   collections: CardCollection[];
   card: GameCard;
@@ -92,6 +100,7 @@ export default function AddCardButton({
     cardId: ID;
     numCopies: number;
   }) => any;
+  onAddCollection: () => any;
 }) {
   const [collectionMenuOpened, setCollectionMenuOpened] = useState(false);
 
@@ -151,7 +160,12 @@ export default function AddCardButton({
             ))}
           </Box>
           <Divider />
-          <AddCollectionRow />
+          <AddCollectionRow
+            onAddCollection={() => {
+              setCollectionMenuOpened(false);
+              onAddCollection();
+            }}
+          />
         </Popover.Dropdown>
       </Popover>
     </Box>
