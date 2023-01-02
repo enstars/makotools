@@ -4,7 +4,6 @@ import {
   doc,
   setDoc,
   getDoc,
-  // serverTimestamp,
   collection,
   query,
   where,

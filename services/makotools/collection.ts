@@ -5,9 +5,10 @@ import { doc, getFirestore, setDoc } from "firebase/firestore";
 import { CardCollection, UserLoggedIn } from "types/makotools";
 import { ID } from "types/game";
 import { MAX_CARD_COPIES } from "services/game";
-import { generateUUID } from "services/utilities";
+import { generateUUID, getTimestamp } from "services/utilities";
 import useUser from "services/firebase/user";
 import { getFirestoreUserCollection } from "services/firebase/firestore";
+import { useDayjs } from "services/libraries/dayjs";
 
 export const MAX_COLLECTION_NAME_LENGTH = 50;
 
@@ -18,11 +19,17 @@ export const COLLECTION_PRIVACY_LEVEL_DESCRIPTION = [
   "Completely private",
 ];
 
-export function editCardInCollection(
-  collection: CardCollection,
-  id: ID,
-  count: number
-): CardCollection {
+export function editCardInCollection({
+  collection,
+  id,
+  count,
+  dateAdded,
+}: {
+  collection: CardCollection;
+  id: ID;
+  count: number;
+  dateAdded?: string;
+}): CardCollection {
   count = clamp(count, 0, MAX_CARD_COPIES);
 
   // Remove card from collection
@@ -34,7 +41,11 @@ export function editCardInCollection(
   let collectionItem = collection.cards.find((c) => c.id === id);
 
   if (!collectionItem) {
-    collection.cards.push({ id, count: count || 1 });
+    collection.cards.push({
+      id,
+      count: count || 1,
+      dateAdded,
+    });
     return collection;
   }
 
@@ -69,6 +80,7 @@ export function createNewCollectionObject({
 
 export function useCollections() {
   const user = useUser();
+  const { dayjs } = useDayjs();
 
   const {
     data: collections,
@@ -92,7 +104,13 @@ export function useCollections() {
       (collection) => collection.id === collectionId
     );
     const newCollection = { ...collectionToUpdate! };
-    editCardInCollection(newCollection, cardId, numCopies);
+    const now = getTimestamp(dayjs());
+    editCardInCollection({
+      collection: newCollection,
+      id: cardId,
+      count: numCopies,
+      dateAdded: now,
+    });
     const db = getFirestore();
     await setDoc(
       doc(
