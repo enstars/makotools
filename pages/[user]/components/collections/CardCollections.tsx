@@ -51,7 +51,6 @@ function CardCollections({
   const user = useUser();
   const {
     data: profileCollections,
-    error,
     isLoading,
     mutate,
   } = useSWR<CardCollection[]>(

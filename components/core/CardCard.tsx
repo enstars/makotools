@@ -19,9 +19,9 @@ import attributes from "data/attributes.json";
 import OfficialityBadge from "components/utilities/formatting/OfficialityBadge";
 import CardStatsNumber from "components/utilities/formatting/CardStatsNumber";
 import Picture from "components/core/Picture";
-import { Lang } from "types/makotools";
+import { CardCollection, Lang } from "types/makotools";
 import useUser from "services/firebase/user";
-import { GameCard } from "types/game";
+import { GameCard, ID } from "types/game";
 
 function RarityBadge({ card }: { card: GameCard }) {
   const theme = useMantineTheme();
@@ -66,11 +66,19 @@ function RarityBadge({ card }: { card: GameCard }) {
 export default function CardCard({
   card,
   cardOptions,
+  collections,
   lang,
+  onEditCollection,
 }: {
   card: GameCard;
   cardOptions: any;
+  collections: CardCollection[] | undefined;
   lang: Lang[];
+  onEditCollection: (params: {
+    collectionId: CardCollection["id"];
+    cardId: ID;
+    numCopies: number;
+  }) => any;
 }) {
   const router = useRouter();
   const theme = useMantineTheme();
@@ -79,8 +87,6 @@ export default function CardCard({
 
   const statsIR = sumStats(card.stats?.ir);
   const statsIR4 = sumStats(card.stats?.ir4);
-
-  const collection = (user.loggedIn && user.db?.collection) || [];
 
   return (
     <Card
@@ -161,8 +167,12 @@ export default function CardCard({
         }}
       >
         <Group spacing={0} noWrap>
-          {!user.loading && user.loggedIn && (
-            <AddCardButton collection={collection} card={card} user={user} />
+          {!user.loading && user.loggedIn && collections && (
+            <AddCardButton
+              card={card}
+              collections={collections}
+              onEditCollection={onEditCollection}
+            />
           )}
           <Group
             px="sm"

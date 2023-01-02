@@ -7,20 +7,19 @@ import {
   IconChecklist,
 } from "@tabler/icons";
 
-import { editCardInCollection } from "services/makotools/collection";
-import { CardCollection, UserLoggedIn } from "types/makotools";
+import { CardCollection } from "types/makotools";
 import { MAX_CARD_COPIES } from "services/game";
 import { GameCard, ID } from "types/game";
 
 function EditCollectionRow({
   collection,
   card,
-  onUpdate,
+  onEditCollection,
 }: {
   collection: CardCollection;
   card: GameCard;
-  onUpdate: (params: {
-    collectionId: number;
+  onEditCollection: (params: {
+    collectionId: CardCollection["id"];
     cardId: ID;
     numCopies: number;
   }) => any;
@@ -35,7 +34,6 @@ function EditCollectionRow({
           paddingRight: "20px",
           overflow: "hidden",
           textOverflow: "ellipsis",
-          maxWidth: "140px",
         }}
       >
         {collection.name}
@@ -46,7 +44,11 @@ function EditCollectionRow({
         onClick={(e: SyntheticEvent) => {
           e.stopPropagation();
           const numCopies = collectedCardData ? collectedCardData.count - 1 : 0;
-          onUpdate({ collectionId: collection.id, cardId: card.id, numCopies });
+          onEditCollection({
+            collectionId: collection.id,
+            cardId: card.id,
+            numCopies,
+          });
         }}
         disabled={!collectedCardData || collectedCardData?.count <= 0}
       >
@@ -61,7 +63,11 @@ function EditCollectionRow({
         onClick={(e: SyntheticEvent) => {
           e.stopPropagation();
           const numCopies = collectedCardData ? collectedCardData.count + 1 : 1;
-          onUpdate({ collectionId: collection.id, cardId: card.id, numCopies });
+          onEditCollection({
+            collectionId: collection.id,
+            cardId: card.id,
+            numCopies,
+          });
         }}
         disabled={
           collectedCardData && collectedCardData?.count >= MAX_CARD_COPIES
@@ -77,43 +83,30 @@ function AddCollectionRow() {
   return (
     <Box sx={{ padding: "8px" }}>
       <Button compact size="xs" onClick={() => {}}>
-        + New collection
+        + Add collection
       </Button>
     </Box>
   );
 }
 
 export default function AddCardButton({
-  collection: collections,
   card,
-  user,
+  collections,
+  onEditCollection,
 }: {
-  collection: CardCollection[];
+  collections: CardCollection[];
   card: GameCard;
-  user: UserLoggedIn;
+  onEditCollection: (params: {
+    collectionId: CardCollection["id"];
+    cardId: ID;
+    numCopies: number;
+  }) => any;
 }) {
   const [collectionMenuOpened, setCollectionMenuOpened] = useState(false);
 
   const isInACollection = collections.some((collection) =>
     collection.cards?.some((c) => c.id === card.id)
   );
-
-  const handleUpdateCollection = ({
-    collectionId,
-    cardId,
-    numCopies,
-  }: {
-    collectionId: number;
-    cardId: ID;
-    numCopies: number;
-  }) => {
-    const newCollections = [...collections];
-    const collectionToUpdate = collections.find(
-      (collection) => collection.id === collectionId
-    );
-    editCardInCollection(collectionToUpdate!, cardId, numCopies);
-    user.db.set({ collection: newCollections });
-  };
 
   return (
     <Box
@@ -154,14 +147,15 @@ export default function AddCardButton({
               alignItems: "center",
               padding: "8px",
               rowGap: "8px",
+              maxWidth: "250px",
             }}
           >
             {collections.map((collection) => (
-              <React.Fragment key={collection.name}>
+              <React.Fragment key={collection.id}>
                 <EditCollectionRow
                   collection={collection}
                   card={card}
-                  onUpdate={handleUpdateCollection}
+                  onEditCollection={onEditCollection}
                 />
               </React.Fragment>
             ))}
