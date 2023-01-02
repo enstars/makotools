@@ -54,5 +54,6 @@ module.exports = {
     "/about/privacy": ["about/privacy"],
     "/about/terms": ["about/terms"],
     "/about/translations": ["about/translations"],
+    "/calendar": ["calendar", "game/campaignTypes"],
   },
 };

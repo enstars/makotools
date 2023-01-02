@@ -11,6 +11,7 @@ import Link from "next/link";
 import Picture from "components/core/Picture";
 import { useDayjs } from "services/libraries/dayjs";
 import { Birthday, Campaign, Event, GameEventStatus, Scout } from "types/game";
+import useTranslation from "next-translate/useTranslation";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   eventCard: {
@@ -26,6 +27,7 @@ function CalendarEventCard({
   event: Campaign;
   status?: GameEventStatus;
 }) {
+  const { t } = useTranslation("calendar");
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
   return (
@@ -88,13 +90,21 @@ function CalendarEventCard({
           }
         >
           {event.type === "birthday"
-            ? event.name[0].split(" ")[0] + "'s birthday"
+            ? t("monthViewLabels.birthday", {
+                name: event.name[0].split(" ")[0],
+              })
             : event.type === "feature scout"
-            ? event.name[0].split(" ")[0] + " FS"
+            ? t("monthViewLabels.fs", {
+                name: event.name[0].split(" ")[0],
+              })
             : event.type === "scout"
-            ? "SC! " + event.name[0]
+            ? t("monthViewLabels.scout", {
+                name: event.name[0],
+              })
             : event.type === "song" || event.type === "tour"
-            ? event?.story_name[0]
+            ? t("monthViewLabels.event", {
+                name: event?.story_name[0],
+              })
             : event.name[0]}
         </Badge>
       </HoverCard.Target>
@@ -117,16 +127,22 @@ function CalendarEventCard({
           }}
         />
         <Text size="md" weight={700}>
-          {event.type === "song"
-            ? event.name[0]
-            : event.type === "tour"
-            ? event.name[0]
+          {event.type === "song" || event.type === "tour"
+            ? t("eventNames.event", {
+                name: event.name[0],
+              })
             : event.type === "scout"
-            ? `SCOUT! ${event.name[0]}`
+            ? t("eventNames.scout", {
+                name: event.name[0],
+              })
             : event.type === "feature scout"
-            ? `Featured Scout: ${event.name[0]}`
+            ? t("eventNames.fs", {
+                name: event.name[0],
+              })
             : event.type === "birthday"
-            ? `${event.name[0]}'s Birthday`
+            ? t("eventNames.birthday", {
+                name: event.name[0],
+              })
             : event.name[0]}
         </Text>
         <Text size="sm" color="dimmed" weight={500}>
