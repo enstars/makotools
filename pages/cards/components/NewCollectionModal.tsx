@@ -15,10 +15,8 @@ import { IconChevronUp } from "@tabler/icons";
 
 import { COLLECTION_ICONS } from "components/collections/CollectionIcons";
 import CollectionIconsMenu from "components/collections/CollectionIconsMenu";
-import {
-  COLLECTION_PRIVACY_LEVEL_DESCRIPTION,
-  MAX_COLLECTION_NAME_LENGTH,
-} from "services/makotools/collection";
+import PRIVACY_LEVELS from "components/collections/privacyLevels";
+import { MAX_COLLECTION_NAME_LENGTH } from "services/makotools/collection";
 import { CardCollection, CollectionPrivacyLevel } from "types/makotools";
 
 export default function NewCollectionModal({
@@ -94,9 +92,9 @@ export default function NewCollectionModal({
           <Select
             label="Privacy level"
             aria-label="Privacy level"
-            data={[0, 1, 2, 3].map((level) => ({
-              value: level,
-              label: COLLECTION_PRIVACY_LEVEL_DESCRIPTION[level],
+            data={PRIVACY_LEVELS.map((level) => ({
+              value: level.value,
+              label: level.description,
             }))}
             {...form.getInputProps("privacyLevel")}
           />

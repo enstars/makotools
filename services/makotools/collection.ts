@@ -12,13 +12,6 @@ import { useDayjs } from "services/libraries/dayjs";
 
 export const MAX_COLLECTION_NAME_LENGTH = 50;
 
-export const COLLECTION_PRIVACY_LEVEL_DESCRIPTION = [
-  "Public to everyone",
-  "Visible to logged in users",
-  "Visible only to friends",
-  "Completely private",
-];
-
 export function editCardInCollection({
   collection,
   id,
