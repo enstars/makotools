@@ -11,9 +11,11 @@ import {
 import { IconPlaylistAdd, IconChecklist, IconPlus } from "@tabler/icons";
 import { inRange, isNil, sortBy } from "lodash";
 
-import { CardCollection } from "types/makotools";
+import { CardCollection, UserLoggedIn } from "types/makotools";
 import { MAX_CARD_COPIES } from "services/game";
 import { GameCard, ID } from "types/game";
+import { CONSTANTS } from "services/makotools/constants";
+import useUser from "services/firebase/user";
 
 function EditCollectionRow({
   collection,
@@ -92,7 +94,19 @@ function EditCollectionRow({
   );
 }
 
-function NewCollectionRow({ onNewCollection }: { onNewCollection: () => any }) {
+function NewCollectionRow({
+  collections,
+  onNewCollection,
+}: {
+  collections: CardCollection[];
+  onNewCollection: () => any;
+}) {
+  const user = useUser();
+  const disabled =
+    collections.length >=
+    CONSTANTS.PATREON.TIERS[(user as UserLoggedIn).db.admin?.patreon || 0]
+      .COLLECTIONS;
+
   return (
     <Box sx={{ padding: "8px" }}>
       <Button
@@ -102,9 +116,15 @@ function NewCollectionRow({ onNewCollection }: { onNewCollection: () => any }) {
           e.stopPropagation();
           onNewCollection();
         }}
+        disabled={disabled}
       >
         + New collection
       </Button>
+      {disabled && (
+        <Text size="xs" color="dimmed" sx={{ marginTop: "8px" }}>
+          You have the maximum number of collections for your Patreon tier.
+        </Text>
+      )}
     </Box>
   );
 }
@@ -147,6 +167,7 @@ export default function AddCardButton({
         styles={{ dropdown: { padding: 0 } }}
         position="right"
         withinPortal
+        width={250}
       >
         <Popover.Target>
           <ActionIcon
@@ -168,7 +189,6 @@ export default function AddCardButton({
               alignItems: "center",
               padding: "8px",
               rowGap: "8px",
-              maxWidth: "250px",
               // Show at most 5 collections before scrolling
               maxHeight: `${36 * 5 + 8 * 6}px`,
               overflow: "auto",
@@ -186,6 +206,7 @@ export default function AddCardButton({
           </Box>
           <Divider />
           <NewCollectionRow
+            collections={collections}
             onNewCollection={() => {
               setCollectionMenuOpened(false);
               onNewCollection();
