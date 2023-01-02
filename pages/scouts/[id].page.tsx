@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Divider } from "@mantine/core";
 import { IconBook, IconCards, IconMedal } from "@tabler/icons";
 
@@ -17,6 +17,8 @@ import PointsTable from "pages/events/components/PointsTable";
 import Stories from "pages/events/components/Stories";
 import SectionTitle from "pages/events/components/SectionTitle";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
+import { useCollections } from "services/makotools/collection";
+import NewCollectionModal from "pages/cards/components/NewCollectionModal";
 
 function Page({
   scout,
@@ -31,6 +33,9 @@ function Page({
 }) {
   let characters = useMemo(() => charactersQuery.data, [charactersQuery.data]);
   let cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
+  const { collections, onEditCollection, onNewCollection } = useCollections();
+  const [newCollectionModalOpened, setNewCollectionModalOpened] =
+    useState<boolean>(false);
 
   cards = cards.filter((card) => scout.cards?.includes(card.id));
 
@@ -39,24 +44,6 @@ function Page({
       .map((card) => card.character_id)
       .includes(character.character_id);
   });
-
-  let contentItems = [
-    {
-      id: "#cards",
-      name: "Cards",
-      icon: <IconCards size={16} strokeWidth={3} />,
-    },
-    {
-      id: "#story",
-      name: "Story",
-      icon: <IconBook size={16} strokeWidth={3} />,
-    },
-    {
-      id: "#event",
-      name: "Event",
-      icon: <IconMedal size={16} strokeWidth={3} />,
-    },
-  ];
 
   return (
     <>
@@ -69,9 +56,12 @@ function Page({
         {cards.map((card: GameCard) => (
           <CardCard
             key={card.id}
-            cardOptions={{ showFullInfo: true }}
             card={card}
+            cardOptions={{ showFullInfo: true }}
+            collections={collections}
             lang={cardsQuery.lang}
+            onEditCollection={onEditCollection}
+            onNewCollection={() => setNewCollectionModalOpened(true)}
           />
         ))}
       </ResponsiveGrid>
@@ -103,6 +93,13 @@ function Page({
           )}
         </>
       )}
+      <NewCollectionModal
+        // use key to reset internal form state on close
+        key={JSON.stringify(newCollectionModalOpened)}
+        opened={newCollectionModalOpened}
+        onClose={() => setNewCollectionModalOpened(false)}
+        onNewCollection={onNewCollection}
+      />
     </>
   );
 }
