@@ -5,7 +5,7 @@ import PageTitle from "components/sections/PageTitle";
 import useTranslation from "next-translate/useTranslation";
 import Trans from "next-translate/Trans";
 function Page() {
-  const { t } = useTranslation("acknowledgements");
+  const { t } = useTranslation("about__acknowledgements");
   return (
     <>
       <PageTitle title={t("title")} />
@@ -13,7 +13,7 @@ function Page() {
         <p>{t("text.main")}</p>
         <p>
           <Trans
-            i18nKey="acknowledgements:text.development"
+            i18nKey="about__acknowledgements:text.development"
             components={[
               <Anchor
                 inherit
@@ -25,7 +25,7 @@ function Page() {
         </p>
         <p>
           <Trans
-            i18nKey="acknowledgements:text.accounts"
+            i18nKey="about__acknowledgements:text.accounts"
             components={[
               "https://ensemble-stars.fandom.com/",
               "https://twitter.com/enstarsENG",

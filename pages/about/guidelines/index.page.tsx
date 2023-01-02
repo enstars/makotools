@@ -8,13 +8,13 @@ import Trans from "next-translate/Trans";
 
 function Page() {
   console.log(JSON.stringify(HTMLContent));
-  const { t } = useTranslation("about/guidelines");
+  const { t } = useTranslation("about__guidelines");
   return (
     <>
       <PageTitle title={t("title")} />
       <TypographyStylesProvider>
         <Trans
-          i18nKey="about/guidelines:guidelines.html"
+          i18nKey="about__guidelines:guidelines.html"
           components={[
             <blockquote />,
             <p />,

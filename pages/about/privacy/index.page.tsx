@@ -7,13 +7,13 @@ import useTranslation from "next-translate/useTranslation";
 import Trans from "next-translate/Trans";
 
 function Page() {
-  const { t } = useTranslation("about/privacy");
+  const { t } = useTranslation("about__privacy");
   return (
     <>
       <PageTitle title={t("title")} />
       <TypographyStylesProvider>
         <Trans
-          i18nKey="about/privacy:privacy.html"
+          i18nKey="about__privacy:privacy.html"
           components={[<p />, <h2 />, <ul />, <li />]}
         />
       </TypographyStylesProvider>

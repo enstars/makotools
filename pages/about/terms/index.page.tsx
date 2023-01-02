@@ -6,7 +6,7 @@ import { getLayout } from "components/Layout";
 import useTranslation from "next-translate/useTranslation";
 
 function Page() {
-  const { t } = useTranslation("about/terms");
+  const { t } = useTranslation("about__terms");
   return (
     <>
       <PageTitle title={t("title")} />

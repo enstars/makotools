@@ -118,7 +118,7 @@ function CalendarListEventCard({
               </Box>
             }
           >
-            {t("game/campaignTypes:" + event.type)}
+            {t("game__campaignTypes:" + event.type)}
           </Badge>
           {status === "start" ? (
             <Badge variant="filled" color="green" px={4} pt={3}>

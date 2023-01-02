@@ -7,7 +7,7 @@ import useTranslation from "next-translate/useTranslation";
 import Trans from "next-translate/Trans";
 
 function Page() {
-  const { t } = useTranslation("about/translations");
+  const { t } = useTranslation("about__translations");
   return (
     <>
       <PageTitle title={t("title")} />
@@ -17,7 +17,7 @@ function Page() {
         <h2>{t("incorrectTls")}</h2>
         <p>
           <Trans
-            i18nKey="about/translations:incorrect.unofficial"
+            i18nKey="about__translations:incorrect.unofficial"
             values={{ email: CONSTANTS.MAKOTOOLS.EMAIL }}
             components={[<a href={`mailto:${CONSTANTS.MAKOTOOLS.EMAIL}`} />]}
           />
