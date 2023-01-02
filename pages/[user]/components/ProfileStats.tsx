@@ -58,9 +58,13 @@ function DisplayFaves({
     return <Text>I hate Ensemble Stars.</Text>;
   } else {
     return (
-      <Stack>
+      <Stack spacing={0}>
         <Group spacing={0}>
-          {faveCharas.map((chara: number) => {
+          <Text size="sm" color="dimmed">
+            Char.
+          </Text>
+          {faveCharas.map((chara: number, index: number) => {
+            let opacity = faveCharas.length / (faveCharas.length * (index + 1));
             return (
               <Picture
                 transparent
@@ -73,20 +77,34 @@ function DisplayFaves({
                 fill={false}
                 width={50}
                 height={50}
-                sx={{ pointerEvents: "none" }}
+                sx={{
+                  pointerEvents: "none",
+                  marginLeft: index > 0 ? -20 : 0,
+                  zIndex: -index,
+                  opacity: opacity,
+                }}
               />
             );
           })}
         </Group>
-        <Group>
-          {faveUnits.map((unit: number) => {
+        <Group spacing={0}>
+          <Text size="sm" color="dimmed" mr={5}>
+            Units
+          </Text>
+          {faveUnits.map((unit: number, index: number) => {
+            let opacity = faveUnits.length / (faveUnits.length * (index + 1));
             return (
               <Image
                 key={unit}
                 src={getAssetURL(`assets/unit_logo_${unit}.png`)}
                 alt={units.filter((u) => u.id === unit)[0].name[0]}
                 width={50}
-                sx={{ pointerEvents: "none" }}
+                sx={{
+                  pointerEvents: "none",
+                  marginLeft: index > 0 ? -5 : 0,
+                  zIndex: -index,
+                  opacity: opacity,
+                }}
               />
             );
           })}
