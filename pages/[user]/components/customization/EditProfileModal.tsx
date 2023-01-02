@@ -9,6 +9,7 @@ import {
   ActionIcon,
   useMantineTheme,
   Accordion,
+  Divider,
 } from "@mantine/core";
 import dynamic from "next/dynamic";
 import { Dispatch, SetStateAction } from "react";
@@ -17,7 +18,7 @@ import { IconPencil } from "@tabler/icons";
 import MaoBanned from "../../assets/MaoBanned.png";
 import StartPlaying from "../StartPlaying";
 import ProfileAvatar from "../profilePicture/ProfileAvatar";
-import FavoriteCharacters from "../FavoriteCharacters";
+import Favorites from "../Favorites";
 
 import Pronouns from "./Pronouns";
 import Name from "./Name";
@@ -107,6 +108,7 @@ function EditProfileModal({
                   profile__bio: profileState.profile__bio,
                   profile__picture: profileState.profile__picture,
                   profile__fave_charas: profileState.profile__fave_charas,
+                  profile__fave_units: profileState.profile__fave_units,
                   profile__show_faves: profileState.profile__show_faves,
                 });
               }
@@ -184,7 +186,7 @@ function EditProfileModal({
                   />
                 </Box>
               </Box>
-              <Stack sx={{ flex: "1 0 25%" }}>
+              <Stack sx={{ flex: "1 0 65%" }}>
                 <Name
                   externalSetter={setProfileState}
                   profileState={profileState}
@@ -199,7 +201,8 @@ function EditProfileModal({
               externalSetter={setProfileState}
               profileState={profileState}
             />
-            <FavoriteCharacters
+            <Divider mt={15} />
+            <Favorites
               characters={characters}
               units={units}
               profile={profile}
