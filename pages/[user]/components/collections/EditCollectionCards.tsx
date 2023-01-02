@@ -167,24 +167,12 @@ function EditCollectionCards({
               <Stack>
                 <Text>Set Privacy Level</Text>
                 <Select
-                  data={[
-                    {
-                      value: "0",
-                      label: COLLECTION_PRIVACY_LEVEL_DESCRIPTION[0],
-                    },
-                    {
-                      value: "1",
-                      label: COLLECTION_PRIVACY_LEVEL_DESCRIPTION[1],
-                    },
-                    {
-                      value: "2",
-                      label: COLLECTION_PRIVACY_LEVEL_DESCRIPTION[2],
-                    },
-                    {
-                      value: "3",
-                      label: COLLECTION_PRIVACY_LEVEL_DESCRIPTION[3],
-                    },
-                  ]}
+                  data={[0, 1, 2, 3].map((level) => ({
+                    value: JSON.stringify(level),
+                    label: COLLECTION_PRIVACY_LEVEL_DESCRIPTION[
+                      level
+                    ] as string,
+                  }))}
                   defaultValue={`${collection.privacyLevel}`}
                   onChange={(value) => {
                     handlers.setItemProp(

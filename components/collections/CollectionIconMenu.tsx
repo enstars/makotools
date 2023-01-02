@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Menu, Text } from "@mantine/core";
+import { ActionIcon, Menu, Text } from "@mantine/core";
 import { IconChevronUp } from "@tabler/icons";
 
 import { CollectionIcons } from "./CollectionIcons";
@@ -17,13 +17,20 @@ export default function CollectionIconMenu({
   return (
     <Menu position="top">
       <Menu.Target>
-        <ActionIcon>
-          <Box sx={{ display: "flex", flexFlow: "row no-wrap" }}>
-            <Text color={currentIcon.color}>
-              <currentIcon.component {...currentIcon.props} />
-            </Text>
-            <IconChevronUp size={20} />
-          </Box>
+        <ActionIcon
+          sx={{
+            display: "flex",
+            flexFlow: "row no-wrap",
+            alignItems: "center",
+            width: "auto",
+            height: "auto",
+            minHeight: 0,
+          }}
+        >
+          <Text color={currentIcon.color}>
+            <currentIcon.component {...currentIcon.props} />
+          </Text>
+          <IconChevronUp size={20} />
         </ActionIcon>
       </Menu.Target>
       <Menu.Dropdown sx={{ width: "auto", maxWidth: "260px" }}>

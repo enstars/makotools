@@ -7,12 +7,12 @@ import { generateUUID } from "services/utilities";
 
 export const MAX_COLLECTION_NAME_LENGTH = 50;
 
-export const COLLECTION_PRIVACY_LEVEL_DESCRIPTION = {
-  "0": "Public to everyone",
-  "1": "Visible to logged in users",
-  "2": "Visible only to friends",
-  "3": "Completely private",
-};
+export const COLLECTION_PRIVACY_LEVEL_DESCRIPTION = [
+  "Public to everyone",
+  "Visible to logged in users",
+  "Visible only to friends",
+  "Completely private",
+];
 
 export function editCardInCollection(
   collection: CardCollection,
