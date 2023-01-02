@@ -121,12 +121,18 @@ function CalendarListEventCard({
             {t("game__campaignTypes:" + event.type)}
           </Badge>
           {status === "start" ? (
-            <Badge variant="filled" color="green" px={4} pt={3}>
-              <IconPlayerPlay size={12} strokeWidth={3} />
+            <Badge variant="outline" color="green" pl={4} pr={6} py={5}>
+              <Group spacing={2} position="left">
+                <IconPlayerPlay size={12} strokeWidth={3} />
+                <Text>{status}</Text>
+              </Group>
             </Badge>
           ) : status === "end" ? (
-            <Badge variant="filled" color="red" px={4} pt={3}>
-              <IconExclamationMark size={12} strokeWidth={3} />
+            <Badge variant="outline" color="red" pl={4} pr={6} py={5}>
+              <Group spacing={0}>
+                <IconExclamationMark size={12} strokeWidth={3} />
+                <Text>{status}</Text>
+              </Group>
             </Badge>
           ) : undefined}
         </Group>
