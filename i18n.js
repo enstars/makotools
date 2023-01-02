@@ -46,6 +46,13 @@ module.exports = {
   pages: {
     "*": ["common", "sidebar", "footer"],
     "/": ["home"],
-    // "/about": ["about"],
+    "/about": ["about"],
+    "/about/*": ["about"],
+    "/about/announcements": ["about"],
+    "/about/acknowledgements": ["about/acknowledgements"],
+    "/about/guidelines": ["about/guidelines"],
+    "/about/privacy": ["about/privacy"],
+    "/about/terms": ["about/terms"],
+    "/about/translations": ["about/translations"],
   },
 };
