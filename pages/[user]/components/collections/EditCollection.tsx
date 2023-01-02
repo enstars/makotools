@@ -10,7 +10,6 @@ import {
   Text,
   TextInput,
   Tooltip,
-  useMantineTheme,
 } from "@mantine/core";
 import {
   useDisclosure,
@@ -55,13 +54,10 @@ function EditCollection({
   setFunction: () => void;
   width: number;
 }) {
-  const theme = useMantineTheme();
-
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
   const [sort, setSort] = useState<string>("");
   const [privacyModalOpened, privacyModalHandlers] = useDisclosure(false);
   const { dayjs } = useDayjs();
-  const [asc, setAsc] = useState<boolean>(true);
   const [cards, cardHandlers] = useListState<CollectedCard>(
     collection.cards || []
   );
@@ -75,7 +71,6 @@ function EditCollection({
   const height = Math.ceil(cards.length / NUM_COLS) * ROW_HEIGHT;
 
   const icon = COLLECTION_ICONS[collection.icon || 0];
-  const privacy = PRIVACY_LEVELS[collection.privacyLevel];
   const sortBy = (value: string) => {
     setSort(value);
     let sorted: CollectedCard[] = [];

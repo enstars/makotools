@@ -11,7 +11,7 @@ import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCard, GameCharacter, Event, Scout } from "types/game";
 import { QuerySuccess } from "types/makotools";
 import { getLayout } from "components/Layout";
-import CardCard from "components/core/CardCard";
+import { CardCard } from "components/core/CardCard";
 import ESPageHeader from "pages/events/components/ESPageHeader";
 import PointsTable from "pages/events/components/PointsTable";
 import Stories from "pages/events/components/Stories";

@@ -28,7 +28,7 @@ import fuzzysort from "fuzzysort";
 
 import NewCollectionModal from "./components/NewCollectionModal";
 
-import CardCard from "components/core/CardCard";
+import { CardCard } from "components/core/CardCard";
 import PageTitle from "components/sections/PageTitle";
 import { getLayout } from "components/Layout";
 import { QuerySuccess } from "types/makotools";

@@ -22,7 +22,7 @@ import {
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCard, Event, GameUnit, Scout } from "types/game";
 import { QuerySuccess } from "types/makotools";
-import CardCard from "components/core/CardCard";
+import { CardCard } from "components/core/CardCard";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 import { useCollections } from "services/makotools/collection";
 import NewCollectionModal from "pages/cards/components/NewCollectionModal";
