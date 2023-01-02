@@ -41,6 +41,7 @@ import {
   CollectionPrivacyLevel,
 } from "types/makotools";
 import { GameCard, GameUnit } from "types/game";
+import { MAX_COLLECTION_NAME_LENGTH } from "services/makotools/collection";
 
 function EditCollectionCards({
   collection,
@@ -161,9 +162,13 @@ function EditCollectionCards({
           onFocus={(event) => setFocused(event.target.id)}
           onBlur={(event) => setFocused("")}
           defaultValue={collection.name}
-          onChange={(event) =>
-            handlers.setItemProp(index, "name", event.currentTarget.value)
-          }
+          onChange={(event) => {
+            const newName = event.currentTarget.value.substring(
+              0,
+              MAX_COLLECTION_NAME_LENGTH
+            );
+            handlers.setItemProp(index, "name", newName);
+          }}
           styles={{
             input: {
               fontFamily: theme.headings.fontFamily,

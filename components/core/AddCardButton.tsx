@@ -37,7 +37,7 @@ function EditCollectionRow({
         sx={{
           paddingRight: "20px",
           overflow: "hidden",
-          textOverflow: "ellipsis",
+          wordWrap: "break-word",
         }}
       >
         {collection.name}

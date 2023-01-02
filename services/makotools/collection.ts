@@ -4,7 +4,9 @@ import { CardCollection } from "types/makotools";
 import { ID } from "types/game";
 import { MAX_CARD_COPIES } from "services/game";
 
-function editCardInCollection(
+export const MAX_COLLECTION_NAME_LENGTH = 50;
+
+export function editCardInCollection(
   collection: CardCollection,
   id: ID,
   count: number
@@ -32,5 +34,3 @@ function editCardInCollection(
   collection.cards[i] = collectionItem;
   return collection;
 }
-
-export { editCardInCollection };
