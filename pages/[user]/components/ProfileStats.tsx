@@ -60,11 +60,7 @@ function DisplayFaves({
     return (
       <Stack spacing={0}>
         <Group spacing={0}>
-          <Text size="sm" color="dimmed">
-            Char.
-          </Text>
           {faveCharas.map((chara: number, index: number) => {
-            let opacity = faveCharas.length / (faveCharas.length * (index + 1));
             return (
               <Picture
                 transparent
@@ -79,20 +75,13 @@ function DisplayFaves({
                 height={50}
                 sx={{
                   pointerEvents: "none",
-                  marginLeft: index > 0 ? -20 : 0,
-                  zIndex: -index,
-                  opacity: opacity,
                 }}
               />
             );
           })}
         </Group>
         <Group spacing={0}>
-          <Text size="sm" color="dimmed" mr={5}>
-            Units
-          </Text>
           {faveUnits.map((unit: number, index: number) => {
-            let opacity = faveUnits.length / (faveUnits.length * (index + 1));
             return (
               <Image
                 key={unit}
@@ -101,9 +90,6 @@ function DisplayFaves({
                 width={50}
                 sx={{
                   pointerEvents: "none",
-                  marginLeft: index > 0 ? -5 : 0,
-                  zIndex: -index,
-                  opacity: opacity,
                 }}
               />
             );
