@@ -376,7 +376,7 @@ export const getServerSideProps = getServerSideUser(
       "units",
       locale,
       "id",
-      ["id", "name", "order"]
+      ["id", "name", "order", "image_color"]
     );
     if (cards.status === "error" || charactersQuery.status === "error")
       return { props: { cards: undefined } };

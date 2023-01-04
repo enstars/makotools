@@ -2,10 +2,10 @@ import {
   Group,
   ThemeIcon,
   Box,
-  Image,
   Text,
   DefaultMantineColor,
   Stack,
+  Tooltip,
 } from "@mantine/core";
 import { IconCalendar, IconHeart } from "@tabler/icons";
 import dayjs from "dayjs";
@@ -13,7 +13,8 @@ import dayjs from "dayjs";
 import Picture from "components/core/Picture";
 import { GameCharacter, GameUnit } from "types/game";
 import { UserData } from "types/makotools";
-import { getAssetURL } from "services/data";
+import IconEnstars from "components/core/IconEnstars";
+import { getNameOrder } from "services/game";
 
 function StatContainer({
   icon,
@@ -46,11 +47,13 @@ function DisplayFaves({
   faveUnits,
   characters,
   units,
+  profile,
 }: {
   faveCharas: number[];
   faveUnits: number[];
   characters: GameCharacter[];
   units: GameUnit[];
+  profile: UserData;
 }) {
   if (faveCharas[0] === 0 && faveUnits[0] === 0) {
     return <Text>Everyone &lt;3</Text>;
@@ -58,40 +61,73 @@ function DisplayFaves({
     return <Text>I hate Ensemble Stars.</Text>;
   } else {
     return (
-      <Stack spacing={0}>
+      <Stack spacing={2}>
         <Group spacing={0}>
           {faveCharas.map((chara: number, index: number) => {
             return (
-              <Picture
-                transparent
+              <Tooltip
                 key={chara}
-                srcB2={`assets/character_sd_square1_${chara}.png`}
-                alt={
-                  characters.filter((c) => c.character_id === chara)[0]
-                    .first_name[0]
-                }
-                fill={false}
-                width={50}
-                height={50}
-                sx={{
-                  pointerEvents: "none",
-                }}
-              />
+                label={getNameOrder(
+                  {
+                    first_name: characters.filter(
+                      (c) => c.character_id === chara
+                    )[0].first_name[0],
+                    last_name: characters.filter(
+                      (c) => c.character_id === chara
+                    )[0].last_name[0],
+                  },
+                  profile.setting__name_order
+                )}
+              >
+                <ThemeIcon
+                  variant="light"
+                  color={
+                    characters.filter((c) => c.character_id === chara)[0]
+                      .image_color
+                  }
+                  size={50}
+                  radius={25}
+                >
+                  <Picture
+                    transparent
+                    srcB2={`assets/character_sd_square1_${chara}.png`}
+                    alt={
+                      characters.filter((c) => c.character_id === chara)[0]
+                        .first_name[0]
+                    }
+                    fill={false}
+                    width={50}
+                    height={50}
+                    sx={{
+                      pointerEvents: "none",
+                    }}
+                  />
+                </ThemeIcon>
+              </Tooltip>
             );
           })}
         </Group>
-        <Group spacing={0}>
+        <Group spacing={3}>
           {faveUnits.map((unit: number, index: number) => {
             return (
-              <Image
+              <Tooltip
                 key={unit}
-                src={getAssetURL(`assets/unit_logo_${unit}.png`)}
-                alt={units.filter((u) => u.id === unit)[0].name[0]}
-                width={50}
-                sx={{
-                  pointerEvents: "none",
-                }}
-              />
+                label={units.filter((u) => u.id === unit)[0].name[0]}
+                position="bottom"
+              >
+                <ThemeIcon
+                  variant="light"
+                  color={units.filter((u) => u.id === unit)[0].image_color}
+                  size={50}
+                  radius={25}
+                >
+                  <IconEnstars
+                    unit={unit}
+                    size={30}
+                    color={units.filter((u) => u.id === unit)[0].image_color}
+                  />
+                </ThemeIcon>
+              </Tooltip>
             );
           })}
         </Group>
@@ -137,6 +173,7 @@ function ProfileStats({
                 faveUnits={profile.profile__fave_units}
                 characters={characters}
                 units={units}
+                profile={profile}
               />
             )}
           </StatContainer>
