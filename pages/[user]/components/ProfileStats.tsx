@@ -79,6 +79,10 @@ function DisplayFaves({
                   },
                   profile.setting__name_order
                 )}
+                transition="slide-up"
+                transitionDuration={500}
+                offset={0}
+                p={3}
               >
                 <ThemeIcon
                   variant="light"
@@ -124,6 +128,10 @@ function DisplayFaves({
                 key={unit}
                 label={units.filter((u) => u.id === unit)[0].name[0]}
                 position="bottom"
+                transition="slide-down"
+                transitionDuration={500}
+                offset={0}
+                p={3}
               >
                 <Box
                   p={5}
@@ -143,7 +151,7 @@ function DisplayFaves({
                   <Image
                     src={getAssetURL(`assets/unit_logo_${unit}.png`)}
                     alt={units.filter((u) => u.id === unit)[0].name[0]}
-                    height={30}
+                    height={25}
                     width="auto"
                   />
                 </Box>
