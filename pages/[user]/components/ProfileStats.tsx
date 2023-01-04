@@ -6,6 +6,7 @@ import {
   DefaultMantineColor,
   Stack,
   Tooltip,
+  Image,
 } from "@mantine/core";
 import { IconCalendar, IconHeart } from "@tabler/icons";
 import dayjs from "dayjs";
@@ -13,8 +14,8 @@ import dayjs from "dayjs";
 import Picture from "components/core/Picture";
 import { GameCharacter, GameUnit } from "types/game";
 import { UserData } from "types/makotools";
-import IconEnstars from "components/core/IconEnstars";
 import { getNameOrder } from "services/game";
+import { getAssetURL } from "services/data";
 
 function StatContainer({
   icon,
@@ -62,7 +63,7 @@ function DisplayFaves({
   } else {
     return (
       <Stack spacing={2}>
-        <Group spacing={0}>
+        <Group spacing={3}>
           {faveCharas.map((chara: number, index: number) => {
             return (
               <Tooltip
@@ -87,6 +88,15 @@ function DisplayFaves({
                   }
                   size={50}
                   radius={25}
+                  sx={{
+                    transition: "background 0.5s",
+                    ["&:hover"]: {
+                      background: `${
+                        characters.filter((c) => c.character_id === chara)[0]
+                          .image_color
+                      }ee`,
+                    },
+                  }}
                 >
                   <Picture
                     transparent
@@ -115,18 +125,28 @@ function DisplayFaves({
                 label={units.filter((u) => u.id === unit)[0].name[0]}
                 position="bottom"
               >
-                <ThemeIcon
-                  variant="light"
-                  color={units.filter((u) => u.id === unit)[0].image_color}
-                  size={50}
-                  radius={25}
+                <Box
+                  p={5}
+                  sx={{
+                    background: `${
+                      units.filter((u) => u.id === unit)[0].image_color
+                    }33`,
+                    borderRadius: 10,
+                    transition: "background 0.5s",
+                    ["&:hover"]: {
+                      background: `${
+                        units.filter((u) => u.id === unit)[0].image_color
+                      }ee`,
+                    },
+                  }}
                 >
-                  <IconEnstars
-                    unit={unit}
-                    size={30}
-                    color={units.filter((u) => u.id === unit)[0].image_color}
+                  <Image
+                    src={getAssetURL(`assets/unit_logo_${unit}.png`)}
+                    alt={units.filter((u) => u.id === unit)[0].name[0]}
+                    height={30}
+                    width="auto"
                   />
-                </ThemeIcon>
+                </Box>
               </Tooltip>
             );
           })}
