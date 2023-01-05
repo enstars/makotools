@@ -29,7 +29,12 @@ function StatContainer({
   children: any;
 }) {
   return (
-    <Group mt="xs" noWrap align="flex-start">
+    <Group
+      mt="xs"
+      noWrap
+      align="flex-start"
+      sx={{ flexBasis: "30%", flexGrow: title === "Favorites" ? 1 : 0 }}
+    >
       <ThemeIcon variant="light" color={iconColor} sx={{ flexShrink: 0 }}>
         {icon}
       </ThemeIcon>
@@ -49,6 +54,7 @@ function DisplayFaves({
   characters,
   units,
   profile,
+  ...props
 }: {
   faveCharas: number[];
   faveUnits: number[];
@@ -85,22 +91,10 @@ function DisplayFaves({
                 p={3}
               >
                 <ThemeIcon
-                  variant="light"
-                  color={
-                    characters.filter((c) => c.character_id === chara)[0]
-                      .image_color
-                  }
+                  variant="default"
                   size={50}
                   radius={25}
-                  sx={{
-                    transition: "background 0.5s",
-                    ["&:hover"]: {
-                      background: `${
-                        characters.filter((c) => c.character_id === chara)[0]
-                          .image_color
-                      }ee`,
-                    },
-                  }}
+                  sx={{ background: "none", border: "none" }}
                 >
                   <Picture
                     transparent
@@ -135,24 +129,27 @@ function DisplayFaves({
               >
                 <Box
                   p={5}
-                  sx={{
-                    background: `${
-                      units.filter((u) => u.id === unit)[0].image_color
-                    }33`,
-                    borderRadius: 10,
-                    transition: "background 0.5s",
-                    ["&:hover"]: {
-                      background: `${
-                        units.filter((u) => u.id === unit)[0].image_color
-                      }ee`,
-                    },
-                  }}
+                  sx={(theme) => ({
+                    display: "flex",
+                    alignItems: "center",
+                    height: 50,
+                    minHeight: 50,
+                  })}
                 >
                   <Image
-                    src={getAssetURL(`assets/unit_logo_${unit}.png`)}
+                    src={getAssetURL(`assets/unit_logo_border_${unit}.png`)}
                     alt={units.filter((u) => u.id === unit)[0].name[0]}
-                    height={25}
+                    height={
+                      unit === 16 || unit === 14 || unit === 11 || unit === 8
+                        ? 30
+                        : unit === 6 || unit === 9
+                        ? 20
+                        : unit === 15
+                        ? 15
+                        : 25
+                    }
                     width="auto"
+                    sx={{ pointerEvents: "none" }}
                   />
                 </Box>
               </Tooltip>

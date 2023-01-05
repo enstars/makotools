@@ -127,7 +127,7 @@ function Banner({ events }: { events: (Birthday | Event | Scout)[] }) {
                   ? t("banner.fs", { name: event.name[0] })
                   : event.type === "birthday"
                   ? t("banner.birthday", {
-                      name: event.name,
+                      name: event.name[0],
                     })
                   : event.name[0]}
               </Title>
