@@ -6,11 +6,18 @@ import {
   Text,
   Title,
   useMantineTheme,
-  Badge,
   Group,
   Stack,
+  Button,
+  Tooltip,
 } from "@mantine/core";
-import { IconCalendarDue, IconHeart, IconStar } from "@tabler/icons";
+import {
+  IconArrowLeft,
+  IconArrowRight,
+  IconCalendarDue,
+  IconHeart,
+  IconStar,
+} from "@tabler/icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import useTranslation from "next-translate/useTranslation";
@@ -95,8 +102,20 @@ function RecommendedCard({
     ? `/events/${(event as Event).event_id}`
     : `/scouts/${(event as Scout).gacha_id}`;
   return (
-    <Paper p={5} withBorder shadow="xs" component={Link} href={link}>
-      <Stack>
+    <Paper
+      withBorder
+      shadow="xs"
+      p={5}
+      component={Link}
+      href={
+        event.type === "birthday"
+          ? `/characters/${event.character_id}`
+          : event.type === "feature scout" || event.type === "scout"
+          ? `/scouts/${event.gacha_id}`
+          : `/events/${event.event_id}`
+      }
+    >
+      <Group noWrap align="flex-start" spacing="xs">
         <Image
           alt={event.name[0]}
           src={getAssetURL(
@@ -104,58 +123,38 @@ function RecommendedCard({
               event.type === "birthday" ? "normal" : "evolution"
             }.webp`
           )}
-          radius="sm"
+          width={80}
+          height={80}
+          radius="md"
         />
-        <Group spacing="xs" align="center" position="left">
-          <IconStar size={14} />
-          <Text size="xs" color="dimmed">
-            Because you like{" "}
-            <Text weight={700} component="span">
-              {returnCharOrUnitName()}
+        <Stack spacing="xs">
+          <Group noWrap spacing={3} align="center" position="left">
+            <IconStar size={14} />
+            <Text size="xs" color="dimmed" lineClamp={1}>
+              Because you like{" "}
+              <Text weight={700} component="span">
+                {returnCharOrUnitName()}
+              </Text>
             </Text>
+          </Group>
+          <Text weight={700} lineClamp={1}>
+            {event.type === "birthday"
+              ? `${event.name[0].split(" ")[1]}'s Birthday`
+              : event.name[0]}
           </Text>
-        </Group>
-        <Title order={4}>
-          {event.type === "birthday"
-            ? `${event.name[0]}'s Birthday`
-            : event.name[0]}
-        </Title>
-        <Group>
-          <Badge leftSection={<IconCalendarDue size={19} />}>
-            {countdownAmt}
-          </Badge>
-          <Badge
-            variant="filled"
-            color={
-              event.type === "birthday"
-                ? "cyan"
-                : event.type === "feature scout"
-                ? "blue"
-                : event.type === "scout"
-                ? "indigo"
-                : event.type === "song"
-                ? "yellow"
-                : "green"
-            }
-          >
-            {event.type}
-          </Badge>
-        </Group>
-        <Group spacing="xs">
-          <Text weight={600}>Starts on</Text>
-          <Text
-            weight={600}
-            py={1}
-            px={15}
-            sx={{
-              background: `${theme.colors.yellow[6]}33`,
-              borderRadius: theme.radius.lg,
-            }}
-          >
-            {dayjs(event.start.en).format("MM-DD-YYYY")}
-          </Text>
-        </Group>
-      </Stack>
+          <Group spacing={3} align="center">
+            <IconCalendarDue size={16} />
+            <Tooltip
+              label={dayjs(event.start.en).format("MMMM DD YYYY")}
+              position="right"
+            >
+              <Text size="sm" weight={500}>
+                Starts in {countdownAmt}
+              </Text>
+            </Tooltip>
+          </Group>
+        </Stack>
+      </Group>
     </Paper>
   );
 }
@@ -211,7 +210,7 @@ function RecommendedCountdown({
   const theme = useMantineTheme();
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
-  const GRID_TOTAL = isMobile ? 4 : 6;
+  const GRID_TOTAL = 3;
   const getOnlyEvents = (events: any[]): (Event | Scout | Birthday)[] => {
     let entries = Object.entries(events);
     let returnArray: (Event | Scout | Birthday)[] = [];
@@ -282,30 +281,53 @@ function RecommendedCountdown({
         </Paper>
       ) : (
         <Carousel
-          mt={10}
+          loop
+          my={10}
           orientation={isMobile ? "vertical" : "horizontal"}
-          height={isMobile ? 1150 : undefined}
+          height={isMobile ? 400 : 120}
           withControls={!isMobile}
           controlSize={40}
           controlsOffset="xs"
+          nextControlIcon={
+            <Button
+              variant="default"
+              rightIcon={<IconArrowRight />}
+              styles={(theme) => ({
+                icon: {
+                  color: theme.colors[theme.primaryColor][4],
+                },
+                label: {
+                  color: theme.colors[theme.primaryColor][4],
+                },
+              })}
+            >
+              Next
+            </Button>
+          }
+          previousControlIcon={
+            <Button
+              variant="default"
+              leftIcon={<IconArrowLeft />}
+              styles={(theme) => ({
+                icon: {
+                  color: theme.colors[theme.primaryColor][4],
+                },
+                label: {
+                  color: theme.colors[theme.primaryColor][4],
+                },
+              })}
+            >
+              Previous
+            </Button>
+          }
           align={isMobile ? "start" : "center"}
           styles={(theme) => ({
+            controls: {
+              top: "100%",
+            },
             control: {
-              backgroundColor:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[6]
-                  : theme.colors.gray[0],
-              border: `1px solid ${
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[8]
-                  : theme.colors[theme.primaryColor][6]
-              }`,
-              color: theme.colors[theme.primaryColor][4],
-              opacity: 1,
-              "&[data-inactive]": {
-                opacity: 0,
-                cursor: "default",
-              },
+              border: "none",
+              background: "none",
             },
           })}
         >
