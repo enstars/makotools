@@ -14,6 +14,7 @@ import { IconCalendarDue, IconHeart, IconStar } from "@tabler/icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import useTranslation from "next-translate/useTranslation";
+import { Carousel } from "@mantine/carousel";
 
 import { countdown, retrieveNextCampaigns } from "services/campaigns";
 import useUser from "services/firebase/user";
@@ -159,6 +160,40 @@ function RecommendedCard({
   );
 }
 
+function RecommendedSlide({
+  events,
+  eventsSlide,
+  characters,
+  units,
+}: {
+  events: any[];
+  eventsSlide: Event[];
+  characters: GameCharacter[];
+  units: GameUnit[];
+}) {
+  const { dayjs } = useDayjs();
+  return (
+    <ResponsiveGrid width={230} my={5}>
+      {eventsSlide
+        .filter((e) => dayjs(e.start.en).isAfter(dayjs()))
+        .map((e: Event | Scout | Birthday, i) => (
+          <RecommendedCard
+            key={i}
+            event={events[events.findIndex((ev: any) => ev.event === e)].event}
+            faveChar={
+              events[events.findIndex((ev: any) => ev.event === e)].charId
+            }
+            faveUnit={
+              events[events.findIndex((ev: any) => ev.event === e)].unitId
+            }
+            characters={characters}
+            units={units}
+          />
+        ))}
+    </ResponsiveGrid>
+  );
+}
+
 function RecommendedCountdown({
   events,
   characters,
@@ -172,10 +207,11 @@ function RecommendedCountdown({
   characters: GameCharacter[];
   units: GameUnit[];
 }) {
-  const { dayjs } = useDayjs();
   const user = useUser();
   const theme = useMantineTheme();
+  const [isMobile, setIsMobile] = useState<boolean>(false);
 
+  const GRID_TOTAL = isMobile ? 4 : 6;
   const getOnlyEvents = (events: any[]): (Event | Scout | Birthday)[] => {
     let entries = Object.entries(events);
     let returnArray: (Event | Scout | Birthday)[] = [];
@@ -183,6 +219,22 @@ function RecommendedCountdown({
     entries.forEach((entry) => returnArray.push(entry[1].event));
     return returnArray;
   };
+
+  let slidesArr: any[] = [];
+
+  const sortedEvents = retrieveNextCampaigns(
+    getOnlyEvents(events),
+    events.length
+  );
+
+  for (let i = 0; i < sortedEvents.length; i += GRID_TOTAL) {
+    let slide = sortedEvents.slice(i, i + GRID_TOTAL);
+    slidesArr.push(slide);
+  }
+
+  useEffect(() => {
+    window.innerWidth <= 768 && setIsMobile(true);
+  }, []);
 
   return (
     <Container my="3vh">
@@ -229,29 +281,47 @@ function RecommendedCountdown({
           <Text>There are no upcoming recommended campaigns available.</Text>
         </Paper>
       ) : (
-        <ResponsiveGrid width={230} my={5}>
-          {retrieveNextCampaigns(
-            getOnlyEvents(events),
-            events.length >= 6 ? 6 : events.length
-          )
-            .filter((e) => dayjs(e.start.en).isAfter(dayjs()))
-            .map((e: Event | Scout | Birthday, i) => (
-              <RecommendedCard
-                key={i}
-                event={
-                  events[events.findIndex((ev: any) => ev.event === e)].event
-                }
-                faveChar={
-                  events[events.findIndex((ev: any) => ev.event === e)].charId
-                }
-                faveUnit={
-                  events[events.findIndex((ev: any) => ev.event === e)].unitId
-                }
-                characters={characters}
-                units={units}
-              />
-            ))}
-        </ResponsiveGrid>
+        <Carousel
+          mt={10}
+          orientation={isMobile ? "vertical" : "horizontal"}
+          height={isMobile ? 1150 : undefined}
+          withControls={!isMobile}
+          controlSize={40}
+          controlsOffset="xs"
+          align={isMobile ? "start" : "center"}
+          styles={(theme) => ({
+            control: {
+              backgroundColor:
+                theme.colorScheme === "dark"
+                  ? theme.colors.dark[6]
+                  : theme.colors.gray[0],
+              border: `1px solid ${
+                theme.colorScheme === "dark"
+                  ? theme.colors.dark[8]
+                  : theme.colors[theme.primaryColor][6]
+              }`,
+              color: theme.colors[theme.primaryColor][4],
+              opacity: 1,
+              "&[data-inactive]": {
+                opacity: 0,
+                cursor: "default",
+              },
+            },
+          })}
+        >
+          {slidesArr.map((slide, i) => {
+            return (
+              <Carousel.Slide key={i}>
+                <RecommendedSlide
+                  events={events}
+                  eventsSlide={slide}
+                  characters={characters}
+                  units={units}
+                />
+              </Carousel.Slide>
+            );
+          })}
+        </Carousel>
       )}
     </Container>
   );
