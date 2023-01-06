@@ -10,6 +10,7 @@ import {
   Stack,
   Button,
   Tooltip,
+  Box,
 } from "@mantine/core";
 import {
   IconArrowLeft,
@@ -37,7 +38,7 @@ import { getAssetURL } from "services/data";
 import { useDayjs } from "services/libraries/dayjs";
 import { getNameOrder } from "services/game";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
-import ToyaDed from "assets/ToyaDed.png";
+import HokkeConcern from "assets/HokkeConcern.png";
 import { UserLoggedIn } from "types/makotools";
 
 function RecommendedCard({
@@ -146,7 +147,7 @@ function RecommendedCard({
             <IconCalendarDue size={16} />
             <Tooltip
               label={dayjs(event.start.en).format("MMMM DD YYYY")}
-              position="right"
+              position="bottom"
             >
               <Text size="sm" weight={500}>
                 Starts in {countdownAmt}
@@ -246,7 +247,7 @@ function RecommendedCountdown({
       user.db &&
       (!user.db.profile__fave_charas ||
         user.db.profile__fave_charas.length === 0) ? (
-        <Paper p={20} my={10}>
+        <Paper p={15} my={10}>
           <Text>
             There are no recommended campaigns available. Perhaps you should add
             your favorite characters or units to{" "}
@@ -262,19 +263,27 @@ function RecommendedCountdown({
         </Paper>
       ) : (user as UserLoggedIn).db.profile__fave_charas &&
         (user as UserLoggedIn).db.profile__fave_charas[0] === -1 ? (
-        <Paper p={20} my={10}>
-          <Text>
-            Well, since you hate Ensemble Stars so much, we won&apos;t show you
-            any recommendations. How does that sound?
-          </Text>
-          <Image
-            src={ToyaDed.src}
-            alt="He doesn't know what to do."
-            width={100}
-            sx={{ pointerEvents: "none" }}
-            mt={5}
-          />
-        </Paper>
+        <Box mt={10}>
+          <Group noWrap mb={10}>
+            <Image
+              src={HokkeConcern.src}
+              alt="Hokke is concerned."
+              width={80}
+              sx={{ pointerEvents: "none" }}
+              mt={5}
+            />
+            <Stack>
+              <Paper withBorder py={20} pl={15} pr={40}>
+                <Text component="span">
+                  You seem to not like anyone... Not even Akehoshi?
+                </Text>
+              </Paper>
+              <Text size="xs" color="dimmed">
+                (You indicated that you hate Ensemble Stars on your profile)
+              </Text>
+            </Stack>
+          </Group>
+        </Box>
       ) : events.length === 0 ? (
         <Paper p={20} my={10}>
           <Text>There are no upcoming recommended campaigns available.</Text>
