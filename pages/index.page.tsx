@@ -175,7 +175,6 @@ function Page({
         });
       }
     });
-    console.log(recommendedCampaigns);
     return recommendedCampaigns;
   }
 

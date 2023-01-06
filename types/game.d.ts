@@ -311,7 +311,7 @@ export interface CampaignStrings<T> {
 
 export interface CampaignInfo<T = string[]> extends RegionalTimeRange {
   /** Card ID for the event's main card */
-  banner_id: ID[];
+  banner_id: ID;
 
   /** Type of campaign.
    *

@@ -97,7 +97,7 @@ function Page({
                 type={scout.type}
                 eventName={event.name[0]}
                 scoutName={scout.name[0]}
-                banner={event.banner_id[0]}
+                banner={event.banner_id}
               />
             </>
           )}

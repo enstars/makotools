@@ -76,6 +76,8 @@ function Page({
       icon: <IconMusic size={16} strokeWidth={3} />,
     });
 
+  console.log(scout.banner_id);
+
   return (
     <>
       <PageTitle title={event.name[0]} sx={{ width: "100%" }} />
@@ -118,7 +120,7 @@ function Page({
             type={event.type}
             eventName={event.name[0]}
             scoutName={scout.name[0]}
-            banner={scout.banner_id[0]}
+            banner={scout.banner_id}
           />
         </>
       )}
