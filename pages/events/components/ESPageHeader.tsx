@@ -4,6 +4,7 @@ import {
   IconArrowsShuffle2,
   IconBus,
   IconComet,
+  IconRotateClockwise2,
 } from "@tabler/icons";
 import dayjs from "dayjs";
 
@@ -109,6 +110,22 @@ function ESPageHeader({
             >
               {content.type}
             </Badge>
+            {console.log(
+              "in scout pool: ",
+              dayjs().isAfter(dayjs(content.end.en).add(3, "M"))
+            )}
+            {(content.type === "scout" || content.type === "feature scout") &&
+              dayjs().isAfter(dayjs(content.start.en).add(3, "M")) && (
+                <Badge
+                  leftSection={
+                    <Box mt={4}>
+                      <IconRotateClockwise2 size={12} strokeWidth={3} />
+                    </Box>
+                  }
+                >
+                  Dia scout
+                </Badge>
+              )}
           </Group>
         </Box>
       </Group>
