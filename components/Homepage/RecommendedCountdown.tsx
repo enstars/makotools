@@ -275,7 +275,8 @@ function RecommendedCountdown({
             <Stack>
               <Paper withBorder py={20} pl={15} pr={40}>
                 <Text component="span">
-                  You seem to not like anyone... Not even Akehoshi?
+                  You seem to not like anyone... Not even{" "}
+                  {Math.floor(Math.random() * 2) === 0 ? "Akehoshi" : "Yuuki"}?
                 </Text>
               </Paper>
               <Text size="xs" color="dimmed">
