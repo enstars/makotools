@@ -26,14 +26,17 @@ import {
 } from "@tabler/icons";
 import fuzzysort from "fuzzysort";
 
-import CardCard from "./components/DisplayCard";
+import NewCollectionModal from "./components/NewCollectionModal";
 
+import { CardCard } from "components/core/CardCard";
 import PageTitle from "components/sections/PageTitle";
 import { getLayout } from "components/Layout";
 import { QuerySuccess } from "types/makotools";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "services/data";
 import { CardRarity, GameCard, GameCharacter } from "types/game";
+import { useCollections } from "services/makotools/collection";
+
 type SortOption = "id" | "character";
 
 interface CardViewOptions {
@@ -81,7 +84,10 @@ function Page({
     },
   });
   const [search, setSearch] = useState("");
+  const [newCollectionModalOpened, setNewCollectionModalOpened] =
+    useState<boolean>(false);
   const [debouncedSearch] = useDebouncedValue(search, 200);
+  const { collections, onEditCollection, onNewCollection } = useCollections();
 
   let characterIDtoSort: { [key: number]: number } = {};
   characters.forEach((c) => {
@@ -293,9 +299,12 @@ function Page({
             {slicedCardsList.map((e, i) => (
               <CardCard
                 key={e.id}
-                cardOptions={cardOptions}
                 card={e}
+                cardOptions={cardOptions}
+                collections={collections}
                 lang={cardsQuery.lang}
+                onEditCollection={onEditCollection}
+                onNewCollection={() => setNewCollectionModalOpened(true)}
               />
             ))}
           </InfiniteScroll>
@@ -305,6 +314,13 @@ function Page({
           No cards found.
         </Text>
       )}
+      <NewCollectionModal
+        // use key to reset internal form state on close
+        key={JSON.stringify(newCollectionModalOpened)}
+        opened={newCollectionModalOpened}
+        onClose={() => setNewCollectionModalOpened(false)}
+        onNewCollection={onNewCollection}
+      />
     </>
   );
 }

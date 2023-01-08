@@ -6,14 +6,13 @@ import {
   Stack,
   Text,
   Tooltip,
-  useMantineTheme,
 } from "@mantine/core";
 import Link from "next/link";
 
 import CollectionCard from "./CollectionCard";
-import { ICONS } from "./icons";
-import PRIVACY_LEVELS from "./privacyLevels";
 
+import PRIVACY_LEVELS from "components/collections/privacyLevels";
+import { COLLECTION_ICONS } from "components/collections/collectionIcons";
 import { CardCollection, CollectedCard } from "types/makotools";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 
@@ -24,14 +23,9 @@ function CollectionFolder({
   collection: CardCollection;
   isYourProfile: boolean | undefined;
 }) {
-  const theme = useMantineTheme();
-
-  const ICON_STYLE = {
-    borderRadius: theme.radius.lg,
-  };
-
-  const icon = ICONS[collection.icon || 0];
+  const icon = COLLECTION_ICONS[collection.icon || 0];
   const privacy = PRIVACY_LEVELS[collection.privacyLevel];
+
   return (
     <Accordion.Item value={collection.id}>
       <Accordion.Control py="xs" px="md">

@@ -4,7 +4,6 @@ import {
   doc,
   setDoc,
   getDoc,
-  // serverTimestamp,
   collection,
   query,
   where,
@@ -138,13 +137,14 @@ export async function getFirestoreUserCollection([collectionAddress, user]: [
 
     querySnap.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
-      userCollection.push(doc.data() as CardCollection);
+      const data = doc.data();
+      data.id = doc.id;
+      userCollection.push(data as CardCollection);
     });
   } catch (e) {
     console.error(e);
   }
   return userCollection;
-  // };
 }
 
 export async function getFirestoreUserDocument(

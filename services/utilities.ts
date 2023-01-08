@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+
 function parseStringify(object: any) {
   try {
     return JSON.parse(JSON.stringify(object));
@@ -29,4 +31,11 @@ function downloadFromURL(url: string) {
   }
 }
 
-export { parseStringify, generateUUID, downloadFromURL };
+/**
+ * Get string for timestamps in DB
+ */
+function getTimestamp(date: Dayjs) {
+  return date.toISOString();
+}
+
+export { parseStringify, generateUUID, downloadFromURL, getTimestamp };

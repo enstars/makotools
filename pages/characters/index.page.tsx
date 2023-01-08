@@ -9,7 +9,7 @@ import {
 } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
 
-import CharacterCard from "./components/DisplayCard";
+import CharacterCard from "./components/CharacterCard";
 
 import PageTitle from "components/sections/PageTitle";
 import { getLayout } from "components/Layout";

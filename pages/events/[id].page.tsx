@@ -6,7 +6,7 @@ import {
   IconMusic,
   IconVinyl,
 } from "@tabler/icons";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import ESPageHeader from "./components/ESPageHeader";
 import PointsTable from "./components/PointsTable";
@@ -20,13 +20,12 @@ import {
   getLocalizedDataArray,
 } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { useDayjs } from "services/libraries/dayjs";
 import { GameCard, Event, GameUnit, Scout } from "types/game";
 import { QuerySuccess } from "types/makotools";
-import CardCard from "pages/cards/components/DisplayCard";
+import { CardCard } from "components/core/CardCard";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
-
-type Colors = "red" | "blue" | "yellow" | "green";
+import { useCollections } from "services/makotools/collection";
+import NewCollectionModal from "pages/cards/components/NewCollectionModal";
 
 function Page({
   event,
@@ -41,7 +40,9 @@ function Page({
 }) {
   let cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
   let units = useMemo(() => unitsQuery.data, [unitsQuery.data]);
-  const { dayjs } = useDayjs();
+  const { collections, onEditCollection, onNewCollection } = useCollections();
+  const [newCollectionModalOpened, setNewCollectionModalOpened] =
+    useState<boolean>(false);
 
   cards = cards.filter((card) => {
     return event.cards?.includes(card.id);
@@ -87,9 +88,12 @@ function Page({
         {cards.map((card: GameCard) => (
           <CardCard
             key={card.id}
-            cardOptions={{ showFullInfo: true }}
             card={card}
+            cardOptions={{ showFullInfo: true }}
+            collections={collections}
             lang={cardsQuery.lang}
+            onEditCollection={onEditCollection}
+            onNewCollection={() => setNewCollectionModalOpened(true)}
           />
         ))}
       </ResponsiveGrid>
@@ -124,6 +128,13 @@ function Page({
           />
         </>
       )}
+      <NewCollectionModal
+        // use key to reset internal form state on close
+        key={JSON.stringify(newCollectionModalOpened)}
+        opened={newCollectionModalOpened}
+        onClose={() => setNewCollectionModalOpened(false)}
+        onNewCollection={onNewCollection}
+      />
     </>
   );
 }

@@ -11,8 +11,9 @@ import {
 } from "@mantine/core";
 import { useState } from "react";
 
+import { sumStats } from "services/game";
 import CardStatsNumber from "components/utilities/formatting/CardStatsNumber";
-import { GameCard, StatLevel, Stats } from "types/game";
+import { GameCard, StatLevel } from "types/game";
 
 function LabelCell({ total, ...props }: BoxProps & { total?: any }) {
   return (
@@ -85,14 +86,7 @@ function BigData({ data, label }: { data: any; label: string }) {
   );
 }
 
-function sumStats(stats: Stats | any, fallback = "?"): number | string {
-  if (!stats?.da || !stats?.vo || !stats?.pf) return fallback;
-  const sum = stats.da + stats.vo + stats.pf;
-  return sum;
-}
-export { sumStats };
-
-function Stats({ card }: { card: GameCard }) {
+export default function Stats({ card }: { card: GameCard }) {
   const [opened, setOpened] = useState(false);
   return (
     <>
@@ -195,5 +189,3 @@ function Stats({ card }: { card: GameCard }) {
     </>
   );
 }
-
-export default Stats;

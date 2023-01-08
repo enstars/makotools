@@ -1,10 +1,8 @@
 import {
   ActionIcon,
-  AspectRatio,
   Box,
   Button,
   Group,
-  Menu,
   Modal,
   Paper,
   Select,
@@ -12,7 +10,6 @@ import {
   Text,
   TextInput,
   Tooltip,
-  useMantineTheme,
 } from "@mantine/core";
 import {
   useDisclosure,
@@ -31,14 +28,14 @@ import {
 import { useEffect, useState } from "react";
 import { GridContextProvider, GridDropZone, GridItem } from "react-grid-drag";
 
-import { ICONS } from "./icons";
 import EditCollectionCard from "./EditCollectionCard";
-import PRIVACY_LEVELS from "./privacyLevels";
 
+import PRIVACY_LEVELS from "components/collections/privacyLevels";
+import { COLLECTION_ICONS } from "components/collections/collectionIcons";
 import { useDayjs } from "services/libraries/dayjs";
 import { CardCollection, CollectedCard } from "types/makotools";
 import { GameCard, GameUnit } from "types/game";
-import ResponsiveGrid from "components/core/ResponsiveGrid";
+import CollectionIconsMenu from "components/collections/CollectionIconsMenu";
 
 function EditCollection({
   collection,
@@ -57,13 +54,10 @@ function EditCollection({
   setFunction: () => void;
   width: number;
 }) {
-  const theme = useMantineTheme();
-
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
   const [sort, setSort] = useState<string>("");
   const [privacyModalOpened, privacyModalHandlers] = useDisclosure(false);
   const { dayjs } = useDayjs();
-  const [asc, setAsc] = useState<boolean>(true);
   const [cards, cardHandlers] = useListState<CollectedCard>(
     collection.cards || []
   );
@@ -76,8 +70,7 @@ function EditCollection({
   const ROW_HEIGHT = (((width - 24) / NUM_COLS - 10) * 5) / 4 + 10;
   const height = Math.ceil(cards.length / NUM_COLS) * ROW_HEIGHT;
 
-  const icon = ICONS[collection.icon || 0];
-  const privacy = PRIVACY_LEVELS[collection.privacyLevel];
+  const icon = COLLECTION_ICONS[collection.icon || 0];
   const sortBy = (value: string) => {
     setSort(value);
     let sorted: CollectedCard[] = [];
@@ -241,8 +234,8 @@ function EditCollection({
           })}
           iconWidth={62}
           icon={
-            <Menu position="top" withinPortal={true} width={200}>
-              <Menu.Target>
+            <CollectionIconsMenu
+              target={
                 <Button
                   variant="default"
                   sx={{
@@ -264,42 +257,11 @@ function EditCollection({
                     <IconChevronDown size={16} />
                   </Text>
                 </Button>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Label sx={{ textAlign: "center" }}>
-                  Choose a collection icon
-                </Menu.Label>
-                <ResponsiveGrid width={35} sx={{ gap: 6 }}>
-                  {ICONS.map((icon, i) => (
-                    <Menu.Item
-                      key={icon.name}
-                      onClick={() => {
-                        handlers.setItemProp(index, "icon", i);
-                      }}
-                      p={0}
-                      sx={{
-                        width: "auto",
-                        height: "auto",
-                        maxWidth: "100%",
-                        maxHeight: "100%",
-                      }}
-                    >
-                      <AspectRatio
-                        ratio={1}
-                        sx={{
-                          width: "100%",
-                          height: "100%",
-                        }}
-                      >
-                        <Text color={icon.color}>
-                          <icon.component {...icon.props} />
-                        </Text>
-                      </AspectRatio>
-                    </Menu.Item>
-                  ))}
-                </ResponsiveGrid>
-              </Menu.Dropdown>
-            </Menu>
+              }
+              onChange={(value) => {
+                handlers.setItemProp(index, "icon", value);
+              }}
+            />
           }
           rightSection={
             <ActionIcon

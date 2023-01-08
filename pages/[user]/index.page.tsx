@@ -36,7 +36,6 @@ import { Locale, QuerySuccess, UserData, UserLoggedIn } from "types/makotools";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getAssetURL, getLocalizedDataArray } from "services/data";
 import { parseStringify } from "services/utilities";
-import { useDayjs } from "services/libraries/dayjs";
 import useUser from "services/firebase/user";
 import BioDisplay from "components/sections/BioDisplay";
 import Picture from "components/core/Picture";
@@ -88,9 +87,8 @@ function Page({
     () => charactersQuery.data,
     [charactersQuery.data]
   );
-  const units: GameUnit[] = useMemo(() => unitsQuery.data, [unitsQuery.data]);
   // hooks
-  const { dayjs } = useDayjs();
+  const units: GameUnit[] = useMemo(() => unitsQuery.data, [unitsQuery.data]);
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.xs}px)`);

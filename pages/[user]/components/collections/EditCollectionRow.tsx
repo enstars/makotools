@@ -1,9 +1,8 @@
 import { Paper, Group, Button, Text, Box, Tooltip } from "@mantine/core";
 import { IconMenu2, IconPencil } from "@tabler/icons";
 
-import { ICONS } from "./icons";
-import PRIVACY_LEVELS from "./privacyLevels";
-
+import PRIVACY_LEVELS from "components/collections/privacyLevels";
+import { COLLECTION_ICONS } from "components/collections/collectionIcons";
 import { CardCollection } from "types/makotools";
 
 function EditCollectionRow({
@@ -15,7 +14,7 @@ function EditCollectionRow({
   setFunction: (c: CardCollection) => void;
   reordering?: boolean;
 }) {
-  const icon = ICONS[collection.icon || 0];
+  const icon = COLLECTION_ICONS[collection.icon || 0];
   const privacy = PRIVACY_LEVELS[collection.privacyLevel];
   return (
     <>
