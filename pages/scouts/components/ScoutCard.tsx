@@ -1,6 +1,14 @@
-import { Box, Card, createStyles, Paper, Text } from "@mantine/core";
+import {
+  ActionIcon,
+  Box,
+  Card,
+  createStyles,
+  Paper,
+  Text,
+  Tooltip,
+} from "@mantine/core";
 import Link from "next/link";
-import { IconHistory, IconHourglassHigh } from "@tabler/icons";
+import { IconBookmark, IconHistory, IconHourglassHigh } from "@tabler/icons";
 
 import Picture from "components/core/Picture";
 import { useDayjs } from "services/libraries/dayjs";
@@ -108,6 +116,24 @@ function ScoutCard({ scout }: { scout: Scout }) {
             </Text>
           </Paper>
         )}
+        {
+          <Tooltip position="bottom" label="Bookmark this scout">
+            <ActionIcon
+              sx={(theme) => ({
+                position: "absolute",
+                top: 9,
+                right: 3,
+                zIndex: 12,
+              })}
+            >
+              <IconBookmark
+                strokeWidth={2}
+                color="white"
+                style={{ filter: "drop-shadow(0px 0px 1px rgb(0 0 0))" }}
+              />
+            </ActionIcon>
+          </Tooltip>
+        }
         <Picture
           alt={scout.name[0]}
           srcB2={`assets/card_still_full1_${scout.banner_id}_evolution.png`}

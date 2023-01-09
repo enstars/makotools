@@ -9,9 +9,15 @@ import {
   Tooltip,
   Stack,
   ThemeIcon,
+  ActionIcon,
 } from "@mantine/core";
 import Link from "next/link";
-import { IconArrowsShuffle2, IconBus, IconDiamond } from "@tabler/icons";
+import {
+  IconArrowsShuffle2,
+  IconBookmark,
+  IconBus,
+  IconDiamond,
+} from "@tabler/icons";
 
 import Picture from "components/core/Picture";
 import { Event, GameUnit } from "types/game";
@@ -184,6 +190,11 @@ function EventCard({ event, units }: { event: Event; units: GameUnit[] }) {
           </Stack>
         </Box>
       </Group>
+      <Tooltip label="Bookmark this event" position="bottom">
+        <ActionIcon>
+          <IconBookmark />
+        </ActionIcon>
+      </Tooltip>
     </Paper>
   );
 }
