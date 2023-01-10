@@ -6,6 +6,7 @@ import {
   Paper,
   Text,
   Tooltip,
+  useMantineTheme,
 } from "@mantine/core";
 import Link from "next/link";
 import { IconBookmark, IconHistory, IconHourglassHigh } from "@tabler/icons";
@@ -30,6 +31,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 }));
 
 function ScoutCard({ scout }: { scout: Scout }) {
+  const theme = useMantineTheme();
   const { dayjs } = useDayjs();
   const { classes } = useStyles();
 
@@ -129,6 +131,7 @@ function ScoutCard({ scout }: { scout: Scout }) {
               <IconBookmark
                 strokeWidth={2}
                 color="white"
+                fill={`${theme.colors.gray[5]}99`}
                 style={{ filter: "drop-shadow(0px 0px 1px rgb(0 0 0))" }}
               />
             </ActionIcon>

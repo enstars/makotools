@@ -116,6 +116,8 @@ interface UserData {
   setting__show_tl_badge?: ShowTlBadge;
   setting__game_region?: GameRegion;
   setting__use_webp?: UseWebP;
+  bookmarks__events?: ID[];
+  bookmarks__scouts?: ID[];
   readonly admin?: {
     disableTextFields?: boolean;
     patreon?: 0 | 1 | 2 | 3 | 4;

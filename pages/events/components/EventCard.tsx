@@ -10,6 +10,7 @@ import {
   Stack,
   ThemeIcon,
   ActionIcon,
+  useMantineTheme,
 } from "@mantine/core";
 import Link from "next/link";
 import {
@@ -18,11 +19,13 @@ import {
   IconBus,
   IconDiamond,
 } from "@tabler/icons";
+import { UseListStateHandlers } from "@mantine/hooks";
 
 import Picture from "components/core/Picture";
 import { Event, GameUnit } from "types/game";
 import { useDayjs } from "services/libraries/dayjs";
 import IconEnstars from "components/core/IconEnstars";
+import useUser from "services/firebase/user";
 
 const useStyles = createStyles((theme) => ({
   eventCard: {
@@ -59,7 +62,21 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-function EventCard({ event, units }: { event: Event; units: GameUnit[] }) {
+function EventCard({
+  event,
+  units,
+  bookmarked,
+  bookmarks,
+  bookmarkHandlers,
+}: {
+  event: Event;
+  units: GameUnit[];
+  bookmarked: boolean;
+  bookmarks: number[];
+  bookmarkHandlers: UseListStateHandlers<number>;
+}) {
+  const user = useUser();
+  const theme = useMantineTheme();
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
 
@@ -74,13 +91,12 @@ function EventCard({ event, units }: { event: Event; units: GameUnit[] }) {
   );
 
   return (
-    <Paper
-      component={Link}
-      href={`/events/${event.event_id}`}
-      withBorder
-      className={classes.eventCard}
-    >
-      <Box sx={{ position: "relative", flex: "1 1 30%", minWidth: 175 }}>
+    <Paper withBorder className={classes.eventCard}>
+      <Box
+        component={Link}
+        href={`/events/${event.event_id}`}
+        sx={{ position: "relative", flex: "1 1 30%", minWidth: 175 }}
+      >
         <Picture
           alt={event.name[0]}
           srcB2={`assets/card_still_full1_${event.banner_id}_evolution.png`}
@@ -190,11 +206,27 @@ function EventCard({ event, units }: { event: Event; units: GameUnit[] }) {
           </Stack>
         </Box>
       </Group>
-      <Tooltip label="Bookmark this event" position="bottom">
-        <ActionIcon>
-          <IconBookmark />
-        </ActionIcon>
-      </Tooltip>
+      {user.loggedIn && (
+        <Tooltip
+          label={!bookmarked ? "Bookmark this event" : "Remove from bookmarks"}
+          position="bottom"
+        >
+          <ActionIcon
+            onClick={() => {
+              bookmarked
+                ? bookmarkHandlers.remove(bookmarks.indexOf(event.event_id))
+                : bookmarkHandlers.append(event.event_id);
+            }}
+            size="lg"
+          >
+            <IconBookmark
+              fill={bookmarked ? theme.colors[theme.primaryColor][4] : "none"}
+              strokeWidth={bookmarked ? 0 : 1}
+              size={bookmarked ? 30 : 24}
+            />
+          </ActionIcon>
+        </Tooltip>
+      )}
     </Paper>
   );
 }

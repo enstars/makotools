@@ -110,10 +110,6 @@ function ESPageHeader({
             >
               {content.type}
             </Badge>
-            {console.log(
-              "in scout pool: ",
-              dayjs().isAfter(dayjs(content.end.en).add(3, "M"))
-            )}
             {(content.type === "scout" || content.type === "feature scout") &&
               dayjs().isAfter(dayjs(content.start.en).add(3, "M")) && (
                 <Badge
