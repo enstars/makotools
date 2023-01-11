@@ -1,6 +1,13 @@
-import { useMemo, useState } from "react";
-import { Divider } from "@mantine/core";
-import { IconBook, IconCards, IconMedal } from "@tabler/icons";
+import { useEffect, useMemo, useState } from "react";
+import {
+  ActionIcon,
+  Divider,
+  Group,
+  Tooltip,
+  useMantineTheme,
+} from "@mantine/core";
+import { IconBook, IconBookmark, IconCards, IconMedal } from "@tabler/icons";
+import { useListState } from "@mantine/hooks";
 
 import PageTitle from "components/sections/PageTitle";
 import {
@@ -9,7 +16,7 @@ import {
 } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCard, GameCharacter, Event, Scout } from "types/game";
-import { QuerySuccess } from "types/makotools";
+import { QuerySuccess, UserLoggedIn } from "types/makotools";
 import { getLayout } from "components/Layout";
 import { CardCard } from "components/core/CardCard";
 import ESPageHeader from "pages/events/components/ESPageHeader";
@@ -19,6 +26,7 @@ import SectionTitle from "pages/events/components/SectionTitle";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 import { useCollections } from "services/makotools/collection";
 import NewCollectionModal from "pages/cards/components/NewCollectionModal";
+import useUser from "services/firebase/user";
 
 function Page({
   scout,
@@ -31,6 +39,8 @@ function Page({
   charactersQuery: QuerySuccess<GameCharacter[]>;
   cardsQuery: QuerySuccess<GameCard[]>;
 }) {
+  const user = useUser();
+  const theme = useMantineTheme();
   let characters = useMemo(() => charactersQuery.data, [charactersQuery.data]);
   let cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
   const { collections, onEditCollection, onNewCollection } = useCollections();
@@ -45,11 +55,52 @@ function Page({
       .includes(character.character_id);
   });
 
+  const [bookmarks, handlers] = useListState<number>(
+    (user as UserLoggedIn).db.bookmarks__scouts || []
+  );
+
+  useEffect(() => {
+    user.loggedIn &&
+      user.db.set({
+        bookmarks__scouts: bookmarks,
+      });
+  }, [bookmarks]);
+
   return (
     <>
-      <PageTitle
-        title={`${scout.type === "scout" ? "SCOUT!" : ""} ${scout.name[0]}`}
-      />
+      <Group>
+        <PageTitle title={scout.name[0]} sx={{ flex: "1 0 80%" }} />
+        <Tooltip
+          label={
+            user.loggedIn
+              ? bookmarks.includes(scout.gacha_id)
+                ? "Remove from bookmarks"
+                : "Add to bookmarks"
+              : "Log in to add this to your bookmarks"
+          }
+          position="bottom"
+        >
+          <ActionIcon
+            size={40}
+            disabled={!user.loggedIn}
+            onClick={() => {
+              bookmarks.includes(scout.gacha_id)
+                ? handlers.remove(bookmarks.indexOf(scout.gacha_id))
+                : handlers.append(scout.gacha_id);
+            }}
+          >
+            <IconBookmark
+              size={40}
+              fill={
+                bookmarks.includes(scout.gacha_id)
+                  ? theme.colors[theme.primaryColor][4]
+                  : "none"
+              }
+              strokeWidth={bookmarks.includes(scout.gacha_id) ? 0 : 2}
+            />
+          </ActionIcon>
+        </Tooltip>
+      </Group>
       <ESPageHeader content={scout} />
       <SectionTitle title="Cards" id="cards" Icon={IconCards} />
       <ResponsiveGrid width={224}>

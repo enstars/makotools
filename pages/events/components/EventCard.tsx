@@ -221,8 +221,8 @@ function EventCard({
           >
             <IconBookmark
               fill={bookmarked ? theme.colors[theme.primaryColor][4] : "none"}
-              strokeWidth={bookmarked ? 0 : 1}
-              size={bookmarked ? 30 : 24}
+              strokeWidth={bookmarked ? 0 : 2}
+              size={bookmarked ? 32 : 26}
             />
           </ActionIcon>
         </Tooltip>

@@ -10,10 +10,12 @@ import {
 } from "@mantine/core";
 import Link from "next/link";
 import { IconBookmark, IconHistory, IconHourglassHigh } from "@tabler/icons";
+import { UseListStateHandlers } from "@mantine/hooks";
 
 import Picture from "components/core/Picture";
 import { useDayjs } from "services/libraries/dayjs";
 import { Scout } from "types/game";
+import useUser from "services/firebase/user";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   scoutInfo: {
@@ -30,17 +32,61 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 }));
 
-function ScoutCard({ scout }: { scout: Scout }) {
+function ScoutCard({
+  scout,
+  bookmarked,
+  bookmarks,
+  bookmarkHandlers,
+}: {
+  scout: Scout;
+  bookmarked: boolean;
+  bookmarks: number[];
+  bookmarkHandlers: UseListStateHandlers<number>;
+}) {
+  const user = useUser();
   const theme = useMantineTheme();
   const { dayjs } = useDayjs();
   const { classes } = useStyles();
 
   return (
-    <Card withBorder>
+    <Card withBorder sx={{ position: "relative" }} p={0}>
+      {user.loggedIn && (
+        <Tooltip
+          position="bottom"
+          label={bookmarked ? "Remove from bookmarks" : "Add to bookmarks"}
+        >
+          <ActionIcon
+            sx={(theme) => ({
+              position: "absolute",
+              top: 0,
+              right: 3,
+              zIndex: 12,
+            })}
+            onClick={() => {
+              bookmarked
+                ? bookmarkHandlers.remove(bookmarks.indexOf(scout.gacha_id))
+                : bookmarkHandlers.append(scout.gacha_id);
+            }}
+            size={bookmarked ? 32 : 26}
+          >
+            <IconBookmark
+              strokeWidth={2}
+              color={bookmarked ? theme.colors[theme.primaryColor][0] : "white"}
+              fill={
+                bookmarked
+                  ? theme.colors[theme.primaryColor][4]
+                  : `${theme.colors.gray[5]}99`
+              }
+              style={{ filter: "drop-shadow(0px 0px 1px rgb(0 0 0))" }}
+              size={bookmarked ? 32 : 26}
+            />
+          </ActionIcon>
+        </Tooltip>
+      )}
       <Card.Section
         component={Link}
         href={`/scouts/${scout.gacha_id}`}
-        sx={{ position: "relative" }}
+        sx={{ position: "relative", top: 0 }}
       >
         {dayjs(scout.end.en).isBefore(dayjs()) && (
           <Paper
@@ -118,25 +164,6 @@ function ScoutCard({ scout }: { scout: Scout }) {
             </Text>
           </Paper>
         )}
-        {
-          <Tooltip position="bottom" label="Bookmark this scout">
-            <ActionIcon
-              sx={(theme) => ({
-                position: "absolute",
-                top: 9,
-                right: 3,
-                zIndex: 12,
-              })}
-            >
-              <IconBookmark
-                strokeWidth={2}
-                color="white"
-                fill={`${theme.colors.gray[5]}99`}
-                style={{ filter: "drop-shadow(0px 0px 1px rgb(0 0 0))" }}
-              />
-            </ActionIcon>
-          </Tooltip>
-        }
         <Picture
           alt={scout.name[0]}
           srcB2={`assets/card_still_full1_${scout.banner_id}_evolution.png`}

@@ -21,8 +21,8 @@ import {
   IconSortAscending,
   IconSortDescending,
 } from "@tabler/icons";
-import { useMemo } from "react";
-import { useMediaQuery } from "@mantine/hooks";
+import { useEffect, useMemo } from "react";
+import { useListState, useMediaQuery } from "@mantine/hooks";
 
 import ScoutCard from "./components/ScoutCard";
 
@@ -31,10 +31,11 @@ import PageTitle from "components/sections/PageTitle";
 import { getLocalizedDataArray } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCard, GameCharacter, Scout } from "types/game";
-import { QuerySuccess } from "types/makotools";
+import { QuerySuccess, UserLoggedIn } from "types/makotools";
 import { useDayjs } from "services/libraries/dayjs";
 import useFSSList from "services/makotools/search";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
+import useUser from "services/firebase/user";
 
 const defaultView = {
   filters: {
@@ -56,6 +57,7 @@ function Page({
   cardsQuery: QuerySuccess<GameCard[]>;
   charactersQuery: QuerySuccess<GameCharacter[]>;
 }) {
+  const user = useUser();
   const { dayjs } = useDayjs();
   const theme = useMantineTheme();
 
@@ -110,6 +112,16 @@ function Page({
   >(scouts, fssOptions);
 
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
+  const [bookmarks, handlers] = useListState<number>(
+    (user as UserLoggedIn).db.bookmarks__scouts || []
+  );
+
+  useEffect(() => {
+    user.loggedIn &&
+      user.db.set({
+        bookmarks__scouts: bookmarks,
+      });
+  }, [bookmarks]);
 
   return (
     <>
@@ -171,7 +183,7 @@ function Page({
                     }));
                   }}
                   variant="light"
-                  color="toya_default"
+                  color="theme.primaryColor"
                 >
                   {view.sort.ascending ? (
                     <IconSortAscending size={16} />
@@ -265,7 +277,13 @@ function Page({
             {results
               .filter((scout) => scout.type === "scout")
               .map((scout: Scout) => (
-                <ScoutCard key={scout.gacha_id} scout={scout} />
+                <ScoutCard
+                  key={scout.gacha_id}
+                  scout={scout}
+                  bookmarked={bookmarks.includes(scout.gacha_id)}
+                  bookmarks={bookmarks}
+                  bookmarkHandlers={handlers}
+                />
               ))}
           </ResponsiveGrid>
         </Tabs.Panel>
@@ -278,7 +296,13 @@ function Page({
             {results
               .filter((scout) => scout.type === "feature scout")
               .map((scout: Scout) => (
-                <ScoutCard key={scout.gacha_id} scout={scout} />
+                <ScoutCard
+                  key={scout.gacha_id}
+                  scout={scout}
+                  bookmarked={bookmarks.includes(scout.gacha_id)}
+                  bookmarks={bookmarks}
+                  bookmarkHandlers={handlers}
+                />
               ))}
           </ResponsiveGrid>
         </Tabs.Panel>

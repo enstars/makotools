@@ -137,15 +137,11 @@ function Page({
   });
 
   useEffect(() => {
-    console.log(bookmarks);
     user.loggedIn &&
       user.db.set({
         bookmarks__events: bookmarks,
       });
-    console.log(user.db.bookmarks__events);
   }, [bookmarks]);
-
-  console.log(user.db.bookmarks__events);
 
   return (
     <>
