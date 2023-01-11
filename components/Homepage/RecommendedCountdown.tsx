@@ -23,6 +23,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import useTranslation from "next-translate/useTranslation";
 import { Carousel } from "@mantine/carousel";
+import { useMediaQuery } from "@mantine/hooks";
 
 import { countdown, retrieveNextCampaigns } from "services/campaigns";
 import useUser from "services/firebase/user";
@@ -209,7 +210,7 @@ function RecommendedCountdown({
 }) {
   const user = useUser();
   const theme = useMantineTheme();
-  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.xs}px)`);
 
   const GRID_TOTAL = 3;
   const getOnlyEvents = (events: any[]): (Event | Scout | Birthday)[] => {
@@ -232,12 +233,8 @@ function RecommendedCountdown({
     slidesArr.push(slide);
   }
 
-  useEffect(() => {
-    window.innerWidth <= 768 && setIsMobile(true);
-  }, []);
-
   return (
-    <Container my="3vh">
+    <Container my="7vh">
       <Title order={2}>Recommended Campaigns</Title>
       <Alert my={3} icon={<IconHeart />}>
         Recommendations are based on the favorite characters and units listed in
@@ -292,7 +289,7 @@ function RecommendedCountdown({
       ) : (
         <Carousel
           loop
-          my={10}
+          my="1vh"
           orientation={isMobile ? "vertical" : "horizontal"}
           height={isMobile ? 400 : 120}
           withControls={!isMobile}

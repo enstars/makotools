@@ -22,7 +22,7 @@ function createBirthdayData(characters: GameCharacter[]): Birthday[] {
       },
 
       type: "birthday",
-      banner_id: [character.renders?.fs1_5],
+      banner_id: character.renders?.fs1_5,
       horoscope: character.horoscope,
     };
 

@@ -14,6 +14,7 @@ import { getLayout } from "components/Layout";
 import UpcomingCampaigns from "components/Homepage/UpcomingCampaigns";
 import Banner from "components/Homepage/Banner";
 import getServerSideUser from "services/firebase/getServerSideUser";
+import { retrieveNextCampaigns } from "services/campaigns";
 import { getLocalizedDataArray } from "services/data";
 import {
   Birthday,
@@ -38,6 +39,7 @@ import { createBirthdayData } from "services/campaigns";
 import { fetchOceans } from "services/makotools/posts";
 import RecommendedCountdown from "components/Homepage/RecommendedCountdown";
 import useUser from "services/firebase/user";
+import BookmarkedCampaigns from "components/Homepage/BookmarkedCampaigns";
 
 const useStyles = createStyles((theme, _params) => ({
   main: {
@@ -178,6 +180,21 @@ function Page({
     return recommendedCampaigns;
   }
 
+  function getBookmarkedCampaigns(): Campaign[] {
+    if (user.loggedIn) {
+      const bookmarkedEvents = (user as UserLoggedIn).db.bookmarks__events;
+      const bookmarkedScouts = (user as UserLoggedIn).db.bookmarks__scouts;
+      const filteredEvents = gameEvents.filter((e) =>
+        bookmarkedEvents?.includes(e.event_id)
+      );
+      const filteredScouts = scouts.filter((s) =>
+        bookmarkedScouts?.includes(s.gacha_id)
+      );
+      return [...filteredEvents, ...filteredScouts];
+    }
+    return [];
+  }
+
   return (
     <Group
       align="flex-start"
@@ -209,11 +226,19 @@ function Page({
             />
             <CurrentScoutsCountdown scouts={scouts} />
             {user.loggedIn && (
-              <RecommendedCountdown
-                events={getRecommendedCampaigns()}
-                characters={characters}
-                units={units}
-              />
+              <>
+                <BookmarkedCampaigns
+                  campaigns={retrieveNextCampaigns(
+                    getBookmarkedCampaigns(),
+                    getBookmarkedCampaigns().length
+                  )}
+                />
+                <RecommendedCountdown
+                  events={getRecommendedCampaigns()}
+                  characters={characters}
+                  units={units}
+                />
+              </>
             )}
           </Box>
 
