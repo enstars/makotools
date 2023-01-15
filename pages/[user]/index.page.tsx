@@ -146,15 +146,17 @@ function Page({
         units={units}
         locale={locale}
       />
-      <ProfilePicModal
-        opened={openPicModal}
-        openedFunction={setOpenPicModal}
-        cards={cards as GameCard[]}
-        user={user}
-        profile={profile}
-        profileState={profileState}
-        externalSetter={setProfileState}
-      />
+      {openPicModal && (
+        <ProfilePicModal
+          opened={openPicModal}
+          openedFunction={setOpenPicModal}
+          cards={cards as GameCard[]}
+          user={user}
+          profile={profile}
+          profileState={profileState}
+          externalSetter={setProfileState}
+        />
+      )}
       <RemoveFriendModal
         opened={openRemoveFriendModal}
         closeFunction={setRemoveFriendModal}

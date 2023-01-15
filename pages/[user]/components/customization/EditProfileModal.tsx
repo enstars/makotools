@@ -1,15 +1,12 @@
 import {
   Modal,
   Group,
-  Title,
   Button,
   Box,
   Text,
   Stack,
-  ActionIcon,
   useMantineTheme,
   Accordion,
-  Divider,
 } from "@mantine/core";
 import dynamic from "next/dynamic";
 import { Dispatch, SetStateAction } from "react";
@@ -76,56 +73,27 @@ function EditProfileModal({
       }}
       size="lg"
       styles={(theme) => ({
-        root: { marginBottom: 10, marginTop: -25 },
-        modal: { maxHeight: "100%", height: "100%", padding: "5 0" },
-        title: { width: "80%" },
-        body: {
-          position: "relative",
-          width: "100%",
-          height: "95%",
-          maxHeight: "100%",
-          overflowY: "scroll",
-          scrollbarWidth: "none",
-        },
+        title: { width: "100%" },
       })}
       title={
         <Group
           noWrap
           align="center"
-          position="left"
+          position="apart"
           spacing="xl"
           sx={{ width: "100%" }}
         >
-          <Title order={2}>Edit profile</Title>
-          <Button
-            onClick={() => {
-              if (user.loggedIn) {
-                user.db.set({
-                  profile__banner: profileState.profile__banner,
-                  name: profileState.name,
-                  profile__pronouns: profileState.profile__pronouns,
-                  profile__start_playing: profileState.profile__start_playing,
-                  profile__bio: profileState.profile__bio,
-                  profile__picture: profileState.profile__picture,
-                  profile__fave_charas: profileState.profile__fave_charas,
-                  profile__fave_units: profileState.profile__fave_units,
-                  profile__show_faves: profileState.profile__show_faves,
-                });
-              }
-              openedFunction(false);
-            }}
-          >
-            Save
-          </Button>
+          <Text weight={700}>Edit profile</Text>
         </Group>
       }
+      closeOnClickOutside={false}
+      closeOnEscape={false}
+      withCloseButton={false}
     >
-      <Accordion defaultValue={"details"}>
+      <Accordion defaultValue="details" variant="contained">
         <Accordion.Item value="banner">
           <Accordion.Control>
-            <Text size="xl" weight={700}>
-              Banner cards
-            </Text>
+            <Text weight={700}>Banner</Text>
           </Accordion.Control>
           <Accordion.Panel>
             <Banner
@@ -137,32 +105,12 @@ function EditProfileModal({
         </Accordion.Item>
         <Accordion.Item value="details">
           <Accordion.Control>
-            <Text size="xl" weight={700}>
-              Profile details
-            </Text>
+            <Text weight={700}>Basic Info</Text>
           </Accordion.Control>
           <Accordion.Panel>
-            <Group position="apart" spacing="xl" sx={{ marginBottom: 20 }}>
+            <Group spacing="lg" align="flex-start">
               <Box sx={{ flex: "0 0 120px" }}>
-                <Text align="center">Avatar</Text>
-                <Box sx={{ position: "relative" }}>
-                  <ActionIcon
-                    variant="filled"
-                    color={theme.primaryColor}
-                    sx={{
-                      position: "absolute",
-                      right: 0,
-                      marginRight: 5,
-                      marginTop: 5,
-                      zIndex: 10,
-                    }}
-                    radius="xl"
-                    size="lg"
-                    p={4}
-                    onClick={() => picModalFunction(true)}
-                  >
-                    <IconPencil size={28} />
-                  </ActionIcon>
+                <Stack align="center" spacing="xs">
                   <ProfileAvatar
                     src={
                       profileState.profile__picture
@@ -182,11 +130,29 @@ function EditProfileModal({
                         ? profileState.profile__picture.crop
                         : undefined
                     }
-                    border={`5px solid ${theme.colors[theme.primaryColor][5]}`}
                   />
-                </Box>
+                  <Button
+                    variant="subtle"
+                    sx={
+                      {
+                        // position: "absolute",
+                        // right: 0,
+                        // bottom: 0,
+                        // marginRight: 5,
+                        // marginTop: 5,
+                        // zIndex: 10,
+                      }
+                    }
+                    compact
+                    p={4}
+                    onClick={() => picModalFunction(true)}
+                    leftIcon={<IconPencil size={14} />}
+                  >
+                    Edit Avatar
+                  </Button>
+                </Stack>
               </Box>
-              <Stack sx={{ flex: "1 0 65%" }}>
+              <Stack sx={{ "&&&&&": { flex: "1 0 65%" } }} spacing="xs">
                 <Name
                   externalSetter={setProfileState}
                   profileState={profileState}
@@ -195,13 +161,12 @@ function EditProfileModal({
                   externalSetter={setProfileState}
                   profileState={profileState}
                 />
+                <StartPlaying
+                  externalSetter={setProfileState}
+                  profileState={profileState}
+                />
               </Stack>
             </Group>
-            <StartPlaying
-              externalSetter={setProfileState}
-              profileState={profileState}
-            />
-            <Divider mt={15} />
             <Favorites
               characters={characters}
               units={units}
@@ -214,15 +179,44 @@ function EditProfileModal({
         </Accordion.Item>
         <Accordion.Item value="bio">
           <Accordion.Control>
-            <Text size="xl" weight={700}>
-              Bio
-            </Text>
+            <Text weight={700}>Bio</Text>
           </Accordion.Control>
           <Accordion.Panel>
             <Bio externalSetter={setProfileState} profileState={profileState} />
           </Accordion.Panel>
         </Accordion.Item>
       </Accordion>
+      <Group mt="xs" position="right" spacing="xs">
+        <Button
+          variant="light"
+          color="red"
+          onClick={() => {
+            openedFunction(false);
+          }}
+        >
+          Discard Changes
+        </Button>
+        <Button
+          onClick={() => {
+            if (user.loggedIn) {
+              user.db.set({
+                profile__banner: profileState.profile__banner,
+                name: profileState.name,
+                profile__pronouns: profileState.profile__pronouns,
+                profile__start_playing: profileState.profile__start_playing,
+                profile__bio: profileState.profile__bio,
+                profile__picture: profileState.profile__picture,
+                profile__fave_charas: profileState.profile__fave_charas,
+                profile__fave_units: profileState.profile__fave_units,
+                profile__show_faves: profileState.profile__show_faves,
+              });
+            }
+            openedFunction(false);
+          }}
+        >
+          Save Changes
+        </Button>
+      </Group>
     </Modal>
   );
 }
