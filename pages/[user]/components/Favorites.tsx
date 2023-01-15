@@ -67,7 +67,7 @@ function Favorites({
   }, []);
 
   return (
-    <Stack mt={15}>
+    <Stack mt="sm">
       <Group>
         <Input.Wrapper label="Favorite characters">
           <MultiSelect

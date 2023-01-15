@@ -1,27 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
 import {
-  ActionIcon,
   Button,
-  Container,
-  Divider,
   Group,
-  Input,
   Modal,
+  Paper,
   Select,
-  Space,
-  Stack,
   Switch,
   Text,
-  Title,
 } from "@mantine/core";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { IconSun, IconSunOff, IconTrash } from "@tabler/icons";
+import { IconFlower, IconFlowerOff, IconSearch } from "@tabler/icons";
 import Cropper from "react-easy-crop";
 import { Point } from "react-easy-crop/types";
-
-import MaoBanned from "../../assets/MaoBanned.png";
-
-import ProfileAvatar from "./ProfileAvatar";
 
 import { GameCard } from "types/game";
 import { ProfilePicture, User, UserData } from "types/makotools";
@@ -45,192 +35,157 @@ function ProfilePicModal({
   profileState: any;
 }) {
   const [currentPic, setCurrentPic] = useState<ProfilePicture>(
-    user.loggedIn && user.db?.profile__picture
-      ? user.db.profile__picture
+    profileState.profile__picture
+      ? profileState.profile__picture
       : {
-          id: undefined,
-          crop: undefined,
+          id: 0,
+          crop: { x: 0, y: 0, width: 50, height: 50 },
         }
   );
-  const [picObj, setPicObj] = useState<ProfilePicture>({
-    id: undefined,
-    crop: undefined,
-  });
+
+  // console.log(user.db.profile__picture);
 
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState<number>(1);
-  const [bloomed, setBloomed] = useState<boolean>(true);
+  const bloomed = currentPic.id > 0;
 
   useEffect(() => {
     if (user.loggedIn && user.db && user.db.profile__picture)
       setCurrentPic(user.db.profile__picture);
   }, [user]);
 
-  useEffect(() => {
-    if (picObj.id) {
-      let newId;
-      if (bloomed) newId = picObj.id > 0 ? picObj.id : picObj.id * -1;
-      else newId = picObj.id > 0 ? picObj.id * -1 : picObj.id;
-      setPicObj({ ...picObj, id: newId });
-    }
-  }, [bloomed]);
+  console.log(currentPic, bloomed);
 
   return (
     <Modal
       opened={opened}
-      size="lg"
+      size="md"
       onClose={() => openedFunction(false)}
-      title={
-        <Group
-          noWrap
-          align="center"
-          position="left"
-          spacing="xl"
-          sx={{ width: "100%" }}
-        >
-          <Title order={2}>Update avatar</Title>{" "}
-          <Button
-            sx={{
-              visibility: picObj.crop ? "visible" : "hidden",
-              marginTop: 10,
-            }}
-            onClick={() => {
-              externalSetter({ ...profileState, profile__picture: picObj });
-              openedFunction(false);
-            }}
-          >
-            Save
-          </Button>
-        </Group>
-      }
-      styles={(theme) => ({
-        modal: { height: "100%", minHeight: "100%" },
-      })}
+      title="Edit Avatar"
     >
-      <Text size="xl" weight="bold" py={10}>
-        Choose an image
-      </Text>
-      <Group align="flex-start">
-        <Input.Wrapper
-          description="Current avatar"
-          sx={{ flex: "0 1 120" }}
-          inputWrapperOrder={["input", "description"]}
-          styles={(theme) => ({
-            description: { textAlign: "center", marginTop: 5 },
-          })}
-        >
-          <ProfileAvatar
-            src={
-              picObj && picObj.id
-                ? getAssetURL(
-                    `assets/card_still_full1_${Math.abs(picObj.id)}_${
-                      picObj.id > 0 ? "evolution" : "normal"
-                    }.png`
-                  )
-                : currentPic && currentPic.id
-                ? getAssetURL(
-                    `assets/card_still_full1_${Math.abs(currentPic.id)}_${
-                      currentPic.id > 0 ? "evolution" : "normal"
-                    }.png`
-                  )
-                : MaoBanned.src
+      <Select
+        aria-label="Card CG"
+        placeholder="Type to search for a card"
+        value={currentPic.id ? Math.abs(currentPic.id).toString() : null}
+        searchable
+        limit={25}
+        data={[
+          {
+            value: "0",
+            label: "Default Profile Picture",
+          },
+          ...cards
+            .filter((c) => c.title)
+            .map((c) => ({
+              value: c.id.toString(),
+              label: `(${c.title[0]}) ${c.name && c.name[0]}`,
+            })),
+        ]}
+        onChange={(value) => {
+          setCurrentPic({
+            ...currentPic,
+            id: bloomed
+              ? parseInt(value as string)
+              : parseInt(value as string) * -1,
+          });
+        }}
+        icon={<IconSearch size={16} />}
+        rightSectionWidth={62}
+        rightSection={
+          <Switch
+            size="md"
+            sx={{ alignSelf: "center" }}
+            onChange={() =>
+              setCurrentPic((currentPic) => ({
+                ...currentPic,
+                id: currentPic.id * -1,
+              }))
             }
-            crop={picObj.crop ? picObj.crop : currentPic.crop}
+            checked={bloomed}
+            onLabel={<IconFlower size={16} />}
+            offLabel={<IconFlowerOff size={16} />}
+            disabled={!currentPic.id}
+            color="mao_pink"
           />
-        </Input.Wrapper>
-        <Stack sx={{ flex: "1 0 30%" }}>
-          <Input.Wrapper label="Avatar image">
-            <Select
-              placeholder="Type to search for a card"
-              defaultValue={Math.abs(picObj.id as number).toString() || null}
-              searchable
-              limit={25}
-              data={[
-                {
-                  value: "-",
-                  label: "Start typing to search for a card...",
-                  disabled: true,
-                },
-                ...cards
-                  .filter((c) => c.title)
-                  .filter(
-                    (c) => Math.abs(c.id) !== Math.abs(picObj?.id as number)
-                  )
-                  .map((c) => ({
-                    value: c.id.toString(),
-                    label: `(${c.title[0]}) ${c.name && c.name[0]}`,
-                  })),
-              ]}
-              onChange={(value) =>
-                setPicObj({
-                  ...picObj,
-                  id: bloomed
-                    ? parseInt(value as string)
-                    : parseInt(value as string) * -1,
-                })
-              }
-            />
-          </Input.Wrapper>
-          <Group>
-            <Input.Wrapper label="Bloomed?">
-              <Switch
-                size="lg"
-                sx={{ alignSelf: "center" }}
-                onChange={() => {
-                  setBloomed(!bloomed);
-                }}
-                defaultChecked={bloomed}
-                onLabel={<IconSun />}
-                offLabel={<IconSunOff />}
-                disabled={!picObj.id}
-              />
-            </Input.Wrapper>
-            <Input.Wrapper label="Reset avatar">
-              <ActionIcon
-                onClick={() => {
-                  setCurrentPic({ id: undefined, crop: undefined });
-                  setPicObj({ id: undefined, crop: undefined });
-                }}
-                color="red"
-                variant="light"
-              >
-                <IconTrash />
-              </ActionIcon>
-            </Input.Wrapper>
-          </Group>
-        </Stack>
-      </Group>
-      <Space h="xl" />
-      <Divider />
-      <Text size="xl" weight="bold" py={10}>
-        Crop icon
-      </Text>
-      {picObj.id && (
-        <Container
-          sx={{ minHeight: "350px", padding: 0, position: "relative" }}
+        }
+      />
+      {currentPic.id !== 0 ? (
+        <Paper
+          mt="xs"
+          radius="sm"
+          withBorder
+          sx={{
+            minHeight: 240,
+            padding: 0,
+            position: "relative",
+            overflow: "hidden",
+          }}
         >
           <Cropper
             image={getAssetURL(
-              `assets/card_still_full1_${Math.abs(picObj.id as number)}_${
-                (picObj.id as number) > 0 ? "evolution" : "normal"
+              `assets/card_still_full1_${Math.abs(currentPic.id as number)}_${
+                (currentPic.id as number) > 0 ? "evolution" : "normal"
               }.png`
             )}
+            minZoom={0.8}
+            maxZoom={8}
+            cropSize={{ width: 180, height: 180 }}
             aspect={1}
-            cropSize={{ width: 120, height: 120 }}
             cropShape="round"
             crop={crop}
             zoom={zoom}
             onCropChange={setCrop}
             onZoomChange={setZoom}
-            onCropAreaChange={(croppedArea) => {
-              setPicObj({
-                ...picObj,
+            onCropComplete={(croppedArea, cap) => {
+              console.log("CA", croppedArea, cap);
+              setCurrentPic({
+                ...currentPic,
                 crop: croppedArea,
               });
             }}
+            onMediaLoaded={(mediaSize) => {
+              if (!currentPic.crop) return;
+
+              const currentCrop = currentPic.crop;
+              // this was fucking hell to figure out this took me 2 hours please end my suffering
+              const scale =
+                (100 / currentCrop.height) * (180 / mediaSize.height);
+              const crop = {
+                x:
+                  ((currentCrop.x + 0.5 * currentCrop.width - 50) / 100) *
+                  mediaSize.width *
+                  -1 *
+                  scale,
+                y:
+                  ((currentCrop.y + 0.5 * currentCrop.height - 50) / 100) *
+                  mediaSize.height *
+                  -1 *
+                  scale,
+              };
+              setZoom(scale);
+              setCrop(crop);
+            }}
           />
-        </Container>
+        </Paper>
+      ) : (
+        <Paper mt="xs" radius="sm" withBorder p="sm">
+          <Text color="dimmed" align="center" size="xs">
+            Default profile picture selected. Type a card name in the search bar
+            to use a card CG instead.
+          </Text>
+        </Paper>
       )}
+      <Group position="right">
+        <Button
+          mt="xs"
+          onClick={() => {
+            externalSetter({ ...profileState, profile__picture: currentPic });
+            openedFunction(false);
+          }}
+        >
+          Save
+        </Button>
+      </Group>
     </Modal>
   );
 }
