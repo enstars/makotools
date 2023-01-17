@@ -22,18 +22,18 @@ import {
   IconSearch,
   IconSortAscending,
   IconSortDescending,
-  IconTrash,
 } from "@tabler/icons";
 import {
   useDebouncedValue,
   useLocalStorage,
   useMediaQuery,
 } from "@mantine/hooks";
+import fuzzysort from "fuzzysort";
 
 import { getLayout } from "components/Layout";
 import { getLocalizedDataArray } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { Event, ID, Scout } from "types/game";
+import { Event, EventType, ID, Scout, ScoutType } from "types/game";
 import { QuerySuccess, UserLoggedIn } from "types/makotools";
 import PageTitle from "components/sections/PageTitle";
 import useUser from "services/firebase/user";
@@ -41,6 +41,8 @@ import ResponsiveGrid from "components/core/ResponsiveGrid";
 import Picture from "components/core/Picture";
 import { useDayjs } from "services/libraries/dayjs";
 import { countdown } from "services/campaigns";
+
+type SortOption = "alpha" | "type" | "date";
 
 function BookmarkedCard({ campaign }: { campaign: Event | Scout }) {
   const { dayjs } = useDayjs();
@@ -95,7 +97,7 @@ function BookmarkedCard({ campaign }: { campaign: Event | Scout }) {
           srcB2={`assets/card_still_full1_${campaign.banner_id}_evolution.webp`}
           sx={{ width: isMobile ? 150 : 250, height: 120 }}
         />
-        <Stack spacing={5} sx={{ width: isMobile ? 150 : 250 }}>
+        <Stack spacing={5} sx={{ width: isMobile ? 150 : 350 }}>
           <Group>
             <Badge
               variant="filled"
@@ -118,19 +120,25 @@ function BookmarkedCard({ campaign }: { campaign: Event | Scout }) {
             </Badge>
           </Group>
 
-          <Text weight={700} lineClamp={2}>
+          <Text weight={700} lineClamp={isMobile ? 1 : 2}>
             {campaign.name[0]}
           </Text>
-          <Text size="sm">
-            Starts on {dayjs(campaign.start.en).format("MM/DD/YYYY")}
+          <Text>
+            Starts on{" "}
+            <Text
+              weight={700}
+              component="span"
+              sx={{
+                background: `${theme.colors.yellow[4]}55`,
+                padding: "2px 5px",
+                borderRadius: 10,
+              }}
+            >
+              {dayjs(campaign.start.en).format("MM/DD/YYYY")}
+            </Text>
           </Text>
         </Stack>
       </Group>
-      <Tooltip label="Remove from bookmarks" position="bottom">
-        <ActionIcon sx={{ position: "absolute", top: 0, right: 0 }}>
-          <IconTrash size={18} color={theme.colors.red[4]} />
-        </ActionIcon>
-      </Tooltip>
     </Card>
   );
 }
@@ -144,7 +152,6 @@ function Page({
 }) {
   const theme = useMantineTheme();
   const user = useUser();
-  const { dayjs } = useDayjs();
 
   const events: Event[] = useMemo(() => eventsQuery.data, [eventsQuery.data]);
   const scouts: Scout[] = useMemo(() => scoutsQuery.data, [scoutsQuery.data]);
@@ -166,16 +173,16 @@ function Page({
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   interface BookmarkViewOptions {
-    filterType: string[];
+    filterType: (EventType | ScoutType)[];
     searchQuery: string;
-    sortOption: string;
+    sortOption: SortOption;
     sortDescending: boolean;
   }
 
   const VIEW_OPTIONS_DEFAULT: BookmarkViewOptions = {
     filterType: [],
     searchQuery: "",
-    sortOption: "added",
+    sortOption: "date",
     sortDescending: false,
   };
 
@@ -184,11 +191,10 @@ function Page({
     defaultValue: VIEW_OPTIONS_DEFAULT,
   });
 
-  const SORT_OPTIONS: { value: string; label: string }[] = [
+  const SORT_OPTIONS: { value: SortOption; label: string }[] = [
     { value: "alpha", label: "Alphabetical" },
     { value: "type", label: "Campaign type" },
     { value: "date", label: "Start date" },
-    { value: "added", label: "Date added" },
   ];
 
   const [search, setSearch] = useState("");
@@ -197,18 +203,39 @@ function Page({
   const descendingNum = viewOptions.sortDescending ? -1 : 1;
 
   const SORT_FUNCTIONS = {
-    alpha: (a: any, b: any) => (a.name[0] - b.name[0]) * descendingNum,
-    type: (a: any, b: any) => (a.type - b.type) * descendingNum,
+    alpha: (a: any, b: any) => {
+      console.log(a.name[0], b.name[0]);
+      return a.name[0].localeCompare(b.name[0]) * descendingNum;
+    },
+    type: (a: any, b: any) => a.type.localeCompare(b.type) * descendingNum,
     date: (a: any, b: any) =>
-      (new Date(a.start.en) - new Date(b.start.en)) * descendingNum,
+      (new Date(a.start.en).getTime() - new Date(b.start.en).getTime()) *
+      descendingNum,
   };
 
+  const [bookmarksList, setBookmarksList] = useState<(Event | Scout)[]>([]);
+
   useEffect(() => {
-    let filteredBookmarks = bookmarkedCampaigns.filter((b) => {
-      return viewOptions.filterType.includes(b.type);
+    let filteredBookmarks: (Event | Scout)[] = bookmarkedCampaigns.filter(
+      (b) => {
+        return viewOptions.filterType.length
+          ? viewOptions.filterType.includes(b.type)
+          : true;
+      }
+    );
+
+    const searchedList = fuzzysort.go(debouncedSearch, filteredBookmarks, {
+      keys: ["name.0", "name.1", "name.2"],
+      all: true,
     });
-    
-  }, [viewOptions, debouncedSearch])
+
+    const sortedBookmarks = [...searchedList]
+      .sort((a: any, b: any) => b.score - a.score)
+      .map((bm) => bm.obj)
+      .sort(SORT_FUNCTIONS[viewOptions.sortOption]);
+
+    setBookmarksList(sortedBookmarks);
+  }, [viewOptions, debouncedSearch]);
 
   return (
     <>
@@ -225,12 +252,18 @@ function Page({
               sx={{ maxWidth: 220 }}
               variant="default"
               icon={<IconSearch size="1em" />}
+              onChange={(ev) => {
+                setSearch(ev.target.value);
+              }}
             />
             <Select
               label="Sort by"
               data={SORT_OPTIONS}
               value={viewOptions.sortOption}
               icon={<IconArrowsSort size="1em" />}
+              onChange={(val: SortOption) => {
+                if (val) setViewOptions({ ...viewOptions, sortOption: val });
+              }}
               rightSection={
                 <Tooltip label="Toggle ascending/descending">
                   <ActionIcon
@@ -253,7 +286,13 @@ function Page({
               }
             />
             <Input.Wrapper label="Campaign type">
-              <Chip.Group multiple spacing={3}>
+              <Chip.Group
+                multiple
+                spacing={3}
+                onChange={(val: (EventType | ScoutType)[]) => {
+                  setViewOptions({ ...viewOptions, filterType: val });
+                }}
+              >
                 {["song", "tour", "scout", "feature scout", "shuffle"].map(
                   (type) => (
                     <Chip
@@ -281,7 +320,7 @@ function Page({
           </Group>
         </Paper>
         <ResponsiveGrid width={isMobile ? 300 : 500}>
-          {bookmarkedCampaigns.map((bm: Event | Scout, i: number) => {
+          {bookmarksList.map((bm: Event | Scout, i: number) => {
             return <BookmarkedCard key={i} campaign={bm} />;
           })}
         </ResponsiveGrid>
