@@ -259,6 +259,7 @@ function RecommendedCountdown({
           </Text>
         </Paper>
       ) : (user as UserLoggedIn).db.profile__fave_charas &&
+        (user as UserLoggedIn).db.profile__fave_charas.length &&
         (user as UserLoggedIn).db.profile__fave_charas[0] === -1 ? (
         <Box mt={10}>
           <Group noWrap mb={10}>
