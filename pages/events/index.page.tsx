@@ -18,9 +18,10 @@ import {
   IconSortAscending,
   IconSortDescending,
 } from "@tabler/icons";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
+import { useListState } from "@mantine/hooks";
 
 import EventCard from "./components/EventCard";
 
@@ -29,8 +30,9 @@ import PageTitle from "components/sections/PageTitle";
 import { getLocalizedDataArray } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCard, GameCharacter, Event, GameUnit } from "types/game";
-import { QuerySuccess } from "types/makotools";
+import { QuerySuccess, UserLoggedIn } from "types/makotools";
 import useFSSList from "services/makotools/search";
+import useUser from "services/firebase/user";
 
 const defaultView = {
   filters: {
@@ -56,6 +58,7 @@ function Page({
   unitsQuery: QuerySuccess<GameUnit[]>;
   charactersQuery: QuerySuccess<GameCharacter[]>;
 }) {
+  const user = useUser();
   const theme = useMantineTheme();
   const { locale } = useRouter();
   const events = useMemo(() => eventsQuery.data, [eventsQuery.data]);
@@ -124,11 +127,21 @@ function Page({
     Event,
     typeof defaultView.filters
   >(events, fssOptions);
+  const [bookmarks, handlers] = useListState<number>(
+    (user as UserLoggedIn).db.bookmarks__events || []
+  );
 
   let characterIDtoSort: { [key: number]: number } = {};
   characters.forEach((c) => {
     characterIDtoSort[c.character_id] = c.sort_id;
   });
+
+  useEffect(() => {
+    user.loggedIn &&
+      user.db.set({
+        bookmarks__events: bookmarks,
+      });
+  }, [bookmarks]);
 
   return (
     <>
@@ -288,7 +301,14 @@ function Page({
         </Group>
       </Paper>
       {results.map((event) => (
-        <EventCard key={event.event_id} event={event} units={units} />
+        <EventCard
+          key={event.event_id}
+          event={event}
+          units={units}
+          bookmarked={bookmarks.includes(event.event_id)}
+          bookmarks={bookmarks}
+          bookmarkHandlers={handlers}
+        />
       ))}
     </>
   );

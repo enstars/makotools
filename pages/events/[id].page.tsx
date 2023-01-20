@@ -1,12 +1,22 @@
-import { Divider, Paper, Text } from "@mantine/core";
+import {
+  ActionIcon,
+  Divider,
+  Group,
+  Paper,
+  Text,
+  Tooltip,
+  useMantineTheme,
+} from "@mantine/core";
 import {
   IconBook,
+  IconBookmark,
   IconCards,
   IconDiamond,
   IconMusic,
   IconVinyl,
 } from "@tabler/icons";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useListState } from "@mantine/hooks";
 
 import ESPageHeader from "./components/ESPageHeader";
 import PointsTable from "./components/PointsTable";
@@ -21,11 +31,12 @@ import {
 } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCard, Event, GameUnit, Scout } from "types/game";
-import { QuerySuccess } from "types/makotools";
+import { QuerySuccess, UserLoggedIn } from "types/makotools";
 import { CardCard } from "components/core/CardCard";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 import { useCollections } from "services/makotools/collection";
 import NewCollectionModal from "pages/cards/components/NewCollectionModal";
+import useUser from "services/firebase/user";
 
 function Page({
   event,
@@ -38,11 +49,16 @@ function Page({
   cardsQuery: QuerySuccess<GameCard[]>;
   unitsQuery: QuerySuccess<GameUnit[]>;
 }) {
+  const user = useUser();
+  const theme = useMantineTheme();
   let cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
   let units = useMemo(() => unitsQuery.data, [unitsQuery.data]);
   const { collections, onEditCollection, onNewCollection } = useCollections();
   const [newCollectionModalOpened, setNewCollectionModalOpened] =
     useState<boolean>(false);
+  const [bookmarks, handlers] = useListState<number>(
+    (user as UserLoggedIn).db.bookmarks__events || []
+  );
 
   cards = cards.filter((card) => {
     return event.cards?.includes(card.id);
@@ -77,11 +93,48 @@ function Page({
       icon: <IconMusic size={16} strokeWidth={3} />,
     });
 
-  console.log(scout.banner_id);
+  useEffect(() => {
+    user.loggedIn &&
+      user.db.set({
+        bookmarks__events: bookmarks,
+      });
+  }, [bookmarks]);
 
   return (
     <>
-      <PageTitle title={event.name[0]} sx={{ width: "100%" }} />
+      <Group>
+        <PageTitle title={event.name[0]} sx={{ flex: "1 0 80%" }} />
+        <Tooltip
+          label={
+            user.loggedIn
+              ? bookmarks.includes(event.event_id)
+                ? "Remove from bookmarks"
+                : "Add to bookmarks"
+              : "Log in to add this to your bookmarks"
+          }
+          position="bottom"
+        >
+          <ActionIcon
+            size={40}
+            disabled={!user.loggedIn}
+            onClick={() => {
+              bookmarks.includes(event.event_id)
+                ? handlers.remove(bookmarks.indexOf(event.event_id))
+                : handlers.append(event.event_id);
+            }}
+          >
+            <IconBookmark
+              size={40}
+              fill={
+                bookmarks.includes(event.event_id)
+                  ? theme.colors[theme.primaryColor][4]
+                  : "none"
+              }
+              strokeWidth={bookmarks.includes(event.event_id) ? 0 : 2}
+            />
+          </ActionIcon>
+        </Tooltip>
+      </Group>
       <ESPageHeader content={event} units={units} />
       <SectionTitle title="Cards" id="cards" Icon={IconCards} />
       <ResponsiveGrid width={224}>

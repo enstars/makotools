@@ -28,7 +28,6 @@ function Favorites({
   externalSetter: Dispatch<SetStateAction<any>>;
   locale: Locale;
 }) {
-  console.log(profileState.profile__show_faves);
   const [selectedCharas, selectedCharasHandlers] = useListState<number>(
     profileState.profile__fave_charas || []
   );

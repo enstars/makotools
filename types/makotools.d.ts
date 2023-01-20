@@ -106,7 +106,7 @@ interface UserData {
   profile__pronouns?: string;
   profile__start_playing?: string;
   profile__picture?: ProfilePicture;
-  profile__fave_charas?: number[];
+  profile__fave_charas: number[];
   profile__fave_units?: number[];
   profile__show_faves?: boolean;
   // private
@@ -116,6 +116,8 @@ interface UserData {
   setting__show_tl_badge?: ShowTlBadge;
   setting__game_region?: GameRegion;
   setting__use_webp?: UseWebP;
+  bookmarks__events?: ID[];
+  bookmarks__scouts?: ID[];
   readonly admin?: {
     disableTextFields?: boolean;
     patreon?: 0 | 1 | 2 | 3 | 4;

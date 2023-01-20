@@ -16,6 +16,7 @@ import {
   IconMoonStars,
   IconPalette,
   IconGlobe,
+  IconBookmark,
 } from "@tabler/icons";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -214,6 +215,13 @@ function UserMenu({ trigger }: { trigger: any }) {
           </Menu.Item>
         ) : user.loggedIn ? (
           <>
+            <Menu.Item
+              component={Link}
+              href="/bookmarks"
+              icon={<IconBookmark size={14} />}
+            >
+              Bookmarks
+            </Menu.Item>
             <Menu.Item
               id="sidebar-link-settings"
               component={Link}

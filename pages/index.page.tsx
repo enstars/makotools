@@ -178,6 +178,21 @@ function Page({
     return recommendedCampaigns;
   }
 
+  function getBookmarkedCampaigns(): Campaign[] {
+    if (user.loggedIn) {
+      const bookmarkedEvents = (user as UserLoggedIn).db.bookmarks__events;
+      const bookmarkedScouts = (user as UserLoggedIn).db.bookmarks__scouts;
+      const filteredEvents = gameEvents.filter((e) =>
+        bookmarkedEvents?.includes(e.event_id)
+      );
+      const filteredScouts = scouts.filter((s) =>
+        bookmarkedScouts?.includes(s.gacha_id)
+      );
+      return [...filteredEvents, ...filteredScouts];
+    }
+    return [];
+  }
+
   return (
     <Group
       align="flex-start"
