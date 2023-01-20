@@ -43,8 +43,6 @@ function ProfilePicModal({
         }
   );
 
-  // console.log(user.db.profile__picture);
-
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState<number>(1);
   const bloomed = currentPic.id > 0;
@@ -53,8 +51,6 @@ function ProfilePicModal({
     if (user.loggedIn && user.db && user.db.profile__picture)
       setCurrentPic(user.db.profile__picture);
   }, [user]);
-
-  console.log(currentPic, bloomed);
 
   return (
     <Modal
@@ -137,7 +133,6 @@ function ProfilePicModal({
             onCropChange={setCrop}
             onZoomChange={setZoom}
             onCropComplete={(croppedArea, cap) => {
-              console.log("CA", croppedArea, cap);
               setCurrentPic({
                 ...currentPic,
                 crop: croppedArea,

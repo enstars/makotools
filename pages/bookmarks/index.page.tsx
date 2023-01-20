@@ -204,7 +204,6 @@ function Page({
 
   const SORT_FUNCTIONS = {
     alpha: (a: any, b: any) => {
-      console.log(a.name[0], b.name[0]);
       return a.name[0].localeCompare(b.name[0]) * descendingNum;
     },
     type: (a: any, b: any) => a.type.localeCompare(b.type) * descendingNum,

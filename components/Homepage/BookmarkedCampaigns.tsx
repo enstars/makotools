@@ -117,8 +117,6 @@ function BookmarkedCampaigns({ campaigns }: { campaigns: Campaign[] }) {
     slidesArray.push(slide);
   }
 
-  console.log(slidesArray);
-
   return (
     <Container mt="3vh" mb="7vh">
       <Title order={2}>Bookmarked Campaigns</Title>
