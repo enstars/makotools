@@ -2,7 +2,8 @@ import { Box, Image, useMantineTheme } from "@mantine/core";
 import { IconUser } from "@tabler/icons";
 
 import { getAssetURL } from "services/data";
-import { UserData } from "types/makotools";
+import useUser from "services/firebase/user";
+import { UserData, UserLoggedIn } from "types/makotools";
 
 /** Type defining the width, height, x-coordinate, and y-coordinate of a crop
  * @param {number} x - x-coordinate
@@ -26,20 +27,23 @@ function ProfileAvatar({
   userInfo,
   border,
 }: {
-  userInfo: UserData;
+  userInfo?: UserData;
   border?: string;
 }) {
   const theme = useMantineTheme();
+  const user = useUser();
+
+  const profile = userInfo || (user as UserLoggedIn).db;
 
   const src =
-    userInfo.profile__picture &&
+    profile.profile__picture &&
     getAssetURL(
-      `assets/card_still_full1_${Math.abs(userInfo.profile__picture.id)}_${
-        userInfo.profile__picture.id > 0 ? "evolution" : "normal"
+      `assets/card_still_full1_${Math.abs(profile.profile__picture.id)}_${
+        profile.profile__picture.id > 0 ? "evolution" : "normal"
       }.png`
     );
 
-  const crop = userInfo.profile__picture?.crop;
+  const crop = profile.profile__picture?.crop;
 
   const scale: number = crop ? 100 / crop.width : 100;
 
