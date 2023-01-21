@@ -1,6 +1,9 @@
 import { Box, Image, useMantineTheme } from "@mantine/core";
 import { IconUser } from "@tabler/icons";
 
+import { getAssetURL } from "services/data";
+import { UserData } from "types/makotools";
+
 /** Type defining the width, height, x-coordinate, and y-coordinate of a crop
  * @param {number} x - x-coordinate
  * @param {number} y - y-coordinate
@@ -20,15 +23,23 @@ interface Crop {
  * @param {string} border? - If the image needs a border, input the border style here
  */
 function ProfileAvatar({
-  src,
-  crop,
+  userInfo,
   border,
 }: {
-  src: string;
-  crop?: Crop | undefined;
+  userInfo: UserData;
   border?: string;
 }) {
   const theme = useMantineTheme();
+
+  const src =
+    userInfo.profile__picture &&
+    getAssetURL(
+      `assets/card_still_full1_${Math.abs(userInfo.profile__picture.id)}_${
+        userInfo.profile__picture.id > 0 ? "evolution" : "normal"
+      }.png`
+    );
+
+  const crop = userInfo.profile__picture?.crop;
 
   const scale: number = crop ? 100 / crop.width : 100;
 

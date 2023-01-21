@@ -23,7 +23,6 @@ import Autoplay from "embla-carousel-autoplay";
 import { useMediaQuery } from "@mantine/hooks";
 
 import EditProfileModal from "./components/customization/EditProfileModal";
-import MaoBanned from "./assets/MaoBanned.png";
 import ProfilePicModal from "./components/profilePicture/ProfilePicModal";
 import RemoveFriendModal from "./components/RemoveFriendModal";
 import ProfileAvatar from "./components/profilePicture/ProfileAvatar";
@@ -34,7 +33,7 @@ import CardCollections from "./components/collections/CardCollections";
 import { getLayout, useSidebarStatus } from "components/Layout";
 import { Locale, QuerySuccess, UserData, UserLoggedIn } from "types/makotools";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { getAssetURL, getLocalizedDataArray } from "services/data";
+import { getLocalizedDataArray } from "services/data";
 import { parseStringify } from "services/utilities";
 import useUser from "services/firebase/user";
 import BioDisplay from "components/sections/BioDisplay";
@@ -216,22 +215,7 @@ function Page({
           }}
         >
           <ProfileAvatar
-            src={
-              profile.profile__picture && profile.profile__picture.id
-                ? getAssetURL(
-                    `assets/card_still_full1_${Math.abs(
-                      profile.profile__picture.id
-                    )}_${
-                      profile.profile__picture.id > 0 ? "evolution" : "normal"
-                    }.png`
-                  )
-                : MaoBanned.src
-            }
-            crop={
-              profile.profile__picture && profile.profile__picture.crop
-                ? profile.profile__picture.crop
-                : undefined
-            }
+            userInfo={profile}
             border={`5px solid ${
               theme.colorScheme === "dark"
                 ? theme.colors.dark[9]

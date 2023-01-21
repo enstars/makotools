@@ -12,7 +12,6 @@ import dynamic from "next/dynamic";
 import { Dispatch, SetStateAction } from "react";
 import { IconPencil } from "@tabler/icons";
 
-import MaoBanned from "../../assets/MaoBanned.png";
 import StartPlaying from "../StartPlaying";
 import ProfileAvatar from "../profilePicture/ProfileAvatar";
 import Favorites from "../Favorites";
@@ -23,7 +22,6 @@ import Banner from "./Banner";
 
 import { GameCard, GameCharacter, GameUnit } from "types/game";
 import { Locale, User, UserData } from "types/makotools";
-import { getAssetURL } from "services/data";
 
 const Bio = dynamic(() => import("./Bio"), {
   ssr: false,
@@ -111,26 +109,7 @@ function EditProfileModal({
             <Group spacing="lg" align="flex-start">
               <Box sx={{ flex: "0 0 120px" }}>
                 <Stack align="center" spacing="xs">
-                  <ProfileAvatar
-                    src={
-                      profileState.profile__picture
-                        ? getAssetURL(
-                            `assets/card_still_full1_${Math.abs(
-                              profileState.profile__picture.id
-                            )}_${
-                              profileState.profile__picture.id > 0
-                                ? "evolution"
-                                : "normal"
-                            }.png`
-                          )
-                        : MaoBanned.src
-                    }
-                    crop={
-                      profileState.profile__picture
-                        ? profileState.profile__picture.crop
-                        : undefined
-                    }
-                  />
+                  <ProfileAvatar userInfo={profileState} />
                   <Button
                     variant="subtle"
                     sx={
