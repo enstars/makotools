@@ -19,7 +19,7 @@ import {
   IconBus,
   IconDiamond,
 } from "@tabler/icons";
-import { UseListStateHandlers } from "@mantine/hooks";
+import { UseListStateHandlers, useMediaQuery } from "@mantine/hooks";
 
 import Picture from "components/core/Picture";
 import { Event, GameUnit } from "types/game";
@@ -80,6 +80,8 @@ function EventCard({
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
 
+  const isMobile = useMediaQuery("(max-width: 768px)");
+
   let eventUnits: GameUnit[] = units.filter((unit: GameUnit) => {
     return event.unit_id ? event.unit_id?.includes(unit.id) : false;
   });
@@ -91,12 +93,13 @@ function EventCard({
   );
 
   return (
-    <Paper withBorder className={classes.eventCard}>
-      <Box
-        component={Link}
-        href={`/events/${event.event_id}`}
-        sx={{ position: "relative", flex: "1 1 30%", minWidth: 175 }}
-      >
+    <Paper
+      withBorder
+      className={classes.eventCard}
+      component={Link}
+      href={`/events/${event.event_id}`}
+    >
+      <Box sx={{ position: "relative", flex: "1 1 30%", minWidth: 175 }}>
         <Picture
           alt={event.name[0]}
           srcB2={`assets/card_still_full1_${event.banner_id}_evolution.png`}
@@ -212,7 +215,9 @@ function EventCard({
           position="bottom"
         >
           <ActionIcon
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
               bookmarked
                 ? bookmarkHandlers.remove(bookmarks.indexOf(event.event_id))
                 : bookmarkHandlers.append(event.event_id);
@@ -221,8 +226,16 @@ function EventCard({
           >
             <IconBookmark
               fill={bookmarked ? theme.colors[theme.primaryColor][4] : "none"}
-              strokeWidth={bookmarked ? 0 : 2}
-              size={bookmarked ? 32 : 26}
+              strokeWidth={bookmarked ? 0 : isMobile ? 1 : 2}
+              size={
+                !isMobile
+                  ? bookmarked
+                    ? 32
+                    : 26
+                  : isMobile && bookmarked
+                  ? 44
+                  : 40
+              }
             />
           </ActionIcon>
         </Tooltip>

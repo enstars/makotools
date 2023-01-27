@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import Link from "next/link";
 import { IconBookmark, IconHistory, IconHourglassHigh } from "@tabler/icons";
-import { UseListStateHandlers } from "@mantine/hooks";
+import { UseListStateHandlers, useMediaQuery } from "@mantine/hooks";
 
 import Picture from "components/core/Picture";
 import { useDayjs } from "services/libraries/dayjs";
@@ -47,6 +47,7 @@ function ScoutCard({
   const theme = useMantineTheme();
   const { dayjs } = useDayjs();
   const { classes } = useStyles();
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   return (
     <Card withBorder sx={{ position: "relative" }} p={0}>
@@ -78,7 +79,15 @@ function ScoutCard({
                   : `${theme.colors.gray[5]}99`
               }
               style={{ filter: "drop-shadow(0px 0px 1px rgb(0 0 0))" }}
-              size={bookmarked ? 32 : 26}
+              size={
+                !isMobile
+                  ? bookmarked
+                    ? 32
+                    : 26
+                  : isMobile && bookmarked
+                  ? 44
+                  : 40
+              }
             />
           </ActionIcon>
         </Tooltip>
