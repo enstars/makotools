@@ -318,11 +318,17 @@ function Page({
             </Input.Wrapper>
           </Group>
         </Paper>
-        <ResponsiveGrid width={isMobile ? 300 : 500}>
-          {bookmarksList.map((bm: Event | Scout, i: number) => {
-            return <BookmarkedCard key={i} campaign={bm} />;
-          })}
-        </ResponsiveGrid>
+        {!bookmarksList || bookmarksList.length === 0 ? (
+          <Paper p="lg">
+            <Text>There are no campaigns in your bookmarks.</Text>
+          </Paper>
+        ) : (
+          <ResponsiveGrid width={isMobile ? 300 : 500}>
+            {bookmarksList.map((bm: Event | Scout, i: number) => {
+              return <BookmarkedCard key={i} campaign={bm} />;
+            })}
+          </ResponsiveGrid>
+        )}
       </Box>
     </>
   );
