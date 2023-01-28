@@ -339,7 +339,6 @@ function Sidebar(props: any) {
                 .map((link: LinkObject) => {
                   const active =
                     `/${location.asPath.split("/")[1]}` === link.link;
-                  console.log(link);
                   return (
                     <Tooltip
                       key={link.link}
