@@ -5,7 +5,7 @@ import {
   IconCake,
   IconDiamond,
   IconShirt,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import Link from "next/link";
 
 import Picture from "components/core/Picture";

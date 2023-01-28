@@ -17,7 +17,7 @@ import {
   IconBrandPatreon,
   IconDiscountCheck,
   IconHearts,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import { useRef, Fragment, useState, useEffect, useMemo } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { useMediaQuery } from "@mantine/hooks";

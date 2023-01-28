@@ -18,7 +18,7 @@ import {
   IconBookmark,
   IconBus,
   IconDiamond,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import { UseListStateHandlers, useMediaQuery } from "@mantine/hooks";
 
 import Picture from "components/core/Picture";

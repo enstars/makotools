@@ -1,5 +1,5 @@
 import { Accordion, Anchor, Box, Stack, Text } from "@mantine/core";
-import { IconNews } from "@tabler/icons";
+import { IconNews } from "@tabler/icons-react";
 import useTranslation from "next-translate/useTranslation";
 import Link from "next/link";
 

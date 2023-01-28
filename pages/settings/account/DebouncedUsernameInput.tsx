@@ -8,7 +8,7 @@ import {
   Group,
   useMantineTheme,
 } from "@mantine/core";
-import { IconCheck, IconX, IconAt } from "@tabler/icons";
+import { IconCheck, IconX, IconAt } from "@tabler/icons-react";
 import Image from "next/image";
 
 import kinnie from "./kinnie.png";

@@ -20,7 +20,7 @@ import {
   IconUserExclamation,
   IconArrowsUpDown,
   IconFlag,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import { arrayRemove, arrayUnion } from "firebase/firestore";
 import Link from "next/link";
 import { Dispatch, SetStateAction } from "react";

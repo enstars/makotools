@@ -7,7 +7,7 @@ import {
   createStyles,
 } from "@mantine/core";
 import { UseListStateHandlers } from "@mantine/hooks";
-import { IconFlower, IconFlowerOff, IconTrash } from "@tabler/icons";
+import { IconFlower, IconFlowerOff, IconTrash } from "@tabler/icons-react";
 import { useState } from "react";
 
 import { getAssetURL } from "services/data";

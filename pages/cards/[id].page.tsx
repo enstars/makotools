@@ -1,6 +1,6 @@
 import React from "react";
 import { Group, AspectRatio, Badge, Divider } from "@mantine/core";
-import { IconStar } from "@tabler/icons";
+import { IconStar } from "@tabler/icons-react";
 
 import Stats from "./components/Stats";
 import Skills from "./components/Skills";

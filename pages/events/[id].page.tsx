@@ -14,7 +14,7 @@ import {
   IconDiamond,
   IconMusic,
   IconVinyl,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import { useEffect, useMemo, useState } from "react";
 import { useListState } from "@mantine/hooks";
 

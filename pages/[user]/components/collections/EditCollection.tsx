@@ -24,7 +24,7 @@ import {
   IconEye,
   IconSortAscending,
   IconTrash,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { GridContextProvider, GridDropZone, GridItem } from "react-grid-drag";
 

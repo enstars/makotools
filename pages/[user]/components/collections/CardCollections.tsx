@@ -8,7 +8,7 @@ import {
   Title,
   useMantineTheme,
 } from "@mantine/core";
-import { IconPencil } from "@tabler/icons";
+import { IconPencil } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useListState } from "@mantine/hooks";
 import useSWR from "swr";

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState, useEffect, ReactElement } from "react";
-import { IconAlertTriangle } from "@tabler/icons";
+import { IconAlertTriangle } from "@tabler/icons-react";
 import { useAuthUser } from "next-firebase-auth";
 import { ColorScheme } from "@mantine/core";
 

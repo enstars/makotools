@@ -1,5 +1,5 @@
 import { ActionIcon, Modal, TextInput, useMantineTheme } from "@mantine/core";
-import { IconAt, IconPencil } from "@tabler/icons";
+import { IconAt, IconPencil } from "@tabler/icons-react";
 import { useState } from "react";
 
 import DebouncedUsernameInput from "./DebouncedUsernameInput";

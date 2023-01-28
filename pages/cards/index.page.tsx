@@ -23,7 +23,7 @@ import {
   IconSearch,
   IconSortAscending,
   IconSortDescending,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import fuzzysort from "fuzzysort";
 
 import NewCollectionModal from "./components/NewCollectionModal";

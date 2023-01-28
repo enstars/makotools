@@ -1,5 +1,5 @@
 import { Box, Image, useMantineTheme } from "@mantine/core";
-import { IconUser } from "@tabler/icons";
+import { IconUser } from "@tabler/icons-react";
 
 import { getAssetURL } from "services/data";
 import useUser from "services/firebase/user";

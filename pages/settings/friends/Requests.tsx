@@ -9,7 +9,7 @@ import {
   Title,
   useMantineTheme,
 } from "@mantine/core";
-import { IconCheck, IconX } from "@tabler/icons";
+import { IconCheck, IconX } from "@tabler/icons-react";
 import {
   arrayRemove,
   arrayUnion,

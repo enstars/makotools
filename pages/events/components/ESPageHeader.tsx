@@ -5,7 +5,7 @@ import {
   IconBus,
   IconComet,
   IconRotateClockwise2,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import dayjs from "dayjs";
 
 import IconEnstars from "components/core/IconEnstars";

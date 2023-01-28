@@ -15,7 +15,7 @@ import {
   IconLanguageHiragana,
   IconNews,
   IconSpy,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import Link from "next/link";
 
 import { getLayout } from "components/Layout";

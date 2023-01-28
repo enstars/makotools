@@ -11,7 +11,7 @@ import {
   Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { IconChevronUp } from "@tabler/icons";
+import { IconChevronUp } from "@tabler/icons-react";
 
 import { COLLECTION_ICONS } from "components/collections/collectionIcons";
 import CollectionIconsMenu from "components/collections/CollectionIconsMenu";

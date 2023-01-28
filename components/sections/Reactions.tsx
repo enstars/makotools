@@ -11,7 +11,7 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { useState } from "react";
-import { IconChevronDown, IconChevronUp, IconMoodSmile } from "@tabler/icons";
+import { IconChevronDown, IconChevronUp, IconMoodSmile } from "@tabler/icons-react";
 import { Collapse } from "react-collapse";
 import useSWR from "swr";
 

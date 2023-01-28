@@ -8,7 +8,7 @@ import {
   Text,
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
-import { IconSun, IconSunOff, IconX } from "@tabler/icons";
+import { IconSun, IconSunOff, IconX } from "@tabler/icons-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { GridContextProvider, GridDropZone, GridItem } from "react-grid-drag";
 

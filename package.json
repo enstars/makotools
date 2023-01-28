@@ -21,7 +21,7 @@
     "@mantine/spotlight": "^5.9.4",
     "@pronestor/react-zoom-pan-pinch": "^2.4.3",
     "@svgr/webpack": "^6.5.1",
-    "@tabler/icons": "^1.117.0",
+    "@tabler/icons-react": "^2.1.2",
     "@vercel/analytics": "^0.1.6",
     "cookies-next": "^2.1.1",
     "country-flag-icons": "^1.5.5",

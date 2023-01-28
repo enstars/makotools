@@ -17,7 +17,7 @@ import {
   IconPalette,
   IconGlobe,
   IconBookmark,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import useTranslation from "next-translate/useTranslation";

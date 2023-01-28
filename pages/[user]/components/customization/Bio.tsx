@@ -1,5 +1,5 @@
 import { Input, Tabs, Textarea, Text } from "@mantine/core";
-import { IconPencil, IconTextCaption } from "@tabler/icons";
+import { IconPencil, IconTextCaption } from "@tabler/icons-react";
 import { Dispatch, SetStateAction, useState } from "react";
 
 import TextSetting from "./TextSetting";

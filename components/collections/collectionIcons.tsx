@@ -1,4 +1,9 @@
-import { IconCards, IconHeart, IconMoodCry, IconStar } from "@tabler/icons";
+import {
+  IconCards,
+  IconHeart,
+  IconMoodCry,
+  IconStar,
+} from "@tabler/icons-react";
 
 import IconEnstars from "components/core/IconEnstars";
 

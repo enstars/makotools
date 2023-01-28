@@ -3,13 +3,13 @@ import {
   IconLock,
   IconUserCheck,
   IconWorld,
-  TablerIcon,
-} from "@tabler/icons";
+  TablerIconsProps,
+} from "@tabler/icons-react";
 
 import { CollectionPrivacyLevel } from "types/makotools";
 
 const PRIVACY_LEVELS: {
-  icon: TablerIcon;
+  icon: (props: TablerIconsProps) => JSX.Element;
   title: string;
   value: CollectionPrivacyLevel;
   color: string;

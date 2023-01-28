@@ -6,7 +6,7 @@ import {
   Stack,
   Title,
 } from "@mantine/core";
-import { IconArrowLeft, IconArrowRight } from "@tabler/icons";
+import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 import useTranslation from "next-translate/useTranslation";
 import { ReactElement, useCallback } from "react";
 

@@ -8,7 +8,7 @@ import {
   Tooltip,
   Image,
 } from "@mantine/core";
-import { IconCalendar, IconHeart } from "@tabler/icons";
+import { IconCalendar, IconHeart } from "@tabler/icons-react";
 import dayjs from "dayjs";
 
 import Picture from "components/core/Picture";

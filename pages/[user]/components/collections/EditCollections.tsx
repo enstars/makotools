@@ -6,7 +6,7 @@ import {
   IconMenuOrder,
   IconPlus,
   IconX,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import { useElementSize, UseListStateHandlers } from "@mantine/hooks";
 
 import EditCollection from "./EditCollection";

@@ -14,7 +14,7 @@ import {
   IconDeviceGamepad2,
   IconPalette,
   IconFriends,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 
 import Region from "./content/Region";
 import NameOrder from "./content/NameOrder";

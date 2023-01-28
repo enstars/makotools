@@ -1,5 +1,5 @@
 import { useMantineTheme } from "@mantine/core";
-import { IconMoonStars, IconSun } from "@tabler/icons";
+import { IconMoonStars, IconSun } from "@tabler/icons-react";
 
 import SelectSetting from "../shared/SelectSetting";
 

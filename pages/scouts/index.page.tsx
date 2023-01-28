@@ -20,7 +20,7 @@ import {
   IconSearch,
   IconSortAscending,
   IconSortDescending,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import { useEffect, useMemo } from "react";
 import { useListState, useMediaQuery } from "@mantine/hooks";
 

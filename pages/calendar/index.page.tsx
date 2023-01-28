@@ -8,7 +8,7 @@ import {
   SegmentedControl,
   Text,
 } from "@mantine/core";
-import { IconCalendar, IconList } from "@tabler/icons";
+import { IconCalendar, IconList } from "@tabler/icons-react";
 
 import CalendarGridView from "./components/CalendarGridView";
 import CalendarListView from "./components/CalendarListView";

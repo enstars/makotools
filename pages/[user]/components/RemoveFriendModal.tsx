@@ -1,6 +1,6 @@
 import { Button, Group, Modal, Title } from "@mantine/core";
 import { showNotification, updateNotification } from "@mantine/notifications";
-import { IconCheck, IconX } from "@tabler/icons";
+import { IconCheck, IconX } from "@tabler/icons-react";
 import { arrayRemove } from "firebase/firestore";
 import { Dispatch, SetStateAction } from "react";
 

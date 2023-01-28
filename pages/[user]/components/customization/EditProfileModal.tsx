@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import dynamic from "next/dynamic";
 import { Dispatch, SetStateAction } from "react";
-import { IconPencil } from "@tabler/icons";
+import { IconPencil } from "@tabler/icons-react";
 
 import StartPlaying from "../StartPlaying";
 import ProfileAvatar from "../profilePicture/ProfileAvatar";

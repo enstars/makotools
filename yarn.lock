@@ -3347,18 +3347,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tabler/icons@npm:^1.117.0":
-  version: 1.117.0
-  resolution: "@tabler/icons@npm:1.117.0"
+"@tabler/icons-react@npm:^2.1.2":
+  version: 2.1.2
+  resolution: "@tabler/icons-react@npm:2.1.2"
+  dependencies:
+    "@tabler/icons": 2.1.2
+    prop-types: ^15.7.2
   peerDependencies:
-    react: ^16.x || 17.x || 18.x
-    react-dom: ^16.x || 17.x || 18.x
-  peerDependenciesMeta:
-    react:
-      optional: true
-    react-dom:
-      optional: true
-  checksum: bdb18d36bd554bef86b50d59bd659f951a7cd7bab7a7b8155d573d2a584e5fba04e44fa7e2e4c998a0869619de6fc0a922424d4486ddc9273bee3c8ae65ccf12
+    react: ^16.5.1 || ^17.0.0 || ^18.0.0
+  checksum: db776a5c4460fad8d67e31d7de7ce529f3a1ddaa646a223fee0470ff74d2a76c07c8bdb5249003806e930900c8227ee3241d374077c8c6f20386d147ae0228c9
+  languageName: node
+  linkType: hard
+
+"@tabler/icons@npm:2.1.2":
+  version: 2.1.2
+  resolution: "@tabler/icons@npm:2.1.2"
+  checksum: bce682e783c2c6cb27b3dc8bded11c2c003bc6afe4234487826d4b19790ff393b827027ff564bba5604a1b5092406a0fbb47f86171e391799155819881acd87b
   languageName: node
   linkType: hard
 
@@ -7414,7 +7418,7 @@ __metadata:
     "@next/bundle-analyzer": ^13.1.0
     "@pronestor/react-zoom-pan-pinch": ^2.4.3
     "@svgr/webpack": ^6.5.1
-    "@tabler/icons": ^1.117.0
+    "@tabler/icons-react": ^2.1.2
     "@types/dompurify": ^2.4.0
     "@types/jsdom": ^20.0.1
     "@types/lodash": ^4.14.191

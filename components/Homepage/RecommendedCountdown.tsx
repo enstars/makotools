@@ -18,7 +18,7 @@ import {
   IconCalendarDue,
   IconHeart,
   IconStar,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import useTranslation from "next-translate/useTranslation";

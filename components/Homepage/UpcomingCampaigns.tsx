@@ -16,7 +16,7 @@ import {
   IconCalendarTime,
   IconDiamond,
   IconShirt,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import Link from "next/link";
 import useTranslation from "next-translate/useTranslation";
 

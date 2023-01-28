@@ -7,7 +7,7 @@ import {
   IconExclamationMark,
   IconPlayerPlay,
   IconShirt,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 

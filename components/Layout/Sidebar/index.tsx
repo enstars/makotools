@@ -1,4 +1,4 @@
-import React, { forwardRef, ReactElement, SyntheticEvent } from "react";
+import React, { forwardRef, SyntheticEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import {
@@ -8,7 +8,6 @@ import {
   IconBooks,
   IconBrandPatreon,
   IconUserCircle,
-  TablerIcon,
   IconCalendar,
   IconDiamond,
   IconInfoCircle,
@@ -16,7 +15,8 @@ import {
   IconChevronLeft,
   IconSearch,
   IconX,
-} from "@tabler/icons";
+  TablerIconsProps,
+} from "@tabler/icons-react";
 import {
   Navbar,
   ScrollArea,
@@ -50,7 +50,7 @@ import useUser from "services/firebase/user";
 type LinkObject = {
   link: string;
   name: string;
-  Icon?: TablerIcon | ReactElement;
+  Icon?: ((props: TablerIconsProps) => JSX.Element) | any;
   disabled?: boolean;
   props?: any;
 };
@@ -98,7 +98,7 @@ const SidebarLink = forwardRef(function SbL(
               placeItems: "center",
             })}
           >
-            {typeof Icon === "function" ? <Icon size={18} /> : Icon}
+            {Icon.render ? <Icon size={18} /> : Icon}
           </Box>
         )
       }
@@ -339,6 +339,7 @@ function Sidebar(props: any) {
                 .map((link: LinkObject) => {
                   const active =
                     `/${location.asPath.split("/")[1]}` === link.link;
+                  console.log(link);
                   return (
                     <Tooltip
                       key={link.link}

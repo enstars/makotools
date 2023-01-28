@@ -9,7 +9,7 @@ import {
   Text,
 } from "@mantine/core";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { IconFlower, IconFlowerOff, IconSearch } from "@tabler/icons";
+import { IconFlower, IconFlowerOff, IconSearch } from "@tabler/icons-react";
 import Cropper from "react-easy-crop";
 import { Point } from "react-easy-crop/types";
 

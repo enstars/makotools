@@ -8,7 +8,7 @@ import {
   Button,
   NumberInput,
 } from "@mantine/core";
-import { IconPlaylistAdd, IconChecklist, IconPlus } from "@tabler/icons";
+import { IconPlaylistAdd, IconChecklist, IconPlus } from "@tabler/icons-react";
 import { inRange, isNil, sortBy } from "lodash";
 
 import { CardCollection, UserLoggedIn } from "types/makotools";

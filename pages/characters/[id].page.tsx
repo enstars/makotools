@@ -1,6 +1,6 @@
 import { Text, Box, Alert, useMantineTheme } from "@mantine/core";
 import Confetti from "react-confetti";
-import { IconCake } from "@tabler/icons";
+import { IconCake } from "@tabler/icons-react";
 
 import PageTitle from "components/sections/PageTitle";
 import Reactions from "components/sections/Reactions";

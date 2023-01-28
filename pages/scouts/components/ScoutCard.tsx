@@ -9,7 +9,7 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import Link from "next/link";
-import { IconBookmark, IconHistory, IconHourglassHigh } from "@tabler/icons";
+import { IconBookmark, IconHistory, IconHourglassHigh } from "@tabler/icons-react";
 import { UseListStateHandlers, useMediaQuery } from "@mantine/hooks";
 
 import Picture from "components/core/Picture";

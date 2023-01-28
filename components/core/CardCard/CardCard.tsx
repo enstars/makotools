@@ -9,7 +9,7 @@ import {
   Tooltip,
   useMantineTheme,
 } from "@mantine/core";
-import { IconStar, IconSum } from "@tabler/icons";
+import { IconStar, IconSum } from "@tabler/icons-react";
 import { useRouter } from "next/router";
 
 import AddCardButton from "./AddCardButton";
