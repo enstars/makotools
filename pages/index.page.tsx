@@ -13,7 +13,6 @@ import useTranslation from "next-translate/useTranslation";
 import { getLayout } from "components/Layout";
 import UpcomingCampaigns from "components/Homepage/UpcomingCampaigns";
 import Banner from "components/Homepage/Banner";
-
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "services/data";
 import {
@@ -135,7 +134,9 @@ function Page({
                 events.filter(
                   (event: GameEvent) =>
                     event.event_id &&
-                    (event.type === "song" || event.type === "tour")
+                    (event.type === "song" ||
+                      event.type === "tour" ||
+                      event.type === "shuffle")
                 ) as GameEvent[]
               }
             />
