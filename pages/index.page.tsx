@@ -203,7 +203,9 @@ function Page({
                 events.filter(
                   (event: Event) =>
                     event.event_id &&
-                    (event.type === "song" || event.type === "tour")
+                    (event.type === "song" ||
+                      event.type === "tour" ||
+                      event.type === "shuffle")
                 ) as Event[]
               }
             />
