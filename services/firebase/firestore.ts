@@ -10,12 +10,14 @@ import {
   getDocs,
 } from "firebase/firestore";
 
+import { parseStringify } from "services/utilities";
 import {
   UserData,
   LoadingStatus,
   UserPrivateData,
   User,
   CardCollection,
+  UserLoggedIn,
 } from "types/makotools";
 
 /**
@@ -169,4 +171,27 @@ export async function getFirestoreUserDocument(
   if (typeof fallback !== undefined) return fallback;
   throw new Error("nonexistent and no fallback");
   return undefined;
+}
+
+export async function getFirestoreUserProfile([profileAddress, user]: [
+  string,
+  User
+]) {
+  const db = getFirestore();
+  let profile;
+
+  try {
+    const q: any = query(
+      collection(db, "users"),
+      where("username", "==", (user as UserLoggedIn).db.username)
+    );
+    const querySnap = await getDocs(q);
+    profile = parseStringify(querySnap.docs[0].data());
+
+    return profile;
+  } catch (e) {
+    console.error(e);
+  }
+
+  return profile;
 }

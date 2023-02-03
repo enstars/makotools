@@ -39,6 +39,7 @@ const Bio = dynamic(() => import("./Bio"), {
  */
 function EditProfileModal({
   opened,
+  saveChanges,
   openedFunction,
   picModalFunction,
   cards,
@@ -51,6 +52,7 @@ function EditProfileModal({
   locale,
 }: {
   opened: boolean;
+  saveChanges: any;
   openedFunction: Dispatch<SetStateAction<boolean>>;
   picModalFunction: Dispatch<SetStateAction<boolean>>;
   cards?: GameCard[] | undefined;
@@ -177,20 +179,7 @@ function EditProfileModal({
         </Button>
         <Button
           onClick={() => {
-            if (user.loggedIn) {
-              user.db.set({
-                profile__banner: profileState.profile__banner,
-                name: profileState.name,
-                profile__pronouns: profileState.profile__pronouns,
-                profile__start_playing: profileState.profile__start_playing,
-                profile__bio: profileState.profile__bio,
-                profile__picture: profileState.profile__picture,
-                profile__fave_charas: profileState.profile__fave_charas,
-                profile__fave_units: profileState.profile__fave_units,
-                profile__show_faves: profileState.profile__show_faves,
-              });
-            }
-            openedFunction(false);
+            saveChanges();
           }}
         >
           Save Changes
