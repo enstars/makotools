@@ -207,6 +207,7 @@ function Page({
                       event.type === "tour" ||
                       event.type === "shuffle")
                 ) as Event[]
+
               }
             />
             <CurrentScoutsCountdown scouts={scouts} />
