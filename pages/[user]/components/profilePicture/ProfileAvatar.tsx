@@ -26,9 +26,11 @@ interface Crop {
 function ProfileAvatar({
   userInfo,
   border,
+  size = 120,
 }: {
   userInfo?: UserData;
   border?: string;
+  size?: number;
 }) {
   const theme = useMantineTheme();
   const user = useUser();
@@ -63,9 +65,9 @@ function ProfileAvatar({
     <Box
       sx={{
         position: "relative",
-        width: 120,
-        height: 120,
-        borderRadius: 60,
+        width: size,
+        height: size,
+        borderRadius: size,
         background: theme.colors[theme.primaryColor][1],
         border: border,
         textAlign: "center",
@@ -87,15 +89,15 @@ function ProfileAvatar({
       height={transform.height}
       styles={(theme) => ({
         root: {
-          width: "120px !important",
-          height: 120,
+          width: `${size}px !important`,
+          height: size,
         },
         imageWrapper: {
           position: "relative",
-          width: 120,
-          height: 120,
+          width: size,
+          height: size,
           overflow: "hidden",
-          borderRadius: 60,
+          borderRadius: size,
           border: border || "none",
         },
         image: {

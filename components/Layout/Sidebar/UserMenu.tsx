@@ -26,6 +26,7 @@ import { characterColors } from "../../MantineTheme/index";
 
 import useUser from "services/firebase/user";
 import { LOCALES } from "services/makotools/locales";
+import ProfileAvatar from "pages/[user]/components/profilePicture/ProfileAvatar";
 
 function UserMenu({ trigger }: { trigger: any }) {
   const { t } = useTranslation("sidebar");
@@ -61,12 +62,16 @@ function UserMenu({ trigger }: { trigger: any }) {
           component={Link}
           href={user.loggedIn ? `/@${user?.db?.username}` : "#"}
           icon={
-            <Avatar
-              color={theme.primaryColor}
-              size="sm"
-              radius="xl"
-              sx={{ "*": { display: "flex" } }}
-            />
+            user.loggedIn ? (
+              <ProfileAvatar userInfo={user.db} size={32} />
+            ) : (
+              <Avatar
+                color={theme.primaryColor}
+                size="sm"
+                radius="xl"
+                sx={{ "*": { display: "flex" } }}
+              />
+            )
           }
         >
           {user.loading ? (
