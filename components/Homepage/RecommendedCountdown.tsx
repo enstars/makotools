@@ -11,6 +11,7 @@ import {
   Button,
   Tooltip,
   Box,
+  SimpleGrid,
 } from "@mantine/core";
 import {
   IconArrowLeft,
@@ -23,7 +24,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import useTranslation from "next-translate/useTranslation";
 import { Carousel } from "@mantine/carousel";
-import { useMediaQuery } from "@mantine/hooks";
+import { useElementSize, useMediaQuery } from "@mantine/hooks";
 
 import { countdown, retrieveNextCampaigns } from "services/campaigns";
 import useUser from "services/firebase/user";
@@ -35,12 +36,11 @@ import {
   GameUnit,
   Campaign,
 } from "types/game";
-import { getAssetURL } from "services/data";
 import { useDayjs } from "services/libraries/dayjs";
 import { getNameOrder } from "services/game";
-import ResponsiveGrid from "components/core/ResponsiveGrid";
 import HokkeConcern from "assets/HokkeConcern.png";
 import { UserLoggedIn } from "types/makotools";
+import Picture from "components/core/Picture";
 
 function RecommendedCard({
   event,
@@ -104,42 +104,39 @@ function RecommendedCard({
     ? `/events/${(event as Event).event_id}`
     : `/scouts/${(event as Scout).gacha_id}`;
   return (
-    <Paper
-      withBorder
-      shadow="xs"
-      p={5}
-      component={Link}
-      href={
-        event.type === "birthday"
-          ? `/characters/${event.character_id}`
-          : event.type === "feature scout" || event.type === "scout"
-          ? `/scouts/${event.gacha_id}`
-          : `/events/${event.event_id}`
-      }
-    >
-      <Group noWrap align="flex-start" spacing="xs">
-        <Image
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
+      <Text size="xs" color="dimmed" sx={{ display: "flex" }}>
+        <IconStar size={12} style={{ marginTop: 2 }} />
+        <Text inherit ml={4}>
+          Because you like{" "}
+          <Text weight={700} component="span">
+            {returnCharOrUnitName()}
+          </Text>
+        </Text>
+      </Text>
+      <Paper
+        withBorder
+        shadow="xs"
+        component={Link}
+        href={
+          event.type === "birthday"
+            ? `/characters/${event.character_id}`
+            : event.type === "feature scout" || event.type === "scout"
+            ? `/scouts/${event.gacha_id}`
+            : `/events/${event.event_id}`
+        }
+        mt={8}
+        sx={{ flexGrow: 1, display: "flex", height: 96 }}
+      >
+        <Picture
           alt={event.name[0]}
-          src={getAssetURL(
-            `assets/card_still_full1_${event.banner_id}_${
-              event.type === "birthday" ? "normal" : "evolution"
-            }.webp`
-          )}
-          width={80}
-          height={80}
-          radius="md"
+          srcB2={`assets/card_still_full1_${event.banner_id}_${
+            event.type === "birthday" ? "normal" : "evolution"
+          }.webp`}
+          sx={{ width: 90, alignSelf: "stretch", flexShrink: 0 }}
         />
-        <Stack spacing="xs">
-          <Group noWrap spacing={3} align="center" position="left">
-            <IconStar size={14} />
-            <Text size="xs" color="dimmed" lineClamp={1}>
-              Because you like{" "}
-              <Text weight={700} component="span">
-                {returnCharOrUnitName()}
-              </Text>
-            </Text>
-          </Group>
-          <Text weight={700} lineClamp={1}>
+        <Stack spacing={0} py="xs" px="sm">
+          <Text weight={700} lineClamp={2}>
             {event.type === "birthday"
               ? `${event.name[0].split(" ")[1]}'s Birthday`
               : event.name[0]}
@@ -156,8 +153,8 @@ function RecommendedCard({
             </Tooltip>
           </Group>
         </Stack>
-      </Group>
-    </Paper>
+      </Paper>
+    </Box>
   );
 }
 
@@ -166,15 +163,19 @@ function RecommendedSlide({
   eventsSlide,
   characters,
   units,
+  slideColumns,
+  slideRows,
 }: {
   events: any[];
   eventsSlide: Event[];
   characters: GameCharacter[];
   units: GameUnit[];
+  slideColumns: number;
+  slideRows: number;
 }) {
   const { dayjs } = useDayjs();
   return (
-    <ResponsiveGrid width={230} my={5}>
+    <SimpleGrid cols={slideColumns} sx={{ gap: "8px 16px" }}>
       {eventsSlide
         .filter((e) => dayjs(e.start.en).isAfter(dayjs()))
         .map((e: Event | Scout | Birthday, i) => (
@@ -191,7 +192,7 @@ function RecommendedSlide({
             units={units}
           />
         ))}
-    </ResponsiveGrid>
+    </SimpleGrid>
   );
 }
 
@@ -211,8 +212,10 @@ function RecommendedCountdown({
   const user = useUser();
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.xs}px)`);
+  const { ref, width, height } = useElementSize();
+  const slideColumns = width > 0 ? Math.floor(width / 240) : 1;
+  const slideRows = Math.ceil(12 / slideColumns);
 
-  const GRID_TOTAL = 3;
   const getOnlyEvents = (events: any[]): (Event | Scout | Birthday)[] => {
     let entries = Object.entries(events);
     let returnArray: (Event | Scout | Birthday)[] = [];
@@ -228,13 +231,17 @@ function RecommendedCountdown({
     events.length
   );
 
-  for (let i = 0; i < sortedEvents.length; i += GRID_TOTAL) {
-    let slide = sortedEvents.slice(i, i + GRID_TOTAL);
+  for (
+    let i = 0;
+    i < sortedEvents.length && i < 24;
+    i += slideColumns * slideRows
+  ) {
+    let slide = sortedEvents.slice(i, i + slideColumns * slideRows);
     slidesArr.push(slide);
   }
 
   return (
-    <Container my="7vh">
+    <Container my="xl" ref={ref}>
       <Title order={2}>Recommended Campaigns</Title>
       <Alert my={3} icon={<IconHeart />}>
         Recommendations are based on the favorite characters and units listed in
@@ -290,9 +297,9 @@ function RecommendedCountdown({
       ) : (
         <Carousel
           loop
-          my="1vh"
+          my="sm"
           orientation={isMobile ? "vertical" : "horizontal"}
-          height={isMobile ? 400 : 120}
+          height={122 * slideRows + 8 * (slideRows - 1)}
           withControls={!isMobile}
           controlSize={40}
           controlsOffset="xs"
@@ -331,7 +338,10 @@ function RecommendedCountdown({
           align={isMobile ? "start" : "center"}
           styles={(theme) => ({
             controls: {
-              top: "100%",
+              position: "static",
+              padding: 0,
+              paddingTop: theme.spacing.xs,
+              display: slideColumns > 1 ? "flex" : "none",
             },
             control: {
               border: "none",
@@ -347,6 +357,8 @@ function RecommendedCountdown({
                   eventsSlide={slide}
                   characters={characters}
                   units={units}
+                  slideColumns={slideColumns}
+                  slideRows={slideRows}
                 />
               </Carousel.Slide>
             );
