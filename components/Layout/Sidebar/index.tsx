@@ -393,7 +393,7 @@ function Sidebar(props: any) {
                   <SidebarLink
                     collapsed={collapsed}
                     active={true}
-                    name="User"
+                    name={t("links.user")}
                     Icon={
                       <Indicator
                         color="red"

@@ -25,6 +25,7 @@ import {
   IconSortDescending,
 } from "@tabler/icons-react";
 import fuzzysort from "fuzzysort";
+import useTranslation from "next-translate/useTranslation";
 
 import NewCollectionModal from "./components/NewCollectionModal";
 
@@ -69,6 +70,7 @@ function Page({
     [charactersQuery.data]
   );
 
+  const { t } = useTranslation("cards");
   const theme = useMantineTheme();
   const [count, setCount] = useState<number>(CARD_LIST_INITIAL_COUNT);
   const [cardsList, setCardsList] = useState<GameCard[]>([]);
@@ -154,12 +156,12 @@ function Page({
 
       <Paper mb="sm" p="md" withBorder>
         <Text weight="700" size="xs" color="dimmed">
-          <IconSearch size="1em" /> Search Options
+          <IconSearch size="1em" /> {t("search.searchOptions")}
         </Text>
         <Group sx={{ alignItems: "flex-start" }}>
           <TextInput
-            label="Search"
-            placeholder="Type a card name..."
+            label={t("search.searchLabel")}
+            placeholder={t("search.searchPlaceholder")}
             value={search}
             onChange={(event) => {
               setSearch(event.target.value);
@@ -169,8 +171,8 @@ function Page({
             icon={<IconSearch size="1em" />}
           />
           <Select
-            label="Sort by"
-            placeholder="Pick a unit..."
+            label={t("search.sortLabel")}
+            placeholder={t("search.sortPlaceholder")}
             data={SORT_OPTIONS}
             value={viewOptions.sortOption}
             onChange={(val: SortOption) => {
@@ -180,7 +182,7 @@ function Page({
             variant="default"
             icon={<IconArrowsSort size="1em" />}
             rightSection={
-              <Tooltip label="Toggle ascending/descending">
+              <Tooltip label={t("search.sortTooltip")}>
                 <ActionIcon
                   onClick={() => {
                     setViewOptions((v) => ({
@@ -201,8 +203,8 @@ function Page({
             }
           />
           <MultiSelect
-            label="Characters"
-            placeholder="Pick a character..."
+            label={t("search.charLabel")}
+            placeholder={t("search.charPlaceholder")}
             data={characters
               .sort(
                 (a: any, b: any) =>
@@ -223,7 +225,7 @@ function Page({
             variant="default"
             searchable
           />
-          <Input.Wrapper id="rarity" label="Rarity">
+          <Input.Wrapper id="rarity" label={t("search.rarityLabel")}>
             <Chip.Group
               multiple
               value={viewOptions.filterRarity.map((v) => v.toString())}
@@ -255,7 +257,7 @@ function Page({
         </Group>
         <Group mt="xs">
           <Switch
-            label="Show full info"
+            label={t("search.showFulInfo")}
             checked={cardOptions.showFullInfo}
             onChange={(event) =>
               setCardOptions({
@@ -270,14 +272,14 @@ function Page({
               setViewOptions(CARD_VIEW_OPTIONS_DEFAULT);
             }}
           >
-            Reset all filters
+            {t("search.resetFilters")}
           </Button>
         </Group>
       </Paper>
       {slicedCardsList.length ? (
         <>
           <Text color="dimmed" mt="xl" mb="sm" size="sm">
-            {cardsList.length} results found.
+            {t("resultsFound", { count: cardsList.length })}
           </Text>
           <InfiniteScroll
             dataLength={slicedCardsList.length}

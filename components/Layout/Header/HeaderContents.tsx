@@ -98,7 +98,7 @@ function HeaderContents({
                 inherit
                 sx={forceLight && { color: "#fff" }}
               >
-                {decodeURIComponent(crumb)}
+                {t(`links.${decodeURIComponent(crumb)}`)}
               </Anchor>
             ))}
           </Breadcrumbs>

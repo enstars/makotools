@@ -225,7 +225,7 @@ function UserMenu({ trigger }: { trigger: any }) {
               href="/bookmarks"
               icon={<IconBookmark size={14} />}
             >
-              Bookmarks
+              {t("menu.bookmarks")}
             </Menu.Item>
             <Menu.Item
               id="sidebar-link-settings"

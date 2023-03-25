@@ -1,0 +1,16 @@
+{
+  "search": {
+    "searchOptions": "Search options",
+    "searchLabel": "Search",
+    "searchPlaceholder": "Type a card name...",
+    "sortLabel": "Sort by",
+    "sortPlaceholder": "Pick a unit...",
+    "sortTooltip": "Toggle ascending/descending",
+    "charLabel": "Characters",
+    "charPlaceholder": "Pick a character...",
+    "rarityLabel": "Rarity",
+    "showFullInfo": "Show full info",
+    "resetFilters": "Reset all filters"
+  },
+  "resultsFound": "{{count}} results found."
+}
