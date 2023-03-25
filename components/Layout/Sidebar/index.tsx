@@ -16,6 +16,7 @@ import {
   IconSearch,
   IconX,
   TablerIconsProps,
+  IconExternalLink,
 } from "@tabler/icons-react";
 import {
   Navbar,
@@ -189,6 +190,13 @@ function Sidebar(props: any) {
       link: "https://www.patreon.com/makotools",
       name: "patreon",
       Icon: IconBrandPatreon,
+      props: {
+        rightSection: (
+          <Text color="dimmed" mt={-10 + 4} mb={-10}>
+            <IconExternalLink size={16} />
+          </Text>
+        ),
+      },
     },
   ];
   return (
