@@ -9,6 +9,7 @@ import {
   Title,
 } from "@mantine/core";
 import { ReactElement, useState } from "react";
+import useTranslation from "next-translate/useTranslation";
 
 import { GameCard } from "types/game";
 import {
@@ -18,6 +19,7 @@ import {
 } from "services/skills";
 
 function Skills({ card }: { card: GameCard }) {
+  const { t } = useTranslation("cards__card");
   const [liveSkillLevel, setLiveSkillLevel] = useState(5);
   const [supportSkillLevel, setSupportSkillLevel] = useState(3);
 
@@ -32,11 +34,11 @@ function Skills({ card }: { card: GameCard }) {
 
         <Group sx={{ "&&&": { flexGrow: 1, maxWidth: 350 } }}>
           <Input.Wrapper
-            label="Live Lvl."
+            label={t("skilles.liveLabel")}
             sx={{ "&&&": { flex: "2 1 0", minWidth: 150 } }}
           >
             <Slider
-              label={(l) => `Lvl. ${l}`}
+              label={(l) => t("skills.liveSliderLabel", { level: l })}
               min={1}
               max={10}
               value={liveSkillLevel}

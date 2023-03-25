@@ -97,10 +97,10 @@ function Page({
   });
 
   const SORT_OPTIONS: { value: SortOption; label: string }[] = [
-    { value: "id", label: "Card ID" },
+    { value: "id", label: t("search.cardId") },
     {
       value: "character",
-      label: "Character",
+      label: t("search.character"),
     },
   ];
 
@@ -152,7 +152,7 @@ function Page({
 
   return (
     <>
-      <PageTitle title="Cards" />
+      <PageTitle title={t("title")} />
 
       <Paper mb="sm" p="md" withBorder>
         <Text weight="700" size="xs" color="dimmed">
@@ -257,7 +257,7 @@ function Page({
         </Group>
         <Group mt="xs">
           <Switch
-            label={t("search.showFulInfo")}
+            label={t("search.showFullInfo")}
             checked={cardOptions.showFullInfo}
             onChange={(event) =>
               setCardOptions({

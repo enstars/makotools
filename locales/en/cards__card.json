@@ -1,0 +1,6 @@
+{
+  "skills": {
+    "liveLabel": "Live Lvl.",
+    "liveSliderLabel": "Lvl. {{level}}"
+  }
+}
