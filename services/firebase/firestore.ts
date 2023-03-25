@@ -17,7 +17,6 @@ import {
   UserPrivateData,
   User,
   CardCollection,
-  UserLoggedIn,
 } from "types/makotools";
 
 /**
@@ -173,20 +172,38 @@ export async function getFirestoreUserDocument(
   return undefined;
 }
 
-export async function getFirestoreUserProfile([profileAddress, user]: [
+// export async function getFirestoreUserProfile([profileAddress, user]: [
+//   string,
+//   User
+// ]) {
+//   const db = getFirestore();
+//   let profile;
+
+//   try {
+//     const q: any = query(
+//       collection(db, "users"),
+//       where("username", "==", (user as UserLoggedIn).db.username)
+//     );
+//     const querySnap = await getDocs(q);
+//     profile = parseStringify(querySnap.docs[0].data());
+
+//     return profile;
+//   } catch (e) {
+//     console.error(e);
+//   }
+
+//   return profile;
+// }
+export async function getFirestoreUserProfile([profileAddress, uid]: [
   string,
-  User
+  string
 ]) {
   const db = getFirestore();
   let profile;
 
   try {
-    const q: any = query(
-      collection(db, "users"),
-      where("username", "==", (user as UserLoggedIn).db.username)
-    );
-    const querySnap = await getDocs(q);
-    profile = parseStringify(querySnap.docs[0].data());
+    const docSnap = await getDoc(doc(db, `users`, uid));
+    profile = parseStringify(docSnap.data());
 
     return profile;
   } catch (e) {

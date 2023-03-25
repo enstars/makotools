@@ -88,7 +88,7 @@ function BioDisplay({
     function updateHeight() {
       const iframe = iframeRef;
       const contentHeight =
-        iframe.current?.contentDocument?.body.offsetHeight ?? 0;
+        iframe.current?.contentDocument?.body?.offsetHeight ?? 0;
       if (
         typeof contentHeight === "number" &&
         contentHeight !== 0 &&

@@ -2,6 +2,7 @@ import {
   ActionIcon,
   Alert,
   Box,
+  Center,
   Container,
   Group,
   Loader,
@@ -96,7 +97,7 @@ function Page({
     data: profileData,
     isLoading,
     mutate,
-  } = useSWR<UserData>([`/user/${uid}`, user], getFirestoreUserProfile);
+  } = useSWR<UserData>([`/user/${uid}`, uid], getFirestoreUserProfile);
 
   // hooks
   const units: GameUnit[] = useMemo(() => unitsQuery.data, [unitsQuery.data]);
@@ -188,14 +189,10 @@ function Page({
 
   function LoadingState() {
     return (
-      <Container style={{ marginTop: "5%" }}>
-        <Box style={{ textAlign: "center" }}>
-          <Loader
-            size={200}
-            color={theme.primaryColor}
-            style={{ display: "block" }}
-          />
-        </Box>
+      <Container mt="xl">
+        <Center>
+          <Loader />
+        </Center>
       </Container>
     );
   }
