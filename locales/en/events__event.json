@@ -1,0 +1,18 @@
+{
+  "cards": "Cards",
+  "story": "Story",
+  "scout": "Scout",
+  "song": "Song",
+  "loginBookmark": "Log in to add this to your bookmarks",
+  "comingSoon": "Coming soon!",
+  "scoutTitle": "Scout! {{scout}}",
+  "past": "Past",
+  "ongoing": "Ongoing",
+  "upcoming": "Upcoming",
+  "diaScout": "Dia scout pool",
+  "ptSummary": "Cards in the <0>{{scout}}</0> scout offer an event point bonus for <0>{{event}}</0>!",
+  "eventPointBonus": "Event point bonus",
+  "cardCopies": "Card copies",
+  "cardRarity": "Card rarity",
+  "translationCredit": "Summary translated by"
+}

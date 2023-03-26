@@ -22,6 +22,7 @@ import { useEffect, useMemo } from "react";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
 import { useListState } from "@mantine/hooks";
+import useTranslation from "next-translate/useTranslation";
 
 import EventCard from "./components/EventCard";
 
@@ -58,6 +59,7 @@ function Page({
   unitsQuery: QuerySuccess<GameUnit[]>;
   charactersQuery: QuerySuccess<GameCharacter[]>;
 }) {
+  const { t } = useTranslation("events");
   const user = useUser();
   const theme = useMantineTheme();
   const { locale } = useRouter();
@@ -104,12 +106,12 @@ function Page({
       ],
       sorts: [
         {
-          label: "Event ID",
+          label: t("search.eventId"),
           value: "id",
           function: (a: Event, b: Event) => a.event_id - b.event_id,
         },
         {
-          label: "Start Date",
+          label: t("common:search.startDate"),
           value: "date",
           function: (a: Event, b: Event) =>
             dayjs(a.start.en).unix() - dayjs(b.start.en).unix(),
@@ -145,15 +147,15 @@ function Page({
 
   return (
     <>
-      <PageTitle title="Events" />
+      <PageTitle title={t("title")} />
       <Paper mb="sm" p="md" withBorder sx={{ marginTop: "1vh" }}>
         <Text weight="700" size="xs" color="dimmed">
-          <IconSearch size="1em" /> Search Options
+          <IconSearch size="1em" /> {t("common:search.searchOptions")}
         </Text>
         <Group>
           <TextInput
-            label="Search"
-            placeholder="Type an event name..."
+            label={t("common:search.searchLabel")}
+            placeholder={t("search.searchPlaceholder")}
             value={view.search}
             onChange={(event) => {
               setView((v) => ({
@@ -166,8 +168,8 @@ function Page({
             icon={<IconSearch size="1em" />}
           />
           <Select
-            label="Sort by"
-            placeholder="Select sorting option..."
+            label={t("common:search.sortLabel")}
+            placeholder={t("common:search.sortPlaceholder")}
             data={fssOptions.sorts}
             value={view.sort.type}
             onChange={(value) => {
@@ -208,8 +210,8 @@ function Page({
             }
           />
           <MultiSelect
-            label="Featured Units"
-            placeholder="Pick a unit..."
+            label={t("search.unitsLabel")}
+            placeholder={t("search.unitsPlaceholder")}
             data={units
               .sort((a: GameUnit, b: GameUnit) => a.id - b.id)
               .map((unit) => {
@@ -232,8 +234,8 @@ function Page({
             value={view.filters.units.map((u) => u.toString())}
           />
           <MultiSelect
-            label="Featured Characters"
-            placeholder="Pick a character..."
+            label={t("search.charLabel")}
+            placeholder={t("search.charPlaceholder")}
             data={characters
               .sort((a, b) => a.sort_id - b.sort_id)
               .map((c: GameCharacter) => {
@@ -272,9 +274,9 @@ function Page({
               spacing={3}
             >
               {[
-                { value: "song", label: "Unit Song" },
-                { value: "tour", label: "Tour" },
-                { value: "shuffle", label: "Shuffle" },
+                { value: "song", label: t("song") },
+                { value: "tour", label: t("tour") },
+                { value: "shuffle", label: t("shuffle") },
               ].map((r) => (
                 <Chip
                   key={r.value}
@@ -296,7 +298,7 @@ function Page({
               setView(defaultView);
             }}
           >
-            Reset all filters
+            {t("common:search.resetFilters")}
           </Button>
         </Group>
       </Paper>

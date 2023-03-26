@@ -1,4 +1,5 @@
 import { Accordion, AspectRatio, Group, Title } from "@mantine/core";
+import useTranslation from "next-translate/useTranslation";
 
 import Picture from "components/core/Picture";
 import { GameCard } from "types/game";
@@ -45,6 +46,8 @@ function PicturePair({
 }
 
 function Gallery({ card }: { card: GameCard }) {
+  const { t } = useTranslation("cards__card");
+
   return (
     <>
       <Group
@@ -53,12 +56,12 @@ function Gallery({ card }: { card: GameCard }) {
         sx={(theme) => ({ justifyContent: "space-between" })}
       >
         <Title order={2} sx={{ flexGrow: 1 }}>
-          Gallery
+          {t("gallery.heading")}
         </Title>
       </Group>
       <Accordion defaultValue={["cgs", "renders"]} variant="filled" multiple>
         <Accordion.Item value="cgs">
-          <Accordion.Control>Full CGs</Accordion.Control>
+          <Accordion.Control>{t("gallery.fullCgs")}</Accordion.Control>
           <Accordion.Panel>
             <PicturePair
               card={card}
@@ -70,7 +73,7 @@ function Gallery({ card }: { card: GameCard }) {
         </Accordion.Item>
 
         <Accordion.Item value="renders">
-          <Accordion.Control>Transparent Renders</Accordion.Control>
+          <Accordion.Control>{t("gallery.renders")}</Accordion.Control>
           <Accordion.Panel>
             <PicturePair
               card={card}
@@ -82,7 +85,7 @@ function Gallery({ card }: { card: GameCard }) {
           </Accordion.Panel>
         </Accordion.Item>
         <Accordion.Item value="frameless">
-          <Accordion.Control>Card</Accordion.Control>
+          <Accordion.Control>{t("gallery.card")}</Accordion.Control>
           <Accordion.Panel>
             <PicturePair
               card={card}

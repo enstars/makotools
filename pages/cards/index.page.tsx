@@ -156,11 +156,11 @@ function Page({
 
       <Paper mb="sm" p="md" withBorder>
         <Text weight="700" size="xs" color="dimmed">
-          <IconSearch size="1em" /> {t("search.searchOptions")}
+          <IconSearch size="1em" /> {t("common:search.searchOptions")}
         </Text>
         <Group sx={{ alignItems: "flex-start" }}>
           <TextInput
-            label={t("search.searchLabel")}
+            label={t("common:search.searchLabel")}
             placeholder={t("search.searchPlaceholder")}
             value={search}
             onChange={(event) => {
@@ -171,7 +171,7 @@ function Page({
             icon={<IconSearch size="1em" />}
           />
           <Select
-            label={t("search.sortLabel")}
+            label={t("common:search.sortLabel")}
             placeholder={t("search.sortPlaceholder")}
             data={SORT_OPTIONS}
             value={viewOptions.sortOption}
@@ -182,7 +182,7 @@ function Page({
             variant="default"
             icon={<IconArrowsSort size="1em" />}
             rightSection={
-              <Tooltip label={t("search.sortTooltip")}>
+              <Tooltip label={t("common:search.sortTooltip")}>
                 <ActionIcon
                   onClick={() => {
                     setViewOptions((v) => ({
@@ -272,7 +272,7 @@ function Page({
               setViewOptions(CARD_VIEW_OPTIONS_DEFAULT);
             }}
           >
-            {t("search.resetFilters")}
+            {t("common:search.resetFilters")}
           </Button>
         </Group>
       </Paper>

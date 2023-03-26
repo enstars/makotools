@@ -9,8 +9,13 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import Link from "next/link";
-import { IconBookmark, IconHistory, IconHourglassHigh } from "@tabler/icons-react";
+import {
+  IconBookmark,
+  IconHistory,
+  IconHourglassHigh,
+} from "@tabler/icons-react";
 import { UseListStateHandlers, useMediaQuery } from "@mantine/hooks";
+import useTranslation from "next-translate/useTranslation";
 
 import Picture from "components/core/Picture";
 import { useDayjs } from "services/libraries/dayjs";
@@ -43,6 +48,7 @@ function ScoutCard({
   bookmarks: number[];
   bookmarkHandlers: UseListStateHandlers<number>;
 }) {
+  const { t } = useTranslation("scouts");
   const user = useUser();
   const theme = useMantineTheme();
   const { dayjs } = useDayjs();
@@ -131,7 +137,7 @@ function ScoutCard({
                 strokeWidth={3}
                 style={{ verticalAlign: -1, marginRight: 2 }}
               />
-              Past
+              {t("past")}
             </Text>
           </Paper>
         )}
@@ -169,7 +175,7 @@ function ScoutCard({
                 strokeWidth={3}
                 style={{ verticalAlign: -1, marginRight: 2 }}
               />
-              Ongoing
+              {t("ongoing")}
             </Text>
           </Paper>
         )}

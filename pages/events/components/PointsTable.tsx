@@ -1,6 +1,17 @@
-import { Group, Box, Alert, Space, Paper, Table, Text, useMantineTheme } from "@mantine/core";
+import {
+  Group,
+  Box,
+  Alert,
+  Space,
+  Paper,
+  Table,
+  Text,
+  useMantineTheme,
+} from "@mantine/core";
 import { IconStar } from "@tabler/icons-react";
 import Link from "next/link";
+import useTranslation from "next-translate/useTranslation";
+import Trans from "next-translate/Trans";
 
 import gachaCardEventBonus from "data/gachaCardEventBonus.json";
 import Picture from "components/core/Picture";
@@ -19,6 +30,7 @@ function PointsTable({
   scoutName: string;
   banner: ID;
 }) {
+  const { t } = useTranslation("events__event");
   const theme = useMantineTheme();
   return (
     <>
@@ -40,10 +52,17 @@ function PointsTable({
           </Link>
         </Box>
         <Box sx={{ "&&&": { flex: "1 1 55%", minWidth: 240 } }}>
-          <Alert variant="outline" color={theme.primaryColor} sx={{ minHeight: 100 }}>
+          <Alert
+            variant="outline"
+            color={theme.primaryColor}
+            sx={{ minHeight: 100 }}
+          >
             <Text size="md">
-              Cards in the <strong>{scoutName}</strong> scout offer an event
-              point bonus for <strong>{eventName}</strong>!
+              <Trans
+                i18nKey="events__event:ptSummary"
+                components={[<strong key="strong" />]}
+                values={{ scout: scoutName, event: eventName }}
+              />
             </Text>
           </Alert>
         </Box>
@@ -51,14 +70,14 @@ function PointsTable({
       <Space h="lg" />
       <Paper withBorder shadow="xs" p="md">
         <Text weight={700} align="center">
-          Event point bonus
+          {t("eventPointBonus")}
         </Text>
         <Table striped highlightOnHover captionSide="bottom">
           <thead>
             <tr>
-              <th rowSpan={2}>Card rarity</th>
+              <th rowSpan={2}>{t("cardRarity")}</th>
               <th colSpan={5} style={{ textAlign: "center" }}>
-                Card Copies
+                {t("cardCopies")}
               </th>
             </tr>
             <tr>

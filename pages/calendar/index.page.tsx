@@ -9,6 +9,7 @@ import {
   Text,
 } from "@mantine/core";
 import { IconCalendar, IconList } from "@tabler/icons-react";
+import useTranslation from "next-translate/useTranslation";
 
 import CalendarGridView from "./components/CalendarGridView";
 import CalendarListView from "./components/CalendarListView";
@@ -21,7 +22,6 @@ import { getLocalizedDataArray } from "services/data";
 import { createBirthdayData } from "services/campaigns";
 import { GameCharacter, Event, Scout, Birthday } from "types/game";
 import { QuerySuccess } from "types/makotools";
-import useTranslation from "next-translate/useTranslation";
 
 /**
  * If the user is viewing from a mobile phone, the default view should be the list view. Otherwise, it should be the traditional calendar.

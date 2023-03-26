@@ -6,7 +6,12 @@ import {
   Tooltip,
   useMantineTheme,
 } from "@mantine/core";
-import { IconBook, IconBookmark, IconCards, IconMedal } from "@tabler/icons-react";
+import {
+  IconBook,
+  IconBookmark,
+  IconCards,
+  IconMedal,
+} from "@tabler/icons-react";
 import { useListState } from "@mantine/hooks";
 
 import PageTitle from "components/sections/PageTitle";

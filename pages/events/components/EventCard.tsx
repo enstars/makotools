@@ -20,6 +20,7 @@ import {
   IconDiamond,
 } from "@tabler/icons-react";
 import { UseListStateHandlers, useMediaQuery } from "@mantine/hooks";
+import useTranslation from "next-translate/useTranslation";
 
 import Picture from "components/core/Picture";
 import { Event, GameUnit } from "types/game";
@@ -75,6 +76,7 @@ function EventCard({
   bookmarks: number[];
   bookmarkHandlers: UseListStateHandlers<number>;
 }) {
+  const { t } = useTranslation("events");
   const user = useUser();
   const theme = useMantineTheme();
   const { classes } = useStyles();
@@ -127,8 +129,7 @@ function EventCard({
           </Title>
 
           <Text className={classes.eventSummary}>
-            {event.intro_lines?.[0] ||
-              "Event description to be announced soon."}
+            {event.intro_lines?.[0] || t("event.tbaDesc")}
           </Text>
         </Box>
         <Box className={classes.eventInfoDates}>
@@ -156,7 +157,7 @@ function EventCard({
                   </Box>
                 }
               >
-                {event.type}
+                {t(event.type)}
               </Badge>
 
               {eventUnits.map((unit) => (
@@ -180,13 +181,13 @@ function EventCard({
             >
               <Box sx={{ flex: "1 1 0", minWidth: 185 }}>
                 <Text size="xs" color="dimmed" weight={700}>
-                  Start ({dayjs(event.start.en).format("z")})
+                  {t("start")} ({dayjs(event.start.en).format("z")})
                 </Text>
                 <Text weight={500}>{dayjs(event.start.en).format("lll")}</Text>
               </Box>
               <Box sx={{ flex: "1 1 0", minWidth: 185 }}>
                 <Text size="xs" color="dimmed" weight={700}>
-                  End ({dayjs(event.end.en).format("z")})
+                  {t("end")} ({dayjs(event.end.en).format("z")})
                 </Text>
                 <Text weight={500}>{dayjs(event.end.en).format("lll")}</Text>
               </Box>
@@ -196,13 +197,13 @@ function EventCard({
               <Tooltip
                 multiline
                 width={250}
-                label="This event is not available on the global server yet."
+                label={t("event.estimateDesc")}
                 position="bottom-start"
                 withArrow
                 p="sm"
               >
                 <Text color="dimmed" size="xs">
-                  Dates are estimates
+                  {t("event.estimate")}
                 </Text>
               </Tooltip>
             )}
@@ -211,7 +212,9 @@ function EventCard({
       </Group>
       {user.loggedIn && (
         <Tooltip
-          label={!bookmarked ? "Bookmark this event" : "Remove from bookmarks"}
+          label={
+            !bookmarked ? t("event.addBookmark") : t("event.removeBookmark")
+          }
           position="bottom"
         >
           <ActionIcon

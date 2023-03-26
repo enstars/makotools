@@ -1,19 +1,14 @@
 {
   "title": "Cards",
   "search": {
-    "searchOptions": "Search options",
-    "searchLabel": "Search",
     "searchPlaceholder": "Type a card name...",
-    "sortLabel": "Sort by",
     "sortPlaceholder": "Pick a unit...",
-    "sortTooltip": "Toggle ascending/descending",
     "cardId": "Card ID",
     "character": "Character",
     "charLabel": "Characters",
     "charPlaceholder": "Pick a character...",
     "rarityLabel": "Rarity",
-    "showFullInfo": "Show full info",
-    "resetFilters": "Reset all filters"
+    "showFullInfo": "Show full info"
   },
   "resultsFound": "{{count}} results found."
 }

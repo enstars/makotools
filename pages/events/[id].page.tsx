@@ -17,6 +17,7 @@ import {
 } from "@tabler/icons-react";
 import { useEffect, useMemo, useState } from "react";
 import { useListState } from "@mantine/hooks";
+import useTranslation from "next-translate/useTranslation";
 
 import ESPageHeader from "./components/ESPageHeader";
 import PointsTable from "./components/PointsTable";
@@ -49,6 +50,7 @@ function Page({
   cardsQuery: QuerySuccess<GameCard[]>;
   unitsQuery: QuerySuccess<GameUnit[]>;
 }) {
+  const { t } = useTranslation("events__event");
   const user = useUser();
   const theme = useMantineTheme();
   let cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
@@ -71,17 +73,17 @@ function Page({
   let contentItems = [
     {
       id: "#cards",
-      name: "Cards",
+      name: t("cards"),
       icon: <IconCards size={16} strokeWidth={3} />,
     },
     {
       id: "#story",
-      name: "Story",
+      name: t("story"),
       icon: <IconBook size={16} strokeWidth={3} />,
     },
     {
       id: "#scout",
-      name: "Scout",
+      name: t("scout"),
       icon: <IconDiamond size={16} strokeWidth={3} />,
     },
   ];
@@ -89,7 +91,7 @@ function Page({
   if (event.type !== "tour")
     contentItems.splice(contentItems.length - 1, 0, {
       id: "#song",
-      name: "Song",
+      name: t("events:song"),
       icon: <IconMusic size={16} strokeWidth={3} />,
     });
 
@@ -108,9 +110,9 @@ function Page({
           label={
             user.loggedIn
               ? bookmarks.includes(event.event_id)
-                ? "Remove from bookmarks"
-                : "Add to bookmarks"
-              : "Log in to add this to your bookmarks"
+                ? t("events:event.addBookmark")
+                : t("events:event.removeBookmark")
+              : t("loginBookmark")
           }
           position="bottom"
         >
@@ -151,15 +153,15 @@ function Page({
         ))}
       </ResponsiveGrid>
       <Divider my="md" />
-      <SectionTitle title="Story" id="story" Icon={IconBook} />
+      <SectionTitle title={t("story")} id="story" Icon={IconBook} />
       <Stories content={event} />
       <Divider my="md" />
       {event.type !== "tour" && (
         <>
-          <SectionTitle title="Song" id="song" Icon={IconVinyl} />
+          <SectionTitle title={t("song")} id="song" Icon={IconVinyl} />
           <Paper p="sm" withBorder>
             <Text align="center" color="dimmed" size="sm" weight={700}>
-              Coming soon!
+              {t("comingSoon")}
             </Text>
           </Paper>
           <Divider my="md" />
@@ -168,7 +170,7 @@ function Page({
       {scout && (
         <>
           <SectionTitle
-            title={`Scout! ${scout.name[0]}`}
+            title={t("scoutTitle", { scout: scout.name[0] })}
             id="scout"
             Icon={IconDiamond}
           />

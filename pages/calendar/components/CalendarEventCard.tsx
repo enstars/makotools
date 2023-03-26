@@ -7,11 +7,11 @@ import {
   IconShirt,
 } from "@tabler/icons-react";
 import Link from "next/link";
+import useTranslation from "next-translate/useTranslation";
 
 import Picture from "components/core/Picture";
 import { useDayjs } from "services/libraries/dayjs";
 import { Birthday, Campaign, Event, GameEventStatus, Scout } from "types/game";
-import useTranslation from "next-translate/useTranslation";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
   eventCard: {

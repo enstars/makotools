@@ -1,8 +1,12 @@
 {
   "test": "Welcome to MakoTools!",
   "search": {
+    "searchLabel": "Search",
     "searchOptions": "Search options",
     "sortLabel": "Sort by",
-    "resetFilters": "Reset all filters"
+    "sortTooltip": "Toggle ascending/descending",
+    "resetFilters": "Reset all filters",
+    "startDate": "Start Date",
+    "sortPlaceholder": "Select sorting option..."
   }
 }

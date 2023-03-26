@@ -1,6 +1,5 @@
 import {
   ActionIcon,
-  Alert,
   Button,
   Group,
   MultiSelect,
@@ -13,7 +12,6 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import {
-  IconAlertCircle,
   IconArrowsSort,
   IconComet,
   IconDiamond,
@@ -23,6 +21,7 @@ import {
 } from "@tabler/icons-react";
 import { useEffect, useMemo } from "react";
 import { useListState, useMediaQuery } from "@mantine/hooks";
+import useTranslation from "next-translate/useTranslation";
 
 import ScoutCard from "./components/ScoutCard";
 
@@ -57,6 +56,7 @@ function Page({
   cardsQuery: QuerySuccess<GameCard[]>;
   charactersQuery: QuerySuccess<GameCharacter[]>;
 }) {
+  const { t } = useTranslation("scouts");
   const user = useUser();
   const { dayjs } = useDayjs();
   const theme = useMantineTheme();
@@ -87,12 +87,12 @@ function Page({
       ],
       sorts: [
         {
-          label: "Scout ID",
+          label: t("scoutId"),
           value: "id",
           function: (a: Scout, b: Scout) => a.gacha_id - b.gacha_id,
         },
         {
-          label: "Start Date",
+          label: t("startDate"),
           value: "date",
           function: (a: Scout, b: Scout) =>
             dayjs(a.start.en).unix() - dayjs(b.start.en).unix(),
@@ -125,22 +125,15 @@ function Page({
 
   return (
     <>
-      <PageTitle title="Scouts" />
-      <Alert
-        icon={<IconAlertCircle size={16} strokeWidth={3} />}
-        color={theme.primaryColor}
-      >
-        Scouts are gradually being added to MakoTools. We appreciate your
-        patience!
-      </Alert>
+      <PageTitle title={t("title")} />
       <Paper mt="sm" p="md" withBorder>
         <Text weight="700" size="xs" color="dimmed">
-          <IconSearch size="1em" /> Search Options
+          <IconSearch size="1em" /> {t("common:search.searchOptions")}
         </Text>
         <Group>
           <TextInput
-            label="Search"
-            placeholder="Type a scout name..."
+            label={t("common:search.searchLabel")}
+            placeholder={t("searchPlaceholder")}
             value={view.search}
             onChange={(event) => {
               setView((v) => ({
@@ -153,8 +146,8 @@ function Page({
             icon={<IconSearch size="1em" />}
           />
           <Select
-            label="Sort by"
-            placeholder="Select sorting option..."
+            label={t("common:search.sortLabel")}
+            placeholder={t("common:search.sortPlaceholder")}
             data={fssOptions.sorts}
             value={view.sort.type}
             onChange={(value) => {
@@ -195,8 +188,8 @@ function Page({
             }
           />
           <MultiSelect
-            label="Featured Characters"
-            placeholder="Pick a character..."
+            label={t("charLabel")}
+            placeholder={t("charPlaceholder")}
             data={characters
               .sort((a: any, b: any) => a.sort_id - b.sort_id)
               .map((c: GameCharacter) => {
@@ -224,7 +217,7 @@ function Page({
               setView(defaultView);
             }}
           >
-            Reset all filters
+            {t("common:search.resetFilters")}
           </Button>
         </Group>
       </Paper>
@@ -257,7 +250,10 @@ function Page({
             icon={<IconDiamond size={18} />}
             aria-label="Event scouts"
           >
-            <Text weight={700}>Event{!isMobile && " Scouts"}</Text>
+            <Text weight={700}>
+              {t("event")}
+              {!isMobile && ` ${t("scouts")}`}
+            </Text>
           </Tabs.Tab>
           <Tabs.Tab
             value="feature"
@@ -265,7 +261,10 @@ function Page({
             icon={<IconComet size={18} />}
             aria-label="Feature Scouts"
           >
-            <Text weight={700}>Feature{!isMobile && " Scouts"}</Text>
+            <Text weight={700}>
+              {t("feature")}
+              {!isMobile && ` ${t("scouts")}`}
+            </Text>
           </Tabs.Tab>
         </Tabs.List>
 

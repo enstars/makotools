@@ -4,7 +4,7 @@
   "glitter": "Glitter",
   "flash": "Flash",
   "stats": {
-    "statsHeading": "Stats",
+    "heading": "Stats",
     "showDetailedStats": "Show detailed stats",
     "detailedStats": "Detailed stats",
     "maxStats": "Max stats"
@@ -18,5 +18,11 @@
     "center": "center",
     "live": "live",
     "support": "support"
+  },
+  "gallery": {
+    "heading": "Gallery",
+    "fullCgs": "Full CGs",
+    "renders": "Transparent Renders",
+    "card": "Card"
   }
 }
