@@ -30,11 +30,11 @@ function Skills({ card }: { card: GameCard }) {
         mb="sm"
         sx={(theme) => ({ justifyContent: "space-between" })}
       >
-        <Title order={2}>Skills</Title>
+        <Title order={2}>{t("skills.heading")}</Title>
 
         <Group sx={{ "&&&": { flexGrow: 1, maxWidth: 350 } }}>
           <Input.Wrapper
-            label={t("skilles.liveLabel")}
+            label={t("skills.liveLabel")}
             sx={{ "&&&": { flex: "2 1 0", minWidth: 150 } }}
           >
             <Slider
@@ -55,11 +55,11 @@ function Skills({ card }: { card: GameCard }) {
             />
           </Input.Wrapper>
           <Input.Wrapper
-            label="Support Lvl."
+            label={t("skills.supportLabel")}
             sx={{ "&&&": { flex: "1 1 0", minWidth: 85 } }}
           >
             <Slider
-              label={(l) => `Lvl. ${l}`}
+              label={(l) => t("skills.supportSliderLabel", { level: l })}
               min={1}
               max={5}
               value={supportSkillLevel}
@@ -131,7 +131,7 @@ function Skills({ card }: { card: GameCard }) {
             <Group key={s.type} align="start" spacing="xs">
               <Box sx={{ width: 80 }}>
                 <Badge sx={{ width: "100%" }} variant="filled" color={s.color}>
-                  {s.type}
+                  {t(`skills.${s.type}`)}
                 </Badge>
               </Box>
               <Box sx={{ "&&&": { flex: "1 1 0", minWidth: 200 } }}>

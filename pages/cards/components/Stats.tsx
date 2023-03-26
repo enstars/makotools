@@ -10,6 +10,7 @@ import {
   Title,
 } from "@mantine/core";
 import { useState } from "react";
+import useTranslation from "next-translate/useTranslation";
 
 import { sumStats } from "services/game";
 import CardStatsNumber from "components/utilities/formatting/CardStatsNumber";
@@ -87,6 +88,7 @@ function BigData({ data, label }: { data: any; label: string }) {
 }
 
 export default function Stats({ card }: { card: GameCard }) {
+  const { t } = useTranslation("cards__card");
   const [opened, setOpened] = useState(false);
   return (
     <>
@@ -96,16 +98,16 @@ export default function Stats({ card }: { card: GameCard }) {
         sx={(theme) => ({ justifyContent: "space-between" })}
       >
         <Title order={2} sx={{ flexGrow: 1 }}>
-          Stats
+          {t("stats.heading")}
         </Title>
         <Button variant="subtle" onClick={() => setOpened(true)}>
-          Show detailed stats
+          {t("stats.showDetailedStats")}
         </Button>
       </Group>
       <Drawer
         opened={opened}
         onClose={() => setOpened(false)}
-        title="Detailed stats"
+        title={t("stats.detailedStats")}
         padding="md"
         size="lg"
         position="bottom"
@@ -174,15 +176,15 @@ export default function Stats({ card }: { card: GameCard }) {
       </Drawer>
       <Group mb="md">
         <BigData
-          label="Max stats (1 copy)"
+          label={`${t("stats.maxStats")} (1 copy)`}
           data={<CardStatsNumber>{sumStats(card.stats?.ir)}</CardStatsNumber>}
         />
         <BigData
-          label="Max stats (3 copies)"
+          label={`${t("stats.maxStats")} (3 copies)`}
           data={<CardStatsNumber>{sumStats(card.stats?.ir2)}</CardStatsNumber>}
         />
         <BigData
-          label="Max stats (5 copies)"
+          label={`${t("stats.maxStats")} (5 copies)`}
           data={<CardStatsNumber>{sumStats(card.stats?.ir4)}</CardStatsNumber>}
         />
       </Group>
