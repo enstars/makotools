@@ -246,7 +246,7 @@ function RecommendedCountdown({
     <Container my="xl" ref={ref}>
       <Title order={2}>{t("recommended.title")}</Title>
       <Alert my={3} icon={<IconHeart />}>
-        {t("recommended.alert")}
+        {t("recommended.recommendedAlert")}
       </Alert>
       {user.loggedIn &&
       user.db &&
