@@ -8,6 +8,7 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useElementSize, UseListStateHandlers } from "@mantine/hooks";
+import useTranslation from "next-translate/useTranslation";
 
 import EditCollection from "./EditCollection";
 import EditCollectionRow from "./EditCollectionRow";
@@ -16,6 +17,7 @@ import useUser from "services/firebase/user";
 import { CONSTANTS } from "services/makotools/constants";
 import { CardCollection, UserData } from "types/makotools";
 import { GameCard, GameUnit } from "types/game";
+
 export default function EditCollections({
   currentCollection,
   isReordering,
@@ -51,6 +53,7 @@ export default function EditCollections({
   saveAllChanges: () => void;
   discardAllChanges: () => void;
 }) {
+  const { t } = useTranslation("user");
   const user = useUser();
   const { ref, width } = useElementSize();
   if (!user.loggedIn) return null;
@@ -113,7 +116,7 @@ export default function EditCollections({
               tempHandlersWhileReordering.setState([]);
             }}
           >
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             leftIcon={<IconDeviceFloppy size={16} />}
@@ -122,7 +125,7 @@ export default function EditCollections({
               setIsReordering(false);
             }}
           >
-            Save
+            {t("save")}
           </Button>
         </Group>
       </>
@@ -178,7 +181,7 @@ export default function EditCollections({
                     .COLLECTIONS
                 }
               >
-                New
+                {t("new")}
               </Button>
               <Button
                 color="indigo"
@@ -191,7 +194,7 @@ export default function EditCollections({
                   );
                 }}
               >
-                Reorder
+                {t("reorder")}
               </Button>
             </Group>
             <Group spacing="xs">
@@ -201,13 +204,13 @@ export default function EditCollections({
                 leftIcon={<IconX size={16} />}
                 onClick={discardAllChanges}
               >
-                Discard Changes
+                {t("discardChanges")}
               </Button>
               <Button
                 leftIcon={<IconDeviceFloppy size={16} />}
                 onClick={saveAllChanges}
               >
-                Save
+                {t("save")}
               </Button>
             </Group>
           </Group>

@@ -24,6 +24,7 @@ import {
 import { arrayRemove, arrayUnion } from "firebase/firestore";
 import Link from "next/link";
 import { Dispatch, SetStateAction } from "react";
+import useTranslation from "next-translate/useTranslation";
 
 import { CONSTANTS } from "services/makotools/constants";
 import notify from "services/libraries/notify";
@@ -57,6 +58,7 @@ function ProfileButtons({
   setOpenEditModal: Dispatch<SetStateAction<boolean>>;
   setRemoveFriendModal: Dispatch<SetStateAction<boolean>>;
 }) {
+  const { t } = useTranslation("user");
   const theme = useMantineTheme();
 
   const shareURL = `enstars.link/@${profile.username}`;
@@ -64,7 +66,7 @@ function ProfileButtons({
   return (
     <Group spacing="xs">
       {user.loggedIn && user.db.suid === profile.suid && (
-        <Tooltip label="Edit profile">
+        <Tooltip label={t("editProfile")}>
           <ActionIcon
             onClick={() => {
               setOpenEditModal(true);
@@ -79,13 +81,13 @@ function ProfileButtons({
       )}
       <CopyButton value={shareURLFull}>
         {({ copy }) => (
-          <Tooltip label="Copy sharable URL">
+          <Tooltip label={t("copyUrl")}>
             <ActionIcon
               onClick={() => {
                 copy();
                 notify("info", {
                   icon: <IconCopy size={16} />,
-                  message: "Profile link copied",
+                  message: t("linkCopied"),
                   title: (
                     <>
                       <Text span>
@@ -112,13 +114,13 @@ function ProfileButtons({
       {user.loggedIn && user.db.suid !== profile.suid && (
         <>
           {!isFriend && !isOutgoingReq && !isIncomingReq && (
-            <Tooltip label="Send friend request">
+            <Tooltip label={t("sendFriendReq")}>
               <ActionIcon
                 onClick={async () => {
                   showNotification({
                     id: "friendReq",
                     loading: true,
-                    message: "Processing your request...",
+                    message: t("processingRequest"),
                     disallowClose: true,
                     autoClose: false,
                   });
@@ -161,7 +163,7 @@ function ProfileButtons({
             </Tooltip>
           )}
           {isFriend && (
-            <Tooltip label="Remove friend">
+            <Tooltip label={t("removeFriend")}>
               <ActionIcon
                 size="lg"
                 color="red"
@@ -175,7 +177,7 @@ function ProfileButtons({
           {!isFriend && isIncomingReq && (
             <Menu width={200} position="top">
               <Menu.Target>
-                <Tooltip label={`${profile.name} sent you a friend request`}>
+                <Tooltip label={t("sentFriendReq", { friend: profile.name })}>
                   <Indicator>
                     <ActionIcon size="lg" variant="light">
                       <IconUserExclamation size={18} />
@@ -184,7 +186,7 @@ function ProfileButtons({
                 </Tooltip>
               </Menu.Target>
               <Menu.Dropdown>
-                <Menu.Label>Friend request options</Menu.Label>
+                <Menu.Label>{t("friendReqOptions")}</Menu.Label>
                 <Menu.Item
                   icon={<IconCheck size={14} />}
                   px={5}
@@ -192,7 +194,7 @@ function ProfileButtons({
                     showNotification({
                       id: "addFriend",
                       loading: true,
-                      message: "Processing your request...",
+                      message: t("processingRequest"),
                       disallowClose: true,
                       autoClose: false,
                     });
@@ -216,9 +218,9 @@ function ProfileButtons({
                         loading: false,
                         color: "lime",
                         icon: <IconCheck size={24} />,
-                        message: `${
-                          profile.name || profile.username
-                        } is now your friend!`,
+                        message: t("friendAdded", {
+                          friend: profile.name || profile.username,
+                        }),
                       });
                     } else {
                       updateNotification({
@@ -226,13 +228,12 @@ function ProfileButtons({
                         loading: false,
                         color: "red",
                         icon: <IconX size={24} />,
-                        message:
-                          "There was an error updating your friends list",
+                        message: t("addError"),
                       });
                     }
                   }}
                 >
-                  Accept friend request
+                  {t("acceptFriendReq")}
                 </Menu.Item>
                 <Menu.Item
                   color="red"
@@ -242,7 +243,7 @@ function ProfileButtons({
                     showNotification({
                       id: "removeReq",
                       loading: true,
-                      message: "Processing your request...",
+                      message: t("processingRequest"),
                       disallowClose: true,
                       autoClose: false,
                     });
@@ -265,7 +266,7 @@ function ProfileButtons({
                         loading: false,
                         color: "lime",
                         icon: <IconCheck size={24} />,
-                        message: "This friend request has been deleted",
+                        message: t("deleteFriendReq"),
                       });
                     } else {
                       updateNotification({
@@ -273,12 +274,12 @@ function ProfileButtons({
                         loading: false,
                         color: "red",
                         icon: <IconX size={24} />,
-                        message: "There was an error removing this request",
+                        message: t("deleteReqError"),
                       });
                     }
                   }}
                 >
-                  <Text size="sm">Decline friend request</Text>
+                  <Text size="sm">{t("declineFriendReq")}</Text>
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
@@ -286,7 +287,7 @@ function ProfileButtons({
           {!isFriend && isOutgoingReq && (
             <Menu width={200} position="top">
               <Menu.Target>
-                <Tooltip label="Pending friend request">
+                <Tooltip label={t("pendingFriendReq")}>
                   <ActionIcon size="lg" variant="light">
                     <IconArrowsUpDown size={18} />
                   </ActionIcon>
@@ -302,7 +303,7 @@ function ProfileButtons({
                     showNotification({
                       id: "cancelReq",
                       loading: true,
-                      message: "Processing your request...",
+                      message: t("processingReq"),
                       disallowClose: true,
                       autoClose: false,
                     });
@@ -325,7 +326,7 @@ function ProfileButtons({
                         loading: false,
                         color: "lime",
                         icon: <IconCheck size={24} />,
-                        message: `Your friend request has been cancelled`,
+                        message: t("friendReqCancelled"),
                       });
                     } else {
                       updateNotification({
@@ -333,8 +334,7 @@ function ProfileButtons({
                         loading: false,
                         color: "red",
                         icon: <IconX size={24} />,
-                        message:
-                          "There was an error cancelling your friend request",
+                        message: t("cancelError"),
                       });
                     }
                   }}
@@ -344,7 +344,7 @@ function ProfileButtons({
               </Menu.Dropdown>
             </Menu>
           )}
-          <Tooltip label="Report profile">
+          <Tooltip label={t("reportProfile")}>
             <ActionIcon
               component={Link}
               href={CONSTANTS.MODERATION.GET_REPORT_LINK(

@@ -10,6 +10,7 @@ import {
 } from "@mantine/core";
 import { IconCalendar, IconHeart } from "@tabler/icons-react";
 import dayjs from "dayjs";
+import useTranslation from "next-translate/useTranslation";
 
 import Picture from "components/core/Picture";
 import { GameCharacter, GameUnit } from "types/game";
@@ -62,10 +63,11 @@ function DisplayFaves({
   units: GameUnit[];
   profile: UserData;
 }) {
+  const { t } = useTranslation("user");
   if (faveCharas[0] === 0 && faveUnits[0] === 0) {
-    return <Text>Everyone &lt;3</Text>;
+    return <Text>{t("everyoneP")}</Text>;
   } else if (faveCharas[0] === -1 && faveUnits[0] === -1) {
-    return <Text>I hate Ensemble Stars.</Text>;
+    return <Text>{t("hater")}</Text>;
   } else {
     return (
       <Stack spacing={2}>
@@ -170,13 +172,14 @@ function ProfileStats({
   characters: GameCharacter[];
   units: GameUnit[];
 }) {
+  const { t } = useTranslation("user");
   return (
     <Group my={7} noWrap spacing="xl" align="flex-start">
       {profile.profile__start_playing !== "0000-00-00" && (
         <StatContainer
           icon={<IconCalendar size={16} />}
           iconColor={"yellow"}
-          title={"Started Playing"}
+          title={t("startedPlaying")}
         >
           {profile.profile__start_playing &&
             dayjs(profile.profile__start_playing).format("MMMM YYYY")}
@@ -190,7 +193,7 @@ function ProfileStats({
           <StatContainer
             icon={<IconHeart size={16} />}
             iconColor={"pink"}
-            title={"Favorites"}
+            title={t("favorites")}
           >
             {profile.profile__fave_charas && (
               <DisplayFaves

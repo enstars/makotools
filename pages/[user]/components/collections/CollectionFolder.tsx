@@ -8,6 +8,7 @@ import {
   Tooltip,
 } from "@mantine/core";
 import Link from "next/link";
+import useTranslation from "next-translate/useTranslation";
 
 import CollectionCard from "./CollectionCard";
 
@@ -23,6 +24,7 @@ function CollectionFolder({
   collection: CardCollection;
   isYourProfile: boolean | undefined;
 }) {
+  const { t } = useTranslation("user");
   const icon = COLLECTION_ICONS[collection.icon || 0];
   const privacy = PRIVACY_LEVELS[collection.privacyLevel];
 
@@ -59,7 +61,7 @@ function CollectionFolder({
               )}
             </Text>
             <Text size="xs" weight={500} color="dimmed">
-              {collection.cards.length} cards in collection
+              {t("collections.cardAmt", { count: collection.cards.length })}
             </Text>
           </Box>
         </Group>
@@ -75,9 +77,9 @@ function CollectionFolder({
           </ResponsiveGrid>
         ) : (
           <Stack align="flex-start">
-            <Text color="dimmed">This collection is empty.</Text>
+            <Text color="dimmed">{t("collections.emptyColl")}</Text>
             <Button variant="outline" component={Link} href="/cards">
-              Add some cards!
+              {t("collections.addSomeCards")}
             </Button>
           </Stack>
         )}

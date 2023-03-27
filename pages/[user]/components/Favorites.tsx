@@ -7,6 +7,7 @@ import {
   Stack,
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
+import useTranslation from "next-translate/useTranslation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 import { getNameOrder } from "services/game";
@@ -28,6 +29,7 @@ function Favorites({
   externalSetter: Dispatch<SetStateAction<any>>;
   locale: Locale;
 }) {
+  const { t } = useTranslation("user");
   const [selectedCharas, selectedCharasHandlers] = useListState<number>(
     profileState.profile__fave_charas || []
   );
@@ -68,10 +70,10 @@ function Favorites({
   return (
     <Stack mt="sm">
       <Group>
-        <Input.Wrapper label="Favorite characters">
+        <Input.Wrapper label={t("faveCharas")}>
           <MultiSelect
             searchable
-            placeholder="Type to search for a character"
+            placeholder={t("faveCharasPlaceholder")}
             value={selectedCharas.map((id) => id.toString())}
             data={[
               ...characters.map((chara) => ({
@@ -96,10 +98,10 @@ function Favorites({
             clearable
           />
         </Input.Wrapper>
-        <Input.Wrapper label="Favorite units">
+        <Input.Wrapper label={t("faveUnits")}>
           <MultiSelect
             searchable
-            placeholder="Type to search for a unit"
+            placeholder={t("faveUnitsPlaceholder")}
             value={selectedUnits.map((id) => id.toString())}
             data={[
               ...units.map((unit) => ({
@@ -124,7 +126,7 @@ function Favorites({
       <Group noWrap>
         <Input.Wrapper
           inputWrapperOrder={["input", "description"]}
-          description="(Adds every character and unit)"
+          description={t("everyonePDesc")}
           styles={(theme) => ({ description: { marginTop: 3 } })}
         >
           <Button
@@ -142,12 +144,12 @@ function Favorites({
             }}
             disabled={faveCharas[0] === 0 && faveUnits[0] === 0}
           >
-            I&apos;m an everyoneP!
+            {t("everyonePButton")}
           </Button>
         </Input.Wrapper>
         <Input.Wrapper
           inputWrapperOrder={["input", "description"]}
-          description="(Removes every character and unit, and more...)"
+          description={t("haterDesc")}
           styles={(theme) => ({ description: { marginTop: 3 } })}
         >
           <Button
@@ -165,11 +167,11 @@ function Favorites({
               faveUnits[0] === -1
             }
           >
-            I hate Ensemble Stars.
+            {t("hater")}
           </Button>
         </Input.Wrapper>
         <Checkbox
-          label="Show favorites on your profile"
+          label={t("showFaves")}
           defaultChecked={showFaves}
           onChange={(e) => setShowFaves(e.target.checked)}
         />

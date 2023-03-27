@@ -27,6 +27,7 @@ import {
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { GridContextProvider, GridDropZone, GridItem } from "react-grid-drag";
+import useTranslation from "next-translate/useTranslation";
 
 import EditCollectionCard from "./EditCollectionCard";
 
@@ -54,6 +55,7 @@ function EditCollection({
   setFunction: () => void;
   width: number;
 }) {
+  const { t } = useTranslation("user");
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
   const [sort, setSort] = useState<string>("");
   const [privacyModalOpened, privacyModalHandlers] = useDisclosure(false);
@@ -118,14 +120,16 @@ function EditCollection({
         onClose={() => setOpenDeleteModal(false)}
         title={
           <Text weight={700} size="lg">
-            Delete {collection.name}?
+            {t("collections.deleteColl", { name: collection.name })}
           </Text>
         }
         withCloseButton={false}
         centered
         size="sm"
       >
-        <Text mb="xs">Are you sure you want to delete {collection.name}?</Text>
+        <Text mb="xs">
+          {t("collections.deleteConfirmation", { name: collection.name })}
+        </Text>
         <Group position="right" spacing="xs">
           <Button
             leftIcon={<IconTrash size={16} />}
@@ -137,9 +141,11 @@ function EditCollection({
               setFunction();
             }}
           >
-            Yes, Delete
+            {t("collections.deleteConfirm")}
           </Button>
-          <Button onClick={() => setOpenDeleteModal(false)}>No, go back</Button>
+          <Button onClick={() => setOpenDeleteModal(false)}>
+            {t("collections.deleteCancel")}
+          </Button>
         </Group>
       </Modal>
       <Modal
@@ -150,7 +156,7 @@ function EditCollection({
         size="xs"
       >
         <Text mb="xs" weight={500} size="sm">
-          Make the collection visible to...
+          {t("collections.privacySetting")}
         </Text>
         <Group
           sx={{
@@ -202,7 +208,7 @@ function EditCollection({
               privacyModalHandlers.close();
             }}
           >
-            Done
+            {t("done")}
           </Button>
         </Group>
       </Modal>
@@ -215,13 +221,13 @@ function EditCollection({
           <IconChevronLeft size={18} />
         </ActionIcon>
         <Text weight={700} size="lg">
-          Edit collection
+          {t("collections.edit")}
         </Text>
       </Group>
       <Group my="xs" spacing="xs">
         <TextInput
-          aria-label="Input collection name"
-          placeholder="Collection name"
+          aria-label={t("collections.collNameLabel")}
+          placeholder={t("collections.collNamePlaceholder")}
           value={collection.name}
           onChange={(event) =>
             handlers.setItemProp(index, "name", event.currentTarget.value)
@@ -284,15 +290,15 @@ function EditCollection({
             placeholder="Sort by..."
             withinPortal
             data={[
-              { value: "dateAdded", label: "Date added" },
-              { value: "charId", label: "Character ID" },
-              { value: "cardId", label: "Card ID" },
-              { value: "amount", label: "Card amount" },
-              { value: "rarity", label: "Card rarity" },
+              { value: "dateAdded", label: t("collections.dateAdded") },
+              { value: "charId", label: t("collections.charId") },
+              { value: "cardId", label: t("collections.cardId") },
+              { value: "amount", label: t("collections.amount") },
+              { value: "rarity", label: t("collections.rarity") },
             ]}
             icon={<IconSortAscending size="1em" />}
             rightSection={
-              <Tooltip label="Flip order">
+              <Tooltip label={t("collections.flipOrder")}>
                 <ActionIcon
                   variant="light"
                   color="blue"
@@ -368,7 +374,7 @@ function EditCollection({
           </Box>
         </Box>
       ) : (
-        <Text color="dimmed">This collection is empty.</Text>
+        <Text color="dimmed">{t("collections.emptyColl")}</Text>
       )}
     </Paper>
   );

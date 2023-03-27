@@ -61,5 +61,6 @@ module.exports = {
     "/events/[id]": ["events", "events__event"],
     "/scouts": ["scouts"],
     "/scouts/[id]": ["events", "events__event"],
+    "/[user]": ["user"],
   },
 };

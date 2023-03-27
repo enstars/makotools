@@ -11,6 +11,7 @@ import {
 import dynamic from "next/dynamic";
 import { Dispatch, SetStateAction } from "react";
 import { IconPencil } from "@tabler/icons-react";
+import useTranslation from "next-translate/useTranslation";
 
 import StartPlaying from "../StartPlaying";
 import ProfileAvatar from "../profilePicture/ProfileAvatar";
@@ -64,6 +65,7 @@ function EditProfileModal({
   units: GameUnit[];
   locale: Locale;
 }) {
+  const { t } = useTranslation("user");
   const theme = useMantineTheme();
   return (
     <Modal
@@ -83,7 +85,7 @@ function EditProfileModal({
           spacing="xl"
           sx={{ width: "100%" }}
         >
-          <Text weight={700}>Edit profile</Text>
+          <Text weight={700}>{t("editProfile")}</Text>
         </Group>
       }
       closeOnClickOutside={false}
@@ -93,7 +95,7 @@ function EditProfileModal({
       <Accordion defaultValue="details" variant="contained">
         <Accordion.Item value="banner">
           <Accordion.Control>
-            <Text weight={700}>Banner</Text>
+            <Text weight={700}>{t("banner")}</Text>
           </Accordion.Control>
           <Accordion.Panel>
             <Banner
@@ -105,7 +107,7 @@ function EditProfileModal({
         </Accordion.Item>
         <Accordion.Item value="details">
           <Accordion.Control>
-            <Text weight={700}>Basic Info</Text>
+            <Text weight={700}>{t("basicInfo")}</Text>
           </Accordion.Control>
           <Accordion.Panel>
             <Group spacing="lg" align="flex-start">
@@ -129,7 +131,7 @@ function EditProfileModal({
                     onClick={() => picModalFunction(true)}
                     leftIcon={<IconPencil size={14} />}
                   >
-                    Edit Avatar
+                    {t("editAvatar")}
                   </Button>
                 </Stack>
               </Box>
@@ -160,7 +162,7 @@ function EditProfileModal({
         </Accordion.Item>
         <Accordion.Item value="bio">
           <Accordion.Control>
-            <Text weight={700}>Bio</Text>
+            <Text weight={700}>{t("bio")}</Text>
           </Accordion.Control>
           <Accordion.Panel>
             <Bio externalSetter={setProfileState} profileState={profileState} />
@@ -175,14 +177,14 @@ function EditProfileModal({
             openedFunction(false);
           }}
         >
-          Discard Changes
+          {t("discardChanges")}
         </Button>
         <Button
           onClick={() => {
             saveChanges();
           }}
         >
-          Save Changes
+          {t("saveChanges")}
         </Button>
       </Group>
     </Modal>

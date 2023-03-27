@@ -11,6 +11,8 @@ import {
   TypographyStylesProvider,
 } from "@mantine/core";
 import Link from "next/link";
+import useTranslation from "next-translate/useTranslation";
+import Trans from "next-translate/Trans";
 
 import emotes from "services/makotools/emotes";
 import Emote from "components/utilities/emotes/Emote";
@@ -114,6 +116,7 @@ function BioHelpModal({
   opened: boolean;
   openFunction: any;
 }) {
+  const { t } = useTranslation("user");
   const theme = useMantineTheme();
   const { classes } = useStyles();
 
@@ -132,94 +135,97 @@ function BioHelpModal({
         },
       }}
     >
-      <Text size="sm" color="dimmed">
-        Our markdown guide is referenced from{" "}
-        <Link
-          href="https://markdownguide.org"
-          target="_blank"
-          style={{
-            color: theme.colors[theme.primaryColor][5],
-            textDecoration: "none",
-          }}
-        >
-          The Markdown Guide
-        </Link>{" "}
-        and{" "}
-        <Link
-          href="https://rentry.co"
-          target="_blank"
-          style={{
-            color: theme.colors[theme.primaryColor][5],
-            textDecoration: "none",
-          }}
-        >
-          Rentry&apos;s markdown guide
-        </Link>
-        .
-      </Text>
+      <Trans
+        i18nKey="user:markdown.credits"
+        components={[
+          <Link
+            key="markdown"
+            href="https://markdownguide.org"
+            target="_blank"
+            style={{
+              color: theme.colors[theme.primaryColor][5],
+              textDecoration: "none",
+            }}
+          />,
+          <Link
+            key="rentry"
+            href="https://rentry.co"
+            target="_blank"
+            style={{
+              color: theme.colors[theme.primaryColor][5],
+              textDecoration: "none",
+            }}
+          />,
+        ]}
+      />
       <Space h="xl" />
-      <Title order={4}>Basic Markdown</Title>
-      <SamplePreview markdown={"**Bold Text**"} result={<b>Bold Text</b>} />
+      <Title order={4}>{t("markdown.basicMarkdown")}</Title>
       <SamplePreview
-        markdown={"*Italicized Text*"}
-        result={<i>Italicized Text</i>}
+        markdown={`**${t("markdown.boldText")}**`}
+        result={<b>{t("markdown.boldText")}</b>}
       />
       <SamplePreview
-        markdown={"***Bold and Italicized Text***"}
+        markdown={`*${t("markdown.italicizedText")}*`}
+        result={<i>{t("markdown.italicizedText")}</i>}
+      />
+      <SamplePreview
+        markdown={`***${t("markdown.boldItalicizedText")}***`}
         result={
           <b>
-            <i>Bold and Italicized Text</i>
+            <i>{t("markdown.boldItalicizedText")}</i>
           </b>
         }
       />
       <SamplePreview
-        markdown={"~~Strikethrough Text~~"}
-        result={<s>Strikethrough Text</s>}
+        markdown={`~~${t("markdown.strikethrough")}~~`}
+        result={<s>{t("markdown.strikethrough")}</s>}
       />
       <Space h="xl" />
-      <Title order={4}>Headings</Title>
+      <Title order={4}>{t("markdown.headings")}</Title>
       <SamplePreview
-        markdown={"# Heading Level 1"}
-        result={<h1 style={{ margin: 0 }}>Heading Level 1</h1>}
+        markdown={`# ${t("markdown.headingLevel")} 1`}
+        result={<h1 style={{ margin: 0 }}>{t("markdown.headingLevel")} 1</h1>}
       />
       <SamplePreview
-        markdown={"## Heading Level 2"}
-        result={<h2 style={{ margin: 0 }}>Heading Level 2</h2>}
+        markdown={`## ${t("markdown.headingLevel")} 2`}
+        result={<h2 style={{ margin: 0 }}>{t("markdown.headingLevel")} 2</h2>}
       />
       <SamplePreview
-        markdown={"### Heading Level 3"}
-        result={<h3 style={{ margin: 0 }}>Heading Level 3</h3>}
+        markdown={`### ${t("markdown.headingLevel")} 3`}
+        result={<h3 style={{ margin: 0 }}>{t("markdown.headingLevel")} 3</h3>}
       />
       <Space h="xl" />
       <Title order={4}>Miscellaneous</Title>
       <SamplePreview
-        markdown={"> Blockquote"}
+        markdown={`> ${t("markdown.blockquote")}`}
         result={
           <TypographyStylesProvider>
-            <blockquote style={{ margin: 0 }}>Blockquote</blockquote>
+            <blockquote style={{ margin: 0 }}>
+              {t("markdown.blockquote")}
+            </blockquote>
           </TypographyStylesProvider>
         }
       />
       <SamplePreview
         markdown={
           <>
-            Three dashes make...
-            <br />
-            ---
-            <br />
-            ...a dividing line.
+            <Trans
+              i18nKey="user:markdown.horizontalRule"
+              components={[<br key="br" />]}
+            />
           </>
         }
         result={
           <TypographyStylesProvider>
-            Three dashes make...
-            <hr />
-            ...a dividing line.
+            <Trans
+              i18nKey="user:markdown.properHr"
+              components={[<hr key="hr" />]}
+            />
           </TypographyStylesProvider>
         }
       />
       <SamplePreview
-        markdown={`[Link Text](https://example.com)`}
+        markdown={`[${t("markdown.linkText")}](https://example.com)`}
         result={
           <TypographyStylesProvider>
             <a
@@ -227,34 +233,40 @@ function BioHelpModal({
               href="https://www.youtube.com/watch?v=dxrm5TvnOqY"
               rel="noreferrer"
             >
-              Link Text
+              {t("markdown.linkText")}
             </a>
           </TypographyStylesProvider>
         }
       />
       <SamplePreview
-        markdown={`<span style="color:pink;">Isara Mao!</span>`}
-        result={<span style={{ color: "pink" }}>Isara Mao!</span>}
+        markdown={`<span style="color:pink;">${t("markdown.pepetired")}</span>`}
+        result={
+          <span style={{ color: "pink" }}>{t("markdown.pepetired")}</span>
+        }
       />
       <SamplePreview
-        markdown={`<span style="text-decoration:underline">Underlined Text</span>`}
-        result={<u>Underlined Text</u>}
+        markdown={`<span style="text-decoration:underline">${t(
+          "markdown.underlinedText"
+        )}</span>`}
+        result={<u>{t("markdown.underlinedText")}</u>}
       />
       <Space h="xl" />
-      <Title order={4}>You can also use our custom emojis in your bio!</Title>
+      <Title order={4}>{t("markdown.customEmoji")}</Title>
       <Text color="dimmed" size="sm">
-        Non-official emojis are drawn by{" "}
-        <Link
-          href="https://twitter.com/neeneemi"
-          target="_blank"
-          style={{
-            color: theme.colors[theme.primaryColor][5],
-            textDecoration: "none",
-          }}
-        >
-          @neeneemi
-        </Link>
-        ! Check them out!
+        <Trans
+          i18nKey="user:markdown.emojiCredit"
+          components={[
+            <Link
+              key="link"
+              href="https://twitter.com/neeneemi"
+              target="_blank"
+              style={{
+                color: theme.colors[theme.primaryColor][5],
+                textDecoration: "none",
+              }}
+            />,
+          ]}
+        />
       </Text>
       <Space h="xl" />
       <ResponsiveGrid width={120}>

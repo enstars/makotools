@@ -1,5 +1,6 @@
 import { Paper, Group, Button, Text, Box, Tooltip } from "@mantine/core";
 import { IconMenu2, IconPencil } from "@tabler/icons-react";
+import useTranslation from "next-translate/useTranslation";
 
 import PRIVACY_LEVELS from "components/collections/privacyLevels";
 import { COLLECTION_ICONS } from "components/collections/collectionIcons";
@@ -14,6 +15,7 @@ function EditCollectionRow({
   setFunction: (c: CardCollection) => void;
   reordering?: boolean;
 }) {
+  const { t } = useTranslation("user");
   const icon = COLLECTION_ICONS[collection.icon || 0];
   const privacy = PRIVACY_LEVELS[collection.privacyLevel];
   return (
@@ -55,7 +57,7 @@ function EditCollectionRow({
                 </Tooltip>
               </Text>
               <Text size="xs" weight={500} color="dimmed">
-                {collection.cards.length} cards in collection
+                {t("collections.cardAmt", { count: collection.cards.length })}
               </Text>
             </Box>
           </Group>
@@ -71,7 +73,7 @@ function EditCollectionRow({
               variant="default"
               rightIcon={<IconPencil size={16} />}
             >
-              <Text>Edit</Text>
+              <Text>{t("edit")}</Text>
             </Button>
           )}
         </Group>

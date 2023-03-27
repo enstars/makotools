@@ -8,6 +8,7 @@ import {
 } from "@mantine/core";
 import { UseListStateHandlers } from "@mantine/hooks";
 import { IconFlower, IconFlowerOff, IconTrash } from "@tabler/icons-react";
+import useTranslation from "next-translate/useTranslation";
 import { useState } from "react";
 
 import { getAssetURL } from "services/data";
@@ -33,6 +34,7 @@ function EditCollectionCard({
   handlers: UseListStateHandlers<CollectedCard>;
   index: number;
 }) {
+  const { t } = useTranslation("user");
   const { classes, cx } = useStyles();
   const [checked, setChecked] = useState<boolean>(card.id > 0);
 
@@ -106,7 +108,7 @@ function EditCollectionCard({
         }}
       >
         <NumberInput
-          aria-label="Number of card copies"
+          aria-label={t("collections.cardCopiesInput")}
           min={1}
           max={5}
           value={card.count}

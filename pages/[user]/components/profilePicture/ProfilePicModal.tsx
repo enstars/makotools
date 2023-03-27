@@ -12,6 +12,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { IconFlower, IconFlowerOff, IconSearch } from "@tabler/icons-react";
 import Cropper from "react-easy-crop";
 import { Point } from "react-easy-crop/types";
+import useTranslation from "next-translate/useTranslation";
 
 import { GameCard } from "types/game";
 import { ProfilePicture, User, UserData } from "types/makotools";
@@ -34,6 +35,7 @@ function ProfilePicModal({
   externalSetter: Dispatch<SetStateAction<any>>;
   profileState: any;
 }) {
+  const { t } = useTranslation("user");
   const [currentPic, setCurrentPic] = useState<ProfilePicture>(
     profileState.profile__picture
       ? profileState.profile__picture
@@ -57,18 +59,18 @@ function ProfilePicModal({
       opened={opened}
       size="md"
       onClose={() => openedFunction(false)}
-      title="Edit Avatar"
+      title={t("editAvatar")}
     >
       <Select
-        aria-label="Card CG"
-        placeholder="Type to search for a card"
+        aria-label={t("avatarCardCg")}
+        placeholder={t("avatarSearchPlaceholder")}
         value={currentPic.id ? Math.abs(currentPic.id).toString() : null}
         searchable
         limit={25}
         data={[
           {
             value: "0",
-            label: "Default Profile Picture",
+            label: t("defaultAvatar"),
           },
           ...cards
             .filter((c) => c.title)
@@ -165,8 +167,7 @@ function ProfilePicModal({
       ) : (
         <Paper mt="xs" radius="sm" withBorder p="sm">
           <Text color="dimmed" align="center" size="xs">
-            Default profile picture selected. Type a card name in the search bar
-            to use a card CG instead.
+            {t("defaultAvatarNotice")}
           </Text>
         </Paper>
       )}
@@ -178,7 +179,7 @@ function ProfilePicModal({
             openedFunction(false);
           }}
         >
-          Save
+          {t("save")}
         </Button>
       </Group>
     </Modal>

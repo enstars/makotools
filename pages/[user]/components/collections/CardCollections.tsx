@@ -14,6 +14,7 @@ import { useListState } from "@mantine/hooks";
 import useSWR from "swr";
 import { doc, getFirestore, writeBatch } from "firebase/firestore";
 import { isEqual } from "lodash";
+import useTranslation from "next-translate/useTranslation";
 
 import EditCollections from "./EditCollections";
 import CollectionFolder from "./CollectionFolder";
@@ -35,6 +36,7 @@ function CardCollections({
   cards: GameCard[];
   units: GameUnit[];
 }) {
+  const { t } = useTranslation("user");
   const user = useUser();
   const theme = useMantineTheme();
   const {
@@ -177,7 +179,7 @@ function CardCollections({
     <Box>
       <Group position="apart">
         <Title order={2} mt="md" mb="xs">
-          Collections
+          {t("collections.title")}
         </Title>
         {isYourProfile && !editMode && (
           <Button
@@ -188,7 +190,7 @@ function CardCollections({
               editingHandlers.setState(collections);
             }}
           >
-            Edit
+            {t("edit")}
           </Button>
         )}
       </Group>

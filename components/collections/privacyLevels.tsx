@@ -5,43 +5,44 @@ import {
   IconWorld,
   TablerIconsProps,
 } from "@tabler/icons-react";
+import Trans from "next-translate/Trans";
 
 import { CollectionPrivacyLevel } from "types/makotools";
 
 const PRIVACY_LEVELS: {
   icon: (props: TablerIconsProps) => JSX.Element;
-  title: string;
+  title: any;
   value: CollectionPrivacyLevel;
   color: string;
-  description: string;
+  description: any;
 }[] = [
   {
     icon: IconWorld,
-    title: "Everyone",
+    title: <Trans i18nKey="user:collections.everyoneTitle" />,
     value: 0,
     color: "violet",
-    description: "Everyone can see this collection.",
+    description: <Trans i18nKey="user:collections.everyoneDesc" />,
   },
   {
     icon: IconUserCheck,
-    title: "Users",
+    title: <Trans i18nKey="user:collections.usersTitle" />,
     value: 1,
     color: "blue",
-    description: "Only signed-in users can see this collection.",
+    description: <Trans i18nKey="user:collections.usersDesc" />,
   },
   {
     icon: IconFriends,
-    title: "Friends",
+    title: <Trans i18nKey="user:collections.friendsTitle" />,
     value: 2,
     color: "yellow",
-    description: "Only your friends can see this collection.",
+    description: <Trans i18nKey="user:collections.friendsDesc" />,
   },
   {
     icon: IconLock,
-    title: "No One",
+    title: <Trans i18nKey="user:collections.privateTitle" />,
     value: 3,
     color: "red",
-    description: "Only you can see this collection.",
+    description: <Trans i18nKey="user:collections.privateDesc" />,
   },
 ];
 

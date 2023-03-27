@@ -24,6 +24,8 @@ import { useRef, Fragment, useState, useEffect, useMemo } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { useMediaQuery } from "@mantine/hooks";
 import useSWR, { SWRConfig } from "swr";
+import useTranslation from "next-translate/useTranslation";
+import Trans from "next-translate/Trans";
 
 import EditProfileModal from "./components/customization/EditProfileModal";
 import ProfilePicModal from "./components/profilePicture/ProfilePicModal";
@@ -46,6 +48,7 @@ import { GameCard, GameCharacter, GameUnit } from "types/game";
 import { getFirestoreUserProfile } from "services/firebase/firestore";
 
 function PatreonBanner({ profile }: { profile: UserData }) {
+  const { t } = useTranslation("user");
   if (profile?.admin?.patreon) {
     const tier = CONSTANTS.PATREON.TIERS[profile?.admin?.patreon];
     if (profile?.admin?.patreon > 0)
@@ -57,7 +60,7 @@ function PatreonBanner({ profile }: { profile: UserData }) {
           // title={`${tier.NAME} Tier ($${tier.VALUE}) Patreon Supporter!`}
         >
           <Text color="orange" weight={700}>
-            {tier.NAME} (${tier.VALUE}) Patreon Supporter!
+            {tier.NAME} (${tier.VALUE}) {t("patreonSupporter")}
           </Text>
         </Alert>
       );
@@ -100,6 +103,7 @@ function Page({
   } = useSWR<UserData>([`/user/${uid}`, uid], getFirestoreUserProfile);
 
   // hooks
+  const { t } = useTranslation("user");
   const units: GameUnit[] = useMemo(() => unitsQuery.data, [unitsQuery.data]);
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const theme = useMantineTheme();
@@ -312,16 +316,17 @@ function Page({
                   color="red"
                   sx={{ marginTop: "2vh" }}
                 >
-                  You&apos;ve been restricted from editing your profile. You can
-                  submit an appeal through our{" "}
-                  <Text
-                    component={Link}
-                    href="/issues"
-                    sx={{ textDecoration: "underline" }}
-                  >
-                    issues
-                  </Text>{" "}
-                  page.
+                  <Trans
+                    i18nKey="user:restricted"
+                    components={[
+                      <Text
+                        key="link"
+                        component={Link}
+                        href="/issues"
+                        sx={{ textDecoration: "underline" }}
+                      />,
+                    ]}
+                  />
                 </Alert>
               )}
               <Space h="lg" />
@@ -333,7 +338,7 @@ function Page({
                       {profileData.name || profileData.username}
                     </Title>
                     {profileData.admin?.administrator && (
-                      <Tooltip label="This user is a verified MakoTools admin.">
+                      <Tooltip label={t("verified")}>
                         <ActionIcon color={theme.primaryColor} size="lg">
                           <IconDiscountCheck size={30} />
                         </ActionIcon>
@@ -341,9 +346,9 @@ function Page({
                     )}
                     {isFriend && (
                       <Tooltip
-                        label={`${
-                          profileData.name || profileData.username
-                        } is your friend!`}
+                        label={t("friendTooltip", {
+                          friend: profileData.name || profileData.username,
+                        })}
                       >
                         <ActionIcon size="xl" color="pink">
                           <IconHearts />

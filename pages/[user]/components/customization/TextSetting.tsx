@@ -11,6 +11,7 @@ import {
   Text,
   TextInputProps,
 } from "@mantine/core";
+import useTranslation from "next-translate/useTranslation";
 
 import { UserData } from "types/makotools";
 import useUser from "services/firebase/user";
@@ -33,6 +34,7 @@ function TextSetting<T = {}>({
   externalSetter: Dispatch<SetStateAction<any>>;
   profileState: any;
 } & T) {
+  const { t } = useTranslation("user");
   const theme = useMantineTheme();
   const user = useUser();
 
@@ -65,7 +67,7 @@ function TextSetting<T = {}>({
       />
       {showCharCount && (
         <Text align="right" color="dimmed" size="xs" mt="xs">
-          Characters: {inputValue?.length}/{charLimit}
+          {t("characterCount")} {inputValue?.length}/{charLimit}
         </Text>
       )}
     </>
