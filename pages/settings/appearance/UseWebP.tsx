@@ -1,23 +1,26 @@
+import useTranslation from "next-translate/useTranslation";
+
 import SelectSetting from "../shared/SelectSetting";
 
-const webpOptions = [
-  {
-    value: "use",
-    label: "Use WebPs wherever possible",
-  },
-  {
-    value: "dont-use",
-    label: "Don't use WebPs at all",
-  },
-];
-
 function UseWebP() {
+  const { t } = useTranslation("settings");
+  const webpOptions = [
+    {
+      value: "use",
+      label: t("appearance.use"),
+    },
+    {
+      value: "dont-use",
+      label: t("appearance.dontUse"),
+    },
+  ];
+
   return (
     <SelectSetting
       dataKey="setting__use_webp"
-      label="Use WebPs to optimize images"
+      label={t("appearance.webPLabel")}
       data={webpOptions}
-      description="Disabling WebPs may result in slower load times."
+      description={t("appearance.webPDesc")}
       placeholder={webpOptions[0].label}
     />
   );

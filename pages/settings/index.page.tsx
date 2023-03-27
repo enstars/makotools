@@ -15,6 +15,8 @@ import {
   IconPalette,
   IconFriends,
 } from "@tabler/icons-react";
+import useTranslation from "next-translate/useTranslation";
+import Trans from "next-translate/Trans";
 
 import Region from "./content/Region";
 import NameOrder from "./content/NameOrder";
@@ -35,7 +37,7 @@ import useUser from "services/firebase/user";
 
 const tabs = [
   {
-    label: "Content",
+    label: <Trans i18nKey="settings:content.name" />,
     value: "content",
     icon: IconDeviceGamepad2,
     color: "yellow",
@@ -49,7 +51,7 @@ const tabs = [
     ),
   },
   {
-    label: "Appearance",
+    label: <Trans i18nKey="settings:appearance.name" />,
     value: "appearance",
     icon: IconPalette,
     color: "violet",
@@ -64,7 +66,7 @@ const tabs = [
     ),
   },
   {
-    label: "Friends",
+    label: <Trans i18nKey="settings:friends.name" />,
     value: "friends",
     icon: IconFriends,
     color: "green",
@@ -77,7 +79,7 @@ const tabs = [
     ),
   },
   {
-    label: "Account",
+    label: <Trans i18nKey="settings:account.name" />,
     value: "account",
     icon: IconUserCircle,
     color: "toya_default",
@@ -94,6 +96,7 @@ const tabs = [
 ];
 
 function Page({ cards }: { cards: GameCard[] | undefined }) {
+  const { t } = useTranslation("settings");
   const theme = useMantineTheme();
   const { width } = useViewportSize();
   const user = useUser();
@@ -106,7 +109,7 @@ function Page({ cards }: { cards: GameCard[] | undefined }) {
 
   return (
     <>
-      <PageTitle title="Settings" mb={16} />
+      <PageTitle title={t("title")} mb={16} />
       {isNarrowPage ? (
         <Accordion
           multiple
