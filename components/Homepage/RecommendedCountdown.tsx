@@ -25,6 +25,7 @@ import { useEffect, useState } from "react";
 import useTranslation from "next-translate/useTranslation";
 import { Carousel } from "@mantine/carousel";
 import { useElementSize, useMediaQuery } from "@mantine/hooks";
+import Trans from "next-translate/Trans";
 
 import { countdown, retrieveNextCampaigns } from "services/campaigns";
 import useUser from "services/firebase/user";
@@ -69,12 +70,12 @@ function RecommendedCard({
       const s = Math.floor((((ctdwn % 86400000) % 3600000) % 60000) / 1000);
       setCountdownAmt(
         d === 0 && h === 0 && m === 0
-          ? `${s} secs`
+          ? `${s} ${s === 1 ? "sec" : "secs"}`
           : d === 0 && h === 0
-          ? `${m} mins`
+          ? `${m} ${m === 1 ? "min" : "mins"}`
           : d === 0
-          ? `${h} hrs`
-          : `${d} days`
+          ? `${h} ${h === 1 ? "hr" : "hrs"}`
+          : `${d} ${d === 1 ? "day" : "days"}`
       );
     }, 1000);
     return () => clearInterval(interval);
@@ -108,7 +109,7 @@ function RecommendedCard({
       <Text size="xs" color="dimmed" sx={{ display: "flex" }}>
         <IconStar size={12} style={{ marginTop: 2 }} />
         <Text inherit ml={4}>
-          Because you like{" "}
+          {t("recommended.becauseYouLike")}{" "}
           <Text weight={700} component="span">
             {returnCharOrUnitName()}
           </Text>
@@ -148,7 +149,7 @@ function RecommendedCard({
               position="bottom"
             >
               <Text size="sm" weight={500}>
-                Starts in {countdownAmt}
+                {t("event.start")} {countdownAmt}
               </Text>
             </Tooltip>
           </Group>
@@ -209,6 +210,7 @@ function RecommendedCountdown({
   characters: GameCharacter[];
   units: GameUnit[];
 }) {
+  const { t } = useTranslation("home");
   const user = useUser();
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.xs}px)`);
@@ -242,10 +244,9 @@ function RecommendedCountdown({
 
   return (
     <Container my="xl" ref={ref}>
-      <Title order={2}>Recommended Campaigns</Title>
+      <Title order={2}>{t("recommended.title")}</Title>
       <Alert my={3} icon={<IconHeart />}>
-        Recommendations are based on the favorite characters and units listed in
-        your profile.
+        {t("recommended.alert")}
       </Alert>
       {user.loggedIn &&
       user.db &&
@@ -253,16 +254,17 @@ function RecommendedCountdown({
         user.db.profile__fave_charas.length === 0) ? (
         <Paper p={15} my={10}>
           <Text>
-            There are no recommended campaigns available. Perhaps you should add
-            your favorite characters or units to{" "}
-            <Text
-              color={theme.colors[theme.primaryColor][4]}
-              component={Link}
-              href={`/@${user.db.username}`}
-            >
-              your profile
-            </Text>
-            !
+            <Trans
+              i18nKey="home:recommended.noRecommendations"
+              components={[
+                <Text
+                  key="link"
+                  color={theme.colors[theme.primaryColor][4]}
+                  component={Link}
+                  href={`/@${user.db.username}`}
+                />,
+              ]}
+            />
           </Text>
         </Paper>
       ) : (user as UserLoggedIn).db.profile__fave_charas &&
@@ -280,19 +282,23 @@ function RecommendedCountdown({
             <Stack>
               <Paper withBorder py={20} pl={15} pr={40}>
                 <Text component="span">
-                  You seem to not like anyone... Not even{" "}
-                  {Math.floor(Math.random() * 2) === 0 ? "Akehoshi" : "Yuuki"}?
+                  {t("recommended.sadHokke", {
+                    random:
+                      Math.floor(Math.random() * 2) === 0
+                        ? "Akehoshi"
+                        : "Yuuki",
+                  })}
                 </Text>
               </Paper>
               <Text size="xs" color="dimmed">
-                (You indicated that you hate Ensemble Stars on your profile)
+                {t("recommended.explanation")}
               </Text>
             </Stack>
           </Group>
         </Box>
       ) : events.length === 0 ? (
         <Paper p={20} my={10}>
-          <Text>There are no upcoming recommended campaigns available.</Text>
+          <Text>{t("recommended.unavailable")}</Text>
         </Paper>
       ) : (
         <Carousel
@@ -316,7 +322,7 @@ function RecommendedCountdown({
                 },
               })}
             >
-              Next
+              {t("next")}
             </Button>
           }
           previousControlIcon={
@@ -332,7 +338,7 @@ function RecommendedCountdown({
                 },
               })}
             >
-              Previous
+              {t("prev")}
             </Button>
           }
           align={isMobile ? "start" : "center"}
