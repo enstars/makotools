@@ -210,39 +210,42 @@ function EventCard({
           </Stack>
         </Box>
       </Group>
-      {user.loggedIn && (
-        <Tooltip
-          label={
-            !bookmarked ? t("event.addBookmark") : t("event.removeBookmark")
-          }
-          position="bottom"
-        >
-          <ActionIcon
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              bookmarked
-                ? bookmarkHandlers.remove(bookmarks.indexOf(event.event_id))
-                : bookmarkHandlers.append(event.event_id);
-            }}
-            size="lg"
+      {(user.loggedIn &&
+        user.db.admin?.patreon &&
+        user.db.admin?.patreon >= 1) ||
+        (user.loggedIn && user.db.admin?.administrator && (
+          <Tooltip
+            label={
+              !bookmarked ? t("event.addBookmark") : t("event.removeBookmark")
+            }
+            position="bottom"
           >
-            <IconBookmark
-              fill={bookmarked ? theme.colors[theme.primaryColor][4] : "none"}
-              strokeWidth={bookmarked ? 0 : isMobile ? 1 : 2}
-              size={
-                !isMobile
-                  ? bookmarked
-                    ? 32
-                    : 26
-                  : isMobile && bookmarked
-                  ? 44
-                  : 40
-              }
-            />
-          </ActionIcon>
-        </Tooltip>
-      )}
+            <ActionIcon
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                bookmarked
+                  ? bookmarkHandlers.remove(bookmarks.indexOf(event.event_id))
+                  : bookmarkHandlers.append(event.event_id);
+              }}
+              size="lg"
+            >
+              <IconBookmark
+                fill={bookmarked ? theme.colors[theme.primaryColor][4] : "none"}
+                strokeWidth={bookmarked ? 0 : isMobile ? 1 : 2}
+                size={
+                  !isMobile
+                    ? bookmarked
+                      ? 32
+                      : 26
+                    : isMobile && bookmarked
+                    ? 44
+                    : 40
+                }
+              />
+            </ActionIcon>
+          </Tooltip>
+        ))}
     </Paper>
   );
 }

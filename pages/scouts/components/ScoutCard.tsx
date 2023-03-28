@@ -57,7 +57,10 @@ function ScoutCard({
 
   return (
     <Card withBorder sx={{ position: "relative" }} p={0}>
-      {user.loggedIn && (
+      {((user.loggedIn &&
+        user.db.admin?.patreon &&
+        user.db.admin?.patreon >= 1) ||
+        (user.loggedIn && user.db.admin?.administrator)) && (
         <Tooltip
           position="bottom"
           label={bookmarked ? "Remove from bookmarks" : "Add to bookmarks"}

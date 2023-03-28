@@ -373,8 +373,6 @@ function Sidebar(props: any) {
           }
         />
         {user.loggedIn &&
-          ((user.db.admin?.patreon && user.db.admin?.patreon >= 1) ||
-            user.db.admin?.administrator) &&
           (collapsed ? (
             <TextInput
               styles={(theme) => ({
