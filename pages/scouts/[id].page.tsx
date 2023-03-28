@@ -13,6 +13,7 @@ import {
   IconMedal,
 } from "@tabler/icons-react";
 import { useListState } from "@mantine/hooks";
+import useTranslation from "next-translate/useTranslation";
 
 import PageTitle from "components/sections/PageTitle";
 import {
@@ -32,7 +33,6 @@ import ResponsiveGrid from "components/core/ResponsiveGrid";
 import { useCollections } from "services/makotools/collection";
 import NewCollectionModal from "pages/cards/components/NewCollectionModal";
 import useUser from "services/firebase/user";
-import useTranslation from "next-translate/useTranslation";
 
 function Page({
   scout,
