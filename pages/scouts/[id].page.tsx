@@ -32,6 +32,7 @@ import ResponsiveGrid from "components/core/ResponsiveGrid";
 import { useCollections } from "services/makotools/collection";
 import NewCollectionModal from "pages/cards/components/NewCollectionModal";
 import useUser from "services/firebase/user";
+import useTranslation from "next-translate/useTranslation";
 
 function Page({
   scout,
@@ -44,6 +45,7 @@ function Page({
   charactersQuery: QuerySuccess<GameCharacter[]>;
   cardsQuery: QuerySuccess<GameCard[]>;
 }) {
+  const { t } = useTranslation("events__event");
   const user = useUser();
   const theme = useMantineTheme();
   let characters = useMemo(() => charactersQuery.data, [charactersQuery.data]);
@@ -79,14 +81,14 @@ function Page({
           label={
             user.loggedIn
               ? bookmarks.includes(scout.gacha_id)
-                ? "Remove from bookmarks"
-                : "Add to bookmarks"
-              : "Log in to add this to your bookmarks"
+                ? t("events:event.removeBookmark")
+                : t("events:event.addBookmark")
+              : t("loginBookmark")
           }
           position="bottom"
         >
           <ActionIcon
-            size={40}
+            size={60}
             disabled={!user.loggedIn}
             onClick={() => {
               bookmarks.includes(scout.gacha_id)
@@ -95,13 +97,13 @@ function Page({
             }}
           >
             <IconBookmark
-              size={40}
+              size={60}
               fill={
                 bookmarks.includes(scout.gacha_id)
                   ? theme.colors[theme.primaryColor][4]
                   : "none"
               }
-              strokeWidth={bookmarks.includes(scout.gacha_id) ? 0 : 2}
+              strokeWidth={bookmarks.includes(scout.gacha_id) ? 0 : 1}
             />
           </ActionIcon>
         </Tooltip>

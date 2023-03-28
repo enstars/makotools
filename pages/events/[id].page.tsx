@@ -117,7 +117,7 @@ function Page({
           position="bottom"
         >
           <ActionIcon
-            size={40}
+            size={60}
             disabled={!user.loggedIn}
             onClick={() => {
               bookmarks.includes(event.event_id)
@@ -126,7 +126,7 @@ function Page({
             }}
           >
             <IconBookmark
-              size={40}
+              size={60}
               fill={
                 bookmarks.includes(event.event_id)
                   ? theme.colors[theme.primaryColor][4]

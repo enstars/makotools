@@ -304,7 +304,6 @@ function Page({
                         label: {
                           paddingLeft: 10,
                           paddingRight: 10,
-                          textTransform: "uppercase",
                           fontWeight: 600,
                         },
                         iconWrapper: { display: "none" },
