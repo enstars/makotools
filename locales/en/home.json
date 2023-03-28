@@ -37,6 +37,8 @@
     "recommendedAlert": "Recommendations are based on the favorite characters and units listed on your profile.",
     "noRecommendations": "There are no recommended campaigns available. Perhaps you should add your favorite characters or units to <0>your profile</0>!",
     "sadHokke": "You seem to not like anyone... Not even {{random}}?",
+    "akehoshi": "Akehoshi",
+    "yuuki": "Yuuki",
     "explanation": "(You indicated that you hate Ensemble Stars on your profile)",
     "unavailable": "There are no upcoming recommended campaigns available."
   },

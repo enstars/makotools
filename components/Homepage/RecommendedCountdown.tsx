@@ -285,8 +285,8 @@ function RecommendedCountdown({
                   {t("recommended.sadHokke", {
                     random:
                       Math.floor(Math.random() * 2) === 0
-                        ? "Akehoshi"
-                        : "Yuuki",
+                        ? t("recommended.akehoshi")
+                        : t("recommended.yuuki"),
                   })}
                 </Text>
               </Paper>
