@@ -199,6 +199,7 @@ function Sidebar(props: any) {
       },
     },
   ];
+
   return (
     <Navbar
       position={{ top: 0, left: 0 }}
@@ -502,11 +503,10 @@ function Sidebar(props: any) {
                       <Indicator
                         color="red"
                         position="top-start"
-                        dot={
-                          user.loggedIn &&
-                          user.privateDb?.friends__receivedRequests?.length !==
-                            undefined &&
-                          user.privateDb?.friends__receivedRequests?.length > 0
+                        disabled={
+                          !user.loggedIn ||
+                          !user.privateDb?.friends__receivedRequests?.length ||
+                          user.privateDb?.friends__receivedRequests?.length <= 0
                         }
                       >
                         <IconUserCircle size={20} />

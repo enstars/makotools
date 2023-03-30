@@ -25,6 +25,7 @@ import Link from "next/link";
 import useSWR from "swr";
 import { chunk } from "lodash";
 import { showNotification, updateNotification } from "@mantine/notifications";
+import useTranslation from "next-translate/useTranslation";
 
 import NoBitches from "./NoBitches.png";
 
@@ -34,6 +35,7 @@ import { FIRESTORE_MAXIMUM_WHERE_VALUES } from "services/firebase/firestore";
 import { UserData, UserLoggedIn } from "types/makotools";
 
 function Requests() {
+  const { t } = useTranslation("settings");
   const theme = useMantineTheme();
   const user = useUser();
   const yourBitches: string[] | undefined = (user as UserLoggedIn).privateDb
@@ -98,7 +100,7 @@ function Requests() {
               }}
             />
             <Text sx={{ marginTop: 20 }} color="dimmed">
-              Uh oh, looks like someone needs to make some friends!
+              {t("friends.noBitches")}
             </Text>
           </Box>
         ) : (
@@ -133,7 +135,7 @@ function Requests() {
       )}
       {user.loggedIn && (
         <Box sx={{ marginTop: 20 }}>
-          <Title order={2}>Friend Requests</Title>
+          <Title order={2}>{t("friends.friendRequests")}</Title>
           {!isLoading ? (
             !thirstyBitches || thirstyBitches.length === 0 ? (
               <Box
@@ -145,7 +147,7 @@ function Requests() {
                 }}
               >
                 <Text color="dimmed" sx={{ marginLeft: 30, marginTop: 10 }}>
-                  No friend requests. You&apos;re all up to date!
+                  {t("friends.noReqs")}
                 </Text>
                 <Box
                   sx={{

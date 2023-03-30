@@ -27,6 +27,7 @@ import ColorCode from "./account/ColorCode";
 import Email from "./account/Email";
 import UseWebP from "./appearance/UseWebP";
 import Requests from "./friends/Requests";
+import UniqueCode from "./account/UniqueCode";
 
 import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
@@ -89,6 +90,7 @@ const tabs = [
           <Username />
           <Email />
           <ColorCode />
+          <UniqueCode />
         </Stack>
       </>
     ),
@@ -169,8 +171,8 @@ function Page({ cards }: { cards: GameCard[] | undefined }) {
                   <Indicator
                     color="red"
                     position="top-start"
-                    dot={
-                      value === "friends" &&
+                    disabled={
+                      value !== "friends" &&
                       user.loggedIn &&
                       user.privateDb?.friends__receivedRequests &&
                       user.privateDb?.friends__receivedRequests?.length > 0

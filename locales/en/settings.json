@@ -34,12 +34,17 @@
     "webPDesc": "Disabling WebPs may result in slower load times."
   },
   "friends": {
-    "name": "Friends"
+    "name": "Friends",
+    "noBitches": "Uh oh, looks like someone needs to make some friends!",
+    "friendRequests": "Friend Requests",
+    "noReqs": "No friend requests. You're all up to date!"
   },
   "account": {
     "name": "Account",
     "colorCodeLabel": "Color Code",
     "colorCodeDesc": "Your color code is a code unique to you, and cannot be modified or changed.",
+    "uniqueCodeLabel": "Unique Code",
+    "uniqueCodeDesc": "If you signed up via Twitter, please screenshot or copy and paste this code and send it to a MakoTools admin to move your username to a new, email verified MakoTools account.",
     "usernameErrorAlphanumeric": "Username must only contain lowercase alphanumeric characters or underscores!",
     "usernameErrorUnderscore": "Username cannot start or end with an underscore!",
     "usernameErrorEmpty": "Username cannot be empty!",
