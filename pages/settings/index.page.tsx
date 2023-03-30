@@ -17,6 +17,7 @@ import {
 } from "@tabler/icons-react";
 import useTranslation from "next-translate/useTranslation";
 import Trans from "next-translate/Trans";
+import seedrandom from "seedrandom";
 
 import Region from "./content/Region";
 import NameOrder from "./content/NameOrder";
@@ -36,68 +37,74 @@ import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCard } from "types/game";
 import useUser from "services/firebase/user";
 
-const tabs = [
-  {
-    label: <Trans i18nKey="settings:content.name" />,
-    value: "content",
-    icon: IconDeviceGamepad2,
-    color: "yellow",
-    contents: () => (
-      <>
-        <Stack>
-          <Region />
-          <NameOrder />
-        </Stack>
-      </>
-    ),
-  },
-  {
-    label: <Trans i18nKey="settings:appearance.name" />,
-    value: "appearance",
-    icon: IconPalette,
-    color: "violet",
-    contents: () => (
-      <>
-        <Stack>
-          <DarkMode />
-          <ShowTlBadge />
-          <UseWebP />
-        </Stack>
-      </>
-    ),
-  },
-  {
-    label: <Trans i18nKey="settings:friends.name" />,
-    value: "friends",
-    icon: IconFriends,
-    color: "green",
-    contents: () => (
-      <>
-        <Stack>
-          <Requests />
-        </Stack>
-      </>
-    ),
-  },
-  {
-    label: <Trans i18nKey="settings:account.name" />,
-    value: "account",
-    icon: IconUserCircle,
-    color: "toya_default",
-    contents: () => (
-      <>
-        <Stack>
-          <Username />
-          <Email />
-          <ColorCode />
-          <UniqueCode />
-        </Stack>
-      </>
-    ),
-  },
-];
+function Page({
+  cards,
+  uniqueCode,
+}: {
+  cards: GameCard[] | undefined;
+  uniqueCode: string;
+}) {
+  const tabs = [
+    {
+      label: <Trans i18nKey="settings:content.name" />,
+      value: "content",
+      icon: IconDeviceGamepad2,
+      color: "yellow",
+      contents: () => (
+        <>
+          <Stack>
+            <Region />
+            <NameOrder />
+          </Stack>
+        </>
+      ),
+    },
+    {
+      label: <Trans i18nKey="settings:appearance.name" />,
+      value: "appearance",
+      icon: IconPalette,
+      color: "violet",
+      contents: () => (
+        <>
+          <Stack>
+            <DarkMode />
+            <ShowTlBadge />
+            <UseWebP />
+          </Stack>
+        </>
+      ),
+    },
+    {
+      label: <Trans i18nKey="settings:friends.name" />,
+      value: "friends",
+      icon: IconFriends,
+      color: "green",
+      contents: () => (
+        <>
+          <Stack>
+            <Requests />
+          </Stack>
+        </>
+      ),
+    },
+    {
+      label: <Trans i18nKey="settings:account.name" />,
+      value: "account",
+      icon: IconUserCircle,
+      color: "toya_default",
+      contents: () => (
+        <>
+          <Stack>
+            <Username />
+            <Email />
+            <ColorCode />
+            <UniqueCode uniqueCode={uniqueCode} />
+          </Stack>
+        </>
+      ),
+    },
+  ];
 
-function Page({ cards }: { cards: GameCard[] | undefined }) {
   const { t } = useTranslation("settings");
   const theme = useMantineTheme();
   const { width } = useViewportSize();
@@ -200,19 +207,24 @@ function Page({ cards }: { cards: GameCard[] | undefined }) {
 }
 
 export const getServerSideProps = getServerSideUser(
-  async ({ locale }) => {
+  async ({ locale, user }) => {
     const cards = await getLocalizedDataArray<GameCard>("cards", locale, "id", [
       "id",
       "title",
       "name",
       "rarity",
     ]);
+    const uniqueCodeGen = seedrandom(user.id ? user.id : undefined);
+    const uniqueCode = uniqueCodeGen
+      ? `${Math.abs(uniqueCodeGen.int32())}`
+      : "";
     if (cards.status === "error") return { props: { cards: undefined } };
     const bannerIds = cards.data.filter((c) => c.rarity >= 4).map((c) => c.id);
 
     return {
       props: {
         cards: cards.data.filter((c) => bannerIds.includes(c.id)),
+        uniqueCode: uniqueCode,
       },
     };
   },
