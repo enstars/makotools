@@ -6,7 +6,8 @@ import {
   Stack,
   Title,
 } from "@mantine/core";
-import { IconArrowLeft, IconArrowRight } from "@tabler/icons";
+import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
+import useTranslation from "next-translate/useTranslation";
 import { ReactElement, useCallback } from "react";
 
 import { useDayjs } from "services/libraries/dayjs";
@@ -35,6 +36,7 @@ function CalendarHeader({
   setCalendarTime: (a: string) => void;
   children?: ReactElement;
 }) {
+  const { t } = useTranslation("calendar");
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
 
@@ -62,7 +64,7 @@ function CalendarHeader({
       </Button>
       <Stack className={classes.centerSection} spacing={0} align="start">
         <Title order={2} my={0} color="dimmed" size="lg">
-          Game Calendar
+          {t("calendarHeader")}
         </Title>
         <Title order={3}>{dayjs(calendarTime).format("MMMM YYYY")}</Title>
       </Stack>

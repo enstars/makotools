@@ -1,9 +1,11 @@
 import { NavLink, Paper, PaperProps, Text } from "@mantine/core";
-import { IconBrandPatreon } from "@tabler/icons";
+import { IconBrandPatreon } from "@tabler/icons-react";
+import useTranslation from "next-translate/useTranslation";
 import Link from "next/link";
 import React from "react";
 
 function SupportBanner(props: PaperProps) {
+  const { t } = useTranslation("footer");
   return (
     <>
       <Paper {...props}>
@@ -17,8 +19,8 @@ function SupportBanner(props: PaperProps) {
           variant="filled"
           active
           icon={<IconBrandPatreon size={16} />}
-          label={<Text weight={700}>Support us on Patreon!</Text>}
-          description={"Get exclusive perks and beta features!"}
+          label={<Text weight={700}>{t("patreonTitle")}</Text>}
+          description={t("patreonDesc")}
           target="_blank"
         />
       </Paper>

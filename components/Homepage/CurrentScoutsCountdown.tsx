@@ -8,15 +8,16 @@ import {
   Stack,
   Text,
   Title,
+  useMantineTheme,
 } from "@mantine/core";
 import useTranslation from "next-translate/useTranslation";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
 import Picture from "components/core/Picture";
-import { countdown, toCountdownReadable } from "services/events";
+import { countdown, toCountdownReadable } from "services/campaigns";
 import { useDayjs } from "services/libraries/dayjs";
-import { ScoutEvent } from "types/game";
+import { Scout } from "types/game";
 
 const useStyles = createStyles((theme, _params) => ({
   scoutsContainer: {
@@ -24,21 +25,6 @@ const useStyles = createStyles((theme, _params) => ({
   },
   scoutsCards: {
     marginTop: "2vh",
-  },
-  link: {
-    "&:link": {
-      color:
-        theme.colorScheme === "dark"
-          ? theme.colors.indigo[2]
-          : theme.colors.indigo[6],
-      textDecoration: "none",
-    },
-    "&:visited": {
-      color:
-        theme.colorScheme === "dark"
-          ? theme.colors.indigo[2]
-          : theme.colors.indigo[6],
-    },
   },
 }));
 
@@ -60,7 +46,7 @@ function Countdown({ endDate }: { endDate: string }) {
   );
 }
 
-function ScoutCard({ scout }: { scout: ScoutEvent }) {
+function ScoutCard({ scout }: { scout: Scout }) {
   const { t } = useTranslation("home");
   const { classes } = useStyles();
   return (
@@ -97,14 +83,14 @@ function ScoutCard({ scout }: { scout: ScoutEvent }) {
               {scout.type === "scout" ? "event scout" : scout.type}
             </Badge>
           </Group>
-          <Countdown endDate={scout.end_date} />
+          <Countdown endDate={scout.end.en} />
         </Stack>
       </Group>
     </Paper>
   );
 }
 
-function CurrentScoutsCards({ scouts }: { scouts: ScoutEvent[] }) {
+function CurrentScoutsCards({ scouts }: { scouts: Scout[] }) {
   const { classes } = useStyles();
 
   return (
@@ -113,30 +99,39 @@ function CurrentScoutsCards({ scouts }: { scouts: ScoutEvent[] }) {
       className={classes.scoutsCards}
       breakpoints={[{ maxWidth: 755, cols: 1, spacing: "sm" }]}
     >
-      {scouts.map((scout: ScoutEvent) => (
+      {scouts.map((scout: Scout) => (
         <ScoutCard key={scout.gacha_id} scout={scout} />
       ))}
     </SimpleGrid>
   );
 }
 
-function CurrentScoutsCountdown({ scouts }: { scouts: ScoutEvent[] }) {
+function CurrentScoutsCountdown({ scouts }: { scouts: Scout[] }) {
+  const theme = useMantineTheme();
   const { t } = useTranslation("home");
   const { dayjs } = useDayjs();
   const { classes } = useStyles();
-  const currentScouts: ScoutEvent[] = scouts.filter((scout) => {
+  const currentScouts: Scout[] = scouts.filter((scout) => {
     return dayjs(new Date()).isBetween(
-      dayjs(scout.start_date),
-      dayjs(scout.end_date)
+      dayjs(scout.start.en),
+      dayjs(scout.end.en)
     );
   });
   return (
     <Container className={classes.scoutsContainer}>
       <Group align="end">
         <Title order={2}>{t("scout.current")}</Title>
-        <Link href="/scouts" className={classes.link}>
+        <Text
+          color={
+            theme.colorScheme === "dark"
+              ? theme.colors[theme.primaryColor][3]
+              : theme.colors[theme.primaryColor][6]
+          }
+          component={Link}
+          href="/scouts"
+        >
           {t("scout.seeAll")}
-        </Link>
+        </Text>
       </Group>
       <CurrentScoutsCards scouts={currentScouts} />
     </Container>

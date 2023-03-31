@@ -16,18 +16,13 @@ import {
   LoadingOverlay,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import {
-  IconAlertTriangle,
-  IconBrandGoogle,
-  IconBrandTwitter,
-} from "@tabler/icons";
+import { IconAlertTriangle, IconBrandGoogle } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
 import useUser from "services/firebase/user";
 import {
   signInWithGoogle,
-  signInWithTwitter,
   signInWithEmail,
   signUpWithEmail,
 } from "services/firebase/authentication";
@@ -179,15 +174,6 @@ function Login() {
                 style={{ width: "100%" }}
               >
                 {isRegister ? "Sign up" : "Sign in"} with Google
-              </Button>
-              <Button
-                id="signin-twitter"
-                variant="default"
-                leftIcon={<IconBrandTwitter size={16} />}
-                onClick={() => signInWithTwitter()}
-                style={{ width: "100%" }}
-              >
-                {isRegister ? "Sign up" : "Sign in"} with Twitter
               </Button>
             </Stack>
 

@@ -9,12 +9,11 @@ import {
 } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
 
+import CharacterCard from "./components/CharacterCard";
+
 import PageTitle from "components/sections/PageTitle";
 import { getLayout } from "components/Layout";
 import { QuerySuccess } from "types/makotools";
-
-import CharacterCard from "./components/DisplayCard";
-
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "services/data";
 import { GameCharacter, GameUnit } from "types/game";

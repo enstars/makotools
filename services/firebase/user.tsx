@@ -1,10 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState, useEffect, ReactElement } from "react";
-import { IconAlertTriangle } from "@tabler/icons";
+import { IconAlertTriangle } from "@tabler/icons-react";
 import { useAuthUser } from "next-firebase-auth";
 import { ColorScheme } from "@mantine/core";
-
-import { User, UserData, UserLoading, UserPrivateData } from "types/makotools";
 
 import {
   getFirestorePrivateUserData,
@@ -12,6 +10,7 @@ import {
   setFirestoreUserData,
 } from "./firestore";
 
+import { User, UserData, UserLoading, UserPrivateData } from "types/makotools";
 import notify from "services/libraries/notify";
 
 const loadingUser: UserLoading = {
@@ -35,18 +34,21 @@ export function UserProvider({
   serverData: any;
 }) {
   const AuthUser = useAuthUser();
-  const [user, setUser] = useState<User>(
-    serverData?.user
-      ? {
-          loading: false,
-          loggedIn: !!AuthUser.id,
-          user: serverData.user,
-          db: serverData?.db,
-          privateDb: serverData?.privateDb,
-          refreshData: () => {},
-        }
-      : loadingUser
-  );
+  // const [user, setUser] = useState<User>(
+  //   serverData?.user
+  //     ? {
+  //         loading: false,
+  //         loggedIn: !!AuthUser.id,
+  //         user: serverData.user,
+  //         db: serverData?.db,
+  //         privateDb: serverData?.privateDb,
+  //         refreshData: () => {},
+  //       }
+  //     : loadingUser
+  // );
+
+  const [user, setUser] = useState<User>(loadingUser);
+  const [firstCheck, setFirstCheck] = useState<boolean>(true);
 
   //   (data: any, callback?: () => void) => {
   //     console.log(1, user);
@@ -71,7 +73,7 @@ export function UserProvider({
 
   // console.log("firebase user auth ", user);
   useEffect(() => {
-    if (AuthUser.id) {
+    if (AuthUser.id && !firstCheck) {
       const setFirestoreData = async () => {
         try {
           let currentUserData: UserData | undefined = undefined,
@@ -144,6 +146,8 @@ export function UserProvider({
       };
       setFirestoreData();
       setUser((s) => ({ ...s }));
+    } else if (!AuthUser.id && firstCheck) {
+      setFirstCheck(false);
     } else {
       setUser((s) => ({
         ...s,

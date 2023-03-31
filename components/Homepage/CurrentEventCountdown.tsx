@@ -7,6 +7,7 @@ import {
   Box,
   Button,
   Stack,
+  useMantineTheme,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
@@ -17,11 +18,10 @@ import Picture from "components/core/Picture";
 import {
   countdown,
   isItYippeeTime,
-  retrieveClosestEvents,
   toCountdownReadable,
-} from "services/events";
+} from "services/campaigns";
 import { useDayjs } from "services/libraries/dayjs";
-import { GameEvent } from "types/game";
+import { Event } from "types/game";
 
 const useStyles = createStyles((theme, _params) => ({
   eventContainer: {
@@ -35,22 +35,16 @@ const useStyles = createStyles((theme, _params) => ({
 
   link: {
     "&:link": {
-      color:
-        theme.colorScheme === "dark"
-          ? theme.colors.indigo[2]
-          : theme.colors.indigo[6],
+      color: theme.primaryColor,
       textDecoration: "none",
     },
     "&:visited": {
-      color:
-        theme.colorScheme === "dark"
-          ? theme.colors.indigo[2]
-          : theme.colors.indigo[6],
+      color: theme.primaryColor,
     },
   },
 }));
 
-function EventImage({ event }: { event: GameEvent }) {
+function EventImage({ event }: { event: Event }) {
   const { classes } = useStyles();
   return (
     <Link href={`/events/${event.event_id}`}>
@@ -90,7 +84,8 @@ function Countdown({
   );
 }
 
-function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
+function CurrentEventCountdown({ events }: { events: Event[] }) {
+  const theme = useMantineTheme();
   const { t } = useTranslation("home");
   const { dayjs } = useDayjs();
 
@@ -103,42 +98,43 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
 
   const { classes } = useStyles();
 
-  let currentEvent: GameEvent = events.filter((event) => {
-    return dayjs(new Date()).isBetween(
-      dayjs(event.start_date),
-      dayjs(event.end_date)
-    );
+  const shownEvent = events.filter((event) => {
+    return dayjs().isBefore(event.end.en);
   })[0];
-
-  let nextEvent: GameEvent | null = !currentEvent
-    ? (retrieveClosestEvents(events, 1)[0] as GameEvent)
-    : null;
+  const isNextEvent = dayjs().isBefore(shownEvent.start.en);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (currentEvent) {
+      if (isNextEvent) {
         setYippeeTime(
-          isItYippeeTime(new Date(currentEvent.end_date), new Date(), dayjs)
+          isItYippeeTime(new Date(shownEvent.start.en), new Date(), dayjs)
         );
-      }
-      if (nextEvent) {
+      } else {
         setYippeeTime(
-          isItYippeeTime(new Date(nextEvent.start_date), new Date(), dayjs)
+          isItYippeeTime(new Date(shownEvent.end.en), new Date(), dayjs)
         );
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, [currentEvent, nextEvent, dayjs]);
+  }, [shownEvent, dayjs, isNextEvent]);
 
   return (
     <Box>
       <Group align="end">
         <Title order={2}>
-          {currentEvent ? t("event.current") : t("event.next")}
+          {isNextEvent ? t("event.next") : t("event.current")}
         </Title>
-        <Link href="/events" className={classes.link}>
+        <Text
+          color={
+            theme.colorScheme === "dark"
+              ? theme.colors[theme.primaryColor][3]
+              : theme.colors[theme.primaryColor][6]
+          }
+          component={Link}
+          href="/events"
+        >
           {t("event.seeAll")}
-        </Link>
+        </Text>
       </Group>
       <Paper
         shadow="xs"
@@ -148,41 +144,25 @@ function CurrentEventCountdown({ events }: { events: GameEvent[] }) {
         className={classes.eventContainer}
       >
         {yippeeTime && <Confetti recycle={false} />}
-        {currentEvent ? (
-          <Group noWrap={noWrap} align="flex-start" spacing="xl">
-            <EventImage event={currentEvent} />
-            <Stack justify="space-around">
-              <Box>
-                <Title order={3} sx={{ maxWidth: "300px" }}>
-                  {currentEvent.name[0]}
-                </Title>
-                <Countdown date={currentEvent.end_date} status="end" />
-              </Box>
-              <Button color="indigo" disabled>
-                {t("event.eventCalculator")}
-              </Button>
-            </Stack>
-          </Group>
-        ) : nextEvent ? (
-          <Group noWrap={noWrap} align="flex-start" spacing="xl">
-            <EventImage event={nextEvent} />
-            <Stack justify="space-around">
-              <Box>
-                <Title order={3} sx={{ maxWidth: "300px" }}>
-                  {nextEvent.name[0]}
-                </Title>
-                <Countdown date={nextEvent.start_date} status="start" />
-              </Box>
-              <Button color="indigo" disabled>
-                Event Calculator
-              </Button>
-            </Stack>
-          </Group>
-        ) : (
-          <Text size="lg" weight={600}>
-            No upcoming events.
-          </Text>
-        )}
+        <Group noWrap={noWrap} align="flex-start" spacing="xl">
+          <EventImage event={shownEvent} />
+          <Stack justify="space-around">
+            <Box>
+              <Title order={3} sx={{ maxWidth: "300px" }}>
+                {shownEvent.name[0]}
+              </Title>
+
+              {isNextEvent ? (
+                <Countdown date={shownEvent.start.en} status="start" />
+              ) : (
+                <Countdown date={shownEvent.end.en} status="end" />
+              )}
+            </Box>
+            <Button color={theme.primaryColor} disabled>
+              {t("event.eventCalculator")}
+            </Button>
+          </Stack>
+        </Group>
       </Paper>
     </Box>
   );

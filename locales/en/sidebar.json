@@ -1,0 +1,29 @@
+{
+  "links": {
+    "characters": "Characters",
+    "cards": "Cards",
+    "events": "Events",
+    "scouts": "Scouts",
+    "stories": "Stories",
+    "calendar": "Calendar",
+    "about": "About",
+    "patreon": "Patreon",
+    "user": "User"
+  },
+  "searchbarMessage": "Search...",
+  "menu": {
+    "quickSettings": "Quick Settings",
+    "darkMode": "Dark Mode",
+    "userTheme": "Theme",
+    "locale": "Language",
+    "account": "Account",
+    "settings": "Settings",
+    "bookmarks": "Bookmarks",
+    "logout": "Log out",
+    "login": "Log in",
+    "notLoggedIn": "Not Logged In",
+    "loading": "Loading..."
+  },
+  "collapseSidebar": "Collapse",
+  "breadcrumbTitle": "MakoTools"
+}

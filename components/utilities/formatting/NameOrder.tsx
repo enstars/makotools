@@ -1,7 +1,6 @@
 import { ReactElement } from "react";
 
 import { Locale } from "types/makotools";
-
 import useUser from "services/firebase/user";
 import { getNameOrder } from "services/game";
 

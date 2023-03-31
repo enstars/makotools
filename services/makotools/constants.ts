@@ -25,6 +25,7 @@ const CONSTANTS = {
   },
   EXTERNAL_URLS: {
     // ASSETS: "https://f002.backblazeb2.com/file/ensemble-square/",
+    INTERNAL_APIS: "https://stars.ensemble.moe/api",
     ASSETS: "https://assets.enstars.link/",
     DATA: "https://data.ensemble.moe/",
     DATA_TL: "https://tl.data.ensemble.moe/",
@@ -50,11 +51,11 @@ const CONSTANTS = {
   },
   PATREON: {
     TIERS: [
-      { NAME: "Unsubscribed", VALUE: 0 },
-      { NAME: "Shiny Coin", VALUE: 1 },
-      { NAME: "Konpeito", VALUE: 5 },
-      { NAME: "Manga Volumes", VALUE: 10 },
-      { NAME: "Gacha", VALUE: 20 },
+      { NAME: "Unsubscribed", VALUE: 0, COLLECTIONS: 5 },
+      { NAME: "Shiny Coin", VALUE: 1, COLLECTIONS: 7 },
+      { NAME: "Konpeito", VALUE: 5, COLLECTIONS: 10 },
+      { NAME: "Manga Volumes", VALUE: 10, COLLECTIONS: 10 },
+      { NAME: "Gacha", VALUE: 20, COLLECTIONS: 10 },
     ],
   },
 };

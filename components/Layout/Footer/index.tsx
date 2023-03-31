@@ -9,15 +9,16 @@ import {
   Box,
   Container,
 } from "@mantine/core";
-
-import Affiliates from "assets/Affiliates/affiliates.svg";
+import useTranslation from "next-translate/useTranslation";
 
 import SvgBackground from "./mkt_bg.svg";
 import SupportBanner from "./SupportBanner";
 
+import Affiliates from "assets/Affiliates/affiliates.svg";
 import { CONSTANTS } from "services/makotools/constants";
 
 function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
+  const { t } = useTranslation("footer");
   const theme = useMantineTheme();
   return (
     <Footer
@@ -92,17 +93,17 @@ function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
           >
             <SupportBanner mb="xs" sx={{ width: "100%" }} />
             <Anchor component={Link} href="/issues" size="sm">
-              Issues and Suggestions
+              {t("links.issues")}
             </Anchor>
             <Anchor
               component={Link}
               href={`mailto:${CONSTANTS.MAKOTOOLS.EMAIL}`}
               size="sm"
             >
-              Contact Us
+              {t("links.contact")}
             </Anchor>
             <Anchor component={Link} href="/about" size="sm">
-              About MakoTools
+              {t("links.about")}
             </Anchor>
             <Text color="dimmed" size="xs" mt="xs">
               <Anchor
@@ -111,7 +112,7 @@ function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
                 inherit
                 color="dimmed"
               >
-                Community Guidelines
+                {t("links.guidelines")}
               </Anchor>
               <br />
               <Anchor
@@ -120,7 +121,7 @@ function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
                 inherit
                 color="dimmed"
               >
-                Terms of Service
+                {t("links.tos")}
               </Anchor>
               {" · "}
               <Anchor
@@ -129,7 +130,7 @@ function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
                 inherit
                 color="dimmed"
               >
-                Privacy
+                {t("links.privacyPolicy")}
               </Anchor>
             </Text>
           </Stack>
@@ -152,10 +153,7 @@ function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
               </Text>
             )}
             <Text size="xs" color="dimmed" mt="xs">
-              MakoTools is a non-commercial open-sourced fan project. Makotools
-              is not official nor related to Ensemble Stars!!, Cacalia Studio,
-              Happy Elements K.K, or Happy Elements in any way. All assets
-              belong to their respective owners.
+              {t("disclaimer")}
             </Text>
           </Box>
         </Group>

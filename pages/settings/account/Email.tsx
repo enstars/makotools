@@ -1,24 +1,29 @@
 import { Box, Button, Group, Text, TextInput } from "@mantine/core";
+import useTranslation from "next-translate/useTranslation";
 
 import useUser from "services/firebase/user";
 import { sendVerificationEmail } from "services/firebase/firestore";
 import { UserLoggedIn } from "types/makotools";
 
 function Email() {
+  const { t } = useTranslation("settings");
   const user = useUser() as UserLoggedIn;
-  console.log(user);
   if (user.user.email !== null) {
     return (
       <Box>
-        <TextInput label="Email" value={user.user.email || " "} readOnly />
+        <TextInput
+          label={t("account.emailLabel")}
+          value={user.user.email || " "}
+          readOnly
+        />
         {user.loggedIn && user.user.emailVerified ? (
           <Text mt="xs" size="sm" color="dimmed">
-            Your email has been verified!
+            {t("account.emailVerified")}
           </Text>
         ) : (
           <Group mt="xs" position="apart">
             <Text size="sm" color="dimmed">
-              Your email has not been verified.
+              {t("account.emailNotVerified")}
             </Text>
             <Button
               compact
@@ -29,7 +34,7 @@ function Email() {
                 }
               }}
             >
-              Resend verification email
+              {t("account.resendVerificationEmail")}
             </Button>
           </Group>
         )}
@@ -39,9 +44,9 @@ function Email() {
     return (
       <Box>
         <TextInput
-          label="Email"
+          label={t("account.emailLabel")}
           value={""}
-          placeholder="Signed in with Twitter"
+          placeholder={t("account.twitterSignin")}
           readOnly
         />
         {/* <Input.Wrapper label="Email">

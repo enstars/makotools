@@ -1,0 +1,25 @@
+{
+  "title": "Events",
+  "song": "Unit Song",
+  "tour": "Tour",
+  "shuffle": "Shuffle",
+  "scout": "Event Scout",
+  "featureScout": "Feature Scout",
+  "search": {
+    "eventId": "Event ID",
+    "searchPlaceholder": "Type an event name...",
+    "unitsLabel": "Featured Units",
+    "unitsPlaceholder": "Pick a unit...",
+    "charLabel": "Featured Characters",
+    "charPlaceholder": "Pick a character..."
+  },
+  "event": {
+    "tbaDesc": "Event description to be announced soon.",
+    "start": "Start",
+    "end": "End",
+    "estimateDesc": "This event is not available on the global server yet.",
+    "estimate": "Dates are estimates",
+    "addBookmark": "Bookmark this event",
+    "removeBookmark": "Remove from bookmarks"
+  }
+}

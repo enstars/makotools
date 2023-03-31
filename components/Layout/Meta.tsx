@@ -1,7 +1,6 @@
 import Head from "next/head";
 
 import { PageMeta } from "types/makotools";
-
 import { CONSTANTS } from "services/makotools/constants";
 
 function Meta({ title, desc, img }: PageMeta) {

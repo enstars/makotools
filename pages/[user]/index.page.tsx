@@ -1,16 +1,14 @@
 import {
   ActionIcon,
   Alert,
-  AspectRatio,
-  Badge,
   Box,
-  CopyButton,
+  Center,
+  Container,
   Group,
-  Image,
-  Paper,
+  Loader,
+  Notification,
   Space,
   Text,
-  ThemeIcon,
   Title,
   Tooltip,
   useMantineTheme,
@@ -20,30 +18,38 @@ import Link from "next/link";
 import {
   IconAlertCircle,
   IconBrandPatreon,
-  IconCalendar,
-  IconCopy,
-  IconFlag,
-  IconLink,
-  IconUserPlus,
-} from "@tabler/icons";
-import { useRef, Fragment, useState, useEffect } from "react";
+  IconDiscountCheck,
+  IconHearts,
+} from "@tabler/icons-react";
+import { useRef, Fragment, useState, useEffect, useMemo } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { useMediaQuery } from "@mantine/hooks";
+import useSWR, { SWRConfig } from "swr";
+import useTranslation from "next-translate/useTranslation";
+import Trans from "next-translate/Trans";
+
+import EditProfileModal from "./components/customization/EditProfileModal";
+import ProfilePicModal from "./components/profilePicture/ProfilePicModal";
+import RemoveFriendModal from "./components/RemoveFriendModal";
+import ProfileAvatar from "./components/profilePicture/ProfileAvatar";
+import ProfileButtons from "./components/ProfileButtons";
+import ProfileStats from "./components/ProfileStats";
+import CardCollections from "./components/collections/CardCollections";
 
 import { getLayout, useSidebarStatus } from "components/Layout";
-import { UserData } from "types/makotools";
-
+import { Locale, QuerySuccess, UserData, UserLoggedIn } from "types/makotools";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { getAssetURL } from "services/data";
+import { getLocalizedDataArray } from "services/data";
 import { parseStringify } from "services/utilities";
-import { useDayjs } from "services/libraries/dayjs";
 import useUser from "services/firebase/user";
 import BioDisplay from "components/sections/BioDisplay";
 import Picture from "components/core/Picture";
 import { CONSTANTS } from "services/makotools/constants";
-import notify from "services/libraries/notify";
+import { GameCard, GameCharacter, GameUnit } from "types/game";
+import { getFirestoreUserProfile } from "services/firebase/firestore";
 
 function PatreonBanner({ profile }: { profile: UserData }) {
+  const { t } = useTranslation("user");
   if (profile?.admin?.patreon) {
     const tier = CONSTANTS.PATREON.TIERS[profile?.admin?.patreon];
     if (profile?.admin?.patreon > 0)
@@ -55,7 +61,7 @@ function PatreonBanner({ profile }: { profile: UserData }) {
           // title={`${tier.NAME} Tier ($${tier.VALUE}) Patreon Supporter!`}
         >
           <Text color="orange" weight={700}>
-            {tier.NAME} (${tier.VALUE}) Patreon Supporter!
+            {tier.NAME} (${tier.VALUE}) {t("patreonSupporter")}
           </Text>
         </Alert>
       );
@@ -63,248 +69,365 @@ function PatreonBanner({ profile }: { profile: UserData }) {
   return null;
 }
 
-function Page({ profile, uid }: { profile: UserData; uid: string }) {
-  const { dayjs } = useDayjs();
+function Page({
+  profile,
+  uid,
+  cards,
+  cardsQuery,
+  charactersQuery,
+  unitsQuery,
+  locale,
+}: {
+  profile: UserData;
+  uid: string;
+  cards: GameCard[] | undefined;
+  cardsQuery: QuerySuccess<GameCard[]>;
+  charactersQuery: QuerySuccess<GameCharacter[]>;
+  unitsQuery: QuerySuccess<GameUnit[]>;
+  locale: Locale;
+}) {
+  const user = useUser();
+
+  const cardsData: GameCard[] = useMemo(
+    () => cardsQuery.data,
+    [cardsQuery.data]
+  );
+  const characters: GameCharacter[] = useMemo(
+    () => charactersQuery.data,
+    [charactersQuery.data]
+  );
+
+  const {
+    data: profileData,
+    isLoading,
+    mutate,
+  } = useSWR<UserData>([`/user/${uid}`, uid], getFirestoreUserProfile);
+
+  // hooks
+  const { t } = useTranslation("user");
+  const units: GameUnit[] = useMemo(() => unitsQuery.data, [unitsQuery.data]);
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.xs}px)`);
-  const user = useUser();
-  const shareURL = `enstars.link/@${profile.username}`;
-  const shareURLFull = `https://enstars.link/@${profile.username}`;
 
   const [embla, setEmbla] = useState<Embla | null>(null);
+  const [openEditModal, setOpenEditModal] = useState<boolean>(false);
+  const [openPicModal, setOpenPicModal] = useState<boolean>(false);
+  const [openRemoveFriendModal, setRemoveFriendModal] =
+    useState<boolean>(false);
 
+  const [profileState, setProfileState] = useState({
+    profile__banner: profile.profile__banner,
+    name: profile.name,
+    profile__pronouns: profile.profile__pronouns,
+    profile__start_playing: profile.profile__start_playing,
+    profile__bio: profile.profile__bio,
+    profile__picture: profile.profile__picture,
+    profile__fave_charas: profile.profile__fave_charas,
+    profile__fave_units: profile.profile__fave_units,
+    profile__show_faves: profile.profile__show_faves,
+  });
   const { collapsed } = useSidebarStatus();
+  const isOwnProfile = user.loggedIn && user.db.suid === profile.suid;
+
+  const saveProfileChanges = () => {
+    if (!user.loggedIn) return;
+    if (profileData) {
+      setOpenEditModal(false);
+      setProfileState({
+        profile__banner: profileState.profile__banner,
+        name: profileState.name,
+        profile__pronouns: profileState.profile__pronouns,
+        profile__start_playing: profileState.profile__start_playing,
+        profile__bio: profileState.profile__bio,
+        profile__picture: profileState.profile__picture,
+        profile__fave_charas: profileState.profile__fave_charas,
+        profile__fave_units: profileState.profile__fave_units,
+        profile__show_faves: profileState.profile__show_faves,
+      });
+
+      user.db.set({
+        profile__banner: profileState.profile__banner,
+        name: profileState.name,
+        profile__pronouns: profileState.profile__pronouns,
+        profile__start_playing: profileState.profile__start_playing,
+        profile__bio: profileState.profile__bio,
+        profile__picture: profileState.profile__picture,
+        profile__fave_charas: profileState.profile__fave_charas,
+        profile__fave_units: profileState.profile__fave_units,
+        profile__show_faves: profileState.profile__show_faves,
+      });
+
+      const newData: UserData = {
+        ...profileData,
+        profile__banner: profileState.profile__banner,
+        name: profileState.name,
+        profile__pronouns: profileState.profile__pronouns,
+        profile__start_playing: profileState.profile__start_playing,
+        profile__bio: profileState.profile__bio,
+        profile__picture: profileState.profile__picture,
+        profile__fave_charas: profileState.profile__fave_charas,
+        profile__fave_units: profileState.profile__fave_units,
+        profile__show_faves: profileState.profile__show_faves,
+      };
+
+      mutate(newData);
+    }
+  };
+
+  // friend Variables
+  const friendsData = (user as UserLoggedIn).privateDb?.friends__list || [];
+  const outgoingData =
+    (user as UserLoggedIn).privateDb?.friends__sentRequests || [];
+  const incomingData =
+    (user as UserLoggedIn).privateDb?.friends__receivedRequests || [];
+  const isFriend =
+    !!user.loggedIn && !isOwnProfile && friendsData.includes(uid);
+  const isOutgoingFriendReq =
+    !!user.loggedIn && !isOwnProfile && outgoingData.includes(uid);
+  const isIncomingFriendReq =
+    !!user.loggedIn && !isOwnProfile && incomingData.includes(uid);
+
   useEffect(() => {
     embla?.reInit();
   }, [embla, collapsed]);
+
+  function LoadingState() {
+    return (
+      <Container mt="xl">
+        <Center>
+          <Notification
+            loading
+            disallowClose={true}
+            title="Updating profile..."
+          >
+            Please do not refresh the page.
+          </Notification>
+        </Center>
+      </Container>
+    );
+  }
+
   return (
-    <>
-      {profile?.profile__banner && profile.profile__banner?.length ? (
-        <Box mt="sm" sx={{ marginLeft: "-100%", marginRight: "-100%" }}>
-          <Carousel
-            slideSize="34%"
-            height={isMobile ? 150 : 250}
-            slideGap="xs"
-            loop
-            withControls={false}
-            plugins={[autoplay.current]}
-            getEmblaApi={setEmbla}
-            draggable={profile.profile__banner.length > 1}
-          >
-            {/* // doing this so we can surely have enough slides to loop in embla */}
-            {(profile.profile__banner.length > 1 ? [0, 1, 2, 3] : [0]).map(
-              (n) => (
-                <Fragment key={n}>
-                  {profile?.profile__banner?.map((c) => (
-                    <Carousel.Slide key={c}>
-                      <Picture
-                        alt={`Card ${c}`}
-                        srcB2={`assets/card_still_full1_${c}_evolution.png`}
-                        sx={{
-                          height: "100%",
-                        }}
-                        radius="sm"
-                      />
-                    </Carousel.Slide>
-                  ))}
-                </Fragment>
-              )
+    <SWRConfig value={{ fallback: { "/api/user/get": user } }}>
+      {profileData &&
+        profileData !== undefined &&
+        profileData.suid !== undefined &&
+        !isLoading && (
+          <div style={{ position: "relative" }}>
+            <EditProfileModal
+              opened={openEditModal}
+              saveChanges={saveProfileChanges}
+              openedFunction={setOpenEditModal}
+              picModalFunction={setOpenPicModal}
+              cards={cards}
+              user={user}
+              profile={profileData}
+              profileState={profileState}
+              setProfileState={setProfileState}
+              characters={characters}
+              units={units}
+              locale={locale}
+            />
+            {openPicModal && (
+              <ProfilePicModal
+                opened={openPicModal}
+                openedFunction={setOpenPicModal}
+                cards={cards as GameCard[]}
+                user={user}
+                profile={profileData}
+                profileState={profileState}
+                externalSetter={setProfileState}
+              />
             )}
-          </Carousel>
-        </Box>
-      ) : null}
-      {user.loggedIn &&
-        user.db.suid === profile.suid &&
-        user.db?.admin?.disableTextFields && (
-          <Alert
-            icon={<IconAlertCircle size={16} />}
-            color="red"
-            sx={{ marginTop: "2vh" }}
-          >
-            You&apos;ve been restricted from editing your profile. You can
-            submit an appeal through our{" "}
-            <Text
-              component={Link}
-              href="/issues"
-              sx={{ textDecoration: "underline" }}
-            >
-              issues
-            </Text>{" "}
-            page.
-          </Alert>
-        )}
-      <Space h="lg" />
-
-      <Group position="apart">
-        <Box>
-          <Title order={1}>{profile?.name || profile.username}</Title>
-          <Text inline component="span" color="dimmed" weight={500} size="lg">
-            @{profile.username}
-            {profile?.profile__pronouns && ` · ${profile?.profile__pronouns}`}
-          </Text>
-        </Box>
-        <Group spacing="xs">
-          <CopyButton value={shareURLFull}>
-            {({ copy }) => (
-              <Tooltip label="Copy sharable URL">
-                <ActionIcon
-                  onClick={() => {
-                    copy();
-                    notify("info", {
-                      icon: <IconCopy size={16} />,
-                      message: "Profile link copied",
-                      title: (
-                        <>
-                          <Text span>
-                            <Text span weight={400}>
-                              https://
-                            </Text>
-                            <Text span weight={700}>
-                              {shareURL}
-                            </Text>
-                          </Text>
-                        </>
-                      ),
-                    });
-                  }}
-                  size="lg"
-                  color="blue"
-                  variant="light"
-                >
-                  <IconLink size={18} />
-                </ActionIcon>
-              </Tooltip>
-            )}
-          </CopyButton>
-
-          {user.loggedIn && user.db.suid !== profile.suid && (
-            <>
-              <Tooltip label="Send friend request">
-                <ActionIcon
-                  onClick={async () => {
-                    const token = await user.user.getIdToken();
-                    await fetch("/api/friendRequest", {
-                      method: "POST",
-                      headers: {
-                        Authorization: token || "",
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify({ friend: uid }),
-                    });
-                  }}
-                  size="lg"
-                  color="green"
-                  variant="light"
-                >
-                  <IconUserPlus size={18} />
-                </ActionIcon>
-              </Tooltip>
-              <Tooltip label="Report profile">
-                <ActionIcon
-                  component={Link}
-                  href={CONSTANTS.MODERATION.GET_REPORT_LINK(
-                    profile.username,
-                    profile.suid
-                  )}
-                  target="_blank"
-                  size="lg"
-                  color="orange"
-                  variant="light"
-                >
-                  <IconFlag size={18} />
-                </ActionIcon>
-              </Tooltip>
-            </>
-          )}
-        </Group>
-      </Group>
-
-      <PatreonBanner profile={profile} />
-
-      {profile?.profile__bio && (
-        <BioDisplay
-          rawBio={profile.profile__bio}
-          withBorder={false}
-          // p={0}
-          // sx={{ background: "transparent" }}
-          my="md"
-        />
-      )}
-      {profile.profile__start_playing !== "0000-00-00" && (
-        <Group mt="xs" noWrap align="flex-start">
-          <ThemeIcon variant="light" color="yellow" sx={{ flexShrink: 0 }}>
-            <IconCalendar size={16} />
-          </ThemeIcon>
-          <Box>
-            <Text size="xs" weight={700} color="dimmed">
-              Started Playing
-            </Text>
-            {profile.profile__start_playing &&
-              dayjs(profile.profile__start_playing).format("MMMM YYYY")}
-          </Box>
-        </Group>
-      )}
-
-      <Title order={2} mt="md" mb="xs">
-        Card Collection
-      </Title>
-      {!profile?.collection?.length ? (
-        <Text color="dimmed" size="sm">
-          This user has no cards in their collection
-        </Text>
-      ) : (
-        <>
-          <Box
-            sx={(theme) => ({
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
-              gap: theme.spacing.xs,
-            })}
-          >
-            {profile.collection
-              .filter((c) => c.count)
-              .sort((a, b) => b.count - a.count)
-              .map((c) => (
-                <Paper
-                  radius="sm"
-                  component={Link}
-                  key={c.id}
-                  href={`/cards/${c.id}`}
-                  withBorder
-                  sx={{ position: "relative" }}
-                >
-                  <AspectRatio ratio={4 / 5}>
-                    <Image
-                      radius="sm"
-                      alt={"card image"}
-                      src={getAssetURL(
-                        `assets/card_rectangle4_${c.id}_evolution.png`
-                      )}
-                    />
-                  </AspectRatio>
-                  {c.count > 1 && (
-                    <Badge
-                      sx={{ position: "absolute", bottom: 4, left: 4 }}
-                      variant="filled"
-                    >
-                      <Text inline size="xs" weight="700">
-                        {c.count}
+            <RemoveFriendModal
+              opened={openRemoveFriendModal}
+              closeFunction={setRemoveFriendModal}
+              user={user as UserLoggedIn}
+              uid={uid}
+              profile={profileData}
+            />
+            <Box sx={{ position: "relative" }}>
+              {profileData.profile__banner &&
+              profileData.profile__banner?.length ? (
+                <Box mt="sm" sx={{ marginLeft: "-100%", marginRight: "-100%" }}>
+                  <Carousel
+                    slideSize="34%"
+                    height={isMobile ? 150 : 250}
+                    slideGap="xs"
+                    loop
+                    withControls={false}
+                    plugins={[autoplay.current]}
+                    getEmblaApi={setEmbla}
+                    draggable={profileData.profile__banner.length > 1}
+                  >
+                    {/* // doing this so we can surely have enough slides to loop in embla */}
+                    {(profileData.profile__banner.length > 1
+                      ? [0, 1, 2, 3]
+                      : [0]
+                    ).map((n) => (
+                      <Fragment key={n}>
+                        {profileData.profile__banner?.map((c: number) => (
+                          <Carousel.Slide key={c}>
+                            <Picture
+                              alt={`Card ${c}`}
+                              srcB2={`assets/card_still_full1_${Math.abs(c)}_${
+                                c > 0 ? "evolution" : "normal"
+                              }.png`}
+                              sx={{
+                                height: "100%",
+                              }}
+                              radius="sm"
+                            />
+                          </Carousel.Slide>
+                        ))}
+                      </Fragment>
+                    ))}
+                  </Carousel>
+                </Box>
+              ) : null}
+              <Box
+                sx={{
+                  position:
+                    profileData.profile__banner &&
+                    profileData.profile__banner?.length
+                      ? "absolute"
+                      : "static",
+                  marginTop:
+                    profileData.profile__banner &&
+                    profileData.profile__banner?.length
+                      ? -60
+                      : isMobile
+                      ? 150
+                      : 250,
+                }}
+              >
+                <ProfileAvatar
+                  userInfo={profileData}
+                  border={`5px solid ${
+                    theme.colorScheme === "dark"
+                      ? theme.colors.dark[9]
+                      : theme.colors.gray[0]
+                  }`}
+                />
+              </Box>
+              <Box
+                sx={{
+                  marginTop:
+                    profileData.profile__banner &&
+                    profileData.profile__banner?.length
+                      ? 50
+                      : 0,
+                }}
+              >
+                {isOwnProfile && user.db?.admin?.disableTextFields && (
+                  <Alert
+                    icon={<IconAlertCircle size={16} />}
+                    color="red"
+                    sx={{ marginTop: "2vh" }}
+                  >
+                    <Trans
+                      i18nKey="user:restricted"
+                      components={[
                         <Text
-                          component="span"
-                          sx={{ verticalAlign: "-0.05em", lineHeight: 0 }}
+                          key="link"
+                          component={Link}
+                          href="/issues"
+                          sx={{ textDecoration: "underline" }}
+                        />,
+                      ]}
+                    />
+                  </Alert>
+                )}
+                <Space h="lg" />
+
+                <Group position="apart">
+                  <Box>
+                    <Group align="center" spacing="xs">
+                      <Title order={1}>
+                        {profileData.name || profileData.username}
+                      </Title>
+                      {profileData.admin?.administrator && (
+                        <Tooltip label={t("verified")}>
+                          <ActionIcon color={theme.primaryColor} size="lg">
+                            <IconDiscountCheck size={30} />
+                          </ActionIcon>
+                        </Tooltip>
+                      )}
+                      {isFriend && (
+                        <Tooltip
+                          label={t("friendTooltip", {
+                            friend: profileData.name || profileData.username,
+                          })}
                         >
-                          ×
-                        </Text>
-                      </Text>
-                    </Badge>
+                          <ActionIcon size="xl" color="pink">
+                            <IconHearts />
+                          </ActionIcon>
+                        </Tooltip>
+                      )}
+                    </Group>
+                    <Text
+                      inline
+                      component="span"
+                      color="dimmed"
+                      weight={500}
+                      size="lg"
+                    >
+                      @{profileData?.username}
+                      {profileData?.profile__pronouns &&
+                        ` · ${profileData.profile__pronouns}`}
+                    </Text>
+                  </Box>
+                  {!user.loading ? (
+                    <ProfileButtons
+                      user={user}
+                      uid={uid}
+                      profile={profileData}
+                      isFriend={isFriend}
+                      isIncomingReq={isIncomingFriendReq}
+                      isOutgoingReq={isOutgoingFriendReq}
+                      setOpenEditModal={setOpenEditModal}
+                      setRemoveFriendModal={setRemoveFriendModal}
+                    />
+                  ) : (
+                    <Loader
+                      color={theme.colorScheme === "dark" ? "dark" : "gray"}
+                      size="md"
+                      variant="dots"
+                    />
                   )}
-                </Paper>
-              ))}
-          </Box>
-        </>
-      )}
-    </>
+                </Group>
+                <PatreonBanner profile={profileData} />
+                <ProfileStats
+                  profile={profileData}
+                  characters={characters}
+                  units={units}
+                />
+                {profileData?.profile__bio && (
+                  <BioDisplay
+                    rawBio={profileData.profile__bio}
+                    withBorder={false}
+                    // p={0}
+                    // sx={{ background: "transparent" }}
+                    my="md"
+                  />
+                )}
+              </Box>
+            </Box>
+
+            <CardCollections
+              profile={profileData}
+              uid={uid}
+              cards={cardsData}
+              units={units}
+            />
+          </div>
+        )}
+      {(!profileData ||
+        profileData === undefined ||
+        profileData.suid === undefined ||
+        isLoading) && <LoadingState />}
+    </SWRConfig>
   );
 }
 
@@ -312,7 +435,35 @@ Page.getLayout = getLayout({ hideOverflow: true });
 export default Page;
 
 export const getServerSideProps = getServerSideUser(
-  async ({ params, admin }) => {
+  async ({ params, admin, locale }) => {
+    const cards = await getLocalizedDataArray<GameCard>("cards", locale, "id", [
+      "id",
+      "title",
+      "name",
+      "rarity",
+    ]);
+
+    const cardsQuery: any = await getLocalizedDataArray<GameCard>(
+      "cards",
+      locale,
+      "id",
+      ["id", "character_id", "rarity"]
+    );
+    const charactersQuery = await getLocalizedDataArray<GameCharacter>(
+      "characters",
+      locale,
+      "character_id"
+    );
+    const unitsQuery = await getLocalizedDataArray<GameUnit>(
+      "units",
+      locale,
+      "id",
+      ["id", "name", "order", "image_color"]
+    );
+    if (cards.status === "error" || charactersQuery.status === "error")
+      return { props: { cards: undefined } };
+    const bannerIds = cards.data.filter((c) => c.rarity >= 4).map((c) => c.id);
+
     if (typeof params?.user !== "string" || !params.user.startsWith("@")) {
       return {
         notFound: true,
@@ -325,10 +476,34 @@ export const getServerSideProps = getServerSideUser(
       .get();
     if (!querySnap.empty) {
       const profile = parseStringify(querySnap.docs[0].data());
+
+      if (profile.migrated !== true) {
+        await fetch(
+          `${
+            process.env.NODE_ENV === "development"
+              ? "http://localhost:3000/api"
+              : CONSTANTS.EXTERNAL_URLS.INTERNAL_APIS
+          }/collections/migrate`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userUID: querySnap.docs[0].id,
+              existingCollection: profile.collection,
+            }),
+          }
+        );
+      }
       return {
         props: {
           profile,
+          cards: cards.data.filter((c) => bannerIds.includes(c.id)),
+          charactersQuery: charactersQuery,
+          unitsQuery: unitsQuery,
           uid: querySnap.docs[0].id,
+          cardsQuery: cardsQuery,
           meta: {
             title: profile?.name
               ? `${profile.name} (@${profile.username})`

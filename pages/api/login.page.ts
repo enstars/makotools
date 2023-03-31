@@ -6,6 +6,8 @@ import {
 import { FieldValue } from "firebase-admin/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
 
+import { migrateCollection } from "./collections/migrate.page";
+
 import { initAuthentication } from "services/firebase/authentication";
 
 initAuthentication();
@@ -82,6 +84,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
       { merge: true }
     );
+
+    if (!docGet?.migrated) {
+      await migrateCollection(authUser.id, docGet?.collection);
+    }
 
     return res.status(200).json({ success: true });
   } catch (e) {

@@ -1,28 +1,32 @@
+import useTranslation from "next-translate/useTranslation";
+
 import SelectSetting from "../shared/SelectSetting";
 
-const tlBadgeOptions = [
-  {
-    value: "none",
-    label: "Hide all badges",
-  },
-  {
-    value: "unofficial",
-    label: "Only show badges for unofficial translations",
-  },
-  {
-    value: "all",
-    label: "Show all badges",
-  },
-];
-
 function ShowTlBadge() {
+  const { t } = useTranslation("settings");
+
+  const tlBadgeOptions = [
+    {
+      value: "none",
+      label: t("appearance.none"),
+    },
+    {
+      value: "unofficial",
+      label: t("appearance.unofficial"),
+    },
+    {
+      value: "all",
+      label: t("appearance.all"),
+    },
+  ];
+
   return (
     <SelectSetting
       dataKey="setting__show_tl_badge"
-      label="Show officialty badges for translations"
+      label={t("appearance.badgeLabel")}
       data={tlBadgeOptions}
-      description="This setting may not be applied site-wide at this time."
-      placeholder={tlBadgeOptions[0].label}
+      description={t("appearance.badgeDesc")}
+      placeholder={t(`appearance.${tlBadgeOptions[0].value}`)}
     />
   );
 }

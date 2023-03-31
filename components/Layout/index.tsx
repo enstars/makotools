@@ -1,14 +1,23 @@
-import { AppShell, Container, Paper, useMantineTheme } from "@mantine/core";
+import {
+  AppShell,
+  Center,
+  Container,
+  Loader,
+  Paper,
+  Text,
+  useMantineTheme,
+} from "@mantine/core";
 import { useToggle } from "@mantine/hooks";
 import { createContext, useContext } from "react";
-
-import { PageMeta } from "types/makotools";
 
 import ErrorBoundary from "./ErrorBoundary";
 import Meta from "./Meta";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import Footer from "./Footer";
+
+import { PageMeta } from "types/makotools";
+import useUser from "services/firebase/user";
 
 const SidebarStatusContext = createContext<any>(null);
 export const useSidebarStatus = () => useContext(SidebarStatusContext);
@@ -38,13 +47,21 @@ function Layout({
   meta?: PageMeta;
   headerProps?: any;
 }) {
+  const user = useUser();
   const theme = useMantineTheme();
   const dark = theme.colorScheme === "dark";
   const [collapsed, toggleCollapsed] = useToggle([false, true]);
 
   // collapsed={collapsed}
   // toggleCollapsed={collapsed}
-  return (
+  return user.loading ? (
+    <Container p="xl">
+      <Center>
+        <Loader />
+        <Text ml="lg">Loading page...</Text>
+      </Center>
+    </Container>
+  ) : (
     <ErrorBoundary>
       <Meta {...{ ...pageProps?.meta, ...meta }} />
 

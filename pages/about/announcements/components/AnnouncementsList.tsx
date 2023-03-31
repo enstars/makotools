@@ -2,10 +2,9 @@ import { Center, Loader, useMantineTheme } from "@mantine/core";
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import { MakoPost, StrapiItem } from "types/makotools";
-
 import Announcement from "./Announcement";
 
+import { MakoPost, StrapiItem } from "types/makotools";
 import { fetchOceans } from "services/makotools/posts";
 
 const PER_PAGE = 10; //max 100
@@ -27,7 +26,6 @@ function AnnouncementsList() {
           pagination: { page: 1, pageSize: 25 },
         }
       );
-      console.log(postResponses);
       const totalPages = (postResponses.meta.pagination as any).pageCount;
       if (totalPages) {
         setAllPagesCount(totalPages);

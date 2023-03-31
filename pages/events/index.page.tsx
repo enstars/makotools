@@ -10,16 +10,19 @@ import {
   Text,
   TextInput,
   Tooltip,
+  useMantineTheme,
 } from "@mantine/core";
 import {
   IconArrowsSort,
   IconSearch,
   IconSortAscending,
   IconSortDescending,
-} from "@tabler/icons";
-import { useMemo } from "react";
+} from "@tabler/icons-react";
+import { useEffect, useMemo } from "react";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
+import { useListState } from "@mantine/hooks";
+import useTranslation from "next-translate/useTranslation";
 
 import EventCard from "./components/EventCard";
 
@@ -27,9 +30,10 @@ import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import { getLocalizedDataArray } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { GameCard, GameCharacter, GameEvent, GameUnit } from "types/game";
-import { QuerySuccess } from "types/makotools";
+import { GameCard, GameCharacter, Event, GameUnit } from "types/game";
+import { QuerySuccess, UserLoggedIn } from "types/makotools";
 import useFSSList from "services/makotools/search";
+import useUser from "services/firebase/user";
 
 const defaultView = {
   filters: {
@@ -50,11 +54,14 @@ function Page({
   unitsQuery,
   charactersQuery,
 }: {
-  eventsQuery: QuerySuccess<GameEvent[]>;
+  eventsQuery: QuerySuccess<Event[]>;
   cardsQuery: QuerySuccess<GameCard[]>;
   unitsQuery: QuerySuccess<GameUnit[]>;
   charactersQuery: QuerySuccess<GameCharacter[]>;
 }) {
+  const { t } = useTranslation("events");
+  const user = useUser();
+  const theme = useMantineTheme();
   const { locale } = useRouter();
   const events = useMemo(() => eventsQuery.data, [eventsQuery.data]);
   const cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
@@ -64,14 +71,14 @@ function Page({
     [charactersQuery.data]
   );
 
-  const fssOptions = useMemo<FSSOptions<GameEvent, typeof defaultView.filters>>(
+  const fssOptions = useMemo<FSSOptions<Event, typeof defaultView.filters>>(
     () => ({
       filters: [
         {
           type: "units",
           values: [],
           function: (view) => {
-            return (c: GameEvent) =>
+            return (c: Event) =>
               view.filters.units.filter((value) => c.unit_id?.includes(value))
                 .length === view.filters.units.length;
           },
@@ -80,7 +87,7 @@ function Page({
           type: "characters",
           values: [],
           function: (view) => {
-            return (c: GameEvent) =>
+            return (c: Event) =>
               view.filters.characters.filter((value: number) => {
                 return cards
                   .filter((card) => c.cards?.includes(card.id))
@@ -99,15 +106,15 @@ function Page({
       ],
       sorts: [
         {
-          label: "Event ID",
+          label: t("search.eventId"),
           value: "id",
-          function: (a: GameEvent, b: GameEvent) => a.event_id - b.event_id,
+          function: (a: Event, b: Event) => a.event_id - b.event_id,
         },
         {
-          label: "Start Date",
+          label: t("common:search.startDate"),
           value: "date",
-          function: (a: GameEvent, b: GameEvent) =>
-            dayjs(a.start_date).unix() - dayjs(b.start_date).unix(),
+          function: (a: Event, b: Event) =>
+            dayjs(a.start.en).unix() - dayjs(b.start.en).unix(),
         },
       ],
       baseSort: "id",
@@ -119,26 +126,36 @@ function Page({
     []
   );
   const { results, view, setView } = useFSSList<
-    GameEvent,
+    Event,
     typeof defaultView.filters
   >(events, fssOptions);
+  const [bookmarks, handlers] = useListState<number>(
+    (user as UserLoggedIn).db.bookmarks__events || []
+  );
 
   let characterIDtoSort: { [key: number]: number } = {};
   characters.forEach((c) => {
     characterIDtoSort[c.character_id] = c.sort_id;
   });
 
+  useEffect(() => {
+    user.loggedIn &&
+      user.db.set({
+        bookmarks__events: bookmarks,
+      });
+  }, [bookmarks]);
+
   return (
     <>
-      <PageTitle title="Events" />
+      <PageTitle title={t("title")} />
       <Paper mb="sm" p="md" withBorder sx={{ marginTop: "1vh" }}>
         <Text weight="700" size="xs" color="dimmed">
-          <IconSearch size="1em" /> Search Options
+          <IconSearch size="1em" /> {t("common:search.searchOptions")}
         </Text>
         <Group>
           <TextInput
-            label="Search"
-            placeholder="Type an event name..."
+            label={t("common:search.searchLabel")}
+            placeholder={t("search.searchPlaceholder")}
             value={view.search}
             onChange={(event) => {
               setView((v) => ({
@@ -151,8 +168,8 @@ function Page({
             icon={<IconSearch size="1em" />}
           />
           <Select
-            label="Sort by"
-            placeholder="Select sorting option..."
+            label={t("common:search.sortLabel")}
+            placeholder={t("common:search.sortPlaceholder")}
             data={fssOptions.sorts}
             value={view.sort.type}
             onChange={(value) => {
@@ -181,7 +198,7 @@ function Page({
                     }));
                   }}
                   variant="light"
-                  color="blue"
+                  color={theme.primaryColor}
                 >
                   {view.sort.ascending ? (
                     <IconSortAscending size={16} />
@@ -193,8 +210,8 @@ function Page({
             }
           />
           <MultiSelect
-            label="Featured Units"
-            placeholder="Pick a unit..."
+            label={t("search.unitsLabel")}
+            placeholder={t("search.unitsPlaceholder")}
             data={units
               .sort((a: GameUnit, b: GameUnit) => a.id - b.id)
               .map((unit) => {
@@ -217,8 +234,8 @@ function Page({
             value={view.filters.units.map((u) => u.toString())}
           />
           <MultiSelect
-            label="Featured Characters"
-            placeholder="Pick a character..."
+            label={t("search.charLabel")}
+            placeholder={t("search.charPlaceholder")}
             data={characters
               .sort((a, b) => a.sort_id - b.sort_id)
               .map((c: GameCharacter) => {
@@ -257,9 +274,9 @@ function Page({
               spacing={3}
             >
               {[
-                { value: "song", label: "Unit Song" },
-                { value: "tour", label: "Tour" },
-                { value: "shuffle", label: "Shuffle" },
+                { value: "song", label: t("song") },
+                { value: "tour", label: t("tour") },
+                { value: "shuffle", label: t("shuffle") },
               ].map((r) => (
                 <Chip
                   key={r.value}
@@ -281,19 +298,26 @@ function Page({
               setView(defaultView);
             }}
           >
-            Reset all filters
+            {t("common:search.resetFilters")}
           </Button>
         </Group>
       </Paper>
       {results.map((event) => (
-        <EventCard key={event.event_id} event={event} units={units} />
+        <EventCard
+          key={event.event_id}
+          event={event}
+          units={units}
+          bookmarked={bookmarks.includes(event.event_id)}
+          bookmarks={bookmarks}
+          bookmarkHandlers={handlers}
+        />
       ))}
     </>
   );
 }
 
 export const getServerSideProps = getServerSideUser(async ({ locale }) => {
-  const eventsQuery: any = await getLocalizedDataArray<GameEvent>(
+  const eventsQuery: any = await getLocalizedDataArray<Event>(
     "events",
     locale,
     "event_id"
@@ -319,12 +343,12 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     "id"
   );
 
-  // const events: GameEvent[] = retrieveEvents(
+  // const events: Event[] = retrieveEvents(
   //   {
   //     gameEvents: getEvents.data,
   //   },
   //   locale
-  // ) as GameEvent[];
+  // ) as Event[];
 
   return {
     props: {

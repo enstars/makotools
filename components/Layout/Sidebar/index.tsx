@@ -1,4 +1,4 @@
-import React, { forwardRef, ReactElement, SyntheticEvent } from "react";
+import React, { forwardRef, SyntheticEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import {
@@ -8,7 +8,6 @@ import {
   IconBooks,
   IconBrandPatreon,
   IconUserCircle,
-  TablerIcon,
   IconCalendar,
   IconDiamond,
   IconInfoCircle,
@@ -16,7 +15,9 @@ import {
   IconChevronLeft,
   IconSearch,
   IconX,
-} from "@tabler/icons";
+  TablerIconsProps,
+  IconExternalLink,
+} from "@tabler/icons-react";
 import {
   Navbar,
   ScrollArea,
@@ -30,25 +31,27 @@ import {
   NavLinkProps,
   ActionIcon,
   TextInput,
+  Indicator,
 } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
 import { clamp } from "lodash";
+import useTranslation from "next-translate/useTranslation";
 
-import MakotoolsLightComponent from "assets/Logo/mkt_light_icon.svg";
-import MakotoolsDarkComponent from "assets/Logo/mkt_dark_icon.svg";
-import MakotoolsTextLightComponent from "assets/Logo/mkt_light_text.svg";
-import MakotoolsTextDarkComponent from "assets/Logo/mkt_dark_text.svg";
 import { useSidebarStatus } from "..";
 
 import UserMenu from "./UserMenu";
 import SearchResults from "./SearchResults";
 
+import MakotoolsLightComponent from "assets/Logo/mkt_light_icon.svg";
+import MakotoolsDarkComponent from "assets/Logo/mkt_dark_icon.svg";
+import MakotoolsTextLightComponent from "assets/Logo/mkt_light_text.svg";
+import MakotoolsTextDarkComponent from "assets/Logo/mkt_dark_text.svg";
 import useUser from "services/firebase/user";
 
 type LinkObject = {
   link: string;
   name: string;
-  Icon?: TablerIcon | ReactElement;
+  Icon?: ((props: TablerIconsProps) => JSX.Element) | any;
   disabled?: boolean;
   props?: any;
 };
@@ -96,7 +99,7 @@ const SidebarLink = forwardRef(function SbL(
               placeItems: "center",
             })}
           >
-            {typeof Icon === "function" ? <Icon size={18} /> : Icon}
+            {Icon.render ? <Icon size={18} /> : Icon}
           </Box>
         )
       }
@@ -123,6 +126,7 @@ const SidebarLink = forwardRef(function SbL(
 });
 
 function Sidebar(props: any) {
+  const { t } = useTranslation("sidebar");
   const location = useRouter();
 
   const theme = useMantineTheme();
@@ -148,46 +152,54 @@ function Sidebar(props: any) {
   const linkList: LinkObject[] = [
     {
       link: "/characters",
-      name: "Characters",
+      name: "characters",
       Icon: IconUsers,
     },
     {
       link: "/cards",
-      name: "Cards",
+      name: "cards",
       Icon: IconCards,
     },
     {
       link: "/events",
-      name: "Events",
+      name: "events",
       Icon: IconAward,
     },
     {
       link: "/scouts",
-      name: "Scouts",
+      name: "scouts",
       Icon: IconDiamond,
     },
     {
       link: "/stories",
-      name: "Stories",
+      name: "stories",
       Icon: IconBooks,
       disabled: true,
     },
     {
       link: "/calendar",
-      name: "Calendar",
+      name: "calendar",
       Icon: IconCalendar,
     },
     {
       link: "/about",
-      name: "About",
+      name: "about",
       Icon: IconInfoCircle,
     },
     {
       link: "https://www.patreon.com/makotools",
-      name: "Patreon",
+      name: "patreon",
       Icon: IconBrandPatreon,
+      props: {
+        rightSection: (
+          <Text color="dimmed" mt={-10 + 4} mb={-10}>
+            <IconExternalLink size={16} />
+          </Text>
+        ),
+      },
     },
   ];
+
   return (
     <Navbar
       position={{ top: 0, left: 0 }}
@@ -222,7 +234,60 @@ function Sidebar(props: any) {
           href="/"
           label={
             !collapsed && (
-              <Box sx={{ height: 18, display: "flex" }}>
+              <Box
+                sx={{
+                  height: 18,
+                  display: "flex",
+                  ".mkt_dark_text_svg__primaryText": {
+                    fill:
+                      theme.primaryColor === "mao_pink"
+                        ? "#FEE0EE"
+                        : theme.primaryColor === "makoto_green"
+                        ? "#fbfff7"
+                        : theme.primaryColor === "subaru_orange"
+                        ? "#FDECDC"
+                        : theme.primaryColor === "hokke_blue"
+                        ? "#e9f1f7"
+                        : "#E8ECFD",
+                  },
+                  ".mkt_dark_text_svg__secondaryText": {
+                    fill:
+                      theme.primaryColor === "mao_pink"
+                        ? "#f5abce"
+                        : theme.primaryColor === "makoto_green"
+                        ? "#d2f0bd"
+                        : theme.primaryColor === "subaru_orange"
+                        ? "#f5c59a"
+                        : theme.primaryColor === "hokke_blue"
+                        ? "#83beeb"
+                        : "#A4B1E8",
+                  },
+                  ".mkt_light_text_svg__primaryText": {
+                    fill:
+                      theme.primaryColor === "mao_pink"
+                        ? "#8c0646"
+                        : theme.primaryColor === "makoto_green"
+                        ? "#264a0b"
+                        : theme.primaryColor === "subaru_orange"
+                        ? "#7a2e04"
+                        : theme.primaryColor === "hokke_blue"
+                        ? "#00172b"
+                        : "#1C2F7D",
+                  },
+                  ".mkt_light_text_svg__secondaryText": {
+                    fill:
+                      theme.primaryColor === "mao_pink"
+                        ? "#b00b59"
+                        : theme.primaryColor === "makoto_green"
+                        ? "#366612"
+                        : theme.primaryColor === "subaru_orange"
+                        ? "#b54304"
+                        : theme.primaryColor === "hokke_blue"
+                        ? "#003d73"
+                        : "#324CB3",
+                  },
+                }}
+              >
                 {theme.colorScheme === "light" ? (
                   <MakotoolsTextLightComponent
                     viewBox="0 0 1753 281"
@@ -240,24 +305,75 @@ function Sidebar(props: any) {
             )
           }
           Icon={
-            theme.colorScheme === "light" ? (
-              <MakotoolsLightComponent
-                viewBox="0 0 281 281"
-                width={18}
-                height={18}
-              />
-            ) : (
-              <MakotoolsDarkComponent
-                viewBox="0 0 281 281"
-                width={18}
-                height={18}
-              />
-            )
+            <Box
+              sx={{
+                ".mkt_dark_icon_svg__secondary": {
+                  fill:
+                    theme.primaryColor === "mao_pink"
+                      ? "#f5abce"
+                      : theme.primaryColor === "makoto_green"
+                      ? "#d2f0bd"
+                      : theme.primaryColor === "subaru_orange"
+                      ? "#f5c59a"
+                      : theme.primaryColor === "hokke_blue"
+                      ? "#83beeb"
+                      : "#A4B1E8",
+                },
+                ".mkt_dark_icon_svg__primary": {
+                  fill:
+                    theme.primaryColor === "mao_pink"
+                      ? "#FEE0EE"
+                      : theme.primaryColor === "makoto_green"
+                      ? "#fbfff7"
+                      : theme.primaryColor === "subaru_orange"
+                      ? "#FDECDC"
+                      : theme.primaryColor === "hokke_blue"
+                      ? "#e9f1f7"
+                      : "#E8ECFD",
+                },
+                ".mkt_light_icon_svg__secondary": {
+                  fill:
+                    theme.primaryColor === "mao_pink"
+                      ? "#8c0646"
+                      : theme.primaryColor === "makoto_green"
+                      ? "#264a0b"
+                      : theme.primaryColor === "subaru_orange"
+                      ? "#b54304"
+                      : theme.primaryColor === "hokke_blue"
+                      ? "#003d73"
+                      : "#324CB3",
+                },
+                ".mkt_light_icon_svg__primary": {
+                  fill:
+                    theme.primaryColor === "mao_pink"
+                      ? "#b00b59"
+                      : theme.primaryColor === "makoto_green"
+                      ? "#366612"
+                      : theme.primaryColor === "subaru_orange"
+                      ? "#7a2e04"
+                      : theme.primaryColor === "hokke_blue"
+                      ? "#00172b"
+                      : "#1C2F7D",
+                },
+              }}
+            >
+              {theme.colorScheme === "light" ? (
+                <MakotoolsLightComponent
+                  viewBox="0 0 281 281"
+                  width={18}
+                  height={18}
+                />
+              ) : (
+                <MakotoolsDarkComponent
+                  viewBox="0 0 281 281"
+                  width={18}
+                  height={18}
+                />
+              )}
+            </Box>
           }
         />
         {user.loggedIn &&
-          ((user.db.admin?.patreon && user.db.admin?.patreon >= 1) ||
-            user.db.admin?.administrator) &&
           (collapsed ? (
             <TextInput
               styles={(theme) => ({
@@ -271,7 +387,6 @@ function Sidebar(props: any) {
               icon={<IconSearch size={18} />}
               iconWidth={38}
               onClick={() => {
-                console.log("hi");
                 toggleCollapsed();
                 if (props?.onCollapse) props.onCollapse();
               }}
@@ -286,7 +401,7 @@ function Sidebar(props: any) {
               // variant="unstyled"
               value={searchValue}
               onChange={(event) => setSearchValue(event.currentTarget.value)}
-              placeholder="Search"
+              placeholder={t("searchbarMessage")}
               icon={<IconSearch size={18} />}
               iconWidth={38}
               rightSection={
@@ -340,7 +455,7 @@ function Sidebar(props: any) {
                   return (
                     <Tooltip
                       key={link.link}
-                      label={link.name}
+                      label={t(`links.${link.name}`)}
                       position="right"
                       disabled={!collapsed}
                       withinPortal
@@ -351,6 +466,7 @@ function Sidebar(props: any) {
                             collapsed={collapsed}
                             active={active}
                             {...link}
+                            name={t(`links.${link.name}`)}
                           />
                         ) : (
                           <SidebarLink
@@ -359,6 +475,7 @@ function Sidebar(props: any) {
                             collapsed={collapsed}
                             active={active}
                             {...link}
+                            name={t(`links.${link.name}`)}
                           />
                         )}
                       </div>
@@ -381,8 +498,20 @@ function Sidebar(props: any) {
                   <SidebarLink
                     collapsed={collapsed}
                     active={true}
-                    name="User"
-                    Icon={IconUserCircle}
+                    name={t("links.user")}
+                    Icon={
+                      <Indicator
+                        color="red"
+                        position="top-start"
+                        disabled={
+                          !user.loggedIn ||
+                          !user.privateDb?.friends__receivedRequests?.length ||
+                          user.privateDb?.friends__receivedRequests?.length <= 0
+                        }
+                      >
+                        <IconUserCircle size={20} />
+                      </Indicator>
+                    }
                     sx={{ "&&": { flex: "1 1 0" } }}
                     props={{ variant: "subtle" }}
                   />
@@ -430,7 +559,7 @@ function Sidebar(props: any) {
                     <Text component={Group} color="dimmed" spacing={4}>
                       <IconChevronLeft size={16} />
                       <Text inline size="sm" weight={500}>
-                        Collapse
+                        {t("collapseSidebar")}
                       </Text>
                     </Text>
                   </ActionIcon>
@@ -453,7 +582,6 @@ function Sidebar(props: any) {
           onMouseDown={(event: SyntheticEvent) => {
             event.preventDefault();
             mouseDown = true;
-            console.log("down");
             window.addEventListener("mousemove", resize);
             window.addEventListener("mouseup", (e) => {
               window.removeEventListener("mousemove", resize);

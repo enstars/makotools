@@ -9,7 +9,8 @@ import {
   MediaQuery,
   ActionIcon,
 } from "@mantine/core";
-import { IconMenu2 } from "@tabler/icons";
+import { IconMenu2 } from "@tabler/icons-react";
+import useTranslation from "next-translate/useTranslation";
 
 const defaultGetBreadcrumbs = (path: string) =>
   path.split("/").filter((x) => x);
@@ -26,6 +27,7 @@ function HeaderContents({
   setOpened: any;
   headerProps?: any;
 }) {
+  const { t } = useTranslation("sidebar");
   const location = useRouter();
   let pageBreadcrumbs = breadcrumbs || getBreadcrumbs(location.asPath);
   const { forceLight } = headerProps;
@@ -86,7 +88,7 @@ function HeaderContents({
               inherit
               sx={forceLight && { color: "#fff" }}
             >
-              Makotools
+              {t("breadcrumbTitle")}
             </Anchor>
             {pageBreadcrumbs.map((crumb: string, index: number) => (
               <Anchor

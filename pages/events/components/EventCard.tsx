@@ -9,14 +9,24 @@ import {
   Tooltip,
   Stack,
   ThemeIcon,
+  ActionIcon,
+  useMantineTheme,
 } from "@mantine/core";
 import Link from "next/link";
-import { IconArrowsShuffle2, IconBus, IconDiamond } from "@tabler/icons";
+import {
+  IconArrowsShuffle2,
+  IconBookmark,
+  IconBus,
+  IconDiamond,
+} from "@tabler/icons-react";
+import { UseListStateHandlers, useMediaQuery } from "@mantine/hooks";
+import useTranslation from "next-translate/useTranslation";
 
 import Picture from "components/core/Picture";
-import { GameEvent, GameUnit } from "types/game";
+import { Event, GameUnit } from "types/game";
 import { useDayjs } from "services/libraries/dayjs";
 import IconEnstars from "components/core/IconEnstars";
+import useUser from "services/firebase/user";
 
 const useStyles = createStyles((theme) => ({
   eventCard: {
@@ -53,30 +63,47 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-function EventCard({ event, units }: { event: GameEvent; units: GameUnit[] }) {
+function EventCard({
+  event,
+  units,
+  bookmarked,
+  bookmarks,
+  bookmarkHandlers,
+}: {
+  event: Event;
+  units: GameUnit[];
+  bookmarked: boolean;
+  bookmarks: number[];
+  bookmarkHandlers: UseListStateHandlers<number>;
+}) {
+  const { t } = useTranslation("events");
+  const user = useUser();
+  const theme = useMantineTheme();
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
+
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   let eventUnits: GameUnit[] = units.filter((unit: GameUnit) => {
     return event.unit_id ? event.unit_id?.includes(unit.id) : false;
   });
 
-  const isEstimatedDate = dayjs(event.start_date).isAfter(dayjs());
+  const isEstimatedDate = dayjs(event.start.en).isAfter(dayjs());
   const isOngoing = dayjs().isBetween(
-    dayjs(event.start_date),
-    dayjs(event.end_date)
+    dayjs(event.start.en),
+    dayjs(event.end.en)
   );
 
   return (
     <Paper
-      component={Link}
-      href={`/events/${event.event_id}`}
       withBorder
       className={classes.eventCard}
+      component={Link}
+      href={`/events/${event.event_id}`}
     >
       <Box sx={{ position: "relative", flex: "1 1 30%", minWidth: 175 }}>
         <Picture
-          alt={event.name}
+          alt={event.name[0]}
           srcB2={`assets/card_still_full1_${event.banner_id}_evolution.png`}
           sx={(theme) => ({
             height: "100%",
@@ -102,8 +129,7 @@ function EventCard({ event, units }: { event: GameEvent; units: GameUnit[] }) {
           </Title>
 
           <Text className={classes.eventSummary}>
-            {event.intro_lines?.[0] ||
-              "Event description to be announced soon."}
+            {event.intro_lines?.[0] || t("event.tbaDesc")}
           </Text>
         </Box>
         <Box className={classes.eventInfoDates}>
@@ -116,7 +142,7 @@ function EventCard({ event, units }: { event: GameEvent; units: GameUnit[] }) {
                   event.type === "song"
                     ? "grape"
                     : event.type === "shuffle"
-                    ? "blue"
+                    ? "toya_default"
                     : "teal"
                 }
                 leftSection={
@@ -131,7 +157,7 @@ function EventCard({ event, units }: { event: GameEvent; units: GameUnit[] }) {
                   </Box>
                 }
               >
-                {event.type}
+                {t(event.type)}
               </Badge>
 
               {eventUnits.map((unit) => (
@@ -155,17 +181,15 @@ function EventCard({ event, units }: { event: GameEvent; units: GameUnit[] }) {
             >
               <Box sx={{ flex: "1 1 0", minWidth: 185 }}>
                 <Text size="xs" color="dimmed" weight={700}>
-                  Start ({dayjs(event.start_date).format("z")})
+                  {t("start")} ({dayjs(event.start.en).format("z")})
                 </Text>
-                <Text weight={500}>
-                  {dayjs(event.start_date).format("lll")}
-                </Text>
+                <Text weight={500}>{dayjs(event.start.en).format("lll")}</Text>
               </Box>
               <Box sx={{ flex: "1 1 0", minWidth: 185 }}>
                 <Text size="xs" color="dimmed" weight={700}>
-                  End ({dayjs(event.end_date).format("z")})
+                  {t("end")} ({dayjs(event.end.en).format("z")})
                 </Text>
-                <Text weight={500}>{dayjs(event.end_date).format("lll")}</Text>
+                <Text weight={500}>{dayjs(event.end.en).format("lll")}</Text>
               </Box>
             </Group>
 
@@ -173,19 +197,55 @@ function EventCard({ event, units }: { event: GameEvent; units: GameUnit[] }) {
               <Tooltip
                 multiline
                 width={250}
-                label="This event is not available on the global server yet."
+                label={t("event.estimateDesc")}
                 position="bottom-start"
                 withArrow
                 p="sm"
               >
                 <Text color="dimmed" size="xs">
-                  Dates are estimates
+                  {t("event.estimate")}
                 </Text>
               </Tooltip>
             )}
           </Stack>
         </Box>
       </Group>
+      {(user.loggedIn &&
+        user.db.admin?.patreon &&
+        user.db.admin?.patreon >= 1) ||
+        (user.loggedIn && user.db.admin?.administrator && (
+          <Tooltip
+            label={
+              !bookmarked ? t("event.addBookmark") : t("event.removeBookmark")
+            }
+            position="bottom"
+          >
+            <ActionIcon
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                bookmarked
+                  ? bookmarkHandlers.remove(bookmarks.indexOf(event.event_id))
+                  : bookmarkHandlers.append(event.event_id);
+              }}
+              size="lg"
+            >
+              <IconBookmark
+                fill={bookmarked ? theme.colors[theme.primaryColor][4] : "none"}
+                strokeWidth={bookmarked ? 0 : isMobile ? 1 : 2}
+                size={
+                  !isMobile
+                    ? bookmarked
+                      ? 32
+                      : 26
+                    : isMobile && bookmarked
+                    ? 44
+                    : 40
+                }
+              />
+            </ActionIcon>
+          </Tooltip>
+        ))}
     </Paper>
   );
 }

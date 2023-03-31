@@ -6,18 +6,24 @@ import { StrapiResponse } from "strapi-sdk-js";
 type LoadingStatus = "success" | "error";
 
 type Locale =
-  | "en" // English
-  | "ja" // Japanese
-  | "zh" // Standard Mandarin / Simplified
-  | "zh-TW" // Taiwanese Mandarin / Traditional
-  | "ko" // Korean
-  // MakoTools Statistics
-  | "id" // Indonesian
-  | "fil" // Filipino
-  | "ms" // Malaysian
-  | "pt-BR" // Brazilian Portugese
-  | "th" // Thai
-  | "vi"; // Vietnamese
+  | "en" //     English
+  | "ja" //     Japanese
+  | "zh-CN" //  Chinese (China)
+  | "zh-TW" //  Chinese (Taiwan)
+  | "ko" //     Korean
+  | "id" //     Indonesian
+  | "th" //     Thai
+  | "fil" //    Filipino
+  | "ms" //     Malay
+  | "vi" //     Vietnamese
+  | "pt-BR" //  Portuguese (Brazil)
+  | "es" //     Spanish
+  | "ru" //     Russian
+  | "fr" //     French
+  | "de" //     German
+  | "it" //     Italian
+  | "pl" //     Polish
+  | "pt"; //     Portuguese
 
 interface PageMeta {
   title: string;
@@ -50,7 +56,29 @@ interface MakoPost {
 interface CollectedCard {
   id: ID;
   count: number;
+  dateAdded?: string;
 }
+
+/**
+ * 0: completely public collection
+ *
+ * 1: collection is only visible to logged in users
+ *
+ * 2: collection is only visible to friends/following
+ *
+ * 3: collection is completely private
+ */
+type CollectionPrivacyLevel = 0 | 1 | 2 | 3;
+
+interface CardCollection {
+  id: string;
+  name: string;
+  privacyLevel: CollectionPrivacyLevel;
+  icon: number;
+  cards: CollectedCard[];
+  order: number;
+}
+
 // USER
 
 type UseWebP = "use" | "dont-use";
@@ -58,6 +86,15 @@ type NameOrder = "firstlast" | "lastfirst";
 type ShowTlBadge = "none" | "unofficial" | "all";
 type GameRegion = "jp" | "cn" | "kr" | "tw" | "en";
 type UID = ID;
+interface ProfilePicture {
+  id: number;
+  crop: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+}
 interface UserData {
   set(data: any, callback?: () => any): any;
   collection?: CollectedCard[];
@@ -68,13 +105,19 @@ interface UserData {
   profile__bio?: string;
   profile__pronouns?: string;
   profile__start_playing?: string;
-
+  profile__picture?: ProfilePicture;
+  profile__fave_charas: number[];
+  profile__fave_units?: number[];
+  profile__show_faves?: boolean;
   // private
+  user__theme?: string;
   dark_mode: boolean;
   setting__name_order?: NameOrder;
   setting__show_tl_badge?: ShowTlBadge;
   setting__game_region?: GameRegion;
   setting__use_webp?: UseWebP;
+  bookmarks__events?: ID[];
+  bookmarks__scouts?: ID[];
   readonly admin?: {
     disableTextFields?: boolean;
     patreon?: 0 | 1 | 2 | 3 | 4;

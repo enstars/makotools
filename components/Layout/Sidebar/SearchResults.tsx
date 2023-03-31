@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { MeiliSearch } from "meilisearch";
 import Link from "next/link";
 import { useDebouncedValue } from "@mantine/hooks";
-import { IconAward, IconCards, IconDiamond, IconUsers } from "@tabler/icons";
+import { IconAward, IconCards, IconDiamond, IconUsers } from "@tabler/icons-react";
 
 import { SidebarLink } from ".";
 

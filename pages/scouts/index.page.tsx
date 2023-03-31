@@ -1,6 +1,5 @@
 import {
   ActionIcon,
-  Alert,
   Button,
   Group,
   MultiSelect,
@@ -13,16 +12,16 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import {
-  IconAlertCircle,
   IconArrowsSort,
   IconComet,
   IconDiamond,
   IconSearch,
   IconSortAscending,
   IconSortDescending,
-} from "@tabler/icons";
-import { useMemo } from "react";
-import { useMediaQuery } from "@mantine/hooks";
+} from "@tabler/icons-react";
+import { useEffect, useMemo } from "react";
+import { useListState, useMediaQuery } from "@mantine/hooks";
+import useTranslation from "next-translate/useTranslation";
 
 import ScoutCard from "./components/ScoutCard";
 
@@ -30,11 +29,12 @@ import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import { getLocalizedDataArray } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { GameCard, GameCharacter, ScoutEvent } from "types/game";
-import { QuerySuccess } from "types/makotools";
+import { GameCard, GameCharacter, Scout } from "types/game";
+import { QuerySuccess, UserLoggedIn } from "types/makotools";
 import { useDayjs } from "services/libraries/dayjs";
 import useFSSList from "services/makotools/search";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
+import useUser from "services/firebase/user";
 
 const defaultView = {
   filters: {
@@ -52,26 +52,23 @@ function Page({
   cardsQuery,
   charactersQuery,
 }: {
-  scoutsQuery: QuerySuccess<ScoutEvent[]>;
+  scoutsQuery: QuerySuccess<Scout[]>;
   cardsQuery: QuerySuccess<GameCard[]>;
   charactersQuery: QuerySuccess<GameCharacter[]>;
 }) {
+  const { t } = useTranslation("scouts");
+  const user = useUser();
   const { dayjs } = useDayjs();
   const theme = useMantineTheme();
 
-  const scouts: ScoutEvent[] = useMemo(
-    () => scoutsQuery.data,
-    [scoutsQuery.data]
-  );
+  const scouts: Scout[] = useMemo(() => scoutsQuery.data, [scoutsQuery.data]);
   const cards: GameCard[] = useMemo(() => cardsQuery.data, [cardsQuery.data]);
   const characters = useMemo(
     () => charactersQuery.data,
     [charactersQuery.data]
   );
 
-  const fssOptions = useMemo<
-    FSSOptions<ScoutEvent, typeof defaultView.filters>
-  >(
+  const fssOptions = useMemo<FSSOptions<Scout, typeof defaultView.filters>>(
     () => ({
       filters: [
         {
@@ -90,15 +87,15 @@ function Page({
       ],
       sorts: [
         {
-          label: "Scout ID",
+          label: t("scoutId"),
           value: "id",
-          function: (a: ScoutEvent, b: ScoutEvent) => a.gacha_id - b.gacha_id,
+          function: (a: Scout, b: Scout) => a.gacha_id - b.gacha_id,
         },
         {
-          label: "Start Date",
+          label: t("startDate"),
           value: "date",
-          function: (a: ScoutEvent, b: ScoutEvent) =>
-            dayjs(a.start_date).unix() - dayjs(b.start_date).unix(),
+          function: (a: Scout, b: Scout) =>
+            dayjs(a.start.en).unix() - dayjs(b.start.en).unix(),
         },
       ],
       baseSort: "id",
@@ -110,30 +107,33 @@ function Page({
     []
   );
   const { results, view, setView } = useFSSList<
-    ScoutEvent,
+    Scout,
     typeof defaultView.filters
   >(scouts, fssOptions);
 
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
+  const [bookmarks, handlers] = useListState<number>(
+    (user as UserLoggedIn).db.bookmarks__scouts || []
+  );
+
+  useEffect(() => {
+    user.loggedIn &&
+      user.db.set({
+        bookmarks__scouts: bookmarks,
+      });
+  }, [bookmarks]);
 
   return (
     <>
-      <PageTitle title="Scouts" />
-      <Alert
-        icon={<IconAlertCircle size={16} strokeWidth={3} />}
-        color="indigo"
-      >
-        Scouts are gradually being added to MakoTools. We appreciate your
-        patience!
-      </Alert>
+      <PageTitle title={t("title")} />
       <Paper mt="sm" p="md" withBorder>
         <Text weight="700" size="xs" color="dimmed">
-          <IconSearch size="1em" /> Search Options
+          <IconSearch size="1em" /> {t("common:search.searchOptions")}
         </Text>
         <Group>
           <TextInput
-            label="Search"
-            placeholder="Type a scout name..."
+            label={t("common:search.searchLabel")}
+            placeholder={t("searchPlaceholder")}
             value={view.search}
             onChange={(event) => {
               setView((v) => ({
@@ -146,8 +146,8 @@ function Page({
             icon={<IconSearch size="1em" />}
           />
           <Select
-            label="Sort by"
-            placeholder="Select sorting option..."
+            label={t("common:search.sortLabel")}
+            placeholder={t("common:search.sortPlaceholder")}
             data={fssOptions.sorts}
             value={view.sort.type}
             onChange={(value) => {
@@ -176,7 +176,7 @@ function Page({
                     }));
                   }}
                   variant="light"
-                  color="blue"
+                  color="theme.primaryColor"
                 >
                   {view.sort.ascending ? (
                     <IconSortAscending size={16} />
@@ -188,8 +188,8 @@ function Page({
             }
           />
           <MultiSelect
-            label="Featured Characters"
-            placeholder="Pick a character..."
+            label={t("charLabel")}
+            placeholder={t("charPlaceholder")}
             data={characters
               .sort((a: any, b: any) => a.sort_id - b.sort_id)
               .map((c: GameCharacter) => {
@@ -217,7 +217,7 @@ function Page({
               setView(defaultView);
             }}
           >
-            Reset all filters
+            {t("common:search.resetFilters")}
           </Button>
         </Group>
       </Paper>
@@ -250,7 +250,10 @@ function Page({
             icon={<IconDiamond size={18} />}
             aria-label="Event scouts"
           >
-            <Text weight={700}>Event{!isMobile && " Scouts"}</Text>
+            <Text weight={700}>
+              {t("event")}
+              {!isMobile && ` ${t("scouts")}`}
+            </Text>
           </Tabs.Tab>
           <Tabs.Tab
             value="feature"
@@ -258,7 +261,10 @@ function Page({
             icon={<IconComet size={18} />}
             aria-label="Feature Scouts"
           >
-            <Text weight={700}>Feature{!isMobile && " Scouts"}</Text>
+            <Text weight={700}>
+              {t("feature")}
+              {!isMobile && ` ${t("scouts")}`}
+            </Text>
           </Tabs.Tab>
         </Tabs.List>
 
@@ -269,8 +275,14 @@ function Page({
           >
             {results
               .filter((scout) => scout.type === "scout")
-              .map((scout: ScoutEvent) => (
-                <ScoutCard key={scout.gacha_id} scout={scout} />
+              .map((scout: Scout) => (
+                <ScoutCard
+                  key={scout.gacha_id}
+                  scout={scout}
+                  bookmarked={bookmarks.includes(scout.gacha_id)}
+                  bookmarks={bookmarks}
+                  bookmarkHandlers={handlers}
+                />
               ))}
           </ResponsiveGrid>
         </Tabs.Panel>
@@ -282,8 +294,14 @@ function Page({
           >
             {results
               .filter((scout) => scout.type === "feature scout")
-              .map((scout: ScoutEvent) => (
-                <ScoutCard key={scout.gacha_id} scout={scout} />
+              .map((scout: Scout) => (
+                <ScoutCard
+                  key={scout.gacha_id}
+                  scout={scout}
+                  bookmarked={bookmarks.includes(scout.gacha_id)}
+                  bookmarks={bookmarks}
+                  bookmarkHandlers={handlers}
+                />
               ))}
           </ResponsiveGrid>
         </Tabs.Panel>
@@ -293,7 +311,7 @@ function Page({
 }
 
 export const getServerSideProps = getServerSideUser(async ({ locale }) => {
-  const getScouts: any = await getLocalizedDataArray<ScoutEvent>(
+  const getScouts: any = await getLocalizedDataArray<Scout>(
     "scouts",
     locale,
     "gacha_id"

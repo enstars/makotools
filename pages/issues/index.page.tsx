@@ -14,7 +14,7 @@ import {
   IconGitPullRequest,
   IconMail,
   IconBrandDiscord,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import Link from "next/link";
 
 import PageTitle from "components/sections/PageTitle";

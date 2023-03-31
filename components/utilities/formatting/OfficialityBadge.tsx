@@ -1,8 +1,7 @@
-import { IconBadge, IconBadgeOff } from "@tabler/icons";
+import { IconBadge, IconBadgeOff } from "@tabler/icons-react";
 import { Text, Tooltip } from "@mantine/core";
 
 import { Lang } from "types/makotools";
-
 import useUser from "services/firebase/user";
 
 function OfficialityBadge({ langData }: { langData: Lang }) {

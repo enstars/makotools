@@ -3,13 +3,29 @@ import HTMLContent from "raw-loader!./guidelines.html";
 
 import PageTitle from "components/sections/PageTitle";
 import { getLayout } from "components/Layout";
+import useTranslation from "next-translate/useTranslation";
+import Trans from "next-translate/Trans";
 
 function Page() {
+  console.log(JSON.stringify(HTMLContent));
+  const { t } = useTranslation("about__guidelines");
   return (
     <>
-      <PageTitle title="Community Guidelines" />
+      <PageTitle title={t("title")} />
       <TypographyStylesProvider>
-        <div dangerouslySetInnerHTML={{ __html: HTMLContent }} />
+        <Trans
+          i18nKey="about__guidelines:guidelines.html"
+          components={[
+            <blockquote />,
+            <p />,
+            <b />,
+            <h2 />,
+            <ul />,
+            <li />,
+            <a href="/issues" />,
+            <a href="https://www.contributor-covenant.org" />,
+          ]}
+        />
       </TypographyStylesProvider>
     </>
   );
