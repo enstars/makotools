@@ -74,7 +74,10 @@ function SidePanel({
         multiple
         sx={{ flexBasis: 300, flexGrow: 1, minWidth: 0, width: "100%" }}
       >
-        <UpcomingCampaigns events={events as (Birthday | Scout | Event)[]} locale={locale} />
+        <UpcomingCampaigns
+          events={events as (Birthday | Scout | Event)[]}
+          locale={locale}
+        />
         <SiteAnnouncements posts={posts} />
       </Accordion>
     </Box>
@@ -211,7 +214,6 @@ function Page({
                       event.type === "tour" ||
                       event.type === "shuffle")
                 ) as Event[]
-
               }
             />
             <CurrentScoutsCountdown scouts={scouts} />
