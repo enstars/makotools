@@ -74,7 +74,7 @@ function ProfileAvatar({
       }}
     >
       <IconUser
-        size={100}
+        size={size}
         color={theme.colors[theme.primaryColor][3]}
         style={{ marginTop: 3 }}
       />
