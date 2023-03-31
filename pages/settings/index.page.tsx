@@ -179,10 +179,10 @@ function Page({
                     color="red"
                     position="top-start"
                     disabled={
-                      value !== "friends" &&
-                      user.loggedIn &&
-                      user.privateDb?.friends__receivedRequests &&
-                      user.privateDb?.friends__receivedRequests?.length > 0
+                      value !== "friends" ||
+                      !user.loggedIn ||
+                      !user.privateDb?.friends__receivedRequests ||
+                      user.privateDb?.friends__receivedRequests?.length <= 0
                     }
                   >
                     <props.icon size={14} />

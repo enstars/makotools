@@ -74,7 +74,7 @@ function ProfileAvatar({
       }}
     >
       <IconUser
-        size={100}
+        size={size * 0.9}
         color={theme.colors[theme.primaryColor][3]}
         style={{ marginTop: 3 }}
       />
@@ -112,7 +112,9 @@ function ProfileAvatar({
     />
   );
 
-  return src && crop ? image : placeholder;
+  return src && crop && userInfo?.profile__picture?.id !== 0
+    ? image
+    : placeholder;
 }
 
 export default ProfileAvatar;
