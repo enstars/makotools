@@ -154,7 +154,7 @@ function RecommendedCard({
               position="bottom"
             >
               <Text size="sm" weight={500}>
-                {t("event.start", { time: countdownAmt })}
+                {t("recommended.start", { time: countdownAmt })}
               </Text>
             </Tooltip>
           </Group>

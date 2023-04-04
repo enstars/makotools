@@ -8,7 +8,7 @@
     "fs": "{{name}}"
   },
   "event": {
-    "start": "<0>Starts </0> <1>{{time}}</1>",
+    "start": "<0>Starts in</0> <1>{{time}}</1>",
     "end": "<0>Ends in</0> <1>{{time}}</1>",
     "current": "Current Events",
     "next": "Next Events",
@@ -39,7 +39,8 @@
     "akehoshi": "Akehoshi",
     "yuuki": "Yuuki",
     "explanation": "(You indicated that you hate Ensemble Stars on your profile)",
-    "unavailable": "There are no upcoming recommended campaigns available."
+    "unavailable": "There are no upcoming recommended campaigns available.",
+    "start": "Starts in {{time}}"
   },
   "--": "--",
   "next": "Next",
