@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
 import Link from "next/link";
 import useTranslation from "next-translate/useTranslation";
+import Trans from "next-translate/Trans";
 
 import Picture from "components/core/Picture";
 import {
@@ -76,10 +77,25 @@ function Countdown({
   }, [date]);
   return (
     <Group>
-      <Text weight={600}>
-        {status === "start" ? t("event.start") : t("event.end")}
-      </Text>
-      <Title order={4}>{countdownAmt}</Title>
+      {status === "start" ? (
+        <Trans
+          i18nKey="home:event.start"
+          components={[
+            <Text weight={600} key="text" />,
+            <Title order={4} key="time" />,
+          ]}
+          values={{ time: countdownAmt }}
+        />
+      ) : (
+        <Trans
+          i18nKey="home:event.end"
+          components={[
+            <Text weight={600} key="text" />,
+            <Title order={4} key="time" />,
+          ]}
+          values={{ time: countdownAmt }}
+        />
+      )}
     </Group>
   );
 }

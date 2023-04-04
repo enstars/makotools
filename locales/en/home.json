@@ -8,15 +8,14 @@
     "fs": "{{name}}"
   },
   "event": {
-    "start": "Starts in ",
-    "end": "Ends in ",
+    "start": "<0>Starts </0> <1>{{time}}</1>",
+    "end": "<0>Ends in</0> <1>{{time}}</1>",
     "current": "Current Events",
     "next": "Next Events",
     "seeAll": "See all events",
     "eventCalculator": "Event Calculator"
   },
   "scout": {
-    "end": "Ends in ",
     "current": "Current Scouts",
     "seeAll": "See all scouts",
     "scout": "SCOUT! {{name}}",

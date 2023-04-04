@@ -13,6 +13,7 @@ import {
 import useTranslation from "next-translate/useTranslation";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import Trans from "next-translate/Trans";
 
 import Picture from "components/core/Picture";
 import { countdown, toCountdownReadable } from "services/campaigns";
@@ -40,8 +41,14 @@ function Countdown({ endDate }: { endDate: string }) {
   }, [endDate]);
   return (
     <Group>
-      <Text weight={500}>{t("scout.end")}</Text>
-      <Text weight={700}>{countdownAmt}</Text>
+      <Trans
+        i18nKey="home:event.end"
+        components={[
+          <Text weight={500} key="text" />,
+          <Text weight={700} key="countdown" />,
+        ]}
+        values={{ time: countdownAmt }}
+      />
     </Group>
   );
 }
