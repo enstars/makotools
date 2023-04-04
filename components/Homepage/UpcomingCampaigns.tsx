@@ -87,7 +87,6 @@ function EventCard({
     : `/scouts/${(event as Scout).gacha_id}`;
 
   function birthdayEventName(name: string) {
-    console.log(name);
     let splitName = name.split(" ");
     const nameOrderSetting =
       (!user.loading && user.loggedIn && user?.db?.setting__name_order) ||

@@ -104,7 +104,6 @@ function Page({
     isLoading,
     mutate,
   } = useSWR<UserData>([`/user/${uid}`, uid], getFirestoreUserProfile);
-  console.log("profileData", uid, profileData?.profile__picture);
   // hooks
   const { t } = useTranslation("user");
   const units: GameUnit[] = useMemo(() => unitsQuery.data, [unitsQuery.data]);

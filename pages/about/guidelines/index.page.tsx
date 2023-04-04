@@ -1,13 +1,11 @@
 import { TypographyStylesProvider } from "@mantine/core";
-import HTMLContent from "raw-loader!./guidelines.html";
-
-import PageTitle from "components/sections/PageTitle";
-import { getLayout } from "components/Layout";
 import useTranslation from "next-translate/useTranslation";
 import Trans from "next-translate/Trans";
 
+import PageTitle from "components/sections/PageTitle";
+import { getLayout } from "components/Layout";
+
 function Page() {
-  console.log(JSON.stringify(HTMLContent));
   const { t } = useTranslation("about__guidelines");
   return (
     <>
