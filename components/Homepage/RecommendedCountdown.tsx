@@ -109,10 +109,11 @@ function RecommendedCard({
       <Text size="xs" color="dimmed" sx={{ display: "flex" }}>
         <IconStar size={12} style={{ marginTop: 2 }} />
         <Text inherit ml={4}>
-          {t("recommended.becauseYouLike")}{" "}
-          <Text weight={700} component="span">
-            {returnCharOrUnitName()}
-          </Text>
+          <Trans
+            i18nKey="home:recommended.becauseYouLike"
+            components={[<Text key="bold" weight={700} component="span" />]}
+            values={{ character: returnCharOrUnitName() }}
+          />
         </Text>
       </Text>
       <Paper
