@@ -1,9 +1,11 @@
 import { Box, Image, useMantineTheme } from "@mantine/core";
 import { IconUser } from "@tabler/icons-react";
 
+import { EditingProfile } from "../customization/EditProfileModal";
+
 import { getAssetURL } from "services/data";
 import useUser from "services/firebase/user";
-import { UserData, UserLoggedIn } from "types/makotools";
+import { UserLoggedIn } from "types/makotools";
 
 /** Type defining the width, height, x-coordinate, and y-coordinate of a crop
  * @param {number} x - x-coordinate
@@ -28,7 +30,7 @@ function ProfileAvatar({
   border,
   size = 120,
 }: {
-  userInfo?: UserData;
+  userInfo?: EditingProfile;
   border?: string;
   size?: number;
 }) {

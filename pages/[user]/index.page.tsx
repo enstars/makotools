@@ -28,7 +28,9 @@ import useSWR, { SWRConfig } from "swr";
 import useTranslation from "next-translate/useTranslation";
 import Trans from "next-translate/Trans";
 
-import EditProfileModal from "./components/customization/EditProfileModal";
+import EditProfileModal, {
+  EditingProfile,
+} from "./components/customization/EditProfileModal";
 import ProfilePicModal from "./components/profilePicture/ProfilePicModal";
 import RemoveFriendModal from "./components/RemoveFriendModal";
 import ProfileAvatar from "./components/profilePicture/ProfileAvatar";
@@ -102,7 +104,6 @@ function Page({
     isLoading,
     mutate,
   } = useSWR<UserData>([`/user/${uid}`, uid], getFirestoreUserProfile);
-
   // hooks
   const { t } = useTranslation("user");
   const units: GameUnit[] = useMemo(() => unitsQuery.data, [unitsQuery.data]);
@@ -111,22 +112,14 @@ function Page({
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.xs}px)`);
 
   const [embla, setEmbla] = useState<Embla | null>(null);
-  const [openEditModal, setOpenEditModal] = useState<boolean>(false);
+  const [editModalOpened, setOpenEditModal] = useState<boolean>(false);
   const [openPicModal, setOpenPicModal] = useState<boolean>(false);
   const [openRemoveFriendModal, setRemoveFriendModal] =
     useState<boolean>(false);
 
-  const [profileState, setProfileState] = useState({
-    profile__banner: profile.profile__banner,
-    name: profile.name,
-    profile__pronouns: profile.profile__pronouns,
-    profile__start_playing: profile.profile__start_playing,
-    profile__bio: profile.profile__bio,
-    profile__picture: profile.profile__picture,
-    profile__fave_charas: profile.profile__fave_charas,
-    profile__fave_units: profile.profile__fave_units,
-    profile__show_faves: profile.profile__show_faves,
-  });
+  const [profileState, setProfileState] = useState<
+    EditingProfile | undefined
+  >();
   const { collapsed } = useSidebarStatus();
   const isOwnProfile = user.loggedIn && user.db.suid === profile.suid;
 
@@ -134,44 +127,12 @@ function Page({
     if (!user.loggedIn) return;
     if (profileData) {
       setOpenEditModal(false);
-      setProfileState({
-        profile__banner: profileState.profile__banner,
-        name: profileState.name,
-        profile__pronouns: profileState.profile__pronouns,
-        profile__start_playing: profileState.profile__start_playing,
-        profile__bio: profileState.profile__bio,
-        profile__picture: profileState.profile__picture,
-        profile__fave_charas: profileState.profile__fave_charas,
-        profile__fave_units: profileState.profile__fave_units,
-        profile__show_faves: profileState.profile__show_faves,
-      });
+      if (profileState) user.db.set(profileState);
 
-      user.db.set({
-        profile__banner: profileState.profile__banner,
-        name: profileState.name,
-        profile__pronouns: profileState.profile__pronouns,
-        profile__start_playing: profileState.profile__start_playing,
-        profile__bio: profileState.profile__bio,
-        profile__picture: profileState.profile__picture,
-        profile__fave_charas: profileState.profile__fave_charas,
-        profile__fave_units: profileState.profile__fave_units,
-        profile__show_faves: profileState.profile__show_faves,
-      });
-
-      const newData: UserData = {
+      mutate({
         ...profileData,
-        profile__banner: profileState.profile__banner,
-        name: profileState.name,
-        profile__pronouns: profileState.profile__pronouns,
-        profile__start_playing: profileState.profile__start_playing,
-        profile__bio: profileState.profile__bio,
-        profile__picture: profileState.profile__picture,
-        profile__fave_charas: profileState.profile__fave_charas,
-        profile__fave_units: profileState.profile__fave_units,
-        profile__show_faves: profileState.profile__show_faves,
-      };
-
-      mutate(newData);
+        ...profileState,
+      });
     }
   };
 
@@ -216,7 +177,7 @@ function Page({
         !isLoading && (
           <div style={{ position: "relative" }}>
             <EditProfileModal
-              opened={openEditModal}
+              opened={editModalOpened}
               saveChanges={saveProfileChanges}
               openedFunction={setOpenEditModal}
               picModalFunction={setOpenPicModal}
@@ -268,7 +229,9 @@ function Page({
                     ).map((n) => (
                       <Fragment key={n}>
                         {profileData.profile__banner?.map((c: number) => (
-                          <Carousel.Slide key={c}>
+                          <Carousel.Slide
+                            key={`${c.toString()}${n.toString()}`}
+                          >
                             <Picture
                               alt={`Card ${c}`}
                               srcB2={`assets/card_still_full1_${Math.abs(c)}_${
@@ -388,6 +351,22 @@ function Page({
                       isOutgoingReq={isOutgoingFriendReq}
                       setOpenEditModal={setOpenEditModal}
                       setRemoveFriendModal={setRemoveFriendModal}
+                      openEditModal={() => {
+                        setOpenEditModal(true);
+                        setProfileState({
+                          profile__banner: profileData.profile__banner,
+                          name: profileData.name,
+                          profile__pronouns: profileData.profile__pronouns,
+                          profile__start_playing:
+                            profileData.profile__start_playing,
+                          profile__bio: profileData.profile__bio,
+                          profile__picture: profileData.profile__picture,
+                          profile__fave_charas:
+                            profileData.profile__fave_charas,
+                          profile__fave_units: profileData.profile__fave_units,
+                          profile__show_faves: profileData.profile__show_faves,
+                        });
+                      }}
                     />
                   ) : (
                     <Loader

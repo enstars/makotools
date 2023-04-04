@@ -24,6 +24,8 @@ import { useDayjs } from "services/libraries/dayjs";
 import { Birthday, Campaign, Event, Scout } from "types/game";
 import { retrieveNextCampaigns } from "services/campaigns";
 import Picture from "components/core/Picture";
+import { getNameOrder } from "services/game";
+import useUser from "services/firebase/user";
 
 /* END FUNCTION */
 
@@ -62,8 +64,15 @@ const useStyles = createStyles((theme, _params) => ({
 }));
 
 // create individual event card
-function EventCard({ event }: { event: Birthday | Event | Scout }) {
+function EventCard({
+  event,
+  locale,
+}: {
+  event: Birthday | Event | Scout;
+  locale: string | undefined;
+}) {
   const { t } = useTranslation("home");
+  const user = useUser();
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
   const formattedMonth = dayjs(event.start.en).format("MMM");
@@ -76,6 +85,17 @@ function EventCard({ event }: { event: Birthday | Event | Scout }) {
       event.type == "tour"
     ? `/events/${(event as Event).event_id}`
     : `/scouts/${(event as Scout).gacha_id}`;
+
+  function birthdayEventName(name: string) {
+    let splitName = name.split(" ");
+    const nameOrderSetting =
+      (!user.loading && user.loggedIn && user?.db?.setting__name_order) ||
+      "firstlast";
+    return getNameOrder(
+      { first_name: splitName[1], last_name: splitName[0] },
+      nameOrderSetting
+    );
+  }
 
   return (
     <Card
@@ -128,7 +148,9 @@ function EventCard({ event }: { event: Birthday | Event | Scout }) {
           }}
         >
           <Title order={3} weight={700} size="md" sx={{ lineHeight: 1.2 }}>
-            {event.name[0]}
+            {event.type === "birthday"
+              ? birthdayEventName(event.name[0])
+              : event.name[0]}
           </Title>
 
           <Badge
@@ -190,7 +212,13 @@ function EventCard({ event }: { event: Birthday | Event | Scout }) {
   );
 }
 
-function UpcomingCampaigns({ events }: { events: Campaign[] }) {
+function UpcomingCampaigns({
+  events,
+  locale,
+}: {
+  events: Campaign[];
+  locale: string | undefined;
+}) {
   const { t } = useTranslation("home");
   const { dayjs } = useDayjs();
   const { classes } = useStyles();
@@ -205,7 +233,7 @@ function UpcomingCampaigns({ events }: { events: Campaign[] }) {
 
       <Accordion.Panel className={classes.panel} px={0}>
         {retrieveNextCampaigns(events, 8).map((e, index) => {
-          return <EventCard key={index} event={e} />;
+          return <EventCard key={index} event={e} locale={locale} />;
         })}
         <Box mt="xs">
           <Anchor component={Link} href="/calendar" size="sm">

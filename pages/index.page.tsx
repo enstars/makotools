@@ -53,11 +53,13 @@ const useStyles = createStyles((theme, _params) => ({
 
 function SidePanel({
   events,
+  locale,
   posts,
   width = 250,
   ...props
 }: {
   events: (Event | Birthday | Scout)[];
+  locale: string | undefined;
   posts: StrapiItem<MakoPost>[];
   width?: number;
 }) {
@@ -72,7 +74,10 @@ function SidePanel({
         multiple
         sx={{ flexBasis: 300, flexGrow: 1, minWidth: 0, width: "100%" }}
       >
-        <UpcomingCampaigns events={events as (Birthday | Scout | Event)[]} />
+        <UpcomingCampaigns
+          events={events as (Birthday | Scout | Event)[]}
+          locale={locale}
+        />
         <SiteAnnouncements posts={posts} />
       </Accordion>
     </Box>
@@ -80,6 +85,7 @@ function SidePanel({
 }
 
 function Page({
+  locale,
   posts,
   charactersQuery,
   gameEventsQuery,
@@ -87,6 +93,7 @@ function Page({
   cardsQuery,
   unitsQuery,
 }: {
+  locale: string | undefined;
   posts: StrapiItem<MakoPost>[];
   charactersQuery: QuerySuccess<GameCharacter[]>;
   gameEventsQuery: QuerySuccess<Event[]>;
@@ -207,7 +214,6 @@ function Page({
                       event.type === "tour" ||
                       event.type === "shuffle")
                 ) as Event[]
-
               }
             />
             <CurrentScoutsCountdown scouts={scouts} />
@@ -221,13 +227,13 @@ function Page({
           </Box>
 
           <MediaQuery largerThan="md" styles={{ display: "none" }}>
-            <SidePanel events={events} posts={posts} />
+            <SidePanel events={events} posts={posts} locale={locale} />
           </MediaQuery>
         </Group>
       </Stack>
 
       <MediaQuery smallerThan="md" styles={{ display: "none" }}>
-        <SidePanel events={events} posts={posts} />
+        <SidePanel events={events} posts={posts} locale={locale} />
       </MediaQuery>
     </Group>
   );
@@ -277,6 +283,7 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
 
     return {
       props: {
+        locale: locale,
         posts: postResponses.data,
         charactersQuery: characters,
         gameEventsQuery: gameEvents,

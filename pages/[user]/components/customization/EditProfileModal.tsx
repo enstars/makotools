@@ -24,6 +24,19 @@ import Banner from "./Banner";
 import { GameCard, GameCharacter, GameUnit } from "types/game";
 import { Locale, User, UserData } from "types/makotools";
 
+export type EditingProfile = Pick<
+  UserData,
+  | "profile__banner"
+  | "name"
+  | "profile__pronouns"
+  | "profile__start_playing"
+  | "profile__bio"
+  | "profile__picture"
+  | "profile__fave_charas"
+  | "profile__fave_units"
+  | "profile__show_faves"
+>;
+
 const Bio = dynamic(() => import("./Bio"), {
   ssr: false,
 });
@@ -35,7 +48,7 @@ const Bio = dynamic(() => import("./Bio"), {
  * @param {GameCard[]} cards - Array of available cards in game for the profile banner
  * @param {User} user - Object for the currently logged-in user
  * @param {UserData} profile - The profile that is currently being viewed
- * @param {any} profileState - The state of the current profile that is being edited
+ * @param {EditingProfile} profileState - The state of the current profile that is being edited
  * @param {Dispatch<SetStateAction<any>>} - The setter function that updates profileState
  */
 function EditProfileModal({
@@ -59,7 +72,7 @@ function EditProfileModal({
   cards?: GameCard[] | undefined;
   user: User;
   profile: UserData;
-  profileState: any;
+  profileState: EditingProfile | undefined;
   setProfileState: Dispatch<SetStateAction<any>>;
   characters: GameCharacter[];
   units: GameUnit[];
@@ -67,6 +80,7 @@ function EditProfileModal({
 }) {
   const { t } = useTranslation("user");
   const theme = useMantineTheme();
+  if (!opened || !profileState) return null;
   return (
     <Modal
       opened={opened}

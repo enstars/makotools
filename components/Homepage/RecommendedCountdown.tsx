@@ -109,10 +109,11 @@ function RecommendedCard({
       <Text size="xs" color="dimmed" sx={{ display: "flex" }}>
         <IconStar size={12} style={{ marginTop: 2 }} />
         <Text inherit ml={4}>
-          {t("recommended.becauseYouLike")}{" "}
-          <Text weight={700} component="span">
-            {returnCharOrUnitName()}
-          </Text>
+          <Trans
+            i18nKey="home:recommended.becauseYouLike"
+            components={[<Text key="bold" weight={700} component="span" />]}
+            values={{ character: returnCharOrUnitName() }}
+          />
         </Text>
       </Text>
       <Paper
@@ -139,7 +140,11 @@ function RecommendedCard({
         <Stack spacing={0} py="xs" px="sm">
           <Text weight={700} lineClamp={2}>
             {event.type === "birthday"
-              ? `${event.name[0].split(" ")[1]}'s Birthday`
+              ? `${
+                  event.name[0].split(" ")[1] !== undefined
+                    ? event.name[0].split(" ")[1]
+                    : event.name[0].split(" ")[0]
+                }'s Birthday`
               : event.name[0]}
           </Text>
           <Group spacing={3} align="center">
@@ -149,7 +154,7 @@ function RecommendedCard({
               position="bottom"
             >
               <Text size="sm" weight={500}>
-                {t("event.start")} {countdownAmt}
+                {t("recommended.start", { time: countdownAmt })}
               </Text>
             </Tooltip>
           </Group>

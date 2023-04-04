@@ -373,51 +373,50 @@ function Sidebar(props: any) {
             </Box>
           }
         />
-        {user.loggedIn &&
-          (collapsed ? (
-            <TextInput
-              styles={(theme) => ({
-                input: {
-                  padding: theme.spacing.xs,
-                  paddingRight: 0,
-                },
-              })}
-              // variant="filled"
-              value=""
-              icon={<IconSearch size={18} />}
-              iconWidth={38}
-              onClick={() => {
-                toggleCollapsed();
-                if (props?.onCollapse) props.onCollapse();
-              }}
-            />
-          ) : (
-            <TextInput
-              styles={(theme) => ({
-                input: {
-                  padding: theme.spacing.xs,
-                },
-              })}
-              // variant="unstyled"
-              value={searchValue}
-              onChange={(event) => setSearchValue(event.currentTarget.value)}
-              placeholder={t("searchbarMessage")}
-              icon={<IconSearch size={18} />}
-              iconWidth={38}
-              rightSection={
-                searchValue && (
-                  <ActionIcon
-                    size="xs"
-                    onClick={() => {
-                      setSearchValue("");
-                    }}
-                  >
-                    <IconX size={14} />
-                  </ActionIcon>
-                )
-              }
-            />
-          ))}
+        {collapsed ? (
+          <TextInput
+            styles={(theme) => ({
+              input: {
+                padding: theme.spacing.xs,
+                paddingRight: 0,
+              },
+            })}
+            // variant="filled"
+            value=""
+            icon={<IconSearch size={18} />}
+            iconWidth={38}
+            onClick={() => {
+              toggleCollapsed();
+              if (props?.onCollapse) props.onCollapse();
+            }}
+          />
+        ) : (
+          <TextInput
+            styles={(theme) => ({
+              input: {
+                padding: theme.spacing.xs,
+              },
+            })}
+            // variant="unstyled"
+            value={searchValue}
+            onChange={(event) => setSearchValue(event.currentTarget.value)}
+            placeholder={t("searchbarMessage")}
+            icon={<IconSearch size={18} />}
+            iconWidth={38}
+            rightSection={
+              searchValue && (
+                <ActionIcon
+                  size="xs"
+                  onClick={() => {
+                    setSearchValue("");
+                  }}
+                >
+                  <IconX size={14} />
+                </ActionIcon>
+              )
+            }
+          />
+        )}
       </Navbar.Section>
       <Navbar.Section
         grow
