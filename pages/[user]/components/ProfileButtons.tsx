@@ -48,6 +48,7 @@ function ProfileButtons({
   isOutgoingReq,
   setOpenEditModal,
   setRemoveFriendModal,
+  openEditModal,
 }: {
   user: User;
   uid: string;
@@ -57,6 +58,7 @@ function ProfileButtons({
   isOutgoingReq: boolean;
   setOpenEditModal: Dispatch<SetStateAction<boolean>>;
   setRemoveFriendModal: Dispatch<SetStateAction<boolean>>;
+  openEditModal: () => void;
 }) {
   const { t } = useTranslation("user");
   const theme = useMantineTheme();
@@ -68,9 +70,7 @@ function ProfileButtons({
       {user.loggedIn && user.db.suid === profile.suid && (
         <Tooltip label={t("editProfile")}>
           <ActionIcon
-            onClick={() => {
-              setOpenEditModal(true);
-            }}
+            onClick={openEditModal}
             size="lg"
             color="green"
             variant="light"
