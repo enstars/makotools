@@ -190,7 +190,7 @@ function Sidebar(props: any) {
       link: "https://www.patreon.com/makotools",
       name: "patreon",
       Icon: IconBrandPatreon,
-      props: {
+      props: !collapsed && {
         rightSection: (
           <Text color="dimmed" mt={-10 + 4} mb={-10}>
             <IconExternalLink size={16} />
