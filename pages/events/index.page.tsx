@@ -139,10 +139,16 @@ function Page({
   });
 
   useEffect(() => {
-    user.loggedIn &&
+    if (
+      user.loggedIn &&
+      user.db &&
+      user.db.admin?.patreon &&
+      (user.db.admin?.patreon > 0 || user.db.admin.administrator)
+    ) {
       user.db.set({
         bookmarks__events: bookmarks,
       });
+    }
   }, [bookmarks]);
 
   return (
