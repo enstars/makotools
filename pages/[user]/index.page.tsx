@@ -21,12 +21,20 @@ import {
   IconDiscountCheck,
   IconHearts,
 } from "@tabler/icons-react";
-import { useRef, Fragment, useState, useEffect, useMemo } from "react";
+import {
+  useRef,
+  Fragment,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { useMediaQuery } from "@mantine/hooks";
 import useSWR, { SWRConfig } from "swr";
 import useTranslation from "next-translate/useTranslation";
 import Trans from "next-translate/Trans";
+import { omitBy } from "lodash";
 
 import EditProfileModal, {
   EditingProfile,
@@ -123,31 +131,46 @@ function Page({
   const { collapsed } = useSidebarStatus();
   const isOwnProfile = user.loggedIn && user.db.suid === profile.suid;
 
-  const saveProfileChanges = () => {
+  const saveProfileChanges = useCallback(() => {
     if (!user.loggedIn) return;
     if (profileData) {
       setOpenEditModal(false);
-      if (profileState) user.db.set(profileState);
-
-      mutate({
-        ...profileData,
-        ...profileState,
-      });
+      const cleanedProfileState = omitBy(
+        profileState,
+        (v) => typeof v === "undefined"
+      );
+      if (cleanedProfileState) {
+        user.db.set(cleanedProfileState);
+        mutate({
+          ...profileData,
+          ...cleanedProfileState,
+        });
+      }
     }
-  };
+  }, [user, profileData, profileState, mutate]);
 
-  // friend Variables
-  const friendsData = (user as UserLoggedIn).privateDb?.friends__list || [];
-  const outgoingData =
-    (user as UserLoggedIn).privateDb?.friends__sentRequests || [];
-  const incomingData =
-    (user as UserLoggedIn).privateDb?.friends__receivedRequests || [];
-  const isFriend =
-    !!user.loggedIn && !isOwnProfile && friendsData.includes(uid);
-  const isOutgoingFriendReq =
-    !!user.loggedIn && !isOwnProfile && outgoingData.includes(uid);
-  const isIncomingFriendReq =
-    !!user.loggedIn && !isOwnProfile && incomingData.includes(uid);
+  const isFriend = useMemo(() => {
+    if (user.loggedIn)
+      return !isOwnProfile && !!user.privateDb?.friends__list?.includes(uid);
+    return false;
+  }, [user, isOwnProfile, uid]);
+
+  const isOutgoingFriendReq = useMemo(() => {
+    if (user.loggedIn)
+      return (
+        !isOwnProfile && !!user.privateDb?.friends__sentRequests?.includes(uid)
+      );
+    return false;
+  }, [user, isOwnProfile, uid]);
+
+  const isIncomingFriendReq = useMemo(() => {
+    if (user.loggedIn)
+      return (
+        !isOwnProfile &&
+        !!user.privateDb?.friends__receivedRequests?.includes(uid)
+      );
+    return false;
+  }, [user, isOwnProfile, uid]);
 
   useEffect(() => {
     embla?.reInit();
