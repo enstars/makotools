@@ -74,12 +74,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         }
       : {};
 
+    let migrated = docGet?.migrated || true;
+
     await docRef.set(
       {
         email: authUser?.email || null,
         lastLogin: FieldValue.serverTimestamp(),
         suid,
         username,
+        migrated,
         ...fixedCardCounts,
       },
       { merge: true }

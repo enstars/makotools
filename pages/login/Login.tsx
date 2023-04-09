@@ -256,21 +256,32 @@ function Login() {
                     justifyContent: "space-between",
                   }}
                 >
-                  <Anchor
-                    component="button"
-                    type="button"
-                    color="dimmed"
-                    onClick={() => {
-                      setIsRegister(!isRegister);
-                      setSignOnError(null);
-                    }}
-                    size="xs"
-                    style={{ maxWidth: "100%" }}
-                  >
-                    {isRegister
-                      ? "Already have an account? Sign in"
-                      : "Don't have an account? Sign up"}
-                  </Anchor>
+                  <Stack spacing="xs">
+                    <Anchor
+                      component="button"
+                      type="button"
+                      color="dimmed"
+                      onClick={() => {
+                        setIsRegister(!isRegister);
+                        setSignOnError(null);
+                      }}
+                      size="xs"
+                      style={{ maxWidth: "100%" }}
+                    >
+                      {isRegister
+                        ? "Already have an account? Sign in"
+                        : "Don't have an account? Sign up"}
+                    </Anchor>
+                    <Anchor
+                      href="/login/reset_password"
+                      color="dimmed"
+                      size="xs"
+                      style={{ maxWidth: "100%", textAlign: "left" }}
+                    >
+                      Forgot password?
+                    </Anchor>
+                  </Stack>
+
                   <Button id="signin-form-button" type="submit">
                     {!isRegister ? "Sign in" : "Sign up"}
                   </Button>
