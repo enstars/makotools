@@ -11,7 +11,7 @@ import {
 import { IconPlaylistAdd, IconChecklist, IconPlus } from "@tabler/icons-react";
 import { inRange, isNil, sortBy } from "lodash";
 
-import { CardCollection, UserLoggedIn } from "types/makotools";
+import { CardCollection } from "types/makotools";
 import { MAX_CARD_COPIES } from "services/game";
 import { GameCard, ID } from "types/game";
 import { CONSTANTS } from "services/makotools/constants";
@@ -104,8 +104,9 @@ function NewCollectionRow({
   const user = useUser();
   const disabled =
     collections.length >=
-    CONSTANTS.PATREON.TIERS[(user as UserLoggedIn).db.admin?.patreon || 0]
-      .COLLECTIONS;
+    (user.loggedIn
+      ? CONSTANTS.PATREON.TIERS[user.db.admin?.patreon || 0].COLLECTIONS
+      : CONSTANTS.PATREON.TIERS[0].COLLECTIONS);
 
   return (
     <Box sx={{ padding: "8px" }}>

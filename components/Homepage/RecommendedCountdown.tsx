@@ -40,7 +40,6 @@ import {
 import { useDayjs } from "services/libraries/dayjs";
 import { getNameOrder } from "services/game";
 import HokkeConcern from "assets/HokkeConcern.png";
-import { UserLoggedIn } from "types/makotools";
 import Picture from "components/core/Picture";
 
 function RecommendedCard({
@@ -90,7 +89,7 @@ function RecommendedCard({
       };
       return getNameOrder(
         nameObj,
-        (user as UserLoggedIn).db?.setting__name_order
+        user.loggedIn ? user.db?.setting__name_order : undefined
       );
     } else {
       return units.filter((u) => u.id === faveUnit)[0].name[0];
@@ -253,128 +252,130 @@ function RecommendedCountdown({
       <Alert my={3} icon={<IconHeart />}>
         {t("recommended.recommendedAlert")}
       </Alert>
-      {user.loggedIn &&
-      user.db &&
-      (!user.db.profile__fave_charas ||
-        user.db.profile__fave_charas.length === 0) ? (
-        <Paper p={15} my={10}>
-          <Text>
-            <Trans
-              i18nKey="home:recommended.noRecommendations"
-              components={[
-                <Text
-                  key="link"
-                  color={theme.colors[theme.primaryColor][4]}
-                  component={Link}
-                  href={`/@${user.db.username}`}
-                />,
-              ]}
-            />
-          </Text>
-        </Paper>
-      ) : (user as UserLoggedIn).db.profile__fave_charas &&
-        (user as UserLoggedIn).db.profile__fave_charas.length &&
-        (user as UserLoggedIn).db.profile__fave_charas[0] === -1 ? (
-        <Box mt={10}>
-          <Group noWrap mb={10}>
-            <Image
-              src={HokkeConcern.src}
-              alt="Hokke is concerned."
-              width={80}
-              sx={{ pointerEvents: "none" }}
-              mt={5}
-            />
-            <Stack>
-              <Paper withBorder py={20} pl={15} pr={40}>
-                <Text component="span">
-                  {t("recommended.sadHokke", {
-                    random:
-                      Math.floor(Math.random() * 2) === 0
-                        ? t("recommended.akehoshi")
-                        : t("recommended.yuuki"),
-                  })}
-                </Text>
-              </Paper>
-              <Text size="xs" color="dimmed">
-                {t("recommended.explanation")}
-              </Text>
-            </Stack>
-          </Group>
-        </Box>
-      ) : events.length === 0 ? (
-        <Paper p={20} my={10}>
-          <Text>{t("recommended.unavailable")}</Text>
-        </Paper>
-      ) : (
-        <Carousel
-          loop
-          my="sm"
-          orientation={isMobile ? "vertical" : "horizontal"}
-          height={122 * slideRows + 8 * (slideRows - 1)}
-          withControls={!isMobile}
-          controlSize={40}
-          controlsOffset="xs"
-          nextControlIcon={
-            <Button
-              variant="default"
-              rightIcon={<IconArrowRight />}
-              styles={(theme) => ({
-                icon: {
-                  color: theme.colors[theme.primaryColor][4],
-                },
-                label: {
-                  color: theme.colors[theme.primaryColor][4],
-                },
-              })}
-            >
-              {t("next")}
-            </Button>
-          }
-          previousControlIcon={
-            <Button
-              variant="default"
-              leftIcon={<IconArrowLeft />}
-              styles={(theme) => ({
-                icon: {
-                  color: theme.colors[theme.primaryColor][4],
-                },
-                label: {
-                  color: theme.colors[theme.primaryColor][4],
-                },
-              })}
-            >
-              {t("prev")}
-            </Button>
-          }
-          align={isMobile ? "start" : "center"}
-          styles={(theme) => ({
-            controls: {
-              position: "static",
-              padding: 0,
-              paddingTop: theme.spacing.xs,
-              display: slideColumns > 1 ? "flex" : "none",
-            },
-            control: {
-              border: "none",
-              background: "none",
-            },
-          })}
-        >
-          {slidesArr.map((slide, i) => {
-            return (
-              <Carousel.Slide key={i}>
-                <RecommendedSlide
-                  events={events}
-                  eventsSlide={slide}
-                  characters={characters}
-                  units={units}
-                  slideColumns={slideColumns}
-                  slideRows={slideRows}
+      {user.loggedIn && (
+        <>
+          {!user.db.profile__fave_charas ||
+          user.db.profile__fave_charas.length === 0 ? (
+            <Paper p={15} my={10}>
+              <Text>
+                <Trans
+                  i18nKey="home:recommended.noRecommendations"
+                  components={[
+                    <Text
+                      key="link"
+                      color={theme.colors[theme.primaryColor][4]}
+                      component={Link}
+                      href={`/@${user.db.username}`}
+                    />,
+                  ]}
                 />
-              </Carousel.Slide>
-            );
-          })}
-        </Carousel>
+              </Text>
+            </Paper>
+          ) : user.db.profile__fave_charas &&
+            user.db.profile__fave_charas.length &&
+            user.db.profile__fave_charas[0] === -1 ? (
+            <Box mt={10}>
+              <Group noWrap mb={10}>
+                <Image
+                  src={HokkeConcern.src}
+                  alt="Hokke is concerned."
+                  width={80}
+                  sx={{ pointerEvents: "none" }}
+                  mt={5}
+                />
+                <Stack>
+                  <Paper withBorder py={20} pl={15} pr={40}>
+                    <Text component="span">
+                      {t("recommended.sadHokke", {
+                        random:
+                          Math.floor(Math.random() * 2) === 0
+                            ? t("recommended.akehoshi")
+                            : t("recommended.yuuki"),
+                      })}
+                    </Text>
+                  </Paper>
+                  <Text size="xs" color="dimmed">
+                    {t("recommended.explanation")}
+                  </Text>
+                </Stack>
+              </Group>
+            </Box>
+          ) : events.length === 0 ? (
+            <Paper p={20} my={10}>
+              <Text>{t("recommended.unavailable")}</Text>
+            </Paper>
+          ) : (
+            <Carousel
+              loop
+              my="sm"
+              orientation={isMobile ? "vertical" : "horizontal"}
+              height={122 * slideRows + 8 * (slideRows - 1)}
+              withControls={!isMobile}
+              controlSize={40}
+              controlsOffset="xs"
+              nextControlIcon={
+                <Button
+                  variant="default"
+                  rightIcon={<IconArrowRight />}
+                  styles={(theme) => ({
+                    icon: {
+                      color: theme.colors[theme.primaryColor][4],
+                    },
+                    label: {
+                      color: theme.colors[theme.primaryColor][4],
+                    },
+                  })}
+                >
+                  {t("next")}
+                </Button>
+              }
+              previousControlIcon={
+                <Button
+                  variant="default"
+                  leftIcon={<IconArrowLeft />}
+                  styles={(theme) => ({
+                    icon: {
+                      color: theme.colors[theme.primaryColor][4],
+                    },
+                    label: {
+                      color: theme.colors[theme.primaryColor][4],
+                    },
+                  })}
+                >
+                  {t("prev")}
+                </Button>
+              }
+              align={isMobile ? "start" : "center"}
+              styles={(theme) => ({
+                controls: {
+                  position: "static",
+                  padding: 0,
+                  paddingTop: theme.spacing.xs,
+                  display: slideColumns > 1 ? "flex" : "none",
+                },
+                control: {
+                  border: "none",
+                  background: "none",
+                },
+              })}
+            >
+              {slidesArr.map((slide, i) => {
+                return (
+                  <Carousel.Slide key={i}>
+                    <RecommendedSlide
+                      events={events}
+                      eventsSlide={slide}
+                      characters={characters}
+                      units={units}
+                      slideColumns={slideColumns}
+                      slideRows={slideRows}
+                    />
+                  </Carousel.Slide>
+                );
+              })}
+            </Carousel>
+          )}
+        </>
       )}
     </Container>
   );

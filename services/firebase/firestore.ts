@@ -1,4 +1,8 @@
-import { getAuth, sendEmailVerification } from "firebase/auth";
+import {
+  getAuth,
+  sendEmailVerification,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 import {
   getFirestore,
   doc,
@@ -9,6 +13,7 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
+import { Dispatch, SetStateAction } from "react";
 
 import { parseStringify } from "services/utilities";
 import {
@@ -111,6 +116,15 @@ export async function sendVerificationEmail() {
   }
 }
 
+export async function sendPasswordReset(
+  email: string,
+  setEmailSent: Dispatch<SetStateAction<boolean>>
+) {
+  const clientAuth = getAuth();
+  await sendPasswordResetEmail(clientAuth, email);
+  setEmailSent(true);
+}
+
 export async function getFirestoreUserCollection([collectionAddress, user]: [
   string,
   User
@@ -118,13 +132,14 @@ export async function getFirestoreUserCollection([collectionAddress, user]: [
   const db = getFirestore();
 
   const profileUID = collectionAddress.split("/")[1];
-  const accessiblePrivacyLevel = user.loggedIn
-    ? user.user.id === profileUID
-      ? 3
-      : user.privateDb.friends__list?.includes(profileUID)
-      ? 2
-      : 1
-    : 0;
+  // const accessiblePrivacyLevel = user.loggedIn
+  //   ? user.user.id === profileUID
+  //     ? 3
+  //     : user.privateDb.friends__list?.includes(profileUID)
+  //     ? 2
+  //     : 1
+  //   : 0;
+  const accessiblePrivacyLevel = 0;
 
   let querySnap,
     userCollection: CardCollection[] = [];
@@ -143,6 +158,7 @@ export async function getFirestoreUserCollection([collectionAddress, user]: [
       userCollection.push(data as CardCollection);
     });
   } catch (e) {
+    console.info(accessiblePrivacyLevel, collectionAddress, e);
     console.error(e);
   }
   return userCollection;
@@ -182,7 +198,7 @@ export async function getFirestoreUserDocument(
 //   try {
 //     const q: any = query(
 //       collection(db, "users"),
-//       where("username", "==", (user as UserLoggedIn).db.username)
+//       where("username", "==", user.db.username)
 //     );
 //     const querySnap = await getDocs(q);
 //     profile = parseStringify(querySnap.docs[0].data());

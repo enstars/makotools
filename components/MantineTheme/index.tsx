@@ -87,6 +87,22 @@ export const characterColors = [
       "#941F57",
     ],
   },
+  {
+    name: "niki_gray",
+    display_name: "Niki Gray",
+    colors: [
+      "#D7DBDF",
+      "#C6D1DB",
+      "#A7C2D9",
+      "#8BB2D4",
+      "#639BCB",
+      "#468AC3",
+      "#337AB7",
+      "#24679F",
+      "#165285",
+      "#12446E",
+    ],
+  },
 ];
 
 function MantineTheme({

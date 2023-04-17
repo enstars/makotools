@@ -22,7 +22,7 @@ import {
 } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCard, GameCharacter, Event, Scout } from "types/game";
-import { QuerySuccess, UserLoggedIn } from "types/makotools";
+import { QuerySuccess } from "types/makotools";
 import { getLayout } from "components/Layout";
 import { CardCard } from "components/core/CardCard";
 import ESPageHeader from "pages/events/components/ESPageHeader";
@@ -63,7 +63,7 @@ function Page({
   });
 
   const [bookmarks, handlers] = useListState<number>(
-    (user as UserLoggedIn).db.bookmarks__scouts || []
+    user.loggedIn ? user.db.bookmarks__scouts || [] : []
   );
 
   useEffect(() => {

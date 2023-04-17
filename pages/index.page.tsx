@@ -28,12 +28,7 @@ import CurrentEventCountdown from "components/Homepage/CurrentEventCountdown";
 import CurrentScoutsCountdown from "components/Homepage/CurrentScoutsCountdown";
 import SiteAnnouncements from "components/Homepage/SiteAnnouncements";
 import UserVerification from "components/Homepage/UserVerification";
-import {
-  MakoPost,
-  QuerySuccess,
-  StrapiItem,
-  UserLoggedIn,
-} from "types/makotools";
+import { MakoPost, QuerySuccess, StrapiItem } from "types/makotools";
 import { createBirthdayData } from "services/campaigns";
 import { fetchOceans } from "services/makotools/posts";
 import RecommendedCountdown from "components/Homepage/RecommendedCountdown";
@@ -135,8 +130,9 @@ function Page({
   }
 
   function getRecommendedCampaigns(): RecommendedCampaign[] {
-    let faveCharas = (user as UserLoggedIn).db.profile__fave_charas;
-    let faveUnits = (user as UserLoggedIn).db.profile__fave_units;
+    if (!user.loggedIn) return [];
+    let faveCharas = user.db.profile__fave_charas;
+    let faveUnits = user.db.profile__fave_units;
     let recommendedCampaigns: RecommendedCampaign[] = [];
     events.forEach((event: Campaign) => {
       if (event.type === "birthday") {

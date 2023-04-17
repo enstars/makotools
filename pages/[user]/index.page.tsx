@@ -47,7 +47,7 @@ import ProfileStats from "./components/ProfileStats";
 import CardCollections from "./components/collections/CardCollections";
 
 import { getLayout, useSidebarStatus } from "components/Layout";
-import { Locale, QuerySuccess, UserData, UserLoggedIn } from "types/makotools";
+import { Locale, QuerySuccess, UserData } from "types/makotools";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "services/data";
 import { parseStringify } from "services/utilities";
@@ -224,13 +224,15 @@ function Page({
                 externalSetter={setProfileState}
               />
             )}
-            <RemoveFriendModal
-              opened={openRemoveFriendModal}
-              closeFunction={setRemoveFriendModal}
-              user={user as UserLoggedIn}
-              uid={uid}
-              profile={profileData}
-            />
+            {user.loggedIn && (
+              <RemoveFriendModal
+                opened={openRemoveFriendModal}
+                closeFunction={setRemoveFriendModal}
+                user={user}
+                uid={uid}
+                profile={profileData}
+              />
+            )}
             <Box sx={{ position: "relative" }}>
               {profileData.profile__banner &&
               profileData.profile__banner?.length ? (
