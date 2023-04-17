@@ -157,10 +157,12 @@ function Page({
   const scouts: Scout[] = useMemo(() => scoutsQuery.data, [scoutsQuery.data]);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
-  if (!user.loggedIn) return <div>Loading...</div>;
-
-  const bookmarkedEvents: ID[] = user.db.bookmarks__events || [];
-  const bookmarkedScouts: ID[] = user.db.bookmarks__scouts || [];
+  const bookmarkedEvents: ID[] = user.loggedIn
+    ? user.db.bookmarks__events || []
+    : [];
+  const bookmarkedScouts: ID[] = user.loggedIn
+    ? user.db.bookmarks__scouts || []
+    : [];
 
   const filteredEvents = events.filter((ev) =>
     bookmarkedEvents.includes(ev.event_id)
