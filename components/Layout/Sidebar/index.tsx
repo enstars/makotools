@@ -248,6 +248,8 @@ function Sidebar(props: any) {
                         ? "#FDECDC"
                         : theme.primaryColor === "hokke_blue"
                         ? "#e9f1f7"
+                        : theme.primaryColor === "niki_gray"
+                        ? "#D7DBDF"
                         : "#E8ECFD",
                   },
                   ".mkt_dark_text_svg__secondaryText": {
@@ -260,6 +262,8 @@ function Sidebar(props: any) {
                         ? "#f5c59a"
                         : theme.primaryColor === "hokke_blue"
                         ? "#83beeb"
+                        : theme.primaryColor === "niki_gray"
+                        ? "#8BB2D4"
                         : "#A4B1E8",
                   },
                   ".mkt_light_text_svg__primaryText": {
@@ -272,6 +276,8 @@ function Sidebar(props: any) {
                         ? "#7a2e04"
                         : theme.primaryColor === "hokke_blue"
                         ? "#00172b"
+                        : theme.primaryColor === "niki_gray"
+                        ? "#165285"
                         : "#1C2F7D",
                   },
                   ".mkt_light_text_svg__secondaryText": {
@@ -284,6 +290,8 @@ function Sidebar(props: any) {
                         ? "#b54304"
                         : theme.primaryColor === "hokke_blue"
                         ? "#003d73"
+                        : theme.primaryColor === "niki_gray"
+                        ? "#337AB7"
                         : "#324CB3",
                   },
                 }}
@@ -317,6 +325,8 @@ function Sidebar(props: any) {
                       ? "#f5c59a"
                       : theme.primaryColor === "hokke_blue"
                       ? "#83beeb"
+                      : theme.primaryColor === "niki_gray"
+                      ? "#8BB2D4"
                       : "#A4B1E8",
                 },
                 ".mkt_dark_icon_svg__primary": {
@@ -329,6 +339,8 @@ function Sidebar(props: any) {
                       ? "#FDECDC"
                       : theme.primaryColor === "hokke_blue"
                       ? "#e9f1f7"
+                      : theme.primaryColor === "niki_gray"
+                      ? "#D7DBDF"
                       : "#E8ECFD",
                 },
                 ".mkt_light_icon_svg__secondary": {
@@ -341,6 +353,8 @@ function Sidebar(props: any) {
                       ? "#b54304"
                       : theme.primaryColor === "hokke_blue"
                       ? "#003d73"
+                      : theme.primaryColor === "niki_gray"
+                      ? "#337AB7"
                       : "#324CB3",
                 },
                 ".mkt_light_icon_svg__primary": {
@@ -353,6 +367,8 @@ function Sidebar(props: any) {
                       ? "#7a2e04"
                       : theme.primaryColor === "hokke_blue"
                       ? "#00172b"
+                      : theme.primaryColor === "niki_gray"
+                      ? "#165285"
                       : "#1C2F7D",
                 },
               }}

@@ -1,4 +1,8 @@
-import { getAuth, sendEmailVerification } from "firebase/auth";
+import {
+  getAuth,
+  sendEmailVerification,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 import {
   getFirestore,
   doc,
@@ -9,6 +13,7 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
+import { Dispatch, SetStateAction } from "react";
 
 import { parseStringify } from "services/utilities";
 import {
@@ -109,6 +114,15 @@ export async function sendVerificationEmail() {
   ) {
     sendEmailVerification(clientAuth.currentUser);
   }
+}
+
+export async function sendPasswordReset(
+  email: string,
+  setEmailSent: Dispatch<SetStateAction<boolean>>
+) {
+  const clientAuth = getAuth();
+  await sendPasswordResetEmail(clientAuth, email);
+  setEmailSent(true);
 }
 
 export async function getFirestoreUserCollection([collectionAddress, user]: [
