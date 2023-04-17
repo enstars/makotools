@@ -32,16 +32,19 @@ import NoBitches from "./NoBitches.png";
 import useUser from "services/firebase/user";
 import { parseStringify } from "services/utilities";
 import { FIRESTORE_MAXIMUM_WHERE_VALUES } from "services/firebase/firestore";
-import { UserData, UserLoggedIn } from "types/makotools";
+import { UserData } from "types/makotools";
 
 function Requests() {
   const { t } = useTranslation("settings");
   const theme = useMantineTheme();
   const user = useUser();
-  const yourBitches: string[] | undefined = (user as UserLoggedIn).privateDb
-    ?.friends__list;
-  const thirstyBitches: string[] | undefined = (user as UserLoggedIn).privateDb
-    ?.friends__receivedRequests;
+
+  const yourBitches: string[] | undefined = user.loggedIn
+    ? user.privateDb?.friends__list || []
+    : [];
+  const thirstyBitches: string[] | undefined = user.loggedIn
+    ? user.privateDb?.friends__receivedRequests || []
+    : [];
   // only load profiles needed on this page
   const { data: profiles = {}, isLoading } = useSWR(
     user.loggedIn ? "/settings/friends/Requests" : null,

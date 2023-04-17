@@ -32,7 +32,7 @@ import {
 } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCard, Event, GameUnit, Scout } from "types/game";
-import { QuerySuccess, UserLoggedIn } from "types/makotools";
+import { QuerySuccess } from "types/makotools";
 import { CardCard } from "components/core/CardCard";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 import { useCollections } from "services/makotools/collection";
@@ -59,7 +59,7 @@ function Page({
   const [newCollectionModalOpened, setNewCollectionModalOpened] =
     useState<boolean>(false);
   const [bookmarks, handlers] = useListState<number>(
-    (user as UserLoggedIn).db.bookmarks__events || []
+    user.loggedIn ? user.db.bookmarks__events || [] : []
   );
 
   cards = cards.filter((card) => {

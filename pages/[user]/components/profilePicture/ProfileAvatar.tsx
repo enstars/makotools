@@ -5,7 +5,6 @@ import { EditingProfile } from "../customization/EditProfileModal";
 
 import { getAssetURL } from "services/data";
 import useUser from "services/firebase/user";
-import { UserLoggedIn } from "types/makotools";
 
 /** Type defining the width, height, x-coordinate, and y-coordinate of a crop
  * @param {number} x - x-coordinate
@@ -37,7 +36,9 @@ function ProfileAvatar({
   const theme = useMantineTheme();
   const user = useUser();
 
-  const profile = userInfo || (user as UserLoggedIn).db;
+  const profile = userInfo || (user.loggedIn ? user.db : undefined);
+
+  if (profile === undefined) return null;
 
   const src =
     profile.profile__picture &&

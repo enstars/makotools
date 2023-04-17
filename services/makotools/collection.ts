@@ -2,7 +2,7 @@ import { clamp, remove } from "lodash";
 import useSWR from "swr";
 import { doc, getFirestore, setDoc } from "firebase/firestore";
 
-import { CardCollection, UserLoggedIn } from "types/makotools";
+import { CardCollection } from "types/makotools";
 import { ID } from "types/game";
 import { MAX_CARD_COPIES } from "services/game";
 import { generateUUID, getTimestamp } from "services/utilities";
@@ -93,6 +93,7 @@ export function useCollections() {
     cardId: ID;
     numCopies: number;
   }) => {
+    if (!user.loggedIn) throw new Error("User not logged in");
     const collectionToUpdate = collections!.find(
       (collection) => collection.id === collectionId
     );
@@ -106,12 +107,7 @@ export function useCollections() {
     });
     const db = getFirestore();
     await setDoc(
-      doc(
-        db,
-        `users/${(user as UserLoggedIn).user.id}/card_collections/${
-          newCollection.id
-        }`
-      ),
+      doc(db, `users/${user.user.id}/card_collections/${newCollection.id}`),
       newCollection,
       { merge: true }
     );
@@ -123,6 +119,7 @@ export function useCollections() {
     privacyLevel,
     icon,
   }: Pick<CardCollection, "name" | "privacyLevel" | "icon">) => {
+    if (!user.loggedIn) throw new Error("User not logged in");
     const newCollection = createNewCollectionObject({
       name,
       order: collections!.length,
@@ -131,12 +128,7 @@ export function useCollections() {
     });
     const db = getFirestore();
     await setDoc(
-      doc(
-        db,
-        `users/${(user as UserLoggedIn).user.id}/card_collections/${
-          newCollection.id
-        }`
-      ),
+      doc(db, `users/${user.user.id}/card_collections/${newCollection.id}`),
       newCollection
     );
     mutateCollections();

@@ -30,7 +30,7 @@ import PageTitle from "components/sections/PageTitle";
 import { getLocalizedDataArray } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCard, GameCharacter, Scout } from "types/game";
-import { QuerySuccess, UserLoggedIn } from "types/makotools";
+import { QuerySuccess } from "types/makotools";
 import { useDayjs } from "services/libraries/dayjs";
 import useFSSList from "services/makotools/search";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
@@ -113,7 +113,7 @@ function Page({
 
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
   const [bookmarks, handlers] = useListState<number>(
-    (user as UserLoggedIn).db.bookmarks__scouts || []
+    user.loggedIn ? user.db.bookmarks__scouts || [] : []
   );
 
   useEffect(() => {
@@ -121,7 +121,7 @@ function Page({
       user.db.set({
         bookmarks__scouts: bookmarks,
       });
-  }, [bookmarks]);
+  }, [user, bookmarks]);
 
   return (
     <>

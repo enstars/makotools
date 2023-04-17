@@ -31,7 +31,7 @@ import PageTitle from "components/sections/PageTitle";
 import { getLocalizedDataArray } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCard, GameCharacter, Event, GameUnit } from "types/game";
-import { QuerySuccess, UserLoggedIn } from "types/makotools";
+import { QuerySuccess } from "types/makotools";
 import useFSSList from "services/makotools/search";
 import useUser from "services/firebase/user";
 
@@ -130,7 +130,7 @@ function Page({
     typeof defaultView.filters
   >(events, fssOptions);
   const [bookmarks, handlers] = useListState<number>(
-    (user as UserLoggedIn).db.bookmarks__events || []
+    user.loggedIn ? user.db.bookmarks__events || [] : []
   );
 
   let characterIDtoSort: { [key: number]: number } = {};

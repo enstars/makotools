@@ -34,7 +34,7 @@ import { getLayout } from "components/Layout";
 import { getLocalizedDataArray } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { Event, EventType, ID, Scout, ScoutType } from "types/game";
-import { QuerySuccess, UserLoggedIn } from "types/makotools";
+import { QuerySuccess } from "types/makotools";
 import PageTitle from "components/sections/PageTitle";
 import useUser from "services/firebase/user";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
@@ -155,11 +155,12 @@ function Page({
 
   const events: Event[] = useMemo(() => eventsQuery.data, [eventsQuery.data]);
   const scouts: Scout[] = useMemo(() => scoutsQuery.data, [scoutsQuery.data]);
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
-  const bookmarkedEvents: ID[] =
-    (user as UserLoggedIn).db.bookmarks__events || [];
-  const bookmarkedScouts: ID[] =
-    (user as UserLoggedIn).db.bookmarks__scouts || [];
+  if (!user.loggedIn) return <div>Loading...</div>;
+
+  const bookmarkedEvents: ID[] = user.db.bookmarks__events || [];
+  const bookmarkedScouts: ID[] = user.db.bookmarks__scouts || [];
 
   const filteredEvents = events.filter((ev) =>
     bookmarkedEvents.includes(ev.event_id)
@@ -169,8 +170,6 @@ function Page({
   );
 
   const bookmarkedCampaigns = [...filteredEvents, ...filteredScouts];
-
-  const isMobile = useMediaQuery("(max-width: 768px)");
 
   interface BookmarkViewOptions {
     filterType: (EventType | ScoutType)[];
