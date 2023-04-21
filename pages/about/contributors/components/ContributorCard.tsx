@@ -1,12 +1,4 @@
-import {
-  Box,
-  BoxProps,
-  Button,
-  Card,
-  createStyles,
-  Divider,
-} from "@mantine/core";
-import { useState } from "react";
+import { Card, createStyles, Divider } from "@mantine/core";
 
 const useStyles = createStyles((theme, params: any, getRef) => ({
   // card: {
@@ -171,20 +163,10 @@ function ContributorCard({ contributor }: { contributor: any }) {
         p="lg"
         radius="md"
         withBorder
-        className={cx(
-          classes.contributor,
-          contributor.translation && classes.translation,
-          contributor.data && classes.data,
-          contributor.design && classes.design,
-          contributor.dev && classes.dev,
-          contributor.admin && classes.admin
-        )}
         key={contributor.name + contributor.makotools}
       >
         {/* <Card.Section> */}
-        <section
-          className={cx(classes.contributorInfoSection, classes.personalInfo)}
-        >
+        <section>
           <h3 className={cx(classes.contributorInfo, classes.name)}>
             {contributor.name === "Sei"
               ? `${contributor.name}, Keito Eater`.toUpperCase()
