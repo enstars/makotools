@@ -132,14 +132,13 @@ export async function getFirestoreUserCollection([collectionAddress, user]: [
   const db = getFirestore();
 
   const profileUID = collectionAddress.split("/")[1];
-  // const accessiblePrivacyLevel = user.loggedIn
-  //   ? user.user.id === profileUID
-  //     ? 3
-  //     : user.privateDb.friends__list?.includes(profileUID)
-  //     ? 2
-  //     : 1
-  //   : 0;
-  const accessiblePrivacyLevel = 0;
+  const accessiblePrivacyLevel = user.loggedIn
+    ? user.user.id === profileUID
+      ? 3
+      : user.privateDb.friends__list?.includes(profileUID)
+      ? 2
+      : 1
+    : 0;
 
   let querySnap,
     userCollection: CardCollection[] = [];
