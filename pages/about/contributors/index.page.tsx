@@ -1,4 +1,5 @@
 import { createStyles } from "@mantine/core";
+import { useState } from "react";
 
 import ContributorCard from "./components/ContributorCard";
 
@@ -6,6 +7,9 @@ import * as contributors from "data/contributors.json";
 import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
+import useUser from "services/firebase/user";
+import { UserData } from "types/makotools";
+import getServerSideUser from "services/firebase/getServerSideUser";
 
 const useStyles = createStyles((theme, params: any, getRef) => ({
   contributors: {
@@ -16,13 +20,24 @@ const useStyles = createStyles((theme, params: any, getRef) => ({
   },
 }));
 
-function Page() {
-  console.log(contributors);
+function Page({
+  profiles,
+}: {
+  profiles: {
+    [uid: string]: UserData["profile__banner" | "profile__picture"];
+  };
+}) {
+  console.log(contributors, profiles);
   const { classes, cx } = useStyles({});
+  const user = useUser();
+
+  const [loadedProfiles, setLoadedProfiles] = useState<{
+    [uid: string]: UserData;
+  }>({});
+
   return (
     <>
       <PageTitle title="Contributors" />
-      keito
       <ResponsiveGrid alignItems="stretch" className={classes.contributors}>
         {contributors.map((contributor) => {
           return (
@@ -37,5 +52,41 @@ function Page() {
   );
 }
 
-Page.getLayout = getLayout({});
+export const getServerSideProps = getServerSideUser(async ({ admin }) => {
+  const db = admin.firestore();
+  const docCollection = db.collection("users");
+
+  let neededProfiles = contributors.map((c) => c.makotools.replace("@", ""));
+  let profiles: any = {};
+  let i = 0;
+  while (i < neededProfiles.length) {
+    const querySnap = await docCollection
+      .where(
+        "username",
+        "in",
+        i + 10 < neededProfiles.length
+          ? neededProfiles.slice(i, i + 10)
+          : neededProfiles.slice(i, neededProfiles.length)
+      )
+      .get();
+    if (!querySnap.empty) {
+      querySnap.forEach((doc) => {
+        const data = doc.data() as UserData;
+        profiles[doc.id] = {
+          profile__banner: data.profile__banner || null,
+          profile__picture: data.profile__picture || null,
+        };
+      });
+    }
+    i += 10;
+  }
+
+  return {
+    props: { profiles },
+  };
+});
+
+Page.getLayout = getLayout({
+  wide: true,
+});
 export default Page;

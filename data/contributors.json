@@ -30,7 +30,7 @@
     "translation": true,
     "lang": "Thai",
     "makotools": "@mako",
-    "credit": "github.com/kamishirorui"
+    "credit": "github.com/kagiura"
   },
   {
     "name": "son",
@@ -667,17 +667,6 @@
     "data": false,
     "translation": true,
     "lang": "Portuguese (Brazil)",
-    "makotools": "",
-    "credit": ""
-  },
-  {
-    "name": "yuu",
-    "admin": false,
-    "dev": false,
-    "design": false,
-    "data": false,
-    "translation": true,
-    "lang": "Thai",
     "makotools": "",
     "credit": ""
   },
