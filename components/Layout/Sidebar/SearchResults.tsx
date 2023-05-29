@@ -97,7 +97,11 @@ function SearchResults({
               result["data-tl__en__title"] ||
               result["data__en__name"] ||
               result["data-tl__en__name"] ||
-              `${result["data-tl__en__first_name"]} ${result["data-tl__en__last_name"]}`
+              `${result["data-tl__en__first_name"]}${
+                result["data-tl__en__last_name"]
+                  ? ` ${result["data-tl__en__last_name"]}`
+                  : ""
+              }`
             }
             onClick={() => {
               setSearchValue("");
