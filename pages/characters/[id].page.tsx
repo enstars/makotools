@@ -9,6 +9,9 @@ import {
   Image,
   Stack,
   Divider,
+  Accordion,
+  Tooltip,
+  ActionIcon,
 } from "@mantine/core";
 import Confetti from "react-confetti";
 import { IconCake } from "@tabler/icons-react";
@@ -27,13 +30,15 @@ import { useDayjs } from "services/libraries/dayjs";
 import { GameCharacter } from "types/game";
 import { getNameOrder } from "services/game";
 import Picture from "components/core/Picture";
+import { circleKeyToName } from "data/circleKeyToName";
+import { hexToHSL } from "services/utilities";
 
 function CharacterMiniInfo({
   label,
   info,
 }: {
   label: string;
-  info: string | number;
+  info: string | number | JSX.Element;
 }) {
   return (
     <Group>
@@ -79,18 +84,20 @@ function CharacterMiniInfo({
 
 function Page({
   characterQuery,
+  charactersQuery,
 }: {
   characterQuery: QuerySuccess<GameCharacter>;
+  charactersQuery: QuerySuccess<GameCharacter[]>;
 }) {
   const theme = useMantineTheme();
   const { dayjs } = useDayjs();
   const { data: character } = characterQuery;
+  const { data: characters } = charactersQuery;
   if (character.character_id === 74)
     console.log("oh my god niki shiina from ensemble stars");
   if (character.character_id === 13)
     console.log("no way it's makoto yuuki from makotools");
 
-  console.log(character);
   return (
     <>
       {dayjs(character.birthday).year(new Date().getFullYear()).isToday() && (
@@ -112,6 +119,7 @@ function Page({
       )}
 
       <Box
+        id="chara-summary-container"
         pos="relative"
         sx={{
           width: "100%",
@@ -123,13 +131,13 @@ function Page({
           id="chara-title-info"
           pos="absolute"
           sx={{
-            zIndex: 3,
+            zIndex: 2,
           }}
         >
           <Title
             order={1}
             sx={{
-              fontSize: "8rem",
+              fontSize: "6rem",
               lineHeight: 1,
             }}
           >
@@ -149,7 +157,8 @@ function Page({
             size="h2"
             sx={{
               marginTop: "4%",
-              maxWidth: "67%",
+              width: "33%",
+              maxWidth: "33%",
               display: "flex",
               gap: "25px",
               alignItems: "flex-start",
@@ -170,14 +179,14 @@ function Page({
           pos="absolute"
           sx={{
             width: "100%",
-            zIndex: 1,
+            zIndex: 3,
           }}
         >
           <Box
             sx={{
-              margin: "auto",
-              marginTop: "100px",
-              width: "800px",
+              marginLeft: "10%",
+              marginTop: "50px",
+              width: "700px",
             }}
           >
             <Picture
@@ -185,15 +194,15 @@ function Page({
               transparent
               alt={character.first_name[0]}
               fill={false}
-              width={800}
-              height={800}
+              width={700}
+              height={700}
             />
           </Box>
         </Box>
         <Box
           id="chara-info-summary"
           pos="absolute"
-          top="25%"
+          top="15%"
           right="5%"
           sx={{ zIndex: 3 }}
         >
@@ -203,7 +212,7 @@ function Page({
             radius="md"
             sx={{
               borderTop: `6px solid ${character.image_color}`,
-              width: "20vw",
+              width: "33vw",
             }}
           >
             <Group
@@ -211,7 +220,7 @@ function Page({
                 justifyContent: "space-between",
               }}
             >
-              <Title order={4} size="h3">
+              <Title order={3} size="h3">
                 Profile
               </Title>
               {character.unit.map((unit) => (
@@ -239,7 +248,7 @@ function Page({
               />
               <CharacterMiniInfo
                 label="Birthday"
-                info={dayjs(character.birthday).format("MMMM DD")}
+                info={`${dayjs(character.birthday).format("MMMM D")}`}
               />
               <CharacterMiniInfo
                 label="Blood type"
@@ -250,69 +259,206 @@ function Page({
                 info={character.specialty ? character.specialty[0] : "--"}
                 label="Specialty"
               />
+              <CharacterMiniInfo
+                info={
+                  character.image_color ? (
+                    <Group align="center" spacing="xs">
+                      <Box
+                        sx={{
+                          width: 20,
+                          height: 20,
+                          backgroundColor: character.image_color,
+                          borderRadius: 4,
+                          boxShadow: theme.shadows.xs,
+                        }}
+                      />
+                      <Text>{character.image_color.toUpperCase()}</Text>
+                    </Group>
+                  ) : (
+                    "--"
+                  )
+                }
+                label="Image color"
+              />
             </Stack>
           </Paper>
+          {/* <Box
+            pos="absolute"
+            sx={{
+              bottom: 0,
+            }}
+          >
+            <Box
+              sx={{
+                backgroundColor: character.image_color,
+                color: "white",
+              }}
+            >
+              <Stack align="center" spacing="xs">
+                <IconStar size={40} />
+                Circles
+              </Stack>
+            </Box>
+          </Box> */}
         </Box>
-      </Box>
-
-      {/* <PageTitle
-        title={
-          <>
-            <ruby>
-              {character.first_name[0]}
-              {character.first_nameRuby?.[0] && (
-                <>
-                  <rp> (</rp>
-                  <Text component="rt">{character.first_nameRuby[0]}</Text>
-                  <rp>)</rp>
-                </>
-              )}
-            </ruby>{" "}
-            <ruby>
-              {character.last_name[0]}
-
-              {character.last_nameRuby?.[0] && (
-                <>
-                  <rp> (</rp>
-                  <Text component="rt">{character.last_nameRuby[0]}</Text>
-                  <rp>)</rp>
-                </>
-              )}
-            </ruby>
-          </>
-        }
-        space={192}
-      >
         <Box
-          sx={{
-            position: "absolute",
-            paddingTop: 16,
-            width: "100%",
-            display: "flex",
-            justifyContent: "flex-end",
-            zIndex: 5,
-            mask: "linear-gradient(185deg, #000F 190px, #0000 245px)",
-            background: `linear-gradient(205deg, ${character.image_color}44, transparent 205px)`,
-            borderRadius: 16,
-          }}
+          id="chara-bg"
+          pos="absolute"
+          sx={{ zIndex: 1, width: "100%", height: "100vh" }}
         >
-          <Picture
-            srcB2={`render/character_full1_${character.character_id}.png`}
-            transparent
-            alt={character.first_name[0]}
-            fill={false}
-            width={300}
-            height={600}
+          <Box
+            sx={{
+              width: "44vw",
+              height: "44vw",
+              margin: "auto",
+              marginTop: "-12.2vw",
+              borderRadius: 120,
+              border: `2px solid ${character.image_color}22`,
+              transform: "rotate(45deg)",
+            }}
+          />
+          <Box
+            sx={{
+              width: "44vw",
+              height: "44vw",
+              margin: "auto",
+              marginTop: "-22vw",
+              borderRadius: 120,
+              backgroundColor: `${character.image_color}22`,
+              transform: "rotate(45deg)",
+            }}
           />
         </Box>
-      </PageTitle>
-      <Text>{character.introduction[0]}</Text> */}
-      <Box
-        sx={{
-          marginTop: "100vh",
-        }}
-      >
-        <Reactions />
+      </Box>
+      <Reactions />
+      <Box sx={{ width: "95%", margin: "20vh auto 0 auto" }}>
+        <Title order={4} size="h2">
+          Introduction
+        </Title>
+        <Text
+          component="p"
+          sx={{
+            display: "flex",
+            gap: 10,
+            alignItems: "flex-start",
+            "&:before": {
+              content: "'“'",
+              fontSize: "4.5rem",
+              fontFamily: "'Sora', sans serif",
+              color: `${character.image_color}de`,
+            },
+          }}
+        >
+          {character.introduction[0]}
+        </Text>
+
+        <Title order={4} size="h2" sx={{ marginTop: "10vh" }}>
+          Circles
+        </Title>
+        <Group grow align="flex-start" sx={{ marginTop: "5vh" }}>
+          {character.circle?.map((circle) => {
+            const circleMembers = characters.filter((chara) =>
+              chara.circle?.includes(circle)
+            );
+            const hsl = hexToHSL(character.image_color as string);
+            console.log(hsl);
+            return (
+              <Accordion key={circle} variant="contained">
+                <Accordion.Item
+                  value={circle}
+                  sx={{
+                    border: "none",
+                    borderRadius: "20px !important",
+                    padding: "0 !important",
+                  }}
+                >
+                  <Accordion.Control
+                    sx={{
+                      alignItems: "flex-start",
+                      borderRadius: "20px !important",
+                      transition: "background-color 0.2s",
+                      boxShadow: theme.shadows.xs,
+                      backgroundColor:
+                        (theme.colorScheme === "light" &&
+                          hsl.l < 75 &&
+                          (hsl.h < 51 || hsl.h > 60)) ||
+                        (theme.colorScheme === "light" &&
+                          hsl.h >= 51 &&
+                          hsl.h <= 60 &&
+                          hsl.l < 40)
+                          ? character.image_color
+                          : `hsla(${
+                              hsl.h - 5 < 0 ? 360 - (hsl.h - 5) : hsl.h - 5
+                            }, ${hsl.s - 5}%, ${hsl.l - 5}%, ${
+                              theme.colorScheme === "light" ? 1 : 0.7
+                            })`,
+                      color:
+                        theme.colorScheme == "dark" ||
+                        (theme.colorScheme === "light" &&
+                          hsl.l < 75 &&
+                          (hsl.h < 51 || hsl.h > 60)) ||
+                        (theme.colorScheme === "light" &&
+                          hsl.h >= 51 &&
+                          hsl.h <= 60 &&
+                          hsl.l < 40)
+                          ? "#fff"
+                          : `hsl(${
+                              hsl.h - 6 < 0 ? 360 - (hsl.h - 6) : hsl.h - 6
+                            }, ${hsl.s - 10}%, ${
+                              hsl.l - 45 < 20 ? 20 : hsl.l - 45
+                            }%)`,
+                    }}
+                  >
+                    <Stack>
+                      <Title order={5} size="h3">
+                        {circleKeyToName[
+                          circle as keyof typeof circleKeyToName
+                        ] ?? circle}
+                      </Title>
+                      <Group
+                        sx={{
+                          width: "100%",
+                        }}
+                      >
+                        {circleMembers.map((member) => (
+                          <Tooltip
+                            key={member.character_id}
+                            label={`${member.first_name[0]}${
+                              member.last_name[0]
+                                ? ` ${member.last_name[0]}`
+                                : ""
+                            }`}
+                          >
+                            <ActionIcon
+                              component="a"
+                              href={`/characters/${member.character_id}`}
+                              variant="default"
+                              size={50}
+                              radius={25}
+                              sx={{ background: "none", border: "none" }}
+                            >
+                              <Picture
+                                transparent
+                                srcB2={`assets/character_sd_square1_${member.character_id}.png`}
+                                alt={member.first_name[0]}
+                                fill={false}
+                                width={50}
+                                height={50}
+                                sx={{
+                                  pointerEvents: "none",
+                                }}
+                              />
+                            </ActionIcon>
+                          </Tooltip>
+                        ))}
+                      </Group>
+                    </Stack>
+                  </Accordion.Control>
+                </Accordion.Item>
+              </Accordion>
+            );
+          })}
+        </Group>
       </Box>
     </>
   );
@@ -375,6 +521,7 @@ export const getServerSideProps = getServerSideUser(
     return {
       props: {
         characterQuery: character,
+        charactersQuery: characters,
         breadcrumbs,
       },
     };
