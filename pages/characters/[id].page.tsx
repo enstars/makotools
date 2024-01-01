@@ -9,7 +9,6 @@ import {
   Image,
   Stack,
   Divider,
-  Accordion,
   Tooltip,
   ActionIcon,
 } from "@mantine/core";
@@ -363,99 +362,91 @@ function Page({
             const hsl = hexToHSL(character.image_color as string);
             console.log(hsl);
             return (
-              <Accordion key={circle} variant="contained">
-                <Accordion.Item
-                  value={circle}
+              <Stack
+                key={circle}
+                sx={{ boxShadow: theme.shadows.sm, borderRadius: 20, gap: 0 }}
+              >
+                <Box
                   sx={{
-                    border: "none",
-                    borderRadius: "20px !important",
-                    padding: "0 !important",
+                    borderRadius: "20px 20px 0px 0px",
+                    padding: "12px 18px",
+                    backgroundColor:
+                      (theme.colorScheme === "light" &&
+                        hsl.l < 75 &&
+                        (hsl.h < 51 || hsl.h > 60)) ||
+                      (theme.colorScheme === "light" &&
+                        hsl.h >= 51 &&
+                        hsl.h <= 60 &&
+                        hsl.l < 40)
+                        ? character.image_color
+                        : `hsla(${
+                            hsl.h - 5 < 0 ? 360 - (hsl.h - 5) : hsl.h - 5
+                          }, ${hsl.s - 5}%, ${hsl.l - 5}%, ${
+                            theme.colorScheme === "light" ? 1 : 0.7
+                          })`,
+                    color:
+                      theme.colorScheme == "dark" ||
+                      (theme.colorScheme === "light" &&
+                        hsl.l < 75 &&
+                        (hsl.h < 51 || hsl.h > 60)) ||
+                      (theme.colorScheme === "light" &&
+                        hsl.h >= 51 &&
+                        hsl.h <= 60 &&
+                        hsl.l < 40)
+                        ? "#fff"
+                        : `hsl(${
+                            hsl.h - 6 < 0 ? 360 - (hsl.h - 6) : hsl.h - 6
+                          }, ${hsl.s - 10}%, ${
+                            hsl.l - 45 < 20 ? 20 : hsl.l - 45
+                          }%)`,
                   }}
                 >
-                  <Accordion.Control
-                    sx={{
-                      alignItems: "flex-start",
-                      borderRadius: "20px !important",
-                      transition: "background-color 0.2s",
-                      boxShadow: theme.shadows.xs,
-                      backgroundColor:
-                        (theme.colorScheme === "light" &&
-                          hsl.l < 75 &&
-                          (hsl.h < 51 || hsl.h > 60)) ||
-                        (theme.colorScheme === "light" &&
-                          hsl.h >= 51 &&
-                          hsl.h <= 60 &&
-                          hsl.l < 40)
-                          ? character.image_color
-                          : `hsla(${
-                              hsl.h - 5 < 0 ? 360 - (hsl.h - 5) : hsl.h - 5
-                            }, ${hsl.s - 5}%, ${hsl.l - 5}%, ${
-                              theme.colorScheme === "light" ? 1 : 0.7
-                            })`,
-                      color:
-                        theme.colorScheme == "dark" ||
-                        (theme.colorScheme === "light" &&
-                          hsl.l < 75 &&
-                          (hsl.h < 51 || hsl.h > 60)) ||
-                        (theme.colorScheme === "light" &&
-                          hsl.h >= 51 &&
-                          hsl.h <= 60 &&
-                          hsl.l < 40)
-                          ? "#fff"
-                          : `hsl(${
-                              hsl.h - 6 < 0 ? 360 - (hsl.h - 6) : hsl.h - 6
-                            }, ${hsl.s - 10}%, ${
-                              hsl.l - 45 < 20 ? 20 : hsl.l - 45
-                            }%)`,
-                    }}
-                  >
-                    <Stack>
-                      <Title order={5} size="h3">
-                        {circleKeyToName[
-                          circle as keyof typeof circleKeyToName
-                        ] ?? circle}
-                      </Title>
-                      <Group
-                        sx={{
-                          width: "100%",
-                        }}
+                  <Title order={5} size="h3">
+                    {circleKeyToName[circle as keyof typeof circleKeyToName] ??
+                      circle}
+                  </Title>
+                </Box>
+                <Group
+                  align="center"
+                  sx={{
+                    padding: 12,
+                    backgroundColor: `${character.image_color}11`,
+                    justifyContent: "space-around",
+                    width: "100%",
+                    borderRadius: "0px 0px 20px 20px",
+                  }}
+                >
+                  {circleMembers.map((member) => (
+                    <Tooltip
+                      key={member.character_id}
+                      label={`${member.first_name[0]}${
+                        member.last_name[0] ? ` ${member.last_name[0]}` : ""
+                      }`}
+                    >
+                      <ActionIcon
+                        component="a"
+                        href={`/characters/${member.character_id}`}
+                        variant="default"
+                        size={50}
+                        radius={25}
+                        sx={{ background: "none", border: "none" }}
                       >
-                        {circleMembers.map((member) => (
-                          <Tooltip
-                            key={member.character_id}
-                            label={`${member.first_name[0]}${
-                              member.last_name[0]
-                                ? ` ${member.last_name[0]}`
-                                : ""
-                            }`}
-                          >
-                            <ActionIcon
-                              component="a"
-                              href={`/characters/${member.character_id}`}
-                              variant="default"
-                              size={50}
-                              radius={25}
-                              sx={{ background: "none", border: "none" }}
-                            >
-                              <Picture
-                                transparent
-                                srcB2={`assets/character_sd_square1_${member.character_id}.png`}
-                                alt={member.first_name[0]}
-                                fill={false}
-                                width={50}
-                                height={50}
-                                sx={{
-                                  pointerEvents: "none",
-                                }}
-                              />
-                            </ActionIcon>
-                          </Tooltip>
-                        ))}
-                      </Group>
-                    </Stack>
-                  </Accordion.Control>
-                </Accordion.Item>
-              </Accordion>
+                        <Picture
+                          transparent
+                          srcB2={`assets/character_sd_square1_${member.character_id}.png`}
+                          alt={member.first_name[0]}
+                          fill={false}
+                          width={50}
+                          height={50}
+                          sx={{
+                            pointerEvents: "none",
+                          }}
+                        />
+                      </ActionIcon>
+                    </Tooltip>
+                  ))}
+                </Group>
+              </Stack>
             );
           })}
         </Group>
