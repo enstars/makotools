@@ -206,7 +206,7 @@ function CardsSection({
       >
         Cards
       </Title>
-      <Accordion variant="separated">
+      <Accordion variant="separated" defaultValue="5">
         {[5, 4, 3, 2, 1].map((rarity) => {
           const rarityCards = cards.filter((card) => card.rarity === rarity);
           return (
@@ -218,19 +218,27 @@ function CardsSection({
                   border: "none",
                   boxShadow: theme.shadows.xs,
                   overflow: "hidden",
+                  transform: "scale(0.92)",
+                  transition: "transform 250ms ease",
+
+                  "&[data-active]": {
+                    boxShadow: theme.shadows.sm,
+                  },
                 }}
               >
                 <Accordion.Control
                   sx={{
-                    backgroundColor: bgColor,
-                    color: textColor,
+                    "&[data-active]": {
+                      backgroundColor: bgColor,
+                      color: textColor,
+                    },
                   }}
+                  icon={<IconStar />}
                 >
                   <Group spacing="xs">
                     <Title order={5} size="h3">
                       {rarity}
                     </Title>
-                    <IconStar />
                   </Group>
                 </Accordion.Control>
 
