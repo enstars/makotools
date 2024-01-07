@@ -1,5 +1,7 @@
 import { Dayjs } from "dayjs";
 
+import { Event, Scout } from "types/game";
+
 function parseStringify(object: any) {
   try {
     return JSON.parse(JSON.stringify(object));
@@ -107,6 +109,21 @@ function getTimestamp(date: Dayjs) {
   return date.toISOString();
 }
 
+function isGameEvent(event: Event | Scout): event is Event {
+  return (
+    (event as Event).type === "song" ||
+    (event as Event).type === "tour" ||
+    (event as Event).type === "shuffle"
+  );
+}
+
+function isScoutEvent(event: Event | Scout): event is Scout {
+  return (
+    (event as Scout).type === "feature scout" ||
+    (event as Scout).type === "scout"
+  );
+}
+
 export {
   parseStringify,
   generateUUID,
@@ -114,4 +131,6 @@ export {
   getTimestamp,
   hexToHSL,
   HSLToHex,
+  isGameEvent,
+  isScoutEvent,
 };

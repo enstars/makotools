@@ -15,7 +15,9 @@ import {
 } from "@mantine/core";
 import Confetti from "react-confetti";
 import { IconCake, IconStar } from "@tabler/icons-react";
-import { Fragment, useState } from "react";
+import { Fragment, createRef, useEffect, useState } from "react";
+
+import CharacterCard from "./components/CharacterCard";
 
 import Reactions from "components/sections/Reactions";
 import { getLayout } from "components/Layout";
@@ -28,11 +30,11 @@ import {
   getAssetURL,
 } from "services/data";
 import { useDayjs } from "services/libraries/dayjs";
-import { GameCard, GameCharacter } from "types/game";
+import { GameCard, GameCharacter, Event, Scout, GameUnit } from "types/game";
 import { getNameOrder } from "services/game";
 import Picture from "components/core/Picture";
 import { circleKeyToName } from "data/circleKeyToName";
-import { hexToHSL } from "services/utilities";
+import { hexToHSL, isGameEvent } from "services/utilities";
 import { CardCard } from "components/core/CardCard";
 import { useCollections } from "services/makotools/collection";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
@@ -218,11 +220,11 @@ function CardsSection({
                   border: "none",
                   boxShadow: theme.shadows.xs,
                   overflow: "hidden",
-                  transform: "scale(0.92)",
                   transition: "transform 250ms ease",
 
                   "&[data-active]": {
                     boxShadow: theme.shadows.sm,
+                    transform: "scale(1.02)",
                   },
                 }}
               >
@@ -268,6 +270,257 @@ function CardsSection({
           );
         })}
       </Accordion>
+    </Box>
+  );
+}
+
+function EventScoutCard({
+  event,
+  card,
+  baseColor,
+}: {
+  event: Event | Scout;
+  card: GameCard;
+  baseColor: string;
+}) {
+  const [summaryHeight, setSummaryHeight] = useState(4);
+  const summaryRef = createRef<HTMLParagraphElement>();
+
+  useEffect(() => {
+    if (summaryRef.current)
+      setSummaryHeight(summaryRef.current.clientHeight + 20);
+  }, [summaryRef]);
+
+  const cardRarityStars = new Array(card.rarity);
+  for (let i = 0; i < cardRarityStars.length; i++) {
+    cardRarityStars[i] = i + 1;
+  }
+  return (
+    <Paper
+      component="a"
+      href={`/${isGameEvent(event) ? "events" : "scouts"}/${
+        isGameEvent(event) ? event.event_id : event.gacha_id
+      }`}
+      shadow="xs"
+      sx={{
+        position: "relative",
+        width: 325,
+        height: 150,
+        overflow: "hidden",
+        transition: "transform 0.2s ease",
+        "&:hover": {
+          transform: "scale(1.05)",
+
+          "& .rarity-stars": {
+            transform: "translateX(-200px)",
+          },
+
+          "& .summary": {
+            transform: isGameEvent(event) ? "translateY(10px)" : undefined,
+          },
+
+          "& .event-card-bg": {
+            background: isGameEvent(event) ? "#000000dd" : undefined,
+          },
+        },
+      }}
+    >
+      {/* <Box
+        sx={{
+          position: "absolute",
+          textAlign: "center",
+          fontWeight: "bold",
+          top: 5,
+          right: 10,
+          zIndex: 4,
+          width: 60,
+          height: 60,
+          transform: "rotate(-9deg)",
+        }}
+      >
+        <Text
+          fz="md"
+          sx={{ fontFamily: "'Sora', sans serif", color: "white" }}
+        >
+          {dayjs(event.start.en).format("MMM").toLocaleUpperCase()}
+          <br />
+          {dayjs(event.start.en).format("YYYY")}
+        </Text>
+      </Box> */}
+      <Paper
+        className="rarity-stars"
+        shadow="sm"
+        p="xs"
+        sx={{
+          position: "absolute",
+          top: 10,
+          left: -20,
+          zIndex: 4,
+          borderTopLeftRadius: 0,
+          borderBottomLeftRadius: 0,
+          transform: "skew(-15deg) translateX(0px)",
+          transition: "transform 0.4s ease",
+        }}
+      >
+        <Group
+          spacing="xs"
+          sx={{
+            paddingLeft: 20,
+            flexDirection: "row-reverse",
+            transform: "skew(15deg)",
+          }}
+        >
+          {cardRarityStars.map((star) => {
+            return (
+              <IconStar
+                size={16}
+                key={star}
+                color={baseColor}
+                fill={baseColor}
+              />
+            );
+          })}
+        </Group>
+      </Paper>
+      <Box
+        className="summary"
+        pos="absolute"
+        sx={{
+          left: 8,
+          bottom: 4,
+          transform: `translateY(${summaryHeight}px)`,
+          transition: "transform 0.4s ease",
+          zIndex: 3,
+        }}
+      >
+        <Title
+          order={5}
+          size="h4"
+          sx={{
+            color: "#fff",
+          }}
+        >
+          {event.name[0]}
+        </Title>
+        {isGameEvent(event) && event.intro_lines && (
+          <Text
+            ref={summaryRef}
+            fz="sm"
+            component="p"
+            sx={{
+              color: "#fff",
+              padding: 3,
+            }}
+          >
+            {event.intro_lines[0]}
+          </Text>
+        )}
+      </Box>
+      <Box
+        className="event-card-bg"
+        sx={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          background: "linear-gradient(transparent, #000000dd)",
+          zIndex: 2,
+          transition: "background 0.2s",
+        }}
+      />
+      <Picture
+        alt={event.name[0]}
+        srcB2={`assets/card_still_full1_${event.banner_id}_evolution.png`}
+        sx={(theme) => ({
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: 325,
+          height: 150,
+        })}
+      />
+    </Paper>
+  );
+}
+
+function EventsScoutsSection({
+  events,
+  cards,
+  character,
+  baseColor,
+  textColor,
+}: {
+  events: Event[] | Scout[];
+  cards: GameCard[];
+  character: GameCharacter;
+  baseColor: string;
+  textColor: string;
+}) {
+  const { dayjs } = useDayjs();
+
+  return (
+    <Box id="events">
+      <Title
+        order={4}
+        size="h2"
+        sx={{
+          margin: "8vh 0px 4vh 0px",
+        }}
+      >
+        {isGameEvent(events[0]) ? "Events" : "Scouts"}
+      </Title>
+      <ResponsiveGrid width={325}>
+        {events.map((event) => {
+          const correspondingCard = cards.filter((card) =>
+            event.cards.includes(card.id)
+          )[0];
+          return (
+            <EventScoutCard
+              key={isGameEvent(event) ? event.event_id : event.gacha_id}
+              event={event}
+              card={correspondingCard}
+              baseColor={baseColor}
+            />
+          );
+        })}
+      </ResponsiveGrid>
+    </Box>
+  );
+}
+
+function UnitSection({
+  characters,
+  character,
+  locale,
+  units,
+}: {
+  characters: GameCharacter[];
+  character: GameCharacter;
+  locale: Lang[];
+  units: GameUnit[];
+}) {
+  const unit = units.filter((u) => character.unit.includes(u.id))[0];
+  const otherMembers = characters.filter((c) => c.unit.includes(unit.id));
+  return (
+    <Box id="unit-info">
+      <Title
+        order={4}
+        size="h2"
+        sx={{
+          margin: "8vh 0px 4vh 0px",
+        }}
+      >
+        {character.first_name[0]} is a member of {unit.name[0]}!
+      </Title>
+      <ResponsiveGrid>
+        {otherMembers.map((member) => (
+          <CharacterCard
+            key={member.character_id}
+            character={member}
+            locale={locale}
+          />
+        ))}
+      </ResponsiveGrid>
+      <Text component="p">{unit.description[0]}</Text>
     </Box>
   );
 }
@@ -358,10 +611,16 @@ function Page({
   characterQuery,
   charactersQuery,
   cardsQuery,
+  eventsQuery,
+  scoutsQuery,
+  unitsQuery,
 }: {
   characterQuery: QuerySuccess<GameCharacter>;
   charactersQuery: QuerySuccess<GameCharacter[]>;
   cardsQuery: QuerySuccess<GameCard[]>;
+  eventsQuery: QuerySuccess<Event[]>;
+  scoutsQuery: QuerySuccess<Scout[]>;
+  unitsQuery: QuerySuccess<GameUnit[]>;
 }) {
   const theme = useMantineTheme();
   const user = useUser();
@@ -369,6 +628,27 @@ function Page({
   const { data: character } = characterQuery;
   const { data: characters } = charactersQuery;
   const { data: cards } = cardsQuery;
+  const { data: events } = eventsQuery;
+  const { data: scouts } = scoutsQuery;
+  const { data: units } = unitsQuery;
+
+  const charaEvents = events.filter((event) => {
+    for (let card of event.cards) {
+      const cardData = cards.filter((c) => c.id === card)[0];
+      if (!cardData) continue;
+      if (cardData.character_id === character.character_id) return true;
+    }
+    return false;
+  });
+
+  const charaScouts = scouts.filter((scout) => {
+    for (let card of scout.cards) {
+      const cardData = cards.filter((c) => c.id === card)[0];
+      if (!cardData) continue;
+      if (cardData.character_id === character.character_id) return true;
+    }
+    return false;
+  });
 
   const charaCards = cards.filter(
     (card) => card.character_id === character.character_id
@@ -386,7 +666,7 @@ function Page({
       hsl.l < 75 &&
       (hsl.h < 51 || hsl.h > 60)) ||
     (theme.colorScheme === "light" && hsl.h >= 51 && hsl.h <= 60 && hsl.l < 40)
-      ? character.image_color
+      ? hexToHSL(character.image_color as string).hsl
       : `hsla(${hsl.h - 2 < 0 ? 360 - (hsl.h - 2) : hsl.h - 2}, ${
           hsl.s - 5
         }%, ${hsl.l - 5}%, ${theme.colorScheme === "light" ? 1 : 0.7})`;
@@ -396,7 +676,7 @@ function Page({
       hsl.l < 75 &&
       (hsl.h < 51 || hsl.h > 60)) ||
     (theme.colorScheme === "light" && hsl.h >= 51 && hsl.h <= 60 && hsl.l < 40)
-      ? character.image_color
+      ? hexToHSL(character.image_color as string).hsl
       : `hsla(${hsl.h - 2 < 0 ? 360 - (hsl.h - 2) : hsl.h - 2}, ${
           hsl.s - 5
         }%, ${hsl.l - 5}%, ${theme.colorScheme === "light" ? 1 : 0.7})`;
@@ -509,6 +789,10 @@ function Page({
               fill={false}
               width={700}
               height={700}
+              style={{
+                userSelect: "none",
+                pointerEvents: "none",
+              }}
             />
           </Box>
         </Box>
@@ -564,6 +848,12 @@ function Page({
         >
           {character.introduction[0]}
         </Text>
+        <UnitSection
+          characters={characters}
+          character={character}
+          locale={characterQuery.lang}
+          units={units}
+        />
         <CirclesSection
           characters={characters}
           character={character}
@@ -576,6 +866,20 @@ function Page({
           bgColor={bgColor as string}
           textColor={textColor}
           lang={cardsQuery.lang}
+        />
+        <EventsScoutsSection
+          events={charaEvents}
+          cards={charaCards}
+          character={character}
+          baseColor={bgColor as string}
+          textColor={textColor}
+        />
+        <EventsScoutsSection
+          events={charaScouts}
+          cards={charaCards}
+          character={character}
+          baseColor={bgColor as string}
+          textColor={textColor}
         />
       </Box>
     </>
@@ -645,11 +949,28 @@ export const getServerSideProps = getServerSideUser(
       "character_id",
     ]);
 
+    const events = await getLocalizedDataArray<Event>(
+      "events",
+      locale,
+      "event_id"
+    );
+
+    const scouts = await getLocalizedDataArray<Scout>(
+      "scouts",
+      locale,
+      "gacha_id"
+    );
+
+    const units = await getLocalizedDataArray<GameUnit>("units", locale, "id");
+
     return {
       props: {
         characterQuery: character,
         charactersQuery: characters,
         cardsQuery: cards,
+        eventsQuery: events,
+        scoutsQuery: scouts,
+        unitsQuery: units,
         breadcrumbs,
       },
     };
