@@ -110,7 +110,13 @@ function CirclesSection({
 
   return (
     <Box id="circles">
-      <Title order={4} size="h2" sx={{ marginTop: "10vh" }}>
+      <Title
+        order={4}
+        size="h2"
+        sx={{
+          margin: "8vh 0px 4vh 0px",
+        }}
+      >
         Circles
       </Title>
       <Box
@@ -301,12 +307,15 @@ function EventScoutCard({
   baseColor: string;
 }) {
   const [summaryHeight, setSummaryHeight] = useState(4);
+  const [nameHeight, setNameHeight] = useState(0);
   const summaryRef = createRef<HTMLParagraphElement>();
+  const nameRef = createRef<HTMLHeadingElement>();
 
   useEffect(() => {
     if (summaryRef.current)
       setSummaryHeight(summaryRef.current.clientHeight + 20);
-  }, [summaryRef]);
+    if (nameRef.current) setNameHeight(nameRef.current.clientHeight);
+  }, [summaryRef, nameRef]);
 
   const cardRarityStars = new Array(card.rarity);
   for (let i = 0; i < cardRarityStars.length; i++) {
@@ -333,7 +342,9 @@ function EventScoutCard({
           },
 
           "& .summary": {
-            transform: isGameEvent(event) ? "translateY(10px)" : undefined,
+            transform: isGameEvent(event)
+              ? `translateY(${summaryHeight - 150}px)`
+              : undefined,
           },
 
           "& .event-card-bg": {
@@ -342,28 +353,6 @@ function EventScoutCard({
         },
       }}
     >
-      {/* <Box
-        sx={{
-          position: "absolute",
-          textAlign: "center",
-          fontWeight: "bold",
-          top: 5,
-          right: 10,
-          zIndex: 4,
-          width: 60,
-          height: 60,
-          transform: "rotate(-9deg)",
-        }}
-      >
-        <Text
-          fz="md"
-          sx={{ fontFamily: "'Sora', sans serif", color: "white" }}
-        >
-          {dayjs(event.start.en).format("MMM").toLocaleUpperCase()}
-          <br />
-          {dayjs(event.start.en).format("YYYY")}
-        </Text>
-      </Box> */}
       <Paper
         className="rarity-stars"
         shadow="sm"
@@ -406,11 +395,12 @@ function EventScoutCard({
           left: 8,
           bottom: 4,
           transform: `translateY(${summaryHeight}px)`,
-          transition: "transform 0.4s ease",
+          transition: "transform 0.5s ease",
           zIndex: 3,
         }}
       >
         <Title
+          ref={nameRef}
           order={5}
           size="h4"
           sx={{
@@ -419,7 +409,7 @@ function EventScoutCard({
         >
           {event.name[0]}
         </Title>
-        {isGameEvent(event) && event.intro_lines && (
+        {isGameEvent(event) && (
           <Text
             ref={summaryRef}
             fz="sm"
@@ -429,7 +419,7 @@ function EventScoutCard({
               padding: 3,
             }}
           >
-            {event.intro_lines[0]}
+            {event.intro_lines ? event.intro_lines[0] : "No summary available."}
           </Text>
         )}
       </Box>
@@ -462,18 +452,12 @@ function EventScoutCard({
 function EventsScoutsSection({
   events,
   cards,
-  character,
   baseColor,
-  textColor,
 }: {
   events: Event[] | Scout[];
   cards: GameCard[];
-  character: GameCharacter;
   baseColor: string;
-  textColor: string;
 }) {
-  const { dayjs } = useDayjs();
-
   return (
     <Box id="events">
       <Title
@@ -515,29 +499,40 @@ function UnitSection({
   locale: Lang[];
   units: GameUnit[];
 }) {
-  const unit = units.filter((u) => character.unit.includes(u.id))[0];
-  const otherMembers = characters.filter((c) => c.unit.includes(unit.id));
+  const charaUnits = units.filter((u) => character.unit.includes(u.id));
+
   return (
     <Box id="unit-info">
-      <Title
-        order={4}
-        size="h2"
-        sx={{
-          margin: "8vh 0px 4vh 0px",
-        }}
-      >
-        {character.first_name[0]} is a member of {unit.name[0]}!
-      </Title>
-      <ResponsiveGrid>
-        {otherMembers.map((member) => (
-          <CharacterCard
-            key={member.character_id}
-            character={member}
-            locale={locale}
-          />
-        ))}
-      </ResponsiveGrid>
-      <Text component="p">{unit.description[0]}</Text>
+      {charaUnits.map((unit, index) => {
+        const otherMembers = characters.filter((c) => c.unit.includes(unit.id));
+        return (
+          <>
+            <Title
+              order={4}
+              size="h2"
+              sx={{
+                margin: "8vh 0px 4vh 0px",
+              }}
+            >
+              {index === 0
+                ? `${character.first_name[0]} is a member of ${unit.name[0]}!`
+                : `${character.first_name[0]} is also a member of ${unit.name[0]}!`}
+            </Title>
+            <ResponsiveGrid
+              width={`${Math.round(100 / otherMembers.length) - 1}%`}
+            >
+              {otherMembers.map((member) => (
+                <CharacterCard
+                  key={member.character_id}
+                  character={member}
+                  locale={locale}
+                />
+              ))}
+            </ResponsiveGrid>
+            <Text component="p">{unit.description[0]}</Text>
+          </>
+        );
+      })}
     </Box>
   );
 }
@@ -893,16 +888,12 @@ function Page({
         <EventsScoutsSection
           events={charaEvents}
           cards={charaCards}
-          character={character}
           baseColor={bgColor as string}
-          textColor={textColor}
         />
         <EventsScoutsSection
           events={charaScouts}
           cards={charaCards}
-          character={character}
           baseColor={bgColor as string}
-          textColor={textColor}
         />
       </Box>
     </>
