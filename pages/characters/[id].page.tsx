@@ -16,6 +16,7 @@ import {
 import Confetti from "react-confetti";
 import { IconCake, IconStar } from "@tabler/icons-react";
 import { Fragment, createRef, useEffect, useState } from "react";
+import { useMediaQuery } from "@mantine/hooks";
 
 import CharacterCard from "./components/CharacterCard";
 
@@ -48,9 +49,11 @@ function CharacterMiniInfo({
   label: string;
   info: string | number | JSX.Element;
 }) {
+  const isMobile = useMediaQuery("(max-width: 812px)");
   return (
     <Group>
       <Text
+        fz={isMobile ? "sm" : "md"}
         sx={(theme) => ({
           fontWeight: "bold",
           paddingLeft: 10,
@@ -80,6 +83,7 @@ function CharacterMiniInfo({
         />
       </Box>
       <Text
+        fz={isMobile ? "sm" : "md"}
         sx={{
           flexBasis: "50%",
         }}
@@ -102,13 +106,21 @@ function CirclesSection({
   textColor: string;
 }) {
   const theme = useMantineTheme();
+  const isMobile = useMediaQuery("(max-width: 812px)");
 
   return (
     <Box id="circles">
       <Title order={4} size="h2" sx={{ marginTop: "10vh" }}>
         Circles
       </Title>
-      <Group grow align="flex-start" sx={{ marginTop: "5vh" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: isMobile ? "column" : "row",
+          alignItems: "center",
+          gap: 16,
+        }}
+      >
         {character.circle?.map((circle) => {
           const circleMembers = characters.filter((chara) =>
             chara.circle?.includes(circle)
@@ -116,7 +128,12 @@ function CirclesSection({
           return (
             <Stack
               key={circle}
-              sx={{ boxShadow: theme.shadows.sm, borderRadius: 20, gap: 0 }}
+              sx={{
+                boxShadow: theme.shadows.sm,
+                borderRadius: 20,
+                gap: 0,
+                width: "100%",
+              }}
             >
               <Box
                 sx={{
@@ -174,7 +191,7 @@ function CirclesSection({
             </Stack>
           );
         })}
-      </Group>
+      </Box>
     </Box>
   );
 }
@@ -527,13 +544,15 @@ function UnitSection({
 
 function ProfileSummary({ character }: { character: GameCharacter }) {
   const theme = useMantineTheme();
+  const isMobile = useMediaQuery("(max-width: 812px)");
   const { dayjs } = useDayjs();
   return (
     <Box
       id="chara-info-summary"
       pos="absolute"
-      top="15%"
-      right="5%"
+      top={isMobile ? "50%" : "15%"}
+      left={isMobile ? "2px" : undefined}
+      right={isMobile ? undefined : "5%"}
       sx={{ zIndex: 3 }}
     >
       <Paper
@@ -542,7 +561,7 @@ function ProfileSummary({ character }: { character: GameCharacter }) {
         radius="md"
         sx={{
           borderTop: `6px solid ${character.image_color}`,
-          width: "33vw",
+          width: isMobile ? "90vw" : "33vw",
         }}
       >
         <Group
@@ -623,6 +642,7 @@ function Page({
   unitsQuery: QuerySuccess<GameUnit[]>;
 }) {
   const theme = useMantineTheme();
+  const isMobile = useMediaQuery("(max-width: 812px)");
   const user = useUser();
   const { dayjs } = useDayjs();
   const { data: character } = characterQuery;
@@ -732,7 +752,7 @@ function Page({
             order={1}
             sx={{
               wordSpacing: "9999rem",
-              fontSize: "6rem",
+              fontSize: isMobile ? "3rem" : "6rem",
               lineHeight: 1,
             }}
           >
@@ -740,7 +760,7 @@ function Page({
           </Title>
           <Text
             sx={{
-              fontSize: "2rem",
+              fontSize: isMobile ? "1.5rem" : "2rem",
             }}
           >
             CV: {character.character_voice[0]}
@@ -749,8 +769,9 @@ function Page({
             order={3}
             size="h2"
             sx={{
+              fontSize: isMobile ? "1.2rem" : "26px",
               marginTop: "4%",
-              width: "33%",
+              width: isMobile ? "60%" : "33%",
               maxWidth: "33%",
               display: "flex",
               gap: "25px",
@@ -779,7 +800,7 @@ function Page({
             sx={{
               marginLeft: "10%",
               marginTop: "50px",
-              width: "700px",
+              width: isMobile ? 500 : 700,
             }}
           >
             <Picture
@@ -787,8 +808,8 @@ function Page({
               transparent
               alt={character.first_name[0]}
               fill={false}
-              width={700}
-              height={700}
+              width={isMobile ? 500 : 700}
+              height={isMobile ? 500 : 700}
               style={{
                 userSelect: "none",
                 pointerEvents: "none",
@@ -804,29 +825,31 @@ function Page({
         >
           <Box
             sx={{
-              width: "44vw",
-              height: "44vw",
+              width: isMobile ? "50vh" : "44vw",
+              height: isMobile ? "50vh" : "44vw",
               margin: "auto",
               marginTop: "-12.2vw",
-              borderRadius: 120,
+              borderRadius: isMobile ? 50 : 120,
               border: `2px solid ${character.image_color}22`,
               transform: "rotate(45deg)",
             }}
           />
           <Box
             sx={{
-              width: "44vw",
-              height: "44vw",
+              width: isMobile ? "50vh" : "44vw",
+              height: isMobile ? "50vh" : "44vw",
               margin: "auto",
-              marginTop: "-22vw",
-              borderRadius: 120,
+              marginTop: isMobile ? "-25vh" : "-22vw",
+              borderRadius: isMobile ? 50 : 120,
               backgroundColor: `${character.image_color}22`,
               transform: "rotate(45deg)",
             }}
           />
         </Box>
       </Box>
-      <Reactions />
+      <Box mt={isMobile ? "5vh" : undefined}>
+        <Reactions />
+      </Box>
       <Box sx={{ width: "95%", margin: "20vh auto 0 auto" }}>
         <Title order={4} size="h2">
           Introduction
@@ -837,7 +860,7 @@ function Page({
             display: "flex",
             gap: 10,
             alignItems: "flex-start",
-            fontSize: "1.25rem",
+            fontSize: isMobile ? "1rem" : "1.25rem",
             "&:before": {
               content: "'“'",
               fontSize: "4.5rem",
