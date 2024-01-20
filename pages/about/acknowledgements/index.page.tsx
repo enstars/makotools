@@ -2,44 +2,60 @@ import { Anchor, Text, TypographyStylesProvider } from "@mantine/core";
 
 import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
-
+import useTranslation from "next-translate/useTranslation";
+import Trans from "next-translate/Trans";
 function Page() {
+  const { t } = useTranslation("about__acknowledgements");
   return (
     <>
-      <PageTitle title="Acknowledgements" />
+      <PageTitle title={t("title")} />
       <TypographyStylesProvider>
+        <p>{t("text.main")}</p>
         <p>
-          Originally a dream of a certain TomoyaP, MakoTools has been built with
-          help from various people within the fandom, including translators,
-          proofreaders, developers, dataminers, game researchers, and a lot
-          more.
+          <Trans
+            i18nKey="about__acknowledgements:text.development"
+            components={[
+              <Anchor
+                inherit
+                href="https://github.com/enstars"
+                target="_blank"
+              />,
+            ]}
+          />
         </p>
         <p>
-          For the website&apos;s development, you can see our list of active
-          contributors on{" "}
-          <Anchor inherit href="https://github.com/enstars" target="_blank">
-            GitHub
-          </Anchor>
-          .
-        </p>
-        <p>
-          We&apos;ve received a lot of help from various teams, including The
-          English Ensemble Stars Wiki, @enstarsENG, @enstimes, @cnstars_en,
-          @enstars_link, @ESMiSC_EN, @ensemble_scans, and most recently
-          @DaydreamGuides, and The Chinese Ensemble Stars Wiki.
+          <Trans
+            i18nKey="about__acknowledgements:text.accounts"
+            components={[
+              "https://ensemble-stars.fandom.com/",
+              "https://twitter.com/enstarsENG",
+              "https://twitter.com/enstimes",
+              "https://twitter.com/cnstars_en",
+              "https://twitter.com/enstars_link",
+              "https://twitter.com/ESMiSC_EN",
+              "https://twitter.com/ensemble_scans",
+              "https://twitter.com/DaydreamGuides",
+              "https://ensemblestars.huijiwiki.com",
+            ].map((link) => (
+              <Anchor inherit href={link} target="_blank" />
+            ))}
+          />
         </p>
       </TypographyStylesProvider>
       <Text color="dimmed" size="xs">
-        As for individuals, I cannot list everyone&apos;s names due to anonimity
-        reasons, so I&apos;ll just list them by who they produce instead: Thanks
-        to the MidorP, ChiakiP, YutaP, SoumaP wiki staff, the EveryoneP,
-        TomoyaP, ToriP, 3AP, EveP (JunP), SoumaP, SubaruP, Mao+IzumiP, SubaruP
-        &amp; RitsuP, LeoP, MadaraP, KanataP, HikariDormP, TatsumiP, ReiP,
-        IbaraP, RitsuP translators, the HiiroP, EveryoneP, MakotoP, HokkeP,
-        NagisaP, NatsumeP proofreaders, the NatsumeP, ArashiP developer, the
-        ShinobuP, AkitoP, KogaP, KeitoP game researchers, the LeoP, KanataP
-        loremaster, the SubaruP, RitsuP, ChiakiP, AiraP CN wiki staff, and my
-        TsukasaP, ToriP, MakotoP, KaoruP, IzumiP, EichiP, LeoP friends!
+        And here&apos;s a special lovemail to everyone who helped individually,
+        from the head developer! I cannot list everyone&apos;s names due to
+        anonimity reasons, so I&apos;ll just list them by who they produce
+        instead: Thanks to the MidoriP, ChiakiP, YutaP, SoumaP wiki staff, the
+        TomoyaP, ToriP, EveryoneP, 3AP, EveP (JunP), RitsuP, SoumaP, Mao+IzumiP,
+        SubaruP, SubaruP & RitsuP, LeoP, MadaraP, KanataP, HikariDormP,
+        TatsumiP, ReikeiP, ReiP, IbaraP, MitsuruP, MidoriP, translators, the
+        HiiroP, EveryoneP, MakotoP, HokkeP, NagisaP, NatsumeP, IbaraP
+        proofreaders, the NatsumeP, ArashiP, NikiP developer, the ShinobuP,
+        AkitoP, KogaP, KeitoP game researchers, the LeoP loremaster, the
+        SubaruP, RitsuP, ChiakiP, AiraP, EveryoneP CN wiki staff, and my
+        TsukasaP, ToriP, MakotoP, KaoruP, IzumiP, EichiP, LeoP, MikejimaP
+        friends, and my special HiiAiP someone!
       </Text>
     </>
   );

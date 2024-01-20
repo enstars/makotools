@@ -8,9 +8,10 @@ import {
   Text,
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
-import { IconSun, IconSunOff, IconX } from "@tabler/icons";
+import { IconSun, IconSunOff, IconX } from "@tabler/icons-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { GridContextProvider, GridDropZone, GridItem } from "react-grid-drag";
+import useTranslation from "next-translate/useTranslation";
 
 import useUser from "services/firebase/user";
 import { GameCard } from "types/game";
@@ -51,6 +52,7 @@ function Banner({
   externalSetter: Dispatch<SetStateAction<any>>;
   profileState: any;
 }) {
+  const { t } = useTranslation("user");
   const user = useUser();
   const [acValue, setAcValue] = useState("");
 
@@ -76,12 +78,12 @@ function Banner({
   if (!cards)
     return (
       <Text color="dimmed" size="sm">
-        Error fetching card data.
+        {t("cardError")}
       </Text>
     );
 
   return (
-    <Input.Wrapper label="Banner Cards">
+    <Input.Wrapper label={t("currentBannerCards")}>
       <GridContextProvider
         onChange={(
           sourceId: string,
@@ -170,7 +172,7 @@ function Banner({
         </GridDropZone>
       </GridContextProvider>
       <Select
-        placeholder="Type to search for a card"
+        placeholder={t("cardSearchPlaceholder")}
         value={acValue}
         onChange={(value) => {
           if (value) handlers.append(parseInt(value));

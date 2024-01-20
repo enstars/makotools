@@ -11,6 +11,7 @@ import {
   Text,
   TextInputProps,
 } from "@mantine/core";
+import useTranslation from "next-translate/useTranslation";
 
 import { UserData } from "types/makotools";
 import useUser from "services/firebase/user";
@@ -33,6 +34,7 @@ function TextSetting<T = {}>({
   externalSetter: Dispatch<SetStateAction<any>>;
   profileState: any;
 } & T) {
+  const { t } = useTranslation("user");
   const theme = useMantineTheme();
   const user = useUser();
 
@@ -41,17 +43,6 @@ function TextSetting<T = {}>({
   const [inputValue, setInputValue] = useState(
     user.loggedIn ? user.db?.[dataKey] : undefined
   );
-
-  // const handleValueChange = useDebouncedCallback((value) => {
-  //   if (user.loggedIn && !user?.db?.admin?.disableTextFields) {
-  //     externalSetter(value);
-  //   }
-  // }, 2000);
-
-  // const memoizedHandleValueChange = useMemo(
-  //   () => handleValueChange,
-  //   [handleValueChange]
-  // );
 
   useEffect(() => {
     if (isFirestoreAccessible) setInputValue(user.db?.[dataKey]);
@@ -66,17 +57,6 @@ function TextSetting<T = {}>({
           setInputValue(e.target.value);
           externalSetter({ ...profileState, [dataKey]: e.target.value });
         }}
-        // rightSection={
-        //   inputValue?.length &&
-        //   (inputValue?.length > charLimit ? (
-        //     <IconX size={18} color={theme.colors.red[5]} />
-        //   ) : inputValue === user.db?.[dataKey] ? (
-        //     <IconCheck size={18} color={theme.colors.green[5]} />
-        //   ) : (
-        //     <Loader size="xs" />
-        //   ))
-        // }
-        autosize
         {...props}
         error={
           inputValue?.length > charLimit
@@ -87,7 +67,7 @@ function TextSetting<T = {}>({
       />
       {showCharCount && (
         <Text align="right" color="dimmed" size="xs" mt="xs">
-          Characters: {inputValue?.length}/{charLimit}
+          {t("characterCount")} {inputValue?.length}/{charLimit}
         </Text>
       )}
     </>

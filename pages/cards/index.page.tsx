@@ -23,17 +23,21 @@ import {
   IconSearch,
   IconSortAscending,
   IconSortDescending,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import fuzzysort from "fuzzysort";
+import useTranslation from "next-translate/useTranslation";
 
-import CardCard from "./components/DisplayCard";
+import NewCollectionModal from "./components/NewCollectionModal";
 
+import { CardCard } from "components/core/CardCard";
 import PageTitle from "components/sections/PageTitle";
 import { getLayout } from "components/Layout";
 import { QuerySuccess } from "types/makotools";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "services/data";
 import { CardRarity, GameCard, GameCharacter } from "types/game";
+import { useCollections } from "services/makotools/collection";
+
 type SortOption = "id" | "character";
 
 interface CardViewOptions {
@@ -66,6 +70,7 @@ function Page({
     [charactersQuery.data]
   );
 
+  const { t } = useTranslation("cards");
   const theme = useMantineTheme();
   const [count, setCount] = useState<number>(CARD_LIST_INITIAL_COUNT);
   const [cardsList, setCardsList] = useState<GameCard[]>([]);
@@ -81,7 +86,10 @@ function Page({
     },
   });
   const [search, setSearch] = useState("");
+  const [newCollectionModalOpened, setNewCollectionModalOpened] =
+    useState<boolean>(false);
   const [debouncedSearch] = useDebouncedValue(search, 200);
+  const { collections, onEditCollection, onNewCollection } = useCollections();
 
   let characterIDtoSort: { [key: number]: number } = {};
   characters.forEach((c) => {
@@ -89,10 +97,10 @@ function Page({
   });
 
   const SORT_OPTIONS: { value: SortOption; label: string }[] = [
-    { value: "id", label: "Card ID" },
+    { value: "id", label: t("search.cardId") },
     {
       value: "character",
-      label: "Character",
+      label: t("search.character"),
     },
   ];
 
@@ -144,16 +152,16 @@ function Page({
 
   return (
     <>
-      <PageTitle title="Cards" />
+      <PageTitle title={t("title")} />
 
       <Paper mb="sm" p="md" withBorder>
         <Text weight="700" size="xs" color="dimmed">
-          <IconSearch size="1em" /> Search Options
+          <IconSearch size="1em" /> {t("common:search.searchOptions")}
         </Text>
         <Group sx={{ alignItems: "flex-start" }}>
           <TextInput
-            label="Search"
-            placeholder="Type a card name..."
+            label={t("common:search.searchLabel")}
+            placeholder={t("search.searchPlaceholder")}
             value={search}
             onChange={(event) => {
               setSearch(event.target.value);
@@ -163,8 +171,8 @@ function Page({
             icon={<IconSearch size="1em" />}
           />
           <Select
-            label="Sort by"
-            placeholder="Pick a unit..."
+            label={t("common:search.sortLabel")}
+            placeholder={t("search.sortPlaceholder")}
             data={SORT_OPTIONS}
             value={viewOptions.sortOption}
             onChange={(val: SortOption) => {
@@ -174,7 +182,7 @@ function Page({
             variant="default"
             icon={<IconArrowsSort size="1em" />}
             rightSection={
-              <Tooltip label="Toggle ascending/descending">
+              <Tooltip label={t("common:search.sortTooltip")}>
                 <ActionIcon
                   onClick={() => {
                     setViewOptions((v) => ({
@@ -195,8 +203,8 @@ function Page({
             }
           />
           <MultiSelect
-            label="Characters"
-            placeholder="Pick a character..."
+            label={t("search.charLabel")}
+            placeholder={t("search.charPlaceholder")}
             data={characters
               .sort(
                 (a: any, b: any) =>
@@ -217,7 +225,7 @@ function Page({
             variant="default"
             searchable
           />
-          <Input.Wrapper id="rarity" label="Rarity">
+          <Input.Wrapper id="rarity" label={t("search.rarityLabel")}>
             <Chip.Group
               multiple
               value={viewOptions.filterRarity.map((v) => v.toString())}
@@ -249,7 +257,7 @@ function Page({
         </Group>
         <Group mt="xs">
           <Switch
-            label="Show full info"
+            label={t("search.showFullInfo")}
             checked={cardOptions.showFullInfo}
             onChange={(event) =>
               setCardOptions({
@@ -264,14 +272,14 @@ function Page({
               setViewOptions(CARD_VIEW_OPTIONS_DEFAULT);
             }}
           >
-            Reset all filters
+            {t("common:search.resetFilters")}
           </Button>
         </Group>
       </Paper>
       {slicedCardsList.length ? (
         <>
           <Text color="dimmed" mt="xl" mb="sm" size="sm">
-            {cardsList.length} results found.
+            {t("resultsFound", { count: cardsList.length })}
           </Text>
           <InfiniteScroll
             dataLength={slicedCardsList.length}
@@ -293,9 +301,12 @@ function Page({
             {slicedCardsList.map((e, i) => (
               <CardCard
                 key={e.id}
-                cardOptions={cardOptions}
                 card={e}
+                cardOptions={cardOptions}
+                collections={collections}
                 lang={cardsQuery.lang}
+                onEditCollection={onEditCollection}
+                onNewCollection={() => setNewCollectionModalOpened(true)}
               />
             ))}
           </InfiniteScroll>
@@ -305,6 +316,13 @@ function Page({
           No cards found.
         </Text>
       )}
+      <NewCollectionModal
+        // use key to reset internal form state on close
+        key={JSON.stringify(newCollectionModalOpened)}
+        opened={newCollectionModalOpened}
+        onClose={() => setNewCollectionModalOpened(false)}
+        onNewCollection={onNewCollection}
+      />
     </>
   );
 }

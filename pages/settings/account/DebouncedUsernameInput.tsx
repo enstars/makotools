@@ -8,8 +8,9 @@ import {
   Group,
   useMantineTheme,
 } from "@mantine/core";
-import { IconCheck, IconX, IconAt } from "@tabler/icons";
+import { IconCheck, IconX, IconAt } from "@tabler/icons-react";
 import Image from "next/image";
+import useTranslation from "next-translate/useTranslation";
 
 import kinnie from "./kinnie.png";
 
@@ -17,6 +18,7 @@ import { validateUsernameDb } from "services/firebase/firestore";
 import useUser from "services/firebase/user";
 import notify from "services/libraries/notify";
 
+// scrolling hell. 305 canon usernames
 const canonUsernames = [
   "jin",
   "akiomi",
@@ -327,6 +329,7 @@ const canonUsernames = [
 ];
 
 function DebouncedUsernameInput({ changedCallback = () => {} }) {
+  const { t } = useTranslation("settings");
   const theme = useMantineTheme();
   const user = useUser();
   const [inputValue, setInputValue] = useState(
@@ -362,30 +365,28 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
         setUsernameMsg("");
         setUsernameJudgement(true);
       } else if (value.replace(/[a-z0-9_]/g, "").length > 0) {
-        setUsernameMsg(
-          "Username must only contain lowercase alphanumeric characters or underscores!"
-        );
+        setUsernameMsg(t("account.usernameErrorAlphanumeric"));
         setUsernameJudgement(true);
       } else if (value.startsWith("_") || value.endsWith("_")) {
-        setUsernameMsg("Username cannot start or end with an underscore!");
+        setUsernameMsg(t("account.usernameErrorUnderscore"));
         setUsernameJudgement(true);
       } else if (value.length === 0) {
-        setUsernameMsg("Username cannot be empty!");
+        setUsernameMsg(t("account.usernameErrorEmpty"));
         setUsernameJudgement(true);
       } else if (value.length < 8) {
-        setUsernameMsg("Username too short!");
+        setUsernameMsg(t("account.usernameErrorShort"));
         setUsernameJudgement(true);
       } else if (value.length > 15) {
-        setUsernameMsg("Username too long!");
+        setUsernameMsg(t("account.usernameErrorLong"));
         setUsernameJudgement(true);
       } else {
         const usernameValid = await validateUsernameDb(value);
         if (!usernameValid) {
-          setUsernameMsg("Username is taken!");
+          setUsernameMsg(t("account.usernameTaken"));
           setUsernameJudgement(true);
         } else {
           setNewUsername(value);
-          setUsernameMsg("Username is available!");
+          setUsernameMsg(t("account.usernameAvailable"));
           setUsernameJudgement(true);
         }
       }
@@ -401,12 +402,12 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
         changedCallback();
         if (canonUsernames.includes(newUsername)) {
           notify("info", {
-            title: "Enjoy your new username!",
+            title: t("account.unEasterEgg"),
             message: (
               <>
                 <Image
                   src={kinnie}
-                  alt="Izumi Sena points at kinnies (you)"
+                  alt={t("account.iLaughedIrl")}
                   width={200}
                   height={200}
                 />
@@ -455,13 +456,13 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
             ? null
             : { disabled: true })}
         >
-          Save
+          {t("save")}
         </Button>
       </Group>
       <Text mt="xs" color="dimmed" size="xs">
         {user.loggedIn && inputValue !== user.db.username && usernameJudgement
           ? usernameMsg
-          : "Pick a new username..."}
+          : t("account.newUsername")}
       </Text>
     </>
   );

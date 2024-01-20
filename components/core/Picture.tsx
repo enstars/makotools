@@ -21,7 +21,7 @@ import {
   IconFocusCentered,
   IconZoomIn,
   IconZoomOut,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import Link from "next/link";
 import {
   TransformComponent,
@@ -192,7 +192,7 @@ function Picture({
           src={src}
           alt={alt}
           onContextMenu={() => {
-            if ((isB2Optimized || webpSrc) && !dontUseWebP)
+            if (user.loggedIn && (isB2Optimized || webpSrc) && !dontUseWebP)
               notify("info", {
                 title: "This is a WEBP file!",
                 message:
@@ -207,7 +207,7 @@ function Picture({
             loaded ? classes.loadedImg : ""
           )}
         />
-        {action === "download" && (
+        {user.loggedIn && action === "download" && (
           <ActionIcon
             size="sm"
             sx={{ position: "absolute", right: 4, bottom: 4 }}
@@ -218,7 +218,7 @@ function Picture({
             <IconDownload size={14} />
           </ActionIcon>
         )}
-        {action === "view" && (
+        {user.loggedIn && action === "view" && (
           <>
             <ActionIcon
               size="sm"

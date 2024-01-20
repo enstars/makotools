@@ -1,5 +1,5 @@
 import { Alert, Anchor, Text } from "@mantine/core";
-import { IconInfoCircle } from "@tabler/icons";
+import { IconInfoCircle } from "@tabler/icons-react";
 
 import { sendVerificationEmail } from "services/firebase/firestore";
 import useUser from "services/firebase/user";

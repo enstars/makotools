@@ -1,5 +1,5 @@
 import { NavLink, Paper, PaperProps, Text } from "@mantine/core";
-import { IconBrandPatreon } from "@tabler/icons";
+import { IconBrandPatreon } from "@tabler/icons-react";
 import useTranslation from "next-translate/useTranslation";
 import Link from "next/link";
 import React from "react";

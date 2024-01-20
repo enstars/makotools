@@ -11,7 +11,6 @@ function Announcement({
   i: number;
 }) {
   const router = useRouter();
-  // console.log(announcement);
   return (
     <Paper
       sx={{
@@ -35,7 +34,7 @@ function Announcement({
               ? "orange"
               : c.attributes.title === "Beta"
               ? "purple"
-              : "toya"
+              : "toya_default"
           }
         >
           {c.attributes.title}

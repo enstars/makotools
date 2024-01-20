@@ -14,8 +14,7 @@ export function liveSkillParse(
   rarity: CardRarity,
   level: number = 5
 ) {
-  const effect_values =
-    skill?.effect_values || liveSkills[skill.duration]?.[rarity];
+  const effect_values = liveSkills[skill.duration]?.[rarity];
   return `Increases the score by ${effect_values[level - 1][1]}% for ${
     effect_values[level - 1][0]
   } seconds.`;
@@ -27,8 +26,7 @@ export function supportSkillParse(
   level: number = 3,
   fallback = "Unknown"
 ) {
-  const effect_values =
-    skill?.effect_values || supportSkills[skill.type_id][rarity];
+  const effect_values = supportSkills[skill.type_id][rarity];
   if (typeof effect_values === "undefined") return fallback;
   switch (skill.type_id) {
     case 1:

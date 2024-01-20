@@ -1,6 +1,8 @@
 import { Input, Tabs, Textarea, Text } from "@mantine/core";
-import { IconPencil, IconTextCaption } from "@tabler/icons";
+import { IconPencil, IconTextCaption } from "@tabler/icons-react";
 import { Dispatch, SetStateAction, useState } from "react";
+import useTranslation from "next-translate/useTranslation";
+import Trans from "next-translate/Trans";
 
 import TextSetting from "./TextSetting";
 import BioHelpModal from "./BioHelpModal";
@@ -15,6 +17,7 @@ function Name({
   externalSetter: Dispatch<SetStateAction<any>>;
   profileState: any;
 }) {
+  const { t } = useTranslation("user");
   const user = useUser();
   const [opened, setOpened] = useState<boolean>(false);
   if (!user.loggedIn) return null;
@@ -23,28 +26,31 @@ function Name({
     <>
       <BioHelpModal opened={opened} openFunction={setOpened} />
 
-      <Input.Wrapper label="Bio">
+      <Input.Wrapper>
         <Input.Description>
-          You can use markdown in your bio (GFM){" "}
-          <Text
-            component="span"
-            onClick={() => setOpened(true)}
-            sx={(theme) => ({
-              color: theme.colors[theme.primaryColor][5],
-              "&:hover": { cursor: "pointer" },
-            })}
-          >
-            Need help?
-          </Text>
+          <Trans
+            i18nKey="user:markdown.link"
+            components={[
+              <Text
+                key="link"
+                component="span"
+                onClick={() => setOpened(true)}
+                sx={(theme) => ({
+                  color: theme.colors[theme.primaryColor][5],
+                  "&:hover": { cursor: "pointer" },
+                })}
+              />,
+            ]}
+          />
         </Input.Description>
         <Tabs variant="outline" defaultValue="edit" mt="xs">
           {!user.db?.admin?.disableTextFields && (
             <Tabs.List>
               <Tabs.Tab value="edit" icon={<IconPencil size={14} />}>
-                Edit
+                {t("edit")}
               </Tabs.Tab>
               <Tabs.Tab value="preview" icon={<IconTextCaption size={14} />}>
-                Preview
+                {t("preview")}
               </Tabs.Tab>
             </Tabs.List>
           )}
@@ -53,9 +59,10 @@ function Name({
             <TextSetting
               label=""
               dataKey="profile__bio"
-              placeholder="Say something about yourself!"
+              placeholder={t("bioPlaceholder")}
               charLimit={3640}
               Component={Textarea}
+              autosize={true}
               minRows={2}
               maxRows={8}
               externalSetter={externalSetter}

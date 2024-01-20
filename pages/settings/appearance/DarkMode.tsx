@@ -1,27 +1,29 @@
 import { useMantineTheme } from "@mantine/core";
-import { IconMoonStars, IconSun } from "@tabler/icons";
+import { IconMoonStars, IconSun } from "@tabler/icons-react";
+import useTranslation from "next-translate/useTranslation";
 
 import SelectSetting from "../shared/SelectSetting";
 
 function DarkMode() {
+  const { t } = useTranslation("settings");
   const { colorScheme, other } = useMantineTheme();
   return (
     <SelectSetting
       dataKey="dark_mode"
       value={colorScheme || "dark"}
-      label={"Mode"}
+      label={t("appearance.mode")}
       onChange={(value) => {
         other.setAppColorScheme(value);
       }}
       data={[
         {
           value: "light",
-          label: "Light Mode",
+          label: t("appearance.lightMode"),
           icon: <IconSun size={16} />,
         },
         {
           value: "dark",
-          label: "Dark Mode",
+          label: t("appearance.darkMode"),
           icon: <IconMoonStars size={16} />,
         },
       ]}

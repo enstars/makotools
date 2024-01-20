@@ -1,6 +1,19 @@
-import { useMemo } from "react";
-import { Divider } from "@mantine/core";
-import { IconBook, IconCards, IconMedal } from "@tabler/icons";
+import { useEffect, useMemo, useState } from "react";
+import {
+  ActionIcon,
+  Divider,
+  Group,
+  Tooltip,
+  useMantineTheme,
+} from "@mantine/core";
+import {
+  IconBook,
+  IconBookmark,
+  IconCards,
+  IconMedal,
+} from "@tabler/icons-react";
+import { useListState } from "@mantine/hooks";
+import useTranslation from "next-translate/useTranslation";
 
 import PageTitle from "components/sections/PageTitle";
 import {
@@ -8,15 +21,18 @@ import {
   getLocalizedDataArray,
 } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { GameCard, GameCharacter, GameEvent, ID, ScoutEvent } from "types/game";
+import { GameCard, GameCharacter, Event, Scout } from "types/game";
 import { QuerySuccess } from "types/makotools";
 import { getLayout } from "components/Layout";
-import CardCard from "pages/cards/components/DisplayCard";
+import { CardCard } from "components/core/CardCard";
 import ESPageHeader from "pages/events/components/ESPageHeader";
 import PointsTable from "pages/events/components/PointsTable";
 import Stories from "pages/events/components/Stories";
 import SectionTitle from "pages/events/components/SectionTitle";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
+import { useCollections } from "services/makotools/collection";
+import NewCollectionModal from "pages/cards/components/NewCollectionModal";
+import useUser from "services/firebase/user";
 
 function Page({
   scout,
@@ -24,13 +40,19 @@ function Page({
   charactersQuery,
   cardsQuery,
 }: {
-  scout: ScoutEvent;
-  event: GameEvent | null;
+  scout: Scout;
+  event: Event | null;
   charactersQuery: QuerySuccess<GameCharacter[]>;
   cardsQuery: QuerySuccess<GameCard[]>;
 }) {
+  const { t } = useTranslation("events__event");
+  const user = useUser();
+  const theme = useMantineTheme();
   let characters = useMemo(() => charactersQuery.data, [charactersQuery.data]);
   let cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
+  const { collections, onEditCollection, onNewCollection } = useCollections();
+  const [newCollectionModalOpened, setNewCollectionModalOpened] =
+    useState<boolean>(false);
 
   cards = cards.filter((card) => scout.cards?.includes(card.id));
 
@@ -40,38 +62,69 @@ function Page({
       .includes(character.character_id);
   });
 
-  let contentItems = [
-    {
-      id: "#cards",
-      name: "Cards",
-      icon: <IconCards size={16} strokeWidth={3} />,
-    },
-    {
-      id: "#story",
-      name: "Story",
-      icon: <IconBook size={16} strokeWidth={3} />,
-    },
-    {
-      id: "#event",
-      name: "Event",
-      icon: <IconMedal size={16} strokeWidth={3} />,
-    },
-  ];
+  const [bookmarks, handlers] = useListState<number>(
+    user.loggedIn ? user.db.bookmarks__scouts || [] : []
+  );
+
+  useEffect(() => {
+    user.loggedIn &&
+      user.db.set({
+        bookmarks__scouts: bookmarks,
+      });
+  }, [bookmarks]);
 
   return (
     <>
-      <PageTitle
-        title={`${scout.type === "scout" ? "SCOUT!" : ""} ${scout.name[0]}`}
-      />
+      <Group>
+        <PageTitle title={scout.name[0]} sx={{ flex: "1 0 80%" }} />
+        {((user.loggedIn &&
+          user.db.admin?.patreon &&
+          user.db.admin?.patreon >= 1) ||
+          (user.loggedIn && user.db.admin?.administrator)) && (
+          <Tooltip
+            label={
+              user.loggedIn
+                ? bookmarks.includes(scout.gacha_id)
+                  ? t("events:event.removeBookmark")
+                  : t("events:event.addBookmark")
+                : t("loginBookmark")
+            }
+            position="bottom"
+          >
+            <ActionIcon
+              size={60}
+              disabled={!user.loggedIn}
+              onClick={() => {
+                bookmarks.includes(scout.gacha_id)
+                  ? handlers.remove(bookmarks.indexOf(scout.gacha_id))
+                  : handlers.append(scout.gacha_id);
+              }}
+            >
+              <IconBookmark
+                size={60}
+                fill={
+                  bookmarks.includes(scout.gacha_id)
+                    ? theme.colors[theme.primaryColor][4]
+                    : "none"
+                }
+                strokeWidth={bookmarks.includes(scout.gacha_id) ? 0 : 1}
+              />
+            </ActionIcon>
+          </Tooltip>
+        )}
+      </Group>
       <ESPageHeader content={scout} />
       <SectionTitle title="Cards" id="cards" Icon={IconCards} />
       <ResponsiveGrid width={224}>
         {cards.map((card: GameCard) => (
           <CardCard
             key={card.id}
-            cardOptions={{ showFullInfo: true }}
             card={card}
+            cardOptions={{ showFullInfo: true }}
+            collections={collections}
             lang={cardsQuery.lang}
+            onEditCollection={onEditCollection}
+            onNewCollection={() => setNewCollectionModalOpened(true)}
           />
         ))}
       </ResponsiveGrid>
@@ -97,12 +150,19 @@ function Page({
                 type={scout.type}
                 eventName={event.name[0]}
                 scoutName={scout.name[0]}
-                banner={event.banner_id as ID}
+                banner={event.banner_id}
               />
             </>
           )}
         </>
       )}
+      <NewCollectionModal
+        // use key to reset internal form state on close
+        key={JSON.stringify(newCollectionModalOpened)}
+        opened={newCollectionModalOpened}
+        onClose={() => setNewCollectionModalOpened(false)}
+        onNewCollection={onNewCollection}
+      />
     </>
   );
 }
@@ -111,13 +171,13 @@ export const getServerSideProps = getServerSideUser(
   async ({ res, locale, params }) => {
     if (!params?.id || Array.isArray(params?.id)) return { notFound: true };
 
-    const getScouts = await getLocalizedDataArray<ScoutEvent>(
+    const getScouts = await getLocalizedDataArray<Scout>(
       "scouts",
       locale,
       "gacha_id"
     );
 
-    const getScout = getItemFromLocalizedDataArray<ScoutEvent>(
+    const getScout = getItemFromLocalizedDataArray<Scout>(
       getScouts,
       parseInt(params.id),
       "gacha_id"
@@ -128,13 +188,13 @@ export const getServerSideProps = getServerSideUser(
     let getEvents, getEvent;
 
     if (getScout.data.event_id) {
-      getEvents = await getLocalizedDataArray<GameEvent>(
+      getEvents = await getLocalizedDataArray<Event>(
         "events",
         locale,
         "event_id"
       );
 
-      getEvent = getItemFromLocalizedDataArray<GameEvent>(
+      getEvent = getItemFromLocalizedDataArray<Event>(
         getEvents,
         getScout.data.event_id,
         "event_id"
@@ -162,8 +222,8 @@ export const getServerSideProps = getServerSideUser(
       "character_id",
     ]);
 
-    const scout: ScoutEvent = getScout.data;
-    const event: GameEvent | null = getEvent?.data || null;
+    const scout: Scout = getScout.data;
+    const event: Event | null = getEvent?.data || null;
     const title = scout.name[0];
     const breadcrumbs = ["scouts", title];
 

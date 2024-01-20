@@ -9,8 +9,9 @@ import {
   Title,
 } from "@mantine/core";
 import { ReactElement, useState } from "react";
+import useTranslation from "next-translate/useTranslation";
 
-import { GameCard, SkillType } from "types/game";
+import { GameCard } from "types/game";
 import {
   centerSkillParse,
   liveSkillParse,
@@ -18,6 +19,7 @@ import {
 } from "services/skills";
 
 function Skills({ card }: { card: GameCard }) {
+  const { t } = useTranslation("cards__card");
   const [liveSkillLevel, setLiveSkillLevel] = useState(5);
   const [supportSkillLevel, setSupportSkillLevel] = useState(3);
 
@@ -28,15 +30,15 @@ function Skills({ card }: { card: GameCard }) {
         mb="sm"
         sx={(theme) => ({ justifyContent: "space-between" })}
       >
-        <Title order={2}>Skills</Title>
+        <Title order={2}>{t("skills.heading")}</Title>
 
         <Group sx={{ "&&&": { flexGrow: 1, maxWidth: 350 } }}>
           <Input.Wrapper
-            label="Live Lvl."
+            label={t("skills.liveLabel")}
             sx={{ "&&&": { flex: "2 1 0", minWidth: 150 } }}
           >
             <Slider
-              label={(l) => `Lvl. ${l}`}
+              label={(l) => t("skills.liveSliderLabel", { level: l })}
               min={1}
               max={10}
               value={liveSkillLevel}
@@ -53,11 +55,11 @@ function Skills({ card }: { card: GameCard }) {
             />
           </Input.Wrapper>
           <Input.Wrapper
-            label="Support Lvl."
+            label={t("skills.supportLabel")}
             sx={{ "&&&": { flex: "1 1 0", minWidth: 85 } }}
           >
             <Slider
-              label={(l) => `Lvl. ${l}`}
+              label={(l) => t("skills.supportSliderLabel", { level: l })}
               min={1}
               max={5}
               value={supportSkillLevel}
@@ -73,7 +75,7 @@ function Skills({ card }: { card: GameCard }) {
         {[
           {
             type: "center",
-            color: "toya",
+            color: "toya_default",
             description: <Text>{centerSkillParse(card.skills?.center)}</Text>,
           },
           {
@@ -122,14 +124,14 @@ function Skills({ card }: { card: GameCard }) {
           },
         ].map(
           (s: {
-            type: SkillType;
+            type: "center" | "live" | "support";
             color: string;
             description: ReactElement;
           }) => (
             <Group key={s.type} align="start" spacing="xs">
               <Box sx={{ width: 80 }}>
                 <Badge sx={{ width: "100%" }} variant="filled" color={s.color}>
-                  {s.type}
+                  {t(`skills.${s.type}`)}
                 </Badge>
               </Box>
               <Box sx={{ "&&&": { flex: "1 1 0", minWidth: 200 } }}>

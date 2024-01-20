@@ -16,15 +16,16 @@ import {
   IconCalendarTime,
   IconDiamond,
   IconShirt,
-  IconStar,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import Link from "next/link";
 import useTranslation from "next-translate/useTranslation";
 
 import { useDayjs } from "services/libraries/dayjs";
-import { BirthdayEvent, GameEvent, ScoutEvent } from "types/game";
-import { retrieveClosestEvents } from "services/events";
+import { Birthday, Campaign, Event, Scout } from "types/game";
+import { retrieveNextCampaigns } from "services/campaigns";
 import Picture from "components/core/Picture";
+import { getNameOrder } from "services/game";
+import useUser from "services/firebase/user";
 
 /* END FUNCTION */
 
@@ -65,23 +66,36 @@ const useStyles = createStyles((theme, _params) => ({
 // create individual event card
 function EventCard({
   event,
+  locale,
 }: {
-  event: BirthdayEvent | GameEvent | ScoutEvent;
+  event: Birthday | Event | Scout;
+  locale: string | undefined;
 }) {
   const { t } = useTranslation("home");
+  const user = useUser();
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
-  const formattedMonth = dayjs(event.start_date).format("MMM");
-  const formattedDate = dayjs(event.start_date).format("D");
+  const formattedMonth = dayjs(event.start.en).format("MMM");
+  const formattedDate = dayjs(event.start.en).format("D");
 
-  let link = (event as BirthdayEvent).character_id
-    ? `/characters/${(event as BirthdayEvent).character_id}`
-    : ((event as GameEvent).event_id && event.type === "song") ||
+  let link = (event as Birthday).character_id
+    ? `/characters/${(event as Birthday).character_id}`
+    : ((event as Event).event_id && event.type === "song") ||
       event.type === "shuffle" ||
-      event.type == "tour" ||
-      event.type === "anniversary"
-    ? `/events/${(event as GameEvent).event_id}`
-    : `/scouts/${(event as ScoutEvent).gacha_id}`;
+      event.type == "tour"
+    ? `/events/${(event as Event).event_id}`
+    : `/scouts/${(event as Scout).gacha_id}`;
+
+  function birthdayEventName(name: string) {
+    let splitName = name.split(" ");
+    const nameOrderSetting =
+      (!user.loading && user.loggedIn && user?.db?.setting__name_order) ||
+      "firstlast";
+    return getNameOrder(
+      { first_name: splitName[1], last_name: splitName[0] },
+      nameOrderSetting
+    );
+  }
 
   return (
     <Card
@@ -134,7 +148,9 @@ function EventCard({
           }}
         >
           <Title order={3} weight={700} size="md" sx={{ lineHeight: 1.2 }}>
-            {event.type !== "birthday" ? event.name[0] : event.name}
+            {event.type === "birthday"
+              ? birthdayEventName(event.name[0])
+              : event.name[0]}
           </Title>
 
           <Badge
@@ -142,9 +158,7 @@ function EventCard({
             className={classes.eventType}
             variant="filled"
             color={
-              event.type === "anniversary"
-                ? "yellow"
-                : event.type === "birthday"
+              event.type === "birthday"
                 ? "cyan"
                 : event.type === "feature scout"
                 ? "lightblue"
@@ -157,8 +171,6 @@ function EventCard({
               <Text inline mt={0}>
                 {event.type === "birthday" ? (
                   <IconCake size={12} strokeWidth={3} />
-                ) : event.type === "anniversary" ? (
-                  <IconStar size={12} strokeWidth={3} />
                 ) : event.type === "feature scout" ? (
                   <IconShirt size={12} strokeWidth={3} />
                 ) : event.type === "scout" ? (
@@ -175,7 +187,7 @@ function EventCard({
           </Badge>
         </Box>
         <Picture
-          alt={event.name}
+          alt={event.name[0]}
           srcB2={`assets/card_still_full1_${event.banner_id}_normal.webp`}
           radius="sm"
           sx={(theme) => ({
@@ -202,8 +214,10 @@ function EventCard({
 
 function UpcomingCampaigns({
   events,
+  locale,
 }: {
-  events: (BirthdayEvent | GameEvent | ScoutEvent)[];
+  events: Campaign[];
+  locale: string | undefined;
 }) {
   const { t } = useTranslation("home");
   const { dayjs } = useDayjs();
@@ -218,11 +232,9 @@ function UpcomingCampaigns({
       </Accordion.Control>
 
       <Accordion.Panel className={classes.panel} px={0}>
-        {retrieveClosestEvents(events, 8).map(
-          (e: BirthdayEvent | GameEvent | ScoutEvent, index) => {
-            return <EventCard key={index} event={e} />;
-          }
-        )}
+        {retrieveNextCampaigns(events, 8).map((e, index) => {
+          return <EventCard key={index} event={e} locale={locale} />;
+        })}
         <Box mt="xs">
           <Anchor component={Link} href="/calendar" size="sm">
             {t("upcomingCampaigns.seeAll")}

@@ -16,7 +16,8 @@ import {
   IconMoonStars,
   IconPalette,
   IconGlobe,
-} from "@tabler/icons";
+  IconBookmark,
+} from "@tabler/icons-react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import useTranslation from "next-translate/useTranslation";
@@ -25,6 +26,7 @@ import { characterColors } from "../../MantineTheme/index";
 
 import useUser from "services/firebase/user";
 import { LOCALES } from "services/makotools/locales";
+import ProfileAvatar from "pages/[user]/components/profilePicture/ProfileAvatar";
 
 function UserMenu({ trigger }: { trigger: any }) {
   const { t } = useTranslation("sidebar");
@@ -60,12 +62,16 @@ function UserMenu({ trigger }: { trigger: any }) {
           component={Link}
           href={user.loggedIn ? `/@${user?.db?.username}` : "#"}
           icon={
-            <Avatar
-              color={theme.primaryColor}
-              size="sm"
-              radius="xl"
-              sx={{ "*": { display: "flex" } }}
-            />
+            user.loggedIn ? (
+              <ProfileAvatar userInfo={user.db} size={32} />
+            ) : (
+              <Avatar
+                color={theme.primaryColor}
+                size="sm"
+                radius="xl"
+                sx={{ "*": { display: "flex" } }}
+              />
+            )
           }
         >
           {user.loading ? (
@@ -214,6 +220,16 @@ function UserMenu({ trigger }: { trigger: any }) {
           </Menu.Item>
         ) : user.loggedIn ? (
           <>
+            {((user.db.admin?.patreon && user.db.admin?.patreon >= 1) ||
+              user.db.admin?.administrator) && (
+              <Menu.Item
+                component={Link}
+                href="/bookmarks"
+                icon={<IconBookmark size={14} />}
+              >
+                {t("menu.bookmarks")}
+              </Menu.Item>
+            )}
             <Menu.Item
               id="sidebar-link-settings"
               component={Link}
@@ -223,6 +239,7 @@ function UserMenu({ trigger }: { trigger: any }) {
                   color="red"
                   position="top-start"
                   dot={
+                    user.loggedIn &&
                     user.privateDb?.friends__receivedRequests?.length !==
                       undefined &&
                     user.privateDb?.friends__receivedRequests?.length > 0

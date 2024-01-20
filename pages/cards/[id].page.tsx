@@ -1,11 +1,13 @@
 import React from "react";
 import { Group, AspectRatio, Badge, Divider } from "@mantine/core";
-import { IconStar } from "@tabler/icons";
+import { IconStar } from "@tabler/icons-react";
+import useTranslation from "next-translate/useTranslation";
 
-import Stats, { sumStats } from "./components/Stats";
+import Stats from "./components/Stats";
 import Skills from "./components/Skills";
 import Gallery from "./components/Gallery";
 
+import { sumStats } from "services/game";
 import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import attributes from "data/attributes.json";
@@ -38,6 +40,8 @@ function Page({
   const { data: card } = cardQuery;
   const { data: character } = characterQuery;
 
+  const { t } = useTranslation("cards__card");
+
   return (
     <>
       <PageTitle
@@ -59,7 +63,7 @@ function Page({
                 color={attributes[card.type].color}
                 sx={{ textTransform: "none" }}
               >
-                {attributes[card.type].fullname}
+                {t(`${attributes[card.type].fullname}`)}
               </Badge>
             </Group>
           </>

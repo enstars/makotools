@@ -26,7 +26,6 @@ function AnnouncementsList() {
           pagination: { page: 1, pageSize: 25 },
         }
       );
-      console.log(postResponses);
       const totalPages = (postResponses.meta.pagination as any).pageCount;
       if (totalPages) {
         setAllPagesCount(totalPages);

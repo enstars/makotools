@@ -1,7 +1,8 @@
 import { Button, Group, Modal, Title } from "@mantine/core";
 import { showNotification, updateNotification } from "@mantine/notifications";
-import { IconCheck, IconX } from "@tabler/icons";
+import { IconCheck, IconX } from "@tabler/icons-react";
 import { arrayRemove } from "firebase/firestore";
+import useTranslation from "next-translate/useTranslation";
 import { Dispatch, SetStateAction } from "react";
 
 import { UserData, UserLoggedIn } from "types/makotools";
@@ -19,18 +20,18 @@ function RemoveFriendModal({
   opened: boolean;
   closeFunction: Dispatch<SetStateAction<boolean>>;
 }) {
+  const { t } = useTranslation("user");
   return (
     <Modal
       centered
       opened={opened}
       onClose={() => closeFunction(false)}
-      title={<Title order={2}>Remove friend</Title>}
+      title={<Title order={2}>{t("removeFriend")}</Title>}
     >
-      Are you sure you want to remove {profile?.name || profile.username} from
-      your friends list?
+      {t("removeFriendWarning", { enemy: profile?.name || profile.username })}
       <Group noWrap position="right" align="center" sx={{ marginTop: 10 }}>
         <Button variant="outline" onClick={() => closeFunction(false)}>
-          Cancel
+          {t("cancel")}
         </Button>
         <Button
           onClick={async () => {
@@ -38,7 +39,7 @@ function RemoveFriendModal({
             showNotification({
               id: "removeFriend",
               loading: true,
-              message: "Processing your request...",
+              message: t("processingRequest"),
               disallowClose: true,
               autoClose: false,
             });
@@ -52,7 +53,6 @@ function RemoveFriendModal({
               body: JSON.stringify({ friend: uid }),
             });
             const status = await res.json();
-            console.log(status);
             if (status?.success) {
               user.privateDb.set({
                 friends__list: arrayRemove(uid),
@@ -62,9 +62,9 @@ function RemoveFriendModal({
                 loading: false,
                 color: "lime",
                 icon: <IconCheck size={24} />,
-                message: `${
-                  profile?.name || profile.username
-                } was successfully removed from your friends list!`,
+                message: t("friendRemoved", {
+                  enemy: profile?.name || profile.username,
+                }),
               });
             } else {
               updateNotification({
@@ -73,8 +73,7 @@ function RemoveFriendModal({
                 color: "red",
                 icon: <IconX size={24} />,
                 title: "An error occured:",
-                message:
-                  "There was an error removing this user from your friends list.",
+                message: t("removeError"),
               });
             }
           }}

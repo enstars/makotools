@@ -1,10 +1,12 @@
 import { Group, Box, Stack, Title, Text, useMantineTheme } from "@mantine/core";
 import Link from "next/link";
+import useTranslation from "next-translate/useTranslation";
 
 import Picture from "components/core/Picture";
-import { GameEvent, ScoutEvent } from "types/game";
+import { Event, Scout } from "types/game";
 
-function Stories({ content }: { content: GameEvent | ScoutEvent }) {
+function Stories({ content }: { content: Event | Scout }) {
+  const { t } = useTranslation("events__event");
   const theme = useMantineTheme();
   return (
     <>
@@ -28,7 +30,7 @@ function Stories({ content }: { content: GameEvent | ScoutEvent }) {
             {content.intro_lines_tl_credit &&
               content.intro_lines_tl_credit[0] && (
                 <Text align="right" color="dimmed" size="sm">
-                  Summary translated by{" "}
+                  {t("translationCredit")}{" "}
                   {
                     <Text
                       component={Link}

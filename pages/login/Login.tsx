@@ -16,18 +16,13 @@ import {
   LoadingOverlay,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import {
-  IconAlertTriangle,
-  IconBrandGoogle,
-  IconBrandTwitter,
-} from "@tabler/icons";
+import { IconAlertTriangle, IconBrandGoogle } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
 import useUser from "services/firebase/user";
 import {
   signInWithGoogle,
-  signInWithTwitter,
   signInWithEmail,
   signUpWithEmail,
 } from "services/firebase/authentication";
@@ -180,15 +175,6 @@ function Login() {
               >
                 {isRegister ? "Sign up" : "Sign in"} with Google
               </Button>
-              <Button
-                id="signin-twitter"
-                variant="default"
-                leftIcon={<IconBrandTwitter size={16} />}
-                onClick={() => signInWithTwitter()}
-                style={{ width: "100%" }}
-              >
-                {isRegister ? "Sign up" : "Sign in"} with Twitter
-              </Button>
             </Stack>
 
             <Divider
@@ -270,21 +256,32 @@ function Login() {
                     justifyContent: "space-between",
                   }}
                 >
-                  <Anchor
-                    component="button"
-                    type="button"
-                    color="dimmed"
-                    onClick={() => {
-                      setIsRegister(!isRegister);
-                      setSignOnError(null);
-                    }}
-                    size="xs"
-                    style={{ maxWidth: "100%" }}
-                  >
-                    {isRegister
-                      ? "Already have an account? Sign in"
-                      : "Don't have an account? Sign up"}
-                  </Anchor>
+                  <Stack spacing="xs">
+                    <Anchor
+                      component="button"
+                      type="button"
+                      color="dimmed"
+                      onClick={() => {
+                        setIsRegister(!isRegister);
+                        setSignOnError(null);
+                      }}
+                      size="xs"
+                      style={{ maxWidth: "100%" }}
+                    >
+                      {isRegister
+                        ? "Already have an account? Sign in"
+                        : "Don't have an account? Sign up"}
+                    </Anchor>
+                    <Anchor
+                      href="/login/reset_password"
+                      color="dimmed"
+                      size="xs"
+                      style={{ maxWidth: "100%", textAlign: "left" }}
+                    >
+                      Forgot password?
+                    </Anchor>
+                  </Stack>
+
                   <Button id="signin-form-button" type="submit">
                     {!isRegister ? "Sign in" : "Sign up"}
                   </Button>

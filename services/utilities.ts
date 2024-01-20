@@ -1,9 +1,21 @@
+import { Dayjs } from "dayjs";
+
 function parseStringify(object: any) {
   try {
     return JSON.parse(JSON.stringify(object));
   } catch (error) {
     return { error };
   }
+}
+
+function generateUUID() {
+  let dt = new Date().getTime();
+  const uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (dt + Math.random() * 16) % 16 | 0;
+    dt = Math.floor(dt / 16);
+    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+  });
+  return uuid;
 }
 
 function downloadFromURL(url: string) {
@@ -19,4 +31,11 @@ function downloadFromURL(url: string) {
   }
 }
 
-export { parseStringify, downloadFromURL };
+/**
+ * Get string for timestamps in DB
+ */
+function getTimestamp(date: Dayjs) {
+  return date.toISOString();
+}
+
+export { parseStringify, generateUUID, downloadFromURL, getTimestamp };

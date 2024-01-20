@@ -1,4 +1,4 @@
-import React, { forwardRef, ReactElement, SyntheticEvent } from "react";
+import React, { forwardRef, SyntheticEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import {
@@ -8,7 +8,6 @@ import {
   IconBooks,
   IconBrandPatreon,
   IconUserCircle,
-  TablerIcon,
   IconCalendar,
   IconDiamond,
   IconInfoCircle,
@@ -16,7 +15,9 @@ import {
   IconChevronLeft,
   IconSearch,
   IconX,
-} from "@tabler/icons";
+  TablerIconsProps,
+  IconExternalLink,
+} from "@tabler/icons-react";
 import {
   Navbar,
   ScrollArea,
@@ -50,7 +51,7 @@ import useUser from "services/firebase/user";
 type LinkObject = {
   link: string;
   name: string;
-  Icon?: TablerIcon | ReactElement;
+  Icon?: ((props: TablerIconsProps) => JSX.Element) | any;
   disabled?: boolean;
   props?: any;
 };
@@ -98,7 +99,7 @@ const SidebarLink = forwardRef(function SbL(
               placeItems: "center",
             })}
           >
-            {typeof Icon === "function" ? <Icon size={18} /> : Icon}
+            {Icon.render ? <Icon size={18} /> : Icon}
           </Box>
         )
       }
@@ -189,8 +190,16 @@ function Sidebar(props: any) {
       link: "https://www.patreon.com/makotools",
       name: "patreon",
       Icon: IconBrandPatreon,
+      props: !collapsed && {
+        rightSection: (
+          <Text color="dimmed" mt={-10 + 4} mb={-10}>
+            <IconExternalLink size={16} />
+          </Text>
+        ),
+      },
     },
   ];
+
   return (
     <Navbar
       position={{ top: 0, left: 0 }}
@@ -225,7 +234,68 @@ function Sidebar(props: any) {
           href="/"
           label={
             !collapsed && (
-              <Box sx={{ height: 18, display: "flex" }}>
+              <Box
+                sx={{
+                  height: 18,
+                  display: "flex",
+                  ".mkt_dark_text_svg__primaryText": {
+                    fill:
+                      theme.primaryColor === "mao_pink"
+                        ? "#FEE0EE"
+                        : theme.primaryColor === "makoto_green"
+                        ? "#fbfff7"
+                        : theme.primaryColor === "subaru_orange"
+                        ? "#FDECDC"
+                        : theme.primaryColor === "hokke_blue"
+                        ? "#e9f1f7"
+                        : theme.primaryColor === "niki_gray"
+                        ? "#D7DBDF"
+                        : "#E8ECFD",
+                  },
+                  ".mkt_dark_text_svg__secondaryText": {
+                    fill:
+                      theme.primaryColor === "mao_pink"
+                        ? "#f5abce"
+                        : theme.primaryColor === "makoto_green"
+                        ? "#d2f0bd"
+                        : theme.primaryColor === "subaru_orange"
+                        ? "#f5c59a"
+                        : theme.primaryColor === "hokke_blue"
+                        ? "#83beeb"
+                        : theme.primaryColor === "niki_gray"
+                        ? "#8BB2D4"
+                        : "#A4B1E8",
+                  },
+                  ".mkt_light_text_svg__primaryText": {
+                    fill:
+                      theme.primaryColor === "mao_pink"
+                        ? "#8c0646"
+                        : theme.primaryColor === "makoto_green"
+                        ? "#264a0b"
+                        : theme.primaryColor === "subaru_orange"
+                        ? "#7a2e04"
+                        : theme.primaryColor === "hokke_blue"
+                        ? "#00172b"
+                        : theme.primaryColor === "niki_gray"
+                        ? "#165285"
+                        : "#1C2F7D",
+                  },
+                  ".mkt_light_text_svg__secondaryText": {
+                    fill:
+                      theme.primaryColor === "mao_pink"
+                        ? "#b00b59"
+                        : theme.primaryColor === "makoto_green"
+                        ? "#366612"
+                        : theme.primaryColor === "subaru_orange"
+                        ? "#b54304"
+                        : theme.primaryColor === "hokke_blue"
+                        ? "#003d73"
+                        : theme.primaryColor === "niki_gray"
+                        ? "#337AB7"
+                        : "#324CB3",
+                  },
+                }}
+              >
                 {theme.colorScheme === "light" ? (
                   <MakotoolsTextLightComponent
                     viewBox="0 0 1753 281"
@@ -243,69 +313,126 @@ function Sidebar(props: any) {
             )
           }
           Icon={
-            theme.colorScheme === "light" ? (
-              <MakotoolsLightComponent
-                viewBox="0 0 281 281"
-                width={18}
-                height={18}
-              />
-            ) : (
-              <MakotoolsDarkComponent
-                viewBox="0 0 281 281"
-                width={18}
-                height={18}
-              />
-            )
+            <Box
+              sx={{
+                ".mkt_dark_icon_svg__secondary": {
+                  fill:
+                    theme.primaryColor === "mao_pink"
+                      ? "#f5abce"
+                      : theme.primaryColor === "makoto_green"
+                      ? "#d2f0bd"
+                      : theme.primaryColor === "subaru_orange"
+                      ? "#f5c59a"
+                      : theme.primaryColor === "hokke_blue"
+                      ? "#83beeb"
+                      : theme.primaryColor === "niki_gray"
+                      ? "#8BB2D4"
+                      : "#A4B1E8",
+                },
+                ".mkt_dark_icon_svg__primary": {
+                  fill:
+                    theme.primaryColor === "mao_pink"
+                      ? "#FEE0EE"
+                      : theme.primaryColor === "makoto_green"
+                      ? "#fbfff7"
+                      : theme.primaryColor === "subaru_orange"
+                      ? "#FDECDC"
+                      : theme.primaryColor === "hokke_blue"
+                      ? "#e9f1f7"
+                      : theme.primaryColor === "niki_gray"
+                      ? "#D7DBDF"
+                      : "#E8ECFD",
+                },
+                ".mkt_light_icon_svg__secondary": {
+                  fill:
+                    theme.primaryColor === "mao_pink"
+                      ? "#8c0646"
+                      : theme.primaryColor === "makoto_green"
+                      ? "#264a0b"
+                      : theme.primaryColor === "subaru_orange"
+                      ? "#b54304"
+                      : theme.primaryColor === "hokke_blue"
+                      ? "#003d73"
+                      : theme.primaryColor === "niki_gray"
+                      ? "#337AB7"
+                      : "#324CB3",
+                },
+                ".mkt_light_icon_svg__primary": {
+                  fill:
+                    theme.primaryColor === "mao_pink"
+                      ? "#b00b59"
+                      : theme.primaryColor === "makoto_green"
+                      ? "#366612"
+                      : theme.primaryColor === "subaru_orange"
+                      ? "#7a2e04"
+                      : theme.primaryColor === "hokke_blue"
+                      ? "#00172b"
+                      : theme.primaryColor === "niki_gray"
+                      ? "#165285"
+                      : "#1C2F7D",
+                },
+              }}
+            >
+              {theme.colorScheme === "light" ? (
+                <MakotoolsLightComponent
+                  viewBox="0 0 281 281"
+                  width={18}
+                  height={18}
+                />
+              ) : (
+                <MakotoolsDarkComponent
+                  viewBox="0 0 281 281"
+                  width={18}
+                  height={18}
+                />
+              )}
+            </Box>
           }
         />
-        {user.loggedIn &&
-          ((user.db.admin?.patreon && user.db.admin?.patreon >= 1) ||
-            user.db.admin?.administrator) &&
-          (collapsed ? (
-            <TextInput
-              styles={(theme) => ({
-                input: {
-                  padding: theme.spacing.xs,
-                  paddingRight: 0,
-                },
-              })}
-              // variant="filled"
-              value=""
-              icon={<IconSearch size={18} />}
-              iconWidth={38}
-              onClick={() => {
-                console.log("hi");
-                toggleCollapsed();
-                if (props?.onCollapse) props.onCollapse();
-              }}
-            />
-          ) : (
-            <TextInput
-              styles={(theme) => ({
-                input: {
-                  padding: theme.spacing.xs,
-                },
-              })}
-              // variant="unstyled"
-              value={searchValue}
-              onChange={(event) => setSearchValue(event.currentTarget.value)}
-              placeholder={t("searchbarMessage")}
-              icon={<IconSearch size={18} />}
-              iconWidth={38}
-              rightSection={
-                searchValue && (
-                  <ActionIcon
-                    size="xs"
-                    onClick={() => {
-                      setSearchValue("");
-                    }}
-                  >
-                    <IconX size={14} />
-                  </ActionIcon>
-                )
-              }
-            />
-          ))}
+        {collapsed ? (
+          <TextInput
+            styles={(theme) => ({
+              input: {
+                padding: theme.spacing.xs,
+                paddingRight: 0,
+              },
+            })}
+            // variant="filled"
+            value=""
+            icon={<IconSearch size={18} />}
+            iconWidth={38}
+            onClick={() => {
+              toggleCollapsed();
+              if (props?.onCollapse) props.onCollapse();
+            }}
+          />
+        ) : (
+          <TextInput
+            styles={(theme) => ({
+              input: {
+                padding: theme.spacing.xs,
+              },
+            })}
+            // variant="unstyled"
+            value={searchValue}
+            onChange={(event) => setSearchValue(event.currentTarget.value)}
+            placeholder={t("searchbarMessage")}
+            icon={<IconSearch size={18} />}
+            iconWidth={38}
+            rightSection={
+              searchValue && (
+                <ActionIcon
+                  size="xs"
+                  onClick={() => {
+                    setSearchValue("");
+                  }}
+                >
+                  <IconX size={14} />
+                </ActionIcon>
+              )
+            }
+          />
+        )}
       </Navbar.Section>
       <Navbar.Section
         grow
@@ -386,16 +513,15 @@ function Sidebar(props: any) {
                   <SidebarLink
                     collapsed={collapsed}
                     active={true}
-                    name="User"
+                    name={t("links.user")}
                     Icon={
                       <Indicator
                         color="red"
                         position="top-start"
-                        dot={
-                          user.loggedIn &&
-                          user.privateDb?.friends__receivedRequests?.length !==
-                            undefined &&
-                          user.privateDb?.friends__receivedRequests?.length > 0
+                        disabled={
+                          !user.loggedIn ||
+                          !user.privateDb?.friends__receivedRequests?.length ||
+                          user.privateDb?.friends__receivedRequests?.length <= 0
                         }
                       >
                         <IconUserCircle size={20} />
@@ -471,7 +597,6 @@ function Sidebar(props: any) {
           onMouseDown={(event: SyntheticEvent) => {
             event.preventDefault();
             mouseDown = true;
-            console.log("down");
             window.addEventListener("mousemove", resize);
             window.addEventListener("mouseup", (e) => {
               window.removeEventListener("mousemove", resize);

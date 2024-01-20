@@ -77,7 +77,7 @@ const useStyles = createStyles((theme, params: any, getRef) => ({
   },
 }));
 
-function DisplayCard({
+export default function CharacterCard({
   character,
   locale,
 }: {
@@ -123,5 +123,3 @@ function DisplayCard({
     </Card>
   );
 }
-
-export default DisplayCard;

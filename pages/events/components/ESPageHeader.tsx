@@ -4,20 +4,23 @@ import {
   IconArrowsShuffle2,
   IconBus,
   IconComet,
-} from "@tabler/icons";
+  IconRotateClockwise2,
+} from "@tabler/icons-react";
 import dayjs from "dayjs";
+import useTranslation from "next-translate/useTranslation";
 
 import IconEnstars from "components/core/IconEnstars";
 import Picture from "components/core/Picture";
-import { GameEvent, GameUnit, ScoutEvent } from "types/game";
+import { Event, GameUnit, Scout } from "types/game";
 
 function ESPageHeader({
   content,
   units,
 }: {
-  content: GameEvent | ScoutEvent;
+  content: Event | Scout;
   units?: GameUnit[];
 }) {
+  const { t } = useTranslation("events__event");
   return (
     <>
       <Group position="apart" align="flex-start">
@@ -37,32 +40,33 @@ function ESPageHeader({
           <Group>
             <Box sx={{ flex: "1 1 0", minWidth: 200 }}>
               <Text size="sm" color="dimmed" weight={700}>
-                Start ({dayjs(content.start_date).format("z")})
+                {t("events:event.start")} ({dayjs(content.start.en).format("z")}
+                )
               </Text>
               <Text size="lg" weight={500}>
-                {dayjs(content.start_date).format("lll")}
+                {dayjs(content.start.en).format("lll")}
               </Text>
             </Box>
             <Box sx={{ flex: "1 1 0", minWidth: 200 }}>
               <Text size="sm" color="dimmed" weight={700}>
-                End ({dayjs(content.end_date).format("z")})
+                {t("events:event.end")} ({dayjs(content.end.en).format("z")})
               </Text>
               <Text size="lg" weight={500}>
-                {dayjs(content.end_date).format("lll")}
+                {dayjs(content.end.en).format("lll")}
               </Text>
             </Box>
           </Group>
           <Space h="md" />
           <Group noWrap>
-            {dayjs(content.end_date).isBefore(dayjs()) ? (
-              <Badge color="gray">Past</Badge>
+            {dayjs(content.end.en).isBefore(dayjs()) ? (
+              <Badge color="gray">{t("past")}</Badge>
             ) : dayjs().isBetween(
-                dayjs(content.start_date),
-                dayjs(content.end_date)
+                dayjs(content.start.en),
+                dayjs(content.end.en)
               ) ? (
-              <Badge color="yellow">Ongoing</Badge>
+              <Badge color="yellow">{t("ongoing")}</Badge>
             ) : (
-              <Badge color="lime">Upcoming</Badge>
+              <Badge color="lime">{t("upcoming")}</Badge>
             )}
             {units &&
               units.map((unit) => (
@@ -84,7 +88,7 @@ function ESPageHeader({
                 content.type === "song"
                   ? "grape"
                   : content.type === "shuffle"
-                  ? "toya"
+                  ? "toya_default"
                   : content.type === "tour"
                   ? "teal"
                   : content.type === "scout"
@@ -107,8 +111,26 @@ function ESPageHeader({
                 </Box>
               }
             >
-              {content.type}
+              {t(
+                `events:${
+                  content.type === "feature scout"
+                    ? "featureScout"
+                    : content.type
+                }`
+              )}
             </Badge>
+            {(content.type === "scout" || content.type === "feature scout") &&
+              dayjs().isAfter(dayjs(content.start.en).add(3, "M")) && (
+                <Badge
+                  leftSection={
+                    <Box mt={4}>
+                      <IconRotateClockwise2 size={12} strokeWidth={3} />
+                    </Box>
+                  }
+                >
+                  {t("diaScout")}
+                </Badge>
+              )}
           </Group>
         </Box>
       </Group>

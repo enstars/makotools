@@ -1,17 +1,35 @@
-import { getAuth, sendEmailVerification } from "firebase/auth";
+import {
+  getAuth,
+  sendEmailVerification,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 import {
   getFirestore,
   doc,
   setDoc,
   getDoc,
-  // serverTimestamp,
   collection,
   query,
   where,
   getDocs,
 } from "firebase/firestore";
+import { Dispatch, SetStateAction } from "react";
 
-import { UserData, LoadingStatus, UserPrivateData } from "types/makotools";
+import { parseStringify } from "services/utilities";
+import {
+  UserData,
+  LoadingStatus,
+  UserPrivateData,
+  User,
+  CardCollection,
+} from "types/makotools";
+
+/**
+ * When querying documents using where(), a maximum of
+ * 10 values can be passed to most operators
+ * https://firebase.google.com/docs/firestore/query-data/queries#in_not-in_and_array-contains-any
+ */
+export const FIRESTORE_MAXIMUM_WHERE_VALUES = 10;
 
 export function setFirestoreUserData(
   data: any,
@@ -96,4 +114,116 @@ export async function sendVerificationEmail() {
   ) {
     sendEmailVerification(clientAuth.currentUser);
   }
+}
+
+export async function sendPasswordReset(
+  email: string,
+  setEmailSent: Dispatch<SetStateAction<boolean>>
+) {
+  const clientAuth = getAuth();
+  await sendPasswordResetEmail(clientAuth, email);
+  setEmailSent(true);
+}
+
+export async function getFirestoreUserCollection([collectionAddress, user]: [
+  string,
+  User
+]) {
+  const db = getFirestore();
+
+  const profileUID = collectionAddress.split("/")[1];
+  const accessiblePrivacyLevel = user.loggedIn
+    ? user.user.id === profileUID
+      ? 3
+      : user.privateDb.friends__list?.includes(profileUID)
+      ? 2
+      : 1
+    : 0;
+
+  let querySnap,
+    userCollection: CardCollection[] = [];
+  try {
+    querySnap = await getDocs(
+      query(
+        collection(db, collectionAddress),
+        where("privacyLevel", "<=", accessiblePrivacyLevel)
+      )
+    );
+
+    querySnap.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      const data = doc.data();
+      data.id = doc.id;
+      userCollection.push(data as CardCollection);
+    });
+  } catch (e) {
+    console.info(accessiblePrivacyLevel, collectionAddress, e);
+    console.error(e);
+  }
+  return userCollection;
+}
+
+export async function getFirestoreUserDocument(
+  collection: string,
+  document: string,
+  fallback?: any,
+  customUid?: string
+) {
+  const clientAuth = getAuth();
+  const db = getFirestore();
+
+  if (clientAuth.currentUser === null) {
+    return undefined;
+  }
+  const uid = customUid || clientAuth.currentUser.uid;
+  const docSnap = await getDoc(doc(db, `users/${uid}/${collection}`, document));
+
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    return data as UserData;
+  }
+  if (typeof fallback !== undefined) return fallback;
+  throw new Error("nonexistent and no fallback");
+  return undefined;
+}
+
+// export async function getFirestoreUserProfile([profileAddress, user]: [
+//   string,
+//   User
+// ]) {
+//   const db = getFirestore();
+//   let profile;
+
+//   try {
+//     const q: any = query(
+//       collection(db, "users"),
+//       where("username", "==", user.db.username)
+//     );
+//     const querySnap = await getDocs(q);
+//     profile = parseStringify(querySnap.docs[0].data());
+
+//     return profile;
+//   } catch (e) {
+//     console.error(e);
+//   }
+
+//   return profile;
+// }
+export async function getFirestoreUserProfile([profileAddress, uid]: [
+  string,
+  string
+]) {
+  const db = getFirestore();
+  let profile;
+
+  try {
+    const docSnap = await getDoc(doc(db, `users`, uid));
+    profile = parseStringify(docSnap.data());
+
+    return profile;
+  } catch (e) {
+    console.error(e);
+  }
+
+  return profile;
 }

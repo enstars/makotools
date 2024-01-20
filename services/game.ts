@@ -1,6 +1,9 @@
 import { DEFAULT_LOCALE } from "./makotools/locales";
 
 import { Locale, NameOrder } from "types/makotools";
+import { Stats } from "types/game";
+
+export const MAX_CARD_COPIES = 5;
 
 // https://en.wikipedia.org/wiki/Personal_name#Eastern_name_order
 const lastFirstLocales: Locale[] = ["ja", "zh-CN", "zh-TW", "ko"];
@@ -38,4 +41,10 @@ export function getNameOrder(
   if (setting === "lastfirst") return `${lastName} ${firstName}`.trim();
 
   return `${firstName} ${lastName}`.trim();
+}
+
+export function sumStats(stats: Stats | any, fallback = "?"): number | string {
+  if (!stats?.da || !stats?.vo || !stats?.pf) return fallback;
+  const sum = stats.da + stats.vo + stats.pf;
+  return sum;
 }

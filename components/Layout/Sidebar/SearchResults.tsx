@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { MeiliSearch } from "meilisearch";
 import Link from "next/link";
 import { useDebouncedValue } from "@mantine/hooks";
-import { IconAward, IconCards, IconDiamond, IconUsers } from "@tabler/icons";
+import { IconAward, IconCards, IconDiamond, IconUsers } from "@tabler/icons-react";
 
 import { SidebarLink } from ".";
 
@@ -97,7 +97,11 @@ function SearchResults({
               result["data-tl__en__title"] ||
               result["data__en__name"] ||
               result["data-tl__en__name"] ||
-              `${result["data-tl__en__first_name"]} ${result["data-tl__en__last_name"]}`
+              `${result["data-tl__en__first_name"]}${
+                result["data-tl__en__last_name"]
+                  ? ` ${result["data-tl__en__last_name"]}`
+                  : ""
+              }`
             }
             onClick={() => {
               setSearchValue("");

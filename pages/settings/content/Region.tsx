@@ -1,43 +1,46 @@
 import { CN, GB, JP, KR, TW } from "country-flag-icons/react/3x2";
+import useTranslation from "next-translate/useTranslation";
 
 import SelectSetting from "../shared/SelectSetting";
 
-const gameRegions = [
-  {
-    value: "jp",
-    label: "Japan",
-    icon: <JP height={16} style={{ borderRadius: 3 }} />,
-  },
-  {
-    value: "cn",
-    label: "Mainland China",
-    icon: <CN height={16} style={{ borderRadius: 3 }} />,
-  },
-  {
-    value: "kr",
-    label: "Korea",
-    icon: <KR height={16} style={{ borderRadius: 3 }} />,
-  },
-  {
-    value: "tw",
-    label: "Taiwan",
-    icon: <TW height={16} style={{ borderRadius: 3 }} />,
-  },
-  {
-    value: "en",
-    label: "Global (English)",
-    icon: <GB height={16} style={{ borderRadius: 3 }} />,
-  },
-];
-
 function Region() {
+  const { t } = useTranslation("settings");
+
+  const gameRegions = [
+    {
+      value: "jp",
+      label: t("content.jp"),
+      icon: <JP height={16} style={{ borderRadius: 3 }} />,
+    },
+    {
+      value: "cn",
+      label: t("content.cn"),
+      icon: <CN height={16} style={{ borderRadius: 3 }} />,
+    },
+    {
+      value: "kr",
+      label: t("content.kr"),
+      icon: <KR height={16} style={{ borderRadius: 3 }} />,
+    },
+    {
+      value: "tw",
+      label: t("content.tw"),
+      icon: <TW height={16} style={{ borderRadius: 3 }} />,
+    },
+    {
+      value: "en",
+      label: t("content.en"),
+      icon: <GB height={16} style={{ borderRadius: 3 }} />,
+    },
+  ];
+
   return (
     <SelectSetting
       dataKey="setting__game_region"
-      label="Game Region"
+      label={t("content.regionLabel")}
       data={gameRegions}
-      description="This setting currently does not have an effect on content yet."
-      placeholder="Japan (Default)"
+      description={t("content.regionDesc")}
+      placeholder={t("content.regionPlaceholder")}
     />
   );
 }

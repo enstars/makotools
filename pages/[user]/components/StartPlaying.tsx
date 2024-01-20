@@ -1,4 +1,5 @@
 import { Checkbox, Group, Input, Select } from "@mantine/core";
+import useTranslation from "next-translate/useTranslation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 import useUser from "services/firebase/user";
@@ -50,6 +51,7 @@ function StartPlaying({
   externalSetter: Dispatch<SetStateAction<any>>;
   profileState: any;
 }) {
+  const { t } = useTranslation("user");
   const { dayjs } = useDayjs();
   const user = useUser();
 
@@ -99,13 +101,13 @@ function StartPlaying({
   }, [picked]);
 
   return (
-    <Input.Wrapper label="Started Playing">
+    <Input.Wrapper label={t("startedPlaying")}>
       <Group>
         <Select
           data={years.map((y) => ({ value: y, label: y }))}
           sx={{ flexGrow: 1, flexBasis: 100 }}
           disabled={picked.unknown}
-          placeholder="Year"
+          placeholder={t("year")}
           searchable
           value={picked.unknown ? null : picked.year}
           onChange={(value) => {
@@ -139,7 +141,7 @@ function StartPlaying({
           }
           sx={{ flexGrow: 1.5, flexBasis: 100 }}
           disabled={picked.unknown}
-          placeholder="Month"
+          placeholder={t("month")}
           searchable
           value={picked.unknown ? null : picked.month}
           onChange={(value) => {
@@ -153,7 +155,7 @@ function StartPlaying({
         />
 
         <Checkbox
-          label="Unknown"
+          label={t("unknown")}
           checked={picked.unknown}
           onChange={(event) => {
             // DO NOT REMOVE LINE BELOW. THIS IS REQUIRED FOR SOME REASON

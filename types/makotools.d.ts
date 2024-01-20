@@ -56,7 +56,29 @@ interface MakoPost {
 interface CollectedCard {
   id: ID;
   count: number;
+  dateAdded?: string;
 }
+
+/**
+ * 0: completely public collection
+ *
+ * 1: collection is only visible to logged in users
+ *
+ * 2: collection is only visible to friends/following
+ *
+ * 3: collection is completely private
+ */
+type CollectionPrivacyLevel = 0 | 1 | 2 | 3;
+
+interface CardCollection {
+  id: string;
+  name: string;
+  privacyLevel: CollectionPrivacyLevel;
+  icon: number;
+  cards: CollectedCard[];
+  order: number;
+}
+
 // USER
 
 type UseWebP = "use" | "dont-use";
@@ -65,12 +87,12 @@ type ShowTlBadge = "none" | "unofficial" | "all";
 type GameRegion = "jp" | "cn" | "kr" | "tw" | "en";
 type UID = ID;
 interface ProfilePicture {
-  id?: number;
+  id: number;
   crop: {
-    x?: number;
-    y?: number;
-    w?: number;
-    h?: number;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
   };
 }
 interface UserData {
@@ -84,6 +106,9 @@ interface UserData {
   profile__pronouns?: string;
   profile__start_playing?: string;
   profile__picture?: ProfilePicture;
+  profile__fave_charas: number[];
+  profile__fave_units?: number[];
+  profile__show_faves?: boolean;
   // private
   user__theme?: string;
   dark_mode: boolean;
@@ -91,6 +116,8 @@ interface UserData {
   setting__show_tl_badge?: ShowTlBadge;
   setting__game_region?: GameRegion;
   setting__use_webp?: UseWebP;
+  bookmarks__events?: ID[];
+  bookmarks__scouts?: ID[];
   readonly admin?: {
     disableTextFields?: boolean;
     patreon?: 0 | 1 | 2 | 3 | 4;

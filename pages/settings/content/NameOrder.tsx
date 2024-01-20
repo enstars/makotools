@@ -1,20 +1,8 @@
 import { Text } from "@mantine/core";
 import { forwardRef } from "react";
+import useTranslation from "next-translate/useTranslation";
 
 import SelectSetting from "../shared/SelectSetting";
-
-const nameOrderOptions = [
-  {
-    value: "firstlast",
-    label: "Given name, Family name",
-    example: "Eg. Subaru Akehoshi",
-  },
-  {
-    value: "lastfirst",
-    label: "Family name, Given name",
-    example: "Eg. Akehoshi Subaru",
-  },
-];
 
 const nameOrderItem = forwardRef<HTMLDivElement>(function SelectItem(
   { label, example, ...others }: { label: string; example: string },
@@ -31,12 +19,26 @@ const nameOrderItem = forwardRef<HTMLDivElement>(function SelectItem(
 });
 
 function NameOrder() {
+  const { t } = useTranslation("settings");
+  const nameOrderOptions = [
+    {
+      value: "firstlast",
+      label: t("content.firstLast"),
+      example: t("content.firstLastExample"),
+    },
+    {
+      value: "lastfirst",
+      label: t("content.lastFirst"),
+      example: t("content.lastFirstExample"),
+    },
+  ];
+
   return (
     <SelectSetting
       dataKey="setting__name_order"
-      label="Preferred name order"
+      label={t("content.nameOrderLabel")}
       data={nameOrderOptions}
-      description="Japanese, Chinese, and Korean will always be Family name, Given name."
+      description={t("content.nameOrderDesc")}
       placeholder={nameOrderOptions[0].label + " (Default)"}
       itemComponent={nameOrderItem}
     />

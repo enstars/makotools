@@ -8,7 +8,8 @@ import {
   SegmentedControl,
   Text,
 } from "@mantine/core";
-import { IconCalendar, IconList } from "@tabler/icons";
+import { IconCalendar, IconList } from "@tabler/icons-react";
+import useTranslation from "next-translate/useTranslation";
 
 import CalendarGridView from "./components/CalendarGridView";
 import CalendarListView from "./components/CalendarListView";
@@ -18,13 +19,8 @@ import { getLayout } from "components/Layout";
 import { useDayjs } from "services/libraries/dayjs";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "services/data";
-import { createBirthdayData } from "services/events";
-import {
-  GameCharacter,
-  GameEvent,
-  ScoutEvent,
-  BirthdayEvent,
-} from "types/game";
+import { createBirthdayData } from "services/campaigns";
+import { GameCharacter, Event, Scout, Birthday } from "types/game";
 import { QuerySuccess } from "types/makotools";
 
 /**
@@ -43,9 +39,10 @@ function Page({
   scoutsQuery,
 }: {
   charactersQuery: QuerySuccess<GameCharacter[]>;
-  gameEventsQuery: QuerySuccess<GameEvent[]>;
-  scoutsQuery: QuerySuccess<ScoutEvent[]>;
+  gameEventsQuery: QuerySuccess<Event[]>;
+  scoutsQuery: QuerySuccess<Scout[]>;
 }) {
+  const { t } = useTranslation("calendar");
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
 
@@ -53,16 +50,13 @@ function Page({
     () => charactersQuery.data,
     [charactersQuery.data]
   );
-  const gameEvents: GameEvent[] = useMemo(
+  const gameEvents: Event[] = useMemo(
     () => gameEventsQuery.data,
     [gameEventsQuery.data]
   );
-  const scouts: ScoutEvent[] = useMemo(
-    () => scoutsQuery.data,
-    [scoutsQuery.data]
-  );
+  const scouts: Scout[] = useMemo(() => scoutsQuery.data, [scoutsQuery.data]);
 
-  const birthdays: BirthdayEvent[] = createBirthdayData(characters);
+  const birthdays: Birthday[] = createBirthdayData(characters);
 
   const events = [...birthdays, ...gameEvents, ...scouts];
 
@@ -96,7 +90,7 @@ function Page({
               label: (
                 <Center>
                   <IconCalendar size={16} />
-                  <Text ml="xs">Monthly</Text>
+                  <Text ml="xs">{t("calendar.month")}</Text>
                 </Center>
               ),
               value: "cal",
@@ -105,7 +99,7 @@ function Page({
               label: (
                 <Center>
                   <IconList size={16} />
-                  <Text ml="xs">Daily</Text>
+                  <Text ml="xs">{t("calendar.day")}</Text>
                 </Center>
               ),
               value: "list",
@@ -132,7 +126,7 @@ function Page({
                   label: (
                     <Center>
                       <IconCalendar size={16} />
-                      <Text ml="xs">Month</Text>
+                      <Text ml="xs">{t("calendar.month")}</Text>
                     </Center>
                   ),
                   value: "cal",
@@ -141,7 +135,7 @@ function Page({
                   label: (
                     <Center>
                       <IconList size={16} />
-                      <Text ml="xs">Day</Text>
+                      <Text ml="xs">{t("calendar.day")}</Text>
                     </Center>
                   ),
                   value: "list",
@@ -180,7 +174,7 @@ export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
     "event_id"
   );
 
-  const scouts = await getLocalizedDataArray<ScoutEvent>(
+  const scouts = await getLocalizedDataArray<Scout>(
     "scouts",
     locale,
     "gacha_id"

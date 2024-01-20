@@ -10,9 +10,11 @@ import {
   Title,
 } from "@mantine/core";
 import { useState } from "react";
+import useTranslation from "next-translate/useTranslation";
 
+import { sumStats } from "services/game";
 import CardStatsNumber from "components/utilities/formatting/CardStatsNumber";
-import { GameCard, StatLevel, Stats } from "types/game";
+import { GameCard, StatLevel } from "types/game";
 
 function LabelCell({ total, ...props }: BoxProps & { total?: any }) {
   return (
@@ -85,14 +87,8 @@ function BigData({ data, label }: { data: any; label: string }) {
   );
 }
 
-function sumStats(stats: Stats | any, fallback = "?"): number | string {
-  if (!stats?.da || !stats?.vo || !stats?.pf) return fallback;
-  const sum = stats.da + stats.vo + stats.pf;
-  return sum;
-}
-export { sumStats };
-
-function Stats({ card }: { card: GameCard }) {
+export default function Stats({ card }: { card: GameCard }) {
+  const { t } = useTranslation("cards__card");
   const [opened, setOpened] = useState(false);
   return (
     <>
@@ -102,16 +98,16 @@ function Stats({ card }: { card: GameCard }) {
         sx={(theme) => ({ justifyContent: "space-between" })}
       >
         <Title order={2} sx={{ flexGrow: 1 }}>
-          Stats
+          {t("stats.heading")}
         </Title>
         <Button variant="subtle" onClick={() => setOpened(true)}>
-          Show detailed stats
+          {t("stats.showDetailedStats")}
         </Button>
       </Group>
       <Drawer
         opened={opened}
         onClose={() => setOpened(false)}
-        title="Detailed stats"
+        title={t("stats.detailedStats")}
         padding="md"
         size="lg"
         position="bottom"
@@ -149,8 +145,9 @@ function Stats({ card }: { card: GameCard }) {
             <tbody>
               {["min", "max", "ir", "ir1", "ir2", "ir3", "ir4"].map(
                 (p: StatLevel) => {
-                  if (card?.stats?.[p]?.da) {
-                    const { da, vo, pf } = card?.stats?.[p];
+                  const stats = card.stats?.[p];
+                  if (stats) {
+                    const { da, vo, pf } = stats;
                     const sum = da + vo + pf;
                     return (
                       <tr key={p}>
@@ -179,20 +176,18 @@ function Stats({ card }: { card: GameCard }) {
       </Drawer>
       <Group mb="md">
         <BigData
-          label="Max stats (1 copy)"
+          label={`${t("stats.maxStats")} (1 copy)`}
           data={<CardStatsNumber>{sumStats(card.stats?.ir)}</CardStatsNumber>}
         />
         <BigData
-          label="Max stats (3 copies)"
+          label={`${t("stats.maxStats")} (3 copies)`}
           data={<CardStatsNumber>{sumStats(card.stats?.ir2)}</CardStatsNumber>}
         />
         <BigData
-          label="Max stats (5 copies)"
+          label={`${t("stats.maxStats")} (5 copies)`}
           data={<CardStatsNumber>{sumStats(card.stats?.ir4)}</CardStatsNumber>}
         />
       </Group>
     </>
   );
 }
-
-export default Stats;

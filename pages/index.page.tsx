@@ -16,18 +16,23 @@ import Banner from "components/Homepage/Banner";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "services/data";
 import {
-  BirthdayEvent,
+  Birthday,
   GameCharacter,
-  GameEvent,
-  ScoutEvent,
+  Event,
+  Scout,
+  GameCard,
+  Campaign,
+  GameUnit,
 } from "types/game";
 import CurrentEventCountdown from "components/Homepage/CurrentEventCountdown";
 import CurrentScoutsCountdown from "components/Homepage/CurrentScoutsCountdown";
 import SiteAnnouncements from "components/Homepage/SiteAnnouncements";
 import UserVerification from "components/Homepage/UserVerification";
 import { MakoPost, QuerySuccess, StrapiItem } from "types/makotools";
-import { createBirthdayData } from "services/events";
+import { createBirthdayData } from "services/campaigns";
 import { fetchOceans } from "services/makotools/posts";
+import RecommendedCountdown from "components/Homepage/RecommendedCountdown";
+import useUser from "services/firebase/user";
 
 const useStyles = createStyles((theme, _params) => ({
   main: {
@@ -43,11 +48,13 @@ const useStyles = createStyles((theme, _params) => ({
 
 function SidePanel({
   events,
+  locale,
   posts,
   width = 250,
   ...props
 }: {
-  events: (GameEvent | BirthdayEvent | ScoutEvent)[];
+  events: (Event | Birthday | Scout)[];
+  locale: string | undefined;
   posts: StrapiItem<MakoPost>[];
   width?: number;
 }) {
@@ -63,7 +70,8 @@ function SidePanel({
         sx={{ flexBasis: 300, flexGrow: 1, minWidth: 0, width: "100%" }}
       >
         <UpcomingCampaigns
-          events={events as (BirthdayEvent | ScoutEvent | GameEvent)[]}
+          events={events as (Birthday | Scout | Event)[]}
+          locale={locale}
         />
         <SiteAnnouncements posts={posts} />
       </Accordion>
@@ -72,42 +80,106 @@ function SidePanel({
 }
 
 function Page({
+  locale,
   posts,
   charactersQuery,
   gameEventsQuery,
   scoutsQuery,
+  cardsQuery,
+  unitsQuery,
 }: {
+  locale: string | undefined;
   posts: StrapiItem<MakoPost>[];
   charactersQuery: QuerySuccess<GameCharacter[]>;
-  gameEventsQuery: QuerySuccess<GameEvent[]>;
-  scoutsQuery: QuerySuccess<ScoutEvent[]>;
+  gameEventsQuery: QuerySuccess<Event[]>;
+  scoutsQuery: QuerySuccess<Scout[]>;
+  cardsQuery: QuerySuccess<GameCard[]>;
+  unitsQuery: QuerySuccess<GameUnit[]>;
 }) {
+  const user = useUser();
   const { t } = useTranslation();
   const { classes } = useStyles();
 
-  console.log(t, t("common:test"));
+  const faveCharas =
+    user.loggedIn && user.db && user.db.profile__fave_charas
+      ? user.db.profile__fave_charas
+      : [];
+
   const characters: GameCharacter[] = useMemo(
     () => charactersQuery.data,
     [charactersQuery.data]
   );
 
-  const birthdays: BirthdayEvent[] = createBirthdayData(characters);
+  const units: GameUnit[] = useMemo(() => unitsQuery.data, [unitsQuery.data]);
 
-  const gameEvents: GameEvent[] = useMemo(
+  const birthdays: Birthday[] = createBirthdayData(characters);
+  const gameEvents: Event[] = useMemo(
     () => gameEventsQuery.data,
     [gameEventsQuery.data]
   );
+  const scouts: Scout[] = useMemo(() => scoutsQuery.data, [scoutsQuery.data]);
 
-  const scouts: ScoutEvent[] = useMemo(
-    () => scoutsQuery.data,
-    [scoutsQuery.data]
-  );
+  const events: Campaign[] = [...birthdays, ...gameEvents, ...scouts];
 
-  const events: (BirthdayEvent | GameEvent | ScoutEvent)[] = [
-    ...birthdays,
-    ...gameEvents,
-    ...scouts,
-  ];
+  const cards: GameCard[] = useMemo(() => cardsQuery.data, [cardsQuery.data]);
+
+  interface RecommendedCampaign {
+    event: Campaign;
+    charId?: number;
+    unitId?: number;
+  }
+
+  function getRecommendedCampaigns(): RecommendedCampaign[] {
+    if (!user.loggedIn) return [];
+    let faveCharas = user.db.profile__fave_charas;
+    let faveUnits = user.db.profile__fave_units;
+    let recommendedCampaigns: RecommendedCampaign[] = [];
+    events.forEach((event: Campaign) => {
+      if (event.type === "birthday") {
+        // only check favorite characters
+        if (faveCharas && faveCharas.includes(event.character_id))
+          recommendedCampaigns.push({
+            event: event,
+            charId: event.character_id,
+          });
+      } else {
+        if (event.type === "song" || event.type === "tour") {
+          // these events should check for units
+          if (
+            event.unit_id?.some((uid) => faveUnits && faveUnits.includes(uid))
+          ) {
+            recommendedCampaigns.push({
+              event: event,
+              unitId: event.unit_id.find(
+                (uid) => faveUnits && faveUnits.includes(uid)
+              ),
+            });
+          }
+        }
+        // check if the event includes a relevant character card
+        let eventCards: GameCard[] = cards.filter((card) =>
+          event.cards.includes(card.id)
+        );
+        eventCards.forEach((card: GameCard) => {
+          if (
+            faveCharas &&
+            faveCharas.includes(card.character_id) &&
+            (card.rarity === 5 || card.rarity === 4)
+          ) {
+            // only include 5* or 4* features
+            if (!recommendedCampaigns.find((c) => c.event === event)) {
+              // no duplicate events
+              recommendedCampaigns.push({
+                event: event,
+                charId: card.character_id,
+              });
+            }
+          }
+        });
+      }
+    });
+    return recommendedCampaigns;
+  }
 
   return (
     <Group
@@ -132,22 +204,32 @@ function Page({
             <CurrentEventCountdown
               events={
                 events.filter(
-                  (event: GameEvent) =>
+                  (event: Event) =>
                     event.event_id &&
-                    (event.type === "song" || event.type === "tour")
-                ) as GameEvent[]
+                    (event.type === "song" ||
+                      event.type === "tour" ||
+                      event.type === "shuffle")
+                ) as Event[]
               }
             />
             <CurrentScoutsCountdown scouts={scouts} />
+            {user.loggedIn && (
+              <RecommendedCountdown
+                events={getRecommendedCampaigns()}
+                characters={characters}
+                units={units}
+              />
+            )}
           </Box>
+
           <MediaQuery largerThan="md" styles={{ display: "none" }}>
-            <SidePanel events={events} posts={posts} />
+            <SidePanel events={events} posts={posts} locale={locale} />
           </MediaQuery>
         </Group>
       </Stack>
 
       <MediaQuery smallerThan="md" styles={{ display: "none" }}>
-        <SidePanel events={events} posts={posts} />
+        <SidePanel events={events} posts={posts} locale={locale} />
       </MediaQuery>
     </Group>
   );
@@ -169,10 +251,23 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     "event_id"
   );
 
-  const scouts = await getLocalizedDataArray<ScoutEvent>(
+  const scouts = await getLocalizedDataArray<Scout>(
     "scouts",
     locale,
     "gacha_id"
+  );
+
+  const cardsQuery = await getLocalizedDataArray<GameCard>(
+    "cards",
+    locale,
+    "id",
+    ["id", "character_id", "rarity"]
+  );
+
+  const unitsQuery = await getLocalizedDataArray<GameUnit>(
+    "units",
+    locale,
+    "id"
   );
 
   try {
@@ -184,10 +279,13 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
 
     return {
       props: {
+        locale: locale,
         posts: postResponses.data,
         charactersQuery: characters,
         gameEventsQuery: gameEvents,
         scoutsQuery: scouts,
+        cardsQuery: cardsQuery,
+        unitsQuery: unitsQuery,
       },
     };
   } catch (e) {

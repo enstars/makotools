@@ -2,8 +2,8 @@
 const workaround = require("next-translate/lib/cjs/plugin/utils.js");
 
 if (process.env.NODE_ENV === "development") {
+  console.log("next-translate (i18n.js): Using local translations");
   workaround.defaultLoader = `async (lang, ns) => {
-    console.log("next-translate (i18n.js): Using local translations");
     return import(\`/locales/\${lang}/\${ns}.json\`).then((m) => m.default);
   }`;
 } else {
@@ -46,6 +46,22 @@ module.exports = {
   pages: {
     "*": ["common", "sidebar", "footer"],
     "/": ["home"],
-    // "/about": ["about"],
+    "/about": ["about"],
+    "/about/*": ["about"],
+    "/about/announcements": ["about"],
+    "/about/acknowledgements": ["about__acknowledgements"],
+    "/about/guidelines": ["about__guidelines"],
+    "/about/privacy": ["about__privacy"],
+    "/about/terms": ["about__terms"],
+    "/about/translations": ["about__translations"],
+    "/calendar": ["calendar", "game__campaignTypes"],
+    "/cards": ["cards"],
+    "/cards/[id]": ["cards__card"],
+    "/events": ["events"],
+    "/events/[id]": ["events", "events__event"],
+    "/scouts": ["scouts"],
+    "/scouts/[id]": ["events", "events__event"],
+    "/settings": ["settings"],
+    "/[user]": ["user"],
   },
 };

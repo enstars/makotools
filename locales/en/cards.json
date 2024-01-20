@@ -1,0 +1,14 @@
+{
+  "title": "Cards",
+  "search": {
+    "searchPlaceholder": "Type a card name...",
+    "sortPlaceholder": "Pick a unit...",
+    "cardId": "Card ID",
+    "character": "Character",
+    "charLabel": "Characters",
+    "charPlaceholder": "Pick a character...",
+    "rarityLabel": "Rarity",
+    "showFullInfo": "Show full info"
+  },
+  "resultsFound": "{{count}} results found."
+}

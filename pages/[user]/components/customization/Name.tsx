@@ -1,25 +1,27 @@
 import React, { Dispatch, SetStateAction } from "react";
+import useTranslation from "next-translate/useTranslation";
 
 import TextSetting from "./TextSetting";
 
-function Pronouns({
+function Name({
   externalSetter,
   profileState,
 }: {
   externalSetter: Dispatch<SetStateAction<any>>;
   profileState: any;
 }) {
+  const { t } = useTranslation("user");
   return (
     <TextSetting
-      label="Pronouns"
-      dataKey="profile__pronouns"
-      placeholder={"Not set"}
-      charLimit={30}
+      label={t("nameLabel")}
+      dataKey="name"
+      placeholder={t("basicProfilePlaceholder")}
+      charLimit={50}
       externalSetter={externalSetter}
       profileState={profileState}
-      sx={{ "&&": { flexGrow: 1 } }}
+      sx={{ flexGrow: 2 }}
     />
   );
 }
 
-export default Pronouns;
+export default Name;

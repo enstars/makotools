@@ -9,7 +9,7 @@ import {
   MediaQuery,
   ActionIcon,
 } from "@mantine/core";
-import { IconMenu2 } from "@tabler/icons";
+import { IconMenu2 } from "@tabler/icons-react";
 import useTranslation from "next-translate/useTranslation";
 
 const defaultGetBreadcrumbs = (path: string) =>
