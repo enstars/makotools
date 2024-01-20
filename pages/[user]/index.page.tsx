@@ -792,30 +792,37 @@ export const getServerSideProps = getServerSideUser(
     }
     const db = admin.firestore();
     const docCollection = db.collection("users");
-    const querySnap = await docCollection
-      .where("username", "==", params.user.replace("@", ""))
-      .get();
-    if (!querySnap.empty) {
-      const profile = parseStringify(querySnap.docs[0].data());
-      return {
-        props: {
-          profile,
-          cards: cards.data.filter((c) => bannerIds.includes(c.id)),
-          uid: querySnap.docs[0].id,
-          meta: {
-            title: profile?.name
-              ? `${profile.name} (@${profile.username})`
-              : `@${profile.username}`,
-            desc:
-              profile?.profile__bio ||
-              `View @${profile.username}'s profile on MakoTools`,
+    try {
+      const querySnap = await docCollection
+        .where("username", "==", params.user.replace("@", ""))
+        .get();
+      if (!querySnap.empty) {
+        const profile = parseStringify(querySnap.docs[0].data());
+        return {
+          props: {
+            profile,
+            cards: cards.data.filter((c) => bannerIds.includes(c.id)),
+            uid: querySnap.docs[0].id,
+            meta: {
+              title: profile?.name
+                ? `${profile.name} (@${profile.username})`
+                : `@${profile.username}`,
+              desc:
+                profile?.profile__bio ||
+                `View @${profile.username}'s profile on MakoTools`,
+            },
           },
-        },
+        };
+      }
+
+      return {
+        notFound: true,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        notFound: true,
       };
     }
-
-    return {
-      notFound: true,
-    };
   }
 );

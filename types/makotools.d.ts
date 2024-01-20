@@ -126,6 +126,17 @@ type User = UserLoading | UserLoggedOut | UserLoggedIn;
 
 interface GetServerSideUserContext extends GetServerSidePropsContext {}
 
+type ContributorRole = "admin" | "data" | "design" | "dev" | "translator";
+
+interface Contributor {
+  name: string;
+  credit?: string;
+  makotools?: string;
+  roles?: ContributorRole[];
+  coordinators?: ContributorRole[];
+  translator_languages?: Locale;
+}
+
 // DATA
 
 /** Language data */
