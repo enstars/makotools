@@ -20,8 +20,8 @@ interface Crop {
 }
 
 /** Component defining a profile picture referenced in ProfilePicModal, EditProfileModal, and the profile page
- * @param {string} src - The image source
- * @param {Crop} crop? - The image crop
+ * @param {EditingProfile} userInfo - The user's profile info
+ * @param {number} size? - The size of the avatar
  * @param {string} border? - If the image needs a border, input the border style here
  */
 function ProfileAvatar({
@@ -38,7 +38,28 @@ function ProfileAvatar({
 
   const profile = userInfo || (user.loggedIn ? user.db : undefined);
 
-  if (profile === undefined) return null;
+  const placeholder = (
+    <Box
+      id="placeholder-icon"
+      sx={{
+        position: "relative",
+        width: size,
+        height: size,
+        borderRadius: size,
+        background: theme.colors[theme.primaryColor][1],
+        border: border,
+        textAlign: "center",
+      }}
+    >
+      <IconUser
+        size={size * 0.9}
+        color={theme.colors[theme.primaryColor][3]}
+        style={{ marginTop: 3 }}
+      />
+    </Box>
+  );
+
+  if (profile === undefined) return placeholder;
 
   const src =
     profile.profile__picture &&
@@ -63,26 +84,6 @@ function ProfileAvatar({
   const style = {
     transform: `translate(${transform.x}, ${transform.y}) scale(${transform.scale},${transform.scale})`,
   };
-
-  const placeholder = (
-    <Box
-      sx={{
-        position: "relative",
-        width: size,
-        height: size,
-        borderRadius: size,
-        background: theme.colors[theme.primaryColor][1],
-        border: border,
-        textAlign: "center",
-      }}
-    >
-      <IconUser
-        size={size * 0.9}
-        color={theme.colors[theme.primaryColor][3]}
-        style={{ marginTop: 3 }}
-      />
-    </Box>
-  );
 
   const image = (
     <Image
@@ -113,6 +114,11 @@ function ProfileAvatar({
         },
       })}
     />
+  );
+
+  console.log(
+    "is this true",
+    src && crop && userInfo?.profile__picture?.id !== 0
   );
 
   return src && crop && userInfo?.profile__picture?.id !== 0

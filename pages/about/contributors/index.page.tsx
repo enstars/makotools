@@ -38,7 +38,11 @@ function Page({
   return (
     <>
       <PageTitle title="Contributors" />
-      <ResponsiveGrid alignItems="stretch" className={classes.contributors}>
+      <ResponsiveGrid
+        sx={{ marginTop: 20 }}
+        alignItems="stretch"
+        className={classes.contributors}
+      >
         {contributors.map((contributor) => {
           return (
             <ContributorCard
@@ -56,31 +60,23 @@ export const getServerSideProps = getServerSideUser(async ({ admin }) => {
   const db = admin.firestore();
   const docCollection = db.collection("users");
 
-  let neededProfiles = contributors.map((c) => c.makotools.replace("@", ""));
+  let neededProfiles = contributors
+    .filter((c) => c.admin)
+    .map((c) => c.makotools.replace("@", ""));
   let profiles: any = {};
 
   try {
-    let i = 0;
-    while (i < neededProfiles.length) {
-      const querySnap = await docCollection
-        .where(
-          "username",
-          "in",
-          i + 10 < neededProfiles.length
-            ? neededProfiles.slice(i, i + 10)
-            : neededProfiles.slice(i, neededProfiles.length)
-        )
-        .get();
-      if (!querySnap.empty) {
-        querySnap.forEach((doc) => {
-          const data = doc.data() as UserData;
-          profiles[doc.id] = {
-            profile__banner: data.profile__banner || null,
-            profile__picture: data.profile__picture || null,
-          };
-        });
-      }
-      i += 10;
+    const querySnap = await docCollection
+      .where("username", "in", neededProfiles)
+      .get();
+    if (!querySnap.empty) {
+      querySnap.forEach((doc) => {
+        const data = doc.data() as UserData;
+        profiles[doc.id] = {
+          profile__banner: data.profile__banner || null,
+          profile__picture: data.profile__picture || null,
+        };
+      });
     }
 
     return {

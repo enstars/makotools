@@ -475,53 +475,60 @@ export const getServerSideProps = getServerSideUser(
     }
     const db = admin.firestore();
     const docCollection = db.collection("users");
-    const querySnap = await docCollection
-      .where("username", "==", params.user.replace("@", ""))
-      .get();
-    if (!querySnap.empty) {
-      const profile = parseStringify(querySnap.docs[0].data());
+    try {
+      const querySnap = await docCollection
+        .where("username", "==", params.user.replace("@", ""))
+        .get();
+      if (!querySnap.empty) {
+        const profile = parseStringify(querySnap.docs[0].data());
 
-      if (profile.migrated !== true) {
-        await fetch(
-          `${
-            process.env.NODE_ENV === "development"
-              ? "http://localhost:3000/api"
-              : CONSTANTS.EXTERNAL_URLS.INTERNAL_APIS
-          }/collections/migrate`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
+        if (profile.migrated !== true) {
+          await fetch(
+            `${
+              process.env.NODE_ENV === "development"
+                ? "http://localhost:3000/api"
+                : CONSTANTS.EXTERNAL_URLS.INTERNAL_APIS
+            }/collections/migrate`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                userUID: querySnap.docs[0].id,
+                existingCollection: profile.collection,
+              }),
+            }
+          );
+        }
+        return {
+          props: {
+            profile,
+            cards: cards.data.filter((c) => bannerIds.includes(c.id)),
+            charactersQuery: charactersQuery,
+            unitsQuery: unitsQuery,
+            uid: querySnap.docs[0].id,
+            cardsQuery: cardsQuery,
+            meta: {
+              title: profile?.name
+                ? `${profile.name} (@${profile.username})`
+                : `@${profile.username}`,
+              desc:
+                profile?.profile__bio ||
+                `View @${profile.username}'s profile on MakoTools`,
             },
-            body: JSON.stringify({
-              userUID: querySnap.docs[0].id,
-              existingCollection: profile.collection,
-            }),
-          }
-        );
-      }
-      return {
-        props: {
-          profile,
-          cards: cards.data.filter((c) => bannerIds.includes(c.id)),
-          charactersQuery: charactersQuery,
-          unitsQuery: unitsQuery,
-          uid: querySnap.docs[0].id,
-          cardsQuery: cardsQuery,
-          meta: {
-            title: profile?.name
-              ? `${profile.name} (@${profile.username})`
-              : `@${profile.username}`,
-            desc:
-              profile?.profile__bio ||
-              `View @${profile.username}'s profile on MakoTools`,
           },
-        },
+        };
+      }
+
+      return {
+        notFound: true,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        notFound: true,
       };
     }
-
-    return {
-      notFound: true,
-    };
   }
 );
