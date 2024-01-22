@@ -42,6 +42,8 @@ function ProfileAvatar({
     <Box
       id="placeholder-icon"
       sx={{
+        overflow: "hidden",
+        boxSizing: "border-box",
         position: "relative",
         width: size,
         height: size,
@@ -97,6 +99,7 @@ function ProfileAvatar({
           height: size,
         },
         imageWrapper: {
+          boxSizing: "border-box",
           position: "relative",
           width: size,
           height: size,
@@ -116,10 +119,7 @@ function ProfileAvatar({
     />
   );
 
-  console.log(
-    "is this true",
-    src && crop && userInfo?.profile__picture?.id !== 0
-  );
+  console.log("profile pic", profile.profile__picture);
 
   return src && crop && userInfo?.profile__picture?.id !== 0
     ? image

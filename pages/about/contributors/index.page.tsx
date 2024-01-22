@@ -27,9 +27,10 @@ function Page({
     [uid: string]: UserData["profile__banner" | "profile__picture"];
   };
 }) {
-  console.log("contributors", contributors, profiles);
   const { classes, cx } = useStyles({});
   const user = useUser();
+
+  console.log("profiles", profiles);
 
   const [loadedProfiles, setLoadedProfiles] = useState<{
     [uid: string]: UserData;
@@ -44,8 +45,13 @@ function Page({
         className={classes.contributors}
       >
         {contributors.map((contributor) => {
+          const userData = Object.values(profiles).filter(
+            (p: any) => p.username === contributor.makotools.replace("@", "")
+          )[0];
+          console.log("userData", userData);
           return (
             <ContributorCard
+              userInfo={contributor.admin ? userData : undefined}
               key={contributor.name + contributor.makotools}
               contributor={contributor}
             />
@@ -73,6 +79,7 @@ export const getServerSideProps = getServerSideUser(async ({ admin }) => {
       querySnap.forEach((doc) => {
         const data = doc.data() as UserData;
         profiles[doc.id] = {
+          username: data.username,
           profile__banner: data.profile__banner || null,
           profile__picture: data.profile__picture || null,
         };

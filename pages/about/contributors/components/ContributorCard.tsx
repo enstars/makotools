@@ -2,8 +2,8 @@ import {
   ActionIcon,
   Badge,
   Box,
+  Card,
   Group,
-  Paper,
   Stack,
   Text,
   Title,
@@ -19,11 +19,11 @@ import {
 } from "@tabler/icons-react";
 import Link from "next/link";
 
+import Picture from "components/core/Picture";
 import ProfileAvatar from "pages/[user]/components/profilePicture/ProfileAvatar";
 
 function makeLanguageArray(languagesString: string) {
   const languageArray = languagesString.split(", ");
-  console.log("language array:", languageArray);
   return languageArray;
 }
 
@@ -37,20 +37,56 @@ function ContributorLanguages({
   return <div>TL: {lang}</div>;
 }
 
-function ContributorCard({ contributor }: { contributor: any }) {
+function ContributorCard({
+  userInfo,
+  contributor,
+}: {
+  userInfo?: any;
+  contributor: any;
+}) {
   const theme = useMantineTheme();
+  console.log(userInfo, "userInfo");
+
   return (
     <>
-      <Paper
+      <Card
         p="md"
         shadow="sm"
         radius="md"
         withBorder
         key={contributor.name + contributor.makotools}
       >
+        {userInfo && (
+          <Card.Section>
+            <Picture
+              srcB2={`assets/card_still_full1_${Math.abs(
+                userInfo.profile__banner[0]
+              )}_${
+                userInfo.profile__banner[0] < 0 ? "normal" : "evolution"
+              }.png`}
+              alt={userInfo.username}
+              sx={{
+                height: 75,
+                img: {
+                  pointerEvents: "none",
+                },
+              }}
+            />
+          </Card.Section>
+        )}
         <Stack>
           <Group spacing="lg" align="center">
-            {contributor.admin && <ProfileAvatar size={70} />}
+            {contributor.admin && (
+              <Box sx={{ marginTop: -35 }}>
+                <ProfileAvatar
+                  userInfo={userInfo}
+                  size={70}
+                  border={`3px solid ${
+                    theme.colorScheme === "dark" ? theme.colors.dark[6] : "#fff"
+                  }`}
+                />
+              </Box>
+            )}
             <Box>
               <Group spacing="xs" align="center">
                 <Title order={3} size="h5">
@@ -152,7 +188,7 @@ function ContributorCard({ contributor }: { contributor: any }) {
               })}
           </Group>
         </Stack>
-      </Paper>
+      </Card>
     </>
   );
 }
