@@ -44,19 +44,34 @@ function Page({
         alignItems="stretch"
         className={classes.contributors}
       >
-        {contributors.map((contributor) => {
-          const userData = Object.values(profiles).filter(
-            (p: any) => p.username === contributor.makotools.replace("@", "")
-          )[0];
-          console.log("userData", userData);
-          return (
-            <ContributorCard
-              userInfo={contributor.admin ? userData : undefined}
-              key={contributor.name + contributor.makotools}
-              contributor={contributor}
-            />
-          );
-        })}
+        {contributors
+          .filter((c) => c.admin)
+          .map((contributor) => {
+            const userData = Object.values(profiles).filter(
+              (p: any) => p.username === contributor.makotools.replace("@", "")
+            )[0];
+            return (
+              <ContributorCard
+                userInfo={contributor.admin ? userData : undefined}
+                key={contributor.name + contributor.makotools}
+                contributor={contributor}
+              />
+            );
+          })}
+        {contributors
+          .filter((c) => !c.admin)
+          .map((contributor) => {
+            const userData = Object.values(profiles).filter(
+              (p: any) => p.username === contributor.makotools.replace("@", "")
+            )[0];
+            return (
+              <ContributorCard
+                userInfo={contributor.admin ? userData : undefined}
+                key={contributor.name + contributor.makotools}
+                contributor={contributor}
+              />
+            );
+          })}
       </ResponsiveGrid>
     </>
   );

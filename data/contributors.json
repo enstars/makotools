@@ -1,5 +1,16 @@
 [
   {
+    "name": "yuu",
+    "admin": true,
+    "dev": true,
+    "design": true,
+    "data": true,
+    "translation": true,
+    "lang": "Thai",
+    "makotools": "@mako",
+    "credit": "github.com/kamishirorui"
+  },
+  {
     "name": "ren",
     "admin": true,
     "dev": true,
@@ -19,18 +30,7 @@
     "translation": false,
     "lang": "",
     "makotools": "@trickstar",
-    "credit": ""
-  },
-  {
-    "name": "yuu",
-    "admin": true,
-    "dev": true,
-    "design": true,
-    "data": true,
-    "translation": true,
-    "lang": "Thai",
-    "makotools": "@mako",
-    "credit": "github.com/kagiura"
+    "credit": "twitter.com/nightreii"
   },
   {
     "name": "son",
@@ -41,18 +41,7 @@
     "translation": false,
     "lang": "",
     "makotools": "@niki",
-    "credit": "https://twitter.com/HELLOGlRLS"
-  },
-  {
-    "name": "midori",
-    "admin": true,
-    "dev": true,
-    "design": false,
-    "data": false,
-    "translation": false,
-    "lang": "",
-    "makotools": "@gayandasleep",
-    "credit": "github.com/myang5"
+    "credit": "https://twitter.com/hellogirls_dev"
   },
   {
     "name": "gradual",
@@ -66,14 +55,14 @@
     "credit": "https://gradualcolors.github.io"
   },
   {
-    "name": "Sei",
+    "name": "sei",
     "admin": false,
     "dev": true,
     "design": false,
     "data": true,
     "translation": true,
     "lang": "Japanese",
-    "makotools": "@yaycupcake",
+    "makotools": "@4674AC",
     "credit": "github.com/yaycupcake"
   },
   {
@@ -85,7 +74,7 @@
     "translation": false,
     "lang": "",
     "makotools": "@narunaru",
-    "credit": "https://twitter.com/tealharp"
+    "credit": "https://twitter.com/tatsumipunch"
   },
   {
     "name": "clock",
@@ -95,8 +84,8 @@
     "data": true,
     "translation": false,
     "lang": "",
-    "makotools": "",
-    "credit": ""
+    "makotools": "@alkalinestar",
+    "credit": "https://twitter.com/joltcounting"
   },
   {
     "name": "asakoto",
@@ -112,7 +101,7 @@
   {
     "name": "lily",
     "admin": false,
-    "dev": true,
+    "dev": false,
     "design": true,
     "data": false,
     "translation": false,
@@ -128,8 +117,8 @@
     "data": false,
     "translation": true,
     "lang": "Polish",
-    "makotools": "@41E223",
-    "credit": ""
+    "makotools": "@hokuto",
+    "credit": "https://twitter.com/hokutal"
   },
   {
     "name": "remi",
@@ -140,7 +129,7 @@
     "translation": true,
     "lang": "Japanese",
     "makotools": "@himemiya",
-    "credit": "https://twitter.com/trystofstars"
+    "credit": "https://twitter.com/106rnc"
   },
   {
     "name": "aleks",
@@ -205,8 +194,8 @@
     "data": true,
     "translation": false,
     "lang": "",
-    "makotools": "@EE3BC4",
-    "credit": ""
+    "makotools": "@bluebird",
+    "credit": "https://twitter.com/tsukinoempire"
   },
   {
     "name": "nico",
@@ -217,7 +206,7 @@
     "translation": true,
     "lang": "Filipino",
     "makotools": "@hasumins",
-    "credit": ""
+    "credit": "https://twitter.com/takaminies"
   },
   {
     "name": "penguin",
@@ -253,14 +242,14 @@
     "credit": ""
   },
   {
-    "name": "may",
+    "name": "may/leaf",
     "admin": false,
     "dev": false,
     "design": false,
     "data": true,
-    "translation": true,
+    "translation": false,
     "lang": "German",
-    "makotools": "@astesicelive",
+    "makotools": "@chronoscore",
     "credit": "https://twitter.com/chronoscore48"
   },
   {
@@ -283,7 +272,7 @@
     "translation": true,
     "lang": "Indonesian",
     "makotools": "@adissa_39",
-    "credit": "https://twitter.com/KuruNito_39"
+    "credit": "https://twitter.com/AuthenticMelody"
   },
   {
     "name": "Vivian",
@@ -326,8 +315,8 @@
     "data": false,
     "translation": true,
     "lang": "Polish",
-    "makotools": "@kurokeism",
-    "credit": "https://twitter.com/hasumist"
+    "makotools": "@kurodaras",
+    "credit": ""
   },
   {
     "name": "Hapi",
@@ -359,8 +348,8 @@
     "data": false,
     "translation": true,
     "lang": "Indonesian",
-    "makotools": "",
-    "credit": ""
+    "makotools": "@chiarakisarri",
+    "credit": "https://twitter.com/ChiaraKisarri"
   },
   {
     "name": "chiffon",
@@ -415,7 +404,7 @@
     "translation": true,
     "lang": "Russian",
     "makotools": "@lizanyanka",
-    "credit": ""
+    "credit": "https://t.me/Ddczz"
   },
   {
     "name": "jay",
@@ -426,7 +415,7 @@
     "translation": true,
     "lang": "Spanish",
     "makotools": "@lilfishie",
-    "credit": ""
+    "credit": "https://twitter.com/elpisbird"
   },
   {
     "name": "jes",
@@ -440,15 +429,15 @@
     "credit": "https://twitter.com/naesmu"
   },
   {
-    "name": "Kes",
-    "admin": false,
-    "dev": false,
+    "name": "midori",
+    "admin": true,
+    "dev": true,
     "design": false,
     "data": false,
-    "translation": true,
-    "lang": "Filipino",
-    "makotools": "",
-    "credit": ""
+    "translation": false,
+    "lang": "",
+    "makotools": "@gayandasleep",
+    "credit": "github.com/myang5"
   },
   {
     "name": "Mel",
@@ -458,7 +447,7 @@
     "data": false,
     "translation": true,
     "lang": "Spanish",
-    "makotools": "@himemayo",
+    "makotools": "@kanatatsu",
     "credit": "https://twitter.com/angelusphilia"
   },
   {
@@ -473,15 +462,15 @@
     "credit": ""
   },
   {
-    "name": "Nazu <3",
+    "name": "Nazu",
     "admin": false,
     "dev": false,
     "design": false,
     "data": false,
     "translation": true,
     "lang": "Malay",
-    "makotools": "",
-    "credit": ""
+    "makotools": "@nazuniiichin",
+    "credit": "https://twitter.com/nazuniiichin"
   },
   {
     "name": "sea",
@@ -503,7 +492,7 @@
     "translation": true,
     "lang": "Malay",
     "makotools": "@nurinee353",
-    "credit": "https://msha.ke/nurinee"
+    "credit": "https://instagram.com/_nurinee353_?igshid=ZDdkNTZiNTM="
   },
   {
     "name": "ocha",
@@ -623,7 +612,7 @@
     "data": false,
     "translation": true,
     "lang": "Indonesian",
-    "makotools": "@taelicious",
+    "makotools": "@arashi_p",
     "credit": "https://twitter.com/kxedehara"
   },
   {
@@ -656,7 +645,7 @@
     "data": false,
     "translation": true,
     "lang": "Spanish",
-    "makotools": "@4414DF",
+    "makotools": "@yamimayu",
     "credit": "https://twitter.com/Yami_Hikari1"
   },
   {
@@ -667,6 +656,17 @@
     "data": false,
     "translation": true,
     "lang": "Portuguese (Brazil)",
+    "makotools": "",
+    "credit": ""
+  },
+  {
+    "name": "yuu",
+    "admin": false,
+    "dev": false,
+    "design": false,
+    "data": false,
+    "translation": true,
+    "lang": "Thai",
     "makotools": "",
     "credit": ""
   },
@@ -693,7 +693,7 @@
     "credit": ""
   },
   {
-    "name": "Neo",
+    "name": "Seoneoji",
     "admin": false,
     "dev": false,
     "design": false,
@@ -737,22 +737,11 @@
     "credit": "https://twitter.com/sheepishbleats"
   },
   {
-    "name": "Claire",
+    "name": "Danny",
     "admin": false,
     "dev": false,
     "design": false,
-    "data": false,
-    "translation": true,
-    "lang": "Italian",
-    "makotools": "@clairestsos",
-    "credit": "https://twitter.com/junouibaguette"
-  },
-  {
-    "name": "Steph",
-    "admin": false,
-    "dev": false,
-    "design": false,
-    "data": false,
+    "data": true,
     "translation": true,
     "lang": "Portuguese (Brazil)",
     "makotools": "@howlinvixen",
@@ -781,15 +770,15 @@
     "credit": "https://twitter.com/2kiskitchen"
   },
   {
-    "name": "Yami",
+    "name": "Claire",
     "admin": false,
     "dev": false,
     "design": false,
     "data": false,
     "translation": true,
-    "lang": "Vietnamese",
-    "makotools": "",
-    "credit": ""
+    "lang": "Italian",
+    "makotools": "@clairestsos",
+    "credit": "https://twitter.com/junouibaguette"
   },
   {
     "name": "joon",
@@ -844,7 +833,7 @@
     "translation": true,
     "lang": "Vietnamese",
     "makotools": "@lizlamourliz",
-    "credit": "https://twitter.com/lizlamourliz_21?t=2AsyEUn3U2CAuQWEWgUD6g&s=09"
+    "credit": "https://twitter.com/lizlamourliz_21"
   },
   {
     "name": "senya",
@@ -924,7 +913,7 @@
     "credit": "https://twitter.com/4507Lin"
   },
   {
-    "name": "Gueru",
+    "name": "Eru",
     "admin": false,
     "dev": false,
     "design": false,
@@ -935,7 +924,7 @@
     "credit": "https://twitter.com/gyeruu"
   },
   {
-    "name": "Kesuka",
+    "name": "Kes",
     "admin": false,
     "dev": false,
     "design": false,
@@ -955,5 +944,38 @@
     "lang": "Korean",
     "makotools": "@kohakuinmymouth",
     "credit": ""
+  },
+  {
+    "name": "eddie",
+    "admin": false,
+    "dev": false,
+    "design": false,
+    "data": true,
+    "translation": false,
+    "lang": "",
+    "makotools": "@stippling",
+    "credit": "https://lightvznz.tumblr.com/"
+  },
+  {
+    "name": "rei",
+    "admin": false,
+    "dev": false,
+    "design": false,
+    "data": true,
+    "translation": false,
+    "lang": "",
+    "makotools": "@kohakunnn",
+    "credit": "https://twitter.com/c4lyx"
+  },
+  {
+    "name": "Star",
+    "admin": false,
+    "dev": false,
+    "design": false,
+    "data": true,
+    "translation": false,
+    "lang": "",
+    "makotools": "@nazunanito",
+    "credit": "https://twitter.com/yaoimaiden"
   }
 ]
