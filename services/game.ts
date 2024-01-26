@@ -24,7 +24,7 @@ export function getNameOrder(
   }:
     | { first_name: string; last_name: string }
     | { first_name: string[]; last_name: string[] },
-  setting: NameOrder = "lastfirst",
+  setting: NameOrder = "firstlast",
   locale: Locale | string = DEFAULT_LOCALE
   //   string accepted bc nextjs always returns locale as string
 ): string {

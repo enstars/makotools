@@ -124,7 +124,17 @@ function EditProfileModal({
             <Text weight={700}>{t("basicInfo")}</Text>
           </Accordion.Control>
           <Accordion.Panel>
-            <Group spacing="lg" align="flex-start">
+            <Group
+              id="icon-group"
+              spacing="lg"
+              align="flex-start"
+              sx={{
+                [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+                  flexDirection: "column",
+                  alignItems: "center",
+                },
+              }}
+            >
               <Box sx={{ flex: "0 0 120px" }}>
                 <Stack align="center" spacing="xs">
                   <ProfileAvatar userInfo={profileState} />

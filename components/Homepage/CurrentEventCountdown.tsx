@@ -105,12 +105,7 @@ function CurrentEventCountdown({ events }: { events: Event[] }) {
   const { t } = useTranslation("home");
   const { dayjs } = useDayjs();
 
-  const [noWrap, setNoWrap] = useState<boolean>(true);
   const [yippeeTime, setYippeeTime] = useState<boolean>(false);
-
-  useEffect(() => {
-    window.innerWidth < 900 ? setNoWrap(false) : setNoWrap(true);
-  }, []);
 
   const { classes } = useStyles();
 
@@ -160,7 +155,15 @@ function CurrentEventCountdown({ events }: { events: Event[] }) {
         className={classes.eventContainer}
       >
         {yippeeTime && <Confetti recycle={false} />}
-        <Group noWrap={noWrap} align="flex-start" spacing="xl">
+        <Group
+          sx={{
+            [`@media (max-width: 800px)`]: {
+              flexWrap: "wrap",
+            },
+          }}
+          align="flex-start"
+          spacing="xl"
+        >
           <EventImage event={shownEvent} />
           <Stack justify="space-around">
             <Box>
