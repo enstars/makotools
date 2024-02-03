@@ -544,11 +544,24 @@ function ProfileSummary({ character }: { character: GameCharacter }) {
   return (
     <Box
       id="chara-info-summary"
-      pos="absolute"
-      top={isMobile ? "50%" : "15%"}
-      left={isMobile ? "2px" : undefined}
-      right={isMobile ? undefined : "5%"}
-      sx={{ zIndex: 3 }}
+      sx={{
+        zIndex: 3,
+
+        position: "absolute",
+        width: 350,
+        right: 0,
+        top: 180,
+        [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+          width: 350,
+        },
+        [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+          width: `75%`,
+          marginRight: "25%",
+          right: "unset",
+          left: 0,
+          // minWidth: 300,
+        },
+      }}
     >
       <Paper
         shadow="md"
@@ -556,7 +569,6 @@ function ProfileSummary({ character }: { character: GameCharacter }) {
         radius="md"
         sx={{
           borderTop: `6px solid ${character.image_color}`,
-          width: isMobile ? "90vw" : "33vw",
         }}
       >
         <Group
@@ -615,6 +627,7 @@ function ProfileSummary({ character }: { character: GameCharacter }) {
             }
             label="Image color"
           />
+          <Reactions fullButton={false} />
         </Stack>
       </Paper>
     </Box>
@@ -730,17 +743,23 @@ function Page({
       <Box
         id="chara-summary-container"
         pos="relative"
-        sx={{
+        sx={(theme) => ({
           width: "100%",
-          height: "100vh",
+          height: 700,
           marginTop: 10,
-        }}
+          [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+            height: "auto",
+          },
+        })}
       >
         <Box
           id="chara-title-info"
-          pos="absolute"
           sx={{
             zIndex: 2,
+            position: "absolute",
+            [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+              position: "relative",
+            },
           }}
         >
           <Title
@@ -760,42 +779,60 @@ function Page({
           >
             CV: {character.character_voice[0]}
           </Text>
-          <Title
-            order={3}
-            size="h2"
+          <Text
+            weight={700}
             sx={{
+              fontFamily: theme.headings.fontFamily,
               fontSize: isMobile ? "1.2rem" : "26px",
-              marginTop: "4%",
-              width: isMobile ? "60%" : "33%",
+              marginTop: theme.spacing.xs,
+              marginBottom: theme.spacing.xs,
               maxWidth: "33%",
               display: "flex",
-              gap: "25px",
+              gap: "1.25rem",
               alignItems: "flex-start",
               "&:before": {
                 content: '""',
                 width: 0,
                 height: 0,
-                borderTop: `40px solid ${baseColor}`,
-                borderLeft: `40px solid transparent`,
+                borderTop: `1.25em solid ${baseColor}`,
+                borderLeft: `1.25em solid transparent`,
+              },
+              [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+                maxWidth: "100%",
+                marginRight: "33%",
               },
             }}
           >
             {character.quote[0]}
-          </Title>
+          </Text>
         </Box>
         <Box
           id="chara-render"
-          pos="absolute"
           sx={{
-            width: "100%",
+            width: 700,
             zIndex: 3,
+            pointerEvents: "none",
+            left: "50%",
+            position: "absolute",
+            transform: "translateX(-50%)",
+
+            [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+              marginLeft: 0,
+              left: "87.5%",
+              width: 500,
+              top: theme.spacing.xl,
+            },
           }}
         >
           <Box
             sx={{
-              marginLeft: "10%",
-              marginTop: "50px",
-              width: isMobile ? 500 : 700,
+              width: "100%",
+              // marginLeft: "10%",
+              // marginTop: "50px",
+              [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+                width: 500,
+                margin: 0,
+              },
             }}
           >
             <Picture
@@ -816,7 +853,7 @@ function Page({
         <Box
           id="chara-bg"
           pos="absolute"
-          sx={{ zIndex: 1, width: "100%", height: "100vh" }}
+          sx={{ zIndex: 1, width: "100%", height: "100vh", top: 0 }}
         >
           <Box
             sx={{
@@ -842,10 +879,7 @@ function Page({
           />
         </Box>
       </Box>
-      <Box mt={isMobile ? "5vh" : undefined}>
-        <Reactions />
-      </Box>
-      <Box sx={{ width: "95%", margin: "20vh auto 0 auto" }}>
+      <Box sx={{ width: "95%", margin: "auto" }} mt="xl">
         <Title order={4} size="h2">
           Introduction
         </Title>
