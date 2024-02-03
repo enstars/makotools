@@ -56,7 +56,7 @@ module.exports = {
     "/about/translations": ["about__translations"],
     "/calendar": ["calendar", "game__campaignTypes"],
     "/cards": ["cards"],
-    "/cards/[id]": ["cards__card"],
+    "/cards/[id]": ["cards__card", "skills"],
     "/events": ["events"],
     "/events/[id]": ["events", "events__event"],
     "/scouts": ["scouts"],
