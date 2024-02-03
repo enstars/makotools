@@ -119,8 +119,6 @@ function ProfileAvatar({
     />
   );
 
-  console.log("profile pic", profile.profile__picture);
-
   return src && crop && userInfo?.profile__picture?.id !== 0
     ? image
     : placeholder;

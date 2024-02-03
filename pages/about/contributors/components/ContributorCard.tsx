@@ -45,7 +45,6 @@ function ContributorCard({
   contributor: any;
 }) {
   const theme = useMantineTheme();
-  console.log(userInfo, "userInfo");
 
   return (
     <>

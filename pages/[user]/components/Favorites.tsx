@@ -142,6 +142,7 @@ function Favorites({
           <Button
             variant="light"
             onClick={() => {
+              // TODO: compute if someone is an everyoneP via a different method
               selectedUnitsHandlers.setState(units.map((unit) => unit.id));
               selectedCharasHandlers.setState(
                 characters.map((chara) => chara.character_id)

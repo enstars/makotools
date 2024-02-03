@@ -73,89 +73,91 @@ function DisplayFaves({
       <Stack spacing={2}>
         <Group spacing={3}>
           {faveCharas.map((chara: number, index: number) => {
-            return (
-              <Tooltip
-                key={chara}
-                label={getNameOrder(
-                  {
-                    first_name: characters.filter(
-                      (c) => c.character_id === chara
-                    )[0].first_name[0],
-                    last_name: characters.filter(
-                      (c) => c.character_id === chara
-                    )[0].last_name[0],
-                  },
-                  profile.setting__name_order
-                )}
-                transition="slide-up"
-                transitionDuration={500}
-                offset={0}
-                p={3}
-              >
-                <ThemeIcon
-                  variant="default"
-                  size={50}
-                  radius={25}
-                  sx={{ background: "none", border: "none" }}
+            if (index > 0)
+              return (
+                <Tooltip
+                  key={chara}
+                  label={getNameOrder(
+                    {
+                      first_name: characters.filter(
+                        (c) => c.character_id === chara
+                      )[0].first_name[0],
+                      last_name: characters.filter(
+                        (c) => c.character_id === chara
+                      )[0].last_name[0],
+                    },
+                    profile.setting__name_order
+                  )}
+                  transition="slide-up"
+                  transitionDuration={500}
+                  offset={0}
+                  p={3}
                 >
-                  <Picture
-                    transparent
-                    srcB2={`assets/character_sd_square1_${chara}.png`}
-                    alt={
-                      characters.filter((c) => c.character_id === chara)[0]
-                        .first_name[0]
-                    }
-                    fill={false}
-                    width={50}
-                    height={50}
-                    sx={{
-                      pointerEvents: "none",
-                    }}
-                  />
-                </ThemeIcon>
-              </Tooltip>
-            );
+                  <ThemeIcon
+                    variant="default"
+                    size={50}
+                    radius={25}
+                    sx={{ background: "none", border: "none" }}
+                  >
+                    <Picture
+                      transparent
+                      srcB2={`assets/character_sd_square1_${chara}.png`}
+                      alt={
+                        characters.filter((c) => c.character_id === chara)[0]
+                          .first_name[0]
+                      }
+                      fill={false}
+                      width={50}
+                      height={50}
+                      sx={{
+                        pointerEvents: "none",
+                      }}
+                    />
+                  </ThemeIcon>
+                </Tooltip>
+              );
           })}
         </Group>
         <Group spacing={3}>
           {faveUnits.map((unit: number, index: number) => {
-            return (
-              <Tooltip
-                key={unit}
-                label={units.filter((u) => u.id === unit)[0].name[0]}
-                position="bottom"
-                transition="slide-down"
-                transitionDuration={500}
-                offset={0}
-                p={3}
-              >
-                <Box
-                  p={5}
-                  sx={(theme) => ({
-                    display: "flex",
-                    alignItems: "center",
-                    height: 50,
-                    minHeight: 50,
-                  })}
+            if (index > 0)
+              return (
+                <Tooltip
+                  key={unit}
+                  label={units.filter((u) => u.id === unit)[0].name[0]}
+                  position="bottom"
+                  transition="slide-down"
+                  transitionDuration={500}
+                  offset={0}
+                  p={3}
                 >
-                  <Image
-                    src={getAssetURL(`assets/unit_logo_border_${unit}.png`)}
-                    alt={units.filter((u) => u.id === unit)[0].name[0]}
-                    height={
-                      unit === 16 || unit === 14 || unit === 11 || unit === 8
-                        ? 30
-                        : unit === 6 || unit === 9
-                        ? 20
-                        : unit === 15
-                        ? 15
-                        : 25
-                    }
-                    width="auto"
-                    sx={{ pointerEvents: "none" }}
-                  />
-                </Box>
-              </Tooltip>
-            );
+                  <Box
+                    p={5}
+                    sx={(theme) => ({
+                      display: "flex",
+                      alignItems: "center",
+                      height: 50,
+                      minHeight: 50,
+                    })}
+                  >
+                    <Image
+                      src={getAssetURL(`assets/unit_logo_border_${unit}.png`)}
+                      alt={units.filter((u) => u.id === unit)[0].name[0]}
+                      height={
+                        unit === 16 || unit === 14 || unit === 11 || unit === 8
+                          ? 30
+                          : unit === 6 || unit === 9
+                          ? 20
+                          : unit === 15
+                          ? 15
+                          : 25
+                      }
+                      width="auto"
+                      sx={{ pointerEvents: "none" }}
+                    />
+                  </Box>
+                </Tooltip>
+              );
           })}
         </Group>
       </Stack>

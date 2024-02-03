@@ -253,22 +253,25 @@ function Page({
                       : [0]
                     ).map((n) => (
                       <Fragment key={n}>
-                        {profileData.profile__banner?.map((c: number) => (
-                          <Carousel.Slide
-                            key={`${c.toString()}${n.toString()}`}
-                          >
-                            <Picture
-                              alt={`Card ${c}`}
-                              srcB2={`assets/card_still_full1_${Math.abs(c)}_${
-                                c > 0 ? "evolution" : "normal"
-                              }.png`}
-                              sx={{
-                                height: "100%",
-                              }}
-                              radius="sm"
-                            />
-                          </Carousel.Slide>
-                        ))}
+                        {profileData.profile__banner?.map((c: number) => {
+                          if (c)
+                            return (
+                              <Carousel.Slide
+                                key={`${c.toString()}${n.toString()}`}
+                              >
+                                <Picture
+                                  alt={`Card ${c}`}
+                                  srcB2={`assets/card_still_full1_${Math.abs(
+                                    c
+                                  )}_${c > 0 ? "evolution" : "normal"}.png`}
+                                  sx={{
+                                    height: "100%",
+                                  }}
+                                  radius="sm"
+                                />
+                              </Carousel.Slide>
+                            );
+                        })}
                       </Fragment>
                     ))}
                   </Carousel>

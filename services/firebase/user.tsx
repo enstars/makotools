@@ -77,12 +77,12 @@ export function UserProvider({
       const setFirestoreData = async () => {
         try {
           let currentUserData: UserData | undefined = undefined,
-            fetchCount = 5;
+            fetchCount = 10;
           while (!currentUserData && fetchCount > 0 && AuthUser.id) {
             currentUserData = await getFirestoreUserData(AuthUser.id);
             fetchCount--;
           }
-          if (typeof currentUserData !== "undefined" && AuthUser.id !== null) {
+          if (currentUserData !== undefined && AuthUser.id !== null) {
             const db: UserData = {
               ...currentUserData,
               set: (data: any, callback?: () => void) => {
@@ -110,6 +110,7 @@ export function UserProvider({
                 );
               },
             };
+
             setUser((s) => ({
               ...s,
               loading: false as const,

@@ -30,8 +30,6 @@ function Page({
   const { classes, cx } = useStyles({});
   const user = useUser();
 
-  console.log("profiles", profiles);
-
   const [loadedProfiles, setLoadedProfiles] = useState<{
     [uid: string]: UserData;
   }>({});
