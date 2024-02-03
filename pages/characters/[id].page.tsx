@@ -12,11 +12,18 @@ import {
   Tooltip,
   ActionIcon,
   Accordion,
+  Checkbox,
 } from "@mantine/core";
 import Confetti from "react-confetti";
 import { IconCake, IconStar } from "@tabler/icons-react";
 import { Fragment, createRef, useEffect, useState } from "react";
 import { useMediaQuery } from "@mantine/hooks";
+import {
+  Parallax,
+  ParallaxProvider,
+  useParallaxController,
+} from "react-scroll-parallax";
+import { useRouter } from "next/router";
 
 import CharacterCard from "./components/CharacterCard";
 
@@ -41,7 +48,8 @@ import { useCollections } from "services/makotools/collection";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 import useUser from "services/firebase/user";
 import NameOrder from "components/utilities/formatting/NameOrder";
-
+import IconEnstars from "components/core/IconEnstars";
+import SectionTitle from "pages/events/components/SectionTitle";
 function CharacterMiniInfo({
   label,
   info,
@@ -49,7 +57,7 @@ function CharacterMiniInfo({
   label: string;
   info: string | number | JSX.Element;
 }) {
-  const isMobile = useMediaQuery("(max-width: 812px)");
+  const isMobile = useMediaQuery("(max-width: 768px)");
   return (
     <Group>
       <Text
@@ -106,7 +114,7 @@ function CirclesSection({
   textColor: string;
 }) {
   const theme = useMantineTheme();
-  const isMobile = useMediaQuery("(max-width: 812px)");
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   return (
     <Box id="circles">
@@ -493,11 +501,13 @@ function UnitSection({
   character,
   locale,
   units,
+  baseColor,
 }: {
   characters: GameCharacter[];
   character: GameCharacter;
   locale: Lang[];
   units: GameUnit[];
+  baseColor: string;
 }) {
   const charaUnits = units.filter((u) => character.unit.includes(u.id));
 
@@ -507,17 +517,23 @@ function UnitSection({
         const otherMembers = characters.filter((c) => c.unit.includes(unit.id));
         return (
           <>
-            <Title
-              order={4}
-              size="h2"
-              sx={{
-                margin: "8vh 0px 4vh 0px",
-              }}
-            >
-              {index === 0
-                ? `${character.first_name[0]} is a member of ${unit.name[0]}!`
-                : `${character.first_name[0]} is also a member of ${unit.name[0]}!`}
-            </Title>
+            <SectionTitle
+              id={`unit-${unit.id}`}
+              Icon={IconEnstars}
+              iconProps={{ unit: unit.id, color: baseColor }}
+              title={
+                <>
+                  <Text weight={400} span>
+                    {character.first_name[0]} is {index !== 0 ? "also" : ""} a
+                    member of{" "}
+                  </Text>
+                  {unit.name[0]}
+                  <Text weight={400} span>
+                    !
+                  </Text>
+                </>
+              }
+            />
             <ResponsiveGrid
               width={`${Math.round(100 / otherMembers.length) - 1}%`}
             >
@@ -537,9 +553,17 @@ function UnitSection({
   );
 }
 
-function ProfileSummary({ character }: { character: GameCharacter }) {
+function ProfileSummary({
+  character,
+  renderFaded,
+  setRenderFaded,
+}: {
+  character: GameCharacter;
+  renderFaded: boolean;
+  setRenderFaded: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const theme = useMantineTheme();
-  const isMobile = useMediaQuery("(max-width: 812px)");
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const { dayjs } = useDayjs();
   return (
     <Box
@@ -551,14 +575,16 @@ function ProfileSummary({ character }: { character: GameCharacter }) {
         width: 350,
         right: 0,
         top: 180,
-        [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+        [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
           width: 350,
         },
-        [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+        [`@media (max-width: ${theme.breakpoints.md}px)`]: {
           width: `75%`,
           marginRight: "25%",
-          right: "unset",
+          position: "relative",
           left: 0,
+          top: 0,
+          right: "unset",
           // minWidth: 300,
         },
       }}
@@ -571,6 +597,20 @@ function ProfileSummary({ character }: { character: GameCharacter }) {
           borderTop: `6px solid ${character.image_color}`,
         }}
       >
+        {isMobile && (
+          <Group position="right">
+            <Checkbox
+              size="xs"
+              label="Fade render"
+              checked={renderFaded}
+              onChange={() => setRenderFaded(!renderFaded)}
+              color={theme.colorScheme === "dark" ? "dark" : "blue"}
+              sx={{
+                marginBottom: theme.spacing.md,
+              }}
+            />
+          </Group>
+        )}
         <Group
           sx={{
             justifyContent: "space-between",
@@ -634,6 +674,91 @@ function ProfileSummary({ character }: { character: GameCharacter }) {
   );
 }
 
+function CharaRender(
+  // theme,
+  // renderFaded: boolean,
+  // character: GameCharacter<string[]>,
+  // renderHeight: number
+  {
+    theme,
+    renderFaded,
+    character,
+    renderHeight,
+  }: {
+    theme: ReturnType<typeof useMantineTheme>;
+    renderFaded: boolean;
+    character: GameCharacter<string[]>;
+    renderHeight: number;
+  }
+) {
+  const parallaxController = useParallaxController();
+  return (
+    <Box
+      id="chara-render"
+      sx={{
+        width: 700,
+        zIndex: 3,
+        pointerEvents: "none",
+        left: "50%",
+        top: scrollY / 5,
+        position: "absolute",
+        transition: "0.2s ease",
+
+        [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+          marginLeft: 0,
+          left: "87.5%",
+          width: 500,
+          top: theme.spacing.xl,
+        },
+
+        transform: renderFaded
+          ? "translateX(-50%) translateX(33%)"
+          : "translateX(-50%)",
+        opacity: renderFaded ? 0.25 : 1,
+      }}
+    >
+      <Box
+        sx={{
+          width: "100%",
+          // marginLeft: "10%",
+          // marginTop: "50px",
+          [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+            width: 500,
+            margin: 0,
+          },
+        }}
+      >
+        <Parallax speed={-10}>
+          <Picture
+            srcB2={`render/character_full1_${character.character_id}.png`}
+            transparent
+            alt={character.first_name[0]}
+            fill={false}
+            width={renderHeight}
+            height={renderHeight}
+            style={{
+              userSelect: "none",
+              pointerEvents: "none",
+            }}onLoad={() => parallaxController.update()} />
+          />
+        </Parallax>
+      </Box>
+    </Box>
+  );
+}
+
+function ParallaxCacheUpdater() {
+  const parallaxController = useParallaxController();
+  const router = useRouter();
+
+  useEffect(() => {
+    console.log("HI");
+    if (parallaxController) parallaxController.update();
+  }, [router.asPath, parallaxController]);
+
+  return null;
+}
+
 function Page({
   characterQuery,
   charactersQuery,
@@ -650,7 +775,7 @@ function Page({
   unitsQuery: QuerySuccess<GameUnit[]>;
 }) {
   const theme = useMantineTheme();
-  const isMobile = useMediaQuery("(max-width: 812px)");
+  const isMobile = useMediaQuery(theme.fn.smallerThan("md"));
   const user = useUser();
   const { dayjs } = useDayjs();
   const { data: character } = characterQuery;
@@ -659,6 +784,7 @@ function Page({
   const { data: events } = eventsQuery;
   const { data: scouts } = scoutsQuery;
   const { data: units } = unitsQuery;
+  const [renderFaded, setRenderFaded] = useState(false);
 
   const charaEvents = events.filter((event) => {
     for (let card of event.cards) {
@@ -681,6 +807,8 @@ function Page({
   const charaCards = cards.filter(
     (card) => card.character_id === character.character_id
   );
+
+  const renderHeight = isMobile ? 500 : 700;
 
   if (character.character_id === 74)
     console.log("oh my god niki shiina from ensemble stars");
@@ -721,7 +849,8 @@ function Page({
         }%, ${hsl.l - 55 < 20 ? 20 : hsl.l - 55}%)`;
 
   return (
-    <>
+    <ParallaxProvider>
+      <ParallaxCacheUpdater />
       {dayjs(character.birthday).year(new Date().getFullYear()).isToday() && (
         <>
           <Confetti
@@ -747,7 +876,8 @@ function Page({
           width: "100%",
           height: 700,
           marginTop: 10,
-          [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+          minHeight: renderHeight + 50,
+          [`@media (max-width: ${theme.breakpoints.md}px)`]: {
             height: "auto",
           },
         })}
@@ -757,7 +887,7 @@ function Page({
           sx={{
             zIndex: 2,
             position: "absolute",
-            [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+            [`@media (max-width: ${theme.breakpoints.md}px)`]: {
               position: "relative",
             },
           }}
@@ -766,130 +896,130 @@ function Page({
             order={1}
             sx={{
               wordSpacing: "9999rem",
-              fontSize: isMobile ? "3rem" : "6rem",
-              lineHeight: 1,
+              fontSize: "6rem",
+              lineHeight: 1.1,
+              marginTop: theme.spacing.xl * 2,
+              [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+                fontSize: "3rem",
+              },
             }}
           >
             <NameOrder {...character} locale={cardsQuery.lang[0].locale} />
           </Title>
           <Text
+            weight={500}
+            mt={theme.spacing.xs}
+            mb={theme.spacing.lg}
             sx={{
-              fontSize: isMobile ? "1.5rem" : "2rem",
+              fontSize: "1.25rem",
+              // [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+              //   fontSize: "1.25rem",
+              // },
             }}
           >
             CV: {character.character_voice[0]}
           </Text>
           <Text
-            weight={700}
+            // weight={700}
+            my={theme.spacing.md}
             sx={{
               fontFamily: theme.headings.fontFamily,
-              fontSize: isMobile ? "1.2rem" : "26px",
-              marginTop: theme.spacing.xs,
-              marginBottom: theme.spacing.xs,
+              fontSize: "1.5rem",
               maxWidth: "33%",
               display: "flex",
-              gap: "1.25rem",
-              alignItems: "flex-start",
               "&:before": {
                 content: '""',
                 width: 0,
                 height: 0,
-                borderTop: `1.25em solid ${baseColor}`,
-                borderLeft: `1.25em solid transparent`,
+                borderTop: `1em solid ${baseColor}`,
+                borderLeft: `1em solid transparent`,
+                position: "relative",
+                top: "0.3rem",
+                marginRight: theme.spacing.sm,
               },
               [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+                fontSize: "1rem",
+              },
+              [`@media (max-width: ${theme.breakpoints.md}px)`]: {
                 maxWidth: "100%",
                 marginRight: "33%",
+                fontSize: "1.15rem",
               },
             }}
           >
             {character.quote[0]}
           </Text>
         </Box>
-        <Box
-          id="chara-render"
-          sx={{
-            width: 700,
-            zIndex: 3,
-            pointerEvents: "none",
-            left: "50%",
-            position: "absolute",
-            transform: "translateX(-50%)",
-
-            [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
-              marginLeft: 0,
-              left: "87.5%",
-              width: 500,
-              top: theme.spacing.xl,
-            },
-          }}
-        >
-          <Box
-            sx={{
-              width: "100%",
-              // marginLeft: "10%",
-              // marginTop: "50px",
-              [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
-                width: 500,
-                margin: 0,
-              },
-            }}
-          >
-            <Picture
-              srcB2={`render/character_full1_${character.character_id}.png`}
-              transparent
-              alt={character.first_name[0]}
-              fill={false}
-              width={isMobile ? 500 : 700}
-              height={isMobile ? 500 : 700}
-              style={{
-                userSelect: "none",
-                pointerEvents: "none",
-              }}
-            />
-          </Box>
-        </Box>
-        <ProfileSummary character={character} />
+        {/* {CharaRender(theme, renderFaded, character, renderHeight)} */}
+        <CharaRender
+          theme={theme}
+          renderFaded={renderFaded}
+          character={character}
+          renderHeight={renderHeight}
+        />
+        <ProfileSummary
+          character={character}
+          renderFaded={renderFaded}
+          setRenderFaded={setRenderFaded}
+        />
         <Box
           id="chara-bg"
           pos="absolute"
           sx={{ zIndex: 1, width: "100%", height: "100vh", top: 0 }}
         >
-          <Box
-            sx={{
-              width: isMobile ? "50vh" : "44vw",
-              height: isMobile ? "50vh" : "44vw",
-              margin: "auto",
-              marginTop: "-12.2vw",
-              borderRadius: isMobile ? 50 : 120,
-              border: `2px solid ${character.image_color}22`,
-              transform: "rotate(45deg)",
-            }}
-          />
-          <Box
-            sx={{
-              width: isMobile ? "50vh" : "44vw",
-              height: isMobile ? "50vh" : "44vw",
-              margin: "auto",
-              marginTop: isMobile ? "-25vh" : "-22vw",
-              borderRadius: isMobile ? 50 : 120,
-              backgroundColor: `${character.image_color}22`,
-              transform: "rotate(45deg)",
-            }}
-          />
+          <Parallax speed={-7.5}>
+            <Box
+              sx={{
+                width: "44vw",
+                height: "44vw",
+                margin: "auto",
+                marginTop: "-12.2vw",
+                borderRadius: 120,
+                border: `4px solid ${character.image_color}22`,
+                transform: "rotate(45deg)",
+                [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+                  width: "50vh",
+                  height: "50vh",
+                  borderRadius: 75,
+                },
+              }}
+            />
+          </Parallax>
+          <Parallax speed={-5}>
+            <Box
+              sx={{
+                width: "44vw",
+                height: "44vw",
+                margin: "auto",
+                marginTop: "-22vw",
+                borderRadius: 120,
+                backgroundColor: `${character.image_color}22`,
+                transform: "rotate(45deg)",
+                [`@media (max-width: ${theme.breakpoints.md}px)`]: {
+                  width: "50vh",
+                  height: "50vh",
+                  borderRadius: 75,
+                  marginTop: "-10vh",
+                },
+              }}
+            />
+          </Parallax>
         </Box>
       </Box>
       <Box sx={{ width: "95%", margin: "auto" }} mt="xl">
-        <Title order={4} size="h2">
-          Introduction
-        </Title>
+        <SectionTitle
+          title="Introduction"
+          id="introduction"
+          Icon={IconStar}
+          iconProps={{ color: baseColor }}
+        />
         <Text
           component="p"
           sx={{
             display: "flex",
             gap: 10,
             alignItems: "flex-start",
-            fontSize: isMobile ? "1rem" : "1.25rem",
+            fontSize: "1rem",
             "&:before": {
               content: "'“'",
               fontSize: "4.5rem",
@@ -905,6 +1035,7 @@ function Page({
           character={character}
           locale={characterQuery.lang}
           units={units}
+          baseColor={baseColor as string}
         />
         <CirclesSection
           characters={characters}
@@ -930,7 +1061,7 @@ function Page({
           baseColor={bgColor as string}
         />
       </Box>
-    </>
+    </ParallaxProvider>
   );
 }
 
