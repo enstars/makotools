@@ -152,7 +152,7 @@ export default function CardCard({
       </Card.Section>
       <Card.Section px="sm" pt="xs">
         <Text size="sm" weight="700">
-          {`${card.title[0]}`}&nbsp;
+          {`${card.title[0] ?? card.title[1]}`}&nbsp;
           <OfficialityBadge langData={lang[0]} />
         </Text>
         {card.title[1] && (
