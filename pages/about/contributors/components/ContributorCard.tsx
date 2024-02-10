@@ -91,10 +91,10 @@ function ContributorCard({
                 <Title order={3} size="h5">
                   {contributor.name}
                 </Title>
-                {contributor.credit && (
+                {contributor.credits && (
                   <ActionIcon
                     component={Link}
-                    href={contributor.credit}
+                    href={contributor.credits}
                     color={theme.colors[theme.primaryColor][4]}
                   >
                     <IconLink size={16} />
@@ -116,6 +116,7 @@ function ContributorCard({
           <Group>
             {contributor.admin && (
               <Badge
+                color="indigo"
                 leftSection={<IconBadge size={16} />}
                 styles={{
                   leftSection: {
