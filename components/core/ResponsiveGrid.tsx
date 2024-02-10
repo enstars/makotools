@@ -11,7 +11,9 @@ function ResponsiveGrid({
       sx={[
         (theme) => ({
           display: "grid",
-          gridTemplateColumns: `[s] repeat(auto-fill, minmax(${width}px, 1fr)) [e]`,
+          gridTemplateColumns: `[s] repeat(auto-fill, minmax(${
+            !isNaN(width as number) ? `${width}px` : width
+          }, 1fr)) [e]`,
           gap: theme.spacing.xs,
           alignItems: alignItems,
           ...(props.sx as any),

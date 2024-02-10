@@ -236,7 +236,8 @@ function Page({
                     event.event_id &&
                     (event.type === "song" ||
                       event.type === "tour" ||
-                      event.type === "shuffle")
+                      event.type === "shuffle" ||
+                      event.type === "special")
                 ) as Event[]
               }
             />

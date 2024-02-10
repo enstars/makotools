@@ -29,6 +29,7 @@ function Emote({ emote, size }: { emote: Emote; size: number | MantineSize }) {
           {emote.name.replace(/ /g, "")}
         </Text>
       }
+      withinPortal
     >
       <Image
         src={emote.emote}

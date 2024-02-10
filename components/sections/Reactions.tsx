@@ -86,7 +86,7 @@ const addReaction = async (params: {
   onRefetch();
 };
 
-function Reactions() {
+function Reactions({ fullButton = true }: { fullButton: boolean }) {
   const { classes } = useStyles();
   const { asPath } = useRouter();
   const [collapsed, setCollapsed] = useState<boolean>(true);
@@ -119,8 +119,13 @@ function Reactions() {
                     leftIcon={<IconMoodSmile size={16} />}
                     px="xs"
                     disabled={reactionsDisabled}
+                    sx={{
+                      "& .mantine-Button-leftIcon": {
+                        marginRight: fullButton ? 10 : 0,
+                      },
+                    }}
                   >
-                    Reactions
+                    {fullButton && "Reactions"}
                   </Button>
                 </Box>
               </Tooltip>

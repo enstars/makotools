@@ -17,6 +17,7 @@ import {
   liveSkillParse,
   supportSkillParse,
 } from "services/skills";
+import ErrorBoundary from "components/Layout/ErrorBoundary";
 
 function Skills({ card }: { card: GameCard }) {
   const { t } = useTranslation("cards__card");
@@ -24,7 +25,7 @@ function Skills({ card }: { card: GameCard }) {
   const [supportSkillLevel, setSupportSkillLevel] = useState(3);
 
   return (
-    <>
+    <ErrorBoundary>
       <Group
         mt="lg"
         mb="sm"
@@ -76,7 +77,9 @@ function Skills({ card }: { card: GameCard }) {
           {
             type: "center",
             color: "toya_default",
-            description: <Text>{centerSkillParse(card.skills?.center)}</Text>,
+            description: (
+              <Text>{centerSkillParse(t, card.skills?.center)}</Text>
+            ),
           },
           {
             type: "live",
@@ -94,7 +97,12 @@ function Skills({ card }: { card: GameCard }) {
                 >
                   Lvl {liveSkillLevel}
                 </Badge>
-                {liveSkillParse(card.skills.live, card.rarity, liveSkillLevel)}
+                {liveSkillParse(
+                  t,
+                  card.skills.live,
+                  card.rarity,
+                  liveSkillLevel
+                )}
               </Text>
             ),
           },
@@ -115,6 +123,7 @@ function Skills({ card }: { card: GameCard }) {
                   Lvl {supportSkillLevel}
                 </Badge>
                 {supportSkillParse(
+                  t,
                   card.skills.support,
                   card.rarity,
                   supportSkillLevel
@@ -154,7 +163,7 @@ function Skills({ card }: { card: GameCard }) {
           )
         )}
       </Stack>
-    </>
+    </ErrorBoundary>
   );
 }
 

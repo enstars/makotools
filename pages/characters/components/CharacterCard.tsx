@@ -117,7 +117,13 @@ export default function CharacterCard({
           className={cx(classes.picture, classes.pictureBloomed)}
         />
       </Box>
-      <Title order={2} className={classes.title}>
+      <Title
+        order={2}
+        className={classes.title}
+        sx={{
+          wordSpacing: "9999rem",
+        }}
+      >
         <NameOrder {...character} locale={locale[0].locale} />
       </Title>
     </Card>

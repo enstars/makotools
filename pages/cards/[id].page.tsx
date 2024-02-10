@@ -1,7 +1,8 @@
 import React from "react";
-import { Group, AspectRatio, Badge, Divider } from "@mantine/core";
+import { Group, AspectRatio, Badge, Divider, Anchor } from "@mantine/core";
 import { IconStar } from "@tabler/icons-react";
 import useTranslation from "next-translate/useTranslation";
+import Link from "next/link";
 
 import Stats from "./components/Stats";
 import Skills from "./components/Skills";
@@ -48,7 +49,15 @@ function Page({
         title={
           <>
             ({card.title[0]}){" "}
-            <NameOrder {...character} locale={characterQuery.lang[0].locale} />
+            <Anchor
+              component={Link}
+              href={`/characters/${character.character_id}`}
+            >
+              <NameOrder
+                {...character}
+                locale={characterQuery.lang[0].locale}
+              />
+            </Anchor>
             <Group mt="sm" spacing="xs">
               <Badge size="xl" color="yellow" sx={{ textTransform: "none" }}>
                 {card.rarity}
