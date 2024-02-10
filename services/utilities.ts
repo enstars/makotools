@@ -12,6 +12,38 @@ function parseStringify(object: any) {
   }
 }
 
+function hexToRGB(hex: string) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+
+  if (!result) {
+    throw new Error("Could not parse Hex Color");
+  }
+
+  return {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16),
+  };
+}
+
+// thanks chatgpt
+function RGBLuminance({ r, g, b }: { r: number; g: number; b: number }) {
+  const a = [r, g, b].map((v) => {
+    v /= 255;
+    return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+  });
+  return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+}
+
+function RGBRelativeLuminance(color: { r: number; g: number; b: number }) {
+  // get luminance of white
+  const white = RGBLuminance({ r: 255, g: 255, b: 255 });
+  // get luminance of color
+  const c = RGBLuminance(color);
+  // return relative luminance
+  return c / white;
+}
+
 function hexToHSL(hex: string): HSLObject {
   // https://www.jameslmilner.com/posts/converting-rgb-hex-hsl-colors/
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -82,36 +114,45 @@ function HSLToHex(hsl: HSLObject): string {
 }
 
 function makeDark(hsl: HSLObject): string {
-    const HUE_ADD = 8;
-    const SAT_SUBTRACT = 30;
-    const LUM_SUBTRACT = 45;
-    const hue: number = hsl.h + HUE_ADD <= 360 ? hsl.h : 360;
-    const sat: number = hsl.s - SAT_SUBTRACT >= 10 ? hsl.s - SAT_SUBTRACT : 10;
-    const lum: number = hsl.l - LUM_SUBTRACT >= 10 ? hsl.l - LUM_SUBTRACT : 10;
-    return `hsl(${hue}, ${sat}%, ${lum}%)`;
+  const HUE_ADD = -8;
+  const SAT_PROP = 0.75;
+  // const SAT_SUBTRACT = 30;
+  // const LUM_SUBTRACT = 45;
+  const hue: number = hsl.h + HUE_ADD <= 360 ? hsl.h : 360;
+  // const sat: number = hsl.s - SAT_SUBTRACT >= 10 ? hsl.s - SAT_SUBTRACT : 10;
+  // const lum: number = hsl.l - LUM_SUBTRACT >= 10 ? hsl.l - LUM_SUBTRACT : 10;
+  const sat = hsl.s * SAT_PROP;
+  const lum = 30;
+  return `hsl(${hue}, ${sat}%, ${lum}%)`;
 }
 
 function makeLight(hsl: HSLObject): string {
-    const LUM_ADD = 20;
-    const SAT_SUB = 25;
-    const hue: number = hsl.h;
-    const sat: number = hsl.s - SAT_SUB >= 10 ? hsl.s - SAT_SUB : 10;
-    const lum: number = hsl.l + LUM_ADD <= 90 ? hsl.l + LUM_ADD : 90;
-    return `hsl(${hue}, ${sat}%, ${lum}%)`;
+  const LUM_SET = 90;
+  const SAT_PROP = 0.75;
+  const hue: number = hsl.h;
+  // const sat: number = hsl.s - SAT_SUB >= 10 ? hsl.s - SAT_SUB : 10;
+  // const lum: number = hsl.l + LUM_ADD <= 90 ? hsl.l + LUM_ADD : 90;
+  const sat = hsl.s * SAT_PROP;
+  const lum = LUM_SET;
+  return `hsl(${hue}, ${sat}%, ${lum}%)`;
 }
 
+const DARK_THRESHOLD = 0.2;
+const LIGHT_THRESHOLD = 0.85;
+
 export const isColorLight = (hexColor: string) => {
-  const hsl = hexToHSL(hexColor as string);
-  return hsl.l > 50;
+  return RGBRelativeLuminance(hexToRGB(hexColor)) > DARK_THRESHOLD;
 };
 
 export const isColorDark = (hexColor: string) => {
-  const hsl = hexToHSL(hexColor as string);
-  return hsl.l <= 50;
+  return RGBRelativeLuminance(hexToRGB(hexColor)) < LIGHT_THRESHOLD;
 };
 
 // text; dark in light mode, light in dark mode
-export function primaryCharaColor(theme: MantineTheme, hexColor: string | undefined) {
+export function primaryCharaColor(
+  theme: MantineTheme,
+  hexColor: string | undefined
+) {
   const hsl = hexToHSL(hexColor as string);
   if (hexColor) {
     if (theme.colorScheme === "light") {
@@ -132,10 +173,13 @@ export function primaryCharaColor(theme: MantineTheme, hexColor: string | undefi
   } else {
     return "#000";
   }
-};
+}
 
 // text; light bgs
-export function secondaryCharaColor(theme: MantineTheme, hexColor: string | undefined) {
+export function secondaryCharaColor(
+  theme: MantineTheme,
+  hexColor: string | undefined
+) {
   const hsl = hexToHSL(hexColor as string);
   if (hexColor) {
     if (theme.colorScheme === "light") {
@@ -156,7 +200,7 @@ export function secondaryCharaColor(theme: MantineTheme, hexColor: string | unde
   } else {
     return "#000";
   }
-};
+}
 
 function generateUUID() {
   let dt = new Date().getTime();
