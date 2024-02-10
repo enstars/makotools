@@ -118,6 +118,6 @@ export function supportSkillParse(
         percent,
       });
     default:
-      return fallback;
+      return t("skills:unknown");
   }
 }

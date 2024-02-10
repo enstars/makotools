@@ -11,7 +11,11 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { useState } from "react";
-import { IconChevronDown, IconChevronUp, IconMoodSmile } from "@tabler/icons-react";
+import {
+  IconChevronDown,
+  IconChevronUp,
+  IconMoodSmile,
+} from "@tabler/icons-react";
 import { Collapse } from "react-collapse";
 import useSWR from "swr";
 
@@ -86,7 +90,7 @@ const addReaction = async (params: {
   onRefetch();
 };
 
-function Reactions({ fullButton = true }: { fullButton: boolean }) {
+function Reactions({ fullButton = true }: { fullButton?: boolean }) {
   const { classes } = useStyles();
   const { asPath } = useRouter();
   const [collapsed, setCollapsed] = useState<boolean>(true);

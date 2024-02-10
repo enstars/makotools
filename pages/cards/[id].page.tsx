@@ -2,6 +2,7 @@ import React from "react";
 import { Group, AspectRatio, Badge, Divider, Anchor } from "@mantine/core";
 import { IconStar } from "@tabler/icons-react";
 import useTranslation from "next-translate/useTranslation";
+import getT from "next-translate/getT";
 import Link from "next/link";
 
 import Stats from "./components/Stats";
@@ -110,6 +111,7 @@ export default Page;
 
 export const getServerSideProps = getServerSideUser(
   async ({ locale, params, db }) => {
+    const t = await getT("cards__card");
     const characters = await getLocalizedDataArray<GameCharacter>(
       "characters",
       locale,
@@ -191,13 +193,13 @@ export const getServerSideProps = getServerSideUser(
             ),
             path: `/cards/${cardID}`,
             skill1desc: cardData?.skills?.center?.type_id
-              ? centerSkillParse(cardData.skills.center)
+              ? centerSkillParse(t, cardData.skills.center)
               : "",
             skill2desc: cardData?.skills?.live?.type_id
-              ? liveSkillParse(cardData.skills.live, cardData.rarity)
+              ? liveSkillParse(t, cardData.skills.live, cardData.rarity)
               : "",
             skill3desc: cardData?.skills?.support?.type_id
-              ? supportSkillParse(cardData.skills.support, cardData.rarity)
+              ? supportSkillParse(t, cardData.skills.support, cardData.rarity)
               : "",
           }),
           desc: `View ${title}'s stats, skills, and more on MakoTools!`,
