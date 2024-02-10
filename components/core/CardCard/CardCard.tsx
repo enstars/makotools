@@ -11,6 +11,7 @@ import {
 } from "@mantine/core";
 import { IconStar, IconSum } from "@tabler/icons-react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 import AddCardButton from "./AddCardButton";
 
@@ -93,10 +94,9 @@ export default function CardCard({
   return (
     <Card
       withBorder
+      component={Link}
       p={0}
-      onClick={() => {
-        router.push(`/cards/${card.id}`);
-      }}
+      href={`/cards/${card.id}`}
       sx={{ "&:hover": { cursor: "pointer" } }}
     >
       <Card.Section sx={{ position: "relative" }} px={3} pt={3}>
@@ -152,7 +152,7 @@ export default function CardCard({
       </Card.Section>
       <Card.Section px="sm" pt="xs">
         <Text size="sm" weight="700">
-          {`${card.title[0]}`}&nbsp;
+          {`${card.title[0] ?? card.title[1]}`}&nbsp;
           <OfficialityBadge langData={lang[0]} />
         </Text>
         {card.title[1] && (

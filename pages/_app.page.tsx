@@ -23,6 +23,7 @@ import { initAuthentication } from "services/firebase/authentication";
 import { UserProvider } from "services/firebase/user";
 import DayjsProvider from "services/libraries/dayjs";
 import MantineTheme from "components/MantineTheme";
+
 initAuthentication();
 
 function MakoTools({

@@ -1,5 +1,6 @@
 // ./initAuth.js
 import { init } from "next-firebase-auth";
+import { initializeApp } from "firebase/app";
 import {
   getAuth,
   signInWithPopup,
@@ -30,6 +31,7 @@ const defaultCallback = console.error;
 
 export function initAuthentication() {
   try {
+    initializeApp(firebaseConfig);
     init({
       authPageURL: "/login",
       appPageURL: "/",
@@ -120,10 +122,15 @@ export function initAuthentication() {
 }
 
 export function signInWithGoogle(errorCallback = defaultCallback) {
-  const clientAuth = getAuth();
-  const provider = new GoogleAuthProvider();
-  provider.setCustomParameters({ prompt: "select_account" });
-  signInWithPopup(clientAuth, provider).catch(errorCallback);
+  try {
+    const clientAuth = getAuth();
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" });
+    signInWithPopup(clientAuth, provider).catch(errorCallback);
+  } catch (error) {
+    errorCallback();
+    console.error(error);
+  }
 }
 
 export function signInWithTwitter(errorCallback = defaultCallback) {
@@ -138,8 +145,13 @@ export function signInWithEmail(
   password: string,
   errorCallback = defaultCallback
 ) {
-  const clientAuth = getAuth();
-  signInWithEmailAndPassword(clientAuth, email, password).catch(errorCallback);
+  try {
+    const clientAuth = getAuth();
+    signInWithEmailAndPassword(clientAuth, email, password).catch(errorCallback);
+  } catch (error) {
+    errorCallback();
+    console.error(error);
+  }
 }
 
 export function signUpWithEmail(
@@ -147,11 +159,14 @@ export function signUpWithEmail(
   password: string,
   errorCallback = defaultCallback
 ) {
-  {
+  try {
     const clientAuth = getAuth();
     createUserWithEmailAndPassword(clientAuth, email, password).catch(
       errorCallback
     );
+  } catch (error) {
+    errorCallback();
+    console.error(error);
   }
 }
 

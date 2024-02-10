@@ -294,8 +294,8 @@ interface GameCard<T = string[]> extends GameCardStrings<T> {
   };
 }
 
-type EventType = "song" | "tour" | "shuffle";
-type ScoutType = "scout" | "feature scout";
+export type EventType = "song" | "tour" | "shuffle" | "special";
+export type ScoutType = "scout" | "feature scout";
 type CampaignType =
   | "birthday"
   | "anniversary"

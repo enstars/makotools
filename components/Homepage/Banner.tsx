@@ -36,7 +36,9 @@ function Banner({ events }: { events: (Birthday | Event | Scout)[] }) {
     .filter(
       (event) =>
         dayjs().isAfter(event.start.en) &&
-        ["scout", "feature scout", "tour", "song"].includes(event.type)
+        ["scout", "feature scout", "special", "tour", "song"].includes(
+          event.type
+        )
     )
     .sort((a, b) => dayjs(a.start.en).unix() - dayjs(b.start.en).unix());
 
@@ -115,11 +117,13 @@ function Banner({ events }: { events: (Birthday | Event | Scout)[] }) {
             radius="sm"
           />
           <Box className={classes.bannerOverlay}>
-            <Stack spacing={0}>
+            <Stack spacing={0} align="start">
               <Title order={2}>
                 {event.type === "song"
                   ? event.name[0]
                   : event.type === "tour"
+                  ? event.name[0]
+                  : event.type === "special"
                   ? event.name[0]
                   : event.type === "scout"
                   ? t("banner.scout", { name: event.name[0] })
@@ -138,6 +142,34 @@ function Banner({ events }: { events: (Birthday | Event | Scout)[] }) {
                     dayjs(event.end.en).format("lll z")
                   : dayjs(event.start.en).format("MMMM D")}
               </Text>
+              <Button
+                mt={6}
+                variant="white"
+                color="dark"
+                component={Link}
+                href={`/${
+                  event.type === "song" ||
+                  event.type === "tour" ||
+                  event.type === "special" ||
+                  event.type === "shuffle"
+                    ? "events"
+                    : event.type === "scout" || event.type === "feature scout"
+                    ? "scouts"
+                    : "characters"
+                }/${
+                  event.type === "song" ||
+                  event.type === "tour" ||
+                  event.type === "special" ||
+                  event.type === "shuffle"
+                    ? event.event_id
+                    : event.type === "scout" || event.type === "feature scout"
+                    ? event.gacha_id
+                    : (event as Birthday).character_id
+                }`}
+                target="_blank"
+              >
+                {t("banner.link")}
+              </Button>
             </Stack>
           </Box>
         </Carousel.Slide>

@@ -2,8 +2,9 @@ import { Box, BoxProps } from "@mantine/core";
 
 function ResponsiveGrid({
   width = 224,
+  alignItems = "flex-start",
   ...props
-}: { width?: number | string } & BoxProps) {
+}: { width?: number; alignItems?: string } & BoxProps) {
   return (
     <Box
       {...props}
@@ -14,7 +15,7 @@ function ResponsiveGrid({
             !isNaN(width as number) ? `${width}px` : width
           }, 1fr)) [e]`,
           gap: theme.spacing.xs,
-          alignItems: "flex-start",
+          alignItems: alignItems,
           ...(props.sx as any),
         }),
       ]}

@@ -5,6 +5,7 @@ import {
   Accordion,
   createStyles,
   MediaQuery,
+  useMantineTheme,
 } from "@mantine/core";
 // import Banner from "assets/banner.png";
 import { useMemo } from "react";
@@ -50,7 +51,7 @@ function SidePanel({
   events,
   locale,
   posts,
-  width = 250,
+  width = 300,
   ...props
 }: {
   events: (Event | Birthday | Scout)[];
@@ -58,16 +59,33 @@ function SidePanel({
   posts: StrapiItem<MakoPost>[];
   width?: number;
 }) {
+  const theme = useMantineTheme();
   return (
     <Box
-      sx={{ "&&&": { flexBasis: width, flexShrink: 0, flexGrow: 2 } }}
+      sx={{
+        "&&&": { flexShrink: 0, flexGrow: 0 },
+        [`@media (max-width: ${theme.breakpoints.lg}px)`]: {
+          flexBasis: "100%",
+          flexGrow: 1,
+        },
+        [`@media (min-width: ${theme.breakpoints.lg}px)`]: {
+          flexBasis: width,
+        },
+      }}
       {...props}
     >
       <Accordion
         variant="contained"
         defaultValue={["birthday", "announcement"]}
         multiple
-        sx={{ flexBasis: 300, flexGrow: 1, minWidth: 0, width: "100%" }}
+        sx={{
+          flexGrow: 1,
+          minWidth: 0,
+          width: "100%",
+          [`@media (min-width: 800px)`]: {
+            flexBasis: width,
+          },
+        }}
       >
         <UpcomingCampaigns
           events={events as (Birthday | Scout | Event)[]}
@@ -189,7 +207,12 @@ function Page({
       noWrap
       className={classes.main}
     >
-      <Stack align="flex-start" spacing="lg" className={classes.mainCol}>
+      <Stack
+        align="flex-start"
+        spacing="lg"
+        className={classes.mainCol}
+        sx={{ flexGrow: 1 }}
+      >
         <Banner events={events} />
         <UserVerification />
 
@@ -197,10 +220,15 @@ function Page({
           align="start"
           sx={{
             flexWrap: "wrap-reverse",
+            flexGrow: 1,
+            width: "100%",
           }}
           className={classes.mainCol}
         >
-          <Box sx={{ "&&": { flexGrow: 1 } }} className={classes.mainCol}>
+          <Box
+            sx={{ width: "100%", "&&": { flexGrow: 1 } }}
+            className={classes.mainCol}
+          >
             <CurrentEventCountdown
               events={
                 events.filter(
