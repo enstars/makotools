@@ -13,9 +13,16 @@ import {
   ActionIcon,
   Accordion,
   Checkbox,
+  AspectRatio,
 } from "@mantine/core";
 import Confetti from "react-confetti";
-import { IconCake, IconStar } from "@tabler/icons-react";
+import {
+  IconCake,
+  IconCards,
+  IconFriends,
+  IconStar,
+  IconStarFilled,
+} from "@tabler/icons-react";
 import { Fragment, createRef, useEffect, useState } from "react";
 import { useMediaQuery } from "@mantine/hooks";
 import {
@@ -24,6 +31,7 @@ import {
   useParallaxController,
 } from "react-scroll-parallax";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 import CharacterCard from "./components/CharacterCard";
 
@@ -41,8 +49,14 @@ import { useDayjs } from "services/libraries/dayjs";
 import { GameCard, GameCharacter, Event, Scout, GameUnit } from "types/game";
 import { getNameOrder } from "services/game";
 import Picture from "components/core/Picture";
-import { circleKeyToName } from "data/circleKeyToName";
-import { hexToHSL, isGameEvent } from "services/utilities";
+import {
+  hexToHSL,
+  isColorDark,
+  isColorLight,
+  isGameEvent,
+  primaryCharaColor,
+  secondaryCharaColor,
+} from "services/utilities";
 import { CardCard } from "components/core/CardCard";
 import { useCollections } from "services/makotools/collection";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
@@ -50,6 +64,8 @@ import useUser from "services/firebase/user";
 import NameOrder from "components/utilities/formatting/NameOrder";
 import IconEnstars from "components/core/IconEnstars";
 import SectionTitle from "pages/events/components/SectionTitle";
+import { circleKeyToName } from "data/circleKeyToName";
+
 function CharacterMiniInfo({
   label,
   info,
@@ -105,56 +121,51 @@ function CharacterMiniInfo({
 function CirclesSection({
   characters,
   character,
-  bgColor,
-  textColor,
 }: {
   characters: GameCharacter[];
   character: GameCharacter;
-  bgColor: string;
-  textColor: string;
 }) {
   const theme = useMantineTheme();
-  const isMobile = useMediaQuery("(max-width: 768px)");
-
   return (
     <Box id="circles">
-      <Title
-        order={4}
-        size="h2"
-        sx={{
-          margin: "8vh 0px 4vh 0px",
-        }}
-      >
-        Circles
-      </Title>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: isMobile ? "column" : "row",
-          alignItems: "center",
-          gap: 16,
-        }}
-      >
+      <SectionTitle
+        id="circles"
+        title="Circles"
+        Icon={IconFriends}
+        iconProps={{ color: secondaryCharaColor(theme, character.image_color) }}
+      />
+      <ResponsiveGrid width={240} sx={{}}>
         {character.circle?.map((circle) => {
           const circleMembers = characters.filter((chara) =>
             chara.circle?.includes(circle)
           );
+          const isSmallCircle = circleMembers.length < 6;
           return (
-            <Stack
+            <Paper
+              withBorder
+              radius="sm"
               key={circle}
               sx={{
-                boxShadow: theme.shadows.sm,
-                borderRadius: 20,
-                gap: 0,
-                width: "100%",
+                height: "auto",
+                position: "relative",
               }}
             >
+              <AspectRatio ratio={1} />
               <Box
                 sx={{
-                  borderRadius: "20px 20px 0px 0px",
-                  padding: "12px 18px",
-                  backgroundColor: bgColor,
-                  color: textColor,
+                  color: primaryCharaColor(theme, character.image_color),
+
+                  width: "100%",
+                  height: "100%",
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  pointerEvents: "none",
+                  padding: "0 33%",
+                  textAlign: "center",
                 }}
               >
                 <Title order={5} size="h3">
@@ -162,50 +173,123 @@ function CirclesSection({
                     circle}
                 </Title>
               </Box>
-              <Group
-                align="center"
+              <Box
                 sx={{
-                  padding: 12,
-                  backgroundColor: `${character.image_color}11`,
-                  justifyContent: "space-around",
-                  width: "100%",
-                  borderRadius: "0px 0px 20px 20px",
+                  // color: textColor,
+
+                  width: "calc(100% - 50px - 20%)",
+                  height: "calc(100% - 50px - 20%)",
+                  position: "absolute",
+                  borderRadius: "50%",
+                  top: "calc(10% + 25px)",
+                  left: "calc(10% + 25px)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  pointerEvents: "none",
+                  textAlign: "center",
+                  // borderWidth: 2,
+                  // borderStyle: "solid",
+                  borderColor: secondaryCharaColor(
+                    theme,
+                    character.image_color
+                  ),
+                  background: secondaryCharaColor(theme, character.image_color),
+                  opacity: 0.05,
+                  transform: "scale(1.375)",
                 }}
-              >
-                {circleMembers.map((member) => (
-                  <Tooltip
+              />
+              <Box
+                sx={{
+                  color: primaryCharaColor(theme, character.image_color),
+
+                  width: "calc(100% - 50px - 20%)",
+                  height: "calc(100% - 50px - 20%)",
+                  position: "absolute",
+                  borderRadius: "50%",
+                  top: "calc(10% + 25px)",
+                  left: "calc(10% + 25px)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  pointerEvents: "none",
+                  textAlign: "center",
+                  background: secondaryCharaColor(theme, character.image_color),
+                  opacity: 0.05,
+                  transform: "scale(1)",
+                }}
+              />
+              {circleMembers.map((member, i) => {
+                const positionInCircle = circleMembers
+                  .map((c) => c.character_id)
+                  .indexOf(character.character_id);
+                const angle =
+                  (360 * (i - positionInCircle)) / circleMembers.length - 90;
+                return (
+                  <Box
                     key={member.character_id}
-                    label={`${member.first_name[0]}${
-                      member.last_name[0] ? ` ${member.last_name[0]}` : ""
-                    }`}
+                    sx={{
+                      width: "100%",
+                      height: "100%",
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "right",
+                      paddingRight: "10%",
+                      transform: `rotate(${angle}deg)`,
+                      pointerEvents: "none",
+                    }}
                   >
-                    <ActionIcon
-                      component="a"
-                      href={`/characters/${member.character_id}`}
-                      variant="default"
-                      size={50}
-                      radius={25}
-                      sx={{ background: "none", border: "none" }}
+                    <Tooltip
+                      key={member.character_id}
+                      label={`${member.first_name[0]}${
+                        member.last_name[0] ? ` ${member.last_name[0]}` : ""
+                      }`}
+                      sx={{ pointerEvents: "all" }}
+                      withinPortal
                     >
-                      <Picture
-                        transparent
-                        srcB2={`assets/character_sd_square1_${member.character_id}.png`}
-                        alt={member.first_name[0]}
-                        fill={false}
-                        width={50}
-                        height={50}
+                      <ActionIcon
+                        component={Link}
+                        href={`/characters/${member.character_id}`}
+                        variant="default"
+                        size={50}
+                        radius={25}
                         sx={{
-                          pointerEvents: "none",
+                          background: "none",
+                          border: "none",
+                          pointerEvents: "all",
+                          transform: `rotate(${-angle}deg) scale(${
+                            isSmallCircle ? 1.25 : 1
+                          })`,
+                          ["&:hover"]: {
+                            transform: `rotate(${-angle}deg) scale(${
+                              isSmallCircle ? 1.35 : 1.1
+                            })`,
+                          },
                         }}
-                      />
-                    </ActionIcon>
-                  </Tooltip>
-                ))}
-              </Group>
-            </Stack>
+                      >
+                        <Picture
+                          transparent
+                          srcB2={`assets/character_sd_square1_${member.character_id}.png`}
+                          alt={member.first_name[0]}
+                          fill={false}
+                          width={50}
+                          height={50}
+                          sx={{
+                            pointerEvents: "none",
+                          }}
+                        />
+                      </ActionIcon>
+                    </Tooltip>
+                  </Box>
+                );
+              })}
+            </Paper>
           );
         })}
-      </Box>
+      </ResponsiveGrid>
     </Box>
   );
 }
@@ -213,14 +297,10 @@ function CirclesSection({
 function CardsSection({
   cards,
   character,
-  bgColor,
-  textColor,
   lang,
 }: {
   cards: GameCard[];
   character: GameCharacter;
-  bgColor: string;
-  textColor: string;
   lang: Lang[];
 }) {
   const theme = useMantineTheme();
@@ -228,50 +308,93 @@ function CardsSection({
   const [newCollectionModalOpened, setNewCollectionModalOpened] =
     useState<boolean>(false);
 
+  const textColor = isColorLight(character.image_color as string)
+    ? primaryCharaColor(theme, character.image_color)
+    : secondaryCharaColor(theme, character.image_color);
+  const bgColor = isColorLight(character.image_color as string)
+    ? secondaryCharaColor(theme, character.image_color)
+    : primaryCharaColor(theme, character.image_color);
+
   return (
     <Box id="cards">
-      <Title
-        order={4}
-        size="h2"
-        sx={{
-          margin: "8vh 0px 4vh 0px",
-        }}
-      >
-        Cards
-      </Title>
+      <SectionTitle
+        id="cards"
+        title="Cards"
+        Icon={IconCards}
+        iconProps={{ color: textColor }}
+      />
       <Accordion variant="separated" defaultValue="5">
         {[5, 4, 3, 2, 1].map((rarity) => {
           const rarityCards = cards.filter((card) => card.rarity === rarity);
+
           return (
             rarityCards.length > 0 && (
               <Accordion.Item
                 value={rarity.toString()}
                 sx={{
-                  borderRadius: 20,
+                  borderRadius: theme.radius.md,
                   border: "none",
-                  boxShadow: theme.shadows.xs,
+                  // boxShadow: theme.shadows.xs,
                   overflow: "hidden",
                   transition: "transform 250ms ease",
-
+                  "&+&": {
+                    marginTop: theme.spacing.xs,
+                  },
                   "&[data-active]": {
-                    boxShadow: theme.shadows.sm,
-                    transform: "scale(1.02)",
+                    // boxShadow: theme.shadows.md,
+                    // transform: "scale(1.02)",
                   },
                 }}
               >
                 <Accordion.Control
                   sx={{
+                    paddingTop: theme.spacing.xs,
+                    paddingBottom: theme.spacing.xs,
+                    backgroundColor: `${character.image_color}11`,
+                    overflow: "hidden",
+                    position: "relative",
+                    color: theme.colorScheme === "dark" && isColorDark(character.image_color as string) ? bgColor : textColor,
                     "&[data-active]": {
                       backgroundColor: bgColor,
-                      color: textColor,
+                      color: isColorLight(character.image_color as string)
+                        ? textColor
+                        : "#fff",
+
+                      "& svg.deco-star": {
+                        color: textColor,
+                        opacity: 0.375,
+                      },
                     },
                   }}
-                  icon={<IconStar />}
+                  // icon={<IconStar />}
                 >
                   <Group spacing="xs">
-                    <Title order={5} size="h3">
+                    <Text size="lg" weight={700}>
                       {rarity}
-                    </Title>
+                    </Text>
+                    <IconStarFilled size="1rem" />
+                  </Group>
+                  <Group
+                    sx={{
+                      position: "absolute",
+                      right: theme.spacing.sm,
+                      bottom: -theme.spacing.xs * 1.5,
+                      transform: "skew(-15deg)",
+                      "& svg.deco-star": {
+                        color: bgColor,
+                        opacity: 0.1,
+                      },
+                    }}
+                    spacing={0}
+                  >
+                    {new Array(rarity).fill(0).map((_, i) => (
+                      <IconStar
+                        className="deco-star"
+                        strokeWidth={1.5}
+                        key={i}
+                        size="3.5rem"
+                      />
+                    ))}
                   </Group>
                 </Accordion.Control>
 
@@ -308,22 +431,13 @@ function CardsSection({
 function EventScoutCard({
   event,
   card,
-  baseColor,
 }: {
   event: Event | Scout;
   card: GameCard;
-  baseColor: string;
 }) {
-  const [summaryHeight, setSummaryHeight] = useState(4);
-  const [nameHeight, setNameHeight] = useState(0);
-  const summaryRef = createRef<HTMLParagraphElement>();
+  const { dayjs } = useDayjs();
+  const theme = useMantineTheme();
   const nameRef = createRef<HTMLHeadingElement>();
-
-  useEffect(() => {
-    if (summaryRef.current)
-      setSummaryHeight(summaryRef.current.clientHeight + 20);
-    if (nameRef.current) setNameHeight(nameRef.current.clientHeight);
-  }, [summaryRef, nameRef]);
 
   const cardRarityStars = new Array(card.rarity);
   for (let i = 0; i < cardRarityStars.length; i++) {
@@ -338,46 +452,53 @@ function EventScoutCard({
       shadow="xs"
       sx={{
         position: "relative",
-        width: 325,
-        height: 150,
+        // width: 325,
+        // height: 150,
         overflow: "hidden",
         transition: "transform 0.2s ease",
         "&:hover": {
-          transform: "scale(1.05)",
+          "& img": {
+            transform: "scale(1.05)",
+          },
 
           "& .rarity-stars": {
             transform: "translateX(-200px)",
           },
-
-          "& .summary": {
-            transform: isGameEvent(event)
-              ? `translateY(${summaryHeight - 150}px)`
-              : undefined,
-          },
-
-          "& .event-card-bg": {
-            background: isGameEvent(event) ? "#000000dd" : undefined,
-          },
         },
       }}
+      withBorder
     >
+      <Picture
+        alt={event.name[0]}
+        srcB2={`assets/card_still_full1_${event.banner_id}_evolution.png`}
+        sx={(theme) => ({
+          // position: "absolute",
+          // top: 0,
+          // left: 0,
+          width: "100%",
+          height: 150,
+        })}
+      />
       <Paper
         className="rarity-stars"
         shadow="sm"
-        p="xs"
+        px="md"
+        py="xs"
         sx={{
           position: "absolute",
           top: 10,
-          left: -20,
+          left: -theme.spacing.md * 1.25,
           zIndex: 4,
           borderTopLeftRadius: 0,
           borderBottomLeftRadius: 0,
           transform: "skew(-15deg) translateX(0px)",
           transition: "transform 0.4s ease",
+          background: "#000A",
+          color: "#fff",
         }}
       >
         <Group
-          spacing="xs"
+          spacing={theme.spacing.xs / 3}
           sx={{
             paddingLeft: 20,
             flexDirection: "row-reverse",
@@ -385,51 +506,32 @@ function EventScoutCard({
           }}
         >
           {cardRarityStars.map((star) => {
-            return (
-              <IconStar
-                size={16}
-                key={star}
-                color={baseColor}
-                fill={baseColor}
-              />
-            );
+            return <IconStarFilled size={16} key={star} color="#fff" />;
           })}
         </Group>
       </Paper>
       <Box
         className="summary"
-        pos="absolute"
-        sx={{
-          left: 8,
-          bottom: 4,
-          transform: `translateY(${summaryHeight}px)`,
-          transition: "transform 0.5s ease",
-          zIndex: 3,
-        }}
+        // pos="absolute"
+        sx={
+          {
+            // left: 8,
+            // bottom: 4,
+            // transform: `translateY(${summaryHeight}px)`,
+            // transition: "transform 0.5s ease",
+            // zIndex: 3,
+          }
+        }
+        px="md"
+        py="md"
       >
-        <Title
-          ref={nameRef}
-          order={5}
-          size="h4"
-          sx={{
-            color: "#fff",
-          }}
-        >
-          {event.name[0]}
-        </Title>
-        {isGameEvent(event) && (
-          <Text
-            ref={summaryRef}
-            fz="sm"
-            component="p"
-            sx={{
-              color: "#fff",
-              padding: 3,
-            }}
-          >
-            {event.intro_lines ? event.intro_lines[0] : "No summary available."}
-          </Text>
-        )}
+        <Text weight={700}>{event.name[0]}</Text>
+
+        <Text weight={500} color="dimmed">
+          {dayjs(event.start.en).format("ll")}
+          {" - "}
+          {dayjs(event.end.en).format("ll")}
+        </Text>
       </Box>
       <Box
         className="event-card-bg"
@@ -442,17 +544,6 @@ function EventScoutCard({
           transition: "background 0.2s",
         }}
       />
-      <Picture
-        alt={event.name[0]}
-        srcB2={`assets/card_still_full1_${event.banner_id}_evolution.png`}
-        sx={(theme) => ({
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: 325,
-          height: 150,
-        })}
-      />
     </Paper>
   );
 }
@@ -460,11 +551,9 @@ function EventScoutCard({
 function EventsScoutsSection({
   events,
   cards,
-  baseColor,
 }: {
   events: Event[] | Scout[];
   cards: GameCard[];
-  baseColor: string;
 }) {
   return (
     <Box id="events">
@@ -477,7 +566,7 @@ function EventsScoutsSection({
       >
         {isGameEvent(events[0]) ? "Events" : "Scouts"}
       </Title>
-      <ResponsiveGrid width={325}>
+      <ResponsiveGrid width={240}>
         {events.map((event) => {
           const correspondingCard = cards.filter((card) =>
             event.cards.includes(card.id)
@@ -487,7 +576,6 @@ function EventsScoutsSection({
               key={isGameEvent(event) ? event.event_id : event.gacha_id}
               event={event}
               card={correspondingCard}
-              baseColor={baseColor}
             />
           );
         })}
@@ -534,9 +622,7 @@ function UnitSection({
                 </>
               }
             />
-            <ResponsiveGrid
-              width={`${Math.round(100 / otherMembers.length) - 1}%`}
-            >
+            <ResponsiveGrid width={100}>
               {otherMembers.map((member) => (
                 <CharacterCard
                   key={member.character_id}
@@ -739,7 +825,10 @@ function CharaRender(
             style={{
               userSelect: "none",
               pointerEvents: "none",
-            }}onLoad={() => parallaxController.update()} />
+            }}
+            onLoad={() => {
+              if (parallaxController) parallaxController.update();
+            }}
           />
         </Parallax>
       </Box>
@@ -752,7 +841,6 @@ function ParallaxCacheUpdater() {
   const router = useRouter();
 
   useEffect(() => {
-    console.log("HI");
     if (parallaxController) parallaxController.update();
   }, [router.asPath, parallaxController]);
 
@@ -826,27 +914,6 @@ function Page({
       : `hsla(${hsl.h - 2 < 0 ? 360 - (hsl.h - 2) : hsl.h - 2}, ${
           hsl.s - 5
         }%, ${hsl.l - 5}%, ${theme.colorScheme === "light" ? 1 : 0.7})`;
-
-  const bgColor =
-    (theme.colorScheme === "light" &&
-      hsl.l < 75 &&
-      (hsl.h < 51 || hsl.h > 60)) ||
-    (theme.colorScheme === "light" && hsl.h >= 51 && hsl.h <= 60 && hsl.l < 40)
-      ? hexToHSL(character.image_color as string).hsl
-      : `hsla(${hsl.h - 2 < 0 ? 360 - (hsl.h - 2) : hsl.h - 2}, ${
-          hsl.s - 5
-        }%, ${hsl.l - 5}%, ${theme.colorScheme === "light" ? 1 : 0.7})`;
-
-  const textColor =
-    theme.colorScheme == "dark" ||
-    (theme.colorScheme === "light" &&
-      hsl.l < 75 &&
-      (hsl.h < 51 || hsl.h > 60)) ||
-    (theme.colorScheme === "light" && hsl.h >= 51 && hsl.h <= 60 && hsl.l < 40)
-      ? "#fff"
-      : `hsl(${hsl.h - 6 < 0 ? 360 - (hsl.h - 6) : hsl.h - 6}, ${
-          hsl.s - 10
-        }%, ${hsl.l - 55 < 20 ? 20 : hsl.l - 55}%)`;
 
   return (
     <ParallaxProvider>
@@ -963,6 +1030,34 @@ function Page({
           setRenderFaded={setRenderFaded}
         />
         <Box
+          id="chara-name-secondaryName"
+          pos="absolute"
+          sx={{ zIndex: 1, width: "100%", height: "100vh", top: 0 }}
+        >
+          <Parallax speed={-8}>
+            <Box
+              sx={{
+                userSelect: "none",
+                position: "absolute",
+                right: "1rem",
+                top: "-6rem",
+                width: "100vw",
+                height: "100vh",
+                fontSize: "4rem",
+                fontWeight: 700,
+                writingMode: "vertical-rl",
+                color: theme.colorScheme === "dark" ? "#000" : "#fff",
+                textShadow:
+                  "var(--text-outline-color) 2px 0px 0px, var(--text-outline-color) 1.75517px 0.958851px 0px, var(--text-outline-color) 1.0806px 1.68294px 0px, var(--text-outline-color) 0.141474px 1.99499px 0px, var(--text-outline-color) -0.832294px 1.81859px 0px, var(--text-outline-color) -1.60229px 1.19694px 0px, var(--text-outline-color) -1.97998px 0.28224px 0px, var(--text-outline-color) -1.87291px -0.701566px 0px, var(--text-outline-color) -1.30729px -1.5136px 0px, var(--text-outline-color) -0.421592px -1.95506px 0px, var(--text-outline-color) 0.567324px -1.91785px 0px, var(--text-outline-color) 1.41734px -1.41108px 0px, var(--text-outline-color) 1.92034px -0.558831px 0px",
+                ["--text-outline-color"]: baseColor,
+              }}
+            >
+              {character.last_name[1]}
+              {character.first_name[1]}
+            </Box>
+          </Parallax>
+        </Box>
+        <Box
           id="chara-bg"
           pos="absolute"
           sx={{ zIndex: 1, width: "100%", height: "100vh", top: 0 }}
@@ -1037,29 +1132,14 @@ function Page({
           units={units}
           baseColor={baseColor as string}
         />
-        <CirclesSection
-          characters={characters}
-          character={character}
-          bgColor={bgColor as string}
-          textColor={textColor}
-        />
+        <CirclesSection characters={characters} character={character} />
         <CardsSection
           cards={charaCards}
           character={character}
-          bgColor={bgColor as string}
-          textColor={textColor}
           lang={cardsQuery.lang}
         />
-        <EventsScoutsSection
-          events={charaEvents}
-          cards={charaCards}
-          baseColor={bgColor as string}
-        />
-        <EventsScoutsSection
-          events={charaScouts}
-          cards={charaCards}
-          baseColor={bgColor as string}
-        />
+        <EventsScoutsSection events={charaEvents} cards={charaCards} />
+        <EventsScoutsSection events={charaScouts} cards={charaCards} />
       </Box>
     </ParallaxProvider>
   );

@@ -1,6 +1,8 @@
+import { MantineTheme } from "@mantine/core";
 import { Dayjs } from "dayjs";
 
 import { Event, Scout } from "types/game";
+import { HSLObject } from "types/makotools";
 
 function parseStringify(object: any) {
   try {
@@ -10,7 +12,7 @@ function parseStringify(object: any) {
   }
 }
 
-function hexToHSL(hex: string) {
+function hexToHSL(hex: string): HSLObject {
   // https://www.jameslmilner.com/posts/converting-rgb-hex-hsl-colors/
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 
@@ -62,7 +64,7 @@ function hexToHSL(hex: string) {
   return { hsl: `hsl(${h}, ${s}%, ${l}%)`, h, s, l };
 }
 
-function HSLToHex(hsl: { h: number; s: number; l: number }): string {
+function HSLToHex(hsl: HSLObject): string {
   const { h, s, l } = hsl;
 
   const hDecimal = l / 100;
@@ -78,6 +80,83 @@ function HSLToHex(hsl: { h: number; s: number; l: number }): string {
   };
   return `#${f(0)}${f(8)}${f(4)}`;
 }
+
+function makeDark(hsl: HSLObject): string {
+    const HUE_ADD = 8;
+    const SAT_SUBTRACT = 30;
+    const LUM_SUBTRACT = 45;
+    const hue: number = hsl.h + HUE_ADD <= 360 ? hsl.h : 360;
+    const sat: number = hsl.s - SAT_SUBTRACT >= 10 ? hsl.s - SAT_SUBTRACT : 10;
+    const lum: number = hsl.l - LUM_SUBTRACT >= 10 ? hsl.l - LUM_SUBTRACT : 10;
+    return `hsl(${hue}, ${sat}%, ${lum}%)`;
+}
+
+function makeLight(hsl: HSLObject): string {
+    const LUM_ADD = 20;
+    const SAT_SUB = 25;
+    const hue: number = hsl.h;
+    const sat: number = hsl.s - SAT_SUB >= 10 ? hsl.s - SAT_SUB : 10;
+    const lum: number = hsl.l + LUM_ADD <= 90 ? hsl.l + LUM_ADD : 90;
+    return `hsl(${hue}, ${sat}%, ${lum}%)`;
+}
+
+export const isColorLight = (hexColor: string) => {
+  const hsl = hexToHSL(hexColor as string);
+  return hsl.l > 50;
+};
+
+export const isColorDark = (hexColor: string) => {
+  const hsl = hexToHSL(hexColor as string);
+  return hsl.l <= 50;
+};
+
+// text; dark in light mode, light in dark mode
+export function primaryCharaColor(theme: MantineTheme, hexColor: string | undefined) {
+  const hsl = hexToHSL(hexColor as string);
+  if (hexColor) {
+    if (theme.colorScheme === "light") {
+      // if light mode is on, make light colors dark
+      if (isColorLight(hexColor)) {
+        return makeDark(hsl);
+      } else {
+        return hexToHSL(hexColor).hsl as string;
+      }
+    } else {
+      // if dark mode is on, make dark colors light
+      if (isColorDark(hexColor)) {
+        return makeLight(hsl);
+      } else {
+        return hexToHSL(hexColor).hsl as string;
+      }
+    }
+  } else {
+    return "#000";
+  }
+};
+
+// text; light bgs
+export function secondaryCharaColor(theme: MantineTheme, hexColor: string | undefined) {
+  const hsl = hexToHSL(hexColor as string);
+  if (hexColor) {
+    if (theme.colorScheme === "light") {
+      // if light mode is on, dark colors light
+      if (isColorDark(hexColor)) {
+        return makeLight(hsl);
+      } else {
+        return hexToHSL(hexColor).hsl as string;
+      }
+    } else {
+      // if dark mode is on, make dark colors dark
+      if (isColorLight(hexColor)) {
+        return makeDark(hsl);
+      } else {
+        return hexToHSL(hexColor).hsl as string;
+      }
+    }
+  } else {
+    return "#000";
+  }
+};
 
 function generateUUID() {
   let dt = new Date().getTime();

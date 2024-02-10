@@ -229,3 +229,10 @@ interface CalendarMonth {
   name: MonthName;
   amount_of_days: MonthLength;
 }
+
+interface HSLObject {
+  hsl?: string;
+  h: number;
+  s: number;
+  l: number;
+}
