@@ -93,21 +93,12 @@ export function EventScoutCard({
       <Box
         className="summary"
         // pos="absolute"
-        sx={
-          {
-            // left: 8,
-            // bottom: 4,
-            // transform: `translateY(${summaryHeight}px)`,
-            // transition: "transform 0.5s ease",
-            // zIndex: 3,
-          }
-        }
         px="md"
         py="md"
       >
         <Text weight={700}>{event.name[0]}</Text>
 
-        <Text weight={500} color="dimmed">
+        <Text weight={500} color="dimmed" size="sm" mt={4}>
           {dayjs(event.start.en).format("ll")}
           {" - "}
           {dayjs(event.end.en).format("ll")}
