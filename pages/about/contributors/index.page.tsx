@@ -5,7 +5,7 @@ import { useMediaQuery } from "@mantine/hooks";
 
 import ContributorCard from "./components/ContributorCard";
 
-import * as contributorsJSON from "data/contributors.json";
+import contributorsJSON from "data/contributors.json";
 import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
