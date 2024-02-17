@@ -122,7 +122,7 @@ function ContributorCard({
               <Box>
                 <Group spacing="xs" align="center">
                   <Text weight={700}>{contributor.name}</Text>
-                  {contributor.makotools && (
+                  {contributor.makotools.length > 0 && (
                     <Text
                       inline
                       span
@@ -136,10 +136,14 @@ function ContributorCard({
                       {contributor.makotools}
                     </Text>
                   )}
-                  {contributor.credits && (
+                  {contributor.credits.length > 0 && (
                     <ActionIcon
                       component={Link}
-                      href={contributor.credits}
+                      href={
+                        !contributor.credits.startsWith("https://")
+                          ? "https://" + contributor.credits
+                          : contributor.credits
+                      }
                       color={theme.colors[theme.primaryColor][4]}
                       size="xs"
                     >
