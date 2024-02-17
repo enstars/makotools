@@ -1,6 +1,7 @@
 import { Box, useMantineTheme, Text, Paper, Group } from "@mantine/core";
 import { IconStarFilled } from "@tabler/icons-react";
 import { createRef } from "react";
+
 import { useDayjs } from "services/libraries/dayjs";
 import { GameCard, Event, Scout } from "types/game";
 import Picture from "components/core/Picture";
@@ -53,6 +54,7 @@ export function EventScoutCard({
           // position: "absolute",
           // top: 0,
           // left: 0,
+          overflow: "hidden",
           width: "100%",
           height: 150,
         })}
@@ -91,21 +93,12 @@ export function EventScoutCard({
       <Box
         className="summary"
         // pos="absolute"
-        sx={
-          {
-            // left: 8,
-            // bottom: 4,
-            // transform: `translateY(${summaryHeight}px)`,
-            // transition: "transform 0.5s ease",
-            // zIndex: 3,
-          }
-        }
         px="md"
         py="md"
       >
         <Text weight={700}>{event.name[0]}</Text>
 
-        <Text weight={500} color="dimmed">
+        <Text weight={500} color="dimmed" size="sm" mt={4}>
           {dayjs(event.start.en).format("ll")}
           {" - "}
           {dayjs(event.end.en).format("ll")}

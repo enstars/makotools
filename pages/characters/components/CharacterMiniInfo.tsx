@@ -10,7 +10,7 @@ export function CharacterMiniInfo({
 }) {
   const isMobile = useMediaQuery("(max-width: 768px)");
   return (
-    <Group>
+    <Group spacing="xs">
       <Text
         fz={isMobile ? "sm" : "md"}
         sx={(theme) => ({
@@ -27,7 +27,9 @@ export function CharacterMiniInfo({
       </Text>
       <Box
         sx={{
-          flexGrow: 1,
+          "&": {
+            flexGrow: 1,
+          },
         }}
       >
         <Divider

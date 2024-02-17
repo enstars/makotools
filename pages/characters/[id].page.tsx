@@ -36,6 +36,7 @@ import SectionTitle from "pages/events/components/SectionTitle";
 const CharacterColorsContext = createContext({
   primary: "",
   secondary: "",
+  image: "",
 });
 
 export const useCharacterColors = () => {
@@ -74,6 +75,7 @@ function Page({
   const charaColors = {
     primary: primaryCharaColor(theme, character.image_color),
     secondary: secondaryCharaColor(theme, character.image_color),
+    image: character.image_color,
   };
 
   const charaEvents = events.filter((event) => {
@@ -249,7 +251,10 @@ function Page({
                   fontSize: "4rem",
                   fontWeight: 700,
                   writingMode: "vertical-rl",
-                  color: theme.colorScheme === "dark" ? "#000" : "#fff",
+                  color:
+                    theme.colorScheme === "dark"
+                      ? theme.colors.dark[8]
+                      : theme.fn.lighten(theme.colors.gray[0], 0.5),
                   textShadow:
                     "var(--text-outline-color) 2px 0px 0px, var(--text-outline-color) 1.75517px 0.958851px 0px, var(--text-outline-color) 1.0806px 1.68294px 0px, var(--text-outline-color) 0.141474px 1.99499px 0px, var(--text-outline-color) -0.832294px 1.81859px 0px, var(--text-outline-color) -1.60229px 1.19694px 0px, var(--text-outline-color) -1.97998px 0.28224px 0px, var(--text-outline-color) -1.87291px -0.701566px 0px, var(--text-outline-color) -1.30729px -1.5136px 0px, var(--text-outline-color) -0.421592px -1.95506px 0px, var(--text-outline-color) 0.567324px -1.91785px 0px, var(--text-outline-color) 1.41734px -1.41108px 0px, var(--text-outline-color) 1.92034px -0.558831px 0px",
                   ["--text-outline-color"]: baseColor,
@@ -341,8 +346,16 @@ function Page({
             character={character}
             lang={cardsQuery.lang}
           />
-          <EventsScoutsSection events={charaEvents} cards={charaCards} />
-          <EventsScoutsSection events={charaScouts} cards={charaCards} />
+          <EventsScoutsSection
+            type="events"
+            events={charaEvents}
+            cards={charaCards}
+          />
+          <EventsScoutsSection
+            type="scouts"
+            events={charaScouts}
+            cards={charaCards}
+          />
         </Box>
       </ParallaxProvider>
     </CharacterColorsContext.Provider>
@@ -410,6 +423,13 @@ export const getServerSideProps = getServerSideUser(
       "type",
       "rarity",
       "character_id",
+
+      "stats.ir.da",
+      "stats.ir.vo",
+      "stats.ir.pf",
+      "stats.ir4.da",
+      "stats.ir4.vo",
+      "stats.ir4.pf",
     ]);
 
     const events = await getLocalizedDataArray<Event>(
