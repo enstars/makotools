@@ -114,6 +114,9 @@ export const getServerSideProps = getServerSideUser(async ({ admin }) => {
 });
 
 Page.getLayout = getLayout({
+  meta: {
+    title: "Contributors",
+  },
   // wide: true,
 });
 export default Page;

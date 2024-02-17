@@ -75,7 +75,7 @@ function Page({
   const charaColors = {
     primary: primaryCharaColor(theme, character.image_color),
     secondary: secondaryCharaColor(theme, character.image_color),
-    image: character.image_color,
+    image: character.image_color || "#000000",
   };
 
   const charaEvents = events.filter((event) => {
@@ -461,5 +461,6 @@ export const getServerSideProps = getServerSideUser(
 );
 Page.getLayout = getLayout({
   wide: true,
+  customWidth: "md",
 });
 export default Page;
