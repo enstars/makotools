@@ -55,10 +55,18 @@ function Layout({
   // collapsed={collapsed}
   // toggleCollapsed={collapsed}
   return user.loading ? (
-    <Container p="xl">
-      <Center>
-        <Loader />
-        <Text ml="lg">Loading page...</Text>
+    <Container
+      p="xl"
+      sx={{
+        height: "100vh",
+      }}
+    >
+      <Center
+        sx={{
+          height: "100%",
+        }}
+      >
+        <Loader size="xl" />
       </Center>
     </Container>
   ) : (
