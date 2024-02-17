@@ -115,11 +115,19 @@ export async function sendVerificationEmail() {
 
 export async function sendPasswordReset(
   email: string,
-  setEmailSent: Dispatch<SetStateAction<boolean>>
+  setEmailSent: Dispatch<SetStateAction<boolean>>,
+  setError: Dispatch<SetStateAction<string>>
 ) {
   const clientAuth = getAuth();
-  await sendPasswordResetEmail(clientAuth, email);
-  setEmailSent(true);
+  console.log("client auth", clientAuth, email);
+  sendPasswordResetEmail(clientAuth, email)
+    .then((res) => {
+      setEmailSent(true);
+    })
+    .catch((error) => {
+      const e = error as Error;
+      setError(e.message);
+    });
 }
 
 export async function getFirestoreUserCollection([collectionAddress, user]: [
