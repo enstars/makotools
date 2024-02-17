@@ -29,6 +29,7 @@ function Layout({
   hideHeader = false,
   hideHeadBreadcrumb = false,
   wide = false,
+  customWidth,
   footerTextOnly = false,
   hideOverflow = true,
   pageProps,
@@ -41,6 +42,7 @@ function Layout({
   hideHeader: boolean;
   hideHeadBreadcrumb: boolean;
   wide: boolean;
+  customWidth?: string;
   footerTextOnly: boolean;
   hideOverflow: boolean;
   pageProps?: any;
@@ -112,7 +114,7 @@ function Layout({
             // shadow="sm"
           >
             <Container
-              size={wide ? "xl" : "sm"}
+              size={customWidth ?? wide ? "xl" : "sm"}
               px="xl"
               py="md"
               sx={{
