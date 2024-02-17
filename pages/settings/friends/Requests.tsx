@@ -42,9 +42,11 @@ function Requests() {
   const yourBitches: string[] | undefined = user.loggedIn
     ? user.privateDb?.friends__list || []
     : [];
+
   const thirstyBitches: string[] | undefined = user.loggedIn
     ? user.privateDb?.friends__receivedRequests || []
     : [];
+
   // only load profiles needed on this page
   const { data: profiles = {}, isLoading } = useSWR(
     user.loggedIn ? "/settings/friends/Requests" : null,

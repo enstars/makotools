@@ -15,6 +15,7 @@ import {
   IconLanguageHiragana,
   IconNews,
   IconSpy,
+  IconUserCheck,
 } from "@tabler/icons-react";
 import Link from "next/link";
 
@@ -123,6 +124,11 @@ function Page() {
             link: "guidelines",
             name: t("linkNames.guidelines"),
             icon: IconHeartHandshake,
+          },
+          {
+            link: "contributors",
+            name: t("linkNames.contributors"),
+            icon: IconUserCheck,
           },
           {
             link: "translations",

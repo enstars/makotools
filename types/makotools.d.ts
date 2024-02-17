@@ -153,6 +153,17 @@ type User = UserLoading | UserLoggedOut | UserLoggedIn;
 
 interface GetServerSideUserContext extends GetServerSidePropsContext {}
 
+type ContributorRole = "admin" | "data" | "design" | "dev" | "translator";
+
+interface Contributor {
+  name: string;
+  credit?: string;
+  makotools?: string;
+  roles?: ContributorRole[];
+  coordinators?: ContributorRole[];
+  translator_languages?: Locale;
+}
+
 // DATA
 
 /** Language data */
@@ -228,4 +239,11 @@ type MonthLength = 28 | 29 | 30 | 31;
 interface CalendarMonth {
   name: MonthName;
   amount_of_days: MonthLength;
+}
+
+interface HSLObject {
+  hsl?: string;
+  h: number;
+  s: number;
+  l: number;
 }

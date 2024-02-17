@@ -9,7 +9,7 @@ import {
   Title,
 } from "@mantine/core";
 import Link from "next/link";
-import { IconCheck } from "@tabler/icons-react";
+import { IconCheck, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { useForm } from "@mantine/form";
 
@@ -19,6 +19,7 @@ import { sendPasswordReset } from "services/firebase/firestore";
 
 function Page() {
   const [emailSent, setEmailSent] = useState<boolean>(false);
+  const [errorMessage, setError] = useState<string | null>(null);
   const form = useForm({
     initialValues: {
       email: "",
@@ -46,6 +47,11 @@ function Page() {
           A password reset link has been sent to your email address.
         </Alert>
       )}
+      {errorMessage && (
+        <Alert color="red" mb="md" icon={<IconX />}>
+          An error occurred: {errorMessage}
+        </Alert>
+      )}
       <Paper radius="md" p="md" withBorder sx={{ width: "100%" }}>
         <Title order={2} size="lg" mb="sm">
           Forgot password?
@@ -53,7 +59,7 @@ function Page() {
         <form
           id="send-password-reset"
           onSubmit={form.onSubmit((values) => {
-            sendPasswordReset(form.values.email, setEmailSent);
+            sendPasswordReset(form.values.email, setEmailSent, setError);
           })}
         >
           <Stack>

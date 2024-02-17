@@ -13,10 +13,15 @@ function getLocalizedNumber(
     return number;
   }
 
-  const intlFormatter = Intl.NumberFormat(locale, {
-    notation: "compact",
-    maximumSignificantDigits: 3,
-  });
+  const intlFormatter = Intl.NumberFormat(
+    locale,
+    short
+      ? {
+          notation: "compact",
+          maximumSignificantDigits: 3,
+        }
+      : undefined
+  );
 
   return intlFormatter.format(number);
 }

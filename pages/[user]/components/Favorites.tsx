@@ -5,6 +5,7 @@ import {
   Input,
   MultiSelect,
   Stack,
+  useMantineTheme,
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import useTranslation from "next-translate/useTranslation";
@@ -29,6 +30,7 @@ function Favorites({
   externalSetter: Dispatch<SetStateAction<any>>;
   locale: Locale;
 }) {
+  const theme = useMantineTheme();
   const { t } = useTranslation("user");
   const [selectedCharas, selectedCharasHandlers] = useListState<number>(
     profileState.profile__fave_charas || []
@@ -123,7 +125,15 @@ function Favorites({
           />
         </Input.Wrapper>
       </Group>
-      <Group noWrap>
+      <Group
+        noWrap
+        sx={{
+          [`@media (max-width: ${theme.breakpoints.sm}px)`]: {
+            flexDirection: "column",
+            alignItems: "flex-start",
+          },
+        }}
+      >
         <Input.Wrapper
           inputWrapperOrder={["input", "description"]}
           description={t("everyonePDesc")}
@@ -132,6 +142,7 @@ function Favorites({
           <Button
             variant="light"
             onClick={() => {
+              // TODO: compute if someone is an everyoneP via a different method
               selectedUnitsHandlers.setState(units.map((unit) => unit.id));
               selectedCharasHandlers.setState(
                 characters.map((chara) => chara.character_id)

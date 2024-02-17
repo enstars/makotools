@@ -204,15 +204,17 @@ type CenterSkillIDs =
   | 13
   | 14
   | 15
-  | 16;
+  | 16
+  | 17;
 
 interface CenterSkill<T = string[]> extends SkillStrings<T> {
-  type_id: CenterSkillIDs;
+  type_id?: CenterSkillIDs;
+  effect_value: (number | string)[];
 }
 
 type LiveSkillIDs = 1 | 2;
 interface LiveSkill<T = string[]> extends SkillStrings<T> {
-  type_id: LiveSkillIDs;
+  type_id?: LiveSkillIDs;
   duration: 5 | 8 | 12;
 }
 
@@ -233,9 +235,12 @@ type SupportSkillIDs =
   | 14
   | 15
   | 16
-  | 28;
+  | 28
+  | 29
+  | 30;
+
 interface SupportSkill<T = string[]> extends SkillStrings<T> {
-  type_id: SupportSkillIDs;
+  type_id?: SupportSkillIDs;
 }
 
 interface GameCardStrings<T> {
@@ -289,8 +294,8 @@ interface GameCard<T = string[]> extends GameCardStrings<T> {
   };
 }
 
-type EventType = "song" | "tour" | "shuffle";
-type ScoutType = "scout" | "feature scout";
+export type EventType = "song" | "tour" | "shuffle" | "special";
+export type ScoutType = "scout" | "feature scout";
 type CampaignType =
   | "birthday"
   | "anniversary"

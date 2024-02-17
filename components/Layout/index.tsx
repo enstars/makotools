@@ -29,6 +29,7 @@ function Layout({
   hideHeader = false,
   hideHeadBreadcrumb = false,
   wide = false,
+  customWidth,
   footerTextOnly = false,
   hideOverflow = true,
   pageProps,
@@ -41,6 +42,7 @@ function Layout({
   hideHeader: boolean;
   hideHeadBreadcrumb: boolean;
   wide: boolean;
+  customWidth?: string;
   footerTextOnly: boolean;
   hideOverflow: boolean;
   pageProps?: any;
@@ -55,10 +57,18 @@ function Layout({
   // collapsed={collapsed}
   // toggleCollapsed={collapsed}
   return user.loading ? (
-    <Container p="xl">
-      <Center>
-        <Loader />
-        <Text ml="lg">Loading page...</Text>
+    <Container
+      p="xl"
+      sx={{
+        height: "100vh",
+      }}
+    >
+      <Center
+        sx={{
+          height: "100%",
+        }}
+      >
+        <Loader size="xl" />
       </Center>
     </Container>
   ) : (
@@ -104,7 +114,7 @@ function Layout({
             // shadow="sm"
           >
             <Container
-              size={wide ? "xl" : "sm"}
+              size={customWidth ?? wide ? "xl" : "sm"}
               px="xl"
               py="md"
               sx={{

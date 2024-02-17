@@ -93,7 +93,7 @@ export default function NewCollectionModal({
             label="Privacy level"
             aria-label="Privacy level"
             data={PRIVACY_LEVELS.map((level) => ({
-              value: level.value,
+              value: level.value.toString(),
               label: level.description,
             }))}
             {...form.getInputProps("privacyLevel")}

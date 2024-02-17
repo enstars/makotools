@@ -1,0 +1,37 @@
+{
+  "center": {
+    "type_boost": "Increases {{substat}} of all {{attribute}} cards by {{percent}}%",
+    "type_boost_all": "Increases all substats (Da, Vo, Pf) of all {{attribute}} cards by {{percent}}%",
+    "all_boost": " Increases all stats of all card types by {{percent}}%. For songs of type \"All\", this is increased by {{percent2}}%"
+  },
+  "live": {
+    "type_1": "Increases the score by {{percent}}% for {{duration}} seconds.",
+    "type_2": "Increases the score of Flick notes by {{percent}}% for {{duration}} seconds and for other notes by {{percent2}}%.",
+    "type_3": "Increases the score of Long and Slide notes by {{percent}}% for {{duration}} seconds and for other notes by {{percent2}}%."
+  },
+  "support": {
+    "type_1": "Decreases the amount that Voltage lowers after a Bad/Miss.",
+    "type_2": "Turns {{noteCount}} {{noteTypeFrom}} into {{noteTypeTo}}.",
+    "type_3": "Turn {{count}} Great/Good into a Perfect.",
+    "type_4": "Increases the amount that the Ensemble Time Gauge rises after a Good/Great/Perfect.",
+    "type_29": "During Ensemble Live: Increases the drop rate of all Stat Pieces by {{percent}}%",
+    "type_30": "Increases the drop rate of Idol Pieces by {{percent}}%.",
+    "type_generic": "Increases the drop rate of {{type}} stat pieces by {{percent}}%.",
+    "pieceNames": {
+      "smallRed": "small red",
+      "mediumRed": "medium red",
+      "largeRed": "large red",
+      "allRed": "all red",
+      "smallBlue": "small blue",
+      "mediumBlue": "medium blue",
+      "largeBlue": "large blue",
+      "allBlue": "all blue",
+      "smallYellow": "small yellow",
+      "mediumYellow": "medium yellow",
+      "largeYellow": "large yellow",
+      "allYellow": "all yellow",
+      "all": "all"
+    }
+  },
+  "unknown": "Unknown"
+}

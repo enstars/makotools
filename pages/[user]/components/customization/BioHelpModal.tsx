@@ -258,7 +258,7 @@ function BioHelpModal({
           components={[
             <Link
               key="link"
-              href="https://twitter.com/neeneemi"
+              href="https://twitter.com/HELLOGlRLS"
               target="_blank"
               style={{
                 color: theme.colors[theme.primaryColor][5],

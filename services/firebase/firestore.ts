@@ -63,38 +63,35 @@ export function setFirestoreUserData(
 }
 
 export async function getFirestoreUserData(uid: string) {
-  const clientAuth = getAuth();
+  // const clientAuth = getAuth();
+  // console.log("clientAuth", clientAuth);
   const db = getFirestore();
 
-  if (clientAuth.currentUser === null) {
-    return undefined;
-  }
-  const docSnap = await getDoc(
-    doc(db, "users", uid || clientAuth?.currentUser?.uid)
-  );
+  // if (clientAuth.currentUser === null) {
+  //   return undefined;
+  // }
+  const docSnap = await getDoc(doc(db, "users", uid));
 
   if (docSnap.exists()) {
     const data = docSnap.data();
     return data as UserData;
+  } else {
+    return undefined;
   }
-  return undefined;
 }
+
 export async function getFirestorePrivateUserData(uid: string) {
   const clientAuth = getAuth();
   const db = getFirestore();
 
-  if (clientAuth.currentUser === null) {
-    return undefined;
-  }
-  const docSnap = await getDoc(
-    doc(db, `users/${uid || clientAuth?.currentUser?.uid}/private`, "values")
-  );
+  const docSnap = await getDoc(doc(db, `users/${uid}/private`, "values"));
 
   if (docSnap.exists()) {
     const data = docSnap.data();
     return data as UserPrivateData;
+  } else {
+    return undefined;
   }
-  return undefined;
 }
 
 export async function validateUsernameDb(username: string) {
@@ -118,11 +115,19 @@ export async function sendVerificationEmail() {
 
 export async function sendPasswordReset(
   email: string,
-  setEmailSent: Dispatch<SetStateAction<boolean>>
+  setEmailSent: Dispatch<SetStateAction<boolean>>,
+  setError: Dispatch<SetStateAction<string>>
 ) {
   const clientAuth = getAuth();
-  await sendPasswordResetEmail(clientAuth, email);
-  setEmailSent(true);
+  console.log("client auth", clientAuth, email);
+  sendPasswordResetEmail(clientAuth, email)
+    .then((res) => {
+      setEmailSent(true);
+    })
+    .catch((error) => {
+      const e = error as Error;
+      setError(e.message);
+    });
 }
 
 export async function getFirestoreUserCollection([collectionAddress, user]: [

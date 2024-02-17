@@ -1,46 +1,103 @@
+import { Translate } from "next-translate";
+
 import { CardRarity, CenterSkill, LiveSkill, SupportSkill } from "types/game";
 import attributes from "data/attributes.json";
 import { centerSkills, liveSkills, supportSkills } from "data/skills";
 
-export function centerSkillParse(skill: CenterSkill) {
-  const { substat, attr } = centerSkills[skill.type_id];
-  return `Increases ${substat} of all ${attributes[attr].fullname} cards by ${
-    substat === "All" ? 50 : 120
-  }%`;
+export function centerSkillParse(t: Translate, skill: CenterSkill) {
+  if (!t || typeof t !== "function") return "Unknown";
+  const typeId = skill?.type_id;
+  if (typeId === undefined) return t("skills:unknown");
+
+  if (typeId === 4 || typeId === 8 || typeId === 12 || typeId === 16) {
+    const { attr } = centerSkills[typeId];
+    return t(`skills:center.type_boost_all`, {
+      attribute: attributes[attr].fullname,
+      percent: skill?.effect_value[0] || "?",
+    });
+  } else if (typeId < 16) {
+    const { substat, attr } = centerSkills[typeId];
+
+    return t(`skills:center.type_boost`, {
+      substat: substat,
+      attribute: attributes[attr].fullname,
+      percent: skill?.effect_value[0] || "?",
+    });
+  } else if (typeId === 17) {
+    return t(`skills:center.all_boost`, {
+      percent: skill?.effect_value[0] || "?",
+      percent2: skill?.effect_value[1] || "?",
+    });
+  }
+
+  return t("skills:unknown");
 }
 
 export function liveSkillParse(
+  t: Translate,
   skill: LiveSkill,
   rarity: CardRarity,
   level: number = 5
 ) {
-  const effect_values = liveSkills[skill.duration]?.[rarity];
-  return `Increases the score by ${effect_values[level - 1][1]}% for ${
-    effect_values[level - 1][0]
-  } seconds.`;
+  if (!t || typeof t !== "function") return "Unknown";
+  const typeId = skill?.type_id;
+  if (typeId === undefined) return t("skills:unknown");
+
+  // @ts-ignore
+  const effect_values = liveSkills[typeId][skill.duration]?.[rarity];
+  if (typeId === 1) {
+    return t(`skills:live.type_${typeId}`, {
+      percent: effect_values[level - 1][1] || "?",
+      duration: skill.duration,
+    });
+  } else if (typeId === 2 || typeId === 3) {
+    return t(`skills:live.type_${typeId}`, {
+      percent: effect_values[level - 1][0] || "?",
+      percent2: effect_values[level - 1][1] || "?",
+      duration: skill.duration,
+    });
+  }
+
+  return t("skills:unknown");
 }
 
 export function supportSkillParse(
+  t: Translate,
   skill: SupportSkill,
   rarity: CardRarity,
-  level: number = 3,
-  fallback = "Unknown"
+  level: number = 3
 ) {
-  const effect_values = supportSkills[skill.type_id][rarity];
-  if (typeof effect_values === "undefined") return fallback;
-  switch (skill.type_id) {
+  if (!t || typeof t !== "function") return "Unknown";
+  const typeId = skill?.type_id;
+  if (typeId === undefined) return t("skills:unknown");
+
+  const effect_values = supportSkills[typeId][rarity];
+
+  switch (typeId) {
     case 1:
-      return `Decreases the amount that Voltage lowers after a Bad/Miss.`;
-    case 2:
-      return `Turns ${effect_values[level - 1][0]} ${
-        effect_values[level - 1][1] ? "Bad/Miss" : "Bad"
-      } into ${
-        ["", "", "", "Good", "Great", "Perfect"][effect_values[level - 1][2]]
-      }.`;
-    case 3:
-      return `Turn ${effect_values[level - 1][0]} Great/Good into a Perfect.`;
     case 4:
-      return `Increases the amount that the Ensemble Time Gauge rises after a Good/Great/Perfect.`;
+      return t(`skills:support.type_${typeId}`);
+    case 2:
+      const noteCount = effect_values[level - 1][0];
+      const noteTypeFrom = effect_values[level - 1][1] ? "Bad/Miss" : "Bad";
+      const noteTypeTo = ["Good", "Great", "Perfect"][
+        effect_values[level - 1][2] - 3
+      ];
+      return t(`skills:support.type_${typeId}`, {
+        noteCount,
+        noteTypeFrom,
+        noteTypeTo,
+      });
+    case 3:
+      const count = effect_values[level - 1][0];
+      return t(`skills:support.type_${typeId}`, {
+        count,
+      });
+    case 29:
+    case 30:
+      return t(`skills:support.type_${typeId}`, {
+        percent: effect_values[level - 1][0],
+      });
     case 5:
     case 6:
     case 7:
@@ -54,10 +111,13 @@ export function supportSkillParse(
     case 15:
     case 16:
     case 28:
-      return `Increases the drop rate of ${
-        supportSkills[skill.type_id].drop_type
-      } stat pieces by ${effect_values[level - 1][0]}%.`;
+      const type = t(`skills:support.pieceNames.${supportSkills[typeId].drop}`);
+      const percent = effect_values[level - 1][0];
+      return t(`skills:support.type_generic`, {
+        type,
+        percent,
+      });
     default:
-      return fallback;
+      return t("skills:unknown");
   }
 }
