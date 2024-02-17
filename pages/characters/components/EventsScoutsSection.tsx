@@ -3,27 +3,29 @@ import { Box, Title } from "@mantine/core";
 import { EventScoutCard } from "./EventScoutCard";
 
 import { GameCard, Event, Scout } from "types/game";
-import { isGameEvent } from "services/utilities";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
+import { useCharacterColors } from "../[id].page";
+import SectionTitle from "pages/events/components/SectionTitle";
+import { IconAward, IconDiamond } from "@tabler/icons-react";
 
 export function EventsScoutsSection({
   events,
   cards,
+  type,
 }: {
   events: Event[] | Scout[];
   cards: GameCard[];
+  type: "events" | "scouts";
 }) {
+  const colors = useCharacterColors();
   return (
-    <Box id="events">
-      <Title
-        order={4}
-        size="h2"
-        sx={{
-          margin: "8vh 0px 4vh 0px",
-        }}
-      >
-        {isGameEvent(events[0]) ? "Events" : "Scouts"}
-      </Title>
+    <Box>
+      <SectionTitle
+        id={type === "events" ? "events" : "scouts"}
+        title={type === "events" ? "Events" : "Scouts"}
+        Icon={type === "events" ? IconAward : IconDiamond}
+        iconProps={{ color: colors.image }}
+      />
       <ResponsiveGrid width={240}>
         {events.map((event) => {
           const correspondingCard = cards.filter((card) =>
@@ -31,7 +33,7 @@ export function EventsScoutsSection({
           )[0];
           return (
             <EventScoutCard
-              key={isGameEvent(event) ? event.event_id : event.gacha_id}
+              key={type === "events" ? event.event_id : event.gacha_id}
               event={event}
               card={correspondingCard}
             />

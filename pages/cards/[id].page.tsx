@@ -111,7 +111,7 @@ export default Page;
 
 export const getServerSideProps = getServerSideUser(
   async ({ locale, params, db }) => {
-    const t = await getT("cards__card");
+    const t = await getT("en", "skills");
     const characters = await getLocalizedDataArray<GameCharacter>(
       "characters",
       locale,

@@ -1,6 +1,7 @@
 import { Box, useMantineTheme, Text, Paper, Group } from "@mantine/core";
 import { IconStarFilled } from "@tabler/icons-react";
 import { createRef } from "react";
+
 import { useDayjs } from "services/libraries/dayjs";
 import { GameCard, Event, Scout } from "types/game";
 import Picture from "components/core/Picture";
@@ -53,6 +54,7 @@ export function EventScoutCard({
           // position: "absolute",
           // top: 0,
           // left: 0,
+          overflow: "hidden",
           width: "100%",
           height: 150,
         })}

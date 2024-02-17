@@ -6,11 +6,6 @@ import { useCharacterColors } from "../[id].page";
 
 import { Lang } from "types/makotools";
 import { GameCard, GameCharacter } from "types/game";
-import {
-  isColorLight,
-  primaryCharaColor,
-  secondaryCharaColor,
-} from "services/utilities";
 import { CardCard } from "components/core/CardCard";
 import { useCollections } from "services/makotools/collection";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
@@ -30,12 +25,12 @@ export function CardsSection({
   const [newCollectionModalOpened, setNewCollectionModalOpened] =
     useState<boolean>(false);
 
-  const textColor = isColorLight(character.image_color as string)
-    ? primaryCharaColor(theme, character.image_color)
-    : secondaryCharaColor(theme, character.image_color);
-  const bgColor = isColorLight(character.image_color as string)
-    ? secondaryCharaColor(theme, character.image_color)
-    : primaryCharaColor(theme, character.image_color);
+  // const textColor = isColorLight(character.image_color as string)
+  //   ? primaryCharaColor(theme, character.image_color)
+  //   : secondaryCharaColor(theme, character.image_color);
+  // const bgColor = isColorLight(character.image_color as string)
+  //   ? secondaryCharaColor(theme, character.image_color)
+  //   : primaryCharaColor(theme, character.image_color);
 
   const colors = useCharacterColors();
 
@@ -45,9 +40,20 @@ export function CardsSection({
         id="cards"
         title="Cards"
         Icon={IconCards}
-        iconProps={{ color: textColor }}
+        iconProps={{ color: colors.image }}
       />
-      <Accordion variant="separated" defaultValue="5">
+      <Accordion
+        variant="separated"
+        defaultValue="5"
+        styles={{
+          chevron: {
+            "& svg": {
+              width: 20,
+              height: 20,
+            },
+          },
+        }}
+      >
         {[5, 4, 3, 2, 1].map((rarity) => {
           const rarityCards = cards.filter((card) => card.rarity === rarity);
 
@@ -74,21 +80,14 @@ export function CardsSection({
                   sx={{
                     paddingTop: theme.spacing.xs,
                     paddingBottom: theme.spacing.xs,
-                    backgroundColor: colors.secondary,
                     overflow: "hidden",
                     position: "relative",
+                    background: colors.secondary,
                     color: colors.primary,
-                    "&[data-active]": {
-                      backgroundColor: bgColor,
-                      color: isColorLight(character.image_color as string)
-                        ? textColor
-                        : "#fff",
-
-                      "& svg.deco-star": {
-                        color: textColor,
-                        opacity: 0.375,
-                      },
-                    },
+                    // "&[data-active]": {
+                    //   // backgroundColor: colors.secondary,
+                    //   // color: colors.primary,
+                    // },
                   }}
                 >
                   <Group spacing="xs">
@@ -104,7 +103,7 @@ export function CardsSection({
                       bottom: -theme.spacing.xs * 1.5,
                       transform: "skew(-15deg)",
                       "& svg.deco-star": {
-                        color: bgColor,
+                        color: colors.primary,
                         opacity: 0.1,
                       },
                     }}
