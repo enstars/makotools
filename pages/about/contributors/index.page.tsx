@@ -1,5 +1,7 @@
-import { createStyles } from "@mantine/core";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { IconTool, IconTools } from "@tabler/icons-react";
+import { Stack, useMantineTheme } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 
 import ContributorCard from "./components/ContributorCard";
 
@@ -10,15 +12,7 @@ import ResponsiveGrid from "components/core/ResponsiveGrid";
 import useUser from "services/firebase/user";
 import { UserData } from "types/makotools";
 import getServerSideUser from "services/firebase/getServerSideUser";
-
-const useStyles = createStyles((theme, params: any, getRef) => ({
-  contributors: {
-    ref: getRef("contributors"),
-    // color: "green",
-    // fontFamily: "Comic Sans MS, cursive",
-    // border: "1px solid orange",
-  },
-}));
+import SectionTitle from "pages/events/components/SectionTitle";
 
 function Page({
   profiles,
@@ -27,35 +21,44 @@ function Page({
     [uid: string]: UserData["profile__banner" | "profile__picture"];
   };
 }) {
-  const { classes, cx } = useStyles({});
   const user = useUser();
+  const theme = useMantineTheme();
 
   const [loadedProfiles, setLoadedProfiles] = useState<{
     [uid: string]: UserData;
   }>({});
 
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
+
+  const adminCards = useMemo(() => {
+    return contributors
+      .filter((c) => c.admin)
+      .map((contributor) => {
+        const userData = Object.values(profiles).filter(
+          (p: any) => p.username === contributor.makotools.replace("@", "")
+        )[0];
+        return (
+          <ContributorCard
+            userInfo={contributor.admin ? userData : undefined}
+            key={contributor.name + contributor.makotools}
+            contributor={contributor}
+          />
+        );
+      });
+  }, [profiles]);
   return (
     <>
       <PageTitle title="Contributors" />
-      <ResponsiveGrid
-        sx={{ marginTop: 20 }}
-        alignItems="stretch"
-        className={classes.contributors}
-      >
-        {contributors
-          .filter((c) => c.admin)
-          .map((contributor) => {
-            const userData = Object.values(profiles).filter(
-              (p: any) => p.username === contributor.makotools.replace("@", "")
-            )[0];
-            return (
-              <ContributorCard
-                userInfo={contributor.admin ? userData : undefined}
-                key={contributor.name + contributor.makotools}
-                contributor={contributor}
-              />
-            );
-          })}
+      <SectionTitle id="admins" title="Admins" Icon={IconTool} />
+      {isMobile ? (
+        <ResponsiveGrid sx={{ marginTop: 20 }} alignItems="stretch">
+          {adminCards}
+        </ResponsiveGrid>
+      ) : (
+        <Stack spacing="xs">{adminCards}</Stack>
+      )}
+      <SectionTitle id="admins" title="Contributors" Icon={IconTools} />
+      <ResponsiveGrid sx={{ marginTop: 20 }} alignItems="stretch">
         {contributors
           .filter((c) => !c.admin)
           .map((contributor) => {
@@ -111,6 +114,6 @@ export const getServerSideProps = getServerSideUser(async ({ admin }) => {
 });
 
 Page.getLayout = getLayout({
-  wide: true,
+  // wide: true,
 });
 export default Page;
