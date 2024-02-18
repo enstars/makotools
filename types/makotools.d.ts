@@ -156,12 +156,17 @@ interface GetServerSideUserContext extends GetServerSidePropsContext {}
 type ContributorRole = "admin" | "data" | "design" | "dev" | "translator";
 
 interface Contributor {
+  admin: boolean;
   name: string;
-  credit?: string;
-  makotools?: string;
-  roles?: ContributorRole[];
+  credits: string;
+  makotools: string;
+  admin: boolean;
+  data: boolean;
+  design: boolean;
+  dev: boolean;
+  translation: boolean;
   coordinators?: ContributorRole[];
-  translator_languages?: Locale;
+  lang: Locale;
 }
 
 // DATA

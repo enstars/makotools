@@ -5,14 +5,16 @@ import { useMediaQuery } from "@mantine/hooks";
 
 import ContributorCard from "./components/ContributorCard";
 
-import * as contributors from "data/contributors.json";
+import contributorsJSON from "data/contributors.json";
 import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 import useUser from "services/firebase/user";
-import { UserData } from "types/makotools";
+import { Contributor, UserData } from "types/makotools";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import SectionTitle from "pages/events/components/SectionTitle";
+
+const contributors = contributorsJSON as Contributor[];
 
 function Page({
   profiles,

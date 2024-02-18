@@ -455,6 +455,9 @@ export const getServerSideProps = getServerSideUser(
         scoutsQuery: scouts,
         unitsQuery: units,
         breadcrumbs,
+        meta: {
+          title: characterName,
+        },
       },
     };
   }
