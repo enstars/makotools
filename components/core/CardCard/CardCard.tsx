@@ -94,10 +94,11 @@ export default function CardCard({
   return (
     <Card
       withBorder
-      component={Link}
       p={0}
-      href={`/cards/${card.id}`}
       sx={{ "&:hover": { cursor: "pointer" } }}
+      onClick={(e: React.SyntheticEvent) => {
+        router.push(`/cards/${card.id}`);
+      }}
     >
       <Card.Section sx={{ position: "relative" }} px={3} pt={3}>
         <Group

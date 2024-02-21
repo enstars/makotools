@@ -73,7 +73,7 @@ function DisplayFaves({
       <Stack spacing={2}>
         <Group spacing={3}>
           {faveCharas.map((chara: number, index: number) => {
-            if (index > 0)
+            if (chara > 0)
               return (
                 <Tooltip
                   key={chara}
@@ -120,7 +120,7 @@ function DisplayFaves({
         </Group>
         <Group spacing={3}>
           {faveUnits.map((unit: number, index: number) => {
-            if (index > 0)
+            if (unit > 0)
               return (
                 <Tooltip
                   key={unit}
