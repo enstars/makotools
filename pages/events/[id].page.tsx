@@ -96,10 +96,7 @@ function Page({
 
   return (
     <>
-      {((user.loggedIn &&
-        user.db.admin?.patreon &&
-        user.db.admin?.patreon >= 1) ||
-        (user.loggedIn && user.db.admin?.administrator)) && (
+      {user.loggedIn && (
         <BookmarkButton
           id={event.event_id}
           bookmarkList={bookmarks}
