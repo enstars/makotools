@@ -92,7 +92,7 @@ function EventCard({
       (!user.loading && user.loggedIn && user?.db?.setting__name_order) ||
       "firstlast";
     return getNameOrder(
-      { first_name: splitName[1], last_name: splitName[0] },
+      { first_name: splitName[0], last_name: splitName[1] },
       nameOrderSetting
     );
   }
