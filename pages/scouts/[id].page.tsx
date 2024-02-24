@@ -235,6 +235,9 @@ export const getServerSideProps = getServerSideUser(
         cardsQuery: cards,
         title,
         breadcrumbs,
+        meta: {
+          title: title,
+        },
       },
     };
   }

@@ -261,6 +261,9 @@ export const getServerSideProps = getServerSideUser(
         unitsQuery: getUnits,
         title,
         breadcrumbs,
+        meta: {
+          title: title,
+        },
       },
     };
   }
