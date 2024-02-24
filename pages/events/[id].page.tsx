@@ -248,10 +248,10 @@ export const getServerSideProps = getServerSideUser(
       "character_id",
     ]);
 
-    const event = getEvent.data;
-    const scout = getScout.data;
+    const event: Event = getEvent.data;
+    const scout: Scout = getScout.data;
     const title = event.name[0];
-    const breadcrumbs = ["events", title];
+    const breadcrumbs = ["events", `${event.event_id}[ID]${title}`];
 
     return {
       props: {

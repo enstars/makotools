@@ -225,7 +225,7 @@ export const getServerSideProps = getServerSideUser(
     const scout: Scout = getScout.data;
     const event: Event | null = getEvent?.data || null;
     const title = scout.name[0];
-    const breadcrumbs = ["scouts", title];
+    const breadcrumbs = ["scouts", `${scout.gacha_id}[ID]${title}`];
 
     return {
       props: {

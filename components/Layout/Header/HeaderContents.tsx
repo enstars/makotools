@@ -17,7 +17,7 @@ const defaultGetBreadcrumbs = (path: string) =>
 
 function HeaderContents({
   getBreadcrumbs = defaultGetBreadcrumbs,
-  breadcrumbs,
+  breadcrumbs = [],
   setOpened,
   headerProps = {},
   ...props
@@ -29,7 +29,8 @@ function HeaderContents({
 }) {
   const { t } = useTranslation("sidebar");
   const location = useRouter();
-  let pageBreadcrumbs = breadcrumbs || getBreadcrumbs(location.asPath);
+  let pageBreadcrumbs: string[] =
+    breadcrumbs || getBreadcrumbs(location.asPath);
   const { forceLight } = headerProps;
 
   return (
@@ -90,17 +91,30 @@ function HeaderContents({
             >
               {t("breadcrumbTitle")}
             </Anchor>
-            {pageBreadcrumbs.map((crumb: string, index: number) => (
-              <Anchor
-                component={Link}
-                key={crumb}
-                href={`/${pageBreadcrumbs.slice(0, index + 1).join("/")}`}
-                inherit
-                sx={forceLight && { color: "#fff" }}
-              >
-                {decodeURIComponent(crumb)}
-              </Anchor>
-            ))}
+            {pageBreadcrumbs.map((crumb: string, index: number) => {
+              console.log(
+                "breadcrumbs",
+                `/${pageBreadcrumbs.slice(0, index + 1).join("/")}`
+              );
+              return (
+                <Anchor
+                  component={Link}
+                  key={crumb.includes("[ID]") ? crumb.split("[ID]")[0] : crumb}
+                  href={`/${
+                    pageBreadcrumbs
+                      .slice(0, index + 1)
+                      .join("/")
+                      .split("[ID]")[0]
+                  }`}
+                  inherit
+                  sx={forceLight && { color: "#fff" }}
+                >
+                  {decodeURIComponent(
+                    crumb.includes("[ID]") ? crumb.split("[ID]")[1] : crumb
+                  )}
+                </Anchor>
+              );
+            })}
           </Breadcrumbs>
         </Text>
       </Group>
