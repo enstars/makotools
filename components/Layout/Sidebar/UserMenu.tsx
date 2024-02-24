@@ -220,16 +220,13 @@ function UserMenu({ trigger }: { trigger: any }) {
           </Menu.Item>
         ) : user.loggedIn ? (
           <>
-            {((user.db.admin?.patreon && user.db.admin?.patreon >= 1) ||
-              user.db.admin?.administrator) && (
-              <Menu.Item
-                component={Link}
-                href="/bookmarks"
-                icon={<IconBookmark size={14} />}
-              >
-                {t("menu.bookmarks")}
-              </Menu.Item>
-            )}
+            <Menu.Item
+              component={Link}
+              href="/bookmarks"
+              icon={<IconBookmark size={14} />}
+            >
+              {t("menu.bookmarks")}
+            </Menu.Item>
             <Menu.Item
               id="sidebar-link-settings"
               component={Link}
