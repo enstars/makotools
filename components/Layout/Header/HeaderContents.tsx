@@ -91,10 +91,6 @@ function HeaderContents({
               {t("breadcrumbTitle")}
             </Anchor>
             {pageBreadcrumbs.map((crumb: string, index: number) => {
-              console.log(
-                "breadcrumbs",
-                `/${pageBreadcrumbs.slice(0, index + 1).join("/")}`
-              );
               return (
                 <Anchor
                   component={Link}
