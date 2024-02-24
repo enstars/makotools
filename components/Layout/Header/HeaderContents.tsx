@@ -12,6 +12,8 @@ import {
 import { IconMenu2 } from "@tabler/icons-react";
 import useTranslation from "next-translate/useTranslation";
 
+import BookmarkButton from "components/core/BookmarkButton";
+
 const defaultGetBreadcrumbs = (path: string) =>
   path.split("/").filter((x) => x);
 
@@ -20,12 +22,14 @@ function HeaderContents({
   breadcrumbs = [],
   setOpened,
   headerProps = {},
+  bookmarkId,
   ...props
 }: {
   getBreadcrumbs?: (path: string) => string[];
   breadcrumbs?: string[];
   setOpened: any;
   headerProps?: any;
+  bookmarkId?: number;
 }) {
   const { t } = useTranslation("sidebar");
   const location = useRouter();
@@ -34,8 +38,28 @@ function HeaderContents({
   const { forceLight } = headerProps;
 
   return (
-    <Group position="apart">
-      <Group noWrap align="center" {...props} {...headerProps}>
+    <Group
+      position="apart"
+      noWrap
+      style={{
+        flexBasis: 0,
+        flexGrow: 1,
+        minWidth: 0,
+        overflow: "hidden",
+      }}
+    >
+      <Group
+        style={{
+          flexBasis: 0,
+          flexGrow: 1,
+          minWidth: 0,
+          overflow: "hidden",
+        }}
+        noWrap
+        align="center"
+        {...props}
+        {...headerProps}
+      >
         <MediaQuery largerThan="xs" styles={{ display: "none" }}>
           <Box sx={{ alignSelf: "stretch" }}>
             <ActionIcon
@@ -118,6 +142,7 @@ function HeaderContents({
           </Breadcrumbs>
         </Text>
       </Group>
+      {typeof bookmarkId === "number" && <BookmarkButton id={bookmarkId} />}
       {/* <Searchbar /> */}
     </Group>
   );

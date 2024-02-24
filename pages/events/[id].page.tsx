@@ -6,7 +6,7 @@ import {
   IconMusic,
   IconVinyl,
 } from "@tabler/icons-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useListState } from "@mantine/hooks";
 import useTranslation from "next-translate/useTranslation";
 
@@ -29,7 +29,6 @@ import ResponsiveGrid from "components/core/ResponsiveGrid";
 import { useCollections } from "services/makotools/collection";
 import NewCollectionModal from "pages/cards/components/NewCollectionModal";
 import useUser from "services/firebase/user";
-import BookmarkButton from "components/core/BookmarkButton";
 
 function Page({
   event,
@@ -87,22 +86,22 @@ function Page({
       icon: <IconMusic size={16} strokeWidth={3} />,
     });
 
-  useEffect(() => {
-    user.loggedIn &&
-      user.db.set({
-        bookmarks__events: bookmarks,
-      });
-  }, [bookmarks]);
+  // useEffect(() => {
+  //   user.loggedIn &&
+  //     user.db.set({
+  //       bookmarks__events: bookmarks,
+  //     });
+  // }, [bookmarks]);
 
   return (
     <>
-      {user.loggedIn && (
+      {/* {user.loggedIn && (
         <BookmarkButton
           id={event.event_id}
           bookmarkList={bookmarks}
           listHandler={handlers}
         />
-      )}
+      )} */}
       <PageTitle title={event.name[0]} sx={{ flex: "1 0 80%" }} />
       <ESPageHeader content={event} units={units} />
       <SectionTitle title="Cards" id="cards" Icon={IconCards} />
@@ -223,6 +222,7 @@ export const getServerSideProps = getServerSideUser(
         unitsQuery: getUnits,
         title,
         breadcrumbs,
+        bookmarkId: event.event_id,
       },
     };
   }
