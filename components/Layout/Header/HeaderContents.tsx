@@ -29,8 +29,7 @@ function HeaderContents({
 }) {
   const { t } = useTranslation("sidebar");
   const location = useRouter();
-  let pageBreadcrumbs: string[] =
-    breadcrumbs || getBreadcrumbs(location.asPath);
+  let pageBreadcrumbs = breadcrumbs ?? getBreadcrumbs(location.asPath);
   const { forceLight } = headerProps;
 
   return (
@@ -92,10 +91,6 @@ function HeaderContents({
               {t("breadcrumbTitle")}
             </Anchor>
             {pageBreadcrumbs.map((crumb: string, index: number) => {
-              console.log(
-                "breadcrumbs",
-                `/${pageBreadcrumbs.slice(0, index + 1).join("/")}`
-              );
               return (
                 <Anchor
                   component={Link}
