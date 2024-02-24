@@ -1,15 +1,6 @@
-import {
-  ActionIcon,
-  Divider,
-  Group,
-  Paper,
-  Text,
-  Tooltip,
-  useMantineTheme,
-} from "@mantine/core";
+import { Divider, Paper, Text, useMantineTheme } from "@mantine/core";
 import {
   IconBook,
-  IconBookmark,
   IconCards,
   IconDiamond,
   IconMusic,
@@ -38,6 +29,7 @@ import ResponsiveGrid from "components/core/ResponsiveGrid";
 import { useCollections } from "services/makotools/collection";
 import NewCollectionModal from "pages/cards/components/NewCollectionModal";
 import useUser from "services/firebase/user";
+import BookmarkButton from "components/core/BookmarkButton";
 
 function Page({
   event,
@@ -104,44 +96,17 @@ function Page({
 
   return (
     <>
-      <Group>
-        <PageTitle title={event.name[0]} sx={{ flex: "1 0 80%" }} />
-        {((user.loggedIn &&
-          user.db.admin?.patreon &&
-          user.db.admin?.patreon >= 1) ||
-          (user.loggedIn && user.db.admin?.administrator)) && (
-          <Tooltip
-            label={
-              user.loggedIn
-                ? bookmarks.includes(event.event_id)
-                  ? t("events:event.addBookmark")
-                  : t("events:event.removeBookmark")
-                : t("loginBookmark")
-            }
-            position="bottom"
-          >
-            <ActionIcon
-              size={60}
-              disabled={!user.loggedIn}
-              onClick={() => {
-                bookmarks.includes(event.event_id)
-                  ? handlers.remove(bookmarks.indexOf(event.event_id))
-                  : handlers.append(event.event_id);
-              }}
-            >
-              <IconBookmark
-                size={60}
-                fill={
-                  bookmarks.includes(event.event_id)
-                    ? theme.colors[theme.primaryColor][4]
-                    : "none"
-                }
-                strokeWidth={bookmarks.includes(event.event_id) ? 0 : 2}
-              />
-            </ActionIcon>
-          </Tooltip>
-        )}
-      </Group>
+      {((user.loggedIn &&
+        user.db.admin?.patreon &&
+        user.db.admin?.patreon >= 1) ||
+        (user.loggedIn && user.db.admin?.administrator)) && (
+        <BookmarkButton
+          id={event.event_id}
+          bookmarkList={bookmarks}
+          listHandler={handlers}
+        />
+      )}
+      <PageTitle title={event.name[0]} sx={{ flex: "1 0 80%" }} />
       <ESPageHeader content={event} units={units} />
       <SectionTitle title="Cards" id="cards" Icon={IconCards} />
       <ResponsiveGrid width={224}>
