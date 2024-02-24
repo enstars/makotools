@@ -29,7 +29,7 @@ function HeaderContents({
 }) {
   const { t } = useTranslation("sidebar");
   const location = useRouter();
-  let pageBreadcrumbs = breadcrumbs || getBreadcrumbs(location.asPath);
+  let pageBreadcrumbs = breadcrumbs ?? getBreadcrumbs(location.asPath);
   const { forceLight } = headerProps;
 
   return (
