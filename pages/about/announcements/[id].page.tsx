@@ -47,6 +47,11 @@ export async function getServerSideProps({
       props: {
         post: post,
         meta: { title: post.attributes.title, desc: post.attributes.preview },
+        breadcrumbs: [
+          "about",
+          "announcements",
+          `${params.id}[ID]${post.attributes.title}`,
+        ],
       },
     };
   } catch (e) {
