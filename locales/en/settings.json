@@ -16,7 +16,7 @@
     "en": "Global (English)",
     "regionLabel": "Game Region",
     "regionDesc": "This setting currently does not have an effect on content yet.",
-    "regionPlaceholder": "Japan (Default)"
+    "regionPlaceholder": "Global (English) (Default)"
   },
   "appearance": {
     "name": "Appearance",

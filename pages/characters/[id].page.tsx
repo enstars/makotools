@@ -31,7 +31,7 @@ import {
 } from "services/utilities";
 import useUser from "services/firebase/user";
 import NameOrder from "components/utilities/formatting/NameOrder";
-import SectionTitle from "pages/events/components/SectionTitle";
+import SectionTitle from "pages/events/[id]/components/SectionTitle";
 
 const CharacterColorsContext = createContext({
   primary: "",

@@ -6,7 +6,7 @@ import { Lang } from "types/makotools";
 import { GameCharacter, GameUnit } from "types/game";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 import IconEnstars from "components/core/IconEnstars";
-import SectionTitle from "pages/events/components/SectionTitle";
+import SectionTitle from "pages/events/[id]/components/SectionTitle";
 
 export function UnitSection({
   characters,

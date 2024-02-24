@@ -12,7 +12,7 @@ import ResponsiveGrid from "components/core/ResponsiveGrid";
 import useUser from "services/firebase/user";
 import { Contributor, UserData } from "types/makotools";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import SectionTitle from "pages/events/components/SectionTitle";
+import SectionTitle from "pages/events/[id]/components/SectionTitle";
 
 const contributors = contributorsJSON as Contributor[];
 
