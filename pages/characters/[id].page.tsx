@@ -414,7 +414,10 @@ export const getServerSideProps = getServerSideUser(
       locale
     );
 
-    const breadcrumbs = ["characters", characterName];
+    const breadcrumbs = [
+      "characters",
+      `${character.data.character_id}[ID]${characterName}`,
+    ];
 
     const cards = await getLocalizedDataArray<GameCard>("cards", locale, "id", [
       "id",
