@@ -39,6 +39,7 @@ interface PictureProps extends NextMantineImageProps {
   srcB2?: string;
   src?: string;
   transparent?: boolean;
+  noAnimation?: boolean;
 }
 
 const useStyles = createStyles(
@@ -67,6 +68,9 @@ const useStyles = createStyles(
       zIndex: 0,
       pointerEvents: "none",
       transition: theme.other.transition,
+      "&.no-animation": {
+        transition: "none",
+      },
       "::before, ::after": {
         content: "''",
         display: "block",
@@ -94,6 +98,9 @@ const useStyles = createStyles(
       maxWidth: "100%",
       opacity: 0,
       transition: theme.other.transition,
+      "&.no-animation": {
+        transition: "none",
+      },
     },
     loadedImg: {
       opacity: 1,
@@ -138,6 +145,7 @@ function Picture({
     className,
     action = "none",
     transparent = false,
+    noAnimation = false,
 
     ...otherProps
   } = props;
@@ -182,7 +190,14 @@ function Picture({
         styles={styles}
         className={cx(classes.picture, className)}
       >
-        {hasPlaceholder && <div className={classes.placeholder} />}
+        {hasPlaceholder && (
+          <div
+            className={cx(
+              classes.placeholder,
+              noAnimation ? "no-animation" : ""
+            )}
+          />
+        )}
         {!dontUseWebP && <source srcSet={webpSrc} />}
         <Image
           unoptimized
@@ -203,6 +218,7 @@ function Picture({
           {...otherProps}
           className={cx(
             classes.img,
+            noAnimation ? "no-animation" : "",
             className,
             loaded ? classes.loadedImg : ""
           )}
