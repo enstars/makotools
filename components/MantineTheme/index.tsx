@@ -1,4 +1,5 @@
 import { MantineProvider } from "@mantine/core";
+import { ModalsProvider } from "@mantine/modals";
 import { NotificationsProvider } from "@mantine/notifications";
 import { NavigationProgress } from "@mantine/nprogress";
 import { ReactNode } from "react";
@@ -198,10 +199,12 @@ function MantineTheme({
         },
       }}
     >
-      <NotificationsProvider position="top-center">
-        <NavigationProgress />
-        {children}
-      </NotificationsProvider>
+      <ModalsProvider>
+        <NotificationsProvider position="top-center">
+          <NavigationProgress />
+          {children}
+        </NotificationsProvider>
+      </ModalsProvider>
     </MantineProvider>
   );
 }
