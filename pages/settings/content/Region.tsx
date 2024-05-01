@@ -44,9 +44,10 @@ function Region() {
         return {
           value: r.value,
           label: t(`content.${r.value}`),
+          icon: r.icon,
         };
       })}
-      description={t("content.regionDesc")}
+      description={t("content.regionDescNew")}
       placeholder={t("content.regionPlaceholder")}
     />
   );
