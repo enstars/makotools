@@ -9,7 +9,7 @@ import { GameCard, GameCharacter } from "types/game";
 import { CardCard } from "components/core/CardCard";
 import { useCollections } from "services/makotools/collection";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
-import SectionTitle from "pages/events/components/SectionTitle";
+import SectionTitle from "pages/events/[id]/components/SectionTitle";
 
 export function CardsSection({
   cards,

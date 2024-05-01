@@ -11,16 +11,20 @@ import useTranslation from "next-translate/useTranslation";
 
 import IconEnstars from "components/core/IconEnstars";
 import Picture from "components/core/Picture";
-import { Event, GameUnit, Scout } from "types/game";
+import { Event, GameRegion, GameUnit, Scout } from "types/game";
 
 function ESPageHeader({
   content,
   units,
+  region,
 }: {
   content: Event | Scout;
   units?: GameUnit[];
+  region: GameRegion;
 }) {
   const { t } = useTranslation("events__event");
+  const startTime = content.start;
+  const endTime = content.end;
   return (
     <>
       <Group position="apart" align="flex-start">
@@ -40,29 +44,29 @@ function ESPageHeader({
           <Group>
             <Box sx={{ flex: "1 1 0", minWidth: 200 }}>
               <Text size="sm" color="dimmed" weight={700}>
-                {t("events:event.start")} ({dayjs(content.start.en).format("z")}
-                )
+                {t("events:event.start")} (
+                {dayjs(startTime[region]).format("z")})
               </Text>
               <Text size="lg" weight={500}>
-                {dayjs(content.start.en).format("lll")}
+                {dayjs(startTime[region]).format("lll")}
               </Text>
             </Box>
             <Box sx={{ flex: "1 1 0", minWidth: 200 }}>
               <Text size="sm" color="dimmed" weight={700}>
-                {t("events:event.end")} ({dayjs(content.end.en).format("z")})
+                {t("events:event.end")} ({dayjs(endTime[region]).format("z")})
               </Text>
               <Text size="lg" weight={500}>
-                {dayjs(content.end.en).format("lll")}
+                {dayjs(endTime[region]).format("lll")}
               </Text>
             </Box>
           </Group>
           <Space h="md" />
           <Group noWrap>
-            {dayjs(content.end.en).isBefore(dayjs()) ? (
+            {dayjs(endTime[region]).isBefore(dayjs()) ? (
               <Badge color="gray">{t("past")}</Badge>
             ) : dayjs().isBetween(
-                dayjs(content.start.en),
-                dayjs(content.end.en)
+                dayjs(startTime[region]),
+                dayjs(endTime[region])
               ) ? (
               <Badge color="yellow">{t("ongoing")}</Badge>
             ) : (
@@ -120,7 +124,7 @@ function ESPageHeader({
               )}
             </Badge>
             {(content.type === "scout" || content.type === "feature scout") &&
-              dayjs().isAfter(dayjs(content.start.en).add(3, "M")) && (
+              dayjs().isAfter(dayjs(startTime[region]).add(3, "M")) && (
                 <Badge
                   leftSection={
                     <Box mt={4}>
