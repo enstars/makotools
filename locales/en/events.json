@@ -7,7 +7,8 @@
   "featureScout": "Feature Scout",
   "search": {
     "eventId": "Event ID",
-    "searchPlaceholder": "Type an event name...",
+    "eventDate": "Event Date",
+    "searchPlaceholder": "Search any event name...",
     "unitsLabel": "Featured Units",
     "unitsPlaceholder": "Pick a unit...",
     "charLabel": "Featured Characters",
@@ -17,9 +18,11 @@
     "tbaDesc": "Event description to be announced soon.",
     "start": "Start",
     "end": "End",
-    "estimateDesc": "This event is not available on the global server yet.",
+    "estimateDesc": "This event is not available on the selected server yet.",
     "estimate": "Dates are estimates",
+    "estimateCompact": "(Est.)",
     "addBookmark": "Bookmark this event",
-    "removeBookmark": "Remove from bookmarks"
+    "removeBookmark": "Remove from bookmarks",
+    "dateUnknown": "Event date for this region unknown"
   }
 }
