@@ -8,7 +8,7 @@
     "lastFirst": "Family name, Given name",
     "lastFirstExample": "Eg. Akehoshi Subaru",
     "nameOrderLabel": "Preferred name order",
-    "nameOrderDesc": "Japanese, Chinese, and Korean will always be Family name, Given name.",
+    "nameOrderDesc": "Japanese, Chinese, and Korean MakoTools will always display Family name, Given name.",
     "jp": "Japan",
     "cn": "Mainland China",
     "kr": "Korea",
@@ -16,6 +16,7 @@
     "en": "Global (English)",
     "regionLabel": "Game Region",
     "regionDesc": "This setting currently does not have an effect on content yet.",
+    "regionDescNew": "Pick which game region to default event and card pages to.",
     "regionPlaceholder": "Global (English) (Default)"
   },
   "appearance": {

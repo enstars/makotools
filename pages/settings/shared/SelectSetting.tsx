@@ -18,6 +18,8 @@ const SelectItemForwardRef = forwardRef<HTMLDivElement>(function SelectItem(
   );
 });
 
+export { SelectItemForwardRef };
+
 function SelectSetting({
   label,
   dataKey,

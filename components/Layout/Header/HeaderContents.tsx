@@ -94,7 +94,11 @@ function HeaderContents({
               return (
                 <Anchor
                   component={Link}
-                  key={crumb.includes("[ID]") ? crumb.split("[ID]")[0] : crumb}
+                  key={
+                    crumb && crumb?.includes("[ID]")
+                      ? crumb.split("[ID]")[0]
+                      : crumb
+                  }
                   href={`/${
                     pageBreadcrumbs
                       .slice(0, index + 1)
@@ -105,7 +109,9 @@ function HeaderContents({
                   sx={forceLight && { color: "#fff" }}
                 >
                   {decodeURIComponent(
-                    crumb.includes("[ID]") ? crumb.split("[ID]")[1] : crumb
+                    crumb && crumb?.includes("[ID]")
+                      ? crumb.split("[ID]")[1]
+                      : crumb
                   )}
                 </Anchor>
               );

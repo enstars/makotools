@@ -1,27 +1,27 @@
 import {
   ActionIcon,
-  Button,
+  Box,
+  Center,
   Chip,
   Group,
   Input,
   MultiSelect,
-  Paper,
+  SegmentedControl,
   Select,
-  Text,
-  TextInput,
   Tooltip,
   useMantineTheme,
 } from "@mantine/core";
 import {
   IconArrowsSort,
-  IconSearch,
+  IconLayoutList,
+  IconList,
   IconSortAscending,
   IconSortDescending,
 } from "@tabler/icons-react";
 import { useEffect, useMemo } from "react";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
-import { useListState } from "@mantine/hooks";
+import { useListState, useLocalStorage } from "@mantine/hooks";
 import useTranslation from "next-translate/useTranslation";
 
 import EventCard from "./components/EventCard";
@@ -30,10 +30,20 @@ import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import { getLocalizedDataArray } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { GameCard, GameCharacter, Event, GameUnit } from "types/game";
+import {
+  GameCard,
+  GameCharacter,
+  Event,
+  GameUnit,
+  GameRegion,
+} from "types/game";
 import { QuerySuccess } from "types/makotools";
 import useFSSList from "services/makotools/search";
 import useUser from "services/firebase/user";
+import SearchOptions from "components/core/SearchOptions";
+import { gameRegions } from "pages/settings/content/Region";
+import { SelectItemForwardRef } from "pages/settings/shared/SelectSetting";
+import ResponsiveGrid from "components/core/ResponsiveGrid";
 
 const defaultView = {
   filters: {
@@ -111,15 +121,15 @@ function Page({
           function: (a: Event, b: Event) => a.event_id - b.event_id,
         },
         {
-          label: t("common:search.startDate"),
+          label: t("search.eventDate"),
           value: "date",
           function: (a: Event, b: Event) =>
-            dayjs(a.start.en).unix() - dayjs(b.start.en).unix(),
+            dayjs(a.start.jp).unix() - dayjs(b.start.jp).unix(),
         },
       ],
       baseSort: "id",
       search: {
-        fields: ["name"],
+        fields: ["name.0", "name.1", "name.2"],
       },
       defaultView,
     }),
@@ -129,6 +139,17 @@ function Page({
     Event,
     typeof defaultView.filters
   >(events, fssOptions);
+
+  const [viewOptions, setViewOptions] = useLocalStorage({
+    key: "viewOptions__event",
+    defaultValue: {
+      region:
+        (user.loggedIn && user.db?.setting__game_region) ||
+        ("en" as GameRegion),
+      density: "full" as "full" | "compact",
+    },
+  });
+
   const [bookmarks, handlers] = useListState<number>(
     user.loggedIn ? user.db.bookmarks__events || [] : []
   );
@@ -154,170 +175,237 @@ function Page({
   return (
     <>
       <PageTitle title={t("title")} />
-      <Paper mb="sm" p="md" withBorder sx={{ marginTop: "1vh" }}>
-        <Text weight="700" size="xs" color="dimmed">
-          <IconSearch size="1em" /> {t("common:search.searchOptions")}
-        </Text>
-        <Group>
-          <TextInput
-            label={t("common:search.searchLabel")}
-            placeholder={t("search.searchPlaceholder")}
-            value={view.search}
-            onChange={(event) => {
-              setView((v) => ({
-                ...v,
-                search: event.target.value,
-              }));
-            }}
-            sx={{ maxWidth: 200 }}
-            variant="default"
-            icon={<IconSearch size="1em" />}
-          />
-          <Select
-            label={t("common:search.sortLabel")}
-            placeholder={t("common:search.sortPlaceholder")}
-            data={fssOptions.sorts}
-            value={view.sort.type}
-            onChange={(value) => {
-              if (value)
-                setView((v) => ({
-                  ...v,
-                  sort: {
-                    ...v.sort,
-                    type: value,
-                  },
-                }));
-            }}
-            sx={{ maxWidth: 200 }}
-            variant="default"
-            icon={<IconArrowsSort size="1em" />}
-            rightSection={
-              <Tooltip label="Toggle ascending/descending">
-                <ActionIcon
-                  onClick={() => {
-                    setView((v) => ({
-                      ...v,
-                      sort: {
-                        ...v.sort,
-                        ascending: !v.sort.ascending,
+      <SearchOptions
+        searchProps={{
+          placeholder: t("search.searchPlaceholder"),
+          value: view.search,
+          onChange: (event) => {
+            setView((v) => ({
+              ...v,
+              search: event.target.value,
+            }));
+          },
+          width: "100%",
+        }}
+        filters={
+          <Group>
+            <Select
+              label={t("common:search.sortLabel")}
+              placeholder={t("common:search.sortPlaceholder")}
+              // data={fssOptions.sorts}
+              // value={view.sort.type}
+              onChange={(value) => {
+                if (value)
+                  setView((v) => ({
+                    ...v,
+                    sort: {
+                      ...v.sort,
+                      type: value,
+                    },
+                  }));
+              }}
+              sx={{ maxWidth: 200 }}
+              variant="default"
+              icon={<IconArrowsSort size="1em" />}
+              {...(view.search
+                ? {
+                    disabled: true,
+                    data: [
+                      {
+                        label: t("common:search.relevance"),
+                        value: "relevance",
                       },
-                    }));
-                  }}
-                  variant="light"
-                  color={theme.primaryColor}
-                >
-                  {view.sort.ascending ? (
-                    <IconSortAscending size={16} />
-                  ) : (
-                    <IconSortDescending size={16} />
-                  )}
-                </ActionIcon>
-              </Tooltip>
-            }
-          />
-          <MultiSelect
-            label={t("search.unitsLabel")}
-            placeholder={t("search.unitsPlaceholder")}
-            data={units
-              .sort((a: GameUnit, b: GameUnit) => a.id - b.id)
-              .map((unit) => {
-                return {
-                  value: unit.id.toString(),
-                  label: unit.name[0],
-                };
-              })}
-            variant="default"
-            searchable
-            onChange={(val) => {
-              setView((v) => ({
-                ...v,
-                filters: {
-                  ...v.filters,
-                  units: val.map((u) => parseInt(u)),
-                },
-              }));
-            }}
-            value={view.filters.units.map((u) => u.toString())}
-          />
-          <MultiSelect
-            label={t("search.charLabel")}
-            placeholder={t("search.charPlaceholder")}
-            data={characters
-              .sort((a, b) => a.sort_id - b.sort_id)
-              .map((c: GameCharacter) => {
-                return {
-                  value: c.character_id.toString(),
-                  label: c.first_name[0],
-                };
-              })}
-            value={view.filters.characters.map((u) => u.toString())}
-            onChange={(val) => {
-              setView((v) => ({
-                ...v,
-                filters: {
-                  ...v.filters,
-                  characters: val.map((u) => parseInt(u)),
-                },
-              }));
-            }}
-            sx={{ maxWidth: 400 }}
-            variant="default"
-            searchable
-          />
-          <Input.Wrapper id="type" label="Event Type">
-            <Chip.Group
-              multiple
-              value={view.filters.types}
+                    ],
+                    value: "relevance",
+                    rightSection: undefined,
+                  }
+                : {
+                    disabled: false,
+                    data: fssOptions.sorts,
+                    value: view.sort.type,
+                    rightSection: (
+                      <Tooltip label="Toggle ascending/descending">
+                        <ActionIcon
+                          onClick={() => {
+                            setView((v) => ({
+                              ...v,
+                              sort: {
+                                ...v.sort,
+                                ascending: !v.sort.ascending,
+                              },
+                            }));
+                          }}
+                          variant="light"
+                          color={theme.primaryColor}
+                        >
+                          {view.sort.ascending ? (
+                            <IconSortAscending size={16} />
+                          ) : (
+                            <IconSortDescending size={16} />
+                          )}
+                        </ActionIcon>
+                      </Tooltip>
+                    ),
+                  })}
+            />
+            <MultiSelect
+              label={t("search.unitsLabel")}
+              placeholder={t("search.unitsPlaceholder")}
+              data={units
+                .sort((a: GameUnit, b: GameUnit) => a.id - b.id)
+                .map((unit) => {
+                  return {
+                    value: unit.id.toString(),
+                    label: unit.name[0],
+                  };
+                })}
+              variant="default"
+              searchable
               onChange={(val) => {
                 setView((v) => ({
                   ...v,
                   filters: {
                     ...v.filters,
-                    types: val,
+                    units: val.map((u) => parseInt(u)),
                   },
                 }));
               }}
-              spacing={3}
-            >
-              {[
-                { value: "song", label: t("song") },
-                { value: "tour", label: t("tour") },
-                { value: "shuffle", label: t("shuffle") },
-              ].map((r) => (
-                <Chip
-                  key={r.value}
-                  value={r.value}
-                  radius="md"
-                  styles={{
-                    label: { paddingLeft: 10, paddingRight: 10 },
-                  }}
-                  variant="filled"
-                >
-                  {r.label}
-                </Chip>
-              ))}
-            </Chip.Group>
-          </Input.Wrapper>
-          <Button
-            compact
-            onClick={() => {
-              setView(defaultView);
-            }}
-          >
-            {t("common:search.resetFilters")}
-          </Button>
-        </Group>
-      </Paper>
-      {results.map((event) => (
-        <EventCard
-          key={event.event_id}
-          event={event}
-          units={units}
-          bookmarked={bookmarks.includes(event.event_id)}
-          bookmarks={bookmarks}
-          bookmarkHandlers={handlers}
-        />
-      ))}
+              value={view.filters.units.map((u) => u.toString())}
+            />
+            <MultiSelect
+              label={t("search.charLabel")}
+              placeholder={t("search.charPlaceholder")}
+              data={characters
+                .sort((a, b) => a.sort_id - b.sort_id)
+                .map((c: GameCharacter) => {
+                  return {
+                    value: c.character_id.toString(),
+                    label: c.first_name[0],
+                  };
+                })}
+              value={view.filters.characters.map((u) => u.toString())}
+              onChange={(val) => {
+                setView((v) => ({
+                  ...v,
+                  filters: {
+                    ...v.filters,
+                    characters: val.map((u) => parseInt(u)),
+                  },
+                }));
+              }}
+              sx={{ maxWidth: 400 }}
+              variant="default"
+              searchable
+            />
+            <Input.Wrapper id="type" label="Event Type">
+              <Chip.Group
+                multiple
+                value={view.filters.types}
+                onChange={(val) => {
+                  setView((v) => ({
+                    ...v,
+                    filters: {
+                      ...v.filters,
+                      types: val,
+                    },
+                  }));
+                }}
+                spacing={3}
+              >
+                {[
+                  { value: "song", label: t("song") },
+                  { value: "tour", label: t("tour") },
+                  { value: "shuffle", label: t("shuffle") },
+                ].map((r) => (
+                  <Chip
+                    key={r.value}
+                    value={r.value}
+                    radius="md"
+                    styles={{
+                      label: { paddingLeft: 10, paddingRight: 10 },
+                    }}
+                    variant="filled"
+                  >
+                    {r.label}
+                  </Chip>
+                ))}
+              </Chip.Group>
+            </Input.Wrapper>
+          </Group>
+        }
+        resetFilters={() => {
+          setView(defaultView);
+        }}
+        display={
+          <Group align="flex-start">
+            <Select
+              label={t("common:search.regionForDates")}
+              description={t("common:search.regionForDatesDesc")}
+              data={gameRegions.map((r) => ({
+                value: r.value,
+                label: t(`regions:region.${r.value}`),
+                icon: r.icon,
+              }))}
+              icon={
+                gameRegions.find((r) => r.value === viewOptions.region)?.icon
+              }
+              itemComponent={SelectItemForwardRef}
+              value={viewOptions.region}
+              onChange={(value) => {
+                setViewOptions((v) => ({ ...v, region: value as GameRegion }));
+              }}
+              sx={{ maxWidth: 200 }}
+              variant="default"
+            />
+            <Input.Wrapper label={t("common:search.density")}>
+              <SegmentedControl
+                sx={{ display: "flex" }}
+                value={viewOptions.density}
+                onChange={(value) => {
+                  setViewOptions((v) => ({
+                    ...v,
+                    density: value as "full" | "compact",
+                  }));
+                }}
+                data={[
+                  {
+                    value: "full",
+                    label: (
+                      <Center>
+                        <IconLayoutList size={16} />
+                        <Box ml={10}>{t("common:search.full")}</Box>
+                      </Center>
+                    ),
+                  },
+                  {
+                    value: "compact",
+                    label: (
+                      <Center>
+                        <IconList size={16} />
+                        <Box ml={10}>{t("common:search.compact")}</Box>
+                      </Center>
+                    ),
+                  },
+                ]}
+              />
+            </Input.Wrapper>
+          </Group>
+        }
+      />
+      <ResponsiveGrid width={viewOptions.density === "full" ? "1fr" : 300}>
+        {results.map((event) => (
+          <EventCard
+            key={event.event_id}
+            event={event}
+            units={units}
+            bookmarked={bookmarks.includes(event.event_id)}
+            bookmarks={bookmarks}
+            bookmarkHandlers={handlers}
+            region={viewOptions.region}
+            density={viewOptions.density}
+          />
+        ))}
+      </ResponsiveGrid>
     </>
   );
 }
