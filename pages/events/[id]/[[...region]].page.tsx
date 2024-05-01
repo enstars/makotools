@@ -211,7 +211,7 @@ export const getServerSideProps = getServerSideUser(
   async ({ res, locale, params, db, user }) => {
     if (!params?.id || Array.isArray(params?.id)) return { notFound: true };
 
-    const validRegions: GameRegion[] = ["en", "jp" /* "cn", "kr", "tw" */];
+    const validRegions: GameRegion[] = ["en", "jp", "cn", "kr", "tw"];
 
     let region = params.region?.[0] as GameRegion;
     const isRegionEmpty = !region;
@@ -220,7 +220,14 @@ export const getServerSideProps = getServerSideUser(
       region = db.setting__game_region as GameRegion;
     }
     if (!validRegions.includes(region)) {
-      region = "en" as GameRegion;
+      // redirect to page with valid region
+      region = "en";
+      return {
+        redirect: {
+          destination: `/events/${params.id}/${region}`,
+          permanent: false,
+        },
+      };
     }
     if (isRegionEmpty) {
       // redirect to page with region

@@ -18,5 +18,6 @@
     "tw": "Taiwan",
     "en": "Global (EN)"
   },
-  "stay_on_same_region": "Stay on {{region}}"
+  "stay_on_same_region": "Stay on {{region}}",
+  "default_region_info": "Regions are now supported! Your current setting is set to always default to <0>{{region}}</0>, but you can change this in <1>Settings</1>."
 }
