@@ -181,13 +181,13 @@ function EventCard({
             >
               <Box sx={{ flex: "1 1 0", minWidth: 185 }}>
                 <Text size="xs" color="dimmed" weight={700}>
-                  {t("start")} ({dayjs(event.start.en).format("z")})
+                  {t("event.start")} ({dayjs(event.start.en).format("z")})
                 </Text>
                 <Text weight={500}>{dayjs(event.start.en).format("lll")}</Text>
               </Box>
               <Box sx={{ flex: "1 1 0", minWidth: 185 }}>
                 <Text size="xs" color="dimmed" weight={700}>
-                  {t("end")} ({dayjs(event.end.en).format("z")})
+                  {t("event.end")} ({dayjs(event.end.en).format("z")})
                 </Text>
                 <Text weight={500}>{dayjs(event.end.en).format("lll")}</Text>
               </Box>

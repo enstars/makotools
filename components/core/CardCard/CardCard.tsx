@@ -92,14 +92,7 @@ export default function CardCard({
   const statsIR4 = sumStats(card.stats?.ir4);
 
   return (
-    <Card
-      withBorder
-      p={0}
-      sx={{ "&:hover": { cursor: "pointer" } }}
-      onClick={(e: React.SyntheticEvent) => {
-        router.push(`/cards/${card.id}`);
-      }}
-    >
+    <Card withBorder p={0}>
       <Card.Section sx={{ position: "relative" }} px={3} pt={3}>
         <Group
           sx={{
@@ -152,7 +145,12 @@ export default function CardCard({
         </Group>
       </Card.Section>
       <Card.Section px="sm" pt="xs">
-        <Text size="sm" weight="700">
+        <Text
+          size="sm"
+          weight="700"
+          component={Link}
+          href={`/cards/${card.id}`}
+        >
           {`${card.title[0] ?? card.title[1]}`}&nbsp;
           <OfficialityBadge langData={lang[0]} />
         </Text>

@@ -290,7 +290,7 @@ function Page({
                       ? -60
                       : isMobile
                       ? 150
-                      : 250,
+                      : 60,
                 }}
               >
                 <ProfileAvatar

@@ -35,6 +35,7 @@ import { fetchOceans } from "services/makotools/posts";
 import RecommendedCountdown from "components/Homepage/RecommendedCountdown";
 import useUser from "services/firebase/user";
 
+const MOBILE_BREAKPOINT = "md";
 const useStyles = createStyles((theme, _params) => ({
   main: {
     maxWidth: "100%",
@@ -64,11 +65,11 @@ function SidePanel({
     <Box
       sx={{
         "&&&": { flexShrink: 0, flexGrow: 0 },
-        [`@media (max-width: ${theme.breakpoints.lg}px)`]: {
+        [`@media (max-width: ${theme.breakpoints[MOBILE_BREAKPOINT]}px)`]: {
           flexBasis: "100%",
           flexGrow: 1,
         },
-        [`@media (min-width: ${theme.breakpoints.lg}px)`]: {
+        [`@media (min-width: ${theme.breakpoints[MOBILE_BREAKPOINT]}px)`]: {
           flexBasis: width,
         },
       }}
@@ -82,7 +83,7 @@ function SidePanel({
           flexGrow: 1,
           minWidth: 0,
           width: "100%",
-          [`@media (min-width: 800px)`]: {
+          [`@media (min-width: ${theme.breakpoints[MOBILE_BREAKPOINT]}px)`]: {
             flexBasis: width,
           },
         }}
@@ -251,13 +252,16 @@ function Page({
             )}
           </Box>
 
-          <MediaQuery largerThan="md" styles={{ display: "none" }}>
+          <MediaQuery
+            largerThan={MOBILE_BREAKPOINT}
+            styles={{ display: "none" }}
+          >
             <SidePanel events={events} posts={posts} locale={locale} />
           </MediaQuery>
         </Group>
       </Stack>
 
-      <MediaQuery smallerThan="md" styles={{ display: "none" }}>
+      <MediaQuery smallerThan={MOBILE_BREAKPOINT} styles={{ display: "none" }}>
         <SidePanel events={events} posts={posts} locale={locale} />
       </MediaQuery>
     </Group>

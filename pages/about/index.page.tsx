@@ -18,11 +18,11 @@ import {
   IconUserCheck,
 } from "@tabler/icons-react";
 import Link from "next/link";
+import useTranslation from "next-translate/useTranslation";
 
 import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import Picture from "components/core/Picture";
-import useTranslation from "next-translate/useTranslation";
 
 function Page() {
   const { t } = useTranslation("about");
