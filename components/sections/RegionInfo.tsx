@@ -67,7 +67,7 @@ export default function RegionInfo({ region }: { region: GameRegion }) {
             sx={{
               "&&&": {
                 flexGrow: 1,
-                flexBasis: 300,
+                flexBasis: 210,
                 display: "flex",
                 alignItems: "center",
                 justifySelf: "stretch",
