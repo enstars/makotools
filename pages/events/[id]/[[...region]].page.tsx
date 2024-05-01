@@ -1,15 +1,6 @@
-import {
-  ActionIcon,
-  Divider,
-  Group,
-  Paper,
-  Text,
-  Tooltip,
-  useMantineTheme,
-} from "@mantine/core";
+import { Divider, Paper, Text, useMantineTheme } from "@mantine/core";
 import {
   IconBook,
-  IconBookmark,
   IconCards,
   IconDiamond,
   IconMusic,
@@ -117,48 +108,11 @@ function Page({
       {/* <PageTitle title={event.name[0]} sx={{ flex: "1 0 80%" }} />
       <ESPageHeader content={event} units={units} /> */}
       <RegionInfo region={region} />
-      <Group>
-        <PageTitle
-          title={event.name[0]}
-          sx={{ flex: "1 0 80%" }}
-          space={theme.spacing.lg}
-        />
-        {((user.loggedIn &&
-          user.db.admin?.patreon &&
-          user.db.admin?.patreon >= 1) ||
-          (user.loggedIn && user.db.admin?.administrator)) && (
-          <Tooltip
-            label={
-              user.loggedIn
-                ? bookmarks.includes(event.event_id)
-                  ? t("events:event.addBookmark")
-                  : t("events:event.removeBookmark")
-                : t("loginBookmark")
-            }
-            position="bottom"
-          >
-            <ActionIcon
-              size={60}
-              disabled={!user.loggedIn}
-              onClick={() => {
-                bookmarks.includes(event.event_id)
-                  ? handlers.remove(bookmarks.indexOf(event.event_id))
-                  : handlers.append(event.event_id);
-              }}
-            >
-              <IconBookmark
-                size={60}
-                fill={
-                  bookmarks.includes(event.event_id)
-                    ? theme.colors[theme.primaryColor][4]
-                    : "none"
-                }
-                strokeWidth={bookmarks.includes(event.event_id) ? 0 : 2}
-              />
-            </ActionIcon>
-          </Tooltip>
-        )}
-      </Group>
+      <PageTitle
+        title={event.name[0]}
+        sx={{ flex: "1 0 80%" }}
+        space={theme.spacing.lg}
+      />
       <ESPageHeader content={event} units={units} region={region} />
       <SectionTitle title="Cards" id="cards" Icon={IconCards} />
       <ResponsiveGrid width={224}>

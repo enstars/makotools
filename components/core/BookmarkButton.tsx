@@ -4,7 +4,6 @@ import { arrayRemove, arrayUnion } from "firebase/firestore";
 import Trans from "next-translate/Trans";
 import useTranslation from "next-translate/useTranslation";
 import Link from "next/link";
-import { useState } from "react";
 
 import useUser from "services/firebase/user";
 
@@ -29,23 +28,34 @@ function SVGBookmark(props: any) {
   );
 }
 
-export default function BookmarkButton({ id }: { id: number }) {
+type BookmarkType = "event" | "scout"; // | "card" | "collection";
+
+export default function BookmarkButton({
+  id,
+  type,
+  mr,
+}: {
+  id: number;
+  type: BookmarkType;
+  mr?: number | string;
+}) {
   const user = useUser();
   const theme = useMantineTheme();
   const { t } = useTranslation("bookmarks");
-
-  const [opened, setOpened] = useState(false);
 
   if (!user.loggedIn) {
     return null;
   }
 
-  const isBookmarked = user.db.bookmarks__events?.includes(id);
+  const userDbProp =
+    type === "event" ? "bookmarks__events" : "bookmarks__scouts";
+
+  const isBookmarked = user.db[userDbProp]?.includes(id);
 
   const addBookmark = (callback?: any) => {
     user.db.set(
       {
-        bookmarks__events: arrayUnion(id),
+        [userDbProp]: arrayUnion(id),
       },
       callback
     );
@@ -54,7 +64,7 @@ export default function BookmarkButton({ id }: { id: number }) {
   const removeBookmark = (callback?: any) => {
     user.db.set(
       {
-        bookmarks__events: arrayRemove(id),
+        [userDbProp]: arrayRemove(id),
       },
       callback
     );
@@ -68,7 +78,9 @@ export default function BookmarkButton({ id }: { id: number }) {
         cursor: "pointer",
         width: 40,
       }}
-      onClick={() => {
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
         if (isBookmarked) {
           removeBookmark(() => {
             showNotification({
@@ -105,7 +117,8 @@ export default function BookmarkButton({ id }: { id: number }) {
         className={isBookmarked ? "bookmarked" : ""}
         sx={{
           position: "absolute",
-          top: -20,
+          top: -48,
+          right: mr || 0,
           opacity: 0.5,
           transition: "0.2s ease",
           transform: "translateY(0px)",
@@ -113,7 +126,7 @@ export default function BookmarkButton({ id }: { id: number }) {
             transform: "translateY(4px)",
           },
           ["&.bookmarked"]: {
-            top: -4,
+            top: -24,
             opacity: 1,
             // fill: "currentColor",
             fill: theme.colors[theme.primaryColor][

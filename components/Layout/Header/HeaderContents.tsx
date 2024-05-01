@@ -143,7 +143,13 @@ function HeaderContents({
           </Breadcrumbs>
         </Text>
       </Group>
-      {typeof bookmarkId === "number" && <BookmarkButton id={bookmarkId} />}
+      {typeof bookmarkId === "number" && (
+        <BookmarkButton
+          id={bookmarkId}
+          type={location.pathname.includes("events") ? "event" : "scout"}
+          mr={"unset"}
+        />
+      )}
       {/* <Searchbar /> */}
     </Group>
   );

@@ -9,16 +9,10 @@ import {
   Tooltip,
   Stack,
   ThemeIcon,
-  ActionIcon,
   useMantineTheme,
 } from "@mantine/core";
 import Link from "next/link";
-import {
-  IconArrowsShuffle2,
-  IconBookmark,
-  IconBus,
-  IconDiamond,
-} from "@tabler/icons-react";
+import { IconArrowsShuffle2, IconBus, IconDiamond } from "@tabler/icons-react";
 import { UseListStateHandlers, useMediaQuery } from "@mantine/hooks";
 import useTranslation from "next-translate/useTranslation";
 
@@ -28,6 +22,7 @@ import { useDayjs } from "services/libraries/dayjs";
 import IconEnstars from "components/core/IconEnstars";
 import useUser from "services/firebase/user";
 import WrappableText from "components/core/WrappableText";
+import BookmarkButton from "components/core/BookmarkButton";
 
 const useStyles = createStyles((theme) => ({
   eventCard: {
@@ -40,7 +35,6 @@ const useStyles = createStyles((theme) => ({
     position: "relative",
   },
   eventInfo: {
-    position: "relative",
     flex: "2 1 60%",
     minWidth: 200,
     rowGap: 0,
@@ -142,14 +136,16 @@ function EventCard({
         >
           {density === "compact" && (
             <>
-              <Text weight={700} size="md" mb="xs">
+              <Text weight={700} size="md" mb="xs" pr="xl">
                 <WrappableText text={event.name[0]} />
               </Text>
             </>
           )}
           {density === "full" && (
             <>
-              <Title order={3}>{event.name[0]}</Title>
+              <Title order={3} pr={32}>
+                {event.name[0]}
+              </Title>
               <Text className={classes.eventSummary}>
                 {event.intro_lines?.[0] || t("event.tbaDesc")}
               </Text>
@@ -300,48 +296,12 @@ function EventCard({
             )}
           </Stack>
         </Box>
+        <BookmarkButton
+          id={event.event_id}
+          type="event"
+          mr={theme.spacing.xs}
+        />
       </Group>
-      {(user.loggedIn &&
-        user.db.admin?.patreon &&
-        user.db.admin?.patreon >= 1) ||
-        (user.loggedIn && user.db.admin?.administrator && (
-          <Tooltip
-            label={
-              !bookmarked ? t("event.addBookmark") : t("event.removeBookmark")
-            }
-            position="bottom"
-          >
-            <ActionIcon
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                bookmarked
-                  ? bookmarkHandlers.remove(bookmarks.indexOf(event.event_id))
-                  : bookmarkHandlers.append(event.event_id);
-              }}
-              size="lg"
-              sx={{
-                position: "absolute",
-                top: theme.spacing.xs,
-                right: theme.spacing.xs,
-              }}
-            >
-              <IconBookmark
-                fill={bookmarked ? theme.colors[theme.primaryColor][4] : "none"}
-                strokeWidth={bookmarked ? 0 : isMobile ? 1 : 2}
-                size={
-                  !isMobile
-                    ? bookmarked
-                      ? 32
-                      : 26
-                    : isMobile && bookmarked
-                    ? 44
-                    : 40
-                }
-              />
-            </ActionIcon>
-          </Tooltip>
-        ))}
     </Paper>
   );
 }
