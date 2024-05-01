@@ -15,6 +15,7 @@
     "viewOptions": "Display Options",
     "density": "Card Style",
     "full": "Full",
-    "compact": "Compact"
+    "compact": "Compact",
+    "resultsFound": "{{count}} results found."
   }
 }

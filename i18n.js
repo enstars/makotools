@@ -57,6 +57,7 @@ module.exports = {
     "/calendar": ["calendar", "game__campaignTypes"],
     "/cards": ["cards", "regions"],
     "/cards/[id]": ["cards__card", "skills"],
+    "/assets": ["assets", "regions"],
     "/events": ["events", "regions"],
     "/events/[id]/[[...region]]": [
       "events",
