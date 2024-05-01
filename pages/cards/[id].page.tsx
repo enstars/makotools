@@ -161,7 +161,7 @@ export const getServerSideProps = getServerSideUser(
     );
     const title = `(${card.data.title[0]}) ${cardCharacterName}`;
 
-    const breadcrumbs = ["cards", title];
+    const breadcrumbs = ["cards", `${card.data.id}[ID]${title}`];
     const cardData = card.data;
     return {
       props: {

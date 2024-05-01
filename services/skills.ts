@@ -32,7 +32,8 @@ export function centerSkillParse(t: Translate, skill: CenterSkill) {
     }
 
     return t("skills:unknown");
-  } catch {
+  } catch (error) {
+    console.error(error);
     if (!t || typeof t !== "function") return "Unknown";
     else return t("skills:unknown");
   }
@@ -65,7 +66,8 @@ export function liveSkillParse(
     }
 
     return t("skills:unknown");
-  } catch {
+  } catch (error) {
+    console.error(error);
     if (!t || typeof t !== "function") return "Unknown";
     return t("skills:unknown");
   }
@@ -133,7 +135,8 @@ export function supportSkillParse(
       default:
         return t("skills:unknown");
     }
-  } catch {
+  } catch (error) {
+    console.error(error);
     if (!t || typeof t !== "function") return "Unknown";
     return t("skills:unknown");
   }
