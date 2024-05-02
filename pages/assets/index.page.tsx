@@ -437,7 +437,7 @@ function Page({
                             transition: theme.other.transition,
                           },
                           "&&:hover": {
-                            flexGrow: card.rarity >= 4 ? 2.5 : 1.1,
+                            flexGrow: 1.1,
                             opacity: 1,
                             ".mantine-ActionIcon-root": {
                               opacity: 1,
@@ -449,8 +449,8 @@ function Page({
                           },
                         }}
                         srcB2={
-                          card.rarity >= 4
-                            ? `assets/card_still_full1_${card.id}_${type}.png` // 4-5 -> full cg
+                          card.era === "!"
+                            ? `assets_1/cs_${card.id}_${type}.png` // 4-5 -> full cg
                             : `assets/card_rectangle4_${card.id}_${type}.png` // 1-3 -> frameless
                         }
                         alt={card.name?.en || card.name?.jp || ""}
