@@ -16,6 +16,7 @@
     "density": "Card Style",
     "full": "Full",
     "compact": "Compact",
+    "list": "List",
     "resultsFound": "{{count}} results found."
   }
 }

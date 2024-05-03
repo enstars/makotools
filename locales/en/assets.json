@@ -3,6 +3,14 @@
   "search": {
     "searchPlaceholder": "Search any card name...",
     "id": "ID",
-    "character": "Character"
-  }
+    "charLabel": "Character",
+    "charPlaceholder": "Select a character",
+    "assetTypeLabel": "Asset Type",
+    "assetType": {
+      "frameless": "Frameless",
+      "cg": "CG",
+      "render": "Render"
+    }
+  },
+  "downloadTypeTooltip": "Download {{type}}"
 }
