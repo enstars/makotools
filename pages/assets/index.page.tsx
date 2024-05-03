@@ -180,7 +180,8 @@ function CompactAssetCard({
                         },
                         backdropFilter: "blur(5px)",
                       }}
-                      onClick={() => {
+                      onClick={(event) => {
+                        event.stopPropagation();
                         downloadFromURL(
                           getAssetURL(
                             card.era === "!!"
@@ -320,14 +321,8 @@ function ListAssetCard({
                       withinPortal
                     >
                       <ActionIcon
-                        onClick={() => {
-                          console.log(
-                            getAssetURL(
-                              card.era === "!!"
-                                ? ty.url.second(card.id, type)
-                                : ty.url.first(card.id, type)
-                            )
-                          );
+                        onClick={(event) => {
+                          event.stopPropagation();
                           downloadFromURL(
                             getAssetURL(
                               card.era === "!!"

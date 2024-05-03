@@ -51,8 +51,8 @@ function Page({
 
   return (
     <>
-      {obtainMethod !== null && (
-        <HowToObtain obtain={card.obtain} obtainEvent={obtainMethod} />
+      {obtainMethod && obtainMethod !== null && (
+        <HowToObtain card={card} obtainCampaign={obtainMethod} />
       )}
       <PageTitle
         title={
@@ -156,7 +156,7 @@ export const getServerSideProps = getServerSideUser(
       "character_id"
     );
 
-    let obtainMethod;
+    let obtainMethod = null;
     const cardObtainId = card.data.obtain.id;
     console.log("card obtain id: ", cardObtainId, typeof cardObtainId);
 
@@ -183,7 +183,7 @@ export const getServerSideProps = getServerSideUser(
           cardObtainId,
           "gacha_id"
         );
-        console.log("obtain method: ", obtainMethod);
+        console.log("obtain methoda: ", obtainMethod);
       }
     }
 
@@ -198,7 +198,9 @@ export const getServerSideProps = getServerSideUser(
       db?.setting__name_order,
       locale
     );
-    const title = `(${card.data.title[0]}) ${cardCharacterName}`;
+    const title = `(${
+      card.data.title[0] || card.data.title[1]
+    }) ${cardCharacterName}`;
 
     const breadcrumbs = ["cards", `${card.data.id}[ID]${title}`];
     const cardData = card.data;
