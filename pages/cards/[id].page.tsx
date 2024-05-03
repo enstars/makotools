@@ -40,17 +40,20 @@ function Page({
 }: {
   characterQuery: QuerySuccess<GameCharacter>;
   cardQuery: QuerySuccess<GameCard>;
-  obtainMethodQuery: QuerySuccess<Event | Scout | undefined>;
+  obtainMethodQuery: QuerySuccess<Event | Scout | null>;
 }) {
   const { data: card } = cardQuery;
   const { data: character } = characterQuery;
-  const { data: obtainMethod } = obtainMethodQuery;
+  const obtainMethod = obtainMethodQuery?.data;
+  console.log("obtain method: ", obtainMethod);
 
   const { t } = useTranslation("cards__card");
 
   return (
     <>
-      <HowToObtain obtain={card.obtain} obtainEvent={obtainMethod} />
+      {obtainMethod !== null && (
+        <HowToObtain obtain={card.obtain} obtainEvent={obtainMethod} />
+      )}
       <PageTitle
         title={
           <>
@@ -155,22 +158,32 @@ export const getServerSideProps = getServerSideUser(
 
     let obtainMethod;
     const cardObtainId = card.data.obtain.id;
+    console.log("card obtain id: ", cardObtainId, typeof cardObtainId);
 
     if (cardObtainId) {
       if (card.data.obtain.type === "event") {
-        const events = await getLocalizedDataArray<Event>("events", locale);
+        const events = await getLocalizedDataArray<Event>(
+          "events",
+          locale,
+          "event_id"
+        );
         obtainMethod = getItemFromLocalizedDataArray<Event>(
           events,
           cardObtainId,
           "event_id"
         );
       } else if (card.data.obtain.type === "gacha") {
-        const scouts = await getLocalizedDataArray<Scout>("scouts", locale);
+        const scouts = await getLocalizedDataArray<Scout>(
+          "scouts",
+          locale,
+          "gacha_id"
+        );
         obtainMethod = getItemFromLocalizedDataArray<Scout>(
           scouts,
           cardObtainId,
           "gacha_id"
         );
+        console.log("obtain method: ", obtainMethod);
       }
     }
 

@@ -2,30 +2,19 @@ import { useState, useEffect, useMemo } from "react";
 import {
   useMantineTheme,
   Text,
-  Paper,
-  Group,
-  Select,
-  Chip,
-  Input,
   Center,
   Loader,
-  Switch,
+  Group,
+  Select,
   MultiSelect,
-  Button,
-  TextInput,
-  ActionIcon,
-  Tooltip,
+  Input,
+  Chip,
 } from "@mantine/core";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useDebouncedValue, useLocalStorage } from "@mantine/hooks";
-import {
-  IconArrowsSort,
-  IconSearch,
-  IconSortAscending,
-  IconSortDescending,
-} from "@tabler/icons-react";
 import fuzzysort from "fuzzysort";
 import useTranslation from "next-translate/useTranslation";
+import { IconArrowsSort } from "@tabler/icons-react";
 
 import NewCollectionModal from "./components/NewCollectionModal";
 
@@ -37,6 +26,8 @@ import getServerSideUser from "services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "services/data";
 import { CardRarity, GameCard, GameCharacter } from "types/game";
 import { useCollections } from "services/makotools/collection";
+import SearchOptions from "components/core/SearchOptions";
+import useFSSList from "services/makotools/search";
 
 type SortOption = "id" | "character";
 
@@ -55,6 +46,18 @@ const CARD_VIEW_OPTIONS_DEFAULT: CardViewOptions = {
   sortOption: "id",
   searchQuery: "",
   sortDescending: false,
+};
+
+const defaultView = {
+  filters: {
+    rarity: [5],
+    characters: [] as number[],
+  },
+  search: "",
+  sort: {
+    type: "id",
+    ascending: true,
+  },
 };
 
 function Page({
@@ -95,14 +98,6 @@ function Page({
   characters.forEach((c) => {
     characterIDtoSort[c.character_id] = c.sort_id;
   });
-
-  const SORT_OPTIONS: { value: SortOption; label: string }[] = [
-    { value: "id", label: t("search.cardId") },
-    {
-      value: "character",
-      label: t("search.character"),
-    },
-  ];
 
   const descendingNum = viewOptions.sortDescending ? -1 : 1;
   const SORT_FUNCTIONS = {
@@ -150,11 +145,58 @@ function Page({
     setCount(newCount);
   };
 
+  const fssOptions = useMemo<FSSOptions<GameCard, typeof defaultView.filters>>(
+    () => ({
+      filters: [
+        {
+          type: "rarity",
+          values: [],
+          function: (view) => {
+            return (c: GameCard) => view.filters.rarity.includes(c.rarity);
+          },
+        },
+        {
+          type: "characters",
+          values: [],
+          function: (view) => {
+            return (c: GameCard) =>
+              view.filters.characters.includes(c.character_id);
+          },
+        },
+      ],
+      sorts: [
+        {
+          label: t("search.cardId"),
+          value: "id",
+          function: (a: GameCard, b: GameCard) => a.id - b.id,
+        },
+        {
+          label: t("search.character"),
+          value: "character",
+          function: (a: GameCard, b: GameCard) =>
+            characterIDtoSort[a.character_id] -
+            characterIDtoSort[b.character_id],
+        },
+      ],
+      baseSort: "id",
+      search: {
+        fields: ["title.0", "title.1", "title.2"],
+      },
+      defaultView,
+    }),
+    []
+  );
+
+  const { results, view, setView } = useFSSList<
+    GameCard,
+    typeof defaultView.filters
+  >(cards, fssOptions);
+
   return (
     <>
       <PageTitle title={t("title")} />
 
-      <Paper mb="sm" p="md" withBorder>
+      {/* <Paper mb="sm" p="md" withBorder>
         <Text weight="700" size="xs" color="dimmed">
           <IconSearch size="1em" /> {t("common:search.searchOptions")}
         </Text>
@@ -275,7 +317,106 @@ function Page({
             {t("common:search.resetFilters")}
           </Button>
         </Group>
-      </Paper>
+      </Paper> */}
+      <SearchOptions
+        searchProps={{
+          placeholder: t("search.searchPlaceholder"),
+          value: view.search,
+          onChange: (event) => {
+            setView((v) => ({
+              ...v,
+              search: event.target.value,
+            }));
+          },
+          width: "100%",
+        }}
+        filters={
+          <Group sx={{ alignItems: "flex-start" }}>
+            <Select
+              label={t("common:search.sortLabel")}
+              placeholder={t("search.sortPlaceholder")}
+              onChange={(val: SortOption) => {
+                if (val) {
+                  setView((v) => ({
+                    ...v,
+                    sort: {
+                      ...v.sort,
+                      type: val,
+                    },
+                  }));
+                }
+              }}
+              sx={{ maxWidth: 200 }}
+              variant="default"
+              icon={<IconArrowsSort size="1em" />}
+              {...(view.search
+                ? {
+                    disabled: true,
+                    data: [
+                      {
+                        label: t("common:search.sortLabel"),
+                      },
+                    ],
+                  }
+                : {
+                    disabled: false,
+                  })}
+            />
+            <MultiSelect
+              label={t("search.charLabel")}
+              placeholder={t("search.charPlaceholder")}
+              data={characters
+                .sort(
+                  (a: any, b: any) =>
+                    characterIDtoSort[a.character_id] -
+                    characterIDtoSort[b.character_id]
+                )
+                .map((c) => {
+                  return {
+                    value: c.character_id.toString(),
+                    label: c.first_name[0],
+                  };
+                })}
+              value={viewOptions.filterCharacters}
+              onChange={(val) => {
+                setViewOptions({ ...viewOptions, filterCharacters: val });
+              }}
+              sx={{ width: "100%", maxWidth: 400 }}
+              variant="default"
+              searchable
+            />
+            <Input.Wrapper id="rarity" label={t("search.rarityLabel")}>
+              <Chip.Group
+                multiple
+                value={viewOptions.filterRarity.map((v) => v.toString())}
+                onChange={(value) => {
+                  const filterRarity = value.map(
+                    (v) => parseInt(v, 10) as CardRarity
+                  );
+                  setViewOptions({ ...viewOptions, filterRarity });
+                }}
+                spacing={3}
+              >
+                {[1, 2, 3, 4, 5].map((r) => (
+                  <Chip
+                    key={r}
+                    value={r.toString()}
+                    radius="md"
+                    styles={{
+                      label: { paddingLeft: 10, paddingRight: 10 },
+                      iconWrapper: { display: "none" },
+                    }}
+                    color="yellow"
+                    variant="filled"
+                  >
+                    {r}
+                  </Chip>
+                ))}
+              </Chip.Group>
+            </Input.Wrapper>
+          </Group>
+        }
+      />
       {slicedCardsList.length ? (
         <>
           <Text color="dimmed" mt="xl" mb="sm" size="sm">

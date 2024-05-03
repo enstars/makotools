@@ -58,7 +58,7 @@ export async function getData<T = any>(
         lang: [lang],
         status: "error",
         error: parseStringify(error),
-        data: undefined,
+        data: null,
       };
     });
 }
@@ -148,7 +148,7 @@ export function getItemFromLocalizedDataArray<Type>(
   const matchedData = data.data?.find(matchId);
 
   if (typeof matchedData === "undefined") {
-    return { ...data, status: "error", error: "Not found", data: undefined };
+    return { ...data, status: "error", error: "Not found", data: null };
   }
   return { ...data, data: matchedData };
 }

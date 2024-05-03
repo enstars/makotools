@@ -191,7 +191,7 @@ interface QueryError {
   lang: Lang[];
   status: "error";
   error: any;
-  data: undefined;
+  data: null;
 }
 
 /** A query from the data repos */
