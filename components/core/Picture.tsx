@@ -10,6 +10,7 @@ import {
   ActionIcon,
   Group,
   Stack,
+  Center,
 } from "@mantine/core";
 import Image, { ImageProps } from "next/image";
 import { ImageProps as MantineImageProps } from "@mantine/core";
@@ -27,6 +28,7 @@ import {
   TransformComponent,
   TransformWrapper,
 } from "@pronestor/react-zoom-pan-pinch";
+import { IconPhotoOff } from "@tabler/icons-react";
 
 import { getAssetURL } from "services/data";
 import { downloadFromURL } from "services/utilities";
@@ -42,6 +44,9 @@ interface PictureProps extends NextMantineImageProps {
   noAnimation?: boolean;
 }
 
+const transparencyGrid =
+  "repeating-conic-gradient(#00000010 0% 25%, transparent 0% 50%) 50%";
+
 const useStyles = createStyles(
   (
     theme,
@@ -51,8 +56,9 @@ const useStyles = createStyles(
     picture: {
       position: "relative",
       display: "block",
-      "&, source, img": {
+      "& source, & img": {
         color: "transparent",
+
         background: "transparent",
       },
     },
@@ -129,6 +135,11 @@ const useStyles = createStyles(
       },
       backdropFilter: "blur(5px)",
     },
+    errorLoading: {
+      "&, *": {
+        pointerEvents: "none",
+      },
+    },
   })
 );
 
@@ -156,6 +167,7 @@ function Picture({
     (user.loggedIn && user.db.setting__use_webp === "dont-use") || false;
 
   const [loaded, setLoaded] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
   const [opened, setOpened] = useState<boolean>(false);
 
   const src = originalSrc || getAssetURL(srcB2 as string);
@@ -188,7 +200,12 @@ function Picture({
         component="picture"
         sx={sx}
         styles={styles}
-        className={cx(classes.picture, className)}
+        className={cx(
+          classes.picture,
+          className,
+
+          error && loaded ? classes.errorLoading : ""
+        )}
       >
         {hasPlaceholder && (
           <div
@@ -214,7 +231,8 @@ function Picture({
                   "We recommend you use the download / view file button on the bottom right to get an uncompressed PNG file. Alternatively, you can also disable WEBPs entirely in Settings.",
               });
           }}
-          onLoadingComplete={() => setLoaded(true)}
+          onLoad={() => setLoaded(true)}
+          onError={() => setError(true)}
           {...otherProps}
           className={cx(
             classes.img,
@@ -223,7 +241,7 @@ function Picture({
             loaded ? classes.loadedImg : ""
           )}
         />
-        {user.loggedIn && action === "download" && (
+        {!error && loaded && user.loggedIn && action === "download" && (
           <ActionIcon
             size="sm"
             sx={{ position: "absolute", right: 4, bottom: 4 }}
@@ -234,7 +252,7 @@ function Picture({
             <IconDownload size={14} />
           </ActionIcon>
         )}
-        {user.loggedIn && action === "view" && (
+        {!error && loaded && user.loggedIn && action === "view" && (
           <>
             <ActionIcon
               size="sm"
@@ -297,8 +315,7 @@ function Picture({
                       sx={{
                         overflow: "hidden",
                         position: "relative",
-                        background:
-                          "repeating-conic-gradient(#00000010 0% 25%, transparent 0% 50%) 50%",
+                        background: transparencyGrid,
                         backgroundSize: "1.75em 1.75em",
                         "&, *": {
                           display: "flex",
@@ -375,6 +392,29 @@ function Picture({
               </TransformWrapper>
             </Modal>
           </>
+        )}
+        {error && (
+          <Center
+            sx={{
+              zIndex: 100,
+              position: "relative",
+              color:
+                theme.colorScheme === "dark"
+                  ? theme.colors.dark[5]
+                  : theme.colors.gray[4],
+              height: "100%",
+              background:
+                theme.colorScheme === "dark"
+                  ? theme.colors.dark[7]
+                  : theme.colors.gray[1],
+              borderRadius:
+                typeof props.radius === "string"
+                  ? theme.radius[props.radius]
+                  : props.radius,
+            }}
+          >
+            <IconPhotoOff />
+          </Center>
         )}
         {children}
       </Box>

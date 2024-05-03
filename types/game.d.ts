@@ -296,6 +296,16 @@ interface GameCard<T = string[]> extends GameCardStrings<T> {
   };
 }
 
+interface GameCardOld {
+  id: ID;
+  character_id: ID;
+  rarity: CardRarity;
+  name: {
+    jp: string;
+    en: string;
+  };
+}
+
 export type EventType = "song" | "tour" | "shuffle" | "special";
 export type ScoutType = "scout" | "feature scout";
 type CampaignType =
