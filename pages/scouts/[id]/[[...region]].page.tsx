@@ -21,29 +21,32 @@ import {
   getLocalizedDataArray,
 } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { GameCard, GameCharacter, Event, Scout } from "types/game";
+import { GameCard, GameCharacter, Event, Scout, GameRegion } from "types/game";
 import { QuerySuccess } from "types/makotools";
 import { getLayout } from "components/Layout";
 import { CardCard } from "components/core/CardCard";
-import ESPageHeader from "pages/events/[id]/components/ESPageHeader";
-import PointsTable from "pages/events/[id]/components/PointsTable";
-import Stories from "pages/events/[id]/components/Stories";
-import SectionTitle from "pages/events/[id]/components/SectionTitle";
+import ESPageHeader from "pages/events/components/ESPageHeader";
+import PointsTable from "pages/events/components/PointsTable";
+import Stories from "pages/events/components/Stories";
+import SectionTitle from "pages/events/components/SectionTitle";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 import { useCollections } from "services/makotools/collection";
 import NewCollectionModal from "pages/cards/components/NewCollectionModal";
 import useUser from "services/firebase/user";
+import RegionInfo from "components/sections/RegionInfo";
 
 function Page({
   scout,
   event,
   charactersQuery,
   cardsQuery,
+  region,
 }: {
   scout: Scout;
   event: Event | null;
   charactersQuery: QuerySuccess<GameCharacter[]>;
   cardsQuery: QuerySuccess<GameCard[]>;
+  region: GameRegion;
 }) {
   const { t } = useTranslation("events__event");
   const user = useUser();
@@ -113,7 +116,8 @@ function Page({
           </Tooltip>
         )}
       </Group>
-      <ESPageHeader content={scout} />
+      <RegionInfo region={region} />
+      <ESPageHeader content={scout} region={region} />
       <SectionTitle title="Cards" id="cards" Icon={IconCards} />
       <ResponsiveGrid width={224}>
         {cards.map((card: GameCard) => (
@@ -168,8 +172,36 @@ function Page({
 }
 
 export const getServerSideProps = getServerSideUser(
-  async ({ res, locale, params }) => {
+  async ({ res, locale, params, db, user }) => {
     if (!params?.id || Array.isArray(params?.id)) return { notFound: true };
+
+    const validRegions: GameRegion[] = ["en", "jp", "cn", "kr", "tw"];
+
+    let region = params.region?.[0] as GameRegion;
+    const isRegionEmpty = !region;
+
+    if (!region && user && db && db?.setting__game_region) {
+      region = db.setting__game_region as GameRegion;
+    }
+    if (!validRegions.includes(region)) {
+      // redirect to page with valid region
+      region = "en";
+      return {
+        redirect: {
+          destination: `/scouts/${params.id}/${region}`,
+          permanent: false,
+        },
+      };
+    }
+    if (isRegionEmpty) {
+      // redirect to page with region
+      return {
+        redirect: {
+          destination: `/scouts/${params.id}/${region}`,
+          permanent: false,
+        },
+      };
+    }
 
     const getScouts = await getLocalizedDataArray<Scout>(
       "scouts",

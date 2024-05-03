@@ -251,6 +251,12 @@ interface GameCardStrings<T> {
   name: T;
 }
 
+interface Obtain {
+  type: ObtainType;
+  subType?: ObtainSubType;
+  id?: ID;
+}
+
 interface GameCard<T = string[]> extends GameCardStrings<T> {
   id: ID;
   rarity: CardRarity;
@@ -274,11 +280,7 @@ interface GameCard<T = string[]> extends GameCardStrings<T> {
    */
   substat_type: CardSubStat;
   releaseDate: ForEachRegion<string>;
-  obtain: {
-    type: ObtainType;
-    subType?: ObtainSubType;
-    id?: ID;
-  };
+  obtain: Obtain;
   stats: {
     [Level in StatLevel]?: Stats;
   };

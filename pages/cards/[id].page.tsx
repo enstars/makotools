@@ -8,6 +8,7 @@ import Link from "next/link";
 import Stats from "./components/Stats";
 import Skills from "./components/Skills";
 import Gallery from "./components/Gallery";
+import HowToObtain from "./components/HowToObtain";
 
 import { sumStats } from "services/game";
 import { getLayout } from "components/Layout";
@@ -25,7 +26,7 @@ import {
 } from "services/data";
 import { getNameOrder } from "services/game";
 import { getPreviewImageURL } from "services/makotools/preview";
-import { GameCard, GameCharacter } from "types/game";
+import { GameCard, GameCharacter, Scout, Event } from "types/game";
 import {
   centerSkillParse,
   liveSkillParse,
@@ -35,17 +36,21 @@ import {
 function Page({
   characterQuery,
   cardQuery,
+  obtainMethodQuery,
 }: {
   characterQuery: QuerySuccess<GameCharacter>;
   cardQuery: QuerySuccess<GameCard>;
+  obtainMethodQuery: QuerySuccess<Event | Scout | undefined>;
 }) {
   const { data: card } = cardQuery;
   const { data: character } = characterQuery;
+  const { data: obtainMethod } = obtainMethodQuery;
 
   const { t } = useTranslation("cards__card");
 
   return (
     <>
+      <HowToObtain obtain={card.obtain} obtainEvent={obtainMethod} />
       <PageTitle
         title={
           <>
@@ -148,6 +153,27 @@ export const getServerSideProps = getServerSideUser(
       "character_id"
     );
 
+    let obtainMethod;
+    const cardObtainId = card.data.obtain.id;
+
+    if (cardObtainId) {
+      if (card.data.obtain.type === "event") {
+        const events = await getLocalizedDataArray<Event>("events", locale);
+        obtainMethod = getItemFromLocalizedDataArray<Event>(
+          events,
+          cardObtainId,
+          "event_id"
+        );
+      } else if (card.data.obtain.type === "gacha") {
+        const scouts = await getLocalizedDataArray<Scout>("scouts", locale);
+        obtainMethod = getItemFromLocalizedDataArray<Scout>(
+          scouts,
+          cardObtainId,
+          "gacha_id"
+        );
+      }
+    }
+
     if (character.status === "error") {
       return {
         notFound: true,
@@ -167,6 +193,7 @@ export const getServerSideProps = getServerSideUser(
       props: {
         characterQuery: character,
         cardQuery: card,
+        obtainMethodQuery: obtainMethod,
         title,
         breadcrumbs,
         meta: {
