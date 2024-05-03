@@ -402,6 +402,7 @@ function Picture({
                 theme.colorScheme === "dark"
                   ? theme.colors.dark[5]
                   : theme.colors.gray[4],
+              width: "100%",
               height: "100%",
               background:
                 theme.colorScheme === "dark"
