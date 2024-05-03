@@ -133,7 +133,7 @@ function Page({
       },
       defaultView,
     }),
-    []
+    [cards, t]
   );
   const { results, view, setView } = useFSSList<
     Event,

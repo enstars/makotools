@@ -488,8 +488,6 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 }));
 
 function Page({
-  cardsQuery,
-  unitsQuery,
   charactersQuery,
   allCardsList,
 }: {
@@ -944,8 +942,6 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
 
   return {
     props: {
-      cardsQuery,
-      unitsQuery,
       charactersQuery,
       allCardsList,
     },
