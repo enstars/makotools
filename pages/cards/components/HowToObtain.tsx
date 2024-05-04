@@ -49,7 +49,7 @@ export default function HowToObtain({
               href={
                 obtainCampaignType === "event"
                   ? `/events/${obtainCampaign.event_id}`
-                  : `/scouts/${obtainCampaign.event_id}`
+                  : `/scouts/${obtainCampaign.gacha_id}`
               }
             >
               {t("obtain.moreDetails")}
