@@ -63,7 +63,7 @@ function SearchOptions({
       <Accordion
         radius={0}
         variant="default"
-        defaultValue={[]}
+        defaultValue={["filters"]}
         multiple
         styles={{
           item: {
