@@ -17,6 +17,8 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { GridContextProvider, GridDropZone, GridItem } from "react-grid-drag";
 import useTranslation from "next-translate/useTranslation";
 
+import { EditingProfile } from "./EditProfileModal";
+
 import useUser from "services/firebase/user";
 import { GameCard } from "types/game";
 import Picture from "components/core/Picture";
@@ -51,11 +53,9 @@ const useStyles = createStyles((theme) => ({
 function Banner({
   cards,
   externalSetter,
-  profileState,
 }: {
   cards: GameCard[] | undefined;
-  externalSetter: Dispatch<SetStateAction<any>>;
-  profileState: any;
+  externalSetter: Dispatch<SetStateAction<EditingProfile>>;
 }) {
   const theme = useMantineTheme();
   const { t } = useTranslation("user");
@@ -87,9 +87,12 @@ function Banner({
       user.db?.profile__banner &&
       JSON.stringify(user.db.profile__banner) !== JSON.stringify(state)
     ) {
-      externalSetter({ ...profileState, profile__banner: filteredState });
+      externalSetter((s) => ({
+        ...s,
+        profile__banner: filteredState,
+      }));
     }
-  }, [state]);
+  }, [state, user, externalSetter, handlers]);
 
   if (!cards)
     return (

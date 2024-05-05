@@ -72,7 +72,7 @@ function BookmarkedCard({ campaign }: { campaign: Event | Scout }) {
           : `${d} days`
       );
     }
-  }, [campaign.start.en]);
+  }, [campaign.start.en, campaign.end.en, dayjs]);
 
   return (
     <Card

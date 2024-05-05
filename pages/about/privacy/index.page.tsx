@@ -13,7 +13,12 @@ function Page() {
       <TypographyStylesProvider>
         <Trans
           i18nKey="about__privacy:privacy.html"
-          components={[<p />, <h2 />, <ul />, <li />]}
+          components={[
+            <p key={0} />,
+            <h2 key={1} />,
+            <ul key={2} />,
+            <li key={3} />,
+          ]}
         />
       </TypographyStylesProvider>
     </>

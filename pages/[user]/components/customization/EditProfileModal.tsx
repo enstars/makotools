@@ -73,7 +73,7 @@ function EditProfileModal({
   user: User;
   profile: UserData;
   profileState: EditingProfile | undefined;
-  setProfileState: Dispatch<SetStateAction<any>>;
+  setProfileState: Dispatch<SetStateAction<EditingProfile>>;
   characters: GameCharacter[];
   units: GameUnit[];
   locale: Locale;

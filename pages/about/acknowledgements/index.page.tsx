@@ -16,6 +16,7 @@ function Page() {
             i18nKey="about__acknowledgements:text.development"
             components={[
               <Anchor
+                key={0}
                 inherit
                 href="https://github.com/enstars"
                 target="_blank"
@@ -37,7 +38,7 @@ function Page() {
               "https://twitter.com/DaydreamGuides",
               "https://ensemblestars.huijiwiki.com",
             ].map((link) => (
-              <Anchor inherit href={link} target="_blank" />
+              <Anchor inherit href={link} target="_blank" key={link} />
             ))}
           />
         </p>

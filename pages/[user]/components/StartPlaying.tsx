@@ -2,6 +2,8 @@ import { Checkbox, Group, Input, Select } from "@mantine/core";
 import useTranslation from "next-translate/useTranslation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
+import { EditingProfile } from "./customization/EditProfileModal";
+
 import useUser from "services/firebase/user";
 import { useDayjs } from "services/libraries/dayjs";
 
@@ -48,7 +50,7 @@ function StartPlaying({
   externalSetter,
   profileState,
 }: {
-  externalSetter: Dispatch<SetStateAction<any>>;
+  externalSetter: Dispatch<SetStateAction<EditingProfile>>;
   profileState: any;
 }) {
   const { t } = useTranslation("user");
@@ -84,7 +86,7 @@ function StartPlaying({
         });
       }
     }
-  }, [user]);
+  }, [user, dayjs]);
 
   useEffect(() => {
     const resolvedData = picked.unknown
@@ -96,9 +98,9 @@ function StartPlaying({
       (typeof user.db?.profile__start_playing === "undefined" ||
         user.db.profile__start_playing !== resolvedData)
     ) {
-      externalSetter({ ...profileState, profile__start_playing: resolvedData });
+      externalSetter((s) => ({ ...s, profile__start_playing: resolvedData }));
     }
-  }, [picked]);
+  }, [picked, user, externalSetter]);
 
   return (
     <Input.Wrapper label={t("startedPlaying")}>

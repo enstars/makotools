@@ -19,7 +19,9 @@ function Page() {
           <Trans
             i18nKey="about__translations:incorrect.unofficial"
             values={{ email: CONSTANTS.MAKOTOOLS.EMAIL }}
-            components={[<a href={`mailto:${CONSTANTS.MAKOTOOLS.EMAIL}`} />]}
+            components={[
+              <a href={`mailto:${CONSTANTS.MAKOTOOLS.EMAIL}`} key={0} />,
+            ]}
           />
         </p>
         <p>{t("incorrect.official")}</p>
