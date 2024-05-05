@@ -1,17 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  ActionIcon,
-  Divider,
-  Group,
-  Tooltip,
-  useMantineTheme,
-} from "@mantine/core";
-import {
-  IconBook,
-  IconBookmark,
-  IconCards,
-  IconMedal,
-} from "@tabler/icons-react";
+import { Divider, useMantineTheme } from "@mantine/core";
+import { IconBook, IconCards, IconMedal } from "@tabler/icons-react";
 import { useListState } from "@mantine/hooks";
 import useTranslation from "next-translate/useTranslation";
 
@@ -78,45 +67,8 @@ function Page({
 
   return (
     <>
-      <Group>
-        <PageTitle title={scout.name[0]} sx={{ flex: "1 0 80%" }} />
-        {((user.loggedIn &&
-          user.db.admin?.patreon &&
-          user.db.admin?.patreon >= 1) ||
-          (user.loggedIn && user.db.admin?.administrator)) && (
-          <Tooltip
-            label={
-              user.loggedIn
-                ? bookmarks.includes(scout.gacha_id)
-                  ? t("events:event.removeBookmark")
-                  : t("events:event.addBookmark")
-                : t("loginBookmark")
-            }
-            position="bottom"
-          >
-            <ActionIcon
-              size={60}
-              disabled={!user.loggedIn}
-              onClick={() => {
-                bookmarks.includes(scout.gacha_id)
-                  ? handlers.remove(bookmarks.indexOf(scout.gacha_id))
-                  : handlers.append(scout.gacha_id);
-              }}
-            >
-              <IconBookmark
-                size={60}
-                fill={
-                  bookmarks.includes(scout.gacha_id)
-                    ? theme.colors[theme.primaryColor][4]
-                    : "none"
-                }
-                strokeWidth={bookmarks.includes(scout.gacha_id) ? 0 : 1}
-              />
-            </ActionIcon>
-          </Tooltip>
-        )}
-      </Group>
       <RegionInfo region={region} />
+      <PageTitle title={scout.name[0]} sx={{ flex: "1 0 80%" }} />
       <ESPageHeader content={scout} region={region} />
       <SectionTitle title="Cards" id="cards" Icon={IconCards} />
       <ResponsiveGrid width={224}>
@@ -265,8 +217,10 @@ export const getServerSideProps = getServerSideUser(
         event: event,
         charactersQuery: characters,
         cardsQuery: cards,
+        region,
         title,
         breadcrumbs,
+        bookmarkId: scout.gacha_id,
         meta: {
           title: title,
         },

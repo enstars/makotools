@@ -7,7 +7,6 @@ import {
   IconVinyl,
 } from "@tabler/icons-react";
 import { useMemo, useState } from "react";
-import { useListState } from "@mantine/hooks";
 import useTranslation from "next-translate/useTranslation";
 
 import ESPageHeader from "../components/ESPageHeader";
@@ -52,9 +51,6 @@ function Page({
   const { collections, onEditCollection, onNewCollection } = useCollections();
   const [newCollectionModalOpened, setNewCollectionModalOpened] =
     useState<boolean>(false);
-  const [bookmarks, handlers] = useListState<number>(
-    user.loggedIn ? user.db.bookmarks__events || [] : []
-  );
 
   cards = cards.filter((card) => {
     return event.cards?.includes(card.id);
@@ -89,24 +85,8 @@ function Page({
       icon: <IconMusic size={16} strokeWidth={3} />,
     });
 
-  // useEffect(() => {
-  //   user.loggedIn &&
-  //     user.db.set({
-  //       bookmarks__events: bookmarks,
-  //     });
-  // }, [bookmarks]);
-
   return (
     <>
-      {/* {user.loggedIn && (
-        <BookmarkButton
-          id={event.event_id}
-          bookmarkList={bookmarks}
-          listHandler={handlers}
-        />
-      )} */}
-      {/* <PageTitle title={event.name[0]} sx={{ flex: "1 0 80%" }} />
-      <ESPageHeader content={event} units={units} /> */}
       <RegionInfo region={region} />
       <PageTitle
         title={event.name[0]}

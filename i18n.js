@@ -66,7 +66,12 @@ module.exports = {
       "bookmarks",
     ],
     "/scouts": ["scouts"],
-    "/scouts/[id]": ["events", "events__event"],
+    "/scouts/[id]/[[...region]]": [
+      "events",
+      "events__event",
+      "regions",
+      "bookmarks",
+    ],
     "/settings": ["settings"],
     "/[user]": ["user"],
   },
