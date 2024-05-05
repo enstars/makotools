@@ -34,10 +34,12 @@ export default function BookmarkButton({
   id,
   type,
   mr,
+  onBusyBackground,
 }: {
   id: number;
   type: BookmarkType;
   mr?: number | string;
+  onBusyBackground?: boolean;
 }) {
   const user = useUser();
   const theme = useMantineTheme();
@@ -77,6 +79,7 @@ export default function BookmarkButton({
         zIndex: 999,
         cursor: "pointer",
         width: 40,
+        color: onBusyBackground ? "white" : undefined,
       }}
       onClick={(e) => {
         e.preventDefault();
@@ -119,9 +122,11 @@ export default function BookmarkButton({
           position: "absolute",
           top: -48,
           right: mr || 0,
+          zIndex: 999,
           opacity: 0.5,
           transition: "0.2s ease",
           transform: "translateY(0px)",
+          fill: onBusyBackground ? "white" : undefined,
           ["&:hover"]: {
             transform: "translateY(4px)",
           },
@@ -132,10 +137,11 @@ export default function BookmarkButton({
             fill: theme.colors[theme.primaryColor][
               theme.colorScheme === "dark" ? 4 : 7
             ],
-            stroke:
-              theme.colors[theme.primaryColor][
-                theme.colorScheme === "dark" ? 4 : 7
-              ],
+            stroke: onBusyBackground
+              ? "white"
+              : theme.colors[theme.primaryColor][
+                  theme.colorScheme === "dark" ? 4 : 7
+                ],
           },
         }}
       />

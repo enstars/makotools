@@ -1,6 +1,8 @@
 {
   "test": "Welcome to MakoTools!",
   "search": {
+    "charLabel": "Character",
+    "charPlaceholder": "Search any character name...",
     "searchLabel": "Search",
     "searchOptions": "Search options",
     "sortLabel": "Sort by",

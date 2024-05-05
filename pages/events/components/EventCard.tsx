@@ -104,6 +104,7 @@ function EventCard({
       component={Link}
       href={`/events/${event.event_id}`}
     >
+      <BookmarkButton id={event.event_id} type="event" mr={theme.spacing.xs} />
       <Box
         sx={{
           position: "relative",
@@ -296,11 +297,6 @@ function EventCard({
             )}
           </Stack>
         </Box>
-        <BookmarkButton
-          id={event.event_id}
-          type="event"
-          mr={theme.spacing.xs}
-        />
       </Group>
     </Paper>
   );

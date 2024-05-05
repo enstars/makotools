@@ -58,14 +58,14 @@ module.exports = {
     "/cards": ["cards", "regions"],
     "/cards/[id]": ["cards__card", "skills", "game__campaignTypes"],
     "/assets": ["assets", "regions"],
-    "/events": ["events", "regions"],
+    "/events": ["events", "regions", "bookmarks"],
     "/events/[id]/[[...region]]": [
       "events",
       "events__event",
       "regions",
       "bookmarks",
     ],
-    "/scouts": ["scouts"],
+    "/scouts": ["scouts", "regions", "bookmarks"],
     "/scouts/[id]/[[...region]]": [
       "events",
       "events__event",
