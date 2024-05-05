@@ -85,6 +85,7 @@ const useStyles = createStyles(
         left: 0,
         width: "100%",
         height: "100%",
+        borderRadius: radius,
       },
       "::before": {
         background: `no-repeat center/cover url(${placeholderURL})`,
