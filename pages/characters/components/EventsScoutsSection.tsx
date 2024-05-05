@@ -1,12 +1,13 @@
-import { Box, Title } from "@mantine/core";
+import { Box } from "@mantine/core";
+import SectionTitle from "pages/events/[id]/components/SectionTitle";
+import { IconAward, IconDiamond } from "@tabler/icons-react";
+
+import { useCharacterColors } from "../[id].page";
 
 import { EventScoutCard } from "./EventScoutCard";
 
 import { GameCard, Event, Scout } from "types/game";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
-import { useCharacterColors } from "../[id].page";
-import SectionTitle from "pages/events/[id]/components/SectionTitle";
-import { IconAward, IconDiamond } from "@tabler/icons-react";
 
 export function EventsScoutsSection({
   events,

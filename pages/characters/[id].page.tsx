@@ -4,6 +4,7 @@ import { IconCake, IconStar } from "@tabler/icons-react";
 import { Fragment, createContext, useContext, useState } from "react";
 import { useMediaQuery } from "@mantine/hooks";
 import { Parallax, ParallaxProvider } from "react-scroll-parallax";
+import SectionTitle from "pages/events/[id]/components/SectionTitle";
 
 import { CirclesSection } from "./components/CirclesSection";
 import { CardsSection } from "./components/CardsSection";
@@ -31,7 +32,6 @@ import {
 } from "services/utilities";
 import useUser from "services/firebase/user";
 import NameOrder from "components/utilities/formatting/NameOrder";
-import SectionTitle from "pages/events/[id]/components/SectionTitle";
 
 const CharacterColorsContext = createContext({
   primary: "",

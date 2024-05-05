@@ -1,5 +1,6 @@
 import { Box, useMantineTheme } from "@mantine/core";
 import { Parallax, useParallaxController } from "react-scroll-parallax";
+
 import { GameCharacter } from "types/game";
 import Picture from "components/core/Picture";
 
