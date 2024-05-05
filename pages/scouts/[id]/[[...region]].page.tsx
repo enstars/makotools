@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
-import { Divider, useMantineTheme } from "@mantine/core";
+import { useMemo, useState } from "react";
+import { Divider } from "@mantine/core";
 import { IconBook, IconCards, IconMedal } from "@tabler/icons-react";
-import { useListState } from "@mantine/hooks";
 import useTranslation from "next-translate/useTranslation";
 
 import PageTitle from "components/sections/PageTitle";
@@ -21,7 +20,6 @@ import SectionTitle from "pages/events/components/SectionTitle";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 import { useCollections } from "services/makotools/collection";
 import NewCollectionModal from "pages/cards/components/NewCollectionModal";
-import useUser from "services/firebase/user";
 import RegionInfo from "components/sections/RegionInfo";
 
 function Page({
@@ -38,8 +36,6 @@ function Page({
   region: GameRegion;
 }) {
   const { t } = useTranslation("events__event");
-  const user = useUser();
-  const theme = useMantineTheme();
   let characters = useMemo(() => charactersQuery.data, [charactersQuery.data]);
   let cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
   const { collections, onEditCollection, onNewCollection } = useCollections();
@@ -53,17 +49,6 @@ function Page({
       .map((card) => card.character_id)
       .includes(character.character_id);
   });
-
-  const [bookmarks, handlers] = useListState<number>(
-    user.loggedIn ? user.db.bookmarks__scouts || [] : []
-  );
-
-  useEffect(() => {
-    user.loggedIn &&
-      user.db.set({
-        bookmarks__scouts: bookmarks,
-      });
-  }, [bookmarks]);
 
   return (
     <>

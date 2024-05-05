@@ -18,10 +18,9 @@ import {
   IconSortAscending,
   IconSortDescending,
 } from "@tabler/icons-react";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import dayjs from "dayjs";
-import { useRouter } from "next/router";
-import { useListState, useLocalStorage } from "@mantine/hooks";
+import { useLocalStorage } from "@mantine/hooks";
 import useTranslation from "next-translate/useTranslation";
 
 import EventCard from "./components/EventCard";
@@ -72,7 +71,6 @@ function Page({
   const { t } = useTranslation("events");
   const user = useUser();
   const theme = useMantineTheme();
-  const { locale } = useRouter();
   const events = useMemo(() => eventsQuery.data, [eventsQuery.data]);
   const cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
   const units = useMemo(() => unitsQuery.data, [unitsQuery.data]);
@@ -150,27 +148,10 @@ function Page({
     },
   });
 
-  const [bookmarks, handlers] = useListState<number>(
-    user.loggedIn ? user.db.bookmarks__events || [] : []
-  );
-
   let characterIDtoSort: { [key: number]: number } = {};
   characters.forEach((c) => {
     characterIDtoSort[c.character_id] = c.sort_id;
   });
-
-  useEffect(() => {
-    if (
-      user.loggedIn &&
-      user.db &&
-      user.db.admin?.patreon &&
-      (user.db.admin?.patreon > 0 || user.db.admin.administrator)
-    ) {
-      user.db.set({
-        bookmarks__events: bookmarks,
-      });
-    }
-  }, [bookmarks]);
 
   return (
     <>
@@ -398,9 +379,6 @@ function Page({
             key={event.event_id}
             event={event}
             units={units}
-            bookmarked={bookmarks.includes(event.event_id)}
-            bookmarks={bookmarks}
-            bookmarkHandlers={handlers}
             region={viewOptions.region}
             density={viewOptions.density}
           />
@@ -436,13 +414,6 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     locale,
     "id"
   );
-
-  // const events: Event[] = retrieveEvents(
-  //   {
-  //     gameEvents: getEvents.data,
-  //   },
-  //   locale
-  // ) as Event[];
 
   return {
     props: {

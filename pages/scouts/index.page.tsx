@@ -16,7 +16,7 @@ import {
   IconSortDescending,
 } from "@tabler/icons-react";
 import { useMemo } from "react";
-import { useListState, useLocalStorage, useMediaQuery } from "@mantine/hooks";
+import { useLocalStorage } from "@mantine/hooks";
 import useTranslation from "next-translate/useTranslation";
 
 import ScoutCard from "./components/ScoutCard";
@@ -113,7 +113,7 @@ function Page({
       },
       defaultView,
     }),
-    []
+    [cards, dayjs, t]
   );
   const { results, view, setView } = useFSSList<
     Scout,
@@ -129,11 +129,6 @@ function Page({
       // density: "full" as "full" | "compact",
     },
   });
-
-  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm}px)`);
-  const [bookmarks, handlers] = useListState<number>(
-    user.loggedIn ? user.db.bookmarks__scouts || [] : []
-  );
 
   return (
     <>
@@ -335,9 +330,6 @@ function Page({
           <ScoutCard
             key={scout.gacha_id}
             scout={scout}
-            bookmarked={bookmarks.includes(scout.gacha_id)}
-            bookmarks={bookmarks}
-            bookmarkHandlers={handlers}
             region={viewOptions.region}
           />
         ))}

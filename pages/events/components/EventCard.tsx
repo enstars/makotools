@@ -13,14 +13,12 @@ import {
 } from "@mantine/core";
 import Link from "next/link";
 import { IconArrowsShuffle2, IconBus, IconDiamond } from "@tabler/icons-react";
-import { UseListStateHandlers, useMediaQuery } from "@mantine/hooks";
 import useTranslation from "next-translate/useTranslation";
 
 import Picture from "components/core/Picture";
 import { Event, GameRegion, GameUnit } from "types/game";
 import { useDayjs } from "services/libraries/dayjs";
 import IconEnstars from "components/core/IconEnstars";
-import useUser from "services/firebase/user";
 import WrappableText from "components/core/WrappableText";
 import BookmarkButton from "components/core/BookmarkButton";
 
@@ -62,27 +60,18 @@ const useStyles = createStyles((theme) => ({
 function EventCard({
   event,
   units,
-  bookmarked,
-  bookmarks,
-  bookmarkHandlers,
   region,
   density,
 }: {
   event: Event;
   units: GameUnit[];
-  bookmarked: boolean;
-  bookmarks: number[];
-  bookmarkHandlers: UseListStateHandlers<number>;
   region: GameRegion;
   density: "full" | "compact";
 }) {
   const { t } = useTranslation("events");
-  const user = useUser();
   const theme = useMantineTheme();
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
-
-  const isMobile = useMediaQuery("(max-width: 768px)");
 
   let eventUnits: GameUnit[] = units.filter((unit: GameUnit) => {
     return event.unit_id ? event.unit_id?.includes(unit.id) : false;

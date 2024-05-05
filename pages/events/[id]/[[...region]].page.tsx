@@ -27,7 +27,6 @@ import { CardCard } from "components/core/CardCard";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 import { useCollections } from "services/makotools/collection";
 import NewCollectionModal from "pages/cards/components/NewCollectionModal";
-import useUser from "services/firebase/user";
 import RegionInfo from "components/sections/RegionInfo";
 
 function Page({
@@ -44,19 +43,18 @@ function Page({
   region: GameRegion;
 }) {
   const { t } = useTranslation("events__event");
-  const user = useUser();
   const theme = useMantineTheme();
-  let cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
-  let units = useMemo(() => unitsQuery.data, [unitsQuery.data]);
+  let allCards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
+  let allUnits = useMemo(() => unitsQuery.data, [unitsQuery.data]);
   const { collections, onEditCollection, onNewCollection } = useCollections();
   const [newCollectionModalOpened, setNewCollectionModalOpened] =
     useState<boolean>(false);
 
-  cards = cards.filter((card) => {
+  const cards = allCards.filter((card) => {
     return event.cards?.includes(card.id);
   });
 
-  units = units.filter(
+  const units = allUnits.filter(
     (unit: GameUnit) => event.unit_id && event.unit_id.includes(unit.id)
   );
 

@@ -8,13 +8,11 @@ import {
 } from "@mantine/core";
 import Link from "next/link";
 import { IconHistory, IconHourglassHigh } from "@tabler/icons-react";
-import { UseListStateHandlers, useMediaQuery } from "@mantine/hooks";
 import useTranslation from "next-translate/useTranslation";
 
 import Picture from "components/core/Picture";
 import { useDayjs } from "services/libraries/dayjs";
 import { GameRegion, Scout } from "types/game";
-import useUser from "services/firebase/user";
 import BookmarkButton from "components/core/BookmarkButton";
 
 const useStyles = createStyles((theme, _params, getRef) => ({
@@ -32,25 +30,11 @@ const useStyles = createStyles((theme, _params, getRef) => ({
   },
 }));
 
-function ScoutCard({
-  scout,
-  bookmarked,
-  bookmarks,
-  bookmarkHandlers,
-  region,
-}: {
-  scout: Scout;
-  bookmarked: boolean;
-  bookmarks: number[];
-  bookmarkHandlers: UseListStateHandlers<number>;
-  region: GameRegion;
-}) {
+function ScoutCard({ scout, region }: { scout: Scout; region: GameRegion }) {
   const { t } = useTranslation("scouts");
-  const user = useUser();
   const theme = useMantineTheme();
   const { dayjs } = useDayjs();
   const { classes } = useStyles();
-  const isMobile = useMediaQuery("(max-width: 768px)");
 
   const unknownDate = !scout.start[region] || !scout.end[region];
 
