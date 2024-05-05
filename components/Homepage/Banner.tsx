@@ -140,7 +140,7 @@ function Banner({ events }: { events: (Birthday | Event | Scout)[] }) {
                   ? dayjs(event.start.en).format("lll") +
                     " – " +
                     dayjs(event.end.en).format("lll z")
-                  : dayjs(event.start.en).format("MMMM D")}
+                  : dayjs(event.start.en).year(dayjs().year()).format("ll")}
               </Text>
               <Button
                 mt={6}
