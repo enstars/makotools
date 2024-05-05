@@ -35,11 +35,13 @@ export default function BookmarkButton({
   type,
   mr,
   onBusyBackground,
+  inCard,
 }: {
   id: number;
   type: BookmarkType;
   mr?: number | string;
   onBusyBackground?: boolean;
+  inCard?: boolean;
 }) {
   const user = useUser();
   const theme = useMantineTheme();
@@ -78,7 +80,7 @@ export default function BookmarkButton({
       sx={{
         zIndex: 999,
         cursor: "pointer",
-        width: 40,
+        width: inCard ? 0 : 40,
         color: onBusyBackground ? "white" : undefined,
       }}
       onClick={(e) => {

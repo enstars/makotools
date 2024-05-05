@@ -104,7 +104,12 @@ function EventCard({
       component={Link}
       href={`/events/${event.event_id}`}
     >
-      <BookmarkButton id={event.event_id} type="event" mr={theme.spacing.xs} />
+      <BookmarkButton
+        id={event.event_id}
+        type="event"
+        mr={theme.spacing.xs}
+        inCard
+      />
       <Box
         sx={{
           position: "relative",
