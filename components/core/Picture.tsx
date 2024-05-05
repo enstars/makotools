@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   createStyles,
-  Modal,
   Paper,
   useMantineTheme,
   Image as MantineImage,
@@ -14,7 +13,7 @@ import {
 } from "@mantine/core";
 import Image, { ImageProps } from "next/image";
 import { ImageProps as MantineImageProps } from "@mantine/core";
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useCallback, useMemo, useState } from "react";
 import {
   IconArrowsDiagonal,
   IconArrowUpRightCircle,
@@ -29,6 +28,7 @@ import {
   TransformWrapper,
 } from "@pronestor/react-zoom-pan-pinch";
 import { IconPhotoOff } from "@tabler/icons-react";
+import { openModal } from "@mantine/modals";
 
 import { getAssetURL } from "services/data";
 import { downloadFromURL } from "services/utilities";
@@ -37,7 +37,7 @@ import { CONSTANTS } from "services/makotools/constants";
 import useUser from "services/firebase/user";
 
 interface PictureProps extends NextMantineImageProps {
-  action?: "none" | "view" | "download";
+  action?: "none" | "view" | "download" | "both";
   srcB2?: string;
   src?: string;
   transparent?: boolean;
@@ -128,6 +128,12 @@ const useStyles = createStyles(
     },
     tcWrapper: { width: "100%" },
     tcContent: { width: "100%" },
+    actionIconWrapper: {
+      position: "absolute",
+      bottom: 4,
+      right: 4,
+      zIndex: 10,
+    },
     actionIconRoot: {
       background: theme.colors.dark[9] + "77",
       color: theme.white,
@@ -164,28 +170,40 @@ function Picture({
   const theme = useMantineTheme();
   const user = useUser();
 
-  const dontUseWebP =
-    (user.loggedIn && user.db.setting__use_webp === "dont-use") || false;
+  const dontUseWebP = useMemo(
+    () => user.loggedIn && user.db.setting__use_webp === "dont-use",
+    [user]
+  );
 
   const [loaded, setLoaded] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [opened, setOpened] = useState<boolean>(false);
 
-  const src = originalSrc || getAssetURL(srcB2 as string);
-  const isB2Optimized = !!srcB2;
+  const src = useMemo(
+    () => originalSrc || getAssetURL(srcB2 as string),
+    [originalSrc, srcB2]
+  );
+  const isB2Optimized = useMemo(() => !!srcB2, [srcB2]);
 
-  const webpSrc = src?.replace("png", "webp");
-  const downloadLink = src + "?download";
+  const webpSrc = useMemo(() => src?.replace("png", "webp"), [src]);
 
-  const downloadFile = (event: SyntheticEvent) => {
-    event.stopPropagation();
-    downloadFromURL(downloadLink);
-  };
+  const downloadFile = useCallback(
+    (e: SyntheticEvent) => {
+      e.stopPropagation();
+      downloadFromURL(src + "?download");
+    },
+    [src]
+  );
 
-  const hasPlaceholder = isB2Optimized && !transparent;
-  const placeholderURL = hasPlaceholder
-    ? src?.replace(".png", "-placeholder.jpg")
-    : undefined;
+  const hasPlaceholder = useMemo(
+    () => isB2Optimized && !transparent,
+    [isB2Optimized, transparent]
+  );
+  const placeholderURL = useMemo(
+    () =>
+      hasPlaceholder ? src?.replace(".png", "-placeholder.jpg") : undefined,
+    [hasPlaceholder, src]
+  );
 
   const { classes, cx } = useStyles({
     radius:
@@ -242,158 +260,197 @@ function Picture({
             loaded ? classes.loadedImg : ""
           )}
         />
-        {!error && loaded && user.loggedIn && action === "download" && (
-          <ActionIcon
-            size="sm"
-            sx={{ position: "absolute", right: 4, bottom: 4 }}
-            onClick={downloadFile}
-            component="a"
-            className={classes.actionIconRoot}
-          >
-            <IconDownload size={14} />
-          </ActionIcon>
-        )}
-        {!error && loaded && user.loggedIn && action === "view" && (
-          <>
-            <ActionIcon
-              size="sm"
-              sx={{ position: "absolute", right: 4, bottom: 4 }}
-              onClick={(event: SyntheticEvent) => {
-                event.stopPropagation();
-                setOpened((o) => !o);
-              }}
-              className={classes.actionIconRoot}
-            >
-              <IconArrowsDiagonal size={14} />
-            </ActionIcon>
-            <Modal
-              size="lg"
-              opened={opened}
-              onClose={() => {
-                setOpened(false);
-              }}
-              centered
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              title={
-                <>
-                  <Text weight="500">
-                    {src?.replace(CONSTANTS.EXTERNAL_URLS.ASSETS, "") ||
-                      "Save Image"}
-                  </Text>
-                  <Text size="sm" color="dimmed">
-                    {alt}
-                  </Text>
-                </>
-              }
-              styles={{
-                header: { alignItems: "flex-start", marginRight: 0 },
-              }}
-              classNames={{
-                body: classes.modalBody,
-              }}
-              overflow="inside"
-            >
-              <Text size="xs" color="dimmed" mb="xs">
-                The image may appear blurry on Safari; Open or Download the
-                image to view in full resolution!
-              </Text>
-              <TransformWrapper
-                centerOnInit={true}
-                centerZoomedOut={true}
-                minScale={0.9}
-                maxScale={12}
-                initialScale={0.95}
-                minPositionY={20}
-                panning={{ velocityDisabled: true }}
+        <Group className={classes.actionIconWrapper} spacing={4}>
+          {!error &&
+            loaded &&
+            user.loggedIn &&
+            (action === "download" || action === "both") && (
+              <ActionIcon
+                size="sm"
+                onClick={downloadFile}
+                component="a"
+                className={classes.actionIconRoot}
               >
-                {({ zoomIn, zoomOut, centerView }) => (
-                  <>
-                    <Paper
-                      radius="md"
-                      withBorder
-                      sx={{
-                        overflow: "hidden",
-                        position: "relative",
-                        background: transparencyGrid,
-                        backgroundSize: "1.75em 1.75em",
-                        "&, *": {
-                          display: "flex",
-                          flexDirection: "column",
-                          minHeight: 0,
-                          flexGrow: 1,
-                        },
-                      }}
-                    >
-                      <Stack
-                        spacing={2}
-                        sx={{
-                          position: "absolute",
-                          zIndex: 10,
-                          bottom: 4,
-                          right: 4,
-                        }}
-                      >
-                        <ActionIcon
-                          className={classes.actionIconRoot}
-                          onClick={() => zoomIn()}
-                        >
-                          <IconZoomIn size={16} />
-                        </ActionIcon>
-                        <ActionIcon
-                          className={classes.actionIconRoot}
-                          onClick={() => zoomOut()}
-                        >
-                          <IconZoomOut size={16} />
-                        </ActionIcon>
-                        <ActionIcon
-                          className={classes.actionIconRoot}
-                          onClick={() => centerView(0.95)}
-                        >
-                          <IconFocusCentered size={16} />
-                        </ActionIcon>
-                      </Stack>
-                      <TransformComponent
-                        wrapperClass={classes.tcWrapper}
-                        contentClass={classes.tcContent}
-                      >
-                        <MantineImage
-                          src={src}
-                          alt={""}
-                          classNames={{ root: classes.modalImage }}
-                          height="100%"
-                          fit="contain"
-                        />
-                      </TransformComponent>
-                    </Paper>
+                <IconDownload size={14} />
+              </ActionIcon>
+            )}
+          {!error &&
+            loaded &&
+            user.loggedIn &&
+            (action === "view" || action === "both") && (
+              <>
+                <ActionIcon
+                  size="sm"
+                  onClick={(event: SyntheticEvent) => {
+                    event.stopPropagation();
+                    // setOpened((o) => !o);
+                    openModal({
+                      title: (
+                        <>
+                          <Text weight="500">
+                            {src?.replace(CONSTANTS.EXTERNAL_URLS.ASSETS, "") ||
+                              "Save Image"}
+                          </Text>
+                          <Text size="sm" color="dimmed">
+                            {alt}
+                          </Text>
+                        </>
+                      ),
+                      styles: {
+                        header: { alignItems: "flex-start", marginRight: 0 },
+                      },
+                      classNames: {
+                        body: classes.modalBody,
+                      },
+                      overflow: "inside",
+                      size: "xl",
+                      centered: true,
+                      onClick: (e) => {
+                        e.stopPropagation();
+                      },
+                      children: (
+                        <>
+                          <Text size="xs" color="dimmed" mb="xs">
+                            The image may appear blurry on Safari; Open or
+                            Download the image to view in full resolution!
+                          </Text>
+                          <TransformWrapper
+                            centerOnInit={true}
+                            centerZoomedOut={true}
+                            minScale={0.9}
+                            maxScale={12}
+                            initialScale={0.95}
+                            minPositionY={20}
+                            panning={{ velocityDisabled: true }}
+                          >
+                            {({ zoomIn, zoomOut, centerView }) => (
+                              <>
+                                <Paper
+                                  radius="md"
+                                  withBorder
+                                  sx={{
+                                    overflow: "hidden",
+                                    position: "relative",
+                                    background: transparencyGrid,
+                                    backgroundSize: "1.75em 1.75em",
+                                    "&, *": {
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      minHeight: 0,
+                                      flexGrow: 1,
+                                    },
+                                  }}
+                                >
+                                  <Stack
+                                    spacing={2}
+                                    sx={{
+                                      position: "absolute",
+                                      zIndex: 10,
+                                      bottom: 4,
+                                      right: 4,
+                                    }}
+                                  >
+                                    <ActionIcon
+                                      className={classes.actionIconRoot}
+                                      onClick={() => zoomIn()}
+                                    >
+                                      <IconZoomIn size={16} />
+                                    </ActionIcon>
+                                    <ActionIcon
+                                      className={classes.actionIconRoot}
+                                      onClick={() => zoomOut()}
+                                    >
+                                      <IconZoomOut size={16} />
+                                    </ActionIcon>
+                                    <ActionIcon
+                                      className={classes.actionIconRoot}
+                                      onClick={() => centerView(0.95)}
+                                    >
+                                      <IconFocusCentered size={16} />
+                                    </ActionIcon>
+                                  </Stack>
+                                  <TransformComponent
+                                    wrapperClass={classes.tcWrapper}
+                                    contentClass={classes.tcContent}
+                                  >
+                                    <MantineImage
+                                      src={src}
+                                      alt={""}
+                                      classNames={{ root: classes.modalImage }}
+                                      height="100%"
+                                      fit="contain"
+                                    />
+                                  </TransformComponent>
+                                </Paper>
 
-                    <Group mt="xs" position="apart">
-                      <Box />
-                      <Group spacing="xs">
-                        <Button
-                          component={Link}
-                          href={src}
-                          target="_blank"
-                          variant="light"
-                          leftIcon={<IconArrowUpRightCircle size={16} />}
-                        >
-                          Open
-                        </Button>
-                        <Button
-                          leftIcon={<IconDownload size={16} />}
-                          onClick={downloadFile}
-                        >
-                          Download
-                        </Button>
-                      </Group>
-                    </Group>
-                  </>
-                )}
-              </TransformWrapper>
-            </Modal>
-          </>
-        )}
+                                <Group mt="xs" position="apart">
+                                  <Box />
+                                  <Group spacing="xs">
+                                    <Button
+                                      component={Link}
+                                      href={src}
+                                      target="_blank"
+                                      variant="light"
+                                      leftIcon={
+                                        <IconArrowUpRightCircle size={16} />
+                                      }
+                                    >
+                                      Open
+                                    </Button>
+                                    <Button
+                                      leftIcon={<IconDownload size={16} />}
+                                      onClick={downloadFile}
+                                    >
+                                      Download
+                                    </Button>
+                                  </Group>
+                                </Group>
+                              </>
+                            )}
+                          </TransformWrapper>
+                        </>
+                      ),
+                      withinPortal: true,
+                    });
+                  }}
+                  className={classes.actionIconRoot}
+                >
+                  <IconArrowsDiagonal size={14} />
+                </ActionIcon>
+                {/* <Modal
+                  size="lg"
+                  opened={opened}
+                  onClose={() => {
+                    setOpened(false);
+                  }}
+                  centered
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                  title={
+                    <>
+                      <Text weight="500">
+                        {src?.replace(CONSTANTS.EXTERNAL_URLS.ASSETS, "") ||
+                          "Save Image"}
+                      </Text>
+                      <Text size="sm" color="dimmed">
+                        {alt}
+                      </Text>
+                    </>
+                  }
+                  styles={{
+                    header: { alignItems: "flex-start", marginRight: 0 },
+                  }}
+                  classNames={{
+                    body: classes.modalBody,
+                  }}
+                  overflow="inside"
+                >
+                
+                </Modal> */}
+              </>
+            )}
+        </Group>
         {error && (
           <Center
             sx={{

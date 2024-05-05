@@ -29,8 +29,8 @@ import {
   IconSortDescending,
   IconStar,
 } from "@tabler/icons-react";
-import { useEffect, useMemo, useState } from "react";
-import { useListState, useLocalStorage } from "@mantine/hooks";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLocalStorage } from "@mantine/hooks";
 import useTranslation from "next-translate/useTranslation";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { IconGhost } from "@tabler/icons-react";
@@ -404,8 +404,8 @@ function FullAssetCard({
               }
               alt={card.name?.en || card.name?.jp || ""}
               radius={3}
-              action="download"
               transparent={assetType.id === "render"}
+              action="both"
             >
               {type === "normal" && (
                 <Paper
@@ -462,8 +462,6 @@ function FullAssetCard({
   );
 }
 
-// rewrite infinite scroll styles to use createStyles
-
 const useStyles = createStyles((theme, _params, getRef) => ({
   cardGrid: {
     display: "grid",
@@ -503,10 +501,13 @@ function Page({
   const [count, setCount] = useState<number>(ASSET_LIST_INITIAL_COUNT);
   const [slicedAssetsList, setSlicedAssetsList] = useState<AssetCard[]>([]);
 
-  let characterIDtoSort: { [key: number]: number } = {};
-  characters.forEach((c) => {
-    characterIDtoSort[c.character_id] = c.sort_id;
-  });
+  const characterIDtoSort = useMemo(() => {
+    let characterIDtoSort: { [key: number]: number } = {};
+    characters.forEach((c) => {
+      characterIDtoSort[c.character_id] = c.sort_id;
+    });
+    return characterIDtoSort;
+  }, [characters]);
 
   const fssOptions = useMemo<FSSOptions<AssetCard, typeof defaultView.filters>>(
     () => ({
@@ -553,8 +554,9 @@ function Page({
       },
       defaultView,
     }),
-    [t]
+    [t, characterIDtoSort]
   );
+
   const { results, view, setView } = useFSSList<
     AssetCard,
     typeof defaultView.filters
@@ -571,18 +573,14 @@ function Page({
     },
   });
 
-  const [bookmarks, handlers] = useListState<number>(
-    user.loggedIn ? user.db.bookmarks__events || [] : []
-  );
-
   useEffect(() => {
     setSlicedAssetsList(results.slice(0, count));
   }, [results, count]);
 
-  const loadMore = () => {
+  const loadMore = useCallback(() => {
     const newCount = count + ASSET_LIST_INITIAL_COUNT;
     setCount(newCount);
-  };
+  }, [count]);
 
   const assetType = useMemo(
     () =>
