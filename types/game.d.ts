@@ -393,6 +393,7 @@ export interface Birthday<T = string[]>
   character_id: ID;
   horoscope: ID;
   type: "birthday";
+  shortCharacterName: T;
 }
 
 export type Campaign = Event | Scout | Birthday;

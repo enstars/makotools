@@ -91,7 +91,7 @@ function CalendarEventCard({
         >
           {event.type === "birthday"
             ? t("monthViewLabels.birthday", {
-                name: event.name[0]?.split(" ")?.[0],
+                name: event.shortCharacterName[0],
               })
             : event.type === "feature scout"
             ? t("monthViewLabels.fs", {

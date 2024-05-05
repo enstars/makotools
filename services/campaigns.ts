@@ -3,14 +3,23 @@ import { useDayjs } from "./libraries/dayjs";
 import { getNameOrder } from "./game";
 
 import { Birthday, GameCharacter, Campaign } from "types/game";
+import { Locale, NameOrder } from "types/makotools";
 
-function createBirthdayData(characters: GameCharacter[]): Birthday[] {
+function createBirthdayData(
+  characters: GameCharacter[],
+  nameOrder: NameOrder,
+  locale: Locale
+): Birthday[] {
   let birthdays = [];
   for (const character of characters) {
     let birthdayEvent: Birthday = {
       character_id: character.character_id,
       name: character.first_name.map((c, i) =>
-        getNameOrder({ first_name: c, last_name: character.last_name[i] })
+        getNameOrder(
+          { first_name: c, last_name: character.last_name[i] },
+          nameOrder,
+          locale
+        )
       ),
       start: {
         jp: character.birthday,
@@ -24,6 +33,7 @@ function createBirthdayData(characters: GameCharacter[]): Birthday[] {
       type: "birthday",
       banner_id: character.renders?.fs1_5,
       horoscope: character.horoscope,
+      shortCharacterName: character.first_name,
     };
 
     birthdays.push(birthdayEvent);
