@@ -115,7 +115,6 @@ export default function RegionInfo({ region }: { region: GameRegion }) {
               variant="light"
               ml={4}
               onClick={() => {
-                console.log(openModal);
                 openModal({
                   title: t("change_region"),
                   children: (
@@ -158,6 +157,7 @@ export default function RegionInfo({ region }: { region: GameRegion }) {
                     </>
                   ),
                   centered: true,
+                  size: "xs",
                 });
               }}
             >

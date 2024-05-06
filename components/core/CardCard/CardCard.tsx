@@ -20,9 +20,10 @@ import attributes from "data/attributes.json";
 import OfficialityBadge from "components/utilities/formatting/OfficialityBadge";
 import CardStatsNumber from "components/utilities/formatting/CardStatsNumber";
 import Picture from "components/core/Picture";
-import { CardCollection, Lang } from "types/makotools";
+import { CardCollection, Lang, Locale } from "types/makotools";
 import useUser from "services/firebase/user";
-import { GameCard, ID } from "types/game";
+import { GameCard, GameRegion, ID } from "types/game";
+import { getTitleHierarchy } from "services/makotools/localization";
 
 function RarityBadge({ card }: { card: GameCard }) {
   const theme = useMantineTheme();
@@ -71,6 +72,7 @@ export default function CardCard({
   lang,
   onEditCollection,
   onNewCollection,
+  gameRegion,
 }: {
   card: GameCard;
   cardOptions: any;
@@ -82,6 +84,7 @@ export default function CardCard({
     numCopies: number;
   }) => any;
   onNewCollection: () => any;
+  gameRegion: GameRegion;
 }) {
   const router = useRouter();
   const theme = useMantineTheme();
@@ -90,6 +93,13 @@ export default function CardCard({
 
   const statsIR = sumStats(card.stats?.ir);
   const statsIR4 = sumStats(card.stats?.ir4);
+
+  const [orderedTitle, orderedLang] = getTitleHierarchy(
+    card.title,
+    lang,
+    router.locale as Locale,
+    gameRegion
+  );
 
   return (
     <Card withBorder p={0}>
@@ -135,7 +145,7 @@ export default function CardCard({
                   ? `assets/card_still_full1_${card.id}_${type}.png` // 4-5 -> full cg
                   : `assets/card_rectangle4_${card.id}_${type}.png` // 1-3 -> frameless
               }
-              alt={card.title[0]}
+              alt={card.title[0] || "Card image"}
               radius={3}
               action="download"
             >
@@ -145,19 +155,32 @@ export default function CardCard({
         </Group>
       </Card.Section>
       <Card.Section px="sm" pt="xs">
-        <Text
-          size="sm"
-          weight="700"
-          component={Link}
-          href={`/cards/${card.id}`}
-        >
-          {`${card.title[0] ?? card.title[1]}`}&nbsp;
-          <OfficialityBadge langData={lang[0]} />
-        </Text>
-        {card.title[1] && (
+        {/* {JSON.stringify(orderedTitle)}
+        {JSON.stringify(orderedLang)} */}
+        {orderedTitle[0] && (
+          <Text
+            size="sm"
+            weight="700"
+            component={Link}
+            href={`/cards/${card.id}`}
+          >
+            {/* {`${orderedTitle[0]}`}&nbsp; */}
+            {/* above but separate ONLY last word into its own span */}
+            {orderedTitle[0].split(" ").slice(0, -1).join(" ")}&nbsp;
+            <Text span inherit sx={{ whiteSpace: "nowrap" }}>
+              {orderedTitle[0].split(" ").splice(-1)}&nbsp;
+              <OfficialityBadge
+                langData={orderedLang[0]}
+                names={card.title}
+                languages={lang}
+              />
+            </Text>
+          </Text>
+        )}
+        {orderedTitle[1] && (
           <Text size="xs" color="dimmed" weight="500">
-            {`${card.title[1]}`}&nbsp;
-            <OfficialityBadge langData={lang[1]} />
+            {`${orderedTitle[1]}`}&nbsp;
+            <OfficialityBadge langData={orderedLang[1]} />
           </Text>
         )}
       </Card.Section>

@@ -34,6 +34,7 @@ import { CardRarity, GameCard, GameCharacter } from "types/game";
 import { useCollections } from "services/makotools/collection";
 import SearchOptions from "components/core/SearchOptions";
 import useFSSList from "services/makotools/search";
+import useUser from "services/firebase/user";
 
 const CARD_LIST_INITIAL_COUNT = 20;
 
@@ -56,6 +57,7 @@ function Page({
   charactersQuery: QuerySuccess<GameCharacter[]>;
   cardsQuery: QuerySuccess<GameCard[]>;
 }) {
+  const user = useUser();
   const cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
   const characters = useMemo(
     () => charactersQuery.data,
@@ -330,6 +332,9 @@ function Page({
                 lang={cardsQuery.lang}
                 onEditCollection={onEditCollection}
                 onNewCollection={() => setNewCollectionModalOpened(true)}
+                gameRegion={
+                  (user.loggedIn && user.db.setting__game_region) || "en"
+                }
               />
             ))}
           </InfiniteScroll>
