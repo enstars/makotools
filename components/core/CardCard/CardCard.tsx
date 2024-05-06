@@ -22,7 +22,7 @@ import CardStatsNumber from "components/utilities/formatting/CardStatsNumber";
 import Picture from "components/core/Picture";
 import { CardCollection, Lang, Locale } from "types/makotools";
 import useUser from "services/firebase/user";
-import { GameCard, GameRegion, ID } from "types/game";
+import { GameCard, GameCharacter, GameRegion, ID } from "types/game";
 import { getTitleHierarchy } from "services/makotools/localization";
 
 function RarityBadge({ card }: { card: GameCard }) {
@@ -67,6 +67,7 @@ function RarityBadge({ card }: { card: GameCard }) {
 
 export default function CardCard({
   card,
+  character,
   cardOptions,
   collections,
   lang,
@@ -75,6 +76,7 @@ export default function CardCard({
   gameRegion,
 }: {
   card: GameCard;
+  character: GameCharacter;
   cardOptions: any;
   collections: CardCollection[] | undefined;
   lang: Lang[];
@@ -254,7 +256,7 @@ export default function CardCard({
                   inherit
                   color="dimmed"
                   sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
-                >{`${card?.name?.[0]?.split(" ")?.[0]}`}</Text>
+                >{`${character.first_name[0]}`}</Text>
               </Text>
             ) : (
               <Box />

@@ -327,6 +327,11 @@ function Page({
               <CardCard
                 key={e.id}
                 card={e}
+                character={
+                  characters.find(
+                    (c) => c.character_id === e.character_id
+                  ) as GameCharacter
+                }
                 cardOptions={cardOptions}
                 collections={collections}
                 lang={cardsQuery.lang}

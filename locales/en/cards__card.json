@@ -28,6 +28,8 @@
   "obtain": {
     "associatedEvent": "Associated Event",
     "associatedScout": "Associated Scout",
-    "moreDetails": "More Details"
+    "moreDetails": "More Details",
+    "eventMethod": "Event",
+    "scoutMethod": "Scout"
   }
 }

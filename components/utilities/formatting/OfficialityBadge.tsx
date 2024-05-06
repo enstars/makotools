@@ -20,7 +20,7 @@ function OfficialityBadge({
   }, [user]);
 
   const tooltipLabel = useMemo(() => {
-    if (names && languages) {
+    if (names && languages && names.filter(Boolean).length > 2) {
       return (
         <Stack spacing={4}>
           {languages.map((lang, i) => (

@@ -1,9 +1,17 @@
 import React from "react";
-import { Group, AspectRatio, Badge, Divider, Anchor } from "@mantine/core";
+import {
+  Group,
+  AspectRatio,
+  Badge,
+  Divider,
+  Text,
+  Anchor,
+} from "@mantine/core";
 import { IconStar } from "@tabler/icons-react";
 import useTranslation from "next-translate/useTranslation";
 import getT from "next-translate/getT";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import Stats from "./components/Stats";
 import Skills from "./components/Skills";
@@ -15,9 +23,8 @@ import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import attributes from "data/attributes.json";
 import Reactions from "components/sections/Reactions";
-import NameOrder from "components/utilities/formatting/NameOrder";
 import { getLocalizedNumber } from "components/utilities/formatting/CardStatsNumber";
-import { QuerySuccess } from "types/makotools";
+import { Locale, QuerySuccess } from "types/makotools";
 import Picture from "components/core/Picture";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import {
@@ -32,6 +39,9 @@ import {
   liveSkillParse,
   supportSkillParse,
 } from "services/skills";
+import NameOrder from "components/utilities/formatting/NameOrder";
+import { getTitleHierarchy } from "services/makotools/localization";
+import useUser from "services/firebase/user";
 
 function Page({
   characterQuery,
@@ -42,51 +52,63 @@ function Page({
   cardQuery: QuerySuccess<GameCard>;
   obtainMethodQuery: QuerySuccess<Event | Scout | null>;
 }) {
+  const router = useRouter();
   const { data: card } = cardQuery;
   const { data: character } = characterQuery;
   const obtainMethod = obtainMethodQuery?.data;
   console.log("obtain method: ", obtainMethod);
 
+  const user = useUser();
+
   const { t } = useTranslation("cards__card");
+
+  const [orderedTitle, orderedLang] = getTitleHierarchy(
+    card.title,
+    cardQuery.lang,
+    router.locale as Locale,
+    (user.loggedIn && user?.db?.setting__game_region) || "en"
+  );
 
   return (
     <>
-      {obtainMethod && obtainMethod !== null && (
-        <HowToObtain card={card} obtainCampaign={obtainMethod} />
-      )}
-      <PageTitle
-        title={
-          <>
-            ({card.title[0]}){" "}
-            <Anchor
-              component={Link}
-              href={`/characters/${character.character_id}`}
-            >
-              <NameOrder
-                {...character}
-                locale={characterQuery.lang[0].locale}
-              />
-            </Anchor>
-            <Group mt="sm" spacing="xs">
-              <Badge size="xl" color="yellow" sx={{ textTransform: "none" }}>
-                {card.rarity}
-                <IconStar
-                  size={13}
-                  strokeWidth={3}
-                  style={{ verticalAlign: -1 }}
-                />
-              </Badge>
-              <Badge
-                size="xl"
-                color={attributes[card.type].color}
-                sx={{ textTransform: "none" }}
-              >
-                {t(`${attributes[card.type].fullname}`)}
-              </Badge>
-            </Group>
-          </>
-        }
-      />
+      <PageTitle title={orderedTitle[0]} />
+      <Group mb="md" spacing="xs" align="center">
+        <Text size="xl" weight={700} color="dimmed">
+          {orderedTitle[1] && (
+            <>
+              {orderedTitle[1]}
+              {" · "}
+            </>
+          )}
+          <Anchor
+            component={Link}
+            href={`/characters/${character.character_id}`}
+          >
+            <NameOrder {...character} locale={characterQuery.lang[0].locale} />
+          </Anchor>
+        </Text>
+        <Badge size="lg" color="yellow" sx={{ textTransform: "none" }}>
+          {card.rarity}
+          <IconStar size={13} strokeWidth={3} style={{ verticalAlign: -1 }} />
+        </Badge>
+        <Badge
+          size="lg"
+          color={attributes[card.type].color}
+          sx={{ textTransform: "none" }}
+        >
+          {t(`${attributes[card.type].fullname}`)}
+        </Badge>
+        {card.obtain.type === "event" && (
+          <Badge size="lg" sx={{ textTransform: "none" }}>
+            {t("obtain.eventMethod")}
+          </Badge>
+        )}
+        {card.obtain.type === "gacha" && (
+          <Badge size="lg" sx={{ textTransform: "none" }}>
+            {t("obtain.scoutMethod")}
+          </Badge>
+        )}
+      </Group>
 
       <Group>
         {["normal", "evolution"].map((type) => (
@@ -104,12 +126,17 @@ function Page({
           </AspectRatio>
         ))}
       </Group>
+
+      <Reactions />
       <Stats card={card} />
       <Divider my="md" />
       <Skills card={card} />
       <Divider my="md" />
+      {obtainMethod && obtainMethod !== null && (
+        <HowToObtain card={card} obtainCampaign={obtainMethod} />
+      )}
+      <Divider my="md" />
       <Gallery card={card} />
-      <Reactions />
     </>
   );
 }
