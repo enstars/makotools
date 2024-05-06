@@ -1,4 +1,4 @@
-import { Divider, Paper, Text, useMantineTheme } from "@mantine/core";
+import { Paper, Text, useMantineTheme } from "@mantine/core";
 import {
   IconBook,
   IconCards,
@@ -106,10 +106,8 @@ function Page({
           />
         ))}
       </ResponsiveGrid>
-      <Divider my="md" />
       <SectionTitle title={t("story")} id="story" Icon={IconBook} />
       <Stories content={event} />
-      <Divider my="md" />
       {event.type !== "tour" && (
         <>
           <SectionTitle title={t("song")} id="song" Icon={IconVinyl} />
@@ -118,7 +116,6 @@ function Page({
               {t("comingSoon")}
             </Text>
           </Paper>
-          <Divider my="md" />
         </>
       )}
       {scout && (
