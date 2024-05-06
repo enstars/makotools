@@ -16,7 +16,7 @@
     "en": "Global (English)",
     "regionLabel": "Game Region",
     "regionDesc": "This setting currently does not have an effect on content yet.",
-    "regionDescNew": "Pick which game region to default event and card pages to.",
+    "regionDescNew": "Pick which game region to default event and scout pages to.",
     "regionPlaceholder": "Global (English) (Default)"
   },
   "appearance": {
