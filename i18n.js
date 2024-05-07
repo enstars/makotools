@@ -74,5 +74,6 @@ module.exports = {
     ],
     "/settings": ["settings"],
     "/[user]": ["user"],
+    "/bookmarks": ["bookmarks", "bookmarks__page", "campaigns", "regions"],
   },
 };

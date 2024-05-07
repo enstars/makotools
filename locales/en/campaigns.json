@@ -1,0 +1,36 @@
+{
+    "full": {
+        "event": {
+            "song": "Unit Song Event",
+            "tour": "Tour Event",
+            "shuffle": "Shuffle Event",
+            "special": "Special Event"
+        },
+        "scout": {
+            "scout": "Event Scout",
+            "feature": "Feature Scout"
+        }, 
+        "others": {
+            "birthday": "Birthday Campaign",
+            "anniversary": "Anniversary Campaign",
+            "other": "Other Campaign"
+        }
+    },
+    "short": {
+        "event": {
+            "song": "Unit Song",
+            "tour": "Tour",
+            "shuffle": "Shuffle",
+            "special": "Special"
+        },
+        "scout": {
+            "scout": "Event",
+            "feature": "Feature"
+        }, 
+        "others": {
+            "birthday": "Birthday",
+            "anniversary": "Anniversary",
+            "other": "Other"
+        }
+    }
+}
