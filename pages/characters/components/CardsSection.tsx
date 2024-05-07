@@ -10,6 +10,7 @@ import { GameCard, GameCharacter } from "types/game";
 import { CardCard } from "components/core/CardCard";
 import { useCollections } from "services/makotools/collection";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
+import useUser from "services/firebase/user";
 
 export function CardsSection({
   cards,
@@ -20,6 +21,7 @@ export function CardsSection({
   character: GameCharacter;
   lang: Lang[];
 }) {
+  const user = useUser();
   const theme = useMantineTheme();
   const { collections, onEditCollection, onNewCollection } = useCollections();
   const [newCollectionModalOpened, setNewCollectionModalOpened] =
@@ -136,6 +138,11 @@ export function CardsSection({
                         onEditCollection={onEditCollection}
                         onNewCollection={() =>
                           setNewCollectionModalOpened(true)
+                        }
+                        character={character}
+                        gameRegion={
+                          (user.loggedIn && user.db.setting__game_region) ||
+                          "en"
                         }
                       />
                     ))}
