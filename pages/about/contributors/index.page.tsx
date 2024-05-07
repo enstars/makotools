@@ -2,10 +2,10 @@ import { useMemo, useState } from "react";
 import { IconTool, IconTools } from "@tabler/icons-react";
 import { Stack, useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import SectionTitle from "pages/events/[id]/components/SectionTitle";
 
 import ContributorCard from "./components/ContributorCard";
 
+import SectionTitle from "pages/events/components/SectionTitle";
 import contributorsJSON from "data/contributors.json";
 import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";

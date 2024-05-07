@@ -1,8 +1,8 @@
 import { Box, Text } from "@mantine/core";
-import SectionTitle from "pages/events/[id]/components/SectionTitle";
 
 import CharacterCard from "./CharacterCard";
 
+import SectionTitle from "pages/events/components/SectionTitle";
 import { Lang } from "types/makotools";
 import { GameCharacter, GameUnit } from "types/game";
 import ResponsiveGrid from "components/core/ResponsiveGrid";

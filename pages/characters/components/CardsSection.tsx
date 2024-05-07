@@ -1,10 +1,10 @@
 import { Box, useMantineTheme, Text, Group, Accordion } from "@mantine/core";
 import { IconCards, IconStar, IconStarFilled } from "@tabler/icons-react";
 import { useState } from "react";
-import SectionTitle from "pages/events/[id]/components/SectionTitle";
 
 import { useCharacterColors } from "../[id].page";
 
+import SectionTitle from "pages/events/components/SectionTitle";
 import { Lang } from "types/makotools";
 import { GameCard, GameCharacter } from "types/game";
 import { CardCard } from "components/core/CardCard";

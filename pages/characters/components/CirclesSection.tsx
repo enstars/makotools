@@ -9,10 +9,10 @@ import {
 } from "@mantine/core";
 import { IconFriends } from "@tabler/icons-react";
 import Link from "next/link";
-import SectionTitle from "pages/events/[id]/components/SectionTitle";
 
 import { useCharacterColors } from "../[id].page";
 
+import SectionTitle from "pages/events/components/SectionTitle";
 import { GameCharacter } from "types/game";
 import Picture from "components/core/Picture";
 import ResponsiveGrid from "components/core/ResponsiveGrid";

@@ -1,11 +1,11 @@
 import { Box } from "@mantine/core";
-import SectionTitle from "pages/events/[id]/components/SectionTitle";
 import { IconAward, IconDiamond } from "@tabler/icons-react";
 
 import { useCharacterColors } from "../[id].page";
 
 import { EventScoutCard } from "./EventScoutCard";
 
+import SectionTitle from "pages/events/components/SectionTitle";
 import { GameCard, Event, Scout } from "types/game";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 
