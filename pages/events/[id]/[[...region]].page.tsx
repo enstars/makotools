@@ -21,7 +21,14 @@ import {
   getLocalizedDataArray,
 } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { GameCard, Event, GameUnit, Scout, GameRegion } from "types/game";
+import {
+  GameCard,
+  Event,
+  GameUnit,
+  Scout,
+  GameRegion,
+  GameCharacter,
+} from "types/game";
 import { QuerySuccess } from "types/makotools";
 import { CardCard } from "components/core/CardCard";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
@@ -34,18 +41,24 @@ function Page({
   scout,
   cardsQuery,
   unitsQuery,
+  charactersQuery,
   region,
 }: {
   event: Event;
   scout: Scout;
   cardsQuery: QuerySuccess<GameCard[]>;
   unitsQuery: QuerySuccess<GameUnit[]>;
+  charactersQuery: QuerySuccess<GameCharacter[]>;
   region: GameRegion;
 }) {
   const { t } = useTranslation("events__event");
   const theme = useMantineTheme();
   let allCards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
   let allUnits = useMemo(() => unitsQuery.data, [unitsQuery.data]);
+  let allCharacters = useMemo(
+    () => charactersQuery.data,
+    [charactersQuery.data]
+  );
   const { collections, onEditCollection, onNewCollection } = useCollections();
   const [newCollectionModalOpened, setNewCollectionModalOpened] =
     useState<boolean>(false);
@@ -103,6 +116,12 @@ function Page({
             lang={cardsQuery.lang}
             onEditCollection={onEditCollection}
             onNewCollection={() => setNewCollectionModalOpened(true)}
+            character={
+              allCharacters.find(
+                (char) => char.character_id === card.character_id
+              ) as GameCharacter
+            }
+            gameRegion={region}
           />
         ))}
       </ResponsiveGrid>
@@ -221,6 +240,13 @@ export const getServerSideProps = getServerSideUser(
       "character_id",
     ]);
 
+    const characters = await getLocalizedDataArray(
+      "characters",
+      locale,
+      "character_id",
+      ["character_id", "first_name"]
+    );
+
     const event = getEvent.data;
     const scout = getScout.data;
     const title = event.name[0];
@@ -232,6 +258,7 @@ export const getServerSideProps = getServerSideUser(
         scout: scout,
         cardsQuery: cards,
         unitsQuery: getUnits,
+        charactersQuery: characters,
         title,
         breadcrumbs,
         bookmarkId: event.event_id,

@@ -66,6 +66,12 @@ function Page({
             lang={cardsQuery.lang}
             onEditCollection={onEditCollection}
             onNewCollection={() => setNewCollectionModalOpened(true)}
+            character={
+              characters.find(
+                (character) => character.character_id === card.character_id
+              ) as GameCharacter
+            }
+            gameRegion={region}
           />
         ))}
       </ResponsiveGrid>
