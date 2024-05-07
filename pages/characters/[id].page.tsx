@@ -4,7 +4,6 @@ import { IconCake, IconStar } from "@tabler/icons-react";
 import { Fragment, createContext, useContext, useState } from "react";
 import { useMediaQuery } from "@mantine/hooks";
 import { Parallax, ParallaxProvider } from "react-scroll-parallax";
-import SectionTitle from "pages/events/[id]/components/SectionTitle";
 
 import { CirclesSection } from "./components/CirclesSection";
 import { CardsSection } from "./components/CardsSection";
@@ -14,6 +13,7 @@ import { ProfileSummary } from "./components/ProfileSummary";
 import { CharaRender } from "./components/CharaRender";
 import { ParallaxCacheUpdater } from "./components/ParallaxCacheUpdater";
 
+import SectionTitle from "pages/events/components/SectionTitle";
 import { getLayout } from "components/Layout";
 import { QuerySuccess } from "types/makotools";
 import getServerSideUser from "services/firebase/getServerSideUser";
