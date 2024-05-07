@@ -60,9 +60,10 @@ export function CharaRender(
       >
         <Parallax speed={-10}>
           <Picture
+            loading="eager"
             srcB2={`render/character_full1_${character.character_id}.png`}
             transparent
-            alt={character.first_name[0]}
+            alt={character.first_name[0] || "Character render"}
             fill={false}
             width={renderHeight}
             height={renderHeight}

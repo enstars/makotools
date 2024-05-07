@@ -103,14 +103,14 @@ const useStyles = createStyles(
       borderRadius: radius,
       objectFit: "cover",
       maxWidth: "100%",
-      opacity: 0,
+      // opacity: 0.01,
       transition: theme.other.transition,
       "&.no-animation": {
         transition: "none",
       },
     },
     loadedImg: {
-      opacity: 1,
+      // opacity: 1,
     },
     radius: {
       borderRadius: radius,
