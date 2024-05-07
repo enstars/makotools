@@ -257,7 +257,7 @@ function Page({
                         sx={{ display: "inline-flex" }}
                       >
                         <IconDiamond size={16} />
-                        {t("event")}
+                        {t("campaigns:full.scout.scout")}
                       </Group>
                     ),
                   },
@@ -270,7 +270,7 @@ function Page({
                         sx={{ display: "inline-flex" }}
                       >
                         <IconComet size={16} />
-                        {t("feature")}
+                        {t("campaigns:full.scout.feature")}
                       </Group>
                     ),
                   },

@@ -23,6 +23,7 @@ import {
 } from "@tabler/icons-react";
 import { useLocalStorage, useMediaQuery } from "@mantine/hooks";
 import useTranslation from "next-translate/useTranslation";
+import Trans from "next-translate/Trans";
 
 import { getLayout } from "components/Layout";
 import { getLocalizedDataArray } from "services/data";
@@ -42,26 +43,45 @@ import { SelectItemForwardRef } from "pages/settings/shared/SelectSetting";
 
 type SortOption = "alpha" | "type" | "date";
 
-function BookmarkedCard({ campaign }: { campaign: Event | Scout }) {
+function BookmarkedCard({
+  campaign,
+  region,
+}: {
+  campaign: Event | Scout;
+  region: GameRegion;
+}) {
   const { dayjs } = useDayjs();
   const { t } = useTranslation("bookmarks__page");
   const theme = useMantineTheme();
   const [countdownAmt, setCountdownAmt] = useState<string>();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
+  const startDate = useMemo(
+    () => campaign.start[region] || 0,
+    [campaign, dayjs, region]
+  );
+  const endDate = useMemo(
+    () => campaign.end[region] || 0,
+    [campaign, dayjs, region]
+  );
+  const datesUnknown = useMemo(
+    () => startDate === 0 || endDate === 0,
+    [startDate, endDate]
+  );
+
   useEffect(() => {
-    if (dayjs(campaign.end.en).isBefore(dayjs())) {
+    if (datesUnknown) {
+      setCountdownAmt(t("countdown.unknown"));
+    } else if (dayjs(endDate).isBefore(dayjs())) {
       setCountdownAmt(t("countdown.ended"));
-    } else if (
-      dayjs().isBetween(dayjs(campaign.start.en), dayjs(campaign.end.en))
-    ) {
+    } else if (dayjs().isBetween(dayjs(startDate), dayjs(endDate))) {
       setCountdownAmt(
         t("countdown.ongoing", {
-          end: dayjs(campaign.end.en).format("ll"),
+          end: dayjs(endDate).format("ll"),
         })
       );
     } else {
-      let ctdwn = countdown(new Date(campaign.start.en), new Date());
+      let ctdwn = countdown(new Date(startDate), new Date());
       const d = Math.floor(ctdwn / 86400000);
       const h = Math.floor((ctdwn % 86400000) / 3600000);
 
@@ -79,7 +99,7 @@ function BookmarkedCard({ campaign }: { campaign: Event | Scout }) {
         );
       }
     }
-  }, [campaign.start.en, campaign.end.en, dayjs, t]);
+  }, [startDate, endDate, dayjs, t, datesUnknown]);
 
   return (
     <Card withBorder sx={{ position: "relative" }} p="md">
@@ -117,7 +137,9 @@ function BookmarkedCard({ campaign }: { campaign: Event | Scout }) {
                     : "green"
                 }
               >
-                {campaign.type}
+                {campaign.type === "scout" || campaign.type === "feature scout"
+                  ? t(`campaigns:short.scout.${campaign.type}`)
+                  : t(`campaigns:short.event.${campaign.type}`)}
               </Badge>
               <Text
                 sx={(theme) => ({
@@ -149,10 +171,17 @@ function BookmarkedCard({ campaign }: { campaign: Event | Scout }) {
           {campaign.name[0]}
         </Anchor>
         <Text size="sm" color="dimmed" weight={500}>
-          Starts on{" "}
-          <Text span weight={700}>
-            {dayjs(campaign.start.en).format("ll")}
-          </Text>
+          {datesUnknown ? (
+            t("campaignStartsUnknown")
+          ) : (
+            <Trans
+              i18nKey="bookmarks__page:campaignStarts"
+              components={[<Text weight={700} key={0} />]}
+              values={{
+                date: dayjs(startDate || 0).format("ll"),
+              }}
+            />
+          )}
         </Text>
       </Stack>
     </Card>
@@ -268,7 +297,8 @@ function Page({
           label: t("search.sortByEventDate"),
           value: "date",
           function: (a: Event, b: Event) =>
-            dayjs(a.start.jp).unix() - dayjs(b.start.jp).unix(),
+            dayjs(a.start[viewOptions.region] || 0).unix() -
+            dayjs(b.start[viewOptions.region] || 0).unix(),
         },
       ],
       baseSort: "id",
@@ -482,7 +512,13 @@ function Page({
             ) : (
               <ResponsiveGrid width={180}>
                 {results.map((bm: Event | Scout, i: number) => {
-                  return <BookmarkedCard key={i} campaign={bm} />;
+                  return (
+                    <BookmarkedCard
+                      key={i}
+                      campaign={bm}
+                      region={viewOptions.region}
+                    />
+                  );
                 })}
               </ResponsiveGrid>
             )}

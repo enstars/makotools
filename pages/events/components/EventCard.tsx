@@ -184,7 +184,7 @@ function EventCard({
                   </Box>
                 }
               >
-                {t(event.type)}
+                {t(`campaigns:short.event.${event.type}`)}
               </Badge>
 
               {eventUnits.map((unit) => (

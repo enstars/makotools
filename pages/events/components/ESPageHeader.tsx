@@ -82,11 +82,9 @@ function ESPageHeader({
             </Box>
           }
         >
-          {t(
-            `events:${
-              content.type === "feature scout" ? "featureScout" : content.type
-            }`
-          )}
+          {content.type === "feature scout" || content.type === "scout"
+            ? t(`campaigns:full.scout.${content.type}`)
+            : t(`campaigns:full.event.${content.type}`)}
         </Badge>
         {(content.type === "scout" || content.type === "feature scout") &&
           dayjs().isAfter(dayjs(startTime).add(3, "M")) && (

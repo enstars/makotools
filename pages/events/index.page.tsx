@@ -8,6 +8,7 @@ import {
   MultiSelect,
   SegmentedControl,
   Select,
+  Text,
   Tooltip,
   useMantineTheme,
 } from "@mantine/core";
@@ -114,12 +115,12 @@ function Page({
       ],
       sorts: [
         {
-          label: t("search.eventId"),
+          label: t("search.sortByEventID"),
           value: "id",
           function: (a: Event, b: Event) => a.event_id - b.event_id,
         },
         {
-          label: t("search.eventDate"),
+          label: t("search.sortByEventDate"),
           value: "date",
           function: (a: Event, b: Event) =>
             dayjs(a.start.jp).unix() - dayjs(b.start.jp).unix(),
@@ -294,9 +295,12 @@ function Page({
                 spacing={3}
               >
                 {[
-                  { value: "song", label: t("song") },
-                  { value: "tour", label: t("tour") },
-                  { value: "shuffle", label: t("shuffle") },
+                  { value: "song", label: t("campaigns:full.event.song") },
+                  { value: "tour", label: t("campaigns:full.event.tour") },
+                  {
+                    value: "shuffle",
+                    label: t("campaigns:full.event.shuffle"),
+                  },
                 ].map((r) => (
                   <Chip
                     key={r.value}
@@ -374,15 +378,21 @@ function Page({
         }
       />
       <ResponsiveGrid width={viewOptions.density === "full" ? "1fr" : 300}>
-        {results.map((event) => (
-          <EventCard
-            key={event.event_id}
-            event={event}
-            units={units}
-            region={viewOptions.region}
-            density={viewOptions.density}
-          />
-        ))}
+        {results.length > 0 ? (
+          results.map((event) => (
+            <EventCard
+              key={event.event_id}
+              event={event}
+              units={units}
+              region={viewOptions.region}
+              density={viewOptions.density}
+            />
+          ))
+        ) : (
+          <Center>
+            <Text color="dimmed">{t("search.noMatch")}</Text>
+          </Center>
+        )}
       </ResponsiveGrid>
     </>
   );
