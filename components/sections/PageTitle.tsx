@@ -1,18 +1,24 @@
 import { Box, Title } from "@mantine/core";
 import { ReactElement } from "react";
 
+import { RegionSwitcher } from "./RegionInfo";
+
+import { GameRegion } from "types/game";
+
 function PageTitle({
   title = "",
   children = <></>,
   space = 64,
   mb = 8,
   sx,
+  region,
 }: {
   title?: string | ReactElement;
   children?: ReactElement;
   space?: number;
   mb?: number;
   sx?: any;
+  region?: GameRegion;
 }) {
   return (
     <Box sx={[{ position: "relative", overflow: "hidden" }, sx]}>
@@ -24,6 +30,7 @@ function PageTitle({
         sx={{ zIndex: 10, position: "relative" }}
         inherit
       >
+        {region && <RegionSwitcher region={region} />}
         {title}
       </Title>
     </Box>

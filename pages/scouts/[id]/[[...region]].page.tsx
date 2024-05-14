@@ -52,8 +52,12 @@ function Page({
 
   return (
     <>
+      <PageTitle
+        title={scout.name[0]}
+        sx={{ flex: "1 0 80%" }}
+        region={region}
+      />
       <RegionInfo region={region} />
-      <PageTitle title={scout.name[0]} sx={{ flex: "1 0 80%" }} />
       <ESPageHeader content={scout} region={region} />
       <SectionTitle title="Cards" id="cards" Icon={IconCards} />
       <ResponsiveGrid width={224}>
