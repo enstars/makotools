@@ -357,7 +357,7 @@ export interface EventStrings<T> extends CampaignStrings<T> {
 
 export interface Event<T = string[]> extends CampaignInfo, EventStrings<T> {
   event_id: ID;
-  gacha_id: ID;
+  gacha_id: ID | ID[];
   unit_id?: ID[];
   cards: ID[];
   type: EventType;
@@ -383,6 +383,8 @@ export interface Scout<T = string[]> extends CampaignInfo, ScoutStrings<T> {
   cards: ID[];
 
   type: ScoutType;
+  /** Related cross scout if scout is a cross scout */
+  related_id?: ID;
 }
 
 export interface BirthdayStrings<T> extends CampaignStrings<T> {}

@@ -256,7 +256,7 @@ export default function CardCard({
                   inherit
                   color="dimmed"
                   sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
-                >{`${character.first_name[0]}`}</Text>
+                >{`${character?.first_name[0] ?? ""}`}</Text>
               </Text>
             ) : (
               <Box />

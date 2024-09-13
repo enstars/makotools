@@ -13,11 +13,13 @@ import ESPageHeader from "../components/ESPageHeader";
 import PointsTable from "../components/PointsTable";
 import Stories from "../components/Stories";
 import SectionTitle from "../components/SectionTitle";
+import ScoutPointsSummary from "../components/ScoutPointsSummary";
 
 import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import {
   getItemFromLocalizedDataArray,
+  getItemsFromLocalizedDataArray,
   getLocalizedDataArray,
 } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
@@ -38,14 +40,14 @@ import RegionInfo from "components/sections/RegionInfo";
 
 function Page({
   event,
-  scout,
+  scouts,
   cardsQuery,
   unitsQuery,
   charactersQuery,
   region,
 }: {
   event: Event;
-  scout: Scout;
+  scouts: Scout[];
   cardsQuery: QuerySuccess<GameCard[]>;
   unitsQuery: QuerySuccess<GameUnit[]>;
   charactersQuery: QuerySuccess<GameCharacter[]>;
@@ -137,22 +139,24 @@ function Page({
           </Paper>
         </>
       )}
-      {scout && (
-        <>
-          <SectionTitle
-            title={t("scoutTitle", { scout: scout.name[0] })}
-            id="scout"
-            Icon={IconDiamond}
-          />
-          <PointsTable
-            id={scout.gacha_id}
-            type={event.type}
-            eventName={event.name[0]}
-            scoutName={scout.name[0]}
-            banner={scout.banner_id}
-          />
-        </>
-      )}
+      {scouts &&
+        scouts.map((s: Scout) => (
+          <>
+            <SectionTitle
+              title={t("scoutTitle", { scout: s.name[0] })}
+              id="scout"
+              Icon={IconDiamond}
+            />
+            <ScoutPointsSummary
+              id={s.gacha_id}
+              type={event.type}
+              eventName={event.name[0]}
+              scoutName={s.name[0]}
+              banner={s.banner_id}
+            />
+          </>
+        ))}
+      {scouts && <PointsTable />}
       <NewCollectionModal
         // use key to reset internal form state on close
         key={JSON.stringify(newCollectionModalOpened)}
@@ -215,13 +219,16 @@ export const getServerSideProps = getServerSideUser(
       "gacha_id"
     );
 
-    const getScout = getItemFromLocalizedDataArray<Scout>(
+    const getScoutsArray = getItemsFromLocalizedDataArray<Scout>(
       getScouts,
-      getEvent.data.gacha_id as number,
+      !getEvent.data.gacha_id.length
+        ? [+getEvent.data.gacha_id]
+        : getEvent.data.gacha_id,
       "gacha_id"
     );
 
-    if (getScout.status === "error") return { notFound: true };
+    if (getScoutsArray.every((scout) => scout.status === "error"))
+      return { notFound: true };
 
     const getUnits = await getLocalizedDataArray("units", locale, "id");
 
@@ -248,14 +255,16 @@ export const getServerSideProps = getServerSideUser(
     );
 
     const event = getEvent.data;
-    const scout = getScout.data;
+    const scouts = getScoutsArray
+      .map((scout) => scout.data)
+      .filter((scout) => scout !== null);
     const title = event.name[0];
     const breadcrumbs = ["events", title];
 
     return {
       props: {
         event: event,
-        scout: scout,
+        scouts: scouts,
         cardsQuery: cards,
         unitsQuery: getUnits,
         charactersQuery: characters,

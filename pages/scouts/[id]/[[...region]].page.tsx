@@ -21,6 +21,7 @@ import ResponsiveGrid from "components/core/ResponsiveGrid";
 import { useCollections } from "services/makotools/collection";
 import NewCollectionModal from "pages/cards/components/NewCollectionModal";
 import RegionInfo from "components/sections/RegionInfo";
+import ScoutPointsSummary from "pages/events/components/ScoutPointsSummary";
 
 function Page({
   scout,
@@ -91,22 +92,21 @@ function Page({
           <Divider my="md" />
         </>
       )}
-      {scout.type === "scout" && (
-        <>
-          {event && (
-            <>
-              <SectionTitle title="Event" id="event" Icon={IconMedal} />
-              <PointsTable
-                id={event.event_id}
-                type={scout.type}
-                eventName={event.name[0]}
-                scoutName={scout.name[0]}
-                banner={event.banner_id}
-              />
-            </>
-          )}
-        </>
-      )}
+      <>
+        {event && (
+          <>
+            <SectionTitle title="Event" id="event" Icon={IconMedal} />
+            <ScoutPointsSummary
+              id={event.event_id}
+              type={scout.type}
+              eventName={event.name[0]}
+              scoutName={scout.name[0]}
+              banner={event.banner_id}
+            />
+            <PointsTable />
+          </>
+        )}
+      </>
       <NewCollectionModal
         // use key to reset internal form state on close
         key={JSON.stringify(newCollectionModalOpened)}
