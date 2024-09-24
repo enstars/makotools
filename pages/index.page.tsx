@@ -29,11 +29,12 @@ import CurrentEventCountdown from "components/Homepage/CurrentEventCountdown";
 import CurrentScoutsCountdown from "components/Homepage/CurrentScoutsCountdown";
 import SiteAnnouncements from "components/Homepage/SiteAnnouncements";
 import UserVerification from "components/Homepage/UserVerification";
-import { MakoPost, QuerySuccess, StrapiItem } from "types/makotools";
+import { Locale, MakoPost, QuerySuccess, StrapiItem } from "types/makotools";
 import { createBirthdayData } from "services/campaigns";
 import { fetchOceans } from "services/makotools/posts";
 import RecommendedCountdown from "components/Homepage/RecommendedCountdown";
 import useUser from "services/firebase/user";
+import { getNameOrderSetting } from "components/utilities/formatting/NameOrder";
 
 const MOBILE_BREAKPOINT = "md";
 const useStyles = createStyles((theme, _params) => ({
@@ -107,7 +108,7 @@ function Page({
   cardsQuery,
   unitsQuery,
 }: {
-  locale: string | undefined;
+  locale: Locale;
   posts: StrapiItem<MakoPost>[];
   charactersQuery: QuerySuccess<GameCharacter[]>;
   gameEventsQuery: QuerySuccess<Event[]>;
@@ -131,7 +132,11 @@ function Page({
 
   const units: GameUnit[] = useMemo(() => unitsQuery.data, [unitsQuery.data]);
 
-  const birthdays: Birthday[] = createBirthdayData(characters);
+  const birthdays: Birthday[] = createBirthdayData(
+    characters,
+    getNameOrderSetting(user),
+    locale
+  );
   const gameEvents: Event[] = useMemo(
     () => gameEventsQuery.data,
     [gameEventsQuery.data]

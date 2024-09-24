@@ -1,5 +1,6 @@
 import { Box } from "@mantine/core";
 import { IconAward, IconDiamond } from "@tabler/icons-react";
+import { isArray } from "lodash";
 
 import { useCharacterColors } from "../[id].page";
 
@@ -34,7 +35,13 @@ export function EventsScoutsSection({
           )[0];
           return (
             <EventScoutCard
-              key={type === "events" ? event.event_id : event.gacha_id}
+              key={
+                type === "events"
+                  ? event.event_id
+                  : isArray(event.gacha_id)
+                  ? event.gacha_id[0]
+                  : event.gacha_id
+              }
               event={event}
               card={correspondingCard}
             />
