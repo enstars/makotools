@@ -73,7 +73,7 @@ function EditProfileModal({
   user: User;
   profile: UserData;
   profileState: EditingProfile | undefined;
-  setProfileState: Dispatch<SetStateAction<any>>;
+  setProfileState: Dispatch<SetStateAction<EditingProfile>>;
   characters: GameCharacter[];
   units: GameUnit[];
   locale: Locale;
@@ -112,11 +112,7 @@ function EditProfileModal({
             <Text weight={700}>{t("banner")}</Text>
           </Accordion.Control>
           <Accordion.Panel>
-            <Banner
-              cards={cards}
-              externalSetter={setProfileState}
-              profileState={profileState}
-            />
+            <Banner cards={cards} externalSetter={setProfileState} />
           </Accordion.Panel>
         </Accordion.Item>
         <Accordion.Item value="details">

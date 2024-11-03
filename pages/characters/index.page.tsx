@@ -52,12 +52,15 @@ function Page({
   const theme = useMantineTheme();
 
   const descendingNum = viewOptions.sortDescending ? -1 : 1;
-  const SORT_FUNCTIONS: { [key in SortOption]: any } = {
-    default: (a: any, b: any) => (a.sort_id - b.sort_id) * descendingNum,
-    id: (a: any, b: any) => (a.id - b.id) * descendingNum,
-    birthday: (a: any, b: any) =>
-      a.birthday.localeCompare(b.birthday) * descendingNum,
-  };
+  const SORT_FUNCTIONS = useMemo(
+    () => ({
+      default: (a: any, b: any) => (a.sort_id - b.sort_id) * descendingNum,
+      id: (a: any, b: any) => (a.id - b.id) * descendingNum,
+      birthday: (a: any, b: any) =>
+        a.birthday.localeCompare(b.birthday) * descendingNum,
+    }),
+    [descendingNum]
+  );
 
   useEffect(() => {
     let filteredList: GameCharacter[] = characters
@@ -73,7 +76,7 @@ function Page({
       .sort(SORT_FUNCTIONS["id"])
       .sort(SORT_FUNCTIONS[viewOptions.sortOption]);
     setListCharacters(filteredList);
-  }, [viewOptions]);
+  }, [viewOptions, SORT_FUNCTIONS, characters]);
 
   const handleNewUnit = (e: string[]) => {
     setViewOptions((v) => ({ ...v, filterUnits: e.map((u) => parseInt(u)) }));

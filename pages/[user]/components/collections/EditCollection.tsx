@@ -65,7 +65,7 @@ function EditCollection({
   );
   useEffect(() => {
     handlers.setItemProp(index, "cards", cards);
-  }, [cards, index]);
+  }, [cards, index, handlers]);
 
   const NUM_COLS = Math.floor((width - 24) / 120);
 

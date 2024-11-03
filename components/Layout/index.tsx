@@ -4,7 +4,6 @@ import {
   Container,
   Loader,
   Paper,
-  Text,
   useMantineTheme,
 } from "@mantine/core";
 import { useToggle } from "@mantine/hooks";
@@ -133,6 +132,7 @@ function Layout({
                     breadcrumbs={pageProps?.breadcrumbs}
                     hideHeadBreadcrumb={hideHeadBreadcrumb}
                     headerProps={headerProps}
+                    bookmarkId={pageProps?.bookmarkId}
                   />
                 )}
                 {Component}

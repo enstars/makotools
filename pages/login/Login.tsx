@@ -34,18 +34,6 @@ function Login() {
   const router = useRouter();
   const user = useUser();
 
-  useEffect(() => {
-    if (!user.loading && user.loggedIn) {
-      router.push("/");
-    }
-
-    return () => {
-      if (isRegister && user.loggedIn) {
-        user.db.set({ name: form.values.name }, () => {});
-      }
-    };
-  }, [user, router]);
-
   function signOnAlertMsg(error: { type: string; code?: string }) {
     const { code } = error;
     let message;
@@ -113,6 +101,18 @@ function Login() {
           : "You must agree to the Terms of Service",
     },
   });
+
+  useEffect(() => {
+    if (!user.loading && user.loggedIn) {
+      router.push("/");
+    }
+
+    return () => {
+      if (isRegister && user.loggedIn) {
+        user.db.set({ name: form.values.name }, () => {});
+      }
+    };
+  }, [user, router, form, isRegister]);
 
   return (
     <Container

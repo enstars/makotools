@@ -5,6 +5,7 @@ import { useMediaQuery } from "@mantine/hooks";
 
 import ContributorCard from "./components/ContributorCard";
 
+import SectionTitle from "pages/events/components/SectionTitle";
 import contributorsJSON from "data/contributors.json";
 import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
@@ -12,7 +13,6 @@ import ResponsiveGrid from "components/core/ResponsiveGrid";
 import useUser from "services/firebase/user";
 import { Contributor, UserData } from "types/makotools";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import SectionTitle from "pages/events/components/SectionTitle";
 
 const contributors = contributorsJSON as Contributor[];
 

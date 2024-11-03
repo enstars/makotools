@@ -13,11 +13,13 @@ function HeaderApp({
   breadcrumbs,
   hideHeadBreadcrumb,
   headerProps,
+  bookmarkId,
 }: {
   getBreadcrumbs: (path: string) => string[];
   breadcrumbs: string[];
   hideHeadBreadcrumb: boolean;
   headerProps: any;
+  bookmarkId?: number;
 }) {
   const [scroll] = useWindowScroll();
   const [opened, setOpened] = useState(false);
@@ -104,6 +106,7 @@ function HeaderApp({
                   getBreadcrumbs={getBreadcrumbs}
                   breadcrumbs={breadcrumbs}
                   setOpened={setOpened}
+                  bookmarkId={bookmarkId}
                 />
               </Header>
             </Box>
@@ -116,6 +119,7 @@ function HeaderApp({
           breadcrumbs={breadcrumbs}
           setOpened={setOpened}
           headerProps={headerProps}
+          bookmarkId={bookmarkId}
         />
       )}
     </>

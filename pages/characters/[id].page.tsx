@@ -13,6 +13,7 @@ import { ProfileSummary } from "./components/ProfileSummary";
 import { CharaRender } from "./components/CharaRender";
 import { ParallaxCacheUpdater } from "./components/ParallaxCacheUpdater";
 
+import SectionTitle from "pages/events/components/SectionTitle";
 import { getLayout } from "components/Layout";
 import { QuerySuccess } from "types/makotools";
 import getServerSideUser from "services/firebase/getServerSideUser";
@@ -31,7 +32,6 @@ import {
 } from "services/utilities";
 import useUser from "services/firebase/user";
 import NameOrder from "components/utilities/formatting/NameOrder";
-import SectionTitle from "pages/events/components/SectionTitle";
 
 const CharacterColorsContext = createContext({
   primary: "",

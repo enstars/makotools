@@ -1,39 +1,34 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   ActionIcon,
+  Anchor,
   Badge,
   Box,
   Card,
+  Center,
   Chip,
   Group,
   Input,
-  Paper,
   Select,
   Stack,
   Text,
-  TextInput,
   Tooltip,
   useMantineTheme,
 } from "@mantine/core";
 import Link from "next/link";
 import {
   IconArrowsSort,
-  IconCalendarDue,
-  IconSearch,
   IconSortAscending,
   IconSortDescending,
 } from "@tabler/icons-react";
-import {
-  useDebouncedValue,
-  useLocalStorage,
-  useMediaQuery,
-} from "@mantine/hooks";
-import fuzzysort from "fuzzysort";
+import { useLocalStorage, useMediaQuery } from "@mantine/hooks";
+import useTranslation from "next-translate/useTranslation";
+import Trans from "next-translate/Trans";
 
 import { getLayout } from "components/Layout";
 import { getLocalizedDataArray } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { Event, EventType, ID, Scout, ScoutType } from "types/game";
+import { Event, GameRegion, ID, Scout } from "types/game";
 import { QuerySuccess } from "types/makotools";
 import PageTitle from "components/sections/PageTitle";
 import useUser from "services/firebase/user";
@@ -41,107 +36,168 @@ import ResponsiveGrid from "components/core/ResponsiveGrid";
 import Picture from "components/core/Picture";
 import { useDayjs } from "services/libraries/dayjs";
 import { countdown } from "services/campaigns";
+import useFSSList from "services/makotools/search";
+import SearchOptions from "components/core/SearchOptions";
+import { gameRegions } from "pages/settings/content/Region";
+import { SelectItemForwardRef } from "pages/settings/shared/SelectSetting";
 
 type SortOption = "alpha" | "type" | "date";
 
-function BookmarkedCard({ campaign }: { campaign: Event | Scout }) {
+function BookmarkedCard({
+  campaign,
+  region,
+}: {
+  campaign: Event | Scout;
+  region: GameRegion;
+}) {
   const { dayjs } = useDayjs();
+  const { t } = useTranslation("bookmarks__page");
   const theme = useMantineTheme();
   const [countdownAmt, setCountdownAmt] = useState<string>();
   const isMobile = useMediaQuery("(max-width: 768px)");
+
+  const startDate = useMemo(
+    () => campaign.start[region] || 0,
+    [campaign, dayjs, region]
+  );
+  const endDate = useMemo(
+    () => campaign.end[region] || 0,
+    [campaign, dayjs, region]
+  );
+  const datesUnknown = useMemo(
+    () => startDate === 0 || endDate === 0,
+    [startDate, endDate]
+  );
+
   useEffect(() => {
-    if (dayjs(campaign.end.en).isBefore(dayjs())) {
-      setCountdownAmt("PAST");
-    } else if (
-      dayjs().isBetween(dayjs(campaign.start.en), dayjs(campaign.end.en))
-    ) {
-      setCountdownAmt("ONGOING");
+    if (datesUnknown) {
+      setCountdownAmt(t("countdown.unknown"));
+    } else if (dayjs(endDate).isBefore(dayjs())) {
+      setCountdownAmt(t("countdown.ended"));
+    } else if (dayjs().isBetween(dayjs(startDate), dayjs(endDate))) {
+      setCountdownAmt(
+        t("countdown.ongoing", {
+          end: dayjs(endDate).format("ll"),
+        })
+      );
     } else {
-      let ctdwn = countdown(new Date(campaign.start.en), new Date());
+      let ctdwn = countdown(new Date(startDate), new Date());
       const d = Math.floor(ctdwn / 86400000);
       const h = Math.floor((ctdwn % 86400000) / 3600000);
-      const m = Math.floor(((ctdwn % 86400000) % 3600000) / 60000);
-      const s = Math.floor((((ctdwn % 86400000) % 3600000) % 60000) / 1000);
-      setCountdownAmt(
-        d === 0 && h === 0 && m === 0
-          ? `${s} secs`
-          : d === 0 && h === 0
-          ? `${m} mins`
-          : d === 0
-          ? `${h} hrs`
-          : `${d} days`
-      );
+
+      if (d > 0) {
+        setCountdownAmt(
+          t("countdown.upcomingDays", {
+            count: d,
+          })
+        );
+      } else {
+        setCountdownAmt(
+          t("countdown.upcomingHours", {
+            count: h,
+          })
+        );
+      }
     }
-  }, [campaign.start.en]);
+  }, [startDate, endDate, dayjs, t, datesUnknown]);
 
   return (
-    <Card
-      withBorder
-      p={0}
-      mb={5}
-      component={Link}
-      href={`/${
-        campaign.type === "scout" || campaign.type === "feature scout"
-          ? "scouts"
-          : "events"
-      }/${
-        campaign.type === "scout" || campaign.type == "feature scout"
-          ? campaign.gacha_id
-          : campaign.event_id
-      }`}
-      sx={{ position: "relative" }}
-    >
-      <Group noWrap>
+    <Card withBorder sx={{ position: "relative" }} p="md">
+      <Card.Section>
         <Picture
           alt={campaign.name[0]}
           srcB2={`assets/card_still_full1_${campaign.banner_id}_evolution.webp`}
-          sx={{ width: isMobile ? 150 : 250, height: 120 }}
-        />
-        <Stack spacing={5} sx={{ width: isMobile ? 150 : 350 }}>
-          <Group>
-            <Badge
-              variant="filled"
-              color={
-                campaign.type === "scout"
-                  ? "grape"
-                  : campaign.type === "feature scout"
-                  ? "blue"
-                  : campaign.type === "tour"
-                  ? "yellow"
-                  : campaign.type === "shuffle"
-                  ? "teal"
-                  : "green"
-              }
-            >
-              {campaign.type}
-            </Badge>
-            <Badge leftSection={<IconCalendarDue size={14} />}>
-              {countdownAmt}
-            </Badge>
-          </Group>
-
-          <Text weight={700} lineClamp={isMobile ? 1 : 2}>
-            {campaign.name[0]}
-          </Text>
-          <Text>
-            Starts on{" "}
-            <Text
-              weight={700}
-              component="span"
-              sx={{
-                background: `${theme.colors.yellow[4]}55`,
-                padding: "2px 5px",
-                borderRadius: 10,
+          sx={{ width: "100%", height: 120 }}
+        >
+          <Center
+            sx={{
+              zIndex: 10,
+              position: "absolute",
+              width: "100%",
+              textAlign: "center",
+              bottom: 0,
+              background: "linear-gradient(to top, #000C, #0000)",
+              height: "75%",
+              alignItems: "flex-end",
+            }}
+          >
+            <Stack spacing={2} mb="xs" align="center">
+              <Badge
+                variant="filled"
+                size="sm"
+                color={
+                  campaign.type === "scout"
+                    ? "grape"
+                    : campaign.type === "feature scout"
+                    ? "blue"
+                    : campaign.type === "tour"
+                    ? "yellow"
+                    : campaign.type === "shuffle"
+                    ? "teal"
+                    : "green"
+                }
+              >
+                {campaign.type === "scout" || campaign.type === "feature scout"
+                  ? t(`campaigns:short.scout.${campaign.type}`)
+                  : t(`campaigns:short.event.${campaign.type}`)}
+              </Badge>
+              <Text
+                sx={(theme) => ({
+                  fontFamily: theme.headings.fontFamily,
+                })}
+                weight={900}
+                size="lg"
+              >
+                {countdownAmt}
+              </Text>
+            </Stack>
+          </Center>
+        </Picture>
+      </Card.Section>
+      <Stack spacing={5} pt="sm">
+        <Anchor
+          component={Link}
+          href={`/${
+            campaign.type === "scout" || campaign.type === "feature scout"
+              ? "scouts"
+              : "events"
+          }/${
+            campaign.type === "scout" || campaign.type == "feature scout"
+              ? campaign.gacha_id
+              : campaign.event_id
+          }`}
+          weight={700}
+        >
+          {campaign.name[0]}
+        </Anchor>
+        <Text size="sm" color="dimmed" weight={500}>
+          {datesUnknown ? (
+            t("campaignStartsUnknown")
+          ) : (
+            <Trans
+              i18nKey="bookmarks__page:campaignStarts"
+              components={[<Text weight={700} key={0} />]}
+              values={{
+                date: dayjs(startDate || 0).format("ll"),
               }}
-            >
-              {dayjs(campaign.start.en).format("MM/DD/YYYY")}
-            </Text>
-          </Text>
-        </Stack>
-      </Group>
+            />
+          )}
+        </Text>
+      </Stack>
     </Card>
   );
 }
+
+const defaultView = {
+  filters: {
+    types: [] as string[],
+  },
+  search: "",
+  sort: {
+    type: "date",
+    ascending: true,
+  },
+};
 
 function Page({
   eventsQuery,
@@ -150,12 +206,13 @@ function Page({
   eventsQuery: QuerySuccess<Event[]>;
   scoutsQuery: QuerySuccess<Scout[]>;
 }) {
+  const { dayjs } = useDayjs();
+  const { t } = useTranslation("bookmarks__page");
   const theme = useMantineTheme();
   const user = useUser();
 
   const events: Event[] = useMemo(() => eventsQuery.data, [eventsQuery.data]);
   const scouts: Scout[] = useMemo(() => scoutsQuery.data, [scoutsQuery.data]);
-  const isMobile = useMediaQuery("(max-width: 768px)");
 
   const bookmarkedEvents: ID[] = user.loggedIn
     ? user.db.bookmarks__events || []
@@ -173,163 +230,305 @@ function Page({
 
   const bookmarkedCampaigns = [...filteredEvents, ...filteredScouts];
 
-  interface BookmarkViewOptions {
-    filterType: (EventType | ScoutType)[];
-    searchQuery: string;
-    sortOption: SortOption;
-    sortDescending: boolean;
-  }
-
-  const VIEW_OPTIONS_DEFAULT: BookmarkViewOptions = {
-    filterType: [],
-    searchQuery: "",
-    sortOption: "date",
-    sortDescending: false,
-  };
-
-  const [viewOptions, setViewOptions] = useLocalStorage<BookmarkViewOptions>({
+  const [viewOptions, setViewOptions] = useLocalStorage({
     key: "bookmarkFilters",
-    defaultValue: VIEW_OPTIONS_DEFAULT,
+    defaultValue: {
+      region: (user.loggedIn && user.db.setting__game_region) || "en",
+    },
   });
 
-  const SORT_OPTIONS: { value: SortOption; label: string }[] = [
-    { value: "alpha", label: "Alphabetical" },
-    { value: "type", label: "Campaign type" },
-    { value: "date", label: "Start date" },
-  ];
+  const fssOptions = useMemo<
+    FSSOptions<Event<string[]> | Scout<string[]>, typeof defaultView.filters>
+  >(
+    () => ({
+      filters: [
+        // {
+        //   type: "units",
+        //   values: [],
+        //   function: (view) => {
+        //     return (c: Event) =>
+        //       view.filters.units.filter((value) => c.unit_id?.includes(value))
+        //         .length === view.filters.units.length;
+        //   },
+        // },
+        // {
+        //   type: "characters",
+        //   values: [],
+        //   function: (view) => {
+        //     return (c: Event) =>
+        //       view.filters.characters.filter((value: number) => {
+        //         return cards
+        //           .filter((card) => c.cards?.includes(card.id))
+        //           .map((card) => card.character_id)
+        //           .includes(value);
+        //       }).length > 0;
+        //   },
+        // },
+        {
+          type: "types",
+          values: [],
+          function: (view) => {
+            return (c) => view.filters.types.includes(c.type);
+          },
+        },
+      ],
+      sorts: [
+        {
+          label: t("search.sortByID"),
+          value: "id",
+          function: (a, b) => {
+            // events go before scouts
+            const aIsScout = a.type === "scout" || a.type === "feature scout";
+            const bIsScout = b.type === "scout" || b.type === "feature scout";
+            if (aIsScout && !bIsScout) return 1;
+            if (!aIsScout && bIsScout) return -1;
+            if (aIsScout && bIsScout) return a.gacha_id - b.gacha_id;
+            return (a as Event).event_id - (b as Event).event_id;
+          },
+        },
+        {
+          label: t("search.sortByAlphabetical"),
+          value: "alphabetical",
+          function: (a: Event, b: Event) => {
+            return a.name[0].localeCompare(b.name[0]);
+          },
+        },
+        {
+          label: t("search.sortByEventDate"),
+          value: "date",
+          function: (a: Event, b: Event) =>
+            dayjs(a.start[viewOptions.region] || 0).unix() -
+            dayjs(b.start[viewOptions.region] || 0).unix(),
+        },
+      ],
+      baseSort: "id",
+      search: {
+        fields: ["name.0", "name.1", "name.2"],
+      },
+      defaultView,
+    }),
+    [t, dayjs]
+  );
 
-  const [search, setSearch] = useState("");
-  const [debouncedSearch] = useDebouncedValue(search, 200);
+  const { results, view, setView } = useFSSList<
+    Event<string[]> | Scout<string[]>,
+    typeof defaultView.filters
+  >(bookmarkedCampaigns, fssOptions);
 
-  const descendingNum = viewOptions.sortDescending ? -1 : 1;
-
-  const SORT_FUNCTIONS = {
-    alpha: (a: any, b: any) => {
-      return a.name[0].localeCompare(b.name[0]) * descendingNum;
-    },
-    type: (a: any, b: any) => a.type.localeCompare(b.type) * descendingNum,
-    date: (a: any, b: any) =>
-      (new Date(a.start.en).getTime() - new Date(b.start.en).getTime()) *
-      descendingNum,
-  };
-
-  const [bookmarksList, setBookmarksList] = useState<(Event | Scout)[]>([]);
-
-  useEffect(() => {
-    let filteredBookmarks: (Event | Scout)[] = bookmarkedCampaigns.filter(
-      (b) => {
-        return viewOptions.filterType.length
-          ? viewOptions.filterType.includes(b.type)
-          : true;
-      }
-    );
-
-    const searchedList = fuzzysort.go(debouncedSearch, filteredBookmarks, {
-      keys: ["name.0", "name.1", "name.2"],
-      all: true,
-    });
-
-    const sortedBookmarks = [...searchedList]
-      .sort((a: any, b: any) => b.score - a.score)
-      .map((bm) => bm.obj)
-      .sort(SORT_FUNCTIONS[viewOptions.sortOption]);
-
-    setBookmarksList(sortedBookmarks);
-  }, [viewOptions, debouncedSearch]);
-
+  const hasBookmarks = bookmarkedCampaigns.length > 0;
   return (
     <>
       <PageTitle title="Bookmarks" />
-      <Box>
-        <Paper withBorder mb={20} p="md">
-          <Text weight={700} size="xs">
-            Filter options
-          </Text>
-          <Group align="flex-start">
-            <TextInput
-              label="Search"
-              placeholder="Type a campaign name..."
-              sx={{ maxWidth: 220 }}
-              variant="default"
-              icon={<IconSearch size="1em" />}
-              onChange={(ev) => {
-                setSearch(ev.target.value);
-              }}
-            />
-            <Select
-              label="Sort by"
-              data={SORT_OPTIONS}
-              value={viewOptions.sortOption}
-              icon={<IconArrowsSort size="1em" />}
-              onChange={(val: SortOption) => {
-                if (val) setViewOptions({ ...viewOptions, sortOption: val });
-              }}
-              rightSection={
-                <Tooltip label="Toggle ascending/descending">
-                  <ActionIcon
-                    onClick={() => {
-                      setViewOptions((v) => ({
-                        ...viewOptions,
-                        sortDescending: !v.sortDescending,
+      {hasBookmarks ? (
+        <>
+          <SearchOptions
+            searchProps={{
+              placeholder: t("search.searchPlaceholder"),
+              value: view.search,
+              onChange: (event) => {
+                setView((v) => ({
+                  ...v,
+                  search: event.target.value,
+                }));
+              },
+              width: "100%",
+            }}
+            filters={
+              <Group>
+                <Select
+                  label={t("common:search.sortLabel")}
+                  placeholder={t("common:search.sortPlaceholder")}
+                  // data={fssOptions.sorts}
+                  // value={view.sort.type}
+                  onChange={(value) => {
+                    if (value)
+                      setView((v) => ({
+                        ...v,
+                        sort: {
+                          ...v.sort,
+                          type: value,
+                        },
+                      }));
+                  }}
+                  sx={{ maxWidth: 200 }}
+                  variant="default"
+                  icon={<IconArrowsSort size="1em" />}
+                  {...(view.search
+                    ? {
+                        disabled: true,
+                        data: [
+                          {
+                            label: t("common:search.relevance"),
+                            value: "relevance",
+                          },
+                        ],
+                        value: "relevance",
+                        rightSection: undefined,
+                      }
+                    : {
+                        disabled: false,
+                        data: fssOptions.sorts,
+                        value: view.sort.type,
+                        rightSection: (
+                          <Tooltip label="Toggle ascending/descending">
+                            <ActionIcon
+                              onClick={() => {
+                                setView((v) => ({
+                                  ...v,
+                                  sort: {
+                                    ...v.sort,
+                                    ascending: !v.sort.ascending,
+                                  },
+                                }));
+                              }}
+                              variant="light"
+                              color={theme.primaryColor}
+                            >
+                              {view.sort.ascending ? (
+                                <IconSortAscending size={16} />
+                              ) : (
+                                <IconSortDescending size={16} />
+                              )}
+                            </ActionIcon>
+                          </Tooltip>
+                        ),
+                      })}
+                />
+                <Input.Wrapper id="type" label="Event Type">
+                  <Chip.Group
+                    multiple
+                    value={view.filters.types}
+                    onChange={(val) => {
+                      setView((v) => ({
+                        ...v,
+                        filters: {
+                          ...v.filters,
+                          types: val,
+                        },
                       }));
                     }}
-                    variant="light"
-                    color={theme.primaryColor}
+                    spacing={3}
                   >
-                    {viewOptions.sortDescending ? (
-                      <IconSortAscending size={16} />
-                    ) : (
-                      <IconSortDescending size={16} />
-                    )}
-                  </ActionIcon>
-                </Tooltip>
-              }
-            />
-            <Input.Wrapper label="Campaign type">
-              <Chip.Group
-                multiple
-                spacing={3}
-                onChange={(val: (EventType | ScoutType)[]) => {
-                  setViewOptions({ ...viewOptions, filterType: val });
+                    {[
+                      { value: "song", label: t("campaigns:full.event.song") },
+                      { value: "tour", label: t("campaigns:full.event.tour") },
+                      {
+                        value: "shuffle",
+                        label: t("campaigns:full.event.shuffle"),
+                      },
+                      {
+                        value: "scout",
+                        label: t("campaigns:full.scout.scout"),
+                      },
+                      {
+                        value: "feature scout",
+                        label: t("campaigns:full.scout.feature"),
+                      },
+                    ].map((r) => (
+                      <Chip
+                        key={r.value}
+                        value={r.value}
+                        radius="md"
+                        styles={{
+                          label: { paddingLeft: 10, paddingRight: 10 },
+                        }}
+                        variant="filled"
+                      >
+                        {r.label}
+                      </Chip>
+                    ))}
+                  </Chip.Group>
+                </Input.Wrapper>
+              </Group>
+            }
+            resetFilters={() => {
+              setView(defaultView);
+            }}
+            display={
+              <Group align="flex-start">
+                <Select
+                  label={t("common:search.regionForDates")}
+                  description={t("common:search.regionForDatesDesc")}
+                  data={gameRegions.map((r) => ({
+                    value: r.value,
+                    label: t(`regions:region.${r.value}`),
+                    icon: r.icon,
+                  }))}
+                  icon={
+                    gameRegions.find((r) => r.value === viewOptions.region)
+                      ?.icon
+                  }
+                  itemComponent={SelectItemForwardRef}
+                  value={viewOptions.region}
+                  onChange={(value) => {
+                    setViewOptions((v) => ({
+                      ...v,
+                      region: value as GameRegion,
+                    }));
+                  }}
+                  sx={{ maxWidth: 200 }}
+                  variant="default"
+                />
+                {/* <Input.Wrapper label={t("common:search.density")}>
+              <SegmentedControl
+                sx={{ display: "flex" }}
+                value={viewOptions.density}
+                onChange={(value) => {
+                  setViewOptions((v) => ({
+                    ...v,
+                    density: value as "full" | "compact",
+                  }));
                 }}
-              >
-                {["song", "tour", "scout", "feature scout", "shuffle"].map(
-                  (type) => (
-                    <Chip
-                      key={type}
-                      value={type}
-                      radius="md"
-                      color="yellow"
-                      variant="filled"
-                      styles={{
-                        label: {
-                          paddingLeft: 10,
-                          paddingRight: 10,
-                          fontWeight: 600,
-                        },
-                        iconWrapper: { display: "none" },
-                      }}
-                    >
-                      {type}
-                    </Chip>
-                  )
-                )}
-              </Chip.Group>
-            </Input.Wrapper>
-          </Group>
-        </Paper>
-        {!bookmarksList || bookmarksList.length === 0 ? (
-          <Paper p="lg">
-            <Text>There are no campaigns in your bookmarks.</Text>
-          </Paper>
-        ) : (
-          <ResponsiveGrid width={isMobile ? 300 : 500}>
-            {bookmarksList.map((bm: Event | Scout, i: number) => {
-              return <BookmarkedCard key={i} campaign={bm} />;
-            })}
-          </ResponsiveGrid>
-        )}
-      </Box>
+                data={[
+                  {
+                    value: "full",
+                    label: (
+                      <Center>
+                        <IconLayoutList size={16} />
+                        <Box ml={10}>{t("common:search.full")}</Box>
+                      </Center>
+                    ),
+                  },
+                  {
+                    value: "compact",
+                    label: (
+                      <Center>
+                        <IconList size={16} />
+                        <Box ml={10}>{t("common:search.compact")}</Box>
+                      </Center>
+                    ),
+                  },
+                ]}
+              />
+            </Input.Wrapper> */}
+              </Group>
+            }
+          />
+          <Box>
+            {results.length === 0 ? (
+              <Center>
+                <Text color="dimmed">{t("search.noMatch")}</Text>
+              </Center>
+            ) : (
+              <ResponsiveGrid width={180}>
+                {results.map((bm: Event | Scout, i: number) => {
+                  return (
+                    <BookmarkedCard
+                      key={i}
+                      campaign={bm}
+                      region={viewOptions.region}
+                    />
+                  );
+                })}
+              </ResponsiveGrid>
+            )}
+          </Box>
+        </>
+      ) : (
+        <Center>
+          <Text color="dimmed">{t("search.noBookmarks")}</Text>
+        </Center>
+      )}
     </>
   );
 }

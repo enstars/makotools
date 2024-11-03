@@ -2,12 +2,14 @@
   "title": "Scouts",
   "scoutId": "Scout ID",
   "startDate": "Start Date",
-  "searchPlaceholder": "Type a scout name...",
+  "search": {
+    "searchPlaceholder": "Type a scout name..."
+  },
   "charLabel": "Featured Characters",
   "charPlaceholder": "Pick a character...",
-  "event": "Event",
-  "feature": "Feature",
-  "scouts": "Scouts",
   "past": "Past",
-  "ongoing": "Ongoing"
+  "ongoing": "Ongoing",
+  "scout": {
+    "dateUnknown": "Scout date for this region unknown"
+  }
 }

@@ -1,18 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
-import {
-  ActionIcon,
-  Divider,
-  Group,
-  Tooltip,
-  useMantineTheme,
-} from "@mantine/core";
-import {
-  IconBook,
-  IconBookmark,
-  IconCards,
-  IconMedal,
-} from "@tabler/icons-react";
-import { useListState } from "@mantine/hooks";
+import { useMemo, useState } from "react";
+import { Divider } from "@mantine/core";
+import { IconBook, IconCards, IconMedal } from "@tabler/icons-react";
 import useTranslation from "next-translate/useTranslation";
 
 import PageTitle from "components/sections/PageTitle";
@@ -21,7 +9,7 @@ import {
   getLocalizedDataArray,
 } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { GameCard, GameCharacter, Event, Scout } from "types/game";
+import { GameCard, GameCharacter, Event, Scout, GameRegion } from "types/game";
 import { QuerySuccess } from "types/makotools";
 import { getLayout } from "components/Layout";
 import { CardCard } from "components/core/CardCard";
@@ -32,22 +20,23 @@ import SectionTitle from "pages/events/components/SectionTitle";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 import { useCollections } from "services/makotools/collection";
 import NewCollectionModal from "pages/cards/components/NewCollectionModal";
-import useUser from "services/firebase/user";
+import RegionInfo from "components/sections/RegionInfo";
+import ScoutPointsSummary from "pages/events/components/ScoutPointsSummary";
 
 function Page({
   scout,
   event,
   charactersQuery,
   cardsQuery,
+  region,
 }: {
   scout: Scout;
   event: Event | null;
   charactersQuery: QuerySuccess<GameCharacter[]>;
   cardsQuery: QuerySuccess<GameCard[]>;
+  region: GameRegion;
 }) {
   const { t } = useTranslation("events__event");
-  const user = useUser();
-  const theme = useMantineTheme();
   let characters = useMemo(() => charactersQuery.data, [charactersQuery.data]);
   let cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
   const { collections, onEditCollection, onNewCollection } = useCollections();
@@ -62,58 +51,15 @@ function Page({
       .includes(character.character_id);
   });
 
-  const [bookmarks, handlers] = useListState<number>(
-    user.loggedIn ? user.db.bookmarks__scouts || [] : []
-  );
-
-  useEffect(() => {
-    user.loggedIn &&
-      user.db.set({
-        bookmarks__scouts: bookmarks,
-      });
-  }, [bookmarks]);
-
   return (
     <>
-      <Group>
-        <PageTitle title={scout.name[0]} sx={{ flex: "1 0 80%" }} />
-        {((user.loggedIn &&
-          user.db.admin?.patreon &&
-          user.db.admin?.patreon >= 1) ||
-          (user.loggedIn && user.db.admin?.administrator)) && (
-          <Tooltip
-            label={
-              user.loggedIn
-                ? bookmarks.includes(scout.gacha_id)
-                  ? t("events:event.removeBookmark")
-                  : t("events:event.addBookmark")
-                : t("loginBookmark")
-            }
-            position="bottom"
-          >
-            <ActionIcon
-              size={60}
-              disabled={!user.loggedIn}
-              onClick={() => {
-                bookmarks.includes(scout.gacha_id)
-                  ? handlers.remove(bookmarks.indexOf(scout.gacha_id))
-                  : handlers.append(scout.gacha_id);
-              }}
-            >
-              <IconBookmark
-                size={60}
-                fill={
-                  bookmarks.includes(scout.gacha_id)
-                    ? theme.colors[theme.primaryColor][4]
-                    : "none"
-                }
-                strokeWidth={bookmarks.includes(scout.gacha_id) ? 0 : 1}
-              />
-            </ActionIcon>
-          </Tooltip>
-        )}
-      </Group>
-      <ESPageHeader content={scout} />
+      <PageTitle
+        title={scout.name[0]}
+        sx={{ flex: "1 0 80%" }}
+        region={region}
+      />
+      <RegionInfo region={region} />
+      <ESPageHeader content={scout} region={region} />
       <SectionTitle title="Cards" id="cards" Icon={IconCards} />
       <ResponsiveGrid width={224}>
         {cards.map((card: GameCard) => (
@@ -125,6 +71,12 @@ function Page({
             lang={cardsQuery.lang}
             onEditCollection={onEditCollection}
             onNewCollection={() => setNewCollectionModalOpened(true)}
+            character={
+              characters.find(
+                (character) => character.character_id === card.character_id
+              ) as GameCharacter
+            }
+            gameRegion={region}
           />
         ))}
       </ResponsiveGrid>
@@ -140,22 +92,21 @@ function Page({
           <Divider my="md" />
         </>
       )}
-      {scout.type === "scout" && (
-        <>
-          {event && (
-            <>
-              <SectionTitle title="Event" id="event" Icon={IconMedal} />
-              <PointsTable
-                id={event.event_id}
-                type={scout.type}
-                eventName={event.name[0]}
-                scoutName={scout.name[0]}
-                banner={event.banner_id}
-              />
-            </>
-          )}
-        </>
-      )}
+      <>
+        {event && (
+          <>
+            <SectionTitle title="Event" id="event" Icon={IconMedal} />
+            <ScoutPointsSummary
+              id={event.event_id}
+              type={scout.type}
+              eventName={event.name[0]}
+              scoutName={scout.name[0]}
+              banner={event.banner_id}
+            />
+            <PointsTable />
+          </>
+        )}
+      </>
       <NewCollectionModal
         // use key to reset internal form state on close
         key={JSON.stringify(newCollectionModalOpened)}
@@ -168,8 +119,36 @@ function Page({
 }
 
 export const getServerSideProps = getServerSideUser(
-  async ({ res, locale, params }) => {
+  async ({ res, locale, params, db, user }) => {
     if (!params?.id || Array.isArray(params?.id)) return { notFound: true };
+
+    const validRegions: GameRegion[] = ["en", "jp", "cn", "kr", "tw"];
+
+    let region = params.region?.[0] as GameRegion;
+    const isRegionEmpty = !region;
+
+    if (!region && user && db && db?.setting__game_region) {
+      region = db.setting__game_region as GameRegion;
+    }
+    if (!validRegions.includes(region)) {
+      // redirect to page with valid region
+      region = "en";
+      return {
+        redirect: {
+          destination: `/scouts/${params.id}/${region}`,
+          permanent: false,
+        },
+      };
+    }
+    if (isRegionEmpty) {
+      // redirect to page with region
+      return {
+        redirect: {
+          destination: `/scouts/${params.id}/${region}`,
+          permanent: false,
+        },
+      };
+    }
 
     const getScouts = await getLocalizedDataArray<Scout>(
       "scouts",
@@ -233,8 +212,10 @@ export const getServerSideProps = getServerSideUser(
         event: event,
         charactersQuery: characters,
         cardsQuery: cards,
+        region,
         title,
         breadcrumbs,
+        bookmarkId: scout.gacha_id,
         meta: {
           title: title,
         },

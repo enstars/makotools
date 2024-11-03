@@ -1,0 +1,16 @@
+{
+  "title": "Assets",
+  "search": {
+    "searchPlaceholder": "Search any card name...",
+    "id": "ID",
+    "charLabel": "Character",
+    "charPlaceholder": "Search any character name...",
+    "assetTypeLabel": "Asset Type",
+    "assetType": {
+      "frameless": "Frameless",
+      "cg": "CG",
+      "render": "Render"
+    }
+  },
+  "downloadTypeTooltip": "Download {{type}}"
+}

@@ -29,12 +29,14 @@ import CurrentEventCountdown from "components/Homepage/CurrentEventCountdown";
 import CurrentScoutsCountdown from "components/Homepage/CurrentScoutsCountdown";
 import SiteAnnouncements from "components/Homepage/SiteAnnouncements";
 import UserVerification from "components/Homepage/UserVerification";
-import { MakoPost, QuerySuccess, StrapiItem } from "types/makotools";
+import { Locale, MakoPost, QuerySuccess, StrapiItem } from "types/makotools";
 import { createBirthdayData } from "services/campaigns";
 import { fetchOceans } from "services/makotools/posts";
 import RecommendedCountdown from "components/Homepage/RecommendedCountdown";
 import useUser from "services/firebase/user";
+import { getNameOrderSetting } from "components/utilities/formatting/NameOrder";
 
+const MOBILE_BREAKPOINT = "md";
 const useStyles = createStyles((theme, _params) => ({
   main: {
     maxWidth: "100%",
@@ -64,11 +66,11 @@ function SidePanel({
     <Box
       sx={{
         "&&&": { flexShrink: 0, flexGrow: 0 },
-        [`@media (max-width: ${theme.breakpoints.lg}px)`]: {
+        [`@media (max-width: ${theme.breakpoints[MOBILE_BREAKPOINT]}px)`]: {
           flexBasis: "100%",
           flexGrow: 1,
         },
-        [`@media (min-width: ${theme.breakpoints.lg}px)`]: {
+        [`@media (min-width: ${theme.breakpoints[MOBILE_BREAKPOINT]}px)`]: {
           flexBasis: width,
         },
       }}
@@ -82,7 +84,7 @@ function SidePanel({
           flexGrow: 1,
           minWidth: 0,
           width: "100%",
-          [`@media (min-width: 800px)`]: {
+          [`@media (min-width: ${theme.breakpoints[MOBILE_BREAKPOINT]}px)`]: {
             flexBasis: width,
           },
         }}
@@ -106,7 +108,7 @@ function Page({
   cardsQuery,
   unitsQuery,
 }: {
-  locale: string | undefined;
+  locale: Locale;
   posts: StrapiItem<MakoPost>[];
   charactersQuery: QuerySuccess<GameCharacter[]>;
   gameEventsQuery: QuerySuccess<Event[]>;
@@ -130,7 +132,11 @@ function Page({
 
   const units: GameUnit[] = useMemo(() => unitsQuery.data, [unitsQuery.data]);
 
-  const birthdays: Birthday[] = createBirthdayData(characters);
+  const birthdays: Birthday[] = createBirthdayData(
+    characters,
+    getNameOrderSetting(user),
+    locale
+  );
   const gameEvents: Event[] = useMemo(
     () => gameEventsQuery.data,
     [gameEventsQuery.data]
@@ -251,13 +257,16 @@ function Page({
             )}
           </Box>
 
-          <MediaQuery largerThan="md" styles={{ display: "none" }}>
+          <MediaQuery
+            largerThan={MOBILE_BREAKPOINT}
+            styles={{ display: "none" }}
+          >
             <SidePanel events={events} posts={posts} locale={locale} />
           </MediaQuery>
         </Group>
       </Stack>
 
-      <MediaQuery smallerThan="md" styles={{ display: "none" }}>
+      <MediaQuery smallerThan={MOBILE_BREAKPOINT} styles={{ display: "none" }}>
         <SidePanel events={events} posts={posts} locale={locale} />
       </MediaQuery>
     </Group>

@@ -1,72 +1,75 @@
-import {
-  ActionIcon,
-  Divider,
-  Group,
-  Paper,
-  Text,
-  Tooltip,
-  useMantineTheme,
-} from "@mantine/core";
+import { Paper, Text, useMantineTheme } from "@mantine/core";
 import {
   IconBook,
-  IconBookmark,
   IconCards,
   IconDiamond,
   IconMusic,
   IconVinyl,
 } from "@tabler/icons-react";
-import { useEffect, useMemo, useState } from "react";
-import { useListState } from "@mantine/hooks";
+import { useMemo, useState } from "react";
 import useTranslation from "next-translate/useTranslation";
 
-import ESPageHeader from "./components/ESPageHeader";
-import PointsTable from "./components/PointsTable";
-import Stories from "./components/Stories";
-import SectionTitle from "./components/SectionTitle";
+import ESPageHeader from "../components/ESPageHeader";
+import PointsTable from "../components/PointsTable";
+import Stories from "../components/Stories";
+import SectionTitle from "../components/SectionTitle";
+import ScoutPointsSummary from "../components/ScoutPointsSummary";
 
 import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import {
   getItemFromLocalizedDataArray,
+  getItemsFromLocalizedDataArray,
   getLocalizedDataArray,
 } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
-import { GameCard, Event, GameUnit, Scout } from "types/game";
+import {
+  GameCard,
+  Event,
+  GameUnit,
+  Scout,
+  GameRegion,
+  GameCharacter,
+} from "types/game";
 import { QuerySuccess } from "types/makotools";
 import { CardCard } from "components/core/CardCard";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 import { useCollections } from "services/makotools/collection";
 import NewCollectionModal from "pages/cards/components/NewCollectionModal";
-import useUser from "services/firebase/user";
+import RegionInfo from "components/sections/RegionInfo";
 
 function Page({
   event,
-  scout,
+  scouts,
   cardsQuery,
   unitsQuery,
+  charactersQuery,
+  region,
 }: {
   event: Event;
-  scout: Scout;
+  scouts: Scout[];
   cardsQuery: QuerySuccess<GameCard[]>;
   unitsQuery: QuerySuccess<GameUnit[]>;
+  charactersQuery: QuerySuccess<GameCharacter[]>;
+  region: GameRegion;
 }) {
   const { t } = useTranslation("events__event");
-  const user = useUser();
   const theme = useMantineTheme();
-  let cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
-  let units = useMemo(() => unitsQuery.data, [unitsQuery.data]);
+  let allCards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
+  let allUnits = useMemo(() => unitsQuery.data, [unitsQuery.data]);
+  let allCharacters = useMemo(
+    () => charactersQuery.data,
+    [charactersQuery.data]
+  );
   const { collections, onEditCollection, onNewCollection } = useCollections();
   const [newCollectionModalOpened, setNewCollectionModalOpened] =
     useState<boolean>(false);
-  const [bookmarks, handlers] = useListState<number>(
-    user.loggedIn ? user.db.bookmarks__events || [] : []
-  );
 
-  cards = cards.filter((card) => {
+  const cards = allCards.filter((card) => {
     return event.cards?.includes(card.id);
   });
 
-  units = units.filter(
+  const units = allUnits.filter(
     (unit: GameUnit) => event.unit_id && event.unit_id.includes(unit.id)
   );
 
@@ -95,54 +98,15 @@ function Page({
       icon: <IconMusic size={16} strokeWidth={3} />,
     });
 
-  useEffect(() => {
-    user.loggedIn &&
-      user.db.set({
-        bookmarks__events: bookmarks,
-      });
-  }, [bookmarks]);
-
   return (
     <>
-      <Group>
-        <PageTitle title={event.name[0]} sx={{ flex: "1 0 80%" }} />
-        {((user.loggedIn &&
-          user.db.admin?.patreon &&
-          user.db.admin?.patreon >= 1) ||
-          (user.loggedIn && user.db.admin?.administrator)) && (
-          <Tooltip
-            label={
-              user.loggedIn
-                ? bookmarks.includes(event.event_id)
-                  ? t("events:event.addBookmark")
-                  : t("events:event.removeBookmark")
-                : t("loginBookmark")
-            }
-            position="bottom"
-          >
-            <ActionIcon
-              size={60}
-              disabled={!user.loggedIn}
-              onClick={() => {
-                bookmarks.includes(event.event_id)
-                  ? handlers.remove(bookmarks.indexOf(event.event_id))
-                  : handlers.append(event.event_id);
-              }}
-            >
-              <IconBookmark
-                size={60}
-                fill={
-                  bookmarks.includes(event.event_id)
-                    ? theme.colors[theme.primaryColor][4]
-                    : "none"
-                }
-                strokeWidth={bookmarks.includes(event.event_id) ? 0 : 2}
-              />
-            </ActionIcon>
-          </Tooltip>
-        )}
-      </Group>
-      <ESPageHeader content={event} units={units} />
+      <RegionInfo region={region} />
+      <PageTitle
+        title={event.name[0]}
+        sx={{ flex: "1 0 80%" }}
+        space={theme.spacing.lg}
+      />
+      <ESPageHeader content={event} units={units} region={region} />
       <SectionTitle title="Cards" id="cards" Icon={IconCards} />
       <ResponsiveGrid width={224}>
         {cards.map((card: GameCard) => (
@@ -154,13 +118,17 @@ function Page({
             lang={cardsQuery.lang}
             onEditCollection={onEditCollection}
             onNewCollection={() => setNewCollectionModalOpened(true)}
+            character={
+              allCharacters.find(
+                (char) => char.character_id === card.character_id
+              ) as GameCharacter
+            }
+            gameRegion={region}
           />
         ))}
       </ResponsiveGrid>
-      <Divider my="md" />
       <SectionTitle title={t("story")} id="story" Icon={IconBook} />
       <Stories content={event} />
-      <Divider my="md" />
       {event.type !== "tour" && (
         <>
           <SectionTitle title={t("song")} id="song" Icon={IconVinyl} />
@@ -169,25 +137,26 @@ function Page({
               {t("comingSoon")}
             </Text>
           </Paper>
-          <Divider my="md" />
         </>
       )}
-      {scout && (
-        <>
-          <SectionTitle
-            title={t("scoutTitle", { scout: scout.name[0] })}
-            id="scout"
-            Icon={IconDiamond}
-          />
-          <PointsTable
-            id={scout.gacha_id}
-            type={event.type}
-            eventName={event.name[0]}
-            scoutName={scout.name[0]}
-            banner={scout.banner_id}
-          />
-        </>
-      )}
+      {scouts &&
+        scouts.map((s: Scout) => (
+          <>
+            <SectionTitle
+              title={t("scoutTitle", { scout: s.name[0] })}
+              id="scout"
+              Icon={IconDiamond}
+            />
+            <ScoutPointsSummary
+              id={s.gacha_id}
+              type={event.type}
+              eventName={event.name[0]}
+              scoutName={s.name[0]}
+              banner={s.banner_id}
+            />
+          </>
+        ))}
+      {scouts && <PointsTable />}
       <NewCollectionModal
         // use key to reset internal form state on close
         key={JSON.stringify(newCollectionModalOpened)}
@@ -200,9 +169,36 @@ function Page({
 }
 
 export const getServerSideProps = getServerSideUser(
-  async ({ res, locale, params }) => {
+  async ({ res, locale, params, db, user }) => {
     if (!params?.id || Array.isArray(params?.id)) return { notFound: true };
 
+    const validRegions: GameRegion[] = ["en", "jp", "cn", "kr", "tw"];
+
+    let region = params.region?.[0] as GameRegion;
+    const isRegionEmpty = !region;
+
+    if (!region && user && db && db?.setting__game_region) {
+      region = db.setting__game_region as GameRegion;
+    }
+    if (!validRegions.includes(region)) {
+      // redirect to page with valid region
+      region = "en";
+      return {
+        redirect: {
+          destination: `/events/${params.id}/${region}`,
+          permanent: false,
+        },
+      };
+    }
+    if (isRegionEmpty) {
+      // redirect to page with region
+      return {
+        redirect: {
+          destination: `/events/${params.id}/${region}`,
+          permanent: false,
+        },
+      };
+    }
     const getEvents: any = await getLocalizedDataArray<Event>(
       "events",
       locale,
@@ -223,13 +219,16 @@ export const getServerSideProps = getServerSideUser(
       "gacha_id"
     );
 
-    const getScout = getItemFromLocalizedDataArray<Scout>(
+    const getScoutsArray = getItemsFromLocalizedDataArray<Scout>(
       getScouts,
-      getEvent.data.gacha_id as number,
+      !getEvent.data.gacha_id.length
+        ? [+getEvent.data.gacha_id]
+        : getEvent.data.gacha_id,
       "gacha_id"
     );
 
-    if (getScout.status === "error") return { notFound: true };
+    if (getScoutsArray.every((scout) => scout.status === "error"))
+      return { notFound: true };
 
     const getUnits = await getLocalizedDataArray("units", locale, "id");
 
@@ -248,22 +247,31 @@ export const getServerSideProps = getServerSideUser(
       "character_id",
     ]);
 
-    const event: Event = getEvent.data;
-    const scout: Scout = getScout.data;
+    const characters = await getLocalizedDataArray(
+      "characters",
+      locale,
+      "character_id",
+      ["character_id", "first_name"]
+    );
+
+    const event = getEvent.data;
+    const scouts = getScoutsArray
+      .map((scout) => scout.data)
+      .filter((scout) => scout !== null);
     const title = event.name[0];
-    const breadcrumbs = ["events", `${event.event_id}[ID]${title}`];
+    const breadcrumbs = ["events", title];
 
     return {
       props: {
         event: event,
-        scout: scout,
+        scouts: scouts,
         cardsQuery: cards,
         unitsQuery: getUnits,
+        charactersQuery: characters,
         title,
         breadcrumbs,
-        meta: {
-          title: title,
-        },
+        bookmarkId: event.event_id,
+        region,
       },
     };
   }

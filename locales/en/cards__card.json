@@ -24,5 +24,12 @@
     "fullCgs": "Full CGs",
     "renders": "Transparent Renders",
     "card": "Card"
+  },
+  "obtain": {
+    "associatedEvent": "Associated Event",
+    "associatedScout": "Associated Scout",
+    "moreDetails": "More Details",
+    "eventMethod": "Event",
+    "scoutMethod": "Scout"
   }
 }

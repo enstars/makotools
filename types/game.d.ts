@@ -251,6 +251,12 @@ interface GameCardStrings<T> {
   name: T;
 }
 
+interface Obtain {
+  type: ObtainType;
+  subType?: ObtainSubType;
+  id?: ID;
+}
+
 interface GameCard<T = string[]> extends GameCardStrings<T> {
   id: ID;
   rarity: CardRarity;
@@ -274,11 +280,7 @@ interface GameCard<T = string[]> extends GameCardStrings<T> {
    */
   substat_type: CardSubStat;
   releaseDate: ForEachRegion<string>;
-  obtain: {
-    type: ObtainType;
-    subType?: ObtainSubType;
-    id?: ID;
-  };
+  obtain: Obtain;
   stats: {
     [Level in StatLevel]?: Stats;
   };
@@ -291,6 +293,16 @@ interface GameCard<T = string[]> extends GameCardStrings<T> {
     song_id: ID;
     type_id?: ID;
     name?: string;
+  };
+}
+
+interface GameCardOld {
+  id: ID;
+  character_id: ID;
+  rarity: CardRarity;
+  name: {
+    jp: string;
+    en: string;
   };
 }
 
@@ -345,7 +357,7 @@ export interface EventStrings<T> extends CampaignStrings<T> {
 
 export interface Event<T = string[]> extends CampaignInfo, EventStrings<T> {
   event_id: ID;
-  gacha_id: ID;
+  gacha_id: ID | ID[];
   unit_id?: ID[];
   cards: ID[];
   type: EventType;
@@ -371,6 +383,8 @@ export interface Scout<T = string[]> extends CampaignInfo, ScoutStrings<T> {
   cards: ID[];
 
   type: ScoutType;
+  /** Related cross scout if scout is a cross scout */
+  related_id?: ID;
 }
 
 export interface BirthdayStrings<T> extends CampaignStrings<T> {}
@@ -381,6 +395,7 @@ export interface Birthday<T = string[]>
   character_id: ID;
   horoscope: ID;
   type: "birthday";
+  shortCharacterName: T;
 }
 
 export type Campaign = Event | Scout | Birthday;

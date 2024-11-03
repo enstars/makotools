@@ -1,9 +1,9 @@
 import { Anchor, Text, TypographyStylesProvider } from "@mantine/core";
+import useTranslation from "next-translate/useTranslation";
+import Trans from "next-translate/Trans";
 
 import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
-import useTranslation from "next-translate/useTranslation";
-import Trans from "next-translate/Trans";
 function Page() {
   const { t } = useTranslation("about__acknowledgements");
   return (
@@ -16,6 +16,7 @@ function Page() {
             i18nKey="about__acknowledgements:text.development"
             components={[
               <Anchor
+                key={0}
                 inherit
                 href="https://github.com/enstars"
                 target="_blank"
@@ -37,7 +38,7 @@ function Page() {
               "https://twitter.com/DaydreamGuides",
               "https://ensemblestars.huijiwiki.com",
             ].map((link) => (
-              <Anchor inherit href={link} target="_blank" />
+              <Anchor inherit href={link} target="_blank" key={link} />
             ))}
           />
         </p>

@@ -1,0 +1,21 @@
+{
+  "search": {
+    "searchPlaceholder": "Search any event or scout name...",
+    "sortByID": "ID",
+    "sortByAlphabetical": "Alphabetical",
+    "sortByEventDate": "Campaign Date",
+    "noMatch": "No bookmarks matching the filters found."
+  },
+  "noBookmarks": "You don't have any bookmarks yet. Start bookmarking events and scouts you like!",
+  "campaignStarts": "Starts on <0>{{date}}</0>",
+  "campaignStartsUnknown": "Unknown date",
+  "countdown": {
+    "ended": "Ended",
+    "ongoing": "Ongoing",
+    "upcomingDays_one": "{{count}} day",
+    "upcomingDays_other": "{{count}} days",
+    "upcomingHours_one": "{{count}} hour",
+    "upcomingHours_other": "{{count}} hours",
+    "unknown": "Unknown"
+  }
+}

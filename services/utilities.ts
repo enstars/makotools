@@ -212,7 +212,11 @@ function generateUUID() {
   return uuid;
 }
 
-function downloadFromURL(url: string) {
+function downloadFromURL(urlParam: string) {
+  // appent ?download if not already done
+  const url = urlParam.includes("?download")
+    ? urlParam
+    : `${urlParam}?download`;
   if (document.body) {
     let downloadFrame = document.createElement("iframe");
     downloadFrame.setAttribute("src", url);

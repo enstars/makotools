@@ -10,6 +10,7 @@ import {
 } from "@mantine/core";
 import { IconCalendar, IconList } from "@tabler/icons-react";
 import useTranslation from "next-translate/useTranslation";
+import { useRouter } from "next/router";
 
 import CalendarGridView from "./components/CalendarGridView";
 import CalendarListView from "./components/CalendarListView";
@@ -22,6 +23,7 @@ import { getLocalizedDataArray } from "services/data";
 import { createBirthdayData } from "services/campaigns";
 import { GameCharacter, Event, Scout, Birthday } from "types/game";
 import { QuerySuccess } from "types/makotools";
+import useUser from "services/firebase/user";
 
 /**
  * If the user is viewing from a mobile phone, the default view should be the list view. Otherwise, it should be the traditional calendar.
@@ -45,6 +47,8 @@ function Page({
   const { t } = useTranslation("calendar");
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
+  const user = useUser();
+  const { locale } = useRouter();
 
   const characters: GameCharacter[] = useMemo(
     () => charactersQuery.data,
@@ -56,7 +60,11 @@ function Page({
   );
   const scouts: Scout[] = useMemo(() => scoutsQuery.data, [scoutsQuery.data]);
 
-  const birthdays: Birthday[] = createBirthdayData(characters);
+  const birthdays: Birthday[] = createBirthdayData(
+    characters,
+    (user.loggedIn && user.db?.setting__name_order) || "firstlast",
+    charactersQuery.lang[0].locale
+  );
 
   const events = [...birthdays, ...gameEvents, ...scouts];
 

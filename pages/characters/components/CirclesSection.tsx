@@ -12,10 +12,10 @@ import Link from "next/link";
 
 import { useCharacterColors } from "../[id].page";
 
+import SectionTitle from "pages/events/components/SectionTitle";
 import { GameCharacter } from "types/game";
 import Picture from "components/core/Picture";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
-import SectionTitle from "pages/events/components/SectionTitle";
 import { circleKeyToName } from "data/circleKeyToName";
 
 export function CirclesSection({

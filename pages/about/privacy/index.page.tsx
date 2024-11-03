@@ -1,10 +1,9 @@
 import { TypographyStylesProvider } from "@mantine/core";
+import useTranslation from "next-translate/useTranslation";
+import Trans from "next-translate/Trans";
 
 import PageTitle from "components/sections/PageTitle";
 import { getLayout } from "components/Layout";
-
-import useTranslation from "next-translate/useTranslation";
-import Trans from "next-translate/Trans";
 
 function Page() {
   const { t } = useTranslation("about__privacy");
@@ -14,7 +13,12 @@ function Page() {
       <TypographyStylesProvider>
         <Trans
           i18nKey="about__privacy:privacy.html"
-          components={[<p />, <h2 />, <ul />, <li />]}
+          components={[
+            <p key={0} />,
+            <h2 key={1} />,
+            <ul key={2} />,
+            <li key={3} />,
+          ]}
         />
       </TypographyStylesProvider>
     </>

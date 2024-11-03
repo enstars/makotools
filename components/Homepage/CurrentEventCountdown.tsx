@@ -177,7 +177,11 @@ function CurrentEventCountdown({ events }: { events: Event[] }) {
                 <Countdown date={shownEvent.end.en} status="end" />
               )}
             </Box>
-            <Button color={theme.primaryColor} disabled>
+            <Button
+              color={theme.primaryColor}
+              component="a"
+              href="/event-calculator"
+            >
               {t("event.eventCalculator")}
             </Button>
           </Stack>

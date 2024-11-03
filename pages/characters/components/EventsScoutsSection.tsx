@@ -1,12 +1,14 @@
-import { Box, Title } from "@mantine/core";
+import { Box } from "@mantine/core";
+import { IconAward, IconDiamond } from "@tabler/icons-react";
+import { isArray } from "lodash";
+
+import { useCharacterColors } from "../[id].page";
 
 import { EventScoutCard } from "./EventScoutCard";
 
+import SectionTitle from "pages/events/components/SectionTitle";
 import { GameCard, Event, Scout } from "types/game";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
-import { useCharacterColors } from "../[id].page";
-import SectionTitle from "pages/events/components/SectionTitle";
-import { IconAward, IconDiamond } from "@tabler/icons-react";
 
 export function EventsScoutsSection({
   events,
@@ -33,7 +35,13 @@ export function EventsScoutsSection({
           )[0];
           return (
             <EventScoutCard
-              key={type === "events" ? event.event_id : event.gacha_id}
+              key={
+                type === "events"
+                  ? event.event_id
+                  : isArray(event.gacha_id)
+                  ? event.gacha_id[0]
+                  : event.gacha_id
+              }
               event={event}
               card={correspondingCard}
             />

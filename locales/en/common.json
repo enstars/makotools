@@ -1,12 +1,24 @@
 {
   "test": "Welcome to MakoTools!",
   "search": {
+    "charLabel": "Character",
+    "charPlaceholder": "Search any character name...",
     "searchLabel": "Search",
     "searchOptions": "Search options",
     "sortLabel": "Sort by",
     "sortTooltip": "Toggle ascending/descending",
-    "resetFilters": "Reset all filters",
+    "resetFilters": "Reset all",
     "startDate": "Start Date",
-    "sortPlaceholder": "Select sorting option..."
+    "sortPlaceholder": "Select sorting option...",
+    "regionForDates": "Game Region",
+    "regionForDatesDesc": "For showing the relevant dates",
+    "relevance": "Relevance",
+    "filters": "Filters",
+    "viewOptions": "Display Options",
+    "density": "Card Style",
+    "full": "Full",
+    "compact": "Compact",
+    "list": "List",
+    "resultsFound": "{{count}} results found."
   }
 }

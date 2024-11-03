@@ -11,6 +11,8 @@ import { useListState } from "@mantine/hooks";
 import useTranslation from "next-translate/useTranslation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
+import { EditingProfile } from "./customization/EditProfileModal";
+
 import { getNameOrder } from "services/game";
 import { GameCharacter, GameUnit } from "types/game";
 import { Locale, UserData } from "types/makotools";
@@ -27,7 +29,7 @@ function Favorites({
   units: GameUnit[];
   profile: UserData;
   profileState: any;
-  externalSetter: Dispatch<SetStateAction<any>>;
+  externalSetter: Dispatch<SetStateAction<EditingProfile>>;
   locale: Locale;
 }) {
   const theme = useMantineTheme();
@@ -57,13 +59,13 @@ function Favorites({
   };
 
   useEffect(() => {
-    externalSetter({
-      ...profileState,
+    externalSetter((s) => ({
+      ...s,
       profile__fave_charas: faveCharas,
       profile__fave_units: faveUnits,
       profile__show_faves: showFaves,
-    });
-  }, [faveCharas, faveUnits, showFaves]);
+    }));
+  }, [faveCharas, faveUnits, showFaves, externalSetter]);
 
   useEffect(() => {
     if (window.innerWidth < 768) setIsMobile(true);

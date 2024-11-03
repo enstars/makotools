@@ -1,9 +1,9 @@
 import { Text, TypographyStylesProvider } from "@mantine/core";
 import TermsHTML from "raw-loader!./terms.html";
+import useTranslation from "next-translate/useTranslation";
 
 import PageTitle from "components/sections/PageTitle";
 import { getLayout } from "components/Layout";
-import useTranslation from "next-translate/useTranslation";
 
 function Page() {
   const { t } = useTranslation("about__terms");

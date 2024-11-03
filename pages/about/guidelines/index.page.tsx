@@ -14,14 +14,14 @@ function Page() {
         <Trans
           i18nKey="about__guidelines:guidelines.html"
           components={[
-            <blockquote />,
-            <p />,
-            <b />,
-            <h2 />,
-            <ul />,
-            <li />,
-            <a href="/issues" />,
-            <a href="https://www.contributor-covenant.org" />,
+            <blockquote key={0} />,
+            <p key={1} />,
+            <b key={2} />,
+            <h2 key={3} />,
+            <ul key={4} />,
+            <li key={5} />,
+            <a href="/issues" key={6} />,
+            <a href="https://www.contributor-covenant.org" key={7} />,
           ]}
         />
       </TypographyStylesProvider>
