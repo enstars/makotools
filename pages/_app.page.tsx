@@ -23,8 +23,11 @@ import { initAuthentication } from "services/firebase/authentication";
 import { UserProvider } from "services/firebase/user";
 import DayjsProvider from "services/libraries/dayjs";
 import MantineTheme from "components/MantineTheme";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 initAuthentication();
+
+const queryClient = new QueryClient();
 
 function MakoTools({
   Component,
@@ -83,13 +86,15 @@ function MakoTools({
         }}
       >
         <DayjsProvider>
-          <MantineTheme
-            colorScheme={colorScheme}
-            setAppColorScheme={setAppColorScheme}
-            toggleAppColorScheme={toggleAppColorScheme}
-          >
-            {getLayout(<Component {...pageProps} />, pageProps)}
-          </MantineTheme>
+          <QueryClientProvider client={queryClient}>
+            <MantineTheme
+              colorScheme={colorScheme}
+              setAppColorScheme={setAppColorScheme}
+              toggleAppColorScheme={toggleAppColorScheme}
+            >
+              {getLayout(<Component {...pageProps} />, pageProps)}
+            </MantineTheme>
+          </QueryClientProvider>
         </DayjsProvider>
       </UserProvider>
     </>
