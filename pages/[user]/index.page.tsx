@@ -100,8 +100,14 @@ function Page({
   unitsQuery: QuerySuccess<GameUnit[]>;
   locale: Locale;
 }) {
-  const { user, userDB, privateUserDB, updatePrivateUserDB, updateUserDB } =
-    useUser();
+  const {
+    user,
+    userDB,
+    privateUserDB,
+    updatePrivateUserDB,
+    updateUserDB,
+    userDBError,
+  } = useUser();
 
   const cardsData: GameCard[] = useMemo(
     () => cardsQuery.data,
@@ -474,11 +480,15 @@ function Page({
     );
   }
 
-  if (isProfileDataPending || updateUserDB?.isPending) {
+  if (
+    isProfileDataPending ||
+    updateUserDB?.isPending ||
+    (!userDB && !userDBError)
+  ) {
     return <LoadingState />;
   }
 
-  if (profileDataError) {
+  if (profileDataError || userDBError) {
     return (
       <Title mt={64} mb="sm">
         <Text component="span" inherit color="dimmed">

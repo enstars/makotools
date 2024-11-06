@@ -42,6 +42,8 @@ interface UserContextType {
         unknown
       >
     | undefined;
+  userDBError: Error | null;
+  privateUserDBError: Error | null;
 }
 
 const loadingUser: UserLoggedOut = {
@@ -55,6 +57,8 @@ const UserContext = React.createContext<UserContextType>({
   privateUserDB: undefined,
   updateUserDB: undefined,
   updatePrivateUserDB: undefined,
+  userDBError: null,
+  privateUserDBError: null,
 });
 const useUser = () => useContext(UserContext);
 
@@ -97,7 +101,7 @@ export function UserProvider({
     },
   });
 
-  const { data: userDB } = useQuery({
+  const { data: userDB, error: userDBError } = useQuery({
     enabled: !!userData,
     queryKey: userQueries.fetchUserDB(userData?.suid),
     queryFn: async () => {
@@ -106,7 +110,7 @@ export function UserProvider({
     },
   });
 
-  const { data: privateUserDB } = useQuery({
+  const { data: privateUserDB, error: privateUserDBError } = useQuery({
     enabled: !!userData,
     queryKey: userQueries.fetchPrivateUserDB(userData?.suid),
     queryFn: async () => {
@@ -209,6 +213,8 @@ export function UserProvider({
     privateUserDB,
     updateUserDB: updateUserDB,
     updatePrivateUserDB: updatePrivateUserDB,
+    userDBError,
+    privateUserDBError,
   };
 
   return (

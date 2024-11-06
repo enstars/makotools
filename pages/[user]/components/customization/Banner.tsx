@@ -13,7 +13,7 @@ import {
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { IconFlower, IconFlowerOff, IconTrash } from "@tabler/icons-react";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, Fragment, SetStateAction, useEffect, useState } from "react";
 import { GridContextProvider, GridDropZone, GridItem } from "react-grid-drag";
 import useTranslation from "next-translate/useTranslation";
 
@@ -60,7 +60,7 @@ function Banner({
   const theme = useMantineTheme();
   const { t } = useTranslation("user");
   const { user, userDB } = useUser();
-  const [acValue, setAcValue] = useState("");
+  const [acValue] = useState("");
 
   const [state, handlers] = useListState(
     (user.loggedIn && userDB?.profile__banner) || []
@@ -91,7 +91,7 @@ function Banner({
         profile__banner: filteredState,
       }));
     }
-  }, [state, user, externalSetter, handlers]);
+  }, [state, user]);
 
   if (!cards)
     return (
@@ -103,14 +103,14 @@ function Banner({
   return (
     <>
       {state.map((item) => (
-        <>
+        <Fragment key={item}>
           <PicturePreload
             srcB2={`assets/card_still_full1_${Math.abs(item)}_normal.png`}
           />
           <PicturePreload
             srcB2={`assets/card_still_full1_${Math.abs(item)}_evolution.png`}
           />
-        </>
+        </Fragment>
       ))}
       <Input.Wrapper label={t("currentBannerCards")}>
         <Space mb="xs" />
