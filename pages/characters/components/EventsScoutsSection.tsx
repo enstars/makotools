@@ -19,14 +19,12 @@ export function EventsScoutsSection({
   cards: GameCard[];
   type: "events" | "scouts";
 }) {
-  const colors = useCharacterColors();
   return (
     <Box>
       <SectionTitle
         id={type === "events" ? "events" : "scouts"}
         title={type === "events" ? "Events" : "Scouts"}
         Icon={type === "events" ? IconAward : IconDiamond}
-        iconProps={{ color: colors.image }}
       />
       <ResponsiveGrid width={240}>
         {events.map((event) => {

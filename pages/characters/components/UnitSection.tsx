@@ -13,13 +13,11 @@ export function UnitSection({
   character,
   locale,
   units,
-  baseColor,
 }: {
   characters: GameCharacter[];
   character: GameCharacter;
   locale: Lang[];
   units: GameUnit[];
-  baseColor: string;
 }) {
   const charaUnits = units.filter((u) => character.unit.includes(u.id));
 
@@ -32,7 +30,7 @@ export function UnitSection({
             <SectionTitle
               id={`unit-${unit.id}`}
               Icon={IconEnstars}
-              iconProps={{ unit: unit.id, color: baseColor }}
+              iconProps={{ unit: unit.id }}
               title={
                 <>
                   <Text weight={400} span>

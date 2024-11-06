@@ -143,7 +143,7 @@ function Page({
   );
   const scouts: Scout[] = useMemo(() => scoutsQuery.data, [scoutsQuery.data]);
 
-  const events: Campaign[] = [...birthdays, ...gameEvents, ...scouts];
+  const events: Campaign[] = [...birthdays, ...(gameEvents ?? []), ...scouts];
 
   const cards: GameCard[] = useMemo(() => cardsQuery.data, [cardsQuery.data]);
 

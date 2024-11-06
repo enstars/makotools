@@ -29,12 +29,7 @@ export function CirclesSection({
   const colors = useCharacterColors();
   return (
     <Box id="circles">
-      <SectionTitle
-        id="circles"
-        title="Circles"
-        Icon={IconFriends}
-        iconProps={{ color: colors.image }}
-      />
+      <SectionTitle id="circles" title="Circles" Icon={IconFriends} />
       <ResponsiveGrid width={240} sx={{}}>
         {character.circle?.map((circle) => {
           const circleMembers = characters.filter((chara) =>
