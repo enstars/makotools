@@ -45,7 +45,7 @@ const useStyles = createStyles((theme) => ({
 function Banner({ events }: { events: (Birthday | Event | Scout)[] }) {
   const theme = useMantineTheme();
   const { t } = useTranslation("home");
-  const user = useUser();
+  const { user } = useUser();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const { dayjs } = useDayjs();
   const { classes } = useStyles();

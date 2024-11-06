@@ -32,7 +32,7 @@ function Login() {
   const [signOnError, setSignOnError] = useState<{ type: string } | null>(null);
 
   const router = useRouter();
-  const user = useUser();
+  const { user, updateUserDB } = useUser();
 
   function signOnAlertMsg(error: { type: string; code?: string }) {
     const { code } = error;
@@ -108,11 +108,11 @@ function Login() {
     }
 
     return () => {
-      if (isRegister && user.loggedIn) {
-        user.db.set({ name: form.values.name }, () => {});
+      if (isRegister && user.loggedIn && updateUserDB) {
+        updateUserDB.mutate({ name: form.values.name });
       }
     };
-  }, [user, router, form, isRegister]);
+  }, [user, router, form, isRegister, updateUserDB]);
 
   return (
     <Container
@@ -185,7 +185,7 @@ function Login() {
             />
             <form
               id="signin-form"
-              onSubmit={form.onSubmit((values) => {
+              onSubmit={form.onSubmit(() => {
                 setSignOnError(null);
                 if (isRegister) {
                   signUpWithEmail(

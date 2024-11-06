@@ -5,12 +5,7 @@ import {
   SetStateAction,
   ChangeEvent,
 } from "react";
-import {
-  TextInput,
-  useMantineTheme,
-  Text,
-  TextInputProps,
-} from "@mantine/core";
+import { TextInput, Text, TextInputProps } from "@mantine/core";
 import useTranslation from "next-translate/useTranslation";
 
 import { UserData } from "types/makotools";
@@ -35,17 +30,16 @@ function TextSetting<T = {}>({
   profileState: any;
 } & T) {
   const { t } = useTranslation("user");
-  const theme = useMantineTheme();
-  const user = useUser();
+  const { user, userDB } = useUser();
 
   const isFirestoreAccessible = user.loggedIn;
 
   const [inputValue, setInputValue] = useState(
-    user.loggedIn ? user.db?.[dataKey] : undefined
+    user.loggedIn ? String(userDB?.[dataKey]) : undefined
   );
 
   useEffect(() => {
-    if (isFirestoreAccessible) setInputValue(user.db?.[dataKey]);
+    if (isFirestoreAccessible) setInputValue(String(userDB?.[dataKey]));
   }, [isFirestoreAccessible, user, dataKey]);
 
   return (
@@ -59,11 +53,11 @@ function TextSetting<T = {}>({
         }}
         {...props}
         error={
-          inputValue?.length > charLimit
+          (inputValue?.length ?? 0) > charLimit
             ? `${label} must be under ${charLimit} characters`
             : null
         }
-        disabled={isFirestoreAccessible && user?.db?.admin?.disableTextFields}
+        disabled={isFirestoreAccessible && userDB?.admin?.disableTextFields}
       />
       {showCharCount && (
         <Text align="right" color="dimmed" size="xs" mt="xs">

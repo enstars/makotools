@@ -6,23 +6,7 @@ import { EditingProfile } from "../customization/EditProfileModal";
 import { getAssetURL } from "services/data";
 import useUser from "services/firebase/user";
 
-/** Type defining the width, height, x-coordinate, and y-coordinate of a crop
- * @param {number} x - x-coordinate
- * @param {number} y - y-coordinate
- * @param {number} width - width
- * @param {number} height - height
- */
-interface Crop {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
 /** Component defining a profile picture referenced in ProfilePicModal, EditProfileModal, and the profile page
- * @param {EditingProfile} userInfo - The user's profile info
- * @param {number} size? - The size of the avatar
- * @param {string} border? - If the image needs a border, input the border style here
  */
 function ProfileAvatar({
   userInfo,
@@ -34,9 +18,9 @@ function ProfileAvatar({
   size?: number;
 }) {
   const theme = useMantineTheme();
-  const user = useUser();
+  const { user, userDB } = useUser();
 
-  const profile = userInfo || (user.loggedIn ? user.db : undefined);
+  const profile = userInfo || (user.loggedIn ? userDB : undefined);
 
   const placeholder = (
     <Box
@@ -93,7 +77,7 @@ function ProfileAvatar({
       alt="avatar"
       width={transform.width}
       height={transform.height}
-      styles={(theme) => ({
+      styles={() => ({
         root: {
           width: `${size}px !important`,
           height: size,

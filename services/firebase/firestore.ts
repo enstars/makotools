@@ -22,6 +22,7 @@ import {
   UserPrivateData,
   User,
   CardCollection,
+  UserLoggedIn,
 } from "types/makotools";
 
 /**
@@ -31,35 +32,27 @@ import {
  */
 export const FIRESTORE_MAXIMUM_WHERE_VALUES = 10;
 
-export function setFirestoreUserData(
-  data: any,
-  callback: (s: { status: LoadingStatus }) => void,
-  priv = false
-) {
+export async function setFirestoreUserData(data: any, priv = false) {
   const clientAuth = getAuth();
   const db = getFirestore();
   if (clientAuth.currentUser === null) {
-    callback({ status: "error" });
-    return;
+    throw new Error("User is not authenticated");
   }
-  setDoc(
-    doc(
-      db,
-      priv ? `users/${clientAuth.currentUser.uid}/private` : "users",
-      priv ? "values" : clientAuth.currentUser.uid
-    ),
-    data,
-    {
-      merge: true,
-    }
-  ).then(
-    () => {
-      callback({ status: "success" });
-    },
-    () => {
-      callback({ status: "error" });
-    }
-  );
+  try {
+    await setDoc(
+      doc(
+        db,
+        priv ? `users/${clientAuth.currentUser.uid}/private` : "users",
+        priv ? "values" : clientAuth.currentUser.uid
+      ),
+      data,
+      {
+        merge: true,
+      }
+    );
+  } catch (error) {
+    throw new Error("Could not update Firebase user data");
+  }
 }
 
 export async function getFirestoreUserData(uid: string) {
@@ -94,7 +87,8 @@ export async function getFirestorePrivateUserData(uid: string) {
   }
 }
 
-export async function validateUsernameDb(username: string) {
+export async function validateUsernameDb(username: string | undefined) {
+  if (!username) return undefined;
   const db = getFirestore();
   const q = query(collection(db, "users"), where("username", "==", username));
   const querySnap = await getDocs(q);
@@ -130,17 +124,18 @@ export async function sendPasswordReset(
     });
 }
 
-export async function getFirestoreUserCollection([collectionAddress, user]: [
-  string,
-  User
-]) {
+export async function getFirestoreUserCollection(
+  user: UserLoggedIn,
+  profileUID: string | undefined,
+  privateUserDB: UserPrivateData | undefined
+) {
   const db = getFirestore();
+  if (!user || !profileUID || !privateUserDB) throw new Error("Missing data");
 
-  const profileUID = collectionAddress.split("/")[1];
   const accessiblePrivacyLevel = user.loggedIn
     ? user.user.id === profileUID
       ? 3
-      : user.privateDb.friends__list?.includes(profileUID)
+      : privateUserDB.friends__list?.includes(profileUID)
       ? 2
       : 1
     : 0;
@@ -150,7 +145,7 @@ export async function getFirestoreUserCollection([collectionAddress, user]: [
   try {
     querySnap = await getDocs(
       query(
-        collection(db, collectionAddress),
+        collection(db, `users/${user.user.id}/card_collections`),
         where("privacyLevel", "<=", accessiblePrivacyLevel)
       )
     );
@@ -162,7 +157,11 @@ export async function getFirestoreUserCollection([collectionAddress, user]: [
       userCollection.push(data as CardCollection);
     });
   } catch (e) {
-    console.info(accessiblePrivacyLevel, collectionAddress, e);
+    console.info(
+      accessiblePrivacyLevel,
+      `users/${user.user.id}/card_collections`,
+      e
+    );
     console.error(e);
   }
   return userCollection;
@@ -214,10 +213,7 @@ export async function getFirestoreUserDocument(
 
 //   return profile;
 // }
-export async function getFirestoreUserProfile([profileAddress, uid]: [
-  string,
-  string
-]) {
+export async function getFirestoreUserProfile(uid: string) {
   const db = getFirestore();
   let profile;
 

@@ -11,34 +11,35 @@ function createBirthdayData(
   locale: Locale
 ): Birthday[] {
   let birthdays = [];
-  for (const character of characters) {
-    let birthdayEvent: Birthday = {
-      character_id: character.character_id,
-      name: character.first_name.map((c, i) =>
-        getNameOrder(
-          { first_name: c, last_name: character.last_name[i] },
-          nameOrder,
-          locale
-        )
-      ),
-      start: {
-        jp: character.birthday,
-        en: character.birthday,
-      },
-      end: {
-        jp: character.birthday,
-        en: character.birthday,
-      },
+  if (characters) {
+    for (const character of characters) {
+      let birthdayEvent: Birthday = {
+        character_id: character.character_id,
+        name: character.first_name.map((c, i) =>
+          getNameOrder(
+            { first_name: c, last_name: character.last_name[i] },
+            nameOrder,
+            locale
+          )
+        ),
+        start: {
+          jp: character.birthday,
+          en: character.birthday,
+        },
+        end: {
+          jp: character.birthday,
+          en: character.birthday,
+        },
 
-      type: "birthday",
-      banner_id: character.renders?.fs1_5,
-      horoscope: character.horoscope,
-      shortCharacterName: character.first_name,
-    };
+        type: "birthday",
+        banner_id: character.renders?.fs1_5,
+        horoscope: character.horoscope,
+        shortCharacterName: character.first_name,
+      };
 
-    birthdays.push(birthdayEvent);
+      birthdays.push(birthdayEvent);
+    }
   }
-
   return birthdays;
 }
 

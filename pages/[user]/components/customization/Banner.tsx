@@ -59,12 +59,11 @@ function Banner({
 }) {
   const theme = useMantineTheme();
   const { t } = useTranslation("user");
-  const user = useUser();
+  const { user, userDB } = useUser();
   const [acValue, setAcValue] = useState("");
 
-  const { classes, cx } = useStyles();
   const [state, handlers] = useListState(
-    (user.loggedIn && user.db?.profile__banner) || []
+    (user.loggedIn && userDB?.profile__banner) || []
   );
   const [reordering, setReordering] = useState(false);
 
@@ -84,8 +83,8 @@ function Banner({
     // update profile banner if user is logged in and state has changed
     if (
       user.loggedIn &&
-      user.db?.profile__banner &&
-      JSON.stringify(user.db.profile__banner) !== JSON.stringify(state)
+      userDB?.profile__banner &&
+      JSON.stringify(userDB.profile__banner) !== JSON.stringify(state)
     ) {
       externalSetter((s) => ({
         ...s,

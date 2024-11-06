@@ -35,12 +35,11 @@ import PRIVACY_LEVELS from "components/collections/privacyLevels";
 import { COLLECTION_ICONS } from "components/collections/collectionIcons";
 import { useDayjs } from "services/libraries/dayjs";
 import { CardCollection, CollectedCard } from "types/makotools";
-import { GameCard, GameUnit } from "types/game";
+import { GameCard } from "types/game";
 import CollectionIconsMenu from "components/collections/CollectionIconsMenu";
 
 function EditCollection({
   collection,
-  units,
   allCards,
   handlers,
   index,
@@ -48,7 +47,6 @@ function EditCollection({
   width,
 }: {
   collection: CardCollection;
-  units: GameUnit[];
   allCards: GameCard[];
   handlers: UseListStateHandlers<CardCollection>;
   index: number;
@@ -65,7 +63,7 @@ function EditCollection({
   );
   useEffect(() => {
     handlers.setItemProp(index, "cards", cards);
-  }, [cards, index, handlers]);
+  }, [cards, index]);
 
   const NUM_COLS = Math.floor((width - 24) / 120);
 

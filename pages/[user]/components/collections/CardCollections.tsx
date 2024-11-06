@@ -5,13 +5,13 @@ import {
   Center,
   Group,
   Loader,
+  Stack,
+  Text,
   Title,
-  useMantineTheme,
 } from "@mantine/core";
-import { IconPencil } from "@tabler/icons-react";
+import { IconAlertCircle, IconCheck, IconPencil } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useListState } from "@mantine/hooks";
-import useSWR from "swr";
 import { doc, getFirestore, writeBatch } from "firebase/firestore";
 import { isEqual } from "lodash";
 import useTranslation from "next-translate/useTranslation";
@@ -19,34 +19,29 @@ import useTranslation from "next-translate/useTranslation";
 import EditCollections from "./EditCollections";
 import CollectionFolder from "./CollectionFolder";
 
-import { CardCollection, UserData } from "types/makotools";
-import { getFirestoreUserCollection } from "services/firebase/firestore";
-import { GameCard, GameUnit } from "types/game";
+import { CardCollection, UserData, UserLoggedIn } from "types/makotools";
+import { GameCard } from "types/game";
 import useUser from "services/firebase/user";
-import { createNewCollectionObject } from "services/makotools/collection";
+import {
+  createNewCollectionObject,
+  useCollections,
+} from "services/makotools/collection";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { cardCollectionQueries } from "services/queries";
+import { showNotification } from "@mantine/notifications";
 
 function CardCollections({
   profile,
-  uid: profileUid,
   cards,
-  units,
 }: {
   profile: UserData;
-  uid: string;
   cards: GameCard[];
-  units: GameUnit[];
 }) {
+  const qc = useQueryClient();
   const { t } = useTranslation("user");
-  const user = useUser();
-  const theme = useMantineTheme();
-  const {
-    data: profileCollections,
-    isLoading,
-    mutate,
-  } = useSWR<CardCollection[]>(
-    [`users/${profileUid}/card_collections`, user],
-    getFirestoreUserCollection
-  );
+  const { user, userDB } = useUser();
+  const { collections: profileCollections, areCollectionsLoading } =
+    useCollections();
 
   const [collections, collectionHandlers] =
     useListState<CardCollection>(profileCollections);
@@ -58,46 +53,144 @@ function CardCollections({
     useListState<CardCollection>([]);
   const [isReordering, setIsReordering] = useState<boolean>(false);
 
-  const isYourProfile = user.loggedIn && user.db.suid === profile.suid;
+  const isYourProfile = user.loggedIn && userDB?.suid === profile.suid;
   const [currentCollection, setCurrentCollection] = useState<
     number | undefined
   >(undefined);
 
   useEffect(() => {
-    if (!isLoading && profileCollections)
+    if (!areCollectionsLoading && profileCollections)
       collectionHandlers.setState(profileCollections);
-  }, [profileCollections, isLoading, collectionHandlers]);
+  }, [profileCollections, areCollectionsLoading, collectionHandlers]);
 
-  const saveReorder = async () => {
-    if (!user.loggedIn) return;
-    const db = getFirestore();
-    // Get a new write batch
-    const batch = writeBatch(db);
+  const reorderCollection = useMutation({
+    mutationFn: async () => {
+      if (!user.loggedIn) throw new Error("User is not logged in");
+      const db = getFirestore();
+      // Get a new write batch
+      const batch = writeBatch(db);
 
-    tempCollectionsWhileReordering.forEach((collection, index) => {
-      editingHandlers.setItemProp(
-        editingCollections.indexOf(
-          editingCollections.find(
-            (c) => c.id === collection.id
-          ) as CardCollection
+      tempCollectionsWhileReordering.forEach((collection, index) => {
+        editingHandlers.setItemProp(
+          editingCollections.indexOf(
+            editingCollections.find(
+              (c) => c.id === collection.id
+            ) as CardCollection
+          ),
+          "order",
+          index
+        );
+        tempCollectionsWhileReordering[index].order = index;
+        const collectionRef = doc(
+          db,
+          `users/${user.user.id}/card_collections`,
+          collection.id
+        );
+        batch.update(collectionRef, { order: index });
+      });
+
+      // Commit the batch
+      await batch.commit();
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({
+        queryKey: cardCollectionQueries.fetchCardCollections(
+          (user as UserLoggedIn).user.id ?? undefined
         ),
-        "order",
-        index
-      );
-      tempCollectionsWhileReordering[index].order = index;
-      const collectionRef = doc(
-        db,
-        `users/${user.user.id}/card_collections`,
-        collection.id
-      );
-      batch.update(collectionRef, { order: index });
-    });
+      });
+    },
+    onError: (error: Error) => {
+      console.error("Could not save collections", error.message);
+    },
+  });
 
-    // Commit the batch
-    await batch.commit();
+  const saveAllCollections = useMutation({
+    mutationFn: async () => {
+      if (!user.loggedIn) throw new Error("User is not logged in");
+      setEditMode(false);
+      setCurrentCollection(undefined);
 
-    mutate(tempCollectionsWhileReordering);
-  };
+      const db = getFirestore();
+
+      // Get a new write batch
+      const batch = writeBatch(db);
+
+      const toUpdateCollections: CardCollection[] = [...editingCollections];
+      const updatedCollections: CardCollection[] = [];
+      collections.forEach((originalCollection) => {
+        const newCollection = toUpdateCollections.find(
+          (c) => c.id === originalCollection.id
+        );
+
+        if (newCollection) {
+          if (!isEqual(originalCollection, newCollection)) {
+            const collectionRef = doc(
+              db,
+              `users/${user.user.id}/card_collections`,
+              newCollection.id
+            );
+            batch.set(collectionRef, newCollection, {
+              merge: true,
+            });
+          }
+
+          toUpdateCollections.splice(
+            toUpdateCollections.indexOf(newCollection),
+            1
+          );
+          updatedCollections.push(newCollection);
+        } else {
+          const collectionRef = doc(
+            db,
+            `users/${user.user.id}/card_collections`,
+            originalCollection.id
+          );
+          batch.delete(collectionRef);
+        }
+      });
+
+      if (toUpdateCollections.length > 0) {
+        toUpdateCollections.forEach((collectionToCreate) => {
+          const collectionRef = doc(
+            db,
+            `users/${user.user.id}/card_collections`,
+            collectionToCreate.id
+          );
+          batch.set(collectionRef, collectionToCreate, {
+            merge: true,
+          });
+          updatedCollections.push(collectionToCreate);
+        });
+      }
+      await batch.commit();
+    },
+    onSuccess: async () => {
+      await qc.refetchQueries({
+        queryKey: cardCollectionQueries.fetchCardCollections(
+          (user as UserLoggedIn).user.id ?? undefined
+        ),
+      });
+      showNotification({
+        id: "saveAllCollections",
+        loading: false,
+        title: "Success!",
+        message: "Successfully saved collections",
+        icon: <IconCheck />,
+        color: "lime",
+      });
+    },
+    onError: (error: Error) => {
+      console.error("Could not save all collections", error.message);
+      showNotification({
+        id: "saveAllCollections",
+        loading: false,
+        title: "An error occurred",
+        message: `Could not save all collections: ${error.message}`,
+        icon: <IconAlertCircle />,
+        color: "red",
+      });
+    },
+  });
 
   const addNewCollection = async () => {
     if (!user.loggedIn) return;
@@ -106,68 +199,6 @@ function CardCollections({
     });
     setCurrentCollection(editingCollections.length);
     editingHandlers.append(newCollection);
-  };
-
-  const saveAllChanges = async () => {
-    if (!user.loggedIn) return;
-    setEditMode(false);
-    setCurrentCollection(undefined);
-
-    const db = getFirestore();
-
-    // Get a new write batch
-    const batch = writeBatch(db);
-
-    const toUpdateCollections: CardCollection[] = [...editingCollections];
-    const updatedCollections: CardCollection[] = [];
-    collections.forEach((originalCollection) => {
-      const newCollection = toUpdateCollections.find(
-        (c) => c.id === originalCollection.id
-      );
-
-      if (newCollection) {
-        if (!isEqual(originalCollection, newCollection)) {
-          const collectionRef = doc(
-            db,
-            `users/${user.user.id}/card_collections`,
-            newCollection.id
-          );
-          batch.set(collectionRef, newCollection, {
-            merge: true,
-          });
-        }
-
-        toUpdateCollections.splice(
-          toUpdateCollections.indexOf(newCollection),
-          1
-        );
-        updatedCollections.push(newCollection);
-      } else {
-        const collectionRef = doc(
-          db,
-          `users/${user.user.id}/card_collections`,
-          originalCollection.id
-        );
-        batch.delete(collectionRef);
-      }
-    });
-
-    if (toUpdateCollections.length > 0) {
-      toUpdateCollections.forEach((collectionToCreate) => {
-        const collectionRef = doc(
-          db,
-          `users/${user.user.id}/card_collections`,
-          collectionToCreate.id
-        );
-        batch.set(collectionRef, collectionToCreate, {
-          merge: true,
-        });
-        updatedCollections.push(collectionToCreate);
-      });
-    }
-    await batch.commit();
-
-    mutate(updatedCollections);
   };
 
   const discardAllChanges = () => {
@@ -181,42 +212,58 @@ function CardCollections({
         <Title order={2} mt="md" mb="xs">
           {t("collections.title")}
         </Title>
-        {isYourProfile && !editMode && (
-          <Button
-            variant="subtle"
-            leftIcon={<IconPencil size={16} />}
-            onClick={() => {
-              setEditMode(true);
-              editingHandlers.setState(collections);
-            }}
-          >
-            {t("edit")}
-          </Button>
-        )}
+        {isYourProfile &&
+          !editMode &&
+          !areCollectionsLoading &&
+          !saveAllCollections.isPending && (
+            <Button
+              variant="subtle"
+              leftIcon={<IconPencil size={16} />}
+              onClick={() => {
+                setEditMode(true);
+                editingHandlers.setState(collections);
+              }}
+            >
+              {t("edit")}
+            </Button>
+          )}
       </Group>
-      {isLoading && !editMode ? (
+      {areCollectionsLoading || saveAllCollections.isPending ? (
         <Box>
           <Center>
-            <Loader />
+            <Stack>
+              <Loader />
+              {areCollectionsLoading && (
+                <Text fz="sm" color="dimmed">
+                  Loading
+                </Text>
+              )}
+              {saveAllCollections.isPending && (
+                <Text fz="sm" color="dimmed">
+                  Saving collections...
+                </Text>
+              )}
+            </Stack>
           </Center>
         </Box>
       ) : editMode ? (
         <EditCollections
-          currentCollection={currentCollection}
-          isReordering={isReordering}
-          setCurrentCollection={setCurrentCollection}
-          units={units}
-          cards={cards}
-          editingHandlers={editingHandlers}
-          addNewCollection={addNewCollection}
-          setIsReordering={setIsReordering}
-          tempCollectionsWhileReordering={tempCollectionsWhileReordering}
-          tempHandlersWhileReordering={tempHandlersWhileReordering}
-          editingCollections={editingCollections}
-          profile={profile}
-          saveReorder={saveReorder}
-          saveAllChanges={saveAllChanges}
-          discardAllChanges={discardAllChanges}
+          {...{
+            addNewCollection,
+            cards,
+            currentCollection,
+            discardAllChanges,
+            editingCollections,
+            editingHandlers,
+            isReordering,
+            profile,
+            setCurrentCollection,
+            setIsReordering,
+            tempCollectionsWhileReordering,
+            tempHandlersWhileReordering,
+          }}
+          saveReorder={reorderCollection}
+          saveAllChanges={saveAllCollections}
         />
       ) : (
         <Accordion

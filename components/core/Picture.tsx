@@ -168,16 +168,15 @@ function Picture({
     ...otherProps
   } = props;
   const theme = useMantineTheme();
-  const user = useUser();
+  const { user, userDB } = useUser();
 
   const dontUseWebP = useMemo(
-    () => user.loggedIn && user.db.setting__use_webp === "dont-use",
+    () => user.loggedIn && userDB?.setting__use_webp === "dont-use",
     [user]
   );
 
   const [loaded, setLoaded] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-  const [opened, setOpened] = useState<boolean>(false);
 
   const src = useMemo(
     () => originalSrc || getAssetURL(srcB2 as string),

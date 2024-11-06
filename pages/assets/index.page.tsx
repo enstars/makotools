@@ -491,7 +491,7 @@ function Page({
 }) {
   const { classes } = useStyles();
   const { t } = useTranslation("assets");
-  const user = useUser();
+  const { user, userDB } = useUser();
   const theme = useMantineTheme();
   const characters = useMemo(
     () => charactersQuery.data,
@@ -566,8 +566,7 @@ function Page({
     key: "viewOptions__event",
     defaultValue: {
       region:
-        (user.loggedIn && user.db?.setting__game_region) ||
-        ("en" as GameRegion),
+        (user.loggedIn && userDB?.setting__game_region) || ("en" as GameRegion),
       density: "full" as "full" | "list" | "compact",
       assetType: "frameless",
     },

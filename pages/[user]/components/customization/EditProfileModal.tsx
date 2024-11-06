@@ -22,7 +22,7 @@ import Name from "./Name";
 import Banner from "./Banner";
 
 import { GameCard, GameCharacter, GameUnit } from "types/game";
-import { Locale, User, UserData } from "types/makotools";
+import { Locale, UserData } from "types/makotools";
 
 export type EditingProfile = Pick<
   UserData,
@@ -41,15 +41,8 @@ const Bio = dynamic(() => import("./Bio"), {
   ssr: false,
 });
 
-/** Modal for editing the profile
- * @param {boolean} opened - Whether the modal is currently opened or not
- * @param {Dispatch<SetStateAction<boolean>} openedFunction - The function that toggles the opened parameter
- * @param {Dispatch<SetStateAction<boolean>} picModalFunction - Function that opens and closes ProfilePicModal
- * @param {GameCard[]} cards - Array of available cards in game for the profile banner
- * @param {User} user - Object for the currently logged-in user
- * @param {UserData} profile - The profile that is currently being viewed
- * @param {EditingProfile} profileState - The state of the current profile that is being edited
- * @param {Dispatch<SetStateAction<any>>} - The setter function that updates profileState
+/**
+ * Modal for editing the profile
  */
 function EditProfileModal({
   opened,
@@ -57,7 +50,6 @@ function EditProfileModal({
   openedFunction,
   picModalFunction,
   cards,
-  user,
   profile,
   profileState,
   setProfileState,
@@ -70,7 +62,6 @@ function EditProfileModal({
   openedFunction: Dispatch<SetStateAction<boolean>>;
   picModalFunction: Dispatch<SetStateAction<boolean>>;
   cards?: GameCard[] | undefined;
-  user: User;
   profile: UserData;
   profileState: EditingProfile | undefined;
   setProfileState: Dispatch<SetStateAction<EditingProfile>>;
@@ -88,7 +79,7 @@ function EditProfileModal({
         openedFunction(false);
       }}
       size="lg"
-      styles={(theme) => ({
+      styles={() => ({
         title: { width: "100%" },
       })}
       title={
@@ -164,10 +155,7 @@ function EditProfileModal({
                   externalSetter={setProfileState}
                   profileState={profileState}
                 />
-                <StartPlaying
-                  externalSetter={setProfileState}
-                  profileState={profileState}
-                />
+                <StartPlaying externalSetter={setProfileState} />
               </Stack>
             </Group>
             <Favorites

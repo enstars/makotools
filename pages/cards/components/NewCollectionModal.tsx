@@ -12,23 +12,31 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconChevronUp } from "@tabler/icons-react";
+import { UseMutationResult } from "@tanstack/react-query";
 
 import { COLLECTION_ICONS } from "components/collections/collectionIcons";
 import CollectionIconsMenu from "components/collections/CollectionIconsMenu";
 import PRIVACY_LEVELS from "components/collections/privacyLevels";
 import { MAX_COLLECTION_NAME_LENGTH } from "services/makotools/collection";
-import { CardCollection, CollectionPrivacyLevel } from "types/makotools";
+import { CollectionPrivacyLevel } from "types/makotools";
 
 export default function NewCollectionModal({
   opened,
   onClose,
-  onNewCollection,
+  createCollection,
 }: {
   opened: boolean;
   onClose: () => any;
-  onNewCollection: (
-    values: Pick<CardCollection, "name" | "privacyLevel" | "icon">
-  ) => any;
+  createCollection: UseMutationResult<
+    void,
+    Error,
+    {
+      name: string;
+      privacyLevel: 0 | 1 | 2 | 3;
+      icon: number;
+    },
+    unknown
+  >;
 }) {
   const form = useForm({
     initialValues: {
@@ -53,7 +61,7 @@ export default function NewCollectionModal({
     <Modal opened={opened} onClose={onClose}>
       <form
         onSubmit={form.onSubmit((values) => {
-          onNewCollection(values);
+          createCollection.mutate(values);
           onClose();
         })}
       >

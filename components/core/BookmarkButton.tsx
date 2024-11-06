@@ -1,9 +1,11 @@
 import { Anchor, Box, Paper, useMantineTheme } from "@mantine/core";
-import { showNotification } from "@mantine/notifications";
+import { showNotification, updateNotification } from "@mantine/notifications";
 import { arrayRemove, arrayUnion } from "firebase/firestore";
+import { update } from "lodash";
 import Trans from "next-translate/Trans";
 import useTranslation from "next-translate/useTranslation";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 import useUser from "services/firebase/user";
 
@@ -43,36 +45,94 @@ export default function BookmarkButton({
   onBusyBackground?: boolean;
   inCard?: boolean;
 }) {
-  const user = useUser();
+  const { user, userDB, updateUserDB } = useUser();
   const theme = useMantineTheme();
   const { t } = useTranslation("bookmarks");
-
-  if (!user.loggedIn) {
-    return null;
-  }
+  const bookmarkAction = useRef<"add" | "remove">();
 
   const userDbProp =
     type === "event" ? "bookmarks__events" : "bookmarks__scouts";
 
-  const isBookmarked = user.db[userDbProp]?.includes(id);
+  const isBookmarked = userDB?.[userDbProp]?.includes(id);
 
-  const addBookmark = (callback?: any) => {
-    user.db.set(
-      {
-        [userDbProp]: arrayUnion(id),
-      },
-      callback
-    );
+  const addBookmark = () => {
+    bookmarkAction.current = "add";
+    updateUserDB?.mutate({
+      [userDbProp]: arrayUnion(id),
+    });
   };
 
-  const removeBookmark = (callback?: any) => {
-    user.db.set(
-      {
-        [userDbProp]: arrayRemove(id),
-      },
-      callback
-    );
+  const removeBookmark = () => {
+    bookmarkAction.current = "remove";
+    updateUserDB?.mutate({
+      [userDbProp]: arrayRemove(id),
+    });
   };
+
+  useEffect(() => {
+    if (updateUserDB?.isSuccess) {
+      if (bookmarkAction.current === "remove") {
+        updateNotification({
+          id: "updateBookmark",
+          title: t("bookmark_removed"),
+          message: (
+            <>
+              <Trans
+                i18nKey="bookmarks:bookmark_added_description"
+                components={[
+                  <Anchor
+                    component={Link}
+                    href={`/bookmarks`}
+                    inherit
+                    key={0}
+                  />,
+                ]}
+              />
+            </>
+          ),
+          color: "lime",
+          onClose: () => {
+            bookmarkAction.current = undefined;
+          },
+        });
+      } else if (bookmarkAction.current === "add") {
+        updateNotification({
+          id: "updateBookmark",
+          title: t("bookmark_added"),
+          color: "lime",
+          message: (
+            <>
+              <Trans
+                i18nKey="bookmarks:bookmark_added_description"
+                components={[
+                  <Anchor
+                    component={Link}
+                    href={`/bookmarks`}
+                    inherit
+                    key={0}
+                  />,
+                ]}
+              />
+            </>
+          ),
+          onClose: () => {
+            bookmarkAction.current = undefined;
+          },
+        });
+      }
+    } else if (updateUserDB?.isPending) {
+      showNotification({
+        id: "updateBookmark",
+        title: "Updating bookmarks...",
+        message: "",
+        loading: true,
+      });
+    }
+  }, [updateUserDB, bookmarkAction]);
+
+  if (!user.loggedIn) {
+    return null;
+  }
 
   return (
     <Paper
@@ -87,34 +147,9 @@ export default function BookmarkButton({
         e.preventDefault();
         e.stopPropagation();
         if (isBookmarked) {
-          removeBookmark(() => {
-            showNotification({
-              message: t("bookmark_removed"),
-              color: "red",
-            });
-          });
+          removeBookmark();
         } else {
-          addBookmark(() => {
-            showNotification({
-              title: t("bookmark_added"),
-              message: (
-                <>
-                  <Trans
-                    i18nKey="bookmarks:bookmark_added_description"
-                    components={[
-                      <Anchor
-                        component={Link}
-                        href={`/bookmarks`}
-                        inherit
-                        key={0}
-                      />,
-                    ]}
-                  />
-                </>
-              ),
-              color: "teal",
-            });
-          });
+          addBookmark();
         }
       }}
     >

@@ -48,7 +48,7 @@ function Layout({
   meta?: PageMeta;
   headerProps?: any;
 }) {
-  const user = useUser();
+  const { user } = useUser();
   const theme = useMantineTheme();
   const dark = theme.colorScheme === "dark";
   const [collapsed, toggleCollapsed] = useToggle([false, true]);

@@ -74,19 +74,12 @@ function MakoTools({
   return (
     <>
       <VercelAnalytics />
-      <UserProvider
-        setAppColorScheme={setAppColorScheme}
-        colorScheme={colorScheme}
-        serverData={{
-          user: pageProps?.__user ? JSON.parse(pageProps.__user) : undefined,
-          db: pageProps?.__db ? JSON.parse(pageProps.__db) : undefined,
-          privateDb: pageProps?.__privateDb
-            ? JSON.parse(pageProps.__privateDb)
-            : undefined,
-        }}
-      >
-        <DayjsProvider>
-          <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <UserProvider
+          setAppColorScheme={setAppColorScheme}
+          colorScheme={colorScheme}
+        >
+          <DayjsProvider>
             <MantineTheme
               colorScheme={colorScheme}
               setAppColorScheme={setAppColorScheme}
@@ -94,9 +87,9 @@ function MakoTools({
             >
               {getLayout(<Component {...pageProps} />, pageProps)}
             </MantineTheme>
-          </QueryClientProvider>
-        </DayjsProvider>
-      </UserProvider>
+          </DayjsProvider>
+        </UserProvider>
+      </QueryClientProvider>
     </>
   );
 }

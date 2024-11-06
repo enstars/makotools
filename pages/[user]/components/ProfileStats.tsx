@@ -55,7 +55,6 @@ function DisplayFaves({
   characters,
   units,
   profile,
-  ...props
 }: {
   faveCharas: number[];
   faveUnits: number[];
@@ -72,7 +71,7 @@ function DisplayFaves({
     return (
       <Stack spacing={2}>
         <Group spacing={3}>
-          {faveCharas.map((chara: number, index: number) => {
+          {faveCharas.map((chara: number) => {
             if (chara > 0)
               return (
                 <Tooltip
@@ -119,7 +118,7 @@ function DisplayFaves({
           })}
         </Group>
         <Group spacing={3}>
-          {faveUnits.map((unit: number, index: number) => {
+          {faveUnits.map((unit: number) => {
             if (unit > 0)
               return (
                 <Tooltip
@@ -133,7 +132,7 @@ function DisplayFaves({
                 >
                   <Box
                     p={5}
-                    sx={(theme) => ({
+                    sx={() => ({
                       display: "flex",
                       alignItems: "center",
                       height: 50,

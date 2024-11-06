@@ -61,7 +61,7 @@ function Page({
     () => charactersQuery.data,
     [charactersQuery.data]
   );
-  const { collections, onEditCollection, onNewCollection } = useCollections();
+  const { collections, editCollection, createCollection } = useCollections();
   const [newCollectionModalOpened, setNewCollectionModalOpened] =
     useState<boolean>(false);
 
@@ -116,7 +116,7 @@ function Page({
             cardOptions={{ showFullInfo: true }}
             collections={collections}
             lang={cardsQuery.lang}
-            onEditCollection={onEditCollection}
+            editCollection={editCollection}
             onNewCollection={() => setNewCollectionModalOpened(true)}
             character={
               allCharacters.find(
@@ -162,7 +162,7 @@ function Page({
         key={JSON.stringify(newCollectionModalOpened)}
         opened={newCollectionModalOpened}
         onClose={() => setNewCollectionModalOpened(false)}
-        onNewCollection={onNewCollection}
+        createCollection={createCollection}
       />
     </>
   );

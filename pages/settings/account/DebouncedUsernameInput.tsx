@@ -331,13 +331,13 @@ const canonUsernames = [
 function DebouncedUsernameInput({ changedCallback = () => {} }) {
   const { t } = useTranslation("settings");
   const theme = useMantineTheme();
-  const user = useUser();
+  const { user, userDB, updateUserDB } = useUser();
   const [inputValue, setInputValue] = useState(
-    user.loggedIn ? user.db.username : ""
+    user.loggedIn ? userDB?.username : ""
   );
 
   const [newUsername, setNewUsername] = useState(
-    user.loggedIn ? user.db.username : ""
+    user.loggedIn ? userDB?.username : ""
   );
   const [usernameMsg, setUsernameMsg] = useState("");
   const [usernameJudgement, setUsernameJudgement] = useState(true);
@@ -352,7 +352,7 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
   );
 
   useEffect(() => {
-    if (user.loggedIn) setInputValue(user.db.username);
+    if (user.loggedIn) setInputValue(userDB?.username);
   }, [user]);
 
   const validateUsername = async (value: string) => {
@@ -361,7 +361,7 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
       setNewUsername("");
 
       // TODO : move this validation server side
-      if (value === user.db.username) {
+      if (value === userDB?.username) {
         setUsernameMsg("");
         setUsernameJudgement(true);
       } else if (value.replace(/[a-z0-9_]/g, "").length > 0) {
@@ -397,10 +397,10 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
     if (user.loggedIn) {
       const usernameValid = await validateUsernameDb(newUsername);
       if (usernameValid) {
-        user.db.set({ username: newUsername });
+        updateUserDB?.mutate({ username: newUsername });
         setNewUsername("");
         changedCallback();
-        if (canonUsernames.includes(newUsername)) {
+        if (newUsername && canonUsernames.includes(newUsername)) {
           notify("info", {
             title: t("account.unEasterEgg"),
             message: (
@@ -432,7 +432,7 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
             setInputValue(e.target.value);
             memoizedHandleValueChange(e.target.value);
           }}
-          {...(user.loggedIn && inputValue === user.db.username
+          {...(user.loggedIn && inputValue === userDB?.username
             ? null
             : !usernameJudgement
             ? { rightSection: <Loader size="xs" /> }
@@ -451,7 +451,7 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
         <Button
           onClick={validateAndSaveUsername}
           {...(user.loggedIn &&
-          inputValue !== user.db.username &&
+          inputValue !== userDB?.username &&
           (usernameJudgement || newUsername)
             ? null
             : { disabled: true })}
@@ -460,7 +460,7 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
         </Button>
       </Group>
       <Text mt="xs" color="dimmed" size="xs">
-        {user.loggedIn && inputValue !== user.db.username && usernameJudgement
+        {user.loggedIn && inputValue !== userDB?.username && usernameJudgement
           ? usernameMsg
           : t("account.newUsername")}
       </Text>

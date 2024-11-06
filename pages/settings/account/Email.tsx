@@ -7,13 +7,14 @@ import { UserLoggedIn } from "types/makotools";
 
 function Email() {
   const { t } = useTranslation("settings");
-  const user = useUser() as UserLoggedIn;
-  if (user.user.email !== null) {
+  const { user } = useUser();
+  const loggedInUser: UserLoggedIn = user as UserLoggedIn;
+  if (loggedInUser.user.email !== null) {
     return (
       <Box>
         <TextInput
           label={t("account.emailLabel")}
-          value={user.user.email || " "}
+          value={loggedInUser.user.email || " "}
           readOnly
         />
         {user.loggedIn && user.user.emailVerified ? (

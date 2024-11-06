@@ -15,23 +15,23 @@ import { Point } from "react-easy-crop/types";
 import useTranslation from "next-translate/useTranslation";
 
 import { GameCard } from "types/game";
-import { ProfilePicture, User, UserData } from "types/makotools";
+import { ProfilePicture, UserData } from "types/makotools";
 import { getAssetURL } from "services/data";
 
 function ProfilePicModal({
   opened,
   openedFunction,
   cards,
-  user,
-  profile,
+  loggedIn,
+  userDB,
   externalSetter,
   profileState,
 }: {
   opened: boolean;
   openedFunction: any;
   cards: GameCard[];
-  user: User;
-  profile: UserData;
+  loggedIn: boolean;
+  userDB: UserData | undefined;
   externalSetter: Dispatch<SetStateAction<any>>;
   profileState: any;
 }) {
@@ -50,9 +50,9 @@ function ProfilePicModal({
   const bloomed = currentPic.id > 0;
 
   useEffect(() => {
-    if (user.loggedIn && user.db && user.db.profile__picture)
-      setCurrentPic(user.db.profile__picture);
-  }, [user]);
+    if (loggedIn && userDB && userDB.profile__picture)
+      setCurrentPic(userDB.profile__picture);
+  }, [userDB, loggedIn]);
 
   return (
     <Modal

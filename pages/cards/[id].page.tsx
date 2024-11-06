@@ -56,9 +56,8 @@ function Page({
   const { data: card } = cardQuery;
   const { data: character } = characterQuery;
   const obtainMethod = obtainMethodQuery?.data;
-  console.log("obtain method: ", obtainMethod);
 
-  const user = useUser();
+  const { user, userDB } = useUser();
 
   const { t } = useTranslation("cards__card");
 
@@ -66,7 +65,7 @@ function Page({
     card.title,
     cardQuery.lang,
     router.locale as Locale,
-    (user.loggedIn && user?.db?.setting__game_region) || "en"
+    (user.loggedIn && userDB?.setting__game_region) || "en"
   );
 
   return (

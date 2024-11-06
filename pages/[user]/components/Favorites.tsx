@@ -108,10 +108,10 @@ function Favorites({
             placeholder={t("faveUnitsPlaceholder")}
             value={selectedUnits.map((id) => id.toString())}
             data={[
-              ...units.map((unit) => ({
+              ...(units?.map((unit) => ({
                 value: unit.id.toString(),
                 label: unit.name[0],
-              })),
+              })) ?? []),
             ]}
             onChange={(values) => {
               if (values) {
