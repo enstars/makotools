@@ -94,7 +94,7 @@ function Reactions({ fullButton = true }: { fullButton?: boolean }) {
   const { classes } = useStyles();
   const { asPath } = useRouter();
   const [collapsed, setCollapsed] = useState<boolean>(true);
-  const user = useUser();
+  const { user } = useUser();
   const currentPageId = asPath.replace(/\//g, "_");
   const { data: reactions = [], mutate } = useSWR(
     `${CONSTANTS.EXTERNAL_URLS.BACKEND}/api/reactions?filters[page][$eq]=${currentPageId}&sort=createdAt:desc`,

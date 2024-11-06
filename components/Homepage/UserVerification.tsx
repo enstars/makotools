@@ -5,7 +5,7 @@ import { sendVerificationEmail } from "services/firebase/firestore";
 import useUser from "services/firebase/user";
 
 function UserVerification() {
-  const user = useUser();
+  const { user } = useUser();
 
   return (
     <>

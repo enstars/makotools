@@ -52,9 +52,7 @@ function BookmarkedCard({
 }) {
   const { dayjs } = useDayjs();
   const { t } = useTranslation("bookmarks__page");
-  const theme = useMantineTheme();
   const [countdownAmt, setCountdownAmt] = useState<string>();
-  const isMobile = useMediaQuery("(max-width: 768px)");
 
   const startDate = useMemo(
     () => campaign.start[region] || 0,
@@ -157,6 +155,7 @@ function BookmarkedCard({
       <Stack spacing={5} pt="sm">
         <Anchor
           component={Link}
+          variant="text"
           href={`/${
             campaign.type === "scout" || campaign.type === "feature scout"
               ? "scouts"
@@ -209,31 +208,29 @@ function Page({
   const { dayjs } = useDayjs();
   const { t } = useTranslation("bookmarks__page");
   const theme = useMantineTheme();
-  const user = useUser();
+  const { user, userDB } = useUser();
 
   const events: Event[] = useMemo(() => eventsQuery.data, [eventsQuery.data]);
   const scouts: Scout[] = useMemo(() => scoutsQuery.data, [scoutsQuery.data]);
 
   const bookmarkedEvents: ID[] = user.loggedIn
-    ? user.db.bookmarks__events || []
+    ? userDB?.bookmarks__events ?? []
     : [];
   const bookmarkedScouts: ID[] = user.loggedIn
-    ? user.db.bookmarks__scouts || []
+    ? userDB?.bookmarks__scouts ?? []
     : [];
 
-  const filteredEvents = events.filter((ev) =>
-    bookmarkedEvents.includes(ev.event_id)
-  );
-  const filteredScouts = scouts.filter((sc) =>
-    bookmarkedScouts.includes(sc.gacha_id)
-  );
+  const filteredEvents =
+    events?.filter((ev) => bookmarkedEvents.includes(ev.event_id)) ?? [];
+  const filteredScouts =
+    scouts?.filter((sc) => bookmarkedScouts.includes(sc.gacha_id)) ?? [];
 
   const bookmarkedCampaigns = [...filteredEvents, ...filteredScouts];
 
   const [viewOptions, setViewOptions] = useLocalStorage({
     key: "bookmarkFilters",
     defaultValue: {
-      region: (user.loggedIn && user.db.setting__game_region) || "en",
+      region: (user.loggedIn && userDB?.setting__game_region) || "en",
     },
   });
 

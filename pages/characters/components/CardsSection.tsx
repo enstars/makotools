@@ -21,11 +21,10 @@ export function CardsSection({
   character: GameCharacter;
   lang: Lang[];
 }) {
-  const user = useUser();
+  const { user, userDB } = useUser();
   const theme = useMantineTheme();
-  const { collections, onEditCollection, onNewCollection } = useCollections();
-  const [newCollectionModalOpened, setNewCollectionModalOpened] =
-    useState<boolean>(false);
+  const { collections, editCollection } = useCollections();
+  const [, setNewCollectionModalOpened] = useState<boolean>(false);
 
   // const textColor = isColorLight(character.image_color as string)
   //   ? primaryCharaColor(theme, character.image_color)
@@ -130,13 +129,13 @@ export function CardsSection({
                         cardOptions={{ showFullInfo: true }}
                         collections={collections}
                         lang={lang}
-                        onEditCollection={onEditCollection}
+                        editCollection={editCollection}
                         onNewCollection={() =>
                           setNewCollectionModalOpened(true)
                         }
                         character={character}
                         gameRegion={
-                          (user.loggedIn && user.db.setting__game_region) ||
+                          (user.loggedIn && userDB?.setting__game_region) ||
                           "en"
                         }
                       />

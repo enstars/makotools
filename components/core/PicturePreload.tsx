@@ -9,10 +9,10 @@ interface PictureProps {
 }
 
 function PicturePreload(props: PictureProps) {
-  const user = useUser();
+  const { user, userDB } = useUser();
 
   const dontUseWebP =
-    (user.loggedIn && user.db.setting__use_webp === "dont-use") || false;
+    (user.loggedIn && userDB?.setting__use_webp === "dont-use") || false;
 
   const { srcB2, src } = props;
   const newsrc = src || getAssetURL(srcB2 as string);

@@ -21,43 +21,41 @@ import {
   IconArrowsUpDown,
   IconFlag,
 } from "@tabler/icons-react";
-import { arrayRemove, arrayUnion } from "firebase/firestore";
 import Link from "next/link";
 import { Dispatch, SetStateAction } from "react";
 import useTranslation from "next-translate/useTranslation";
 
 import { CONSTANTS } from "services/makotools/constants";
 import notify from "services/libraries/notify";
-import { User, UserData } from "types/makotools";
+import { UserData } from "types/makotools";
+import { UseMutateFunction } from "@tanstack/react-query";
 
-/** Friend, edit profile, and sharable link buttons
- * @param {User} user - The logged-in user object
- * @param {string} uid - The current profile's user ID
- * @param {UserData} profile - The current profile
- * @param {boolean} isFriend - Is the current logged-in user friends with the profile user?
- * @param {boolean} isIncomingReq - Did the profile user send a friend req to the currently logged-in user?
- * @param {Dispatch<SetStateAction<boolean>>} setOpenEditModal - The function that controls the edit profile modal
- * @param {Dispatch<SetStateAction<boolean>>} setRemoveFriendModal - The function that controls the remove friend modal
+/**
+ * Friend, edit profile, and sharable link buttons
  */
 function ProfileButtons({
-  user,
-  uid,
   profile,
+  isOwnProfile,
   isFriend,
   isIncomingReq,
   isOutgoingReq,
-  setOpenEditModal,
   setRemoveFriendModal,
+  addFriendFunction,
+  sendFriendReq,
+  deleteFriendReq,
+  cancelFriendReq,
   openEditModal,
 }: {
-  user: User;
-  uid: string;
   profile: UserData;
+  isOwnProfile: boolean;
   isFriend: boolean;
   isIncomingReq: boolean;
   isOutgoingReq: boolean;
-  setOpenEditModal: Dispatch<SetStateAction<boolean>>;
   setRemoveFriendModal: Dispatch<SetStateAction<boolean>>;
+  addFriendFunction: UseMutateFunction<void, Error, void, void>;
+  sendFriendReq: UseMutateFunction<void, Error, void, void>;
+  deleteFriendReq: UseMutateFunction<void, Error, void, void>;
+  cancelFriendReq: UseMutateFunction<void, Error, void, void>;
   openEditModal: () => void;
 }) {
   const { t } = useTranslation("user");
@@ -67,7 +65,7 @@ function ProfileButtons({
   const shareURLFull = `https://enstars.link/@${profile.username}`;
   return (
     <Group spacing="xs">
-      {user.loggedIn && user.db.suid === profile.suid && (
+      {isOwnProfile && (
         <Tooltip label={t("editProfile")}>
           <ActionIcon
             onClick={openEditModal}
@@ -111,49 +109,12 @@ function ProfileButtons({
           </Tooltip>
         )}
       </CopyButton>
-      {user.loggedIn && user.db.suid !== profile.suid && (
+      {!isOwnProfile && (
         <>
           {!isFriend && !isOutgoingReq && !isIncomingReq && (
             <Tooltip label={t("sendFriendReq")}>
               <ActionIcon
-                onClick={async () => {
-                  showNotification({
-                    id: "friendReq",
-                    loading: true,
-                    message: t("processingRequest"),
-                    disallowClose: true,
-                    autoClose: false,
-                  });
-                  const token = await user.user.getIdToken();
-                  const res = await fetch("/api/friendRequest/add", {
-                    method: "POST",
-                    headers: {
-                      Authorization: token || "",
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ friend: uid }),
-                  });
-
-                  const status = await res.json();
-                  if (status?.success) {
-                    updateNotification({
-                      id: "friendReq",
-                      loading: false,
-                      color: "lime",
-                      icon: <IconCheck size={24} />,
-                      message: "Your friend request was sent successfully!",
-                    });
-                  } else {
-                    updateNotification({
-                      id: "friendReq",
-                      loading: false,
-                      color: "red",
-                      icon: <IconX size={24} />,
-                      title: "An error occured:",
-                      message: "Your friend request could not be processed.",
-                    });
-                  }
-                }}
+                onClick={() => sendFriendReq()}
                 size="lg"
                 color="green"
                 variant="light"
@@ -190,48 +151,7 @@ function ProfileButtons({
                 <Menu.Item
                   icon={<IconCheck size={14} />}
                   px={5}
-                  onClick={async () => {
-                    showNotification({
-                      id: "addFriend",
-                      loading: true,
-                      message: t("processingRequest"),
-                      disallowClose: true,
-                      autoClose: false,
-                    });
-                    const token = await user.user.getIdToken();
-                    const res = await fetch("/api/friend/add", {
-                      method: "POST",
-                      headers: {
-                        Authorization: token || "",
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify({ friend: uid }),
-                    });
-                    const status = await res.json();
-                    if (status?.success) {
-                      user.privateDb.set({
-                        friends__receivedRequests: arrayRemove(uid),
-                        friends__list: arrayUnion(uid),
-                      });
-                      updateNotification({
-                        id: "addFriend",
-                        loading: false,
-                        color: "lime",
-                        icon: <IconCheck size={24} />,
-                        message: t("friendAdded", {
-                          friend: profile.name || profile.username,
-                        }),
-                      });
-                    } else {
-                      updateNotification({
-                        id: "addFriend",
-                        loading: false,
-                        color: "red",
-                        icon: <IconX size={24} />,
-                        message: t("addError"),
-                      });
-                    }
-                  }}
+                  onClick={() => addFriendFunction()}
                 >
                   {t("acceptFriendReq")}
                 </Menu.Item>
@@ -239,45 +159,7 @@ function ProfileButtons({
                   color="red"
                   icon={<IconX size={14} />}
                   px={5}
-                  onClick={async () => {
-                    showNotification({
-                      id: "removeReq",
-                      loading: true,
-                      message: t("processingRequest"),
-                      disallowClose: true,
-                      autoClose: false,
-                    });
-                    const token = await user.user.getIdToken();
-                    const res = await fetch("/api/friendRequest/delete", {
-                      method: "POST",
-                      headers: {
-                        Authorization: token || "",
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify({ friend: uid }),
-                    });
-                    const status = await res.json();
-                    if (status?.success) {
-                      user.privateDb.set({
-                        friends__receivedRequests: arrayRemove(uid),
-                      });
-                      updateNotification({
-                        id: "removeReq",
-                        loading: false,
-                        color: "lime",
-                        icon: <IconCheck size={24} />,
-                        message: t("deleteFriendReq"),
-                      });
-                    } else {
-                      updateNotification({
-                        id: "removeReq",
-                        loading: false,
-                        color: "red",
-                        icon: <IconX size={24} />,
-                        message: t("deleteReqError"),
-                      });
-                    }
-                  }}
+                  onClick={() => deleteFriendReq()}
                 >
                   <Text size="sm">{t("declineFriendReq")}</Text>
                 </Menu.Item>
@@ -299,45 +181,7 @@ function ProfileButtons({
                   icon={<IconX size={14} />}
                   py={2}
                   px={5}
-                  onClick={async () => {
-                    showNotification({
-                      id: "cancelReq",
-                      loading: true,
-                      message: t("processingReq"),
-                      disallowClose: true,
-                      autoClose: false,
-                    });
-                    const token = await user.user.getIdToken();
-                    const res = await fetch("/api/friendRequest/cancel", {
-                      method: "POST",
-                      headers: {
-                        Authorization: token || "",
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify({ friend: uid }),
-                    });
-                    const status = await res.json();
-                    if (status?.success) {
-                      user.privateDb.set({
-                        friends__sentRequests: arrayRemove(uid),
-                      });
-                      updateNotification({
-                        id: "cancelReq",
-                        loading: false,
-                        color: "lime",
-                        icon: <IconCheck size={24} />,
-                        message: t("friendReqCancelled"),
-                      });
-                    } else {
-                      updateNotification({
-                        id: "cancelReq",
-                        loading: false,
-                        color: "red",
-                        icon: <IconX size={24} />,
-                        message: t("cancelError"),
-                      });
-                    }
-                  }}
+                  onClick={() => cancelFriendReq()}
                 >
                   <Text size="sm">Cancel friend request</Text>
                 </Menu.Item>

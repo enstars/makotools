@@ -14,9 +14,9 @@ function OfficialityBadge({
   names?: string[];
   languages?: Lang[];
 }) {
-  const user = useUser();
+  const { user, userDB } = useUser();
   const showTlBadge = useMemo(() => {
-    return (user.loggedIn && user?.db?.setting__show_tl_badge) || "none";
+    return (user.loggedIn && userDB?.setting__show_tl_badge) || "none";
   }, [user]);
 
   const tooltipLabel = useMemo(() => {

@@ -16,13 +16,13 @@ import EditCollectionRow from "./EditCollectionRow";
 import useUser from "services/firebase/user";
 import { CONSTANTS } from "services/makotools/constants";
 import { CardCollection, UserData } from "types/makotools";
-import { GameCard, GameUnit } from "types/game";
+import { GameCard } from "types/game";
+import { UseMutationResult } from "@tanstack/react-query";
 
 export default function EditCollections({
   currentCollection,
   isReordering,
   setCurrentCollection,
-  units,
   cards,
   editingHandlers,
   addNewCollection,
@@ -40,7 +40,6 @@ export default function EditCollections({
   setCurrentCollection: React.Dispatch<
     React.SetStateAction<number | undefined>
   >;
-  units: GameUnit[];
   cards: GameCard[];
   editingHandlers: UseListStateHandlers<CardCollection>;
   addNewCollection: () => void;
@@ -49,12 +48,12 @@ export default function EditCollections({
   tempHandlersWhileReordering: UseListStateHandlers<CardCollection>;
   editingCollections: CardCollection[];
   profile: UserData;
-  saveReorder: () => void;
-  saveAllChanges: () => void;
+  saveReorder: UseMutationResult<void, Error, void, unknown>;
+  saveAllChanges: UseMutationResult<void, Error, void, unknown>;
   discardAllChanges: () => void;
 }) {
   const { t } = useTranslation("user");
-  const user = useUser();
+  const { user } = useUser();
   const { ref, width } = useElementSize();
   if (!user.loggedIn) return null;
 
@@ -121,7 +120,7 @@ export default function EditCollections({
           <Button
             leftIcon={<IconDeviceFloppy size={16} />}
             onClick={() => {
-              saveReorder();
+              saveReorder.mutate();
               setIsReordering(false);
             }}
           >
@@ -158,7 +157,7 @@ export default function EditCollections({
         <Stack spacing="xs">
           {editingCollections
             .sort((a, b) => a.order - b.order)
-            .map((collection, index) => (
+            .map((collection) => (
               <EditCollectionRow
                 key={collection.id}
                 collection={collection}
@@ -208,7 +207,7 @@ export default function EditCollections({
               </Button>
               <Button
                 leftIcon={<IconDeviceFloppy size={16} />}
-                onClick={saveAllChanges}
+                onClick={() => saveAllChanges.mutate()}
               >
                 {t("save")}
               </Button>
@@ -219,7 +218,6 @@ export default function EditCollections({
           {typeof currentCollection === "number" && (
             <EditCollection
               collection={editingCollections[currentCollection]}
-              units={units}
               allCards={cards}
               handlers={editingHandlers}
               index={currentCollection}

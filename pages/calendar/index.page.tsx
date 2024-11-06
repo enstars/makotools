@@ -47,8 +47,7 @@ function Page({
   const { t } = useTranslation("calendar");
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
-  const user = useUser();
-  const { locale } = useRouter();
+  const { user, userDB } = useUser();
 
   const characters: GameCharacter[] = useMemo(
     () => charactersQuery.data,
@@ -62,7 +61,7 @@ function Page({
 
   const birthdays: Birthday[] = createBirthdayData(
     characters,
-    (user.loggedIn && user.db?.setting__name_order) || "firstlast",
+    (user.loggedIn && userDB?.setting__name_order) || "firstlast",
     charactersQuery.lang[0].locale
   );
 

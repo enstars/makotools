@@ -37,13 +37,7 @@ import getServerSideUser from "services/firebase/getServerSideUser";
 import { GameCard } from "types/game";
 import useUser from "services/firebase/user";
 
-function Page({
-  cards,
-  uniqueCode,
-}: {
-  cards: GameCard[] | undefined;
-  uniqueCode: string;
-}) {
+function Page({ uniqueCode }: { uniqueCode: string }) {
   const tabs = [
     {
       label: <Trans i18nKey="settings:content.name" />,
@@ -108,7 +102,7 @@ function Page({
   const { t } = useTranslation("settings");
   const theme = useMantineTheme();
   const { width } = useViewportSize();
-  const user = useUser();
+  const { user, privateUserDB } = useUser();
 
   const [isNarrowPage, setIsNarrowPage] = useState(true);
 
@@ -181,8 +175,8 @@ function Page({
                     disabled={
                       value !== "friends" ||
                       !user.loggedIn ||
-                      !user.privateDb?.friends__receivedRequests ||
-                      user.privateDb?.friends__receivedRequests?.length <= 0
+                      !privateUserDB?.friends__receivedRequests ||
+                      privateUserDB?.friends__receivedRequests?.length <= 0
                     }
                   >
                     <props.icon size={14} />

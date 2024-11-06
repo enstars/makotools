@@ -131,8 +131,7 @@ function Sidebar(props: any) {
   const location = useRouter();
 
   const theme = useMantineTheme();
-  const dark = theme.colorScheme === "dark";
-  const user = useUser();
+  const { user, privateUserDB } = useUser();
   const [searchValue, setSearchValue] = useLocalStorage<string>({
     defaultValue: "",
     key: "sidebarSearch",
@@ -526,8 +525,8 @@ function Sidebar(props: any) {
                         position="top-start"
                         disabled={
                           !user.loggedIn ||
-                          !user.privateDb?.friends__receivedRequests?.length ||
-                          user.privateDb?.friends__receivedRequests?.length <= 0
+                          !privateUserDB?.friends__receivedRequests?.length ||
+                          privateUserDB?.friends__receivedRequests?.length <= 0
                         }
                       >
                         <IconUserCircle size={20} />

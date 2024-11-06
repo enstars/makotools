@@ -6,7 +6,6 @@ import {
   Container,
   Group,
   Loader,
-  Notification,
   Space,
   Text,
   Title,
@@ -18,8 +17,10 @@ import Link from "next/link";
 import {
   IconAlertCircle,
   IconBrandPatreon,
+  IconCheck,
   IconDiscountCheck,
   IconHearts,
+  IconX,
 } from "@tabler/icons-react";
 import {
   useRef,
@@ -31,7 +32,6 @@ import {
 } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { useMediaQuery } from "@mantine/hooks";
-import useSWR, { SWRConfig } from "swr";
 import useTranslation from "next-translate/useTranslation";
 import Trans from "next-translate/Trans";
 import { omitBy } from "lodash";
@@ -47,7 +47,7 @@ import ProfileStats from "./components/ProfileStats";
 import CardCollections from "./components/collections/CardCollections";
 
 import { getLayout, useSidebarStatus } from "components/Layout";
-import { Locale, QuerySuccess, UserData } from "types/makotools";
+import { Locale, QuerySuccess, UserData, UserLoggedIn } from "types/makotools";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "services/data";
 import { parseStringify } from "services/utilities";
@@ -57,6 +57,10 @@ import Picture from "components/core/Picture";
 import { CONSTANTS } from "services/makotools/constants";
 import { GameCard, GameCharacter, GameUnit } from "types/game";
 import { getFirestoreUserProfile } from "services/firebase/firestore";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { userQueries } from "services/queries";
+import { showNotification, updateNotification } from "@mantine/notifications";
+import { arrayRemove, arrayUnion } from "firebase/firestore";
 
 function PatreonBanner({ profile }: { profile: UserData }) {
   const { t } = useTranslation("user");
@@ -96,7 +100,14 @@ function Page({
   unitsQuery: QuerySuccess<GameUnit[]>;
   locale: Locale;
 }) {
-  const user = useUser();
+  const {
+    user,
+    userDB,
+    privateUserDB,
+    updatePrivateUserDB,
+    updateUserDB,
+    userDBError,
+  } = useUser();
 
   const cardsData: GameCard[] = useMemo(
     () => cardsQuery.data,
@@ -107,11 +118,278 @@ function Page({
     [charactersQuery.data]
   );
 
+  const qc = useQueryClient();
+
   const {
     data: profileData,
-    isLoading,
-    mutate,
-  } = useSWR<UserData>([`/user/${uid}`, uid], getFirestoreUserProfile);
+    isPending: isProfileDataPending,
+    error: profileDataError,
+  } = useQuery({
+    queryKey: userQueries.fetchProfileData(uid),
+    queryFn: async ({ queryKey }) => {
+      if (!queryKey[1] || !uid) throw new Error("Could not find user");
+      const userData = await getFirestoreUserProfile(queryKey[1]);
+      if (userData) return userData;
+      else throw new Error("Could not retrieve user data");
+    },
+    enabled: !!uid,
+  });
+
+  const sendFriendReq = useMutation({
+    mutationFn: async () => {
+      const token = await (user as UserLoggedIn).user.getIdToken();
+      const res = await fetch("/api/friendRequest/add", {
+        method: "POST",
+        headers: {
+          Authorization: token || "",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ friend: uid }),
+      });
+
+      const status = await res.json();
+      if (!status.success) throw new Error("Could not send friend request");
+    },
+    onMutate: () => {
+      showNotification({
+        id: "friendReq",
+        loading: true,
+        message: t("processingRequest"),
+        disallowClose: true,
+        autoClose: false,
+      });
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: userQueries.fetchProfileData(uid) });
+      updateNotification({
+        id: "friendReq",
+        loading: false,
+        color: "lime",
+        icon: <IconCheck size={24} />,
+        message: "Your friend request was sent successfully!",
+      });
+    },
+    onError: (error: Error) => {
+      updateNotification({
+        id: "friendReq",
+        loading: false,
+        color: "red",
+        icon: <IconX size={24} />,
+        title: "An error occured:",
+        message: `Your friend request could not be processed: ${error.message}`,
+      });
+    },
+  });
+
+  const deleteFriendReq = useMutation({
+    mutationFn: async () => {
+      if (!user.loggedIn) throw new Error("User is not logged in");
+      const token = await (user as UserLoggedIn).user.getIdToken();
+      const res = await fetch("/api/friendRequest/delete", {
+        method: "POST",
+        headers: {
+          Authorization: token || "",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ friend: uid }),
+      });
+      const status = await res.json();
+      if (status?.success) {
+        updatePrivateUserDB?.mutate({
+          friends__receivedRequests: arrayRemove(uid),
+        });
+      } else {
+        throw new Error("Could not delete friend request");
+      }
+    },
+    onMutate: () => {
+      showNotification({
+        id: "removeReq",
+        loading: true,
+        message: t("processingRequest"),
+        disallowClose: true,
+        autoClose: false,
+      });
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: userQueries.fetchUserData(uid) });
+      updateNotification({
+        id: "removeReq",
+        loading: false,
+        color: "lime",
+        icon: <IconCheck size={24} />,
+        message: t("deleteFriendReq"),
+      });
+    },
+    onError: () => {
+      updateNotification({
+        id: "removeReq",
+        loading: false,
+        color: "red",
+        icon: <IconX size={24} />,
+        message: t("deleteReqError"),
+      });
+    },
+  });
+
+  const cancelFriendReq = useMutation({
+    mutationFn: async () => {
+      if (!user.loggedIn) throw new Error("User is not logged in");
+      const token = await (user as UserLoggedIn).user.getIdToken();
+      const res = await fetch("/api/friendRequest/cancel", {
+        method: "POST",
+        headers: {
+          Authorization: token || "",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ friend: uid }),
+      });
+      const status = await res.json();
+      if (status?.success) {
+        updatePrivateUserDB?.mutate({
+          friends__sentRequests: arrayRemove(uid),
+        });
+      } else {
+        throw new Error("Could not cancel friend request");
+      }
+    },
+    onMutate: () => {
+      showNotification({
+        id: "cancelReq",
+        loading: true,
+        message: t("processingReq"),
+        disallowClose: true,
+        autoClose: false,
+      });
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: userQueries.fetchUserData(uid) });
+      updateNotification({
+        id: "cancelReq",
+        loading: false,
+        color: "lime",
+        icon: <IconCheck size={24} />,
+        message: t("friendReqCancelled"),
+      });
+    },
+    onError: () => {
+      updateNotification({
+        id: "cancelReq",
+        loading: false,
+        color: "red",
+        icon: <IconX size={24} />,
+        message: t("cancelError"),
+      });
+    },
+  });
+
+  const removeFriend = useMutation({
+    mutationFn: async () => {
+      if (!user.loggedIn) throw new Error("User is not logged in");
+      const token = await user.user.getIdToken();
+      const res = await fetch("/api/friend/delete", {
+        method: "POST",
+        headers: {
+          Authorization: token || "",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ friend: uid }),
+      });
+      const status = await res.json();
+      if (status?.success) {
+        updatePrivateUserDB?.mutate({
+          friends__list: arrayRemove(uid),
+        });
+      } else {
+        throw new Error("Could not remove friend");
+      }
+    },
+    onMutate: () => {
+      setRemoveFriendModal(false);
+      showNotification({
+        id: "removeFriend",
+        loading: true,
+        message: t("processingRequest"),
+        disallowClose: true,
+        autoClose: false,
+      });
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: userQueries.fetchUserData(uid) });
+      updateNotification({
+        id: "removeFriend",
+        loading: false,
+        color: "lime",
+        icon: <IconCheck size={24} />,
+        message: "User was successfully removed from your friends list!",
+      });
+    },
+    onError: () => {
+      updateNotification({
+        id: "removeFriend",
+        loading: false,
+        color: "red",
+        icon: <IconX size={24} />,
+        title: "An error occured:",
+        message: t("removeError"),
+      });
+    },
+  });
+
+  const addFriend = useMutation({
+    mutationFn: async () => {
+      if (!user.loggedIn) throw new Error("User is not logged in");
+      const token = await (user as UserLoggedIn).user.getIdToken();
+      const res = await fetch("/api/friend/add", {
+        method: "POST",
+        headers: {
+          Authorization: token || "",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ friend: uid }),
+      });
+      const status = await res.json();
+      if (status?.success) {
+        updatePrivateUserDB?.mutate({
+          friends__receivedRequests: arrayRemove(uid),
+          friends__list: arrayUnion(uid),
+        });
+      } else {
+        throw new Error("Could not add friend");
+      }
+    },
+    onMutate: () => {
+      showNotification({
+        id: "addFriend",
+        loading: true,
+        message: t("processingRequest"),
+        disallowClose: true,
+        autoClose: false,
+      });
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: userQueries.fetchUserData(uid) });
+      updateNotification({
+        id: "addFriend",
+        loading: false,
+        color: "lime",
+        icon: <IconCheck size={24} />,
+        message: t("friendAdded", {
+          friend: profile.name || profile.username,
+        }),
+      });
+    },
+    onError: () => {
+      updateNotification({
+        id: "addFriend",
+        loading: false,
+        color: "red",
+        icon: <IconX size={24} />,
+        message: t("addError"),
+      });
+    },
+  });
+
   // hooks
   const { t } = useTranslation("user");
   const units: GameUnit[] = useMemo(() => unitsQuery.data, [unitsQuery.data]);
@@ -128,37 +406,32 @@ function Page({
   const [profileState, setProfileState] = useState<
     EditingProfile | undefined
   >();
-  const { collapsed } = useSidebarStatus();
-  const isOwnProfile = user.loggedIn && user.db.suid === profile.suid;
 
-  const saveProfileChanges = useCallback(() => {
-    if (!user.loggedIn) return;
-    if (profileData) {
-      setOpenEditModal(false);
-      const cleanedProfileState = omitBy(
-        profileState,
-        (v) => typeof v === "undefined"
-      );
-      if (cleanedProfileState) {
-        user.db.set(cleanedProfileState);
-        mutate({
-          ...profileData,
-          ...cleanedProfileState,
-        });
-      }
+  const updateUserData = useCallback(async () => {
+    setOpenEditModal(false);
+    console.log("profile state", profileState);
+    const cleanedProfileState = omitBy(
+      profileState,
+      (v) => typeof v === "undefined"
+    );
+    if (cleanedProfileState) {
+      updateUserDB?.mutate(cleanedProfileState);
     }
-  }, [user, profileData, profileState, mutate]);
+  }, [updateUserDB, userDB, profileState]);
+
+  const { collapsed } = useSidebarStatus();
+  const isOwnProfile = !!(user.loggedIn && userDB?.suid === profile.suid);
 
   const isFriend = useMemo(() => {
     if (user.loggedIn)
-      return !isOwnProfile && !!user.privateDb?.friends__list?.includes(uid);
+      return !isOwnProfile && !!privateUserDB?.friends__list?.includes(uid);
     return false;
   }, [user, isOwnProfile, uid]);
 
   const isOutgoingFriendReq = useMemo(() => {
     if (user.loggedIn)
       return (
-        !isOwnProfile && !!user.privateDb?.friends__sentRequests?.includes(uid)
+        !isOwnProfile && !!privateUserDB?.friends__sentRequests?.includes(uid)
       );
     return false;
   }, [user, isOwnProfile, uid]);
@@ -167,7 +440,7 @@ function Page({
     if (user.loggedIn)
       return (
         !isOwnProfile &&
-        !!user.privateDb?.friends__receivedRequests?.includes(uid)
+        !!privateUserDB?.friends__receivedRequests?.includes(uid)
       );
     return false;
   }, [user, isOwnProfile, uid]);
@@ -175,6 +448,27 @@ function Page({
   useEffect(() => {
     embla?.reInit();
   }, [embla, collapsed]);
+
+  useEffect(() => {
+    if (updateUserDB?.isSuccess) {
+      showNotification({
+        title: "Success!",
+        message: "Your profile was updated successfully",
+        icon: <IconCheck />,
+        color: "lime",
+        autoClose: 5000,
+      });
+      qc.invalidateQueries({ queryKey: userQueries.fetchProfileData(uid) });
+    } else if (updateUserDB?.isError) {
+      showNotification({
+        title: "An error occurred",
+        message: "Your profile could not be updated",
+        icon: <IconAlertCircle />,
+        color: "red",
+        autoClose: 5000,
+      });
+    }
+  }, [updateUserDB]);
 
   function LoadingState() {
     return (
@@ -186,243 +480,259 @@ function Page({
     );
   }
 
-  return (
-    <SWRConfig value={{ fallback: { "/api/user/get": user } }}>
-      {profileData && !isLoading && (
-        <div style={{ position: "relative" }}>
-          <EditProfileModal
-            opened={editModalOpened}
-            saveChanges={saveProfileChanges}
-            openedFunction={setOpenEditModal}
-            picModalFunction={setOpenPicModal}
-            cards={cards}
-            user={user}
-            profile={profileData}
-            profileState={profileState}
-            setProfileState={setProfileState}
-            characters={characters}
-            units={units}
-            locale={locale}
-          />
-          {openPicModal && (
-            <ProfilePicModal
-              opened={openPicModal}
-              openedFunction={setOpenPicModal}
-              cards={cards as GameCard[]}
-              user={user}
-              profile={profileData}
-              profileState={profileState}
-              externalSetter={setProfileState}
-            />
-          )}
-          {user.loggedIn && (
-            <RemoveFriendModal
-              opened={openRemoveFriendModal}
-              closeFunction={setRemoveFriendModal}
-              user={user}
-              uid={uid}
-              profile={profileData}
-            />
-          )}
-          <Box sx={{ position: "relative" }}>
-            {profileData.profile__banner &&
-            profileData.profile__banner?.length ? (
-              <Box mt="sm" sx={{ marginLeft: "-100%", marginRight: "-100%" }}>
-                <Carousel
-                  slideSize="34%"
-                  height={isMobile ? 150 : 250}
-                  slideGap="xs"
-                  loop
-                  withControls={false}
-                  plugins={[autoplay.current]}
-                  getEmblaApi={setEmbla}
-                  draggable={profileData.profile__banner.length > 1}
-                >
-                  {/* // doing this so we can surely have enough slides to loop in embla */}
-                  {(profileData.profile__banner.length > 1
-                    ? [0, 1, 2, 3]
-                    : [0]
-                  ).map((n) => (
-                    <Fragment key={n}>
-                      {profileData.profile__banner?.map((c: number) => {
-                        if (c)
-                          return (
-                            <Carousel.Slide
-                              key={`${c.toString()}${n.toString()}`}
-                            >
-                              <Picture
-                                alt={`Card ${c}`}
-                                srcB2={`assets/card_still_full1_${Math.abs(
-                                  c
-                                )}_${c > 0 ? "evolution" : "normal"}.png`}
-                                sx={{
-                                  height: "100%",
-                                }}
-                                radius="sm"
-                              />
-                            </Carousel.Slide>
-                          );
-                      })}
-                    </Fragment>
-                  ))}
-                </Carousel>
-              </Box>
-            ) : null}
-            <Box
-              sx={{
-                position:
-                  profileData.profile__banner &&
-                  profileData.profile__banner?.length
-                    ? "absolute"
-                    : "static",
-                marginTop:
-                  profileData.profile__banner &&
-                  profileData.profile__banner?.length
-                    ? -60
-                    : isMobile
-                    ? 150
-                    : 60,
-              }}
-            >
-              <ProfileAvatar
-                userInfo={profileData}
-                border={`5px solid ${
-                  theme.colorScheme === "dark"
-                    ? theme.colors.dark[9]
-                    : theme.colors.gray[0]
-                }`}
-              />
-            </Box>
-            <Box
-              sx={{
-                marginTop:
-                  profileData.profile__banner &&
-                  profileData.profile__banner?.length
-                    ? 50
-                    : 0,
-              }}
-            >
-              {isOwnProfile && user.db?.admin?.disableTextFields && (
-                <Alert
-                  icon={<IconAlertCircle size={16} />}
-                  color="red"
-                  sx={{ marginTop: "2vh" }}
-                >
-                  <Trans
-                    i18nKey="user:restricted"
-                    components={[
-                      <Text
-                        key="link"
-                        component={Link}
-                        href="/issues"
-                        sx={{ textDecoration: "underline" }}
-                      />,
-                    ]}
-                  />
-                </Alert>
-              )}
-              <Space h="lg" />
+  if (
+    isProfileDataPending ||
+    updateUserDB?.isPending ||
+    (!userDB && !userDBError)
+  ) {
+    return <LoadingState />;
+  }
 
-              <Group position="apart">
-                <Box>
-                  <Group align="center" spacing="xs">
-                    <Title order={1}>
-                      {profileData.name || profileData.username}
-                    </Title>
-                    {profileData.admin?.administrator && (
-                      <Tooltip label={t("verified")}>
-                        <ActionIcon color={theme.primaryColor} size="lg">
-                          <IconDiscountCheck size={30} />
-                        </ActionIcon>
-                      </Tooltip>
-                    )}
-                    {isFriend && (
-                      <Tooltip
-                        label={t("friendTooltip", {
-                          friend: profileData.name || profileData.username,
-                        })}
-                      >
-                        <ActionIcon size="xl" color="pink">
-                          <IconHearts />
-                        </ActionIcon>
-                      </Tooltip>
-                    )}
-                  </Group>
-                  <Text
-                    inline
-                    component="span"
-                    color="dimmed"
-                    weight={500}
-                    size="lg"
-                  >
-                    @{profileData?.username}
-                    {profileData?.profile__pronouns &&
-                      ` · ${profileData.profile__pronouns}`}
-                  </Text>
-                </Box>
-                {!user.loading ? (
-                  <ProfileButtons
-                    user={user}
-                    uid={uid}
-                    profile={profileData}
-                    isFriend={isFriend}
-                    isIncomingReq={isIncomingFriendReq}
-                    isOutgoingReq={isOutgoingFriendReq}
-                    setOpenEditModal={setOpenEditModal}
-                    setRemoveFriendModal={setRemoveFriendModal}
-                    openEditModal={() => {
-                      setOpenEditModal(true);
-                      setProfileState({
-                        profile__banner: profileData.profile__banner,
-                        name: profileData.name,
-                        profile__pronouns: profileData.profile__pronouns,
-                        profile__start_playing:
-                          profileData.profile__start_playing,
-                        profile__bio: profileData.profile__bio,
-                        profile__picture: profileData.profile__picture,
-                        profile__fave_charas: profileData.profile__fave_charas,
-                        profile__fave_units: profileData.profile__fave_units,
-                        profile__show_faves: profileData.profile__show_faves,
-                      });
-                    }}
-                  />
-                ) : (
-                  <Loader
-                    color={theme.colorScheme === "dark" ? "dark" : "gray"}
-                    size="md"
-                    variant="dots"
-                  />
-                )}
-              </Group>
-              <PatreonBanner profile={profileData} />
-              <ProfileStats
-                profile={profileData}
-                characters={characters}
-                units={units}
-              />
-              {profileData?.profile__bio && (
-                <BioDisplay
-                  rawBio={profileData.profile__bio}
-                  withBorder={false}
-                  // p={0}
-                  // sx={{ background: "transparent" }}
-                  my="md"
+  if (profileDataError || userDBError) {
+    return (
+      <Title mt={64} mb="sm">
+        <Text component="span" inherit color="dimmed">
+          500
+        </Text>{" "}
+        Could not load this profile
+      </Title>
+    );
+  }
+
+  if (profileData) {
+    return (
+      <div style={{ position: "relative" }}>
+        <EditProfileModal
+          opened={editModalOpened}
+          saveChanges={updateUserData}
+          openedFunction={setOpenEditModal}
+          picModalFunction={setOpenPicModal}
+          cards={cards}
+          profile={profileData}
+          profileState={profileState}
+          setProfileState={setProfileState}
+          characters={characters}
+          units={units}
+          locale={locale}
+        />
+        {openPicModal && (
+          <ProfilePicModal
+            opened={openPicModal}
+            openedFunction={setOpenPicModal}
+            cards={cards as GameCard[]}
+            loggedIn={user.loggedIn ?? false}
+            userDB={userDB}
+            profileState={profileState}
+            externalSetter={setProfileState}
+          />
+        )}
+        {user.loggedIn && (
+          <RemoveFriendModal
+            opened={openRemoveFriendModal}
+            closeFunction={setRemoveFriendModal}
+            removeFriendFunction={removeFriend.mutate}
+            profile={profileData}
+          />
+        )}
+        <Box sx={{ position: "relative" }}>
+          {profileData.profile__banner &&
+          profileData.profile__banner?.length ? (
+            <Box mt="sm" sx={{ marginLeft: "-100%", marginRight: "-100%" }}>
+              <Carousel
+                slideSize="34%"
+                height={isMobile ? 150 : 250}
+                slideGap="xs"
+                loop
+                withControls={false}
+                plugins={[autoplay.current]}
+                getEmblaApi={setEmbla}
+                draggable={profileData.profile__banner.length > 1}
+              >
+                {/* // doing this so we can surely have enough slides to loop in embla */}
+                {(profileData.profile__banner.length > 1
+                  ? [0, 1, 2, 3]
+                  : [0]
+                ).map((n) => (
+                  <Fragment key={n}>
+                    {profileData.profile__banner?.map((c: number) => {
+                      if (c)
+                        return (
+                          <Carousel.Slide
+                            key={`${c.toString()}${n.toString()}`}
+                          >
+                            <Picture
+                              alt={`Card ${c}`}
+                              srcB2={`assets/card_still_full1_${Math.abs(c)}_${
+                                c > 0 ? "evolution" : "normal"
+                              }.png`}
+                              sx={{
+                                height: "100%",
+                              }}
+                              radius="sm"
+                            />
+                          </Carousel.Slide>
+                        );
+                    })}
+                  </Fragment>
+                ))}
+              </Carousel>
+            </Box>
+          ) : null}
+          <Box
+            sx={{
+              position:
+                profileData.profile__banner &&
+                profileData.profile__banner?.length
+                  ? "absolute"
+                  : "static",
+              marginTop:
+                profileData.profile__banner &&
+                profileData.profile__banner?.length
+                  ? -60
+                  : isMobile
+                  ? 150
+                  : 60,
+            }}
+          >
+            <ProfileAvatar
+              userInfo={profileData}
+              border={`5px solid ${
+                theme.colorScheme === "dark"
+                  ? theme.colors.dark[9]
+                  : theme.colors.gray[0]
+              }`}
+            />
+          </Box>
+          <Box
+            sx={{
+              marginTop:
+                profileData.profile__banner &&
+                profileData.profile__banner?.length
+                  ? 50
+                  : 0,
+            }}
+          >
+            {isOwnProfile && userDB?.admin?.disableTextFields && (
+              <Alert
+                icon={<IconAlertCircle size={16} />}
+                color="red"
+                sx={{ marginTop: "2vh" }}
+              >
+                <Trans
+                  i18nKey="user:restricted"
+                  components={[
+                    <Text
+                      key="link"
+                      component={Link}
+                      href="/issues"
+                      sx={{ textDecoration: "underline" }}
+                    />,
+                  ]}
+                />
+              </Alert>
+            )}
+            <Space h="lg" />
+
+            <Group position="apart">
+              <Box>
+                <Group align="center" spacing="xs">
+                  <Title order={1}>
+                    {profileData.name || profileData.username}
+                  </Title>
+                  {profileData.admin?.administrator && (
+                    <Tooltip label={t("verified")}>
+                      <ActionIcon color={theme.primaryColor} size="lg">
+                        <IconDiscountCheck size={30} />
+                      </ActionIcon>
+                    </Tooltip>
+                  )}
+                  {isFriend && (
+                    <Tooltip
+                      label={t("friendTooltip", {
+                        friend: profileData.name || profileData.username,
+                      })}
+                    >
+                      <ActionIcon size="xl" color="pink">
+                        <IconHearts />
+                      </ActionIcon>
+                    </Tooltip>
+                  )}
+                </Group>
+                <Text
+                  inline
+                  component="span"
+                  color="dimmed"
+                  weight={500}
+                  size="lg"
+                >
+                  @{profileData?.username}
+                  {profileData?.profile__pronouns &&
+                    ` · ${profileData.profile__pronouns}`}
+                </Text>
+              </Box>
+              {!user.loading && !isProfileDataPending ? (
+                <ProfileButtons
+                  {...{
+                    user,
+                    uid,
+                    isOwnProfile,
+                    isFriend,
+                    setRemoveFriendModal,
+                  }}
+                  sendFriendReq={sendFriendReq.mutate}
+                  deleteFriendReq={deleteFriendReq.mutate}
+                  cancelFriendReq={cancelFriendReq.mutate}
+                  addFriendFunction={addFriend.mutate}
+                  profile={profileData}
+                  isIncomingReq={isIncomingFriendReq}
+                  isOutgoingReq={isOutgoingFriendReq}
+                  setRemoveFriendModal={setRemoveFriendModal}
+                  openEditModal={() => {
+                    setOpenEditModal(true);
+                    setProfileState({
+                      profile__banner: profileData.profile__banner,
+                      name: profileData.name,
+                      profile__pronouns: profileData.profile__pronouns,
+                      profile__start_playing:
+                        profileData.profile__start_playing,
+                      profile__bio: profileData.profile__bio,
+                      profile__picture: profileData.profile__picture,
+                      profile__fave_charas: profileData.profile__fave_charas,
+                      profile__fave_units: profileData.profile__fave_units,
+                      profile__show_faves: profileData.profile__show_faves,
+                    });
+                  }}
+                />
+              ) : (
+                <Loader
+                  color={theme.colorScheme === "dark" ? "dark" : "gray"}
+                  size="md"
+                  variant="dots"
                 />
               )}
-            </Box>
+            </Group>
+            <PatreonBanner profile={profileData} />
+            <ProfileStats
+              profile={profileData}
+              characters={characters}
+              units={units}
+            />
+            {profileData?.profile__bio && (
+              <BioDisplay
+                rawBio={profileData.profile__bio}
+                withBorder={false}
+                // p={0}
+                // sx={{ background: "transparent" }}
+                my="md"
+              />
+            )}
           </Box>
+        </Box>
 
-          <CardCollections
-            profile={profileData}
-            uid={uid}
-            cards={cardsData}
-            units={units}
-          />
-        </div>
-      )}
-      {isLoading && <LoadingState />}
-    </SWRConfig>
-  );
+        <CardCollections profile={profileData} cards={cardsData} />
+      </div>
+    );
+  }
 }
 
 Page.getLayout = getLayout({ hideOverflow: true });
@@ -494,7 +804,7 @@ export const getServerSideProps = getServerSideUser(
         return {
           props: {
             profile,
-            cards: cards.data.filter((c) => bannerIds.includes(c.id)),
+            cards: cards.data.filter((c) => bannerIds.includes(c.id)) ?? [],
             charactersQuery: charactersQuery,
             unitsQuery: unitsQuery,
             uid: querySnap.docs[0].id,

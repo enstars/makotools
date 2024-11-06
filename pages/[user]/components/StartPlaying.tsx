@@ -48,14 +48,12 @@ years.forEach((year) => {
 
 function StartPlaying({
   externalSetter,
-  profileState,
 }: {
   externalSetter: Dispatch<SetStateAction<EditingProfile>>;
-  profileState: any;
 }) {
   const { t } = useTranslation("user");
   const { dayjs } = useDayjs();
-  const user = useUser();
+  const { user, userDB } = useUser();
 
   const [picked, setPicked] = useState<{
     month: string;
@@ -71,7 +69,7 @@ function StartPlaying({
 
   useEffect(() => {
     if (user.loggedIn) {
-      const startPlaying = user.db.profile__start_playing;
+      const startPlaying = userDB?.profile__start_playing;
       if (startPlaying && startPlaying !== "0000-00-00") {
         setPicked({
           month: dayjs(startPlaying).format("MM"),
@@ -95,8 +93,8 @@ function StartPlaying({
     if (
       !picked.loading &&
       user.loggedIn &&
-      (typeof user.db?.profile__start_playing === "undefined" ||
-        user.db.profile__start_playing !== resolvedData)
+      (typeof userDB?.profile__start_playing === "undefined" ||
+        userDB?.profile__start_playing !== resolvedData)
     ) {
       externalSetter((s) => ({ ...s, profile__start_playing: resolvedData }));
     }

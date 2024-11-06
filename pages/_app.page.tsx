@@ -23,8 +23,11 @@ import { initAuthentication } from "services/firebase/authentication";
 import { UserProvider } from "services/firebase/user";
 import DayjsProvider from "services/libraries/dayjs";
 import MantineTheme from "components/MantineTheme";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 initAuthentication();
+
+const queryClient = new QueryClient();
 
 function MakoTools({
   Component,
@@ -71,27 +74,22 @@ function MakoTools({
   return (
     <>
       <VercelAnalytics />
-      <UserProvider
-        setAppColorScheme={setAppColorScheme}
-        colorScheme={colorScheme}
-        serverData={{
-          user: pageProps?.__user ? JSON.parse(pageProps.__user) : undefined,
-          db: pageProps?.__db ? JSON.parse(pageProps.__db) : undefined,
-          privateDb: pageProps?.__privateDb
-            ? JSON.parse(pageProps.__privateDb)
-            : undefined,
-        }}
-      >
-        <DayjsProvider>
-          <MantineTheme
-            colorScheme={colorScheme}
-            setAppColorScheme={setAppColorScheme}
-            toggleAppColorScheme={toggleAppColorScheme}
-          >
-            {getLayout(<Component {...pageProps} />, pageProps)}
-          </MantineTheme>
-        </DayjsProvider>
-      </UserProvider>
+      <QueryClientProvider client={queryClient}>
+        <UserProvider
+          setAppColorScheme={setAppColorScheme}
+          colorScheme={colorScheme}
+        >
+          <DayjsProvider>
+            <MantineTheme
+              colorScheme={colorScheme}
+              setAppColorScheme={setAppColorScheme}
+              toggleAppColorScheme={toggleAppColorScheme}
+            >
+              {getLayout(<Component {...pageProps} />, pageProps)}
+            </MantineTheme>
+          </DayjsProvider>
+        </UserProvider>
+      </QueryClientProvider>
     </>
   );
 }
