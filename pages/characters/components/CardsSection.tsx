@@ -37,12 +37,7 @@ export function CardsSection({
 
   return (
     <Box id="cards">
-      <SectionTitle
-        id="cards"
-        title="Cards"
-        Icon={IconCards}
-        iconProps={{ color: colors.image }}
-      />
+      <SectionTitle id="cards" title="Cards" Icon={IconCards} />
       <Accordion
         variant="separated"
         defaultValue="5"

@@ -93,7 +93,7 @@ function Page({
           <MultiSelect
             label="Unit"
             placeholder="Pick a unit..."
-            data={units
+            data={(units ?? [])
               .sort((a, b) => a.order - b.order)
               .map((o) => ({
                 label: o.name[0],
