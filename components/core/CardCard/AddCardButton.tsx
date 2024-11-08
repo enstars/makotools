@@ -13,7 +13,7 @@ import { inRange, isNil, sortBy } from "lodash";
 
 import { CardCollection } from "types/makotools";
 import { MAX_CARD_COPIES } from "services/game";
-import { GameCard, ID } from "types/game";
+import { GameCard } from "types/game";
 import { CONSTANTS } from "services/makotools/constants";
 import useUser from "services/firebase/user";
 import { UseMutationResult } from "@tanstack/react-query";
@@ -107,10 +107,10 @@ function NewCollectionRow({
   collections: CardCollection[];
   onNewCollection: () => any;
 }) {
-  const { user, userDB } = useUser();
+  const { userDB } = useUser();
   const disabled =
     collections.length >=
-    (user.loggedIn
+    (userDB
       ? CONSTANTS.PATREON.TIERS[userDB?.admin?.patreon || 0].COLLECTIONS
       : CONSTANTS.PATREON.TIERS[0].COLLECTIONS);
 

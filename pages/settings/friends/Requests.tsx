@@ -33,7 +33,7 @@ import useUser from "services/firebase/user";
 import { FIRESTORE_MAXIMUM_WHERE_VALUES } from "services/firebase/firestore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { friendQueries, userQueries } from "services/queries";
-import { UserLoggedIn } from "types/makotools";
+import { AuthUserContext } from "next-firebase-auth";
 
 function Requests() {
   const qc = useQueryClient();
@@ -41,13 +41,10 @@ function Requests() {
   const theme = useMantineTheme();
   const { user, userDB, privateUserDB, updatePrivateUserDB } = useUser();
 
-  const yourBitches: string[] | undefined = user.loggedIn
-    ? privateUserDB?.friends__list || []
-    : [];
+  const yourBitches: string[] | undefined = privateUserDB?.friends__list || [];
 
-  const thirstyBitches: string[] | undefined = user.loggedIn
-    ? privateUserDB?.friends__receivedRequests || []
-    : [];
+  const thirstyBitches: string[] | undefined =
+    privateUserDB?.friends__receivedRequests || [];
 
   const {
     data: friendProfiles,
@@ -56,7 +53,7 @@ function Requests() {
   } = useQuery({
     queryKey: friendQueries.fetchFriendData(userDB?.suid),
     queryFn: async () => {
-      if (!user.loggedIn) throw new Error("User is not logged in");
+      if (!user?.id) throw new Error("User is not logged in");
       const loadedProfiles: Partial<Record<string, DocumentData>> = {};
       const profilesToLoad = [
         ...(yourBitches ?? []),
@@ -83,12 +80,18 @@ function Requests() {
         return undefined;
       }
     },
-    enabled: !!user.loggedIn && !!userDB?.suid,
+    enabled: !!user?.id && !!userDB?.suid,
   });
 
   const acceptFriendReq = useMutation({
-    mutationFn: async ({ user, uid }: { user: UserLoggedIn; uid: string }) => {
-      const token = await user.user.getIdToken();
+    mutationFn: async ({
+      user,
+      uid,
+    }: {
+      user: AuthUserContext;
+      uid: string;
+    }) => {
+      const token = await user.getIdToken();
       const res = await fetch("/api/friend/add", {
         method: "POST",
         headers: {
@@ -119,7 +122,7 @@ function Requests() {
     onSuccess: (data, variables) => {
       qc.invalidateQueries({
         queryKey: userQueries.fetchPrivateUserDB(
-          variables.user.user.id ?? undefined
+          variables.user.id ?? undefined
         ),
       });
       updateNotification({
@@ -145,8 +148,14 @@ function Requests() {
   });
 
   const deleteFriendReq = useMutation({
-    mutationFn: async ({ user, uid }: { user: UserLoggedIn; uid: string }) => {
-      const token = await user.user.getIdToken();
+    mutationFn: async ({
+      user,
+      uid,
+    }: {
+      user: AuthUserContext;
+      uid: string;
+    }) => {
+      const token = await user.getIdToken();
       const res = await fetch("/api/friendRequest/delete", {
         method: "POST",
         headers: {
@@ -175,9 +184,7 @@ function Requests() {
     },
     onSuccess: (data, vars) => {
       qc.invalidateQueries({
-        queryKey: userQueries.fetchPrivateUserDB(
-          vars.user.user.id ?? undefined
-        ),
+        queryKey: userQueries.fetchPrivateUserDB(vars.user.id ?? undefined),
       });
       updateNotification({
         id: "removeReq",
@@ -208,7 +215,7 @@ function Requests() {
     );
   }
 
-  if (friendProfilesError || !user.loggedIn) {
+  if (friendProfilesError || !user?.id) {
     return (
       <Box>
         <Title order={3}>Could not load friends list</Title>

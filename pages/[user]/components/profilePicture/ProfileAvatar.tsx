@@ -18,9 +18,9 @@ function ProfileAvatar({
   size?: number;
 }) {
   const theme = useMantineTheme();
-  const { user, userDB } = useUser();
+  const { userDB } = useUser();
 
-  const profile = userInfo || (user.loggedIn ? userDB : undefined);
+  const profile = userInfo || userDB;
 
   const placeholder = (
     <Box

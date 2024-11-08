@@ -65,7 +65,7 @@ const useStyles = createStyles((theme, _params) => ({
 
 // create individual event card
 function EventCard({ event }: { event: Birthday | Event | Scout }) {
-  const { user, userDB } = useUser();
+  const { userDB } = useUser();
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
   const formattedMonth = dayjs(event.start.en).format("MMM");
@@ -82,8 +82,7 @@ function EventCard({ event }: { event: Birthday | Event | Scout }) {
   function birthdayEventName(name: string) {
     let splitName = name.split(" ");
     const nameOrderSetting =
-      (!user.loading && user.loggedIn && userDB?.setting__name_order) ||
-      "firstlast";
+      (userDB && userDB?.setting__name_order) || "firstlast";
     return getNameOrder(
       { first_name: splitName[0], last_name: splitName[1] },
       nameOrderSetting

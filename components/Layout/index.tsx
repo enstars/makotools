@@ -48,14 +48,14 @@ function Layout({
   meta?: PageMeta;
   headerProps?: any;
 }) {
-  const { user } = useUser();
+  const { isUserDBPending } = useUser();
   const theme = useMantineTheme();
   const dark = theme.colorScheme === "dark";
   const [collapsed, toggleCollapsed] = useToggle([false, true]);
 
   // collapsed={collapsed}
   // toggleCollapsed={collapsed}
-  return user.loading ? (
+  return isUserDBPending ? (
     <Container
       p="xl"
       sx={{

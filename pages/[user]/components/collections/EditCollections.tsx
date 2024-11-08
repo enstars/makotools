@@ -55,7 +55,7 @@ export default function EditCollections({
   const { t } = useTranslation("user");
   const { user } = useUser();
   const { ref, width } = useElementSize();
-  if (!user.loggedIn) return null;
+  if (!user?.id) return null;
 
   if (isReordering)
     return (

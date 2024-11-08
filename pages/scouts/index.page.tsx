@@ -57,7 +57,7 @@ function Page({
   charactersQuery: QuerySuccess<GameCharacter[]>;
 }) {
   const { t } = useTranslation("scouts");
-  const { user, userDB } = useUser();
+  const { userDB } = useUser();
   const { dayjs } = useDayjs();
   const theme = useMantineTheme();
 
@@ -123,8 +123,7 @@ function Page({
   const [viewOptions, setViewOptions] = useLocalStorage({
     key: "viewOptions__scout",
     defaultValue: {
-      region:
-        (user.loggedIn && userDB?.setting__game_region) || ("en" as GameRegion),
+      region: userDB?.setting__game_region || ("en" as GameRegion),
       // density: "full" as "full" | "compact",
     },
   });

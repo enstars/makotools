@@ -14,7 +14,7 @@ function MultiSelectSetting({
   data: any[];
 }) {
   const { user, userDB, updateUserDB } = useUser();
-  const isFirestoreAccessible = user.loggedIn;
+  const isFirestoreAccessible = user?.id;
 
   return (
     <MultiSelect
@@ -23,7 +23,7 @@ function MultiSelectSetting({
       }
       label={label}
       onChange={(value) => {
-        if (user.loggedIn) updateUserDB?.mutate({ [dataKey]: value });
+        if (userDB) updateUserDB?.mutate({ [dataKey]: value });
       }}
       data={data}
       {...props}

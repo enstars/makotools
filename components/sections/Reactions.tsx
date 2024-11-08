@@ -22,10 +22,11 @@ import useSWR from "swr";
 import EmoteSelector from "../utilities/emotes/EmoteSelector";
 import Emote from "../utilities/emotes/Emote";
 
-import { DbReaction, Reaction, User } from "types/makotools";
+import { DbReaction, Reaction } from "types/makotools";
 import useUser from "services/firebase/user";
 import emotes from "services/makotools/emotes";
 import { CONSTANTS } from "services/makotools/constants";
+import { AuthUserContext } from "next-firebase-auth";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -65,12 +66,12 @@ const fetchReactions = async (url: string) => {
 const addReaction = async (params: {
   id: string;
   currentPageId: string;
-  user: User;
+  user: AuthUserContext | null;
   onRefetch: () => any;
 }) => {
   const { id, currentPageId, user, onRefetch } = params;
-  if (!user.loggedIn) return;
-  const token = await user.user.getIdToken();
+  if (!user) return;
+  const token = await user.getIdToken();
   await fetch(`${CONSTANTS.EXTERNAL_URLS.BACKEND}/api/reactions`, {
     method: "POST",
     headers: {
@@ -79,7 +80,7 @@ const addReaction = async (params: {
     },
     body: JSON.stringify({
       data: {
-        user: user.user.id,
+        user: user.id,
         type: "emote",
         content: id,
         page: currentPageId,
@@ -94,7 +95,7 @@ function Reactions({ fullButton = true }: { fullButton?: boolean }) {
   const { classes } = useStyles();
   const { asPath } = useRouter();
   const [collapsed, setCollapsed] = useState<boolean>(true);
-  const { user } = useUser();
+  const { user, userDB } = useUser();
   const currentPageId = asPath.replace(/\//g, "_");
   const { data: reactions = [], mutate } = useSWR(
     `${CONSTANTS.EXTERNAL_URLS.BACKEND}/api/reactions?filters[page][$eq]=${currentPageId}&sort=createdAt:desc`,
@@ -102,7 +103,7 @@ function Reactions({ fullButton = true }: { fullButton?: boolean }) {
   );
   const theme = useMantineTheme();
 
-  const reactionsDisabled = user.loading || !user.loggedIn;
+  const reactionsDisabled = !!userDB;
 
   return (
     <Paper my="sm" withBorder p={3} radius="md">
@@ -143,7 +144,7 @@ function Reactions({ fullButton = true }: { fullButton?: boolean }) {
               onRefetch: mutate,
             });
           }}
-          disabled={user.loading || !user.loggedIn}
+          disabled={!!userDB}
         >
           <></>
         </EmoteSelector>

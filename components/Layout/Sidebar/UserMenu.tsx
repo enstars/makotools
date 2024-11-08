@@ -35,7 +35,8 @@ function UserMenu({ trigger }: { trigger: any }) {
   const theme = useMantineTheme();
   const dark = theme.colorScheme === "dark";
   const [opened, handlers] = useDisclosure(false);
-  const { user, userDB, privateUserDB, updateUserDB } = useUser();
+  const { user, userDB, privateUserDB, updateUserDB, isUserDBPending } =
+    useUser();
   const { push, pathname, asPath, query, locale } = useRouter();
   const userMenuAction = useRef<"change-theme">();
 
@@ -100,9 +101,9 @@ function UserMenu({ trigger }: { trigger: any }) {
       <Menu.Dropdown>
         <Menu.Item
           component={Link}
-          href={user.loggedIn ? `/@${userDB?.username}` : "#"}
+          href={userDB ? `/@${userDB?.username}` : "#"}
           icon={
-            user.loggedIn ? (
+            userDB ? (
               <ProfileAvatar userInfo={userDB} size={32} />
             ) : (
               <Avatar
@@ -114,11 +115,11 @@ function UserMenu({ trigger }: { trigger: any }) {
             )
           }
         >
-          {user.loading ? (
+          {isUserDBPending ? (
             <Text size="sm" color="dimmed">
               {t("menu.loading")}
             </Text>
-          ) : user.loggedIn ? (
+          ) : userDB ? (
             <Box
               sx={{
                 "*": {
@@ -165,7 +166,7 @@ function UserMenu({ trigger }: { trigger: any }) {
         >
           {t("menu.darkMode")}
         </Menu.Item>
-        {user.loggedIn && (
+        {userDB && (
           <Menu.Item
             id="sidebar-user-theme"
             icon={<IconPalette size={14} />}
@@ -252,7 +253,7 @@ function UserMenu({ trigger }: { trigger: any }) {
         </Menu.Item>
         <Menu.Label id="sidebar-label-account">{t("menu.account")}</Menu.Label>
 
-        {user.loading ? (
+        {isUserDBPending ? (
           <Menu.Item
             className="sidebar-link-login"
             icon={<IconLogin size={14} />}
@@ -260,7 +261,7 @@ function UserMenu({ trigger }: { trigger: any }) {
           >
             {t("menu.login")}
           </Menu.Item>
-        ) : user.loggedIn ? (
+        ) : user?.id ? (
           <>
             <Menu.Item
               component={Link}
@@ -278,7 +279,7 @@ function UserMenu({ trigger }: { trigger: any }) {
                   color="red"
                   position="top-start"
                   dot={
-                    user.loggedIn &&
+                    privateUserDB &&
                     privateUserDB?.friends__receivedRequests?.length !==
                       undefined &&
                     privateUserDB?.friends__receivedRequests?.length > 0
@@ -293,7 +294,7 @@ function UserMenu({ trigger }: { trigger: any }) {
             <Menu.Item
               id="sidebar-link-logout"
               onClick={() => {
-                user.user.signOut().then(() => {
+                user.signOut().then(() => {
                   push("/");
                 });
               }}

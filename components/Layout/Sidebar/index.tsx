@@ -77,7 +77,6 @@ const SidebarLink = forwardRef(function SbL(
     },
   ref
 ) {
-  const theme = useMantineTheme();
   return (
     <NavLink
       ref={ref}
@@ -524,7 +523,7 @@ function Sidebar(props: any) {
                         color="red"
                         position="top-start"
                         disabled={
-                          !user.loggedIn ||
+                          !user?.id ||
                           !privateUserDB?.friends__receivedRequests?.length ||
                           privateUserDB?.friends__receivedRequests?.length <= 0
                         }
@@ -603,7 +602,7 @@ function Sidebar(props: any) {
             event.preventDefault();
             mouseDown = true;
             window.addEventListener("mousemove", resize);
-            window.addEventListener("mouseup", (e) => {
+            window.addEventListener("mouseup", () => {
               window.removeEventListener("mousemove", resize);
             });
           }}

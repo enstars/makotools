@@ -89,7 +89,7 @@ function RecommendedCard({
         };
         return getNameOrder(
           nameObj,
-          user.loggedIn ? userDB?.setting__name_order : undefined
+          userDB ? userDB?.setting__name_order : undefined
         );
       } else {
         return "";
@@ -246,7 +246,7 @@ function RecommendedCountdown({
       <Alert my={3} icon={<IconHeart />}>
         {t("recommended.recommendedAlert")}
       </Alert>
-      {user.loggedIn && (
+      {userDB && (
         <>
           {userDB &&
           (!userDB?.profile__fave_charas ||

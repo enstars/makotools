@@ -171,7 +171,7 @@ function Picture({
   const { user, userDB } = useUser();
 
   const dontUseWebP = useMemo(
-    () => user.loggedIn && userDB?.setting__use_webp === "dont-use",
+    () => userDB?.setting__use_webp === "dont-use",
     [user]
   );
 
@@ -242,7 +242,7 @@ function Picture({
           src={src}
           alt={alt}
           onContextMenu={() => {
-            if (user.loggedIn && (isB2Optimized || webpSrc) && !dontUseWebP)
+            if (userDB && (isB2Optimized || webpSrc) && !dontUseWebP)
               notify("info", {
                 title: "This is a WEBP file!",
                 message:
@@ -262,7 +262,7 @@ function Picture({
         <Group className={classes.actionIconWrapper} spacing={4}>
           {!error &&
             loaded &&
-            user.loggedIn &&
+            userDB &&
             (action === "download" || action === "both") && (
               <ActionIcon
                 size="sm"
@@ -275,7 +275,7 @@ function Picture({
             )}
           {!error &&
             loaded &&
-            user.loggedIn &&
+            userDB &&
             (action === "view" || action === "both") && (
               <>
                 <ActionIcon

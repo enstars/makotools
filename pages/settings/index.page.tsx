@@ -102,7 +102,7 @@ function Page({ uniqueCode }: { uniqueCode: string }) {
   const { t } = useTranslation("settings");
   const theme = useMantineTheme();
   const { width } = useViewportSize();
-  const { user, privateUserDB } = useUser();
+  const { privateUserDB } = useUser();
 
   const [isNarrowPage, setIsNarrowPage] = useState(true);
 
@@ -174,7 +174,7 @@ function Page({ uniqueCode }: { uniqueCode: string }) {
                     position="top-start"
                     disabled={
                       value !== "friends" ||
-                      !user.loggedIn ||
+                      !privateUserDB ||
                       !privateUserDB?.friends__receivedRequests ||
                       privateUserDB?.friends__receivedRequests?.length <= 0
                     }

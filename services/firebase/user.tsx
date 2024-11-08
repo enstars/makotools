@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext, useState, useEffect, ReactElement } from "react";
+import React, { useContext, useEffect, ReactElement } from "react";
 import { IconAlertTriangle } from "@tabler/icons-react";
-import { useAuthUser } from "next-firebase-auth";
+import { AuthUserContext, useAuthUser } from "next-firebase-auth";
 import { ColorScheme } from "@mantine/core";
 
 import {
@@ -10,12 +10,7 @@ import {
   setFirestoreUserData,
 } from "./firestore";
 
-import {
-  User,
-  UserData,
-  UserLoggedOut,
-  UserPrivateData,
-} from "types/makotools";
+import { UserData, UserPrivateData } from "types/makotools";
 import notify from "services/libraries/notify";
 import {
   useMutation,
@@ -27,7 +22,7 @@ import { userQueries } from "services/queries";
 import { FieldValue } from "firebase/firestore";
 
 interface UserContextType {
-  user: User;
+  user: AuthUserContext | null;
   userDB: UserData | undefined;
   privateUserDB: UserPrivateData | undefined;
   updateUserDB:
@@ -44,21 +39,18 @@ interface UserContextType {
     | undefined;
   userDBError: Error | null;
   privateUserDBError: Error | null;
+  isUserDBPending: boolean;
 }
 
-const loadingUser: UserLoggedOut = {
-  loading: false,
-  loggedIn: false,
-};
-
 const UserContext = React.createContext<UserContextType>({
-  user: loadingUser,
+  user: null,
   userDB: undefined,
   privateUserDB: undefined,
   updateUserDB: undefined,
   updatePrivateUserDB: undefined,
   userDBError: null,
   privateUserDBError: null,
+  isUserDBPending: false,
 });
 const useUser = () => useContext(UserContext);
 
@@ -66,44 +58,23 @@ export default useUser;
 export function UserProvider({
   children,
   colorScheme,
-  setAppColorScheme,
 }: {
   children: ReactElement;
   colorScheme: ColorScheme;
-  setAppColorScheme: (c: ColorScheme) => void;
 }) {
   const AuthUser = useAuthUser();
 
   const qc = useQueryClient();
 
-  const [user, setUser] = useState<User>(loadingUser);
-
   const authUserId = AuthUser.id === null ? undefined : AuthUser.id;
 
   const {
-    data: userData,
-    isPending: isUserDataPending,
-    error: userError,
-    isSuccess: userDataSuccess,
-    isRefetching: isUserDataRefetching,
-    isFetching: isUserDataFetching,
+    data: userDB,
+    error: userDBError,
+    isPending: isUserDBPending,
   } = useQuery({
-    enabled: AuthUser.id !== null,
-    queryKey: userQueries.fetchUserData(authUserId),
-    queryFn: async () => {
-      if (!authUserId) return null;
-      const currentUserData = await getFirestoreUserData(authUserId);
-      if (currentUserData) {
-        return currentUserData;
-      } else {
-        throw new Error("Could not find user data");
-      }
-    },
-  });
-
-  const { data: userDB, error: userDBError } = useQuery({
-    enabled: !!userData,
-    queryKey: userQueries.fetchUserDB(userData?.suid),
+    enabled: !!authUserId,
+    queryKey: userQueries.fetchUserDB(authUserId),
     queryFn: async () => {
       if (AuthUser.id) return await getFirestoreUserData(AuthUser.id);
       else throw new Error("Could not retrieve user DB");
@@ -111,8 +82,8 @@ export function UserProvider({
   });
 
   const { data: privateUserDB, error: privateUserDBError } = useQuery({
-    enabled: !!userData,
-    queryKey: userQueries.fetchPrivateUserDB(userData?.suid),
+    enabled: !!authUserId,
+    queryKey: userQueries.fetchPrivateUserDB(authUserId),
     queryFn: async () => {
       if (AuthUser.id) return await getFirestorePrivateUserData(AuthUser.id);
       else throw new Error("Could not retrieve private user DB");
@@ -125,10 +96,10 @@ export function UserProvider({
     },
     onSuccess: async () => {
       await qc.invalidateQueries({
-        queryKey: userQueries.fetchUserDB(userData?.suid),
+        queryKey: userQueries.fetchUserDB(authUserId),
       });
       await qc.refetchQueries({
-        queryKey: userQueries.fetchProfileData(userData?.suid),
+        queryKey: userQueries.fetchProfileData(authUserId),
       });
     },
   });
@@ -143,17 +114,17 @@ export function UserProvider({
     },
     onSuccess: async () => {
       await qc.invalidateQueries({
-        queryKey: userQueries.fetchPrivateUserDB(userData?.suid),
+        queryKey: userQueries.fetchPrivateUserDB(authUserId),
       });
       await qc.refetchQueries({
-        queryKey: userQueries.fetchProfileData(userData?.suid),
+        queryKey: userQueries.fetchProfileData(authUserId),
       });
     },
   });
 
   useEffect(() => {
-    if (userError) {
-      console.error("a user error occurred", userError);
+    if (userDBError) {
+      console.error("a user error occurred", userDBError);
       notify("error", {
         title: "Error",
         message:
@@ -163,58 +134,21 @@ export function UserProvider({
       });
       AuthUser.signOut();
     }
-  }, [userError]);
+  }, [userDBError]);
 
   useEffect(() => {
-    if (
-      userDataSuccess &&
-      userData &&
-      !isUserDataRefetching &&
-      !isUserDataFetching
-    ) {
-      setAppColorScheme(userData.dark_mode ? "dark" : "light");
-      setUser((s) => ({
-        ...s,
-        loading: false as const,
-        loggedIn: true as const,
-        user: AuthUser,
-      }));
-    } else if (
-      isUserDataPending ||
-      isUserDataRefetching ||
-      (isUserDataFetching && (!userData || !userDataSuccess))
-    ) {
-      setUser({
-        loading: true,
-        loggedIn: undefined,
-      });
-    } else {
-      setUser({
-        loading: false,
-        loggedIn: false,
-      });
-    }
-  }, [
-    userDataSuccess,
-    userData,
-    isUserDataPending,
-    isUserDataRefetching,
-    isUserDataFetching,
-  ]);
-
-  useEffect(() => {
-    if (!user.loading && user.loggedIn)
-      updateUserDB.mutate({ dark_mode: colorScheme === "dark" });
+    if (userDB) updateUserDB.mutate({ dark_mode: colorScheme === "dark" });
   }, [colorScheme]);
 
   const contextValue = {
-    user,
+    user: AuthUser,
     userDB,
     privateUserDB,
     updateUserDB: updateUserDB,
     updatePrivateUserDB: updatePrivateUserDB,
     userDBError,
     privateUserDBError,
+    isUserDBPending,
   };
 
   return (

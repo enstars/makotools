@@ -3,21 +3,19 @@ import useTranslation from "next-translate/useTranslation";
 
 import useUser from "services/firebase/user";
 import { sendVerificationEmail } from "services/firebase/firestore";
-import { UserLoggedIn } from "types/makotools";
 
 function Email() {
   const { t } = useTranslation("settings");
   const { user } = useUser();
-  const loggedInUser: UserLoggedIn = user as UserLoggedIn;
-  if (loggedInUser.user.email !== null) {
+  if (user?.email !== null) {
     return (
       <Box>
         <TextInput
           label={t("account.emailLabel")}
-          value={loggedInUser.user.email || " "}
+          value={user?.email ?? " "}
           readOnly
         />
-        {user.loggedIn && user.user.emailVerified ? (
+        {user?.emailVerified ? (
           <Text mt="xs" size="sm" color="dimmed">
             {t("account.emailVerified")}
           </Text>
@@ -30,7 +28,7 @@ function Email() {
               compact
               variant="subtle"
               onClick={() => {
-                if (user.loggedIn && !user.user.emailVerified) {
+                if (user?.id && !user.emailVerified) {
                   sendVerificationEmail();
                 }
               }}

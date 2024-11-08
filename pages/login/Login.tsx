@@ -32,7 +32,7 @@ function Login() {
   const [signOnError, setSignOnError] = useState<{ type: string } | null>(null);
 
   const router = useRouter();
-  const { user, updateUserDB } = useUser();
+  const { user, userDB, updateUserDB, isUserDBPending } = useUser();
 
   function signOnAlertMsg(error: { type: string; code?: string }) {
     const { code } = error;
@@ -103,12 +103,12 @@ function Login() {
   });
 
   useEffect(() => {
-    if (!user.loading && user.loggedIn) {
+    if (userDB) {
       router.push("/");
     }
 
     return () => {
-      if (isRegister && user.loggedIn && updateUserDB) {
+      if (isRegister && userDB && updateUserDB) {
         updateUserDB.mutate({ name: form.values.name });
       }
     };
@@ -120,7 +120,7 @@ function Login() {
       pt="lg"
       style={{ height: "100%", maxWidth: 400 }}
     >
-      {!user.loading && user.loggedIn ? (
+      {userDB ? (
         <Text id="signin-redirect" align="center" color="dimmed" size="sm">
           Redirecting you to MakoTools
         </Text>
@@ -161,7 +161,7 @@ function Login() {
             withBorder
             sx={{ width: "100%" }}
           >
-            <LoadingOverlay visible={user.loading} />
+            <LoadingOverlay visible={isUserDBPending} />
             <Title id="signin-title" order={2} size="lg" mb="sm">
               {isRegister ? "Sign up" : "Sign in"}
             </Title>

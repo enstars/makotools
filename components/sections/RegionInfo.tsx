@@ -95,13 +95,12 @@ export function RegionSwitcher() {
 export default function RegionInfo({ region }: { region: GameRegion }) {
   const { t } = useTranslation("regions");
   const router = useRouter();
-  const { user, userDB } = useUser();
+  const { userDB } = useUser();
 
   // get region name from the router
   const regionName = router.query.region?.[0] as string;
 
-  const userRegionSetting =
-    (user.loggedIn && userDB?.setting__game_region) || "en";
+  const userRegionSetting = (userDB && userDB?.setting__game_region) || "en";
 
   useEffect(() => {
     if (localStorage.getItem("mktls__notices__defaultRegionInfoShown")) return;
@@ -139,9 +138,7 @@ export default function RegionInfo({ region }: { region: GameRegion }) {
     return null;
   }
 
-  const isCorrectRegion = user.loggedIn
-    ? userRegionSetting === regionName
-    : true;
+  const isCorrectRegion = userDB ? userRegionSetting === regionName : true;
 
   const pathWithoutRegion = router.asPath.replace(
     `/${router.query.region?.[0] as string}`,
