@@ -1,11 +1,10 @@
 import { Anchor, Box, Paper, useMantineTheme } from "@mantine/core";
 import { showNotification, updateNotification } from "@mantine/notifications";
 import { arrayRemove, arrayUnion } from "firebase/firestore";
-import { update } from "lodash";
 import Trans from "next-translate/Trans";
 import useTranslation from "next-translate/useTranslation";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import useUser from "services/firebase/user";
 
@@ -45,7 +44,7 @@ export default function BookmarkButton({
   onBusyBackground?: boolean;
   inCard?: boolean;
 }) {
-  const { user, userDB, updateUserDB } = useUser();
+  const { userDB, updateUserDB } = useUser();
   const theme = useMantineTheme();
   const { t } = useTranslation("bookmarks");
   const bookmarkAction = useRef<"add" | "remove">();
@@ -130,7 +129,7 @@ export default function BookmarkButton({
     }
   }, [updateUserDB, bookmarkAction]);
 
-  if (!user.loggedIn) {
+  if (!userDB) {
     return null;
   }
 

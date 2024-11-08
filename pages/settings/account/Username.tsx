@@ -9,7 +9,7 @@ import useUser from "services/firebase/user";
 
 function Username() {
   const { t } = useTranslation("settings");
-  const { user, userDB } = useUser();
+  const { userDB } = useUser();
   const theme = useMantineTheme();
   const [usernameModalOpen, setUsernameModalOpen] = useState(false);
 
@@ -17,7 +17,7 @@ function Username() {
     <>
       <TextInput
         label={t("account.usernameLabel")}
-        value={user.loggedIn ? userDB?.username : ""}
+        value={userDB?.username ?? ""}
         readOnly
         placeholder={t("account.usernamePlaceholder")}
         icon={<IconAt size={16} />}

@@ -24,32 +24,6 @@ import { GameCard } from "types/game";
 import Picture from "components/core/Picture";
 import PicturePreload from "components/core/PicturePreload";
 
-const useStyles = createStyles((theme) => ({
-  item: {
-    ...theme.fn.focusStyles(),
-    display: "flex",
-    alignItems: "center",
-    borderRadius: theme.radius.md,
-    border: `1px solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.colors.gray[2]
-    }`,
-    padding: `${theme.spacing.sm}px ${theme.spacing.xl}px`,
-    backgroundColor:
-      theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.white,
-    marginBottom: theme.spacing.sm,
-  },
-
-  itemDragging: {
-    boxShadow: theme.shadows.sm,
-  },
-
-  symbol: {
-    fontSize: 30,
-    fontWeight: 700,
-    width: 60,
-  },
-}));
-
 function Banner({
   cards,
   externalSetter,
@@ -62,9 +36,7 @@ function Banner({
   const { user, userDB } = useUser();
   const [acValue] = useState("");
 
-  const [state, handlers] = useListState(
-    (user.loggedIn && userDB?.profile__banner) || []
-  );
+  const [state, handlers] = useListState(userDB?.profile__banner ?? []);
   const [reordering, setReordering] = useState(false);
 
   const NUM_COLS = 3;
@@ -82,7 +54,6 @@ function Banner({
 
     // update profile banner if user is logged in and state has changed
     if (
-      user.loggedIn &&
       userDB?.profile__banner &&
       JSON.stringify(userDB.profile__banner) !== JSON.stringify(state)
     ) {
@@ -140,7 +111,7 @@ function Banner({
                   margin: "auto",
                 }}
               >
-                {state.map((item, index) => (
+                {state.map((item) => (
                   <GridItem key={item?.toString()}>
                     <Box
                       sx={{

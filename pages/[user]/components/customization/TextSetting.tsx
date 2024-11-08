@@ -32,10 +32,10 @@ function TextSetting<T = {}>({
   const { t } = useTranslation("user");
   const { user, userDB } = useUser();
 
-  const isFirestoreAccessible = user.loggedIn;
+  const isFirestoreAccessible = user?.id && userDB;
 
   const [inputValue, setInputValue] = useState(
-    user.loggedIn ? String(userDB?.[dataKey]) : undefined
+    userDB ? String(userDB?.[dataKey]) : undefined
   );
 
   useEffect(() => {

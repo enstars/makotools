@@ -120,11 +120,11 @@ function Page({
     [charactersQuery.data]
   );
 
-  const units: GameUnit[] = useMemo(() => unitsQuery.data, [unitsQuery.data]);
+  const units: GameUnit[] = useMemo(() => unitsQuery?.data, [unitsQuery?.data]);
 
   const birthdays: Birthday[] = createBirthdayData(
     characters,
-    getNameOrderSetting(user, userDB),
+    getNameOrderSetting(userDB),
     locale
   );
   const gameEvents: Event[] = useMemo(
@@ -139,7 +139,7 @@ function Page({
     ...(scouts ?? []),
   ];
 
-  const cards: GameCard[] = useMemo(() => cardsQuery.data, [cardsQuery.data]);
+  const cards: GameCard[] = useMemo(() => cardsQuery?.data, [cardsQuery?.data]);
 
   interface RecommendedCampaign {
     event: Campaign;
@@ -148,9 +148,9 @@ function Page({
   }
 
   function getRecommendedCampaigns(): RecommendedCampaign[] {
-    if (!user.loggedIn) return [];
-    let faveCharas = userDB?.profile__fave_charas;
-    let faveUnits = userDB?.profile__fave_units;
+    if (!userDB) return [];
+    let faveCharas = userDB.profile__fave_charas;
+    let faveUnits = userDB.profile__fave_units;
     let recommendedCampaigns: RecommendedCampaign[] = [];
     events.forEach((event: Campaign) => {
       if (event.type === "birthday") {
@@ -242,7 +242,7 @@ function Page({
               }
             />
             <CurrentScoutsCountdown scouts={scouts} />
-            {user.loggedIn && (
+            {userDB && (
               <RecommendedCountdown
                 events={getRecommendedCampaigns()}
                 characters={characters}

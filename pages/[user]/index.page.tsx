@@ -47,7 +47,7 @@ import ProfileStats from "./components/ProfileStats";
 import CardCollections from "./components/collections/CardCollections";
 
 import { getLayout, useSidebarStatus } from "components/Layout";
-import { Locale, QuerySuccess, UserData, UserLoggedIn } from "types/makotools";
+import { Locale, QuerySuccess, UserData } from "types/makotools";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "services/data";
 import { parseStringify } from "services/utilities";
@@ -107,6 +107,7 @@ function Page({
     updatePrivateUserDB,
     updateUserDB,
     userDBError,
+    isUserDBPending,
   } = useUser();
 
   const cardsData: GameCard[] = useMemo(
@@ -137,7 +138,8 @@ function Page({
 
   const sendFriendReq = useMutation({
     mutationFn: async () => {
-      const token = await (user as UserLoggedIn).user.getIdToken();
+      if (!user) throw new Error("User does not exist");
+      const token = await user.getIdToken();
       const res = await fetch("/api/friendRequest/add", {
         method: "POST",
         headers: {
@@ -183,8 +185,8 @@ function Page({
 
   const deleteFriendReq = useMutation({
     mutationFn: async () => {
-      if (!user.loggedIn) throw new Error("User is not logged in");
-      const token = await (user as UserLoggedIn).user.getIdToken();
+      if (!privateUserDB || !user) throw new Error("User is not logged in");
+      const token = await user.getIdToken();
       const res = await fetch("/api/friendRequest/delete", {
         method: "POST",
         headers: {
@@ -234,8 +236,8 @@ function Page({
 
   const cancelFriendReq = useMutation({
     mutationFn: async () => {
-      if (!user.loggedIn) throw new Error("User is not logged in");
-      const token = await (user as UserLoggedIn).user.getIdToken();
+      if (!privateUserDB || !user) throw new Error("User is not logged in");
+      const token = await user.getIdToken();
       const res = await fetch("/api/friendRequest/cancel", {
         method: "POST",
         headers: {
@@ -285,8 +287,8 @@ function Page({
 
   const removeFriend = useMutation({
     mutationFn: async () => {
-      if (!user.loggedIn) throw new Error("User is not logged in");
-      const token = await user.user.getIdToken();
+      if (!privateUserDB || !user) throw new Error("User is not logged in");
+      const token = await user.getIdToken();
       const res = await fetch("/api/friend/delete", {
         method: "POST",
         headers: {
@@ -338,8 +340,8 @@ function Page({
 
   const addFriend = useMutation({
     mutationFn: async () => {
-      if (!user.loggedIn) throw new Error("User is not logged in");
-      const token = await (user as UserLoggedIn).user.getIdToken();
+      if (!user || !privateUserDB) throw new Error("User is not logged in");
+      const token = await user.getIdToken();
       const res = await fetch("/api/friend/add", {
         method: "POST",
         headers: {
@@ -420,30 +422,30 @@ function Page({
   }, [updateUserDB, userDB, profileState]);
 
   const { collapsed } = useSidebarStatus();
-  const isOwnProfile = !!(user.loggedIn && userDB?.suid === profile.suid);
+  const isOwnProfile = !!(userDB?.suid === profile.suid);
 
   const isFriend = useMemo(() => {
-    if (user.loggedIn)
+    if (privateUserDB)
       return !isOwnProfile && !!privateUserDB?.friends__list?.includes(uid);
     return false;
-  }, [user, isOwnProfile, uid]);
+  }, [privateUserDB, isOwnProfile, uid]);
 
   const isOutgoingFriendReq = useMemo(() => {
-    if (user.loggedIn)
+    if (privateUserDB)
       return (
         !isOwnProfile && !!privateUserDB?.friends__sentRequests?.includes(uid)
       );
     return false;
-  }, [user, isOwnProfile, uid]);
+  }, [privateUserDB, isOwnProfile, uid]);
 
   const isIncomingFriendReq = useMemo(() => {
-    if (user.loggedIn)
+    if (privateUserDB)
       return (
         !isOwnProfile &&
         !!privateUserDB?.friends__receivedRequests?.includes(uid)
       );
     return false;
-  }, [user, isOwnProfile, uid]);
+  }, [privateUserDB, isOwnProfile, uid]);
 
   useEffect(() => {
     embla?.reInit();
@@ -520,13 +522,13 @@ function Page({
             opened={openPicModal}
             openedFunction={setOpenPicModal}
             cards={cards as GameCard[]}
-            loggedIn={user.loggedIn ?? false}
+            loggedIn={!!userDB ?? false}
             userDB={userDB}
             profileState={profileState}
             externalSetter={setProfileState}
           />
         )}
-        {user.loggedIn && (
+        {userDB && privateUserDB && (
           <RemoveFriendModal
             opened={openRemoveFriendModal}
             closeFunction={setRemoveFriendModal}
@@ -670,7 +672,7 @@ function Page({
                     ` · ${profileData.profile__pronouns}`}
                 </Text>
               </Box>
-              {!user.loading && !isProfileDataPending ? (
+              {!isUserDBPending && !isProfileDataPending ? (
                 <ProfileButtons
                   {...{
                     user,

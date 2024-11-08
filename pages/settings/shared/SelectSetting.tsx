@@ -32,13 +32,13 @@ function SelectSetting({
 }) {
   const { user, userDB, updateUserDB } = useUser();
 
-  const isFirestoreAccessible = user.loggedIn;
+  const isFirestoreAccessible = user?.id;
   return (
     <Select
       value={isFirestoreAccessible ? (userDB?.[dataKey] as string) : undefined}
       label={label}
       onChange={(value) => {
-        if (user.loggedIn) updateUserDB?.mutate({ [dataKey]: value });
+        if (userDB) updateUserDB?.mutate({ [dataKey]: value });
       }}
       itemComponent={SelectItemForwardRef}
       icon={

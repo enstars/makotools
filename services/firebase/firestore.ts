@@ -13,17 +13,11 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
+import { AuthUserContext } from "next-firebase-auth";
 import { Dispatch, SetStateAction } from "react";
 
 import { parseStringify } from "services/utilities";
-import {
-  UserData,
-  LoadingStatus,
-  UserPrivateData,
-  User,
-  CardCollection,
-  UserLoggedIn,
-} from "types/makotools";
+import { UserData, UserPrivateData, CardCollection } from "types/makotools";
 
 /**
  * When querying documents using where(), a maximum of
@@ -55,7 +49,9 @@ export async function setFirestoreUserData(data: any, priv = false) {
   }
 }
 
-export async function getFirestoreUserData(uid: string) {
+export async function getFirestoreUserData(
+  uid: string
+): Promise<UserData | null> {
   // const clientAuth = getAuth();
   // console.log("clientAuth", clientAuth);
   const db = getFirestore();
@@ -69,7 +65,7 @@ export async function getFirestoreUserData(uid: string) {
     const data = docSnap.data();
     return data as UserData;
   } else {
-    return undefined;
+    return null;
   }
 }
 
@@ -83,7 +79,7 @@ export async function getFirestorePrivateUserData(uid: string) {
     const data = docSnap.data();
     return data as UserPrivateData;
   } else {
-    return undefined;
+    return null;
   }
 }
 
@@ -125,15 +121,16 @@ export async function sendPasswordReset(
 }
 
 export async function getFirestoreUserCollection(
-  user: UserLoggedIn,
+  user: AuthUserContext | null,
+  userDB: UserData | undefined,
   profileUID: string | undefined,
   privateUserDB: UserPrivateData | undefined
 ) {
   const db = getFirestore();
   if (!user || !profileUID || !privateUserDB) throw new Error("Missing data");
 
-  const accessiblePrivacyLevel = user.loggedIn
-    ? user.user.id === profileUID
+  const accessiblePrivacyLevel = userDB
+    ? user.id === profileUID
       ? 3
       : privateUserDB.friends__list?.includes(profileUID)
       ? 2
@@ -145,7 +142,7 @@ export async function getFirestoreUserCollection(
   try {
     querySnap = await getDocs(
       query(
-        collection(db, `users/${user.user.id}/card_collections`),
+        collection(db, `users/${user.id}/card_collections`),
         where("privacyLevel", "<=", accessiblePrivacyLevel)
       )
     );
@@ -159,7 +156,7 @@ export async function getFirestoreUserCollection(
   } catch (e) {
     console.info(
       accessiblePrivacyLevel,
-      `users/${user.user.id}/card_collections`,
+      `users/${user.id}/card_collections`,
       e
     );
     console.error(e);
@@ -188,7 +185,6 @@ export async function getFirestoreUserDocument(
   }
   if (typeof fallback !== undefined) return fallback;
   throw new Error("nonexistent and no fallback");
-  return undefined;
 }
 
 // export async function getFirestoreUserProfile([profileAddress, user]: [

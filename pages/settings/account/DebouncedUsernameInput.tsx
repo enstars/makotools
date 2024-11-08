@@ -331,14 +331,10 @@ const canonUsernames = [
 function DebouncedUsernameInput({ changedCallback = () => {} }) {
   const { t } = useTranslation("settings");
   const theme = useMantineTheme();
-  const { user, userDB, updateUserDB } = useUser();
-  const [inputValue, setInputValue] = useState(
-    user.loggedIn ? userDB?.username : ""
-  );
+  const { userDB, updateUserDB } = useUser();
+  const [inputValue, setInputValue] = useState(userDB?.username ?? "");
 
-  const [newUsername, setNewUsername] = useState(
-    user.loggedIn ? userDB?.username : ""
-  );
+  const [newUsername, setNewUsername] = useState(userDB?.username ?? "");
   const [usernameMsg, setUsernameMsg] = useState("");
   const [usernameJudgement, setUsernameJudgement] = useState(true);
 
@@ -352,11 +348,11 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
   );
 
   useEffect(() => {
-    if (user.loggedIn) setInputValue(userDB?.username);
-  }, [user]);
+    if (userDB) setInputValue(userDB.username);
+  }, [userDB]);
 
   const validateUsername = async (value: string) => {
-    if (user.loggedIn) {
+    if (userDB) {
       setUsernameJudgement(false);
       setNewUsername("");
 
@@ -394,7 +390,7 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
   };
 
   const validateAndSaveUsername = async () => {
-    if (user.loggedIn) {
+    if (userDB) {
       const usernameValid = await validateUsernameDb(newUsername);
       if (usernameValid) {
         updateUserDB?.mutate({ username: newUsername });
@@ -432,7 +428,7 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
             setInputValue(e.target.value);
             memoizedHandleValueChange(e.target.value);
           }}
-          {...(user.loggedIn && inputValue === userDB?.username
+          {...(userDB && inputValue === userDB?.username
             ? null
             : !usernameJudgement
             ? { rightSection: <Loader size="xs" /> }
@@ -450,7 +446,7 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
         />
         <Button
           onClick={validateAndSaveUsername}
-          {...(user.loggedIn &&
+          {...(userDB &&
           inputValue !== userDB?.username &&
           (usernameJudgement || newUsername)
             ? null
@@ -460,7 +456,7 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
         </Button>
       </Group>
       <Text mt="xs" color="dimmed" size="xs">
-        {user.loggedIn && inputValue !== userDB?.username && usernameJudgement
+        {userDB && inputValue !== userDB?.username && usernameJudgement
           ? usernameMsg
           : t("account.newUsername")}
       </Text>

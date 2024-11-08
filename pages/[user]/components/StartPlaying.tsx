@@ -68,7 +68,7 @@ function StartPlaying({
   });
 
   useEffect(() => {
-    if (user.loggedIn) {
+    if (user?.id && userDB) {
       const startPlaying = userDB?.profile__start_playing;
       if (startPlaying && startPlaying !== "0000-00-00") {
         setPicked({
@@ -84,7 +84,7 @@ function StartPlaying({
         });
       }
     }
-  }, [user, dayjs]);
+  }, [user, userDB, dayjs]);
 
   useEffect(() => {
     const resolvedData = picked.unknown
@@ -92,7 +92,7 @@ function StartPlaying({
       : `${picked.year}-${picked.month}-01`;
     if (
       !picked.loading &&
-      user.loggedIn &&
+      user?.id &&
       (typeof userDB?.profile__start_playing === "undefined" ||
         userDB?.profile__start_playing !== resolvedData)
     ) {

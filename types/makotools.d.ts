@@ -129,23 +129,6 @@ interface UserPrivateData {
   friends__receivedRequests?: UID[];
 }
 
-interface UserLoading {
-  loading: true;
-  loggedIn: undefined;
-}
-interface UserLoggedOut {
-  loading: false;
-  loggedIn: false;
-}
-
-interface UserLoggedIn {
-  loading: false;
-  loggedIn: true;
-  user: AuthUserContext;
-}
-
-type User = UserLoading | UserLoggedOut | UserLoggedIn;
-
 interface GetServerSideUserContext extends GetServerSidePropsContext {}
 
 type ContributorRole = "admin" | "data" | "design" | "dev" | "translator";

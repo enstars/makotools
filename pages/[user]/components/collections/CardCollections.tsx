@@ -19,7 +19,7 @@ import useTranslation from "next-translate/useTranslation";
 import EditCollections from "./EditCollections";
 import CollectionFolder from "./CollectionFolder";
 
-import { CardCollection, UserData, UserLoggedIn } from "types/makotools";
+import { CardCollection, UserData } from "types/makotools";
 import { GameCard } from "types/game";
 import useUser from "services/firebase/user";
 import {
@@ -53,7 +53,7 @@ function CardCollections({
     useListState<CardCollection>([]);
   const [isReordering, setIsReordering] = useState<boolean>(false);
 
-  const isYourProfile = user.loggedIn && userDB?.suid === profile.suid;
+  const isYourProfile = userDB?.suid === profile.suid;
   const [currentCollection, setCurrentCollection] = useState<
     number | undefined
   >(undefined);
@@ -65,7 +65,7 @@ function CardCollections({
 
   const reorderCollection = useMutation({
     mutationFn: async () => {
-      if (!user.loggedIn) throw new Error("User is not logged in");
+      if (!user?.id || !userDB) throw new Error("User is not logged in");
       const db = getFirestore();
       // Get a new write batch
       const batch = writeBatch(db);
@@ -83,7 +83,7 @@ function CardCollections({
         tempCollectionsWhileReordering[index].order = index;
         const collectionRef = doc(
           db,
-          `users/${user.user.id}/card_collections`,
+          `users/${user.id}/card_collections`,
           collection.id
         );
         batch.update(collectionRef, { order: index });
@@ -95,7 +95,7 @@ function CardCollections({
     onSuccess: () => {
       qc.invalidateQueries({
         queryKey: cardCollectionQueries.fetchCardCollections(
-          (user as UserLoggedIn).user.id ?? undefined
+          user?.id ?? undefined
         ),
       });
     },
@@ -106,7 +106,7 @@ function CardCollections({
 
   const saveAllCollections = useMutation({
     mutationFn: async () => {
-      if (!user.loggedIn) throw new Error("User is not logged in");
+      if (!user?.id || !userDB) throw new Error("User is not logged in");
       setEditMode(false);
       setCurrentCollection(undefined);
 
@@ -126,7 +126,7 @@ function CardCollections({
           if (!isEqual(originalCollection, newCollection)) {
             const collectionRef = doc(
               db,
-              `users/${user.user.id}/card_collections`,
+              `users/${user.id}/card_collections`,
               newCollection.id
             );
             batch.set(collectionRef, newCollection, {
@@ -142,7 +142,7 @@ function CardCollections({
         } else {
           const collectionRef = doc(
             db,
-            `users/${user.user.id}/card_collections`,
+            `users/${user.id}/card_collections`,
             originalCollection.id
           );
           batch.delete(collectionRef);
@@ -153,7 +153,7 @@ function CardCollections({
         toUpdateCollections.forEach((collectionToCreate) => {
           const collectionRef = doc(
             db,
-            `users/${user.user.id}/card_collections`,
+            `users/${user.id}/card_collections`,
             collectionToCreate.id
           );
           batch.set(collectionRef, collectionToCreate, {
@@ -167,7 +167,7 @@ function CardCollections({
     onSuccess: async () => {
       await qc.refetchQueries({
         queryKey: cardCollectionQueries.fetchCardCollections(
-          (user as UserLoggedIn).user.id ?? undefined
+          user?.id ?? undefined
         ),
       });
       showNotification({
@@ -193,7 +193,7 @@ function CardCollections({
   });
 
   const addNewCollection = async () => {
-    if (!user.loggedIn) return;
+    if (!user?.id || !userDB) return;
     const newCollection = createNewCollectionObject({
       order: collections.length,
     });

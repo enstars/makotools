@@ -112,7 +112,7 @@ function CurrentEventCountdown({ events }: { events: Event[] }) {
   const shownEvent = events.filter((event) => {
     return dayjs().isBefore(event.end.en);
   })[0];
-  const isNextEvent = dayjs().isBefore(shownEvent.start.en);
+  const isNextEvent = shownEvent && dayjs().isBefore(shownEvent.start.en);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -166,17 +166,19 @@ function CurrentEventCountdown({ events }: { events: Event[] }) {
         >
           <EventImage event={shownEvent} />
           <Stack justify="space-around">
-            <Box>
-              <Title order={3} sx={{ maxWidth: "300px" }}>
-                {shownEvent.name[0]}
-              </Title>
+            {shownEvent && (
+              <Box>
+                <Title order={3} sx={{ maxWidth: "300px" }}>
+                  {shownEvent.name[0]}
+                </Title>
 
-              {isNextEvent ? (
-                <Countdown date={shownEvent.start.en} status="start" />
-              ) : (
-                <Countdown date={shownEvent.end.en} status="end" />
-              )}
-            </Box>
+                {isNextEvent ? (
+                  <Countdown date={shownEvent.start.en} status="start" />
+                ) : (
+                  <Countdown date={shownEvent.end.en} status="end" />
+                )}
+              </Box>
+            )}
             <Button
               color={theme.primaryColor}
               component="a"

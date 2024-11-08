@@ -1,7 +1,7 @@
 import { clamp, remove } from "lodash";
 import { doc, getFirestore, setDoc } from "firebase/firestore";
 
-import { CardCollection, UserLoggedIn } from "types/makotools";
+import { CardCollection } from "types/makotools";
 import { ID } from "types/game";
 import { MAX_CARD_COPIES } from "services/game";
 import { generateUUID, getTimestamp } from "services/utilities";
@@ -73,21 +73,21 @@ export function createNewCollectionObject({
 }
 
 export function useCollections() {
-  const { user, privateUserDB } = useUser();
+  const { user, userDB, privateUserDB } = useUser();
   const { dayjs } = useDayjs();
   const qc = useQueryClient();
 
-  const loggedInUser: UserLoggedIn = user as UserLoggedIn;
-  const userId = loggedInUser.user?.id;
+  const userId = user?.id;
 
   const { data: collections, isPending: areCollectionsLoading } = useQuery({
     queryKey: cardCollectionQueries.fetchCardCollections(userId ?? undefined),
-    enabled: !!user.loggedIn,
+    enabled: !!userDB && !!userId,
     queryFn: async ({ queryKey }) => {
       const uid = queryKey[1];
       try {
         return await getFirestoreUserCollection(
-          loggedInUser,
+          user,
+          userDB,
           uid,
           privateUserDB
         );
@@ -107,7 +107,7 @@ export function useCollections() {
       cardId: number;
       numCopies: number;
     }) => {
-      if (!user.loggedIn) throw new Error("User not logged in");
+      if (!user || !userDB) throw new Error("User not logged in");
       if (!userId) throw new Error("User ID is undefined");
       const collectionToUpdate = collections!.find(
         (collection) => collection.id === collectionId
@@ -149,7 +149,7 @@ export function useCollections() {
       privacyLevel: 0 | 1 | 2 | 3;
       icon: number;
     }) => {
-      if (!user.loggedIn) throw new Error("User not logged in");
+      if (!user || !userDB) throw new Error("User not logged in");
       const newCollection = createNewCollectionObject({
         name,
         order: collections!.length,
@@ -158,7 +158,7 @@ export function useCollections() {
       });
       const db = getFirestore();
       await setDoc(
-        doc(db, `users/${user.user.id}/card_collections/${newCollection.id}`),
+        doc(db, `users/${user.id}/card_collections/${newCollection.id}`),
         newCollection
       );
     },

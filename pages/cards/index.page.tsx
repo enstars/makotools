@@ -57,7 +57,7 @@ function Page({
   charactersQuery: QuerySuccess<GameCharacter[]>;
   cardsQuery: QuerySuccess<GameCard[]>;
 }) {
-  const { user, userDB } = useUser();
+  const { userDB } = useUser();
   const cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
   const characters = useMemo(
     () => charactersQuery.data,
@@ -337,9 +337,7 @@ function Page({
                 lang={cardsQuery.lang}
                 editCollection={editCollection}
                 onNewCollection={() => setNewCollectionModalOpened(true)}
-                gameRegion={
-                  (user.loggedIn && userDB?.setting__game_region) || "en"
-                }
+                gameRegion={(userDB && userDB?.setting__game_region) || "en"}
               />
             ))}
           </InfiniteScroll>

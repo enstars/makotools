@@ -21,7 +21,7 @@ export function CardsSection({
   character: GameCharacter;
   lang: Lang[];
 }) {
-  const { user, userDB } = useUser();
+  const { userDB } = useUser();
   const theme = useMantineTheme();
   const { collections, editCollection } = useCollections();
   const [, setNewCollectionModalOpened] = useState<boolean>(false);
@@ -134,10 +134,7 @@ export function CardsSection({
                           setNewCollectionModalOpened(true)
                         }
                         character={character}
-                        gameRegion={
-                          (user.loggedIn && userDB?.setting__game_region) ||
-                          "en"
-                        }
+                        gameRegion={userDB?.setting__game_region || "en"}
                       />
                     ))}
                   </ResponsiveGrid>

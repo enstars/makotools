@@ -17,7 +17,7 @@ function SiteAnnouncements({ posts }: { posts: StrapiItem<MakoPost>[] }) {
       </Accordion.Control>
       <Accordion.Panel>
         <Stack spacing="sm">
-          {posts.map((p, i: number) => (
+          {posts?.map((p, i: number) => (
             <Announcement key={p.id} announcement={p.attributes} i={i} />
           ))}
         </Stack>
