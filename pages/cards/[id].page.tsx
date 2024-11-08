@@ -24,9 +24,8 @@ import PageTitle from "components/sections/PageTitle";
 import attributes from "data/attributes.json";
 import Reactions from "components/sections/Reactions";
 import { getLocalizedNumber } from "components/utilities/formatting/CardStatsNumber";
-import { Locale, QuerySuccess } from "types/makotools";
+import { Locale, QuerySuccess, UserData } from "types/makotools";
 import Picture from "components/core/Picture";
-import getServerSideUser from "services/firebase/getServerSideUser";
 import {
   getItemFromLocalizedDataArray,
   getLocalizedDataArray,
@@ -61,7 +60,7 @@ function Page({
 
   const { t } = useTranslation("cards__card");
 
-  const [orderedTitle, orderedLang] = getTitleHierarchy(
+  const [orderedTitle] = getTitleHierarchy(
     card.title,
     cardQuery.lang,
     router.locale as Locale,
@@ -143,136 +142,150 @@ function Page({
 Page.getLayout = getLayout({});
 export default Page;
 
-export const getServerSideProps = getServerSideUser(
-  async ({ locale, params, db }) => {
-    const t = await getT("en", "skills");
-    const characters = await getLocalizedDataArray<GameCharacter>(
-      "characters",
-      locale,
-      "character_id"
-    );
-    const cards = await getLocalizedDataArray<GameCard>("cards", locale);
+export async function getStaticPaths() {
+  const cards = await getLocalizedDataArray<GameCard>("cards");
+  const paths = cards.data?.map((card) => ({
+    params: { id: String(card.id) },
+  }));
 
-    if (
-      !params?.id ||
-      typeof params.id !== "string" ||
-      cards.status === "error" ||
-      characters.status === "error"
-    ) {
-      return {
-        notFound: true,
-      };
-    }
-    const lastURLSegment = params.id.toLocaleLowerCase();
-    const cardID = parseInt(lastURLSegment, 10);
+  return { paths };
+}
 
-    const card = getItemFromLocalizedDataArray<GameCard>(cards, cardID);
+export async function getStaticProps({
+  locale,
+  params,
+  db,
+}: {
+  locale: string;
+  params: { id: string };
+  db: UserData;
+}) {
+  const t = await getT("en", "skills");
+  const characters = await getLocalizedDataArray<GameCharacter>(
+    "characters",
+    locale,
+    "character_id"
+  );
+  const cards = await getLocalizedDataArray<GameCard>("cards", locale);
 
-    if (card.status === "error") {
-      return {
-        notFound: true,
-      };
-    }
-
-    const cardCharacterId = card.data.character_id;
-
-    const character = getItemFromLocalizedDataArray<GameCharacter>(
-      characters,
-      cardCharacterId,
-      "character_id"
-    );
-
-    let obtainMethod = null;
-    const cardObtainId = card.data.obtain.id;
-    console.log("card obtain id: ", cardObtainId, typeof cardObtainId);
-
-    if (cardObtainId) {
-      if (card.data.obtain.type === "event") {
-        const events = await getLocalizedDataArray<Event>(
-          "events",
-          locale,
-          "event_id"
-        );
-        obtainMethod = getItemFromLocalizedDataArray<Event>(
-          events,
-          cardObtainId,
-          "event_id"
-        );
-      } else if (card.data.obtain.type === "gacha") {
-        const scouts = await getLocalizedDataArray<Scout>(
-          "scouts",
-          locale,
-          "gacha_id"
-        );
-        obtainMethod = getItemFromLocalizedDataArray<Scout>(
-          scouts,
-          cardObtainId,
-          "gacha_id"
-        );
-        console.log("obtain methoda: ", obtainMethod);
-      }
-    }
-
-    if (character.status === "error") {
-      return {
-        notFound: true,
-      };
-    }
-
-    const cardCharacterName = getNameOrder(
-      character.data,
-      db?.setting__name_order,
-      locale
-    );
-    const title = `(${
-      card.data.title[0] || card.data.title[1]
-    }) ${cardCharacterName}`;
-
-    const breadcrumbs = ["cards", `${card.data.id}[ID]${title}`];
-    const cardData = card.data;
+  if (
+    !params?.id ||
+    typeof params.id !== "string" ||
+    cards.status === "error" ||
+    characters.status === "error"
+  ) {
     return {
-      props: {
-        characterQuery: character,
-        cardQuery: card,
-        obtainMethodQuery: obtainMethod,
-        title,
-        breadcrumbs,
-        meta: {
-          title,
-          img: getPreviewImageURL("card", {
-            title: card.data.title[0],
-            name: cardCharacterName,
-            image1: `card_rectangle4_${cardID}_normal.png`,
-            image2: `card_rectangle4_${cardID}_evolution.png`,
-            stats1: getLocalizedNumber(
-              sumStats(cardData.stats?.ir, "???"),
-              locale,
-              false
-            ),
-            stats2: getLocalizedNumber(
-              sumStats(cardData.stats?.ir2, "???"),
-              locale,
-              false
-            ),
-            stats3: getLocalizedNumber(
-              sumStats(cardData.stats?.ir4, "???"),
-              locale,
-              false
-            ),
-            path: `/cards/${cardID}`,
-            skill1desc: cardData?.skills?.center?.type_id
-              ? centerSkillParse(t, cardData.skills.center)
-              : "",
-            skill2desc: cardData?.skills?.live?.type_id
-              ? liveSkillParse(t, cardData.skills.live, cardData.rarity)
-              : "",
-            skill3desc: cardData?.skills?.support?.type_id
-              ? supportSkillParse(t, cardData.skills.support, cardData.rarity)
-              : "",
-          }),
-          desc: `View ${title}'s stats, skills, and more on MakoTools!`,
-        },
-      },
+      notFound: true,
     };
   }
-);
+  const lastURLSegment = params.id.toLocaleLowerCase();
+  const cardID = parseInt(lastURLSegment, 10);
+
+  const card = getItemFromLocalizedDataArray<GameCard>(cards, cardID);
+
+  if (card.status === "error") {
+    return {
+      notFound: true,
+    };
+  }
+
+  const cardCharacterId = card.data.character_id;
+
+  const character = getItemFromLocalizedDataArray<GameCharacter>(
+    characters,
+    cardCharacterId,
+    "character_id"
+  );
+
+  let obtainMethod = null;
+  const cardObtainId = card.data.obtain.id;
+  console.log("card obtain id: ", cardObtainId, typeof cardObtainId);
+
+  if (cardObtainId) {
+    if (card.data.obtain.type === "event") {
+      const events = await getLocalizedDataArray<Event>(
+        "events",
+        locale,
+        "event_id"
+      );
+      obtainMethod = getItemFromLocalizedDataArray<Event>(
+        events,
+        cardObtainId,
+        "event_id"
+      );
+    } else if (card.data.obtain.type === "gacha") {
+      const scouts = await getLocalizedDataArray<Scout>(
+        "scouts",
+        locale,
+        "gacha_id"
+      );
+      obtainMethod = getItemFromLocalizedDataArray<Scout>(
+        scouts,
+        cardObtainId,
+        "gacha_id"
+      );
+    }
+  }
+
+  if (character.status === "error") {
+    return {
+      notFound: true,
+    };
+  }
+
+  const cardCharacterName = getNameOrder(
+    character.data,
+    db?.setting__name_order,
+    locale
+  );
+  const title = `(${
+    card.data.title[0] || card.data.title[1]
+  }) ${cardCharacterName}`;
+
+  const breadcrumbs = ["cards", `${card.data.id}[ID]${title}`];
+  const cardData = card.data;
+  return {
+    props: {
+      characterQuery: character,
+      cardQuery: card,
+      obtainMethodQuery: obtainMethod,
+      title,
+      breadcrumbs,
+      meta: {
+        title,
+        img: getPreviewImageURL("card", {
+          title: card.data.title[0],
+          name: cardCharacterName,
+          image1: `card_rectangle4_${cardID}_normal.png`,
+          image2: `card_rectangle4_${cardID}_evolution.png`,
+          stats1: getLocalizedNumber(
+            sumStats(cardData.stats?.ir, "???"),
+            locale,
+            false
+          ),
+          stats2: getLocalizedNumber(
+            sumStats(cardData.stats?.ir2, "???"),
+            locale,
+            false
+          ),
+          stats3: getLocalizedNumber(
+            sumStats(cardData.stats?.ir4, "???"),
+            locale,
+            false
+          ),
+          path: `/cards/${cardID}`,
+          skill1desc: cardData?.skills?.center?.type_id
+            ? centerSkillParse(t, cardData.skills.center)
+            : "",
+          skill2desc: cardData?.skills?.live?.type_id
+            ? liveSkillParse(t, cardData.skills.live, cardData.rarity)
+            : "",
+          skill3desc: cardData?.skills?.support?.type_id
+            ? supportSkillParse(t, cardData.skills.support, cardData.rarity)
+            : "",
+        }),
+        desc: `View ${title}'s stats, skills, and more on MakoTools!`,
+      },
+    },
+  };
+}

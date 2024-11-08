@@ -54,11 +54,16 @@ function Page({ post }: { post: StrapiItem<MakoPost> }) {
 Page.getLayout = getLayout({});
 export default Page;
 
-export async function getServerSideProps({
-  params,
-}: {
-  params: { id: string };
-}) {
+export async function getStaticPaths() {
+  const { data: posts } = await fetchOceans<StrapiItem<MakoPost>[]>("/posts");
+  const paths = posts.map((post) => ({
+    params: { id: post.id },
+  }));
+
+  return { paths, fallback: false };
+}
+
+export async function getStaticProps({ params }: { params: { id: number } }) {
   try {
     const { data: posts } = await fetchOceans<StrapiItem<MakoPost>[]>(
       "/posts",
