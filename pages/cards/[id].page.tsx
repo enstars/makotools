@@ -6,6 +6,8 @@ import {
   Divider,
   Text,
   Anchor,
+  Center,
+  Loader,
 } from "@mantine/core";
 import { IconStar } from "@tabler/icons-react";
 import useTranslation from "next-translate/useTranslation";
@@ -24,7 +26,7 @@ import PageTitle from "components/sections/PageTitle";
 import attributes from "data/attributes.json";
 import Reactions from "components/sections/Reactions";
 import { getLocalizedNumber } from "components/utilities/formatting/CardStatsNumber";
-import { Locale, QuerySuccess, UserData } from "types/makotools";
+import { Locale, UserData } from "types/makotools";
 import Picture from "components/core/Picture";
 import {
   getItemFromLocalizedDataArray,
@@ -41,28 +43,112 @@ import {
 import NameOrder from "components/utilities/formatting/NameOrder";
 import { getTitleHierarchy } from "services/makotools/localization";
 import useUser from "services/firebase/user";
+import { useQuery } from "@tanstack/react-query";
+import { dataQueries } from "services/queries";
 
-function Page({
-  characterQuery,
-  cardQuery,
-  obtainMethodQuery,
-}: {
-  characterQuery: QuerySuccess<GameCharacter>;
-  cardQuery: QuerySuccess<GameCard>;
-  obtainMethodQuery: QuerySuccess<Event | Scout | null>;
-}) {
+function Page({ cardId, locale }: { cardId: string; locale: Locale }) {
   const router = useRouter();
-  const { data: card } = cardQuery;
-  const { data: character } = characterQuery;
-  const obtainMethod = obtainMethodQuery?.data;
 
   const { userDB } = useUser();
 
   const { t } = useTranslation("cards__card");
 
+  const { data: cardData, isPending: isCardPending } = useQuery({
+    queryKey: dataQueries.fetchCardData(cardId),
+    enabled: !!cardId,
+    queryFn: async () => {
+      const cardsData = await getLocalizedDataArray<GameCard>("cards", locale);
+      if (cardsData.status === "error")
+        throw new Error("Could not retrieve card data");
+      const cardData = getItemFromLocalizedDataArray(
+        cardsData,
+        parseInt(cardId)
+      );
+      if (cardData.status === "success") return cardData;
+      else throw new Error("Could not retrieve card data");
+    },
+  });
+
+  const card = cardData?.data;
+
+  const { data: characterData, isPending: isCharacterPending } = useQuery({
+    queryKey: [dataQueries.fetchCharacterData(card?.character_id)],
+    enabled: !!card,
+    queryFn: async () => {
+      if (!card) throw new Error("No card data provided");
+      const charactersData = await getLocalizedDataArray<GameCharacter>(
+        "characters",
+        locale,
+        "character_id"
+      );
+      if (charactersData.status === "error")
+        throw new Error("Could not retrieve character data");
+      const characterData = getItemFromLocalizedDataArray(
+        charactersData,
+        card.character_id,
+        "character_id"
+      );
+      if (characterData.status === "success") return characterData;
+      else throw new Error("Could not retrieve character data");
+    },
+  });
+
+  const { data: obtainMethodData, isPending: isObtainMethodPending } = useQuery(
+    {
+      queryKey: dataQueries.fetchCardObtainMethod(card?.id),
+      enabled: !!card,
+      queryFn: async () => {
+        if (!card) throw new Error("No card data provided");
+
+        const cardObtainId = card.obtain.id;
+
+        if (cardObtainId) {
+          if (card.obtain.type === "event") {
+            const events = await getLocalizedDataArray<Event>(
+              "events",
+              locale,
+              "event_id"
+            );
+            return getItemFromLocalizedDataArray<Event>(
+              events,
+              cardObtainId,
+              "event_id"
+            );
+          } else if (card.obtain.type === "gacha") {
+            const scouts = await getLocalizedDataArray<Scout>(
+              "scouts",
+              locale,
+              "gacha_id"
+            );
+            return getItemFromLocalizedDataArray<Scout>(
+              scouts,
+              cardObtainId,
+              "gacha_id"
+            );
+          }
+        }
+      },
+    }
+  );
+
+  if (!cardData || !characterData || !obtainMethodData || !card) {
+    if (isCardPending || isCharacterPending || isObtainMethodPending) {
+      return (
+        <Center>
+          <Loader />
+        </Center>
+      );
+    } else {
+      return <></>;
+    }
+  }
+
+  const character = characterData.data;
+  const obtainMethod = obtainMethodData.data;
+
   const [orderedTitle] = getTitleHierarchy(
-    card.title,
-    cardQuery.lang,
+    card?.title ?? [""],
+    cardData?.lang,
     router.locale as Locale,
     userDB?.setting__game_region || "en"
   );
@@ -82,11 +168,11 @@ function Page({
             component={Link}
             href={`/characters/${character.character_id}`}
           >
-            <NameOrder {...character} locale={characterQuery.lang[0].locale} />
+            <NameOrder {...character} {...{ locale }} />
           </Anchor>
         </Text>
         <Badge size="lg" color="yellow" sx={{ textTransform: "none" }}>
-          {card.rarity}
+          {card?.rarity}
           <IconStar size={13} strokeWidth={3} style={{ verticalAlign: -1 }} />
         </Badge>
         <Badge
@@ -139,6 +225,7 @@ function Page({
   );
 }
 
+// TODO: add meta to layout props
 Page.getLayout = getLayout({});
 export default Page;
 
@@ -154,138 +241,16 @@ export async function getStaticPaths() {
 export async function getStaticProps({
   locale,
   params,
-  db,
 }: {
   locale: string;
   params: { id: string };
-  db: UserData;
 }) {
-  const t = await getT("en", "skills");
-  const characters = await getLocalizedDataArray<GameCharacter>(
-    "characters",
-    locale,
-    "character_id"
-  );
-  const cards = await getLocalizedDataArray<GameCard>("cards", locale);
+  const cardId = params.id;
 
-  if (
-    !params?.id ||
-    typeof params.id !== "string" ||
-    cards.status === "error" ||
-    characters.status === "error"
-  ) {
-    return {
-      notFound: true,
-    };
-  }
-  const lastURLSegment = params.id.toLocaleLowerCase();
-  const cardID = parseInt(lastURLSegment, 10);
-
-  const card = getItemFromLocalizedDataArray<GameCard>(cards, cardID);
-
-  if (card.status === "error") {
-    return {
-      notFound: true,
-    };
-  }
-
-  const cardCharacterId = card.data.character_id;
-
-  const character = getItemFromLocalizedDataArray<GameCharacter>(
-    characters,
-    cardCharacterId,
-    "character_id"
-  );
-
-  let obtainMethod = null;
-  const cardObtainId = card.data.obtain.id;
-  console.log("card obtain id: ", cardObtainId, typeof cardObtainId);
-
-  if (cardObtainId) {
-    if (card.data.obtain.type === "event") {
-      const events = await getLocalizedDataArray<Event>(
-        "events",
-        locale,
-        "event_id"
-      );
-      obtainMethod = getItemFromLocalizedDataArray<Event>(
-        events,
-        cardObtainId,
-        "event_id"
-      );
-    } else if (card.data.obtain.type === "gacha") {
-      const scouts = await getLocalizedDataArray<Scout>(
-        "scouts",
-        locale,
-        "gacha_id"
-      );
-      obtainMethod = getItemFromLocalizedDataArray<Scout>(
-        scouts,
-        cardObtainId,
-        "gacha_id"
-      );
-    }
-  }
-
-  if (character.status === "error") {
-    return {
-      notFound: true,
-    };
-  }
-
-  const cardCharacterName = getNameOrder(
-    character.data,
-    db?.setting__name_order,
-    locale
-  );
-  const title = `(${
-    card.data.title[0] || card.data.title[1]
-  }) ${cardCharacterName}`;
-
-  const breadcrumbs = ["cards", `${card.data.id}[ID]${title}`];
-  const cardData = card.data;
   return {
     props: {
-      characterQuery: character,
-      cardQuery: card,
-      obtainMethodQuery: obtainMethod,
-      title,
-      breadcrumbs,
-      meta: {
-        title,
-        img: getPreviewImageURL("card", {
-          title: card.data.title[0],
-          name: cardCharacterName,
-          image1: `card_rectangle4_${cardID}_normal.png`,
-          image2: `card_rectangle4_${cardID}_evolution.png`,
-          stats1: getLocalizedNumber(
-            sumStats(cardData.stats?.ir, "???"),
-            locale,
-            false
-          ),
-          stats2: getLocalizedNumber(
-            sumStats(cardData.stats?.ir2, "???"),
-            locale,
-            false
-          ),
-          stats3: getLocalizedNumber(
-            sumStats(cardData.stats?.ir4, "???"),
-            locale,
-            false
-          ),
-          path: `/cards/${cardID}`,
-          skill1desc: cardData?.skills?.center?.type_id
-            ? centerSkillParse(t, cardData.skills.center)
-            : "",
-          skill2desc: cardData?.skills?.live?.type_id
-            ? liveSkillParse(t, cardData.skills.live, cardData.rarity)
-            : "",
-          skill3desc: cardData?.skills?.support?.type_id
-            ? supportSkillParse(t, cardData.skills.support, cardData.rarity)
-            : "",
-        }),
-        desc: `View ${title}'s stats, skills, and more on MakoTools!`,
-      },
+      cardId,
+      locale,
     },
   };
 }
