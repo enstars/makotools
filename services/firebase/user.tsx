@@ -23,8 +23,8 @@ import { FieldValue } from "firebase/firestore";
 
 interface UserContextType {
   user: AuthUserContext | null;
-  userDB: UserData | undefined;
-  privateUserDB: UserPrivateData | undefined;
+  userDB: UserData | null | undefined;
+  privateUserDB: UserPrivateData | null | undefined;
   updateUserDB:
     | UseMutationResult<void, Error, Partial<UserData>, unknown>
     | undefined;
@@ -44,8 +44,8 @@ interface UserContextType {
 
 const UserContext = React.createContext<UserContextType>({
   user: null,
-  userDB: undefined,
-  privateUserDB: undefined,
+  userDB: null,
+  privateUserDB: null,
   updateUserDB: undefined,
   updatePrivateUserDB: undefined,
   userDBError: null,
@@ -73,11 +73,10 @@ export function UserProvider({
     error: userDBError,
     isPending: isUserDBPending,
   } = useQuery({
-    enabled: !!authUserId,
     queryKey: userQueries.fetchUserDB(authUserId),
     queryFn: async () => {
       if (AuthUser.id) return await getFirestoreUserData(AuthUser.id);
-      else throw new Error("Could not retrieve user DB");
+      else return null;
     },
   });
 
@@ -86,7 +85,7 @@ export function UserProvider({
     queryKey: userQueries.fetchPrivateUserDB(authUserId),
     queryFn: async () => {
       if (AuthUser.id) return await getFirestorePrivateUserData(AuthUser.id);
-      else throw new Error("Could not retrieve private user DB");
+      else return null;
     },
   });
 

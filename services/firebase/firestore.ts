@@ -49,7 +49,9 @@ export async function setFirestoreUserData(data: any, priv = false) {
   }
 }
 
-export async function getFirestoreUserData(uid: string) {
+export async function getFirestoreUserData(
+  uid: string
+): Promise<UserData | null> {
   // const clientAuth = getAuth();
   // console.log("clientAuth", clientAuth);
   const db = getFirestore();
@@ -63,7 +65,7 @@ export async function getFirestoreUserData(uid: string) {
     const data = docSnap.data();
     return data as UserData;
   } else {
-    return undefined;
+    return null;
   }
 }
 
@@ -77,7 +79,7 @@ export async function getFirestorePrivateUserData(uid: string) {
     const data = docSnap.data();
     return data as UserPrivateData;
   } else {
-    return undefined;
+    return null;
   }
 }
 

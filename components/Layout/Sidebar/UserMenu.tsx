@@ -279,7 +279,7 @@ function UserMenu({ trigger }: { trigger: any }) {
                   color="red"
                   position="top-start"
                   dot={
-                    privateUserDB &&
+                    !!privateUserDB &&
                     privateUserDB?.friends__receivedRequests?.length !==
                       undefined &&
                     privateUserDB?.friends__receivedRequests?.length > 0
@@ -296,6 +296,10 @@ function UserMenu({ trigger }: { trigger: any }) {
               onClick={() => {
                 user.signOut().then(() => {
                   push("/");
+                  showNotification({
+                    title: "Success",
+                    message: "You have logged out successfully",
+                  });
                 });
               }}
               icon={<IconLogout size={14} />}
