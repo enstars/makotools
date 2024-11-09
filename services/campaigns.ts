@@ -14,7 +14,7 @@ function createBirthdayData(
   for (const character of characters) {
     let birthdayEvent: Birthday = {
       character_id: character.character_id,
-      name: character.first_name.map((c, i) =>
+      name: character.first_name?.map((c, i) =>
         getNameOrder(
           { first_name: c, last_name: character.last_name[i] },
           nameOrder,

@@ -98,12 +98,12 @@ function Page({
         >
           {t(`${attributes[card.type].fullname}`)}
         </Badge>
-        {card.obtain.type === "event" && (
+        {card.obtain?.type === "event" && (
           <Badge size="lg" sx={{ textTransform: "none" }}>
             {t("obtain.eventMethod")}
           </Badge>
         )}
-        {card.obtain.type === "gacha" && (
+        {card.obtain?.type === "gacha" && (
           <Badge size="lg" sx={{ textTransform: "none" }}>
             {t("obtain.scoutMethod")}
           </Badge>
@@ -131,9 +131,11 @@ function Page({
       <Stats card={card} />
       <Divider my="md" />
       <Skills card={card} />
-      <Divider my="md" />
       {obtainMethod && obtainMethod !== null && (
-        <HowToObtain card={card} obtainCampaign={obtainMethod} />
+        <>
+          <Divider my="md" />
+          <HowToObtain card={card} obtainCampaign={obtainMethod} />
+        </>
       )}
       <Divider my="md" />
       <Gallery card={card} />
@@ -184,8 +186,7 @@ export const getServerSideProps = getServerSideUser(
     );
 
     let obtainMethod = null;
-    const cardObtainId = card.data.obtain.id;
-    console.log("card obtain id: ", cardObtainId, typeof cardObtainId);
+    const cardObtainId = card.data.obtain?.id;
 
     if (cardObtainId) {
       if (card.data.obtain.type === "event") {
