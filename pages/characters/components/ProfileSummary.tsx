@@ -99,7 +99,7 @@ export function ProfileSummary({
           <CharacterMiniInfo label="Weight" info={`${character.weight}kg`} />
           <CharacterMiniInfo
             label="School"
-            info={(character.school as string[])[0] ?? "--"}
+            info={(character.school as string[])?.[0] ?? "--"}
           />
           <CharacterMiniInfo
             label="Birthday"
