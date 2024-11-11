@@ -8,7 +8,13 @@
     "charLabel": "Characters",
     "charPlaceholder": "Pick a character...",
     "rarityLabel": "Rarity",
-    "showFullInfo": "Show full info"
+    "showFullInfo": "Show full info",
+    "releaseDate": "Release Date (International)",
+    "region__temp": {
+      "all": "JP & Global",
+      "global": "Global only",
+      "any": "All"
+    }
   },
   "resultsFound": "{{count}} results found."
 }
