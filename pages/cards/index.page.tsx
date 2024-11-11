@@ -35,6 +35,8 @@ import { useCollections } from "services/makotools/collection";
 import SearchOptions from "components/core/SearchOptions";
 import useFSSList from "services/makotools/search";
 import useUser from "services/firebase/user";
+import { GetStaticProps } from "next";
+import { DEFAULT_LOCALE } from "services/makotools/locales";
 
 const CARD_LIST_INITIAL_COUNT = 20;
 
@@ -358,7 +360,8 @@ function Page({
   );
 }
 
-export const getServerSideProps = getServerSideUser(async ({ locale }) => {
+export const getStaticProps = (async ({ locale: nextLocale }) => {
+  const locale = nextLocale || DEFAULT_LOCALE;
   const characters = await getLocalizedDataArray<GameCharacter>(
     "characters",
     locale,
@@ -381,14 +384,15 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
   ]);
 
   if (characters.status === "error" || cards.status === "error")
-    return {
-      notFound: true,
-    };
+    throw new Error("Failed to fetch data");
 
   return {
     props: { charactersQuery: characters, cardsQuery: cards },
   };
-});
+}) satisfies GetStaticProps<{
+  charactersQuery: QuerySuccess<GameCharacter[]>;
+  cardsQuery: QuerySuccess<GameCard[]>;
+}>;
 
 Page.getLayout = getLayout({ wide: true });
 export default Page;
