@@ -175,10 +175,12 @@ export const getStaticProps = (async ({
 
   const cardsQuery = await getLocalizedDataArray<GameCard>("cards", locale);
   if (cardsQuery.status === "error")
-    throw new Error("Could not retrieve card data");
+    throw new Error("Could not retrieve any card data");
   const cardQuery = getItemFromLocalizedDataArray(cardsQuery, parseInt(cardId));
   if (cardQuery.status === "error")
-    throw new Error("Could not retrieve card data");
+    return {
+      notFound: true,
+    };
 
   const { data: card } = cardQuery;
 
@@ -189,15 +191,14 @@ export const getStaticProps = (async ({
   );
   if (charactersQuery.status === "error")
     throw new Error("Could not retrieve character data");
+
   const characterQuery = getItemFromLocalizedDataArray(
     charactersQuery,
     card.character_id,
     "character_id"
   );
-
   if (characterQuery.status === "error")
     throw new Error("Could not retrieve character data");
-  if (!card) throw new Error("No card data provided");
 
   const cardObtainId = card.obtain.id;
   const getObtain = async () => {
