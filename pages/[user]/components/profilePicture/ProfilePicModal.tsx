@@ -31,7 +31,7 @@ function ProfilePicModal({
   openedFunction: any;
   cards: GameCard[];
   loggedIn: boolean;
-  userDB: UserData | undefined;
+  userDB: UserData | null | undefined;
   externalSetter: Dispatch<SetStateAction<any>>;
   profileState: any;
 }) {

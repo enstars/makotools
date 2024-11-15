@@ -122,9 +122,9 @@ export async function sendPasswordReset(
 
 export async function getFirestoreUserCollection(
   user: AuthUserContext | null,
-  userDB: UserData | undefined,
+  userDB: UserData | null | undefined,
   profileUID: string | undefined,
-  privateUserDB: UserPrivateData | undefined
+  privateUserDB: UserPrivateData | null | undefined
 ) {
   const db = getFirestore();
   if (!user || !profileUID || !privateUserDB) throw new Error("Missing data");

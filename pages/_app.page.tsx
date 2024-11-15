@@ -75,10 +75,7 @@ function MakoTools({
     <>
       <VercelAnalytics />
       <QueryClientProvider client={queryClient}>
-        <UserProvider
-          setAppColorScheme={setAppColorScheme}
-          colorScheme={colorScheme}
-        >
+        <UserProvider colorScheme={colorScheme}>
           <DayjsProvider>
             <MantineTheme
               colorScheme={colorScheme}
