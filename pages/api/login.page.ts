@@ -23,7 +23,7 @@ async function validateSUID(
   suid: string
 ) {
   const querySnap = await docCollection.where("suid", "==", suid).get();
-  const suidValid = !querySnap.size;
+  const suidValid = querySnap.size === 0;
   return suidValid;
 }
 
@@ -44,7 +44,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     let suid = docGet?.suid;
     if (!suid) {
       let uniqueSUID = "";
-      while (!uniqueSUID.length) {
+      while (uniqueSUID.length === 0) {
         uniqueSUID = genRanHex(6);
         if (await validateSUID(docCollection, uniqueSUID)) {
           suid = uniqueSUID;

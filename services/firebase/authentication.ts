@@ -147,9 +147,11 @@ export function signInWithEmail(
 ) {
   try {
     const clientAuth = getAuth();
-    signInWithEmailAndPassword(clientAuth, email, password).catch(errorCallback);
+    signInWithEmailAndPassword(clientAuth, email, password).catch(
+      errorCallback
+    );
   } catch (error) {
-    errorCallback();
+    errorCallback(error);
     console.error(error);
   }
 }
@@ -165,7 +167,7 @@ export function signUpWithEmail(
       errorCallback
     );
   } catch (error) {
-    errorCallback();
+    errorCallback(error);
     console.error(error);
   }
 }
