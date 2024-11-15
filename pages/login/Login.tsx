@@ -26,60 +26,73 @@ import {
   signInWithEmail,
   signUpWithEmail,
 } from "services/firebase/authentication";
+import { showNotification } from "@mantine/notifications";
 
 function Login() {
   const [isRegister, setIsRegister] = useState(false);
-  const [signOnError, setSignOnError] = useState<{ type: string } | null>(null);
+  const [signOnError, setSignOnError] = useState<Error | null>(null);
 
   const router = useRouter();
   const { user, userDB, updateUserDB, isUserDBPending } = useUser();
 
-  function signOnAlertMsg(error: { type: string; code?: string }) {
-    const { code } = error;
-    let message;
-    switch (code) {
-      case "wrong-password":
-        message = <span>The password is incorrect. Please try again.</span>;
-        break;
-      case "user-not-found":
-        message = (
-          <span>
-            A user with this email address could not be found. Please try again.
-          </span>
-        );
-        break;
-      case "timeout":
-        message = (
-          <span>
-            The operation has timed out. Please try again or{" "}
-            <Anchor inherit href="/issues">
-              submit an issue
-            </Anchor>{" "}
-            if the problem is persistent.
-          </span>
-        );
-        break;
-      case "too-many-requests":
-        message = (
-          <span>
-            The server has received too many sign on requests. Please wait and
-            try again later.
-          </span>
-        );
-        break;
-      default:
-        message = (
-          <span>
-            An unknown sign on error has occured. Please try again or{" "}
-            <Anchor href="/issues">submit an issue</Anchor> if the problem is
-            persistent.
-          </span>
-        );
-        break;
+  useEffect(() => {
+    if (signOnError) {
+      showNotification({
+        id: "signinError",
+        color: "red",
+        title: "An error occurred",
+        message: signOnError.message,
+        icon: <IconAlertTriangle />,
+      });
     }
+  }, [signOnError]);
 
-    return message;
-  }
+  // function signOnAlertMsg(error: { type: string; code?: string }) {
+  //   const { code } = error;
+  //   let message;
+  //   switch (code) {
+  //     case "wrong-password":
+  //       message = <span>The password is incorrect. Please try again.</span>;
+  //       break;
+  //     case "user-not-found":
+  //       message = (
+  //         <span>
+  //           A user with this email address could not be found. Please try again.
+  //         </span>
+  //       );
+  //       break;
+  //     case "timeout":
+  //       message = (
+  //         <span>
+  //           The operation has timed out. Please try again or{" "}
+  //           <Anchor inherit href="/issues">
+  //             submit an issue
+  //           </Anchor>{" "}
+  //           if the problem is persistent.
+  //         </span>
+  //       );
+  //       break;
+  //     case "too-many-requests":
+  //       message = (
+  //         <span>
+  //           The server has received too many sign on requests. Please wait and
+  //           try again later.
+  //         </span>
+  //       );
+  //       break;
+  //     default:
+  //       message = (
+  //         <span>
+  //           An unknown sign on error has occured. Please try again or{" "}
+  //           <Anchor href="/issues">submit an issue</Anchor> if the problem is
+  //           persistent.
+  //         </span>
+  //       );
+  //       break;
+  //   }
+
+  //   return message;
+  // }
 
   const form = useForm({
     initialValues: {
@@ -137,23 +150,6 @@ function Login() {
           >
             Back to MakoTools
           </Anchor>
-          {signOnError && (
-            <Alert
-              className="signin-alert-error"
-              icon={<IconAlertTriangle />}
-              title={
-                signOnError.type === "login"
-                  ? "Login Error"
-                  : "Registration Error"
-              }
-              color="red"
-              style={{
-                marginBottom: 10,
-              }}
-            >
-              {signOnAlertMsg(signOnError)}
-            </Alert>
-          )}
           <Paper
             id="signin-paper-container"
             radius="md"
@@ -192,12 +188,8 @@ function Login() {
                     form.values.email,
                     form.values.password,
                     (error) => {
+                      const errorObj = error as Error;
                       console.error(error);
-                      const errorCode = error.code.split("/")[1];
-                      const errorObj = {
-                        type: "registration",
-                        code: errorCode,
-                      };
                       setSignOnError(errorObj);
                     }
                   );
@@ -207,11 +199,7 @@ function Login() {
                     form.values.password,
                     (error) => {
                       console.error(error);
-                      const errorCode = error.code.split("/")[1];
-                      const errorObj = {
-                        type: "login",
-                        code: errorCode,
-                      };
+                      const errorObj = error as Error;
                       setSignOnError(errorObj);
                     }
                   );

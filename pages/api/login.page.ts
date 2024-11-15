@@ -44,7 +44,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     let suid = docGet?.suid;
     if (!suid) {
       let uniqueSUID = "";
-      while (!uniqueSUID) {
+      while (!uniqueSUID.length) {
         uniqueSUID = genRanHex(6);
         if (await validateSUID(docCollection, uniqueSUID)) {
           suid = uniqueSUID;
