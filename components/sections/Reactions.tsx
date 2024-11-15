@@ -5,6 +5,7 @@ import {
   Button,
   createStyles,
   Group,
+  Loader,
   Paper,
   Text,
   Tooltip,
@@ -17,7 +18,6 @@ import {
   IconMoodSmile,
 } from "@tabler/icons-react";
 import { Collapse } from "react-collapse";
-import useSWR from "swr";
 
 import EmoteSelector from "../utilities/emotes/EmoteSelector";
 import Emote from "../utilities/emotes/Emote";
@@ -26,7 +26,9 @@ import { DbReaction, Reaction } from "types/makotools";
 import useUser from "services/firebase/user";
 import emotes from "services/makotools/emotes";
 import { CONSTANTS } from "services/makotools/constants";
-import { AuthUserContext } from "next-firebase-auth";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { reactionQueries } from "services/queries";
+import { showNotification } from "@mantine/notifications";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -63,47 +65,64 @@ const fetchReactions = async (url: string) => {
   return reactions as Reaction[];
 };
 
-const addReaction = async (params: {
-  id: string;
-  currentPageId: string;
-  user: AuthUserContext | null;
-  onRefetch: () => any;
-}) => {
-  const { id, currentPageId, user, onRefetch } = params;
-  if (!user) return;
-  const token = await user.getIdToken();
-  await fetch(`${CONSTANTS.EXTERNAL_URLS.BACKEND}/api/reactions`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: token || "",
-    },
-    body: JSON.stringify({
-      data: {
-        user: user.id,
-        type: "emote",
-        content: id,
-        page: currentPageId,
-      },
-    }),
-  });
-
-  onRefetch();
-};
-
 function Reactions({ fullButton = true }: { fullButton?: boolean }) {
+  const qc = useQueryClient();
   const { classes } = useStyles();
   const { asPath } = useRouter();
   const [collapsed, setCollapsed] = useState<boolean>(true);
   const { user, userDB } = useUser();
   const currentPageId = asPath.replace(/\//g, "_");
-  const { data: reactions = [], mutate } = useSWR(
-    `${CONSTANTS.EXTERNAL_URLS.BACKEND}/api/reactions?filters[page][$eq]=${currentPageId}&sort=createdAt:desc`,
-    fetchReactions
-  );
+
+  const { data: reactions = [], isPending: areReactionsPending } = useQuery({
+    queryKey: reactionQueries.fetchReactions(currentPageId),
+    enabled: !!currentPageId,
+    queryFn: async () => {
+      return await fetchReactions(
+        `${CONSTANTS.EXTERNAL_URLS.BACKEND}/api/reactions?filters[page][$eq]=${currentPageId}&sort=createdAt:desc`
+      );
+    },
+  });
+
+  const addReaction = useMutation({
+    mutationFn: async ({ id }: { id: string }) => {
+      if (!user) throw new Error("User is not logged in");
+      const token = await user.getIdToken();
+      if (!token) throw new Error("Could not get user id token");
+
+      await fetch(`${CONSTANTS.EXTERNAL_URLS.BACKEND}/api/reactions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token || "",
+        },
+        body: JSON.stringify({
+          data: {
+            user: user.id,
+            type: "emote",
+            content: id,
+            page: currentPageId,
+          },
+        }),
+      });
+    },
+    onSuccess: async () => {
+      await qc.invalidateQueries({
+        queryKey: reactionQueries.fetchReactions(currentPageId),
+      });
+    },
+    onError: (error) => {
+      showNotification({
+        color: "red",
+        message: `Could not add reaction: ${error.message}`,
+      });
+    },
+  });
+
   const theme = useMantineTheme();
 
-  const reactionsDisabled = !!userDB;
+  const reactionsDisabled = !userDB;
+
+  if (areReactionsPending) return <Loader my="sm" variant="dots" />;
 
   return (
     <Paper my="sm" withBorder p={3} radius="md">
@@ -137,12 +156,7 @@ function Reactions({ fullButton = true }: { fullButton?: boolean }) {
             );
           }}
           callback={(emote) => {
-            addReaction({
-              id: emote.stringId,
-              currentPageId,
-              user,
-              onRefetch: mutate,
-            });
+            addReaction.mutate({ id: emote.stringId });
           }}
           disabled={!!userDB}
         >

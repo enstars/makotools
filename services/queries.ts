@@ -16,3 +16,7 @@ export const cardCollectionQueries = {
   ],
   fetchCardCollection: ["fetchCardCollection"],
 };
+
+export const reactionQueries = {
+  fetchReactions: (pid: string | undefined) => ["fetchReactions", pid],
+};
