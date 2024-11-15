@@ -126,9 +126,9 @@ export function signInWithGoogle(errorCallback = defaultCallback) {
     const clientAuth = getAuth();
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: "select_account" });
-    signInWithPopup(clientAuth, provider).catch(errorCallback);
+    signInWithPopup(clientAuth, provider);
   } catch (error) {
-    errorCallback();
+    errorCallback(error);
     console.error(error);
   }
 }
@@ -147,9 +147,7 @@ export function signInWithEmail(
 ) {
   try {
     const clientAuth = getAuth();
-    signInWithEmailAndPassword(clientAuth, email, password).catch(
-      errorCallback
-    );
+    signInWithEmailAndPassword(clientAuth, email, password);
   } catch (error) {
     errorCallback(error);
     console.error(error);
@@ -163,9 +161,7 @@ export function signUpWithEmail(
 ) {
   try {
     const clientAuth = getAuth();
-    createUserWithEmailAndPassword(clientAuth, email, password).catch(
-      errorCallback
-    );
+    createUserWithEmailAndPassword(clientAuth, email, password);
   } catch (error) {
     errorCallback(error);
     console.error(error);

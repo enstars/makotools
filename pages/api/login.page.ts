@@ -80,6 +80,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       {
         email: authUser?.email || null,
         lastLogin: FieldValue.serverTimestamp(),
+        uid: suid,
         suid,
         username,
         migrated,
