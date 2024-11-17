@@ -1,11 +1,13 @@
 import {
   ActionIcon,
   Alert,
+  Anchor,
   Box,
   Center,
   Container,
   Group,
   Loader,
+  Notification,
   Space,
   Text,
   Title,
@@ -408,6 +410,9 @@ function Page({
   const [profileState, setProfileState] = useState<
     EditingProfile | undefined
   >();
+  const [showUpdateProfileSuccess, setShowUpdateProfileSuccess] =
+    useState(false);
+  const [showUpdateProfileError, setShowUpdateProfileError] = useState(false);
 
   useEffect(() => {
     if (!editModalOpened) setProfileState(undefined);
@@ -456,22 +461,10 @@ function Page({
 
   useEffect(() => {
     if (updateUserDB?.isSuccess) {
-      showNotification({
-        title: "Success!",
-        message: "Your profile was updated successfully",
-        icon: <IconCheck />,
-        color: "lime",
-        autoClose: 5000,
-      });
+      setShowUpdateProfileSuccess(true);
       qc.invalidateQueries({ queryKey: userQueries.fetchProfileData(uid) });
     } else if (updateUserDB?.isError) {
-      showNotification({
-        title: "An error occurred",
-        message: "Your profile could not be updated",
-        icon: <IconAlertCircle />,
-        color: "red",
-        autoClose: 5000,
-      });
+      setShowUpdateProfileError(true);
     }
   }, [updateUserDB]);
 
@@ -507,6 +500,28 @@ function Page({
   if (profileData) {
     return (
       <div style={{ position: "relative" }}>
+        {showUpdateProfileSuccess && (
+          <Notification
+            title="Success!"
+            icon={<IconCheck />}
+            color="lime"
+            onClose={() => setShowUpdateProfileSuccess(false)}
+          >
+            Your profile was updated successfully
+          </Notification>
+        )}
+        {showUpdateProfileError && (
+          <Notification
+            title="An error occurred"
+            icon={<IconAlertCircle />}
+            color="red"
+            onClose={() => setShowUpdateProfileError(false)}
+          >
+            Your profile could not be updated. Please try again or
+            <Anchor href="/issues">submit an issue</Anchor> if the problem is
+            persistent.
+          </Notification>
+        )}
         <EditProfileModal
           opened={editModalOpened}
           saveChanges={updateUserData}

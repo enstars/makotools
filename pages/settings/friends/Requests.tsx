@@ -77,7 +77,7 @@ function Requests() {
         );
         return loadedProfiles;
       } else {
-        return undefined;
+        return null;
       }
     },
     enabled: !!user?.id && !!userDB?.suid,

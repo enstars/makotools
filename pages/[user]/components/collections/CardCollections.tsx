@@ -5,12 +5,13 @@ import {
   Center,
   Group,
   Loader,
+  Paper,
   Stack,
   Text,
   Title,
 } from "@mantine/core";
 import { IconAlertCircle, IconCheck, IconPencil } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useListState } from "@mantine/hooks";
 import { doc, getFirestore, writeBatch } from "firebase/firestore";
 import { isEqual } from "lodash";
@@ -40,11 +41,7 @@ function CardCollections({
   const qc = useQueryClient();
   const { t } = useTranslation("user");
   const { user, userDB } = useUser();
-  const { collections: profileCollections, areCollectionsLoading } =
-    useCollections();
-
-  const [collections, collectionHandlers] =
-    useListState<CardCollection>(profileCollections);
+  const { collections, areCollectionsLoading } = useCollections();
 
   const [editMode, setEditMode] = useState<boolean>(false);
   const [editingCollections, editingHandlers] = useListState<CardCollection>();
@@ -57,11 +54,6 @@ function CardCollections({
   const [currentCollection, setCurrentCollection] = useState<
     number | undefined
   >(undefined);
-
-  useEffect(() => {
-    if (!areCollectionsLoading && profileCollections)
-      collectionHandlers.setState(profileCollections);
-  }, [profileCollections, areCollectionsLoading, collectionHandlers]);
 
   const reorderCollection = useMutation({
     mutationFn: async () => {
@@ -107,6 +99,7 @@ function CardCollections({
   const saveAllCollections = useMutation({
     mutationFn: async () => {
       if (!user?.id || !userDB) throw new Error("User is not logged in");
+      const currentCollections = collections ?? [];
       setEditMode(false);
       setCurrentCollection(undefined);
 
@@ -115,42 +108,49 @@ function CardCollections({
       // Get a new write batch
       const batch = writeBatch(db);
 
-      const toUpdateCollections: CardCollection[] = [...editingCollections];
+      const collectionsToUpdate: CardCollection[] = [...editingCollections];
       const updatedCollections: CardCollection[] = [];
-      collections.forEach((originalCollection) => {
-        const newCollection = toUpdateCollections.find(
-          (c) => c.id === originalCollection.id
+      // for each collection in the db
+      currentCollections.forEach((originalCollection) => {
+        const existingCollection = collectionsToUpdate.find(
+          (collectionToUpdate) =>
+            collectionToUpdate.id === originalCollection.id
         );
 
-        if (newCollection) {
-          if (!isEqual(originalCollection, newCollection)) {
+        if (existingCollection) {
+          // if the updated collection is different from the currently saved collection
+          if (!isEqual(originalCollection, existingCollection)) {
             const collectionRef = doc(
               db,
               `users/${user.id}/card_collections`,
-              newCollection.id
+              existingCollection.id
             );
-            batch.set(collectionRef, newCollection, {
+            batch.set(collectionRef, existingCollection, {
               merge: true,
             });
           }
 
-          toUpdateCollections.splice(
-            toUpdateCollections.indexOf(newCollection),
+          collectionsToUpdate.splice(
+            collectionsToUpdate.indexOf(existingCollection),
             1
           );
-          updatedCollections.push(newCollection);
+          updatedCollections.push(existingCollection);
         } else {
-          const collectionRef = doc(
-            db,
-            `users/${user.id}/card_collections`,
-            originalCollection.id
-          );
-          batch.delete(collectionRef);
+          // otherwise delete the exisitng reference in the database
+          if (collections?.length) {
+            const collectionRef = doc(
+              db,
+              `users/${user.id}/card_collections`,
+              originalCollection.id
+            );
+            batch.delete(collectionRef);
+          }
         }
       });
 
-      if (toUpdateCollections.length > 0) {
-        toUpdateCollections.forEach((collectionToCreate) => {
+      // only new collections are in this array at this point
+      if (collectionsToUpdate.length > 0) {
+        collectionsToUpdate.forEach((collectionToCreate) => {
           const collectionRef = doc(
             db,
             `users/${user.id}/card_collections`,
@@ -178,6 +178,7 @@ function CardCollections({
         icon: <IconCheck />,
         color: "lime",
       });
+      editingHandlers.setState([]);
     },
     onError: (error: Error) => {
       console.error("Could not save all collections", error.message);
@@ -189,13 +190,14 @@ function CardCollections({
         icon: <IconAlertCircle />,
         color: "red",
       });
+      editingHandlers.setState([]);
     },
   });
 
   const addNewCollection = async () => {
     if (!user?.id || !userDB) return;
     const newCollection = createNewCollectionObject({
-      order: collections.length,
+      order: collections?.length ?? 0,
     });
     setCurrentCollection(editingCollections.length);
     editingHandlers.append(newCollection);
@@ -221,7 +223,7 @@ function CardCollections({
               leftIcon={<IconPencil size={16} />}
               onClick={() => {
                 setEditMode(true);
-                editingHandlers.setState(collections);
+                editingHandlers.setState(collections ?? []);
               }}
             >
               {t("edit")}
@@ -233,7 +235,7 @@ function CardCollections({
           <Center>
             <Stack>
               <Loader />
-              {areCollectionsLoading && (
+              {areCollectionsLoading && !saveAllCollections.isPending && (
                 <Text fz="sm" color="dimmed">
                   Loading
                 </Text>
@@ -265,7 +267,7 @@ function CardCollections({
           saveReorder={reorderCollection}
           saveAllChanges={saveAllCollections}
         />
-      ) : (
+      ) : collections?.length ? (
         <Accordion
           variant="separated"
           defaultValue={collections.sort((a, b) => a.order - b.order)?.[0]?.id}
@@ -290,6 +292,17 @@ function CardCollections({
               />
             ))}
         </Accordion>
+      ) : (
+        <Paper mt="sm" p="sm" withBorder>
+          {isYourProfile ? (
+            <Text color="dimmed">
+              You have no collections. Click the Edit button to create your
+              first collection.
+            </Text>
+          ) : (
+            <Text color="dimmed">This user has no available collections.</Text>
+          )}
+        </Paper>
       )}
     </Box>
   );

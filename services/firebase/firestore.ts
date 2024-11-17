@@ -126,12 +126,12 @@ export async function getFirestoreUserCollection(
   privateUserDB: UserPrivateData | null | undefined
 ) {
   const db = getFirestore();
-  if (!user || !profileUID || !privateUserDB) throw new Error("Missing data");
+  if (!user || !profileUID) throw new Error("Missing data");
 
   const accessiblePrivacyLevel = userDB
     ? user.id === profileUID
       ? 3
-      : privateUserDB.friends__list?.includes(profileUID)
+      : (privateUserDB?.friends__list ?? []).includes(profileUID)
       ? 2
       : 1
     : 0;
