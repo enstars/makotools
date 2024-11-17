@@ -64,7 +64,7 @@ function EditProfileModal({
   cards?: GameCard[] | undefined;
   profile: UserData;
   profileState: EditingProfile | undefined;
-  setProfileState: Dispatch<SetStateAction<EditingProfile>>;
+  setProfileState: Dispatch<SetStateAction<EditingProfile | undefined>>;
   characters: GameCharacter[];
   units: GameUnit[];
   locale: Locale;

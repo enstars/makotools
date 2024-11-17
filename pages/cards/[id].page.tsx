@@ -210,7 +210,6 @@ export const getServerSideProps = getServerSideUser(
           cardObtainId,
           "gacha_id"
         );
-        console.log("obtain methoda: ", obtainMethod);
       }
     }
 

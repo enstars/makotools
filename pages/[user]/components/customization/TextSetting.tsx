@@ -35,17 +35,18 @@ function TextSetting<T = {}>({
   const isFirestoreAccessible = user?.id && userDB;
 
   const [inputValue, setInputValue] = useState(
-    userDB ? String(userDB?.[dataKey]) : undefined
+    userDB?.[dataKey] ? String(userDB?.[dataKey]) : ""
   );
 
   useEffect(() => {
-    if (isFirestoreAccessible) setInputValue(String(userDB?.[dataKey]));
+    if (isFirestoreAccessible)
+      setInputValue(userDB?.[dataKey] ? String(userDB?.[dataKey]) : "");
   }, [isFirestoreAccessible, user, dataKey]);
 
   return (
     <>
       <Component
-        value={inputValue}
+        value={inputValue ?? ""}
         label={label}
         onChange={(e: ChangeEvent<HTMLInputElement>) => {
           setInputValue(e.target.value);

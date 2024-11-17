@@ -409,9 +409,12 @@ function Page({
     EditingProfile | undefined
   >();
 
+  useEffect(() => {
+    if (!editModalOpened) setProfileState(undefined);
+  }, [editModalOpened]);
+
   const updateUserData = useCallback(async () => {
     setOpenEditModal(false);
-    console.log("profile state", profileState);
     const cleanedProfileState = omitBy(
       profileState,
       (v) => typeof v === "undefined"

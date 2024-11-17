@@ -10,7 +10,11 @@ import { migrateCollection } from "./collections/migrate.page";
 
 import { initAuthentication } from "services/firebase/authentication";
 
-initAuthentication();
+try {
+  initAuthentication();
+} catch (e) {
+  console.error(e);
+}
 
 const genRanHex = (size: number) =>
   [...Array(size)]
@@ -80,7 +84,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       {
         email: authUser?.email || null,
         lastLogin: FieldValue.serverTimestamp(),
-        uid: suid,
         suid,
         username,
         migrated,

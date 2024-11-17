@@ -3,7 +3,11 @@ import { unsetAuthCookies } from "next-firebase-auth";
 
 import { initAuthentication } from "services/firebase/authentication";
 
-initAuthentication();
+try {
+  initAuthentication();
+} catch (e) {
+  console.error(`Could not authenticate: ${(e as Error).message}`);
+}
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {

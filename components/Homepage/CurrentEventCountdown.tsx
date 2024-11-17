@@ -46,7 +46,7 @@ const useStyles = createStyles((theme, _params) => ({
 }));
 
 function EventImage({ event }: { event: Event }) {
-  const { classes } = useStyles();
+  if (!event) return <></>;
   return (
     <Link href={`/events/${event.event_id}`}>
       <Picture
@@ -115,6 +115,7 @@ function CurrentEventCountdown({ events }: { events: Event[] }) {
   const isNextEvent = shownEvent && dayjs().isBefore(shownEvent.start.en);
 
   useEffect(() => {
+    if (!shownEvent) return;
     const interval = setInterval(() => {
       if (isNextEvent) {
         setYippeeTime(

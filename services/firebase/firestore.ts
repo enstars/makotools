@@ -109,7 +109,6 @@ export async function sendPasswordReset(
   setError: Dispatch<SetStateAction<string>>
 ) {
   const clientAuth = getAuth();
-  console.log("client auth", clientAuth, email);
   sendPasswordResetEmail(clientAuth, email)
     .then((res) => {
       setEmailSent(true);

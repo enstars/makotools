@@ -71,49 +71,55 @@ export function initAuthentication() {
         console.error(err);
       },
       tokenChangedHandler: async (authUser) => {
-        const { loginAPIEndpoint, logoutAPIEndpoint } = {
-          loginAPIEndpoint: "/api/login", // required
-          logoutAPIEndpoint: "/api/logout", // required
-        };
-        let response;
-        // If the user is authed, call login to set a cookie.
-        if (authUser.id) {
-          const userToken = (await authUser.getIdToken()) || "";
-          response = await fetch(loginAPIEndpoint, {
-            method: "POST",
-            headers: [["Authorization", userToken]],
-            credentials: "include",
-          });
-          if (!response.ok) {
-            const responseJSON = await response.json();
-            throw new Error(
-              `Received ${
-                response.status
-              } response from login API endpoint: ${JSON.stringify(
-                responseJSON
-              )}`
-            );
-          }
-        } else {
-          // If the user is not authed, call logout to unset the cookie.
-          response = await fetch(logoutAPIEndpoint, {
-            method: "POST",
-            credentials: "include",
-          });
-          if (response.ok) {
-            // window.location.reload();
+        try {
+          const { loginAPIEndpoint, logoutAPIEndpoint } = {
+            loginAPIEndpoint: "/api/login", // required
+            logoutAPIEndpoint: "/api/logout", // required
+          };
+          let response;
+          // If the user is authed, call login to set a cookie.
+          if (authUser.id) {
+            const userToken = (await authUser.getIdToken()) || "";
+            response = await fetch(loginAPIEndpoint, {
+              method: "POST",
+              headers: [["Authorization", userToken]],
+              credentials: "include",
+            });
+            if (!response.ok) {
+              const responseJSON = await response.json();
+              throw new Error(
+                `Received ${
+                  response.status
+                } response from login API endpoint: ${JSON.stringify(
+                  responseJSON
+                )}`
+              );
+            }
           } else {
-            const responseJSON = await response.json();
-            throw new Error(
-              `Received ${
-                response.status
-              } response from logout API endpoint: ${JSON.stringify(
-                responseJSON
-              )}`
-            );
+            // If the user is not authed, call logout to unset the cookie.
+            response = await fetch(logoutAPIEndpoint, {
+              method: "POST",
+              credentials: "include",
+            });
+            if (response.ok) {
+              // window.location.reload();
+            } else {
+              const responseJSON = await response.json();
+              throw new Error(
+                `Received ${
+                  response.status
+                } response from logout API endpoint: ${JSON.stringify(
+                  responseJSON
+                )}`
+              );
+            }
           }
+          return response;
+        } catch (error) {
+          console.error(
+            `There was an error handling the token: ${(error as Error).message}`
+          );
         }
-        return response;
       },
     });
   } catch (e) {
@@ -140,31 +146,29 @@ export function signInWithTwitter(errorCallback = defaultCallback) {
   signInWithPopup(clientAuth, provider).catch(errorCallback);
 }
 
-export function signInWithEmail(
+export async function signInWithEmail(
   email: string,
   password: string,
-  errorCallback = defaultCallback
+  onError: (error: Error) => void
 ) {
+  const clientAuth = getAuth();
   try {
-    const clientAuth = getAuth();
-    signInWithEmailAndPassword(clientAuth, email, password);
+    await signInWithEmailAndPassword(clientAuth, email, password);
   } catch (error) {
-    errorCallback(error);
-    console.error(error);
+    onError(error as Error);
   }
 }
 
-export function signUpWithEmail(
+export async function signUpWithEmail(
   email: string,
   password: string,
-  errorCallback = defaultCallback
+  onError: (error: Error) => void
 ) {
+  const clientAuth = getAuth();
   try {
-    const clientAuth = getAuth();
-    createUserWithEmailAndPassword(clientAuth, email, password);
+    await createUserWithEmailAndPassword(clientAuth, email, password);
   } catch (error) {
-    errorCallback(error);
-    console.error(error);
+    onError(error as Error);
   }
 }
 

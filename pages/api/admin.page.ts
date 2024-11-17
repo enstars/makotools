@@ -3,7 +3,11 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import { initAuthentication } from "services/firebase/authentication";
 
-initAuthentication();
+try {
+  initAuthentication();
+} catch (e) {
+  console.error(`Could not authenticate: ${(e as Error).message}`);
+}
 
 // this bit of code i just quickly put together
 // to transfer user data between accounts manually
