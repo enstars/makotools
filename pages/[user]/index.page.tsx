@@ -410,9 +410,6 @@ function Page({
   const [profileState, setProfileState] = useState<
     EditingProfile | undefined
   >();
-  const [showUpdateProfileSuccess, setShowUpdateProfileSuccess] =
-    useState(false);
-  const [showUpdateProfileError, setShowUpdateProfileError] = useState(false);
 
   useEffect(() => {
     if (!editModalOpened) setProfileState(undefined);
@@ -461,10 +458,36 @@ function Page({
 
   useEffect(() => {
     if (updateUserDB?.isSuccess) {
-      setShowUpdateProfileSuccess(true);
+      showNotification({
+        id: "updateProfile",
+        title: "Success!",
+        icon: <IconCheck />,
+        color: "lime",
+        message: "Your profile was updated successfully",
+        autoClose: 5000,
+        onClose: () => {
+          updateUserDB.reset();
+        },
+      });
       qc.invalidateQueries({ queryKey: userQueries.fetchProfileData(uid) });
     } else if (updateUserDB?.isError) {
-      setShowUpdateProfileError(true);
+      showNotification({
+        id: "updateProfile",
+        title: "An error occurred",
+        icon: <IconAlertCircle />,
+        color: "red",
+        message: (
+          <>
+            Your profile could not be updated. Please try again or
+            <Anchor href="/issues">submit an issue</Anchor> if the problem is
+            persistent
+          </>
+        ),
+        autoClose: 5000,
+        onClose: () => {
+          updateUserDB.reset();
+        },
+      });
     }
   }, [updateUserDB]);
 
@@ -500,28 +523,6 @@ function Page({
   if (profileData) {
     return (
       <div style={{ position: "relative" }}>
-        {showUpdateProfileSuccess && (
-          <Notification
-            title="Success!"
-            icon={<IconCheck />}
-            color="lime"
-            onClose={() => setShowUpdateProfileSuccess(false)}
-          >
-            Your profile was updated successfully
-          </Notification>
-        )}
-        {showUpdateProfileError && (
-          <Notification
-            title="An error occurred"
-            icon={<IconAlertCircle />}
-            color="red"
-            onClose={() => setShowUpdateProfileError(false)}
-          >
-            Your profile could not be updated. Please try again or
-            <Anchor href="/issues">submit an issue</Anchor> if the problem is
-            persistent.
-          </Notification>
-        )}
         <EditProfileModal
           opened={editModalOpened}
           saveChanges={updateUserData}
