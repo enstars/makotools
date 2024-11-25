@@ -17,6 +17,15 @@ export const cardCollectionQueries = {
   fetchCardCollection: ["fetchCardCollection"],
 };
 
+export const dataQueries = {
+  fetchCharacterData: (cid: number | undefined) => ["fetchCharacterData", cid],
+  fetchCardData: (cid: string | undefined) => ["fetchCardData", cid],
+  fetchCardObtainMethod: (cid: number | undefined) => [
+    "fetchCardObtainMethod",
+    cid,
+  ],
+};
+
 export const reactionQueries = {
   fetchReactions: (pid: string | undefined) => ["fetchReactions", pid],
 };

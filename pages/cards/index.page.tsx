@@ -12,6 +12,8 @@ import {
   Tooltip,
   ActionIcon,
   Switch,
+  SegmentedControl,
+  Box,
 } from "@mantine/core";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useLocalStorage } from "@mantine/hooks";
@@ -21,6 +23,7 @@ import {
   IconSortAscending,
   IconSortDescending,
 } from "@tabler/icons-react";
+import { GetStaticProps } from "next";
 
 import NewCollectionModal from "./components/NewCollectionModal";
 
@@ -28,13 +31,14 @@ import { CardCard } from "components/core/CardCard";
 import PageTitle from "components/sections/PageTitle";
 import { getLayout } from "components/Layout";
 import { QuerySuccess } from "types/makotools";
-import getServerSideUser from "services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "services/data";
 import { CardRarity, GameCard, GameCharacter } from "types/game";
 import { useCollections } from "services/makotools/collection";
 import SearchOptions from "components/core/SearchOptions";
 import useFSSList from "services/makotools/search";
 import useUser from "services/firebase/user";
+import { DEFAULT_LOCALE } from "services/makotools/locales";
+import { useDayjs } from "services/libraries/dayjs";
 
 const CARD_LIST_INITIAL_COUNT = 20;
 
@@ -42,11 +46,12 @@ const defaultView = {
   filters: {
     rarity: [5],
     characters: [] as number[],
+    region__temp: "any" as "all" | "global" | "any",
   },
   search: "",
   sort: {
-    type: "id",
-    ascending: true,
+    type: "releaseDate",
+    ascending: false,
   },
 };
 
@@ -58,6 +63,7 @@ function Page({
   cardsQuery: QuerySuccess<GameCard[]>;
 }) {
   const { userDB } = useUser();
+  const { dayjs } = useDayjs();
   const cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
   const characters = useMemo(
     () => charactersQuery.data,
@@ -103,6 +109,18 @@ function Page({
               view.filters.characters.includes(c.character_id);
           },
         },
+        {
+          type: "region__temp",
+          values: ["all", "global", "any"],
+          function: (view) => {
+            return (c: GameCard) => {
+              if (view.filters.region__temp === "any") return true;
+              const cardId = c.id;
+              const cardIsGlobal = cardId >= 10000;
+              return cardIsGlobal === (view.filters.region__temp === "global");
+            };
+          },
+        },
       ],
       sorts: [
         {
@@ -116,6 +134,22 @@ function Page({
           function: (a: GameCard, b: GameCard) =>
             characterIDtoSort[a.character_id] -
             characterIDtoSort[b.character_id],
+        },
+        {
+          label: t("search.releaseDate"),
+          value: "releaseDate",
+          function: (a: GameCard, b: GameCard) => {
+            // dates are in the format "YYYY-MM-DD"
+            const dateAEn = dayjs(a.releaseDate?.en || "3000-01-01").unix();
+            const dateAJp = dayjs(a.releaseDate?.jp || "3000-01-01").unix();
+            const dateA = Math.min(dateAEn, dateAJp);
+
+            const dateBEn = dayjs(b.releaseDate?.en || "3000-01-01").unix();
+            const dateBJp = dayjs(b.releaseDate?.jp || "3000-01-01").unix();
+            const dateB = Math.min(dateBEn, dateBJp);
+
+            return dateA - dateB;
+          },
         },
       ],
       baseSort: "id",
@@ -284,6 +318,48 @@ function Page({
                 ))}
               </Chip.Group>
             </Input.Wrapper>
+
+            <Input.Wrapper label={t("common:search.density")}>
+              <SegmentedControl
+                sx={{ display: "flex" }}
+                value={view.filters.region__temp}
+                onChange={(value) => {
+                  setView((v) => ({
+                    ...v,
+                    filters: {
+                      ...v.filters,
+                      region__temp: value as "all" | "global" | "any",
+                    },
+                  }));
+                }}
+                data={[
+                  {
+                    value: "any",
+                    label: (
+                      <Center>
+                        <Box>{t("search.region__temp.any")}</Box>
+                      </Center>
+                    ),
+                  },
+                  {
+                    value: "all",
+                    label: (
+                      <Center>
+                        <Box>{t("search.region__temp.all")}</Box>
+                      </Center>
+                    ),
+                  },
+                  {
+                    value: "global",
+                    label: (
+                      <Center>
+                        <Box>{t("search.region__temp.global")}</Box>
+                      </Center>
+                    ),
+                  },
+                ]}
+              />
+            </Input.Wrapper>
           </Group>
         }
         display={
@@ -358,7 +434,8 @@ function Page({
   );
 }
 
-export const getServerSideProps = getServerSideUser(async ({ locale }) => {
+export const getStaticProps = (async ({ locale: nextLocale }) => {
+  const locale = nextLocale || DEFAULT_LOCALE;
   const characters = await getLocalizedDataArray<GameCharacter>(
     "characters",
     locale,
@@ -378,17 +455,20 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     "stats.ir4.vo",
     "stats.ir4.pf",
     "character_id",
+    "releaseDate.en",
+    "releaseDate.jp",
   ]);
 
   if (characters.status === "error" || cards.status === "error")
-    return {
-      notFound: true,
-    };
+    throw new Error("Failed to fetch data");
 
   return {
     props: { charactersQuery: characters, cardsQuery: cards },
   };
-});
+}) satisfies GetStaticProps<{
+  charactersQuery: QuerySuccess<GameCharacter[]>;
+  cardsQuery: QuerySuccess<GameCard[]>;
+}>;
 
 Page.getLayout = getLayout({ wide: true });
 export default Page;

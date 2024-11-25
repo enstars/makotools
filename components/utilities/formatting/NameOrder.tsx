@@ -21,7 +21,7 @@ function NameOrder({
 }): ReactElement {
   const { userDB } = useUser();
 
-  const nameOrderSetting = getNameOrderSetting(userDB);
+  const nameOrderSetting = userDB ? getNameOrderSetting(userDB) : "firstlast";
   const name = getNameOrder(
     { first_name, last_name },
     nameOrderSetting,
