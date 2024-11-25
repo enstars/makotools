@@ -57,7 +57,7 @@ export default Page;
 export async function getStaticPaths() {
   const { data: posts } = await fetchOceans<StrapiItem<MakoPost>[]>("/posts");
   const paths = posts.map((post) => ({
-    params: { id: post.id },
+    params: { id: post.id.toString() },
   }));
 
   return { paths, fallback: false };
