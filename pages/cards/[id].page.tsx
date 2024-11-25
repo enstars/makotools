@@ -6,46 +6,32 @@ import {
   Divider,
   Text,
   Anchor,
-  Center,
-  Loader,
 } from "@mantine/core";
 import { IconStar } from "@tabler/icons-react";
 import useTranslation from "next-translate/useTranslation";
-import getT from "next-translate/getT";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { GetStaticPaths, GetStaticProps } from "next";
 
 import Stats from "./components/Stats";
 import Skills from "./components/Skills";
 import Gallery from "./components/Gallery";
 import HowToObtain from "./components/HowToObtain";
 
-import { sumStats } from "services/game";
 import { getLayout } from "components/Layout";
 import PageTitle from "components/sections/PageTitle";
 import attributes from "data/attributes.json";
 import Reactions from "components/sections/Reactions";
-import { getLocalizedNumber } from "components/utilities/formatting/CardStatsNumber";
-import { Locale, QuerySuccess, UserData } from "types/makotools";
+import { Locale, QuerySuccess } from "types/makotools";
 import Picture from "components/core/Picture";
 import {
   getItemFromLocalizedDataArray,
   getLocalizedDataArray,
 } from "services/data";
-import { getNameOrder } from "services/game";
-import { getPreviewImageURL } from "services/makotools/preview";
 import { GameCard, GameCharacter, Scout, Event } from "types/game";
-import {
-  centerSkillParse,
-  liveSkillParse,
-  supportSkillParse,
-} from "services/skills";
 import NameOrder from "components/utilities/formatting/NameOrder";
 import { getTitleHierarchy } from "services/makotools/localization";
 import useUser from "services/firebase/user";
-import { useQuery } from "@tanstack/react-query";
-import { dataQueries } from "services/queries";
-import { GetStaticPaths, GetStaticProps } from "next";
 
 function Page({
   cardId,
@@ -228,6 +214,7 @@ export const getStaticProps = (async ({
         "gacha_id"
       );
     }
+    return null;
   };
   const obtainMethodQuery = await getObtain();
 
