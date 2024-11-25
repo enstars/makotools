@@ -24,8 +24,16 @@ import { UserProvider } from "services/firebase/user";
 import DayjsProvider from "services/libraries/dayjs";
 import MantineTheme from "components/MantineTheme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { showNotification } from "@mantine/notifications";
 
-initAuthentication();
+try {
+  initAuthentication();
+} catch (error) {
+  showNotification({
+    id: "authError",
+    message: `Could not authenticate: ${(error as Error).message}`,
+  });
+}
 
 const queryClient = new QueryClient();
 
@@ -75,10 +83,7 @@ function MakoTools({
     <>
       <VercelAnalytics />
       <QueryClientProvider client={queryClient}>
-        <UserProvider
-          setAppColorScheme={setAppColorScheme}
-          colorScheme={colorScheme}
-        >
+        <UserProvider colorScheme={colorScheme}>
           <DayjsProvider>
             <MantineTheme
               colorScheme={colorScheme}

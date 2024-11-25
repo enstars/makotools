@@ -48,14 +48,14 @@ function ProfileAvatar({
   if (profile === undefined) return placeholder;
 
   const src =
-    profile.profile__picture &&
+    profile?.profile__picture &&
     getAssetURL(
       `assets/card_still_full1_${Math.abs(profile.profile__picture.id)}_${
         profile.profile__picture.id > 0 ? "evolution" : "normal"
       }.png`
     );
 
-  const crop = profile.profile__picture?.crop;
+  const crop = profile?.profile__picture?.crop;
 
   const scale: number = crop ? 100 / crop.width : 100;
 

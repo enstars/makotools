@@ -135,11 +135,7 @@ function RecommendedCard({
         <Stack spacing={0} py="xs" px="sm">
           <Text weight={700} lineClamp={2}>
             {event.type === "birthday"
-              ? `${
-                  event.name[0].split(" ")[1] !== undefined
-                    ? event.name[0].split(" ")[1]
-                    : event.name[0].split(" ")[0]
-                }'s Birthday`
+              ? `${event.name[0].split(" ")[0]}'s Birthday`
               : event.name[0]}
           </Text>
           <Group spacing={3} align="center">
@@ -209,7 +205,7 @@ function RecommendedCountdown({
   units: GameUnit[];
 }) {
   const { t } = useTranslation("home");
-  const { user, userDB } = useUser();
+  const { userDB } = useUser();
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.xs}px)`);
   const { ref, width } = useElementSize();

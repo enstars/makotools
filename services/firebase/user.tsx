@@ -97,9 +97,6 @@ export function UserProvider({
       await qc.invalidateQueries({
         queryKey: userQueries.fetchUserDB(authUserId),
       });
-      await qc.refetchQueries({
-        queryKey: userQueries.fetchProfileData(authUserId),
-      });
     },
   });
 
@@ -114,9 +111,6 @@ export function UserProvider({
     onSuccess: async () => {
       await qc.invalidateQueries({
         queryKey: userQueries.fetchPrivateUserDB(authUserId),
-      });
-      await qc.refetchQueries({
-        queryKey: userQueries.fetchProfileData(authUserId),
       });
     },
   });

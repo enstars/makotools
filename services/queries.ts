@@ -25,3 +25,7 @@ export const dataQueries = {
     cid,
   ],
 };
+
+export const reactionQueries = {
+  fetchReactions: (pid: string | undefined) => ["fetchReactions", pid],
+};

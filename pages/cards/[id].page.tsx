@@ -104,12 +104,12 @@ function Page({
         >
           {t(`${attributes[card.type].fullname}`)}
         </Badge>
-        {card.obtain.type === "event" && (
+        {card.obtain?.type === "event" && (
           <Badge size="lg" sx={{ textTransform: "none" }}>
             {t("obtain.eventMethod")}
           </Badge>
         )}
-        {card.obtain.type === "gacha" && (
+        {card.obtain?.type === "gacha" && (
           <Badge size="lg" sx={{ textTransform: "none" }}>
             {t("obtain.scoutMethod")}
           </Badge>
@@ -137,9 +137,11 @@ function Page({
       <Stats card={card} />
       <Divider my="md" />
       <Skills card={card} />
-      <Divider my="md" />
-      {obtainMethod && (
-        <HowToObtain card={card} obtainCampaign={obtainMethod} />
+      {obtainMethod && obtainMethod !== null && (
+        <>
+          <Divider my="md" />
+          <HowToObtain card={card} obtainCampaign={obtainMethod} />
+        </>
       )}
       <Divider my="md" />
       <Gallery card={card} />

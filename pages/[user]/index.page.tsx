@@ -1,11 +1,13 @@
 import {
   ActionIcon,
   Alert,
+  Anchor,
   Box,
   Center,
   Container,
   Group,
   Loader,
+  Notification,
   Space,
   Text,
   Title,
@@ -409,9 +411,12 @@ function Page({
     EditingProfile | undefined
   >();
 
+  useEffect(() => {
+    if (!editModalOpened) setProfileState(undefined);
+  }, [editModalOpened]);
+
   const updateUserData = useCallback(async () => {
     setOpenEditModal(false);
-    console.log("profile state", profileState);
     const cleanedProfileState = omitBy(
       profileState,
       (v) => typeof v === "undefined"
@@ -454,20 +459,34 @@ function Page({
   useEffect(() => {
     if (updateUserDB?.isSuccess) {
       showNotification({
+        id: "updateProfile",
         title: "Success!",
-        message: "Your profile was updated successfully",
         icon: <IconCheck />,
         color: "lime",
+        message: "Your profile was updated successfully",
         autoClose: 5000,
+        onClose: () => {
+          updateUserDB.reset();
+        },
       });
       qc.invalidateQueries({ queryKey: userQueries.fetchProfileData(uid) });
     } else if (updateUserDB?.isError) {
       showNotification({
+        id: "updateProfile",
         title: "An error occurred",
-        message: "Your profile could not be updated",
         icon: <IconAlertCircle />,
         color: "red",
+        message: (
+          <>
+            Your profile could not be updated. Please try again or
+            <Anchor href="/issues">submit an issue</Anchor> if the problem is
+            persistent
+          </>
+        ),
         autoClose: 5000,
+        onClose: () => {
+          updateUserDB.reset();
+        },
       });
     }
   }, [updateUserDB]);

@@ -4,7 +4,9 @@ import { Locale, NameOrder, UserData } from "types/makotools";
 import useUser from "services/firebase/user";
 import { getNameOrder } from "services/game";
 
-export function getNameOrderSetting(userDB: UserData | undefined): NameOrder {
+export function getNameOrderSetting(
+  userDB: UserData | null | undefined
+): NameOrder {
   return userDB?.setting__name_order || "firstlast";
 }
 

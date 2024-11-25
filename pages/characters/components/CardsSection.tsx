@@ -56,6 +56,7 @@ export function CardsSection({
           return (
             rarityCards.length > 0 && (
               <Accordion.Item
+                key={rarity}
                 value={rarity.toString()}
                 sx={{
                   borderRadius: theme.radius.md,

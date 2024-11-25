@@ -106,16 +106,18 @@ export default function CharacterCard({
           alt={character.first_name[0]}
           className={classes.picture}
         />
-        <Picture
-          transparent
-          src={getAssetURL(
-            `assets/card_full1_${
-              (twoStarIDs as any)[character.character_id]
-            }_subtracted.png`
-          )}
-          alt={character.first_name[0]}
-          className={cx(classes.picture, classes.pictureBloomed)}
-        />
+        {character.character_id < 81 && (
+          <Picture
+            transparent
+            src={getAssetURL(
+              `assets/card_full1_${
+                (twoStarIDs as any)[character.character_id]
+              }_subtracted.png`
+            )}
+            alt={character.first_name[0]}
+            className={cx(classes.picture, classes.pictureBloomed)}
+          />
+        )}
       </Box>
       <Title
         order={2}

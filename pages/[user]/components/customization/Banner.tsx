@@ -2,7 +2,6 @@ import {
   ActionIcon,
   Box,
   Button,
-  createStyles,
   Group,
   Input,
   Select,
@@ -13,7 +12,14 @@ import {
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { IconFlower, IconFlowerOff, IconTrash } from "@tabler/icons-react";
-import { Dispatch, Fragment, SetStateAction, useEffect, useState } from "react";
+import {
+  Dispatch,
+  Fragment,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { GridContextProvider, GridDropZone, GridItem } from "react-grid-drag";
 import useTranslation from "next-translate/useTranslation";
 
@@ -33,7 +39,7 @@ function Banner({
 }) {
   const theme = useMantineTheme();
   const { t } = useTranslation("user");
-  const { user, userDB } = useUser();
+  const { userDB } = useUser();
   const [acValue] = useState("");
 
   const [state, handlers] = useListState(userDB?.profile__banner ?? []);
@@ -43,26 +49,25 @@ function Banner({
   const ROW_HEIGHT = 110;
   const height = Math.ceil(state.length / NUM_COLS) * ROW_HEIGHT;
 
+  const [filteredState, setFilteredState] = useState(
+    userDB?.profile__banner ?? []
+  );
+
   useEffect(() => {
     // get state where value are only numbers
-    const filteredState = state.filter((item) => typeof item === "number");
+    setFilteredState(state.filter((item) => !isNaN(item)));
+  }, [state]);
 
-    // update listState if its changed
-    if (JSON.stringify(filteredState) !== JSON.stringify(state)) {
-      handlers.setState(filteredState);
-    }
-
+  useEffect(() => {
     // update profile banner if user is logged in and state has changed
-    if (
-      userDB?.profile__banner &&
-      JSON.stringify(userDB.profile__banner) !== JSON.stringify(state)
-    ) {
+    const currentBanner = userDB?.profile__banner ?? [];
+    if (JSON.stringify(currentBanner) !== JSON.stringify(filteredState)) {
       externalSetter((s) => ({
         ...s,
         profile__banner: filteredState,
       }));
     }
-  }, [state, user]);
+  }, [filteredState, userDB]);
 
   if (!cards)
     return (

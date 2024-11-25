@@ -10,7 +10,11 @@ import { migrateCollection } from "./collections/migrate.page";
 
 import { initAuthentication } from "services/firebase/authentication";
 
-initAuthentication();
+try {
+  initAuthentication();
+} catch (e) {
+  console.error(e);
+}
 
 const genRanHex = (size: number) =>
   [...Array(size)]
@@ -23,7 +27,7 @@ async function validateSUID(
   suid: string
 ) {
   const querySnap = await docCollection.where("suid", "==", suid).get();
-  const suidValid = !querySnap.size;
+  const suidValid = querySnap.size === 0;
   return suidValid;
 }
 
@@ -44,7 +48,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     let suid = docGet?.suid;
     if (!suid) {
       let uniqueSUID = "";
-      while (!uniqueSUID) {
+      while (uniqueSUID.length === 0) {
         uniqueSUID = genRanHex(6);
         if (await validateSUID(docCollection, uniqueSUID)) {
           suid = uniqueSUID;

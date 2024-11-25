@@ -105,6 +105,7 @@ function Page({
         title={event.name[0]}
         sx={{ flex: "1 0 80%" }}
         space={theme.spacing.lg}
+        {...{ region }}
       />
       <ESPageHeader content={event} units={units} region={region} />
       <SectionTitle title="Cards" id="cards" Icon={IconCards} />

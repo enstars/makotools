@@ -147,7 +147,7 @@ export default function RegionInfo({ region }: { region: GameRegion }) {
 
   if (isCorrectRegion) return null;
   return (
-    <Text color="dimmed" size="sm" mb="xs">
+    <Text color="dimmed" size="sm" my="xs">
       <Trans
         i18nKey="regions:incorrect_region"
         components={[<Text inherit sx={{ fontWeight: 700 }} span key={0} />]}
