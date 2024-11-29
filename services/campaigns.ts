@@ -31,7 +31,6 @@ function createBirthdayData(
             jp: character.birthday,
             en: character.birthday,
           },
-
           type: "birthday",
           banner_id: character.renders?.fs1_5,
           horoscope: character.horoscope,
