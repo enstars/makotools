@@ -5,8 +5,8 @@ import useUser from "services/firebase/user";
 
 function ColorCode() {
   const { t } = useTranslation("settings");
-  const user = useUser();
-  const cc = user.loggedIn ? "#" + user?.db?.suid : "";
+  const { userDB } = useUser();
+  const cc = userDB ? "#" + userDB?.suid : "";
   return (
     <TextInput
       label={t("account.colorCodeLabel")}

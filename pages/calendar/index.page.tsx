@@ -10,7 +10,6 @@ import {
 } from "@mantine/core";
 import { IconCalendar, IconList } from "@tabler/icons-react";
 import useTranslation from "next-translate/useTranslation";
-import { useRouter } from "next/router";
 
 import CalendarGridView from "./components/CalendarGridView";
 import CalendarListView from "./components/CalendarListView";
@@ -47,8 +46,7 @@ function Page({
   const { t } = useTranslation("calendar");
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
-  const user = useUser();
-  const { locale } = useRouter();
+  const { userDB } = useUser();
 
   const characters: GameCharacter[] = useMemo(
     () => charactersQuery.data,
@@ -62,7 +60,7 @@ function Page({
 
   const birthdays: Birthday[] = createBirthdayData(
     characters,
-    (user.loggedIn && user.db?.setting__name_order) || "firstlast",
+    userDB?.setting__name_order || "firstlast",
     charactersQuery.lang[0].locale
   );
 
@@ -71,7 +69,7 @@ function Page({
   const [calendarTime, setCalendarTime] = useState<string>(dayjs().format());
 
   const [view, setView] = useState<string>("cal");
-  const [showViewOptions, changeShowViewOptions] = useState<boolean>(true);
+  const [, changeShowViewOptions] = useState<boolean>(true);
 
   useEffect(() => {
     window.innerWidth < 900 ? setView("list") : setView("cal");
@@ -169,7 +167,7 @@ function Page({
   );
 }
 
-export const getServerSideProps = getServerSideUser(async ({ res, locale }) => {
+export const getServerSideProps = getServerSideUser(async ({ locale }) => {
   const characters = await getLocalizedDataArray<GameCharacter>(
     "characters",
     locale,

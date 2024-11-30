@@ -13,17 +13,17 @@ function MultiSelectSetting({
   dataKey: keyof UserData;
   data: any[];
 }) {
-  const user = useUser();
-  const isFirestoreAccessible = user.loggedIn;
+  const { user, userDB, updateUserDB } = useUser();
+  const isFirestoreAccessible = user?.id;
 
   return (
     <MultiSelect
       value={
-        (isFirestoreAccessible && (user.db?.[dataKey] as string[])) || undefined
+        (isFirestoreAccessible && (userDB?.[dataKey] as string[])) || undefined
       }
       label={label}
       onChange={(value) => {
-        if (user.loggedIn) user.db.set({ [dataKey]: value });
+        if (userDB) updateUserDB?.mutate({ [dataKey]: value });
       }}
       data={data}
       {...props}

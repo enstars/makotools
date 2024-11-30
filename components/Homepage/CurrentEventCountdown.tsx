@@ -46,7 +46,7 @@ const useStyles = createStyles((theme, _params) => ({
 }));
 
 function EventImage({ event }: { event: Event }) {
-  const { classes } = useStyles();
+  if (!event) return <></>;
   return (
     <Link href={`/events/${event.event_id}`}>
       <Picture
@@ -112,9 +112,10 @@ function CurrentEventCountdown({ events }: { events: Event[] }) {
   const shownEvent = events.filter((event) => {
     return dayjs().isBefore(event.end.en);
   })[0];
-  const isNextEvent = dayjs().isBefore(shownEvent.start.en);
+  const isNextEvent = shownEvent && dayjs().isBefore(shownEvent.start.en);
 
   useEffect(() => {
+    if (!shownEvent) return;
     const interval = setInterval(() => {
       if (isNextEvent) {
         setYippeeTime(
@@ -166,17 +167,19 @@ function CurrentEventCountdown({ events }: { events: Event[] }) {
         >
           <EventImage event={shownEvent} />
           <Stack justify="space-around">
-            <Box>
-              <Title order={3} sx={{ maxWidth: "300px" }}>
-                {shownEvent.name[0]}
-              </Title>
+            {shownEvent && (
+              <Box>
+                <Title order={3} sx={{ maxWidth: "300px" }}>
+                  {shownEvent.name[0]}
+                </Title>
 
-              {isNextEvent ? (
-                <Countdown date={shownEvent.start.en} status="start" />
-              ) : (
-                <Countdown date={shownEvent.end.en} status="end" />
-              )}
-            </Box>
+                {isNextEvent ? (
+                  <Countdown date={shownEvent.start.en} status="start" />
+                ) : (
+                  <Countdown date={shownEvent.end.en} status="end" />
+                )}
+              </Box>
+            )}
             <Button
               color={theme.primaryColor}
               component="a"

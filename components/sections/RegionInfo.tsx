@@ -12,10 +12,9 @@ import useUser from "services/firebase/user";
 import { GameRegion } from "types/game";
 import notify from "services/libraries/notify";
 
-export function RegionSwitcher({ region }: { region: GameRegion }) {
+export function RegionSwitcher() {
   const { t } = useTranslation("regions");
   const router = useRouter();
-  const user = useUser();
 
   // get region name from the router
   const regionName = router.query.region?.[0] as string;
@@ -78,9 +77,6 @@ export function RegionSwitcher({ region }: { region: GameRegion }) {
     return null;
   }
 
-  const userRegionSetting =
-    (user.loggedIn && user.db?.setting__game_region) || "en";
-
   const RegionIcon = gameRegions.find((r) => r.value === regionName)?.icon || (
     <AQ height={16} style={{ borderRadius: 3 }} />
   );
@@ -99,13 +95,12 @@ export function RegionSwitcher({ region }: { region: GameRegion }) {
 export default function RegionInfo({ region }: { region: GameRegion }) {
   const { t } = useTranslation("regions");
   const router = useRouter();
-  const user = useUser();
+  const { userDB } = useUser();
 
   // get region name from the router
   const regionName = router.query.region?.[0] as string;
 
-  const userRegionSetting =
-    (user.loggedIn && user.db?.setting__game_region) || "en";
+  const userRegionSetting = (userDB && userDB?.setting__game_region) || "en";
 
   useEffect(() => {
     if (localStorage.getItem("mktls__notices__defaultRegionInfoShown")) return;
@@ -143,9 +138,7 @@ export default function RegionInfo({ region }: { region: GameRegion }) {
     return null;
   }
 
-  const isCorrectRegion = user.loggedIn
-    ? userRegionSetting === regionName
-    : true;
+  const isCorrectRegion = userDB ? userRegionSetting === regionName : true;
 
   const pathWithoutRegion = router.asPath.replace(
     `/${router.query.region?.[0] as string}`,
@@ -154,7 +147,7 @@ export default function RegionInfo({ region }: { region: GameRegion }) {
 
   if (isCorrectRegion) return null;
   return (
-    <Text color="dimmed" size="sm" mb="xs">
+    <Text color="dimmed" size="sm" my="xs">
       <Trans
         i18nKey="regions:incorrect_region"
         components={[<Text inherit sx={{ fontWeight: 700 }} span key={0} />]}

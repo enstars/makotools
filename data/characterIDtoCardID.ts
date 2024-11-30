@@ -50,6 +50,11 @@ export const twoStarIDs = {
   72: 2097,
   73: 2096,
   74: 2098,
+  81: 4005,
+  82: 4006,
+  83: 4007,
+  84: 4008,
+  85: 4009,
 };
 
 interface DoubleFace {
@@ -60,4 +65,11 @@ interface DoubleFace {
 export const twoStarIDsDoubleface: DoubleFace = {
   40: 2492,
   73: 2493,
+};
+
+export const twoStarIDSEsupuri = {
+  81: 4204,
+  82: 4205,
+  83: 4206,
+  85: 4207,
 };

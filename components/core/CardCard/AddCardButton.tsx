@@ -13,22 +13,28 @@ import { inRange, isNil, sortBy } from "lodash";
 
 import { CardCollection } from "types/makotools";
 import { MAX_CARD_COPIES } from "services/game";
-import { GameCard, ID } from "types/game";
+import { GameCard } from "types/game";
 import { CONSTANTS } from "services/makotools/constants";
 import useUser from "services/firebase/user";
+import { UseMutationResult } from "@tanstack/react-query";
 
 function EditCollectionRow({
   collection,
   card,
-  onEditCollection,
+  editCollection,
 }: {
   collection: CardCollection;
   card: GameCard;
-  onEditCollection: (params: {
-    collectionId: CardCollection["id"];
-    cardId: ID;
-    numCopies: number;
-  }) => any;
+  editCollection: UseMutationResult<
+    void,
+    Error,
+    {
+      collectionId: string | number;
+      cardId: number;
+      numCopies: number;
+    },
+    unknown
+  >;
 }) {
   const collectedCardData = collection.cards.find((c) => c.id === card.id);
   const isInCollection = !!collectedCardData;
@@ -61,7 +67,7 @@ function EditCollectionRow({
               if (isNil(value) || !inRange(value, 0, MAX_CARD_COPIES + 1)) {
                 return;
               }
-              onEditCollection({
+              editCollection.mutate({
                 collectionId: collection.id,
                 cardId: card.id,
                 numCopies: value,
@@ -79,7 +85,7 @@ function EditCollectionRow({
             variant="light"
             color="green"
             onClick={() =>
-              onEditCollection({
+              editCollection.mutate({
                 collectionId: collection.id,
                 cardId: card.id,
                 numCopies: 1,
@@ -101,11 +107,11 @@ function NewCollectionRow({
   collections: CardCollection[];
   onNewCollection: () => any;
 }) {
-  const user = useUser();
+  const { userDB } = useUser();
   const disabled =
     collections.length >=
-    (user.loggedIn
-      ? CONSTANTS.PATREON.TIERS[user.db.admin?.patreon || 0].COLLECTIONS
+    (userDB
+      ? CONSTANTS.PATREON.TIERS[userDB?.admin?.patreon || 0].COLLECTIONS
       : CONSTANTS.PATREON.TIERS[0].COLLECTIONS);
 
   return (
@@ -133,16 +139,21 @@ function NewCollectionRow({
 export default function AddCardButton({
   card,
   collections,
-  onEditCollection,
+  editCollection,
   onNewCollection,
 }: {
   collections: CardCollection[];
   card: GameCard;
-  onEditCollection: (params: {
-    collectionId: CardCollection["id"];
-    cardId: ID;
-    numCopies: number;
-  }) => any;
+  editCollection: UseMutationResult<
+    void,
+    Error,
+    {
+      collectionId: string | number;
+      cardId: number;
+      numCopies: number;
+    },
+    unknown
+  >;
   onNewCollection: () => any;
 }) {
   const [collectionMenuOpened, setCollectionMenuOpened] = useState(false);
@@ -200,7 +211,7 @@ export default function AddCardButton({
                 <EditCollectionRow
                   collection={collection}
                   card={card}
-                  onEditCollection={onEditCollection}
+                  editCollection={editCollection}
                 />
               </React.Fragment>
             ))}

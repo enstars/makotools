@@ -314,7 +314,6 @@ function Page({
             title="Introduction"
             id="introduction"
             Icon={IconStar}
-            iconProps={{ color: baseColor }}
           />
           <Text
             component="p"
@@ -338,7 +337,6 @@ function Page({
             character={character}
             locale={characterQuery.lang}
             units={units}
-            baseColor={baseColor as string}
           />
           <CirclesSection characters={characters} character={character} />
           <CardsSection

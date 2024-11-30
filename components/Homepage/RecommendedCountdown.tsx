@@ -56,9 +56,8 @@ function RecommendedCard({
   units: GameUnit[];
 }) {
   const { dayjs } = useDayjs();
-  const user = useUser();
+  const { user, userDB } = useUser();
   const { t } = useTranslation("home");
-  const theme = useMantineTheme();
   const [countdownAmt, setCountdownAmt] = useState<string>();
   useEffect(() => {
     const interval = setInterval(() => {
@@ -82,27 +81,24 @@ function RecommendedCard({
 
   function returnCharOrUnitName(): string {
     if (faveChar) {
-      let char = characters.filter((c) => c.character_id === faveChar)[0];
-      let nameObj = {
-        first_name: char.first_name[0],
-        last_name: char.last_name[0],
-      };
-      return getNameOrder(
-        nameObj,
-        user.loggedIn ? user.db?.setting__name_order : undefined
-      );
+      let char = characters?.filter((c) => c.character_id === faveChar)[0];
+      if (char) {
+        let nameObj = {
+          first_name: char.first_name[0],
+          last_name: char.last_name[0],
+        };
+        return getNameOrder(
+          nameObj,
+          userDB ? userDB?.setting__name_order : undefined
+        );
+      } else {
+        return "";
+      }
     } else {
       return units.filter((u) => u.id === faveUnit)[0].name[0];
     }
   }
 
-  let link = (event as Birthday).character_id
-    ? `/characters/${(event as Birthday).character_id}`
-    : ((event as Event).event_id && event.type === "song") ||
-      event.type === "shuffle" ||
-      event.type == "tour"
-    ? `/events/${(event as Event).event_id}`
-    : `/scouts/${(event as Scout).gacha_id}`;
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Text size="xs" color="dimmed" sx={{ display: "flex" }}>
@@ -139,11 +135,7 @@ function RecommendedCard({
         <Stack spacing={0} py="xs" px="sm">
           <Text weight={700} lineClamp={2}>
             {event.type === "birthday"
-              ? `${
-                  event.name[0].split(" ")[1] !== undefined
-                    ? event.name[0].split(" ")[1]
-                    : event.name[0].split(" ")[0]
-                }'s Birthday`
+              ? `${event.name[0].split(" ")[0]}'s Birthday`
               : event.name[0]}
           </Text>
           <Group spacing={3} align="center">
@@ -169,14 +161,12 @@ function RecommendedSlide({
   characters,
   units,
   slideColumns,
-  slideRows,
 }: {
   events: any[];
   eventsSlide: Event[];
   characters: GameCharacter[];
   units: GameUnit[];
   slideColumns: number;
-  slideRows: number;
 }) {
   const { dayjs } = useDayjs();
   return (
@@ -215,10 +205,10 @@ function RecommendedCountdown({
   units: GameUnit[];
 }) {
   const { t } = useTranslation("home");
-  const user = useUser();
+  const { userDB } = useUser();
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.xs}px)`);
-  const { ref, width, height } = useElementSize();
+  const { ref, width } = useElementSize();
   const slideColumns = width > 0 ? Math.floor(width / 240) : 1;
   const slideRows = Math.ceil(12 / slideColumns);
 
@@ -252,10 +242,11 @@ function RecommendedCountdown({
       <Alert my={3} icon={<IconHeart />}>
         {t("recommended.recommendedAlert")}
       </Alert>
-      {user.loggedIn && (
+      {userDB && (
         <>
-          {!user.db.profile__fave_charas ||
-          user.db.profile__fave_charas.length === 0 ? (
+          {userDB &&
+          (!userDB?.profile__fave_charas ||
+            userDB?.profile__fave_charas.length === 0) ? (
             <Paper p={15} my={10}>
               <Text>
                 <Trans
@@ -265,15 +256,14 @@ function RecommendedCountdown({
                       key="link"
                       color={theme.colors[theme.primaryColor][4]}
                       component={Link}
-                      href={`/@${user.db.username}`}
+                      href={`/@${userDB.username}`}
                     />,
                   ]}
                 />
               </Text>
             </Paper>
-          ) : user.db.profile__fave_charas &&
-            user.db.profile__fave_charas.length &&
-            user.db.profile__fave_charas[0] === -1 ? (
+          ) : userDB?.profile__fave_charas?.length &&
+            userDB.profile__fave_charas[0] === -1 ? (
             <Box mt={10}>
               <Group noWrap mb={10}>
                 <Image
@@ -368,7 +358,6 @@ function RecommendedCountdown({
                       characters={characters}
                       units={units}
                       slideColumns={slideColumns}
-                      slideRows={slideRows}
                     />
                   </Carousel.Slide>
                 );

@@ -22,8 +22,9 @@ import CardStatsNumber from "components/utilities/formatting/CardStatsNumber";
 import Picture from "components/core/Picture";
 import { CardCollection, Lang, Locale } from "types/makotools";
 import useUser from "services/firebase/user";
-import { GameCard, GameCharacter, GameRegion, ID } from "types/game";
+import { GameCard, GameCharacter, GameRegion } from "types/game";
 import { getTitleHierarchy } from "services/makotools/localization";
+import { UseMutationResult } from "@tanstack/react-query";
 
 function RarityBadge({ card }: { card: GameCard }) {
   const theme = useMantineTheme();
@@ -71,7 +72,7 @@ export default function CardCard({
   cardOptions,
   collections,
   lang,
-  onEditCollection,
+  editCollection,
   onNewCollection,
   gameRegion,
 }: {
@@ -80,18 +81,23 @@ export default function CardCard({
   cardOptions: any;
   collections: CardCollection[] | undefined;
   lang: Lang[];
-  onEditCollection: (params: {
-    collectionId: CardCollection["id"];
-    cardId: ID;
-    numCopies: number;
-  }) => any;
+  editCollection: UseMutationResult<
+    void,
+    Error,
+    {
+      collectionId: string | number;
+      cardId: number;
+      numCopies: number;
+    },
+    unknown
+  >;
   onNewCollection: () => any;
   gameRegion: GameRegion;
 }) {
   const router = useRouter();
   const theme = useMantineTheme();
 
-  const user = useUser();
+  const { userDB, user } = useUser();
 
   const statsIR = sumStats(card.stats?.ir);
   const statsIR4 = sumStats(card.stats?.ir4);
@@ -193,11 +199,11 @@ export default function CardCard({
         }}
       >
         <Group spacing={0} noWrap>
-          {!user.loading && user.loggedIn && collections && (
+          {userDB && collections && (
             <AddCardButton
               card={card}
               collections={collections}
-              onEditCollection={onEditCollection}
+              editCollection={editCollection}
               onNewCollection={onNewCollection}
             />
           )}

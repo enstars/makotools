@@ -50,7 +50,7 @@ export default function useFSSList<DataType, Filter>(
       finalList = sortedList;
     }
     setResults([...finalList]);
-  }, [view, debouncedSearch, data, options]);
+  }, [view, debouncedSearch, options]);
 
   return { results, view, setView };
 }

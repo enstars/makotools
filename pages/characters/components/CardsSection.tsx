@@ -21,11 +21,10 @@ export function CardsSection({
   character: GameCharacter;
   lang: Lang[];
 }) {
-  const user = useUser();
+  const { userDB } = useUser();
   const theme = useMantineTheme();
-  const { collections, onEditCollection, onNewCollection } = useCollections();
-  const [newCollectionModalOpened, setNewCollectionModalOpened] =
-    useState<boolean>(false);
+  const { collections, editCollection } = useCollections();
+  const [, setNewCollectionModalOpened] = useState<boolean>(false);
 
   // const textColor = isColorLight(character.image_color as string)
   //   ? primaryCharaColor(theme, character.image_color)
@@ -38,12 +37,7 @@ export function CardsSection({
 
   return (
     <Box id="cards">
-      <SectionTitle
-        id="cards"
-        title="Cards"
-        Icon={IconCards}
-        iconProps={{ color: colors.image }}
-      />
+      <SectionTitle id="cards" title="Cards" Icon={IconCards} />
       <Accordion
         variant="separated"
         defaultValue="5"
@@ -62,6 +56,7 @@ export function CardsSection({
           return (
             rarityCards.length > 0 && (
               <Accordion.Item
+                key={rarity}
                 value={rarity.toString()}
                 sx={{
                   borderRadius: theme.radius.md,
@@ -135,15 +130,12 @@ export function CardsSection({
                         cardOptions={{ showFullInfo: true }}
                         collections={collections}
                         lang={lang}
-                        onEditCollection={onEditCollection}
+                        editCollection={editCollection}
                         onNewCollection={() =>
                           setNewCollectionModalOpened(true)
                         }
                         character={character}
-                        gameRegion={
-                          (user.loggedIn && user.db.setting__game_region) ||
-                          "en"
-                        }
+                        gameRegion={userDB?.setting__game_region || "en"}
                       />
                     ))}
                   </ResponsiveGrid>

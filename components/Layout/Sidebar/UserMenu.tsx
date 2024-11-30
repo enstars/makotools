@@ -27,14 +27,55 @@ import { characterColors } from "../../MantineTheme/index";
 import useUser from "services/firebase/user";
 import { LOCALES } from "services/makotools/locales";
 import ProfileAvatar from "pages/[user]/components/profilePicture/ProfileAvatar";
+import { useEffect, useRef } from "react";
+import { showNotification, updateNotification } from "@mantine/notifications";
 
 function UserMenu({ trigger }: { trigger: any }) {
   const { t } = useTranslation("sidebar");
   const theme = useMantineTheme();
   const dark = theme.colorScheme === "dark";
   const [opened, handlers] = useDisclosure(false);
-  const user = useUser();
+  const { user, userDB, privateUserDB, updateUserDB, isUserDBPending } =
+    useUser();
   const { push, pathname, asPath, query, locale } = useRouter();
+  const userMenuAction = useRef<"change-theme">();
+
+  useEffect(() => {
+    if (updateUserDB?.isPending) {
+      if (userMenuAction.current === "change-theme") {
+        showNotification({
+          id: "updateTheme",
+          loading: true,
+          title: "Updating MakoTools theme...",
+          message: "This might take some time.",
+        });
+      }
+    } else if (updateUserDB?.isSuccess) {
+      updateNotification({
+        id: "updateTheme",
+        loading: false,
+        title: "Successfully updated theme!",
+        message: (
+          <Text>
+            You are now using{" "}
+            <Text fw={600}>
+              {characterColors.find(
+                (color) => color.name === userDB?.user__theme
+              )?.display_name ?? ""}
+            </Text>
+            !
+          </Text>
+        ),
+      });
+    } else if (updateUserDB?.isError) {
+      updateNotification({
+        id: "updateTheme",
+        loading: false,
+        title: "Updating MakoTools theme...",
+        message: "This might take some time.",
+      });
+    }
+  }, [updateUserDB, userDB]);
 
   return (
     <Menu
@@ -60,10 +101,10 @@ function UserMenu({ trigger }: { trigger: any }) {
       <Menu.Dropdown>
         <Menu.Item
           component={Link}
-          href={user.loggedIn ? `/@${user?.db?.username}` : "#"}
+          href={userDB ? `/@${userDB?.username}` : "#"}
           icon={
-            user.loggedIn ? (
-              <ProfileAvatar userInfo={user.db} size={32} />
+            userDB ? (
+              <ProfileAvatar userInfo={userDB} size={32} />
             ) : (
               <Avatar
                 color={theme.primaryColor}
@@ -74,11 +115,11 @@ function UserMenu({ trigger }: { trigger: any }) {
             )
           }
         >
-          {user.loading ? (
+          {isUserDBPending ? (
             <Text size="sm" color="dimmed">
               {t("menu.loading")}
             </Text>
-          ) : user.loggedIn ? (
+          ) : userDB ? (
             <Box
               sx={{
                 "*": {
@@ -88,13 +129,13 @@ function UserMenu({ trigger }: { trigger: any }) {
                 },
               }}
             >
-              {user.db?.name && (
+              {userDB?.name && (
                 <Text id="sidebar-user-name" size="sm" weight={500}>
-                  {user.db.name}
+                  {userDB.name}
                 </Text>
               )}
               <Text id="sidebar-user-email" size="xs" color="dimmed" mt={-2}>
-                @{user?.db?.username}
+                @{userDB?.username}
               </Text>
             </Box>
           ) : (
@@ -125,7 +166,7 @@ function UserMenu({ trigger }: { trigger: any }) {
         >
           {t("menu.darkMode")}
         </Menu.Item>
-        {user.loggedIn && (
+        {userDB && (
           <Menu.Item
             id="sidebar-user-theme"
             icon={<IconPalette size={14} />}
@@ -134,7 +175,9 @@ function UserMenu({ trigger }: { trigger: any }) {
               <Select
                 placeholder="Choose user theme..."
                 value={theme.primaryColor}
-                onChange={(value) => user.db?.set({ user__theme: value })}
+                onChange={(value) =>
+                  updateUserDB?.mutate({ user__theme: value ?? undefined })
+                }
                 data={characterColors.map((colorTheme) => ({
                   value: colorTheme.name,
                   label: colorTheme.display_name,
@@ -210,7 +253,7 @@ function UserMenu({ trigger }: { trigger: any }) {
         </Menu.Item>
         <Menu.Label id="sidebar-label-account">{t("menu.account")}</Menu.Label>
 
-        {user.loading ? (
+        {isUserDBPending ? (
           <Menu.Item
             className="sidebar-link-login"
             icon={<IconLogin size={14} />}
@@ -218,7 +261,7 @@ function UserMenu({ trigger }: { trigger: any }) {
           >
             {t("menu.login")}
           </Menu.Item>
-        ) : user.loggedIn ? (
+        ) : user?.id ? (
           <>
             <Menu.Item
               component={Link}
@@ -236,10 +279,10 @@ function UserMenu({ trigger }: { trigger: any }) {
                   color="red"
                   position="top-start"
                   dot={
-                    user.loggedIn &&
-                    user.privateDb?.friends__receivedRequests?.length !==
+                    !!privateUserDB &&
+                    privateUserDB?.friends__receivedRequests?.length !==
                       undefined &&
-                    user.privateDb?.friends__receivedRequests?.length > 0
+                    privateUserDB?.friends__receivedRequests?.length > 0
                   }
                 >
                   <IconSettings size={14} />
@@ -251,8 +294,12 @@ function UserMenu({ trigger }: { trigger: any }) {
             <Menu.Item
               id="sidebar-link-logout"
               onClick={() => {
-                user.user.signOut().then(() => {
+                user.signOut().then(() => {
                   push("/");
+                  showNotification({
+                    title: "Success",
+                    message: "You have logged out successfully",
+                  });
                 });
               }}
               icon={<IconLogout size={14} />}

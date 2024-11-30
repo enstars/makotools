@@ -45,7 +45,7 @@ const useStyles = createStyles((theme) => ({
 function Banner({ events }: { events: (Birthday | Event | Scout)[] }) {
   const theme = useMantineTheme();
   const { t } = useTranslation("home");
-  const user = useUser();
+  const { user, userDB } = useUser();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const { dayjs } = useDayjs();
   const { classes } = useStyles();
@@ -126,87 +126,90 @@ function Banner({ events }: { events: (Birthday | Event | Scout)[] }) {
                 variant="white"
                 color="dark"
                 component={Link}
-                href={
-                  user.loggedIn ? CONSTANTS.EXTERNAL_URLS.PATREON : "/login"
-                }
+                href={userDB ? CONSTANTS.EXTERNAL_URLS.PATREON : "/login"}
                 target="_blank"
               >
-                {user.loggedIn ? t("supportOnPatreon") : t("createAccount")}
+                {userDB ? t("supportOnPatreon") : t("createAccount")}
               </Button>
             </Stack>
           </Box>
         </Box>
       </Carousel.Slide>
-      {banners.map((event) => (
-        <Carousel.Slide key={event.name[0]}>
-          <Box className={classes.bannerSlide}>
-            <Picture
-              alt={event.name[0] || "caption"}
-              srcB2={`assets/card_still_full1_${event.banner_id}_${
-                event.type === "birthday" ? "normal" : "evolution"
-              }.png`}
-              sx={{ width: "100%", height: "100%" }}
-              radius="md"
-            />
-            <Box className={classes.bannerOverlay}>
-              <Stack spacing={0} align="start">
-                <Title order={2}>
-                  {event.type === "song"
-                    ? event.name[0]
-                    : event.type === "tour"
-                    ? event.name[0]
-                    : event.type === "special"
-                    ? event.name[0]
-                    : event.type === "scout"
-                    ? t("banner.scout", { name: event.name[0] })
-                    : event.type === "feature scout"
-                    ? t("banner.fs", { name: event.name[0] })
-                    : event.type === "birthday"
-                    ? t("banner.birthday", {
-                        name: event.name[0],
-                      })
-                    : event.name[0]}
-                </Title>
-                <Text weight={500} sx={{ opacity: 0.75 }}>
-                  {event.type !== "birthday"
-                    ? dayjs(event.start.en).format("lll") +
-                      " – " +
-                      dayjs(event.end.en).format("lll z")
-                    : dayjs(event.start.en).year(dayjs().year()).format("ll")}
-                </Text>
-                <Button
-                  mt={6}
-                  variant="white"
-                  color="dark"
-                  component={Link}
-                  href={`/${
-                    event.type === "song" ||
-                    event.type === "tour" ||
-                    event.type === "special" ||
-                    event.type === "shuffle"
-                      ? "events"
-                      : event.type === "scout" || event.type === "feature scout"
-                      ? "scouts"
-                      : "characters"
-                  }/${
-                    event.type === "song" ||
-                    event.type === "tour" ||
-                    event.type === "special" ||
-                    event.type === "shuffle"
-                      ? event.event_id
-                      : event.type === "scout" || event.type === "feature scout"
-                      ? event.gacha_id
-                      : (event as Birthday).character_id
-                  }`}
-                  target="_blank"
-                >
-                  {t("banner.link")}
-                </Button>
-              </Stack>
+      {banners.map((event) => {
+        if (!event) return <></>;
+        return (
+          <Carousel.Slide key={event.name[0]}>
+            <Box className={classes.bannerSlide}>
+              <Picture
+                alt={event?.name[0] || "caption"}
+                srcB2={`assets/card_still_full1_${event.banner_id}_${
+                  event.type === "birthday" ? "normal" : "evolution"
+                }.png`}
+                sx={{ width: "100%", height: "100%" }}
+                radius="md"
+              />
+              <Box className={classes.bannerOverlay}>
+                <Stack spacing={0} align="start">
+                  <Title order={2}>
+                    {event.type === "song"
+                      ? event.name[0]
+                      : event.type === "tour"
+                      ? event.name[0]
+                      : event.type === "special"
+                      ? event.name[0]
+                      : event.type === "scout"
+                      ? t("banner.scout", { name: event.name[0] })
+                      : event.type === "feature scout"
+                      ? t("banner.fs", { name: event.name[0] })
+                      : event.type === "birthday"
+                      ? t("banner.birthday", {
+                          name: event.name[0],
+                        })
+                      : event.name[0]}
+                  </Title>
+                  <Text weight={500} sx={{ opacity: 0.75 }}>
+                    {event.type !== "birthday"
+                      ? dayjs(event.start.en).format("lll") +
+                        " – " +
+                        dayjs(event.end.en).format("lll z")
+                      : dayjs(event.start.en).year(dayjs().year()).format("ll")}
+                  </Text>
+                  <Button
+                    mt={6}
+                    variant="white"
+                    color="dark"
+                    component={Link}
+                    href={`/${
+                      event.type === "song" ||
+                      event.type === "tour" ||
+                      event.type === "special" ||
+                      event.type === "shuffle"
+                        ? "events"
+                        : event.type === "scout" ||
+                          event.type === "feature scout"
+                        ? "scouts"
+                        : "characters"
+                    }/${
+                      event.type === "song" ||
+                      event.type === "tour" ||
+                      event.type === "special" ||
+                      event.type === "shuffle"
+                        ? event.event_id
+                        : event.type === "scout" ||
+                          event.type === "feature scout"
+                        ? event.gacha_id
+                        : (event as Birthday).character_id
+                    }`}
+                    target="_blank"
+                  >
+                    {t("banner.link")}
+                  </Button>
+                </Stack>
+              </Box>
             </Box>
-          </Box>
-        </Carousel.Slide>
-      ))}
+          </Carousel.Slide>
+        );
+      })}
     </Carousel>
   );
 }

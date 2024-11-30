@@ -1,14 +1,13 @@
 import { ReactElement } from "react";
 
-import { Locale, NameOrder, User } from "types/makotools";
+import { Locale, NameOrder, UserData } from "types/makotools";
 import useUser from "services/firebase/user";
 import { getNameOrder } from "services/game";
 
-export function getNameOrderSetting(user: User): NameOrder {
-  return (
-    (!user.loading && user.loggedIn && user?.db?.setting__name_order) ||
-    "firstlast"
-  );
+export function getNameOrderSetting(
+  userDB: UserData | null | undefined
+): NameOrder {
+  return userDB?.setting__name_order || "firstlast";
 }
 
 function NameOrder({
@@ -20,9 +19,9 @@ function NameOrder({
   last_name: string[];
   locale: Locale;
 }): ReactElement {
-  const user = useUser();
+  const { userDB } = useUser();
 
-  const nameOrderSetting = getNameOrderSetting(user);
+  const nameOrderSetting = getNameOrderSetting(userDB);
   const name = getNameOrder(
     { first_name, last_name },
     nameOrderSetting,

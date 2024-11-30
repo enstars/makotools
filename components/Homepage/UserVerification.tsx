@@ -5,11 +5,11 @@ import { sendVerificationEmail } from "services/firebase/firestore";
 import useUser from "services/firebase/user";
 
 function UserVerification() {
-  const user = useUser();
+  const { user } = useUser();
 
   return (
     <>
-      {user.loggedIn && user.user.email && !user.user.emailVerified && (
+      {user?.email && !user.emailVerified && (
         <Alert
           sx={{ width: "100%" }}
           py="xs"

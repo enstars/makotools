@@ -168,16 +168,15 @@ function Picture({
     ...otherProps
   } = props;
   const theme = useMantineTheme();
-  const user = useUser();
+  const { user, userDB } = useUser();
 
   const dontUseWebP = useMemo(
-    () => user.loggedIn && user.db.setting__use_webp === "dont-use",
+    () => userDB?.setting__use_webp === "dont-use",
     [user]
   );
 
   const [loaded, setLoaded] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-  const [opened, setOpened] = useState<boolean>(false);
 
   const src = useMemo(
     () => originalSrc || getAssetURL(srcB2 as string),
@@ -243,7 +242,7 @@ function Picture({
           src={src}
           alt={alt}
           onContextMenu={() => {
-            if (user.loggedIn && (isB2Optimized || webpSrc) && !dontUseWebP)
+            if (userDB && (isB2Optimized || webpSrc) && !dontUseWebP)
               notify("info", {
                 title: "This is a WEBP file!",
                 message:
@@ -263,7 +262,7 @@ function Picture({
         <Group className={classes.actionIconWrapper} spacing={4}>
           {!error &&
             loaded &&
-            user.loggedIn &&
+            userDB &&
             (action === "download" || action === "both") && (
               <ActionIcon
                 size="sm"
@@ -276,7 +275,7 @@ function Picture({
             )}
           {!error &&
             loaded &&
-            user.loggedIn &&
+            userDB &&
             (action === "view" || action === "both") && (
               <>
                 <ActionIcon

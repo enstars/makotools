@@ -33,7 +33,7 @@ const idToIcon: { [n: number]: any } = {
   17: IconMaM,
 };
 
-const useStyles = createStyles((theme) => ({
+const useStyles = createStyles(() => ({
   icon: {
     "& path": {
       fill: "transparent",
@@ -51,6 +51,7 @@ function IconEnstars({
 } & any) {
   const UnitIcon = idToIcon[unit];
   const { classes } = useStyles();
+  if (!UnitIcon) return <></>;
   return (
     <UnitIcon
       viewBox="0 0 24 24"

@@ -1,5 +1,4 @@
 import { clamp, remove } from "lodash";
-import useSWR from "swr";
 import { doc, getFirestore, setDoc } from "firebase/firestore";
 
 import { CardCollection } from "types/makotools";
@@ -9,6 +8,8 @@ import { generateUUID, getTimestamp } from "services/utilities";
 import useUser from "services/firebase/user";
 import { getFirestoreUserCollection } from "services/firebase/firestore";
 import { useDayjs } from "services/libraries/dayjs";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { cardCollectionQueries } from "services/queries";
 
 export const MAX_COLLECTION_NAME_LENGTH = 50;
 
@@ -72,73 +73,111 @@ export function createNewCollectionObject({
 }
 
 export function useCollections() {
-  const user = useUser();
+  const { user, userDB, privateUserDB } = useUser();
   const { dayjs } = useDayjs();
+  const qc = useQueryClient();
 
-  const {
-    data: collections,
-    isLoading: loadingCollections,
-    mutate: mutateCollections,
-  } = useSWR<CardCollection[]>(
-    user.loggedIn ? [`users/${user.user.id}/card_collections`, user] : null,
-    getFirestoreUserCollection
-  );
+  const userId = user?.id;
 
-  const onEditCollection = async ({
-    collectionId,
-    cardId,
-    numCopies,
-  }: {
-    collectionId: CardCollection["id"];
-    cardId: ID;
-    numCopies: number;
-  }) => {
-    if (!user.loggedIn) throw new Error("User not logged in");
-    const collectionToUpdate = collections!.find(
-      (collection) => collection.id === collectionId
-    );
-    const newCollection = { ...collectionToUpdate! };
-    const now = getTimestamp(dayjs());
-    editCardInCollection({
-      collection: newCollection,
-      id: cardId,
-      count: numCopies,
-      dateAdded: now,
-    });
-    const db = getFirestore();
-    await setDoc(
-      doc(db, `users/${user.user.id}/card_collections/${newCollection.id}`),
-      newCollection,
-      { merge: true }
-    );
-    mutateCollections();
-  };
+  const { data: collections, isPending: areCollectionsLoading } = useQuery({
+    queryKey: cardCollectionQueries.fetchCardCollections(userId ?? undefined),
+    enabled: !!userDB && !!userId,
+    queryFn: async ({ queryKey }) => {
+      const uid = queryKey[1];
+      try {
+        return await getFirestoreUserCollection(
+          user,
+          userDB,
+          uid,
+          privateUserDB
+        );
+      } catch {
+        throw new Error("Could not retrieve user collections");
+      }
+    },
+  });
 
-  const onNewCollection = async ({
-    name,
-    privacyLevel,
-    icon,
-  }: Pick<CardCollection, "name" | "privacyLevel" | "icon">) => {
-    if (!user.loggedIn) throw new Error("User not logged in");
-    const newCollection = createNewCollectionObject({
+  const editCollection = useMutation({
+    mutationFn: async ({
+      collectionId,
+      cardId,
+      numCopies,
+    }: {
+      collectionId: string | number;
+      cardId: number;
+      numCopies: number;
+    }) => {
+      if (!user || !userDB) throw new Error("User not logged in");
+      if (!userId) throw new Error("User ID is undefined");
+      const collectionToUpdate = collections!.find(
+        (collection) => collection.id === collectionId
+      );
+      const newCollection = { ...collectionToUpdate! };
+      const now = getTimestamp(dayjs());
+      editCardInCollection({
+        collection: newCollection,
+        id: cardId,
+        count: numCopies,
+        dateAdded: now,
+      });
+      const db = getFirestore();
+      await setDoc(
+        doc(db, `users/${userId}/card_collections/${newCollection.id}`),
+        newCollection,
+        { merge: true }
+      );
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({
+        queryKey: cardCollectionQueries.fetchCardCollections(
+          userId ?? undefined
+        ),
+      });
+    },
+    onError: (error: Error) => {
+      console.error("Could not edit collection", error.message);
+    },
+  });
+
+  const createCollection = useMutation({
+    mutationFn: async ({
       name,
-      order: collections!.length,
       privacyLevel,
       icon,
-    });
-    const db = getFirestore();
-    await setDoc(
-      doc(db, `users/${user.user.id}/card_collections/${newCollection.id}`),
-      newCollection
-    );
-    mutateCollections();
-  };
+    }: {
+      name: string;
+      privacyLevel: 0 | 1 | 2 | 3;
+      icon: number;
+    }) => {
+      if (!user || !userDB) throw new Error("User not logged in");
+      const newCollection = createNewCollectionObject({
+        name,
+        order: collections!.length,
+        privacyLevel,
+        icon,
+      });
+      const db = getFirestore();
+      await setDoc(
+        doc(db, `users/${user.id}/card_collections/${newCollection.id}`),
+        newCollection
+      );
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({
+        queryKey: cardCollectionQueries.fetchCardCollections(
+          userId ?? undefined
+        ),
+      });
+    },
+    onError: (error: Error) => {
+      console.error("Could not create a new collection", error.message);
+    },
+  });
 
   return {
     collections,
-    loadingCollections,
-    mutateCollections,
-    onEditCollection,
-    onNewCollection,
+    areCollectionsLoading,
+    editCollection,
+    createCollection,
   };
 }

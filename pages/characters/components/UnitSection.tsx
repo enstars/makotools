@@ -7,19 +7,18 @@ import { Lang } from "types/makotools";
 import { GameCharacter, GameUnit } from "types/game";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 import IconEnstars from "components/core/IconEnstars";
+import { Fragment } from "react";
 
 export function UnitSection({
   characters,
   character,
   locale,
   units,
-  baseColor,
 }: {
   characters: GameCharacter[];
   character: GameCharacter;
   locale: Lang[];
   units: GameUnit[];
-  baseColor: string;
 }) {
   const charaUnits = units.filter((u) => character.unit.includes(u.id));
 
@@ -28,11 +27,11 @@ export function UnitSection({
       {charaUnits.map((unit, index) => {
         const otherMembers = characters.filter((c) => c.unit.includes(unit.id));
         return (
-          <>
+          <Fragment key={unit.id}>
             <SectionTitle
               id={`unit-${unit.id}`}
               Icon={IconEnstars}
-              iconProps={{ unit: unit.id, color: baseColor }}
+              iconProps={{ unit: unit.id }}
               title={
                 <>
                   <Text weight={400} span>
@@ -56,7 +55,7 @@ export function UnitSection({
               ))}
             </ResponsiveGrid>
             <Text component="p">{unit.description[0]}</Text>
-          </>
+          </Fragment>
         );
       })}
     </Box>

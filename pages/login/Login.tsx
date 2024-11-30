@@ -26,16 +26,18 @@ import {
   signInWithEmail,
   signUpWithEmail,
 } from "services/firebase/authentication";
+import { showNotification } from "@mantine/notifications";
 
 function Login() {
   const [isRegister, setIsRegister] = useState(false);
-  const [signOnError, setSignOnError] = useState<{ type: string } | null>(null);
+  const [signOnError, setSignOnError] = useState<Error | null>(null);
 
   const router = useRouter();
-  const user = useUser();
+  const { user, userDB, updateUserDB, isUserDBPending } = useUser();
 
-  function signOnAlertMsg(error: { type: string; code?: string }) {
-    const { code } = error;
+  function signOnAlertMsg(error: string) {
+    const codeRegex = /\(([^)]+)\)/;
+    const code = codeRegex.exec(error)?.[1].split("/")[1] ?? "";
     let message;
     switch (code) {
       case "wrong-password":
@@ -67,6 +69,15 @@ function Login() {
           </span>
         );
         break;
+      case "email-already-in-use":
+        message = (
+          <span>
+            The email you tried to sign up with is already in use. Please try
+            registering with a new email or login into the account associated
+            with the provided email.
+          </span>
+        );
+        break;
       default:
         message = (
           <span>
@@ -80,6 +91,18 @@ function Login() {
 
     return message;
   }
+
+  useEffect(() => {
+    if (signOnError) {
+      showNotification({
+        id: "signinError",
+        color: "red",
+        title: "An error occurred",
+        message: signOnAlertMsg(signOnError.message),
+        icon: <IconAlertTriangle />,
+      });
+    }
+  }, [signOnError]);
 
   const form = useForm({
     initialValues: {
@@ -103,16 +126,21 @@ function Login() {
   });
 
   useEffect(() => {
-    if (!user.loading && user.loggedIn) {
+    if (userDB) {
       router.push("/");
     }
 
     return () => {
-      if (isRegister && user.loggedIn) {
-        user.db.set({ name: form.values.name }, () => {});
+      if (isRegister && userDB && updateUserDB) {
+        updateUserDB.mutate({ name: form.values.name });
       }
     };
-  }, [user, router, form, isRegister]);
+  }, [user, router, form, isRegister, updateUserDB]);
+
+  const onError = (error: Error) => {
+    console.error(error.message);
+    setSignOnError(error);
+  };
 
   return (
     <Container
@@ -120,7 +148,7 @@ function Login() {
       pt="lg"
       style={{ height: "100%", maxWidth: 400 }}
     >
-      {!user.loading && user.loggedIn ? (
+      {userDB ? (
         <Text id="signin-redirect" align="center" color="dimmed" size="sm">
           Redirecting you to MakoTools
         </Text>
@@ -137,23 +165,6 @@ function Login() {
           >
             Back to MakoTools
           </Anchor>
-          {signOnError && (
-            <Alert
-              className="signin-alert-error"
-              icon={<IconAlertTriangle />}
-              title={
-                signOnError.type === "login"
-                  ? "Login Error"
-                  : "Registration Error"
-              }
-              color="red"
-              style={{
-                marginBottom: 10,
-              }}
-            >
-              {signOnAlertMsg(signOnError)}
-            </Alert>
-          )}
           <Paper
             id="signin-paper-container"
             radius="md"
@@ -161,7 +172,7 @@ function Login() {
             withBorder
             sx={{ width: "100%" }}
           >
-            <LoadingOverlay visible={user.loading} />
+            <LoadingOverlay visible={isUserDBPending} />
             <Title id="signin-title" order={2} size="lg" mb="sm">
               {isRegister ? "Sign up" : "Sign in"}
             </Title>
@@ -185,35 +196,19 @@ function Login() {
             />
             <form
               id="signin-form"
-              onSubmit={form.onSubmit((values) => {
+              onSubmit={form.onSubmit(() => {
                 setSignOnError(null);
                 if (isRegister) {
                   signUpWithEmail(
                     form.values.email,
                     form.values.password,
-                    (error) => {
-                      console.error(error);
-                      const errorCode = error.code.split("/")[1];
-                      const errorObj = {
-                        type: "registration",
-                        code: errorCode,
-                      };
-                      setSignOnError(errorObj);
-                    }
+                    onError
                   );
                 } else {
                   signInWithEmail(
                     form.values.email,
                     form.values.password,
-                    (error) => {
-                      console.error(error);
-                      const errorCode = error.code.split("/")[1];
-                      const errorObj = {
-                        type: "login",
-                        code: errorCode,
-                      };
-                      setSignOnError(errorObj);
-                    }
+                    onError
                   );
                 }
               })}

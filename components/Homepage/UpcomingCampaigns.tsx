@@ -64,15 +64,8 @@ const useStyles = createStyles((theme, _params) => ({
 }));
 
 // create individual event card
-function EventCard({
-  event,
-  locale,
-}: {
-  event: Birthday | Event | Scout;
-  locale: string | undefined;
-}) {
-  const { t } = useTranslation("home");
-  const user = useUser();
+function EventCard({ event }: { event: Birthday | Event | Scout }) {
+  const { userDB } = useUser();
   const { classes } = useStyles();
   const { dayjs } = useDayjs();
   const formattedMonth = dayjs(event.start.en).format("MMM");
@@ -89,8 +82,7 @@ function EventCard({
   function birthdayEventName(name: string) {
     let splitName = name.split(" ");
     const nameOrderSetting =
-      (!user.loading && user.loggedIn && user?.db?.setting__name_order) ||
-      "firstlast";
+      (userDB && userDB?.setting__name_order) || "firstlast";
     return getNameOrder(
       { first_name: splitName[0], last_name: splitName[1] },
       nameOrderSetting
@@ -212,15 +204,8 @@ function EventCard({
   );
 }
 
-function UpcomingCampaigns({
-  events,
-  locale,
-}: {
-  events: Campaign[];
-  locale: string | undefined;
-}) {
+function UpcomingCampaigns({ events }: { events: Campaign[] }) {
   const { t } = useTranslation("home");
-  const { dayjs } = useDayjs();
   const { classes } = useStyles();
 
   return (
@@ -233,7 +218,7 @@ function UpcomingCampaigns({
 
       <Accordion.Panel className={classes.panel} px={0}>
         {retrieveNextCampaigns(events, 8).map((e, index) => {
-          return <EventCard key={index} event={e} locale={locale} />;
+          return <EventCard key={index} event={e} />;
         })}
         <Box mt="xs">
           <Anchor component={Link} href="/calendar" size="sm">

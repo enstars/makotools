@@ -491,7 +491,7 @@ function Page({
 }) {
   const { classes } = useStyles();
   const { t } = useTranslation("assets");
-  const user = useUser();
+  const { userDB } = useUser();
   const theme = useMantineTheme();
   const characters = useMemo(
     () => charactersQuery.data,
@@ -565,9 +565,7 @@ function Page({
   const [viewOptions, setViewOptions] = useLocalStorage({
     key: "viewOptions__event",
     defaultValue: {
-      region:
-        (user.loggedIn && user.db?.setting__game_region) ||
-        ("en" as GameRegion),
+      region: userDB?.setting__game_region || ("en" as GameRegion),
       density: "full" as "full" | "list" | "compact",
       assetType: "frameless",
     },
@@ -853,7 +851,7 @@ function Page({
                 : classes.cardGrid
             }
           >
-            {slicedAssetsList.map((card, i) =>
+            {slicedAssetsList.map((card) =>
               viewOptions.density === "compact" ? (
                 <CompactAssetCard
                   key={card.id}
@@ -898,12 +896,6 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     locale,
     "character_id",
     ["character_id", "first_name", "sort_id"]
-  );
-
-  const unitsQuery: any = await getLocalizedDataArray<GameUnit>(
-    "units",
-    locale,
-    "id"
   );
 
   // const events: Event[] = retrieveEvents(

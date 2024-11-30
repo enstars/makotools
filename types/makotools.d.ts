@@ -96,7 +96,6 @@ interface ProfilePicture {
   };
 }
 interface UserData {
-  set(data: any, callback?: () => any): any;
   collection?: CollectedCard[];
   suid: string;
   username: string;
@@ -125,31 +124,10 @@ interface UserData {
   };
 }
 interface UserPrivateData {
-  set(data: any, callback?: () => any): any;
   friends__list?: UID[];
   friends__sentRequests?: UID[];
   friends__receivedRequests?: UID[];
 }
-
-interface UserLoading {
-  loading: true;
-  loggedIn: undefined;
-}
-interface UserLoggedOut {
-  loading: false;
-  loggedIn: false;
-}
-
-interface UserLoggedIn {
-  loading: false;
-  loggedIn: true;
-  user: AuthUserContext;
-  db: UserData;
-  privateDb: UserPrivateData;
-  refreshData: () => void;
-}
-
-type User = UserLoading | UserLoggedOut | UserLoggedIn;
 
 interface GetServerSideUserContext extends GetServerSidePropsContext {}
 

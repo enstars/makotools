@@ -117,7 +117,7 @@ function MantineTheme({
   setAppColorScheme: (c: any) => void;
   toggleAppColorScheme: () => void;
 }) {
-  const user = useUser();
+  const { userDB } = useUser();
   return (
     <MantineProvider
       emotionCache={emotionCache}
@@ -127,7 +127,7 @@ function MantineTheme({
         colorScheme,
         components: {
           NavLink: {
-            styles: (theme) => ({
+            styles: () => ({
               root: {
                 "& > *:last-child": {
                   margin: 0,
@@ -156,10 +156,10 @@ function MantineTheme({
             }),
             {}
           ),
-          ...(user.loggedIn &&
-          user.db?.user__theme &&
-          characterColors.map((c) => c.name).includes(user.db?.user__theme) &&
-          user.db?.user__theme !== "toya_default"
+          ...(userDB &&
+          userDB?.user__theme &&
+          characterColors.map((c) => c.name).includes(userDB?.user__theme) &&
+          userDB?.user__theme !== "toya_default"
             ? {}
             : {
                 dark: [
@@ -177,10 +177,10 @@ function MantineTheme({
               }),
         },
         primaryColor:
-          user.loggedIn &&
-          user.db?.user__theme &&
-          characterColors.map((c) => c.name).includes(user.db?.user__theme)
-            ? user.db.user__theme
+          userDB &&
+          userDB?.user__theme &&
+          characterColors.map((c) => c.name).includes(userDB?.user__theme)
+            ? userDB.user__theme
             : "toya_default",
         primaryShade: { light: 6, dark: 5 },
         lineHeight: 1.5,

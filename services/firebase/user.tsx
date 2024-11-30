@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext, useState, useEffect, ReactElement } from "react";
+import React, { useContext, useEffect, ReactElement } from "react";
 import { IconAlertTriangle } from "@tabler/icons-react";
-import { useAuthUser } from "next-firebase-auth";
+import { AuthUserContext, useAuthUser } from "next-firebase-auth";
 import { ColorScheme } from "@mantine/core";
 
 import {
@@ -10,158 +10,141 @@ import {
   setFirestoreUserData,
 } from "./firestore";
 
-import { User, UserData, UserLoading, UserPrivateData } from "types/makotools";
+import { UserData, UserPrivateData } from "types/makotools";
 import notify from "services/libraries/notify";
+import {
+  useMutation,
+  UseMutationResult,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { userQueries } from "services/queries";
+import { FieldValue } from "firebase/firestore";
 
-const loadingUser: UserLoading = {
-  loading: true,
-  loggedIn: undefined,
-};
+interface UserContextType {
+  user: AuthUserContext | null;
+  userDB: UserData | null | undefined;
+  privateUserDB: UserPrivateData | null | undefined;
+  updateUserDB:
+    | UseMutationResult<void, Error, Partial<UserData>, unknown>
+    | undefined;
+  updatePrivateUserDB:
+    | UseMutationResult<
+        void,
+        Error,
+        | Partial<UserPrivateData>
+        | Partial<Record<keyof UserPrivateData, FieldValue>>,
+        unknown
+      >
+    | undefined;
+  userDBError: Error | null;
+  privateUserDBError: Error | null;
+  isUserDBPending: boolean;
+}
 
-const UserContext = React.createContext<User>(loadingUser);
+const UserContext = React.createContext<UserContextType>({
+  user: null,
+  userDB: null,
+  privateUserDB: null,
+  updateUserDB: undefined,
+  updatePrivateUserDB: undefined,
+  userDBError: null,
+  privateUserDBError: null,
+  isUserDBPending: false,
+});
 const useUser = () => useContext(UserContext);
 
 export default useUser;
 export function UserProvider({
   children,
   colorScheme,
-  setAppColorScheme,
-  serverData,
 }: {
   children: ReactElement;
   colorScheme: ColorScheme;
-  setAppColorScheme: (c: ColorScheme) => void;
-  serverData: any;
 }) {
   const AuthUser = useAuthUser();
-  // const [user, setUser] = useState<User>(
-  //   serverData?.user
-  //     ? {
-  //         loading: false,
-  //         loggedIn: !!AuthUser.id,
-  //         user: serverData.user,
-  //         db: serverData?.db,
-  //         privateDb: serverData?.privateDb,
-  //         refreshData: () => {},
-  //       }
-  //     : loadingUser
-  // );
 
-  const [user, setUser] = useState<User>(loadingUser);
-  const [firstCheck, setFirstCheck] = useState<boolean>(true);
+  const qc = useQueryClient();
 
-  //   (data: any, callback?: () => void) => {
-  //     console.log(1, user);
-  //     if (user.loggedIn) {
-  //       console.log(2);
-  //       setFirestoreUserData(data, ({ status }) => {
-  //         if (status === "success") {
-  //           setUser((f: UserLoggedIn) => ({
-  //             ...f,
-  //             db: {
-  //               ...f.db,
-  //               ...data,
-  //             },
-  //           }));
-  //           if (callback) callback();
-  //         }
-  //       });
-  //     }
-  //   },
-  //   [user.loggedIn, user, setUser]
-  // );
+  const authUserId = AuthUser.id === null ? undefined : AuthUser.id;
 
-  // console.log("firebase user auth ", user);
+  const {
+    data: userDB,
+    error: userDBError,
+    isPending: isUserDBPending,
+  } = useQuery({
+    queryKey: userQueries.fetchUserDB(authUserId),
+    queryFn: async () => {
+      if (AuthUser.id) return await getFirestoreUserData(AuthUser.id);
+      else return null;
+    },
+  });
+
+  const { data: privateUserDB, error: privateUserDBError } = useQuery({
+    enabled: !!authUserId,
+    queryKey: userQueries.fetchPrivateUserDB(authUserId),
+    queryFn: async () => {
+      if (AuthUser.id) return await getFirestorePrivateUserData(AuthUser.id);
+      else return null;
+    },
+  });
+
+  const updateUserDB = useMutation({
+    mutationFn: async (newData: Partial<UserData>) => {
+      await setFirestoreUserData(newData);
+    },
+    onSuccess: async () => {
+      await qc.invalidateQueries({
+        queryKey: userQueries.fetchUserDB(authUserId),
+      });
+    },
+  });
+
+  const updatePrivateUserDB = useMutation({
+    mutationFn: async (
+      newData:
+        | Partial<UserPrivateData>
+        | Partial<Record<keyof UserPrivateData, FieldValue>>
+    ) => {
+      await setFirestoreUserData(newData, true);
+    },
+    onSuccess: async () => {
+      await qc.invalidateQueries({
+        queryKey: userQueries.fetchPrivateUserDB(authUserId),
+      });
+    },
+  });
+
   useEffect(() => {
-    if (AuthUser.id && !firstCheck) {
-      const setFirestoreData = async () => {
-        try {
-          let currentUserData: UserData | undefined = undefined,
-            fetchCount = 10;
-          while (!currentUserData && fetchCount > 0 && AuthUser.id) {
-            currentUserData = await getFirestoreUserData(AuthUser.id);
-            fetchCount--;
-          }
-          if (currentUserData !== undefined && AuthUser.id !== null) {
-            const db: UserData = {
-              ...currentUserData,
-              set: (data: any, callback?: () => void) => {
-                setFirestoreUserData(data, ({ status }) => {
-                  if (status === "success") {
-                    setFirestoreData();
-                    if (callback) callback();
-                  }
-                });
-              },
-            };
-
-            const privateDb: UserPrivateData = {
-              ...(await getFirestorePrivateUserData(AuthUser.id)),
-              set: (data: any, callback?: () => void) => {
-                setFirestoreUserData(
-                  data,
-                  ({ status }) => {
-                    if (status === "success") {
-                      setFirestoreData();
-                      if (callback) callback();
-                    }
-                  },
-                  true
-                );
-              },
-            };
-
-            setUser((s) => ({
-              ...s,
-              loading: false as const,
-              loggedIn: true as const,
-              user: AuthUser,
-              db,
-              privateDb,
-              refreshData: () => {
-                setFirestoreData();
-              },
-            }));
-            if (currentUserData?.dark_mode)
-              setAppColorScheme(currentUserData.dark_mode ? "dark" : "light");
-          } else {
-            notify("error", {
-              title: "Error",
-              message:
-                "We had trouble fetching your user data. If this is your first time signing up, please try signing in again. If this error persists, please report at the Issues and Suggestions page.",
-              color: "red",
-              icon: <IconAlertTriangle size={16} />,
-            });
-            AuthUser.signOut();
-          }
-        } catch (e) {
-          notify("error", {
-            title: "Uh oh!",
-            message: `We ran into a problem with your data: ${JSON.stringify(
-              e
-            )}`,
-            color: "red",
-            icon: <IconAlertTriangle size={16} />,
-          });
-        }
-      };
-      setFirestoreData();
-      setUser((s) => ({ ...s }));
-    } else if (!AuthUser.id && firstCheck) {
-      setFirstCheck(false);
-    } else {
-      setUser((s) => ({
-        ...s,
-        loading: false as const,
-        loggedIn: false as const,
-      }));
+    if (userDBError) {
+      console.error("a user error occurred", userDBError);
+      notify("error", {
+        title: "Error",
+        message:
+          "We had trouble fetching your user data. If this is your first time signing up, please try signing in again. If this error persists, please report at the Issues and Suggestions page.",
+        color: "red",
+        icon: <IconAlertTriangle size={16} />,
+      });
+      AuthUser.signOut();
     }
-  }, [AuthUser]);
+  }, [userDBError]);
 
   useEffect(() => {
-    if (!user.loading && user.loggedIn)
-      user.db.set({ dark_mode: colorScheme === "dark" });
+    if (userDB) updateUserDB.mutate({ dark_mode: colorScheme === "dark" });
   }, [colorScheme]);
 
-  return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
+  const contextValue = {
+    user: AuthUser,
+    userDB,
+    privateUserDB,
+    updateUserDB: updateUserDB,
+    updatePrivateUserDB: updatePrivateUserDB,
+    userDBError,
+    privateUserDBError,
+    isUserDBPending,
+  };
+
+  return (
+    <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>
+  );
 }

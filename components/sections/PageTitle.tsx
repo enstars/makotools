@@ -30,7 +30,7 @@ function PageTitle({
         sx={{ zIndex: 10, position: "relative" }}
         inherit
       >
-        {region && <RegionSwitcher region={region} />}
+        {region && <RegionSwitcher />}
         {title}
       </Title>
     </Box>

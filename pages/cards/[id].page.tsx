@@ -56,17 +56,16 @@ function Page({
   const { data: card } = cardQuery;
   const { data: character } = characterQuery;
   const obtainMethod = obtainMethodQuery?.data;
-  console.log("obtain method: ", obtainMethod);
 
-  const user = useUser();
+  const { userDB } = useUser();
 
   const { t } = useTranslation("cards__card");
 
-  const [orderedTitle, orderedLang] = getTitleHierarchy(
+  const [orderedTitle] = getTitleHierarchy(
     card.title,
     cardQuery.lang,
     router.locale as Locale,
-    (user.loggedIn && user?.db?.setting__game_region) || "en"
+    userDB?.setting__game_region || "en"
   );
 
   return (
@@ -211,7 +210,6 @@ export const getServerSideProps = getServerSideUser(
           cardObtainId,
           "gacha_id"
         );
-        console.log("obtain methoda: ", obtainMethod);
       }
     }
 

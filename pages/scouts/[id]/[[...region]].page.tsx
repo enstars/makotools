@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { Divider } from "@mantine/core";
 import { IconBook, IconCards, IconMedal } from "@tabler/icons-react";
-import useTranslation from "next-translate/useTranslation";
 
 import PageTitle from "components/sections/PageTitle";
 import {
@@ -36,14 +35,13 @@ function Page({
   cardsQuery: QuerySuccess<GameCard[]>;
   region: GameRegion;
 }) {
-  const { t } = useTranslation("events__event");
   let characters = useMemo(() => charactersQuery.data, [charactersQuery.data]);
   let cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
-  const { collections, onEditCollection, onNewCollection } = useCollections();
+  const { collections, editCollection, createCollection } = useCollections();
   const [newCollectionModalOpened, setNewCollectionModalOpened] =
     useState<boolean>(false);
 
-  cards = cards.filter((card) => scout.cards?.includes(card.id));
+  cards = cards?.filter((card) => scout.cards?.includes(card.id)) ?? [];
 
   characters = characters.filter((character) => {
     return cards
@@ -69,7 +67,7 @@ function Page({
             cardOptions={{ showFullInfo: true }}
             collections={collections}
             lang={cardsQuery.lang}
-            onEditCollection={onEditCollection}
+            editCollection={editCollection}
             onNewCollection={() => setNewCollectionModalOpened(true)}
             character={
               characters.find(
@@ -112,14 +110,14 @@ function Page({
         key={JSON.stringify(newCollectionModalOpened)}
         opened={newCollectionModalOpened}
         onClose={() => setNewCollectionModalOpened(false)}
-        onNewCollection={onNewCollection}
+        createCollection={createCollection}
       />
     </>
   );
 }
 
 export const getServerSideProps = getServerSideUser(
-  async ({ res, locale, params, db, user }) => {
+  async ({ locale, params, db, user }) => {
     if (!params?.id || Array.isArray(params?.id)) return { notFound: true };
 
     const validRegions: GameRegion[] = ["en", "jp", "cn", "kr", "tw"];

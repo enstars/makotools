@@ -331,14 +331,10 @@ const canonUsernames = [
 function DebouncedUsernameInput({ changedCallback = () => {} }) {
   const { t } = useTranslation("settings");
   const theme = useMantineTheme();
-  const user = useUser();
-  const [inputValue, setInputValue] = useState(
-    user.loggedIn ? user.db.username : ""
-  );
+  const { userDB, updateUserDB } = useUser();
+  const [inputValue, setInputValue] = useState(userDB?.username ?? "");
 
-  const [newUsername, setNewUsername] = useState(
-    user.loggedIn ? user.db.username : ""
-  );
+  const [newUsername, setNewUsername] = useState(userDB?.username ?? "");
   const [usernameMsg, setUsernameMsg] = useState("");
   const [usernameJudgement, setUsernameJudgement] = useState(true);
 
@@ -352,16 +348,16 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
   );
 
   useEffect(() => {
-    if (user.loggedIn) setInputValue(user.db.username);
-  }, [user]);
+    if (userDB) setInputValue(userDB.username);
+  }, [userDB]);
 
   const validateUsername = async (value: string) => {
-    if (user.loggedIn) {
+    if (userDB) {
       setUsernameJudgement(false);
       setNewUsername("");
 
       // TODO : move this validation server side
-      if (value === user.db.username) {
+      if (value === userDB?.username) {
         setUsernameMsg("");
         setUsernameJudgement(true);
       } else if (value.replace(/[a-z0-9_]/g, "").length > 0) {
@@ -394,13 +390,13 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
   };
 
   const validateAndSaveUsername = async () => {
-    if (user.loggedIn) {
+    if (userDB) {
       const usernameValid = await validateUsernameDb(newUsername);
       if (usernameValid) {
-        user.db.set({ username: newUsername });
+        updateUserDB?.mutate({ username: newUsername });
         setNewUsername("");
         changedCallback();
-        if (canonUsernames.includes(newUsername)) {
+        if (newUsername && canonUsernames.includes(newUsername)) {
           notify("info", {
             title: t("account.unEasterEgg"),
             message: (
@@ -432,7 +428,7 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
             setInputValue(e.target.value);
             memoizedHandleValueChange(e.target.value);
           }}
-          {...(user.loggedIn && inputValue === user.db.username
+          {...(userDB && inputValue === userDB?.username
             ? null
             : !usernameJudgement
             ? { rightSection: <Loader size="xs" /> }
@@ -450,8 +446,8 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
         />
         <Button
           onClick={validateAndSaveUsername}
-          {...(user.loggedIn &&
-          inputValue !== user.db.username &&
+          {...(userDB &&
+          inputValue !== userDB?.username &&
           (usernameJudgement || newUsername)
             ? null
             : { disabled: true })}
@@ -460,7 +456,7 @@ function DebouncedUsernameInput({ changedCallback = () => {} }) {
         </Button>
       </Group>
       <Text mt="xs" color="dimmed" size="xs">
-        {user.loggedIn && inputValue !== user.db.username && usernameJudgement
+        {userDB && inputValue !== userDB?.username && usernameJudgement
           ? usernameMsg
           : t("account.newUsername")}
       </Text>

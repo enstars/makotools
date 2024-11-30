@@ -57,7 +57,7 @@ function Page({
   charactersQuery: QuerySuccess<GameCharacter[]>;
   cardsQuery: QuerySuccess<GameCard[]>;
 }) {
-  const user = useUser();
+  const { userDB } = useUser();
   const cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
   const characters = useMemo(
     () => charactersQuery.data,
@@ -75,7 +75,7 @@ function Page({
   });
   const [newCollectionModalOpened, setNewCollectionModalOpened] =
     useState<boolean>(false);
-  const { collections, onEditCollection, onNewCollection } = useCollections();
+  const { collections, editCollection, createCollection } = useCollections();
 
   const characterIDtoSort = useMemo<{ [key: number]: number }>(() => {
     let result: { [key: number]: number } = {};
@@ -323,7 +323,7 @@ function Page({
               alignItems: "flex-start",
             }}
           >
-            {slicedCardsList.map((e, i) => (
+            {slicedCardsList.map((e) => (
               <CardCard
                 key={e.id}
                 card={e}
@@ -335,11 +335,9 @@ function Page({
                 cardOptions={cardOptions}
                 collections={collections}
                 lang={cardsQuery.lang}
-                onEditCollection={onEditCollection}
+                editCollection={editCollection}
                 onNewCollection={() => setNewCollectionModalOpened(true)}
-                gameRegion={
-                  (user.loggedIn && user.db.setting__game_region) || "en"
-                }
+                gameRegion={(userDB && userDB?.setting__game_region) || "en"}
               />
             ))}
           </InfiniteScroll>
@@ -354,7 +352,7 @@ function Page({
         key={JSON.stringify(newCollectionModalOpened)}
         opened={newCollectionModalOpened}
         onClose={() => setNewCollectionModalOpened(false)}
-        onNewCollection={onNewCollection}
+        createCollection={createCollection}
       />
     </>
   );

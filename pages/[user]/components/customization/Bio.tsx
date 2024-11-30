@@ -18,9 +18,9 @@ function Name({
   profileState: any;
 }) {
   const { t } = useTranslation("user");
-  const user = useUser();
+  const { user, userDB } = useUser();
   const [opened, setOpened] = useState<boolean>(false);
-  if (!user.loggedIn) return null;
+  if (!user?.id || !userDB) return null;
 
   return (
     <>
@@ -44,7 +44,7 @@ function Name({
           />
         </Input.Description>
         <Tabs variant="outline" defaultValue="edit" mt="xs">
-          {!user.db?.admin?.disableTextFields && (
+          {!userDB?.admin?.disableTextFields && (
             <Tabs.List>
               <Tabs.Tab value="edit" icon={<IconPencil size={14} />}>
                 {t("edit")}

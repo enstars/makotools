@@ -2,7 +2,6 @@ import {
   ActionIcon,
   Box,
   Button,
-  createStyles,
   Group,
   Input,
   Select,
@@ -13,7 +12,14 @@ import {
 } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { IconFlower, IconFlowerOff, IconTrash } from "@tabler/icons-react";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  Dispatch,
+  Fragment,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { GridContextProvider, GridDropZone, GridItem } from "react-grid-drag";
 import useTranslation from "next-translate/useTranslation";
 
@@ -24,32 +30,6 @@ import { GameCard } from "types/game";
 import Picture from "components/core/Picture";
 import PicturePreload from "components/core/PicturePreload";
 
-const useStyles = createStyles((theme) => ({
-  item: {
-    ...theme.fn.focusStyles(),
-    display: "flex",
-    alignItems: "center",
-    borderRadius: theme.radius.md,
-    border: `1px solid ${
-      theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.colors.gray[2]
-    }`,
-    padding: `${theme.spacing.sm}px ${theme.spacing.xl}px`,
-    backgroundColor:
-      theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.white,
-    marginBottom: theme.spacing.sm,
-  },
-
-  itemDragging: {
-    boxShadow: theme.shadows.sm,
-  },
-
-  symbol: {
-    fontSize: 30,
-    fontWeight: 700,
-    width: 60,
-  },
-}));
-
 function Banner({
   cards,
   externalSetter,
@@ -59,40 +39,35 @@ function Banner({
 }) {
   const theme = useMantineTheme();
   const { t } = useTranslation("user");
-  const user = useUser();
-  const [acValue, setAcValue] = useState("");
+  const { userDB } = useUser();
+  const [acValue] = useState("");
 
-  const { classes, cx } = useStyles();
-  const [state, handlers] = useListState(
-    (user.loggedIn && user.db?.profile__banner) || []
-  );
+  const [state, handlers] = useListState(userDB?.profile__banner ?? []);
   const [reordering, setReordering] = useState(false);
 
   const NUM_COLS = 3;
   const ROW_HEIGHT = 110;
   const height = Math.ceil(state.length / NUM_COLS) * ROW_HEIGHT;
 
+  const [filteredState, setFilteredState] = useState(
+    userDB?.profile__banner ?? []
+  );
+
   useEffect(() => {
     // get state where value are only numbers
-    const filteredState = state.filter((item) => typeof item === "number");
+    setFilteredState(state.filter((item) => !isNaN(item)));
+  }, [state]);
 
-    // update listState if its changed
-    if (JSON.stringify(filteredState) !== JSON.stringify(state)) {
-      handlers.setState(filteredState);
-    }
-
+  useEffect(() => {
     // update profile banner if user is logged in and state has changed
-    if (
-      user.loggedIn &&
-      user.db?.profile__banner &&
-      JSON.stringify(user.db.profile__banner) !== JSON.stringify(state)
-    ) {
+    const currentBanner = userDB?.profile__banner ?? [];
+    if (JSON.stringify(currentBanner) !== JSON.stringify(filteredState)) {
       externalSetter((s) => ({
         ...s,
         profile__banner: filteredState,
       }));
     }
-  }, [state, user, externalSetter, handlers]);
+  }, [filteredState, userDB]);
 
   if (!cards)
     return (
@@ -104,14 +79,14 @@ function Banner({
   return (
     <>
       {state.map((item) => (
-        <>
+        <Fragment key={item}>
           <PicturePreload
             srcB2={`assets/card_still_full1_${Math.abs(item)}_normal.png`}
           />
           <PicturePreload
             srcB2={`assets/card_still_full1_${Math.abs(item)}_evolution.png`}
           />
-        </>
+        </Fragment>
       ))}
       <Input.Wrapper label={t("currentBannerCards")}>
         <Space mb="xs" />
@@ -141,7 +116,7 @@ function Banner({
                   margin: "auto",
                 }}
               >
-                {state.map((item, index) => (
+                {state.map((item) => (
                   <GridItem key={item?.toString()}>
                     <Box
                       sx={{

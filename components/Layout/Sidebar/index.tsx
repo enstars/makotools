@@ -77,7 +77,6 @@ const SidebarLink = forwardRef(function SbL(
     },
   ref
 ) {
-  const theme = useMantineTheme();
   return (
     <NavLink
       ref={ref}
@@ -131,8 +130,7 @@ function Sidebar(props: any) {
   const location = useRouter();
 
   const theme = useMantineTheme();
-  const dark = theme.colorScheme === "dark";
-  const user = useUser();
+  const { user, privateUserDB } = useUser();
   const [searchValue, setSearchValue] = useLocalStorage<string>({
     defaultValue: "",
     key: "sidebarSearch",
@@ -525,9 +523,9 @@ function Sidebar(props: any) {
                         color="red"
                         position="top-start"
                         disabled={
-                          !user.loggedIn ||
-                          !user.privateDb?.friends__receivedRequests?.length ||
-                          user.privateDb?.friends__receivedRequests?.length <= 0
+                          !user?.id ||
+                          !privateUserDB?.friends__receivedRequests?.length ||
+                          privateUserDB?.friends__receivedRequests?.length <= 0
                         }
                       >
                         <IconUserCircle size={20} />
@@ -604,7 +602,7 @@ function Sidebar(props: any) {
             event.preventDefault();
             mouseDown = true;
             window.addEventListener("mousemove", resize);
-            window.addEventListener("mouseup", (e) => {
+            window.addEventListener("mouseup", () => {
               window.removeEventListener("mousemove", resize);
             });
           }}

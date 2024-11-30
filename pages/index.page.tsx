@@ -9,7 +9,6 @@ import {
 } from "@mantine/core";
 // import Banner from "assets/banner.png";
 import { useMemo } from "react";
-import useTranslation from "next-translate/useTranslation";
 
 import { getLayout } from "components/Layout";
 import UpcomingCampaigns from "components/Homepage/UpcomingCampaigns";
@@ -89,10 +88,7 @@ function SidePanel({
           },
         }}
       >
-        <UpcomingCampaigns
-          events={events as (Birthday | Scout | Event)[]}
-          locale={locale}
-        />
+        <UpcomingCampaigns events={events as (Birthday | Scout | Event)[]} />
         <SiteAnnouncements posts={posts} />
       </Accordion>
     </Box>
@@ -116,25 +112,19 @@ function Page({
   cardsQuery: QuerySuccess<GameCard[]>;
   unitsQuery: QuerySuccess<GameUnit[]>;
 }) {
-  const user = useUser();
-  const { t } = useTranslation();
+  const { user, userDB } = useUser();
   const { classes } = useStyles();
-
-  const faveCharas =
-    user.loggedIn && user.db && user.db.profile__fave_charas
-      ? user.db.profile__fave_charas
-      : [];
 
   const characters: GameCharacter[] = useMemo(
     () => charactersQuery.data,
     [charactersQuery.data]
   );
 
-  const units: GameUnit[] = useMemo(() => unitsQuery.data, [unitsQuery.data]);
+  const units: GameUnit[] = useMemo(() => unitsQuery?.data, [unitsQuery?.data]);
 
   const birthdays: Birthday[] = createBirthdayData(
     characters,
-    getNameOrderSetting(user),
+    getNameOrderSetting(userDB),
     locale
   );
   const gameEvents: Event[] = useMemo(
@@ -143,9 +133,13 @@ function Page({
   );
   const scouts: Scout[] = useMemo(() => scoutsQuery.data, [scoutsQuery.data]);
 
-  const events: Campaign[] = [...birthdays, ...gameEvents, ...scouts];
+  const events: Campaign[] = [
+    ...(birthdays ?? []),
+    ...(gameEvents ?? []),
+    ...(scouts ?? []),
+  ];
 
-  const cards: GameCard[] = useMemo(() => cardsQuery.data, [cardsQuery.data]);
+  const cards: GameCard[] = useMemo(() => cardsQuery?.data, [cardsQuery?.data]);
 
   interface RecommendedCampaign {
     event: Campaign;
@@ -154,9 +148,9 @@ function Page({
   }
 
   function getRecommendedCampaigns(): RecommendedCampaign[] {
-    if (!user.loggedIn) return [];
-    let faveCharas = user.db.profile__fave_charas;
-    let faveUnits = user.db.profile__fave_units;
+    if (!userDB) return [];
+    let faveCharas = userDB.profile__fave_charas;
+    let faveUnits = userDB.profile__fave_units;
     let recommendedCampaigns: RecommendedCampaign[] = [];
     events.forEach((event: Campaign) => {
       if (event.type === "birthday") {
@@ -248,7 +242,7 @@ function Page({
               }
             />
             <CurrentScoutsCountdown scouts={scouts} />
-            {user.loggedIn && (
+            {userDB && (
               <RecommendedCountdown
                 events={getRecommendedCampaigns()}
                 characters={characters}
