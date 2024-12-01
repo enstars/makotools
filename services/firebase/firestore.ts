@@ -141,7 +141,7 @@ export async function getFirestoreUserCollection(
   try {
     querySnap = await getDocs(
       query(
-        collection(db, `users/${user.id}/card_collections`),
+        collection(db, `users/${profileUID}/card_collections`),
         where("privacyLevel", "<=", accessiblePrivacyLevel)
       )
     );
@@ -155,7 +155,7 @@ export async function getFirestoreUserCollection(
   } catch (e) {
     console.info(
       accessiblePrivacyLevel,
-      `users/${user.id}/card_collections`,
+      `users/${profileUID}/card_collections`,
       e
     );
     console.error(e);

@@ -37,6 +37,7 @@ import ResponsiveGrid from "components/core/ResponsiveGrid";
 import { useCollections } from "services/makotools/collection";
 import NewCollectionModal from "pages/cards/components/NewCollectionModal";
 import RegionInfo from "components/sections/RegionInfo";
+import useUser from "services/firebase/user";
 
 function Page({
   event,
@@ -61,7 +62,10 @@ function Page({
     () => charactersQuery.data,
     [charactersQuery.data]
   );
-  const { collections, editCollection, createCollection } = useCollections();
+  const { user } = useUser();
+  const { collections, editCollection, createCollection } = useCollections(
+    user?.id
+  );
   const [newCollectionModalOpened, setNewCollectionModalOpened] =
     useState<boolean>(false);
 

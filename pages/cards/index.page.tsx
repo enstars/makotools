@@ -57,7 +57,7 @@ function Page({
   charactersQuery: QuerySuccess<GameCharacter[]>;
   cardsQuery: QuerySuccess<GameCard[]>;
 }) {
-  const { userDB } = useUser();
+  const { user, userDB } = useUser();
   const cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
   const characters = useMemo(
     () => charactersQuery.data,
@@ -75,7 +75,9 @@ function Page({
   });
   const [newCollectionModalOpened, setNewCollectionModalOpened] =
     useState<boolean>(false);
-  const { collections, editCollection, createCollection } = useCollections();
+  const { collections, editCollection, createCollection } = useCollections(
+    user?.id
+  );
 
   const characterIDtoSort = useMemo<{ [key: number]: number }>(() => {
     let result: { [key: number]: number } = {};

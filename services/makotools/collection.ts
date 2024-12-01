@@ -1,7 +1,7 @@
 import { clamp, remove } from "lodash";
 import { doc, getFirestore, setDoc } from "firebase/firestore";
 
-import { CardCollection } from "types/makotools";
+import { CardCollection, UserData } from "types/makotools";
 import { ID } from "types/game";
 import { MAX_CARD_COPIES } from "services/game";
 import { generateUUID, getTimestamp } from "services/utilities";
@@ -72,7 +72,7 @@ export function createNewCollectionObject({
   };
 }
 
-export function useCollections() {
+export function useCollections(profileUID: string | null | undefined) {
   const { user, userDB, privateUserDB } = useUser();
   const { dayjs } = useDayjs();
   const qc = useQueryClient();
@@ -80,8 +80,10 @@ export function useCollections() {
   const userId = user?.id;
 
   const { data: collections, isPending: areCollectionsLoading } = useQuery({
-    queryKey: cardCollectionQueries.fetchCardCollections(userId ?? undefined),
-    enabled: !!userDB && !!userId,
+    queryKey: cardCollectionQueries.fetchCardCollections(
+      profileUID ?? undefined
+    ),
+    enabled: !!profileUID,
     queryFn: async ({ queryKey }) => {
       const uid = queryKey[1];
       try {

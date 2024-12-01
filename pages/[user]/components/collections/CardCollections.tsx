@@ -33,15 +33,17 @@ import { showNotification } from "@mantine/notifications";
 
 function CardCollections({
   profile,
+  profileUID,
   cards,
 }: {
   profile: UserData;
+  profileUID: string;
   cards: GameCard[];
 }) {
   const qc = useQueryClient();
   const { t } = useTranslation("user");
   const { user, userDB } = useUser();
-  const { collections, areCollectionsLoading } = useCollections();
+  const { collections, areCollectionsLoading } = useCollections(profileUID);
 
   const [editMode, setEditMode] = useState<boolean>(false);
   const [editingCollections, editingHandlers] = useListState<CardCollection>();

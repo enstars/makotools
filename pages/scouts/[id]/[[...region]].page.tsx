@@ -21,6 +21,7 @@ import { useCollections } from "services/makotools/collection";
 import NewCollectionModal from "pages/cards/components/NewCollectionModal";
 import RegionInfo from "components/sections/RegionInfo";
 import ScoutPointsSummary from "pages/events/components/ScoutPointsSummary";
+import useUser from "services/firebase/user";
 
 function Page({
   scout,
@@ -37,7 +38,10 @@ function Page({
 }) {
   let characters = useMemo(() => charactersQuery.data, [charactersQuery.data]);
   let cards = useMemo(() => cardsQuery.data, [cardsQuery.data]);
-  const { collections, editCollection, createCollection } = useCollections();
+  const { user } = useUser();
+  const { collections, editCollection, createCollection } = useCollections(
+    user?.id
+  );
   const [newCollectionModalOpened, setNewCollectionModalOpened] =
     useState<boolean>(false);
 

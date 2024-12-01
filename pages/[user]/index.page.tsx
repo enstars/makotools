@@ -750,7 +750,11 @@ function Page({
           </Box>
         </Box>
 
-        <CardCollections profile={profileData} cards={cardsData} />
+        <CardCollections
+          profile={profileData}
+          profileUID={uid}
+          cards={cardsData}
+        />
       </div>
     );
   }
