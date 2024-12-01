@@ -72,7 +72,7 @@ export function createNewCollectionObject({
   };
 }
 
-export function useCollections(profileUID: string) {
+export function useCollections(profileUID: string | null | undefined) {
   const { user, userDB, privateUserDB } = useUser();
   const { dayjs } = useDayjs();
   const qc = useQueryClient();

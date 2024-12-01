@@ -21,9 +21,9 @@ export function CardsSection({
   character: GameCharacter;
   lang: Lang[];
 }) {
-  const { userDB } = useUser();
+  const { user, userDB } = useUser();
   const theme = useMantineTheme();
-  const { collections, editCollection } = useCollections();
+  const { collections, editCollection } = useCollections(user?.id);
   const [, setNewCollectionModalOpened] = useState<boolean>(false);
 
   // const textColor = isColorLight(character.image_color as string)
