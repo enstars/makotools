@@ -45,7 +45,7 @@ const useStyles = createStyles((theme) => ({
 function Banner({ events }: { events: (Birthday | Event | Scout)[] }) {
   const theme = useMantineTheme();
   const { t } = useTranslation("home");
-  const { user, userDB } = useUser();
+  const { userDB } = useUser();
   const autoplay = useRef(Autoplay({ delay: 5000 }));
   const { dayjs } = useDayjs();
   const { classes } = useStyles();
@@ -53,9 +53,14 @@ function Banner({ events }: { events: (Birthday | Event | Scout)[] }) {
     .filter(
       (event) =>
         dayjs().isAfter(event.start.en) &&
-        ["scout", "feature scout", "special", "tour", "song"].includes(
-          event.type
-        )
+        [
+          "scout",
+          "feature scout",
+          "special",
+          "tour",
+          "song",
+          "shuffle",
+        ].includes(event.type)
     )
     .sort((a, b) => dayjs(a.start.en).unix() - dayjs(b.start.en).unix());
 
@@ -71,7 +76,7 @@ function Banner({ events }: { events: (Birthday | Event | Scout)[] }) {
     shownEvents.push(...currentBirthdays);
 
     const pastGameEvents = pastEvents.filter((event) =>
-      ["tour", "song"].includes(event.type)
+      ["tour", "song", "shuffle"].includes(event.type)
     );
     shownEvents.push(pastGameEvents[pastGameEvents.length - 1] as Event);
 
@@ -156,6 +161,8 @@ function Banner({ events }: { events: (Birthday | Event | Scout)[] }) {
                       : event.type === "tour"
                       ? event.name[0]
                       : event.type === "special"
+                      ? event.name[0]
+                      : event.type === "shuffle"
                       ? event.name[0]
                       : event.type === "scout"
                       ? t("banner.scout", { name: event.name[0] })

@@ -8,6 +8,7 @@ import {
   Button,
   Stack,
   useMantineTheme,
+  Loader,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
@@ -77,24 +78,28 @@ function Countdown({
   }, [date]);
   return (
     <Group>
-      {status === "start" ? (
-        <Trans
-          i18nKey="home:event.start"
-          components={[
-            <Text weight={600} key="text" />,
-            <Title order={4} key="time" />,
-          ]}
-          values={{ time: countdownAmt }}
-        />
+      {countdownAmt ? (
+        status === "start" ? (
+          <Trans
+            i18nKey="home:event.start"
+            components={[
+              <Text weight={600} key="text" />,
+              <Title order={4} key="time" />,
+            ]}
+            values={{ time: countdownAmt }}
+          />
+        ) : (
+          <Trans
+            i18nKey="home:event.end"
+            components={[
+              <Text weight={600} key="text" />,
+              <Title order={4} key="time" />,
+            ]}
+            values={{ time: countdownAmt }}
+          />
+        )
       ) : (
-        <Trans
-          i18nKey="home:event.end"
-          components={[
-            <Text weight={600} key="text" />,
-            <Title order={4} key="time" />,
-          ]}
-          values={{ time: countdownAmt }}
-        />
+        <Loader variant="dots" />
       )}
     </Group>
   );

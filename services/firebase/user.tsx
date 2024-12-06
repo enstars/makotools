@@ -66,14 +66,13 @@ export function UserProvider({
 
   const qc = useQueryClient();
 
-  const authUserId = AuthUser.id === null ? undefined : AuthUser.id;
-
   const {
     data: userDB,
     error: userDBError,
     isPending: isUserDBPending,
   } = useQuery({
-    queryKey: userQueries.fetchUserDB(authUserId),
+    enabled: AuthUser.clientInitialized,
+    queryKey: userQueries.fetchUserDB(AuthUser.id),
     queryFn: async () => {
       if (AuthUser.id) return await getFirestoreUserData(AuthUser.id);
       else return null;
@@ -81,8 +80,8 @@ export function UserProvider({
   });
 
   const { data: privateUserDB, error: privateUserDBError } = useQuery({
-    enabled: !!authUserId,
-    queryKey: userQueries.fetchPrivateUserDB(authUserId),
+    enabled: AuthUser.clientInitialized,
+    queryKey: userQueries.fetchPrivateUserDB(AuthUser.id),
     queryFn: async () => {
       if (AuthUser.id) return await getFirestorePrivateUserData(AuthUser.id);
       else return null;
@@ -95,7 +94,7 @@ export function UserProvider({
     },
     onSuccess: async () => {
       await qc.invalidateQueries({
-        queryKey: userQueries.fetchUserDB(authUserId),
+        queryKey: userQueries.fetchUserDB(AuthUser.id),
       });
     },
   });
@@ -110,7 +109,7 @@ export function UserProvider({
     },
     onSuccess: async () => {
       await qc.invalidateQueries({
-        queryKey: userQueries.fetchPrivateUserDB(authUserId),
+        queryKey: userQueries.fetchPrivateUserDB(AuthUser.id),
       });
     },
   });

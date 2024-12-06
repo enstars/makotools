@@ -64,7 +64,9 @@ function Page({
     charactersQuery.lang[0].locale
   );
 
-  const events = [...birthdays, ...gameEvents, ...scouts];
+  const events = [...birthdays, ...gameEvents, ...scouts].filter(
+    (event) => event.start
+  );
 
   const [calendarTime, setCalendarTime] = useState<string>(dayjs().format());
 

@@ -3,6 +3,7 @@ import {
   Container,
   createStyles,
   Group,
+  Loader,
   Paper,
   SimpleGrid,
   Stack,
@@ -39,7 +40,7 @@ function Countdown({ endDate }: { endDate: string }) {
     }, 1000);
     return () => clearInterval(interval);
   }, [endDate]);
-  return (
+  return countdownAmt ? (
     <Group>
       <Trans
         i18nKey="home:event.end"
@@ -50,6 +51,8 @@ function Countdown({ endDate }: { endDate: string }) {
         values={{ time: countdownAmt }}
       />
     </Group>
+  ) : (
+    <Loader variant="dots" />
   );
 }
 
