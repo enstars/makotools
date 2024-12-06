@@ -60,17 +60,19 @@ function Gallery({ card }: { card: GameCard }) {
         </Title>
       </Group>
       <Accordion defaultValue={["cgs", "renders"]} variant="filled" multiple>
-        <Accordion.Item value="cgs">
-          <Accordion.Control>{t("gallery.fullCgs")}</Accordion.Control>
-          <Accordion.Panel>
-            <PicturePair
-              card={card}
-              url="assets/card_still_full1_"
-              width={250}
-              ratio={13 / 6}
-            />
-          </Accordion.Panel>
-        </Accordion.Item>
+        {card.rarity >= 4 && (
+          <Accordion.Item value="cgs">
+            <Accordion.Control>{t("gallery.fullCgs")}</Accordion.Control>
+            <Accordion.Panel>
+              <PicturePair
+                card={card}
+                url="assets/card_still_full1_"
+                width={250}
+                ratio={13 / 6}
+              />
+            </Accordion.Panel>
+          </Accordion.Item>
+        )}
 
         <Accordion.Item value="renders">
           <Accordion.Control>{t("gallery.renders")}</Accordion.Control>

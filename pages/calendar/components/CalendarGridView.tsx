@@ -144,8 +144,10 @@ function CalendarWeek({
             ? dayjs(day)
                 .year(2000)
                 .isSame(dayjs(event.start.en).year(2000), "day")
-            : dayjs(day).isSame(event.start.en, "day") ||
+            : event.start.en
+            ? dayjs(day).isSame(event.start.en, "day") ||
               dayjs(day).isSame(event.end.en, "day")
+            : false
         );
         return (
           <CalendarDay
