@@ -53,7 +53,10 @@ function CalendarListEventCard({
       href={
         event.type === "birthday"
           ? `/characters/${(event as Birthday).character_id}`
-          : (event as Event).event_id
+          : (event as Event).type === "song" ||
+            (event as Event).type === "tour" ||
+            (event as Event).type === "shuffle" ||
+            (event as Event).type === "special"
           ? `/events/${(event as Event).event_id}`
           : `/scouts/${(event as Scout).gacha_id}`
       }
