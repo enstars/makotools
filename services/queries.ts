@@ -1,8 +1,11 @@
 export const userQueries = {
   fetchProfileData: (uid: string | undefined) => ["fetchProfileData", uid],
   fetchUserData: (id: string | undefined) => ["fetchUserData", id],
-  fetchUserDB: (id: string | undefined) => ["fetchUserDB", id],
-  fetchPrivateUserDB: (id: string | undefined) => ["fetchPrivateUserDB", id],
+  fetchUserDB: (id: string | undefined | null) => ["fetchUserDB", id],
+  fetchPrivateUserDB: (id: string | undefined | null) => [
+    "fetchPrivateUserDB",
+    id,
+  ],
 };
 
 export const friendQueries = {
