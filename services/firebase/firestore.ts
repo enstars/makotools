@@ -17,7 +17,13 @@ import { AuthUserContext } from "next-firebase-auth";
 import { Dispatch, SetStateAction } from "react";
 
 import { parseStringify } from "services/utilities";
-import { UserData, UserPrivateData, CardCollection } from "types/makotools";
+import {
+  UserData,
+  UserPrivateData,
+  CardCollection,
+  FriendCodeRegions,
+  FriendCode,
+} from "types/makotools";
 
 /**
  * When querying documents using where(), a maximum of
@@ -149,6 +155,7 @@ export async function getFirestoreUserCollection(
     querySnap.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
       const data = doc.data();
+      console.log("card collection data", data);
       data.id = doc.id;
       userCollection.push(data as CardCollection);
     });
@@ -161,6 +168,48 @@ export async function getFirestoreUserCollection(
     console.error(e);
   }
   return userCollection;
+}
+
+export async function getFirestoreUserFriendCodes(
+  user: AuthUserContext | null,
+  userDB: UserData | null | undefined,
+  profileUID: string | undefined,
+  privateUserDB: UserPrivateData | null | undefined
+): Promise<Partial<FriendCodeRegions>> {
+  const db = getFirestore();
+  if (!user || !profileUID) throw new Error("Missing data");
+
+  const accessiblePrivacyLevel = userDB
+    ? user.id === profileUID
+      ? 3
+      : (privateUserDB?.friends__list ?? []).includes(profileUID)
+      ? 2
+      : 1
+    : 0;
+
+  const userFriendCodes: Partial<FriendCodeRegions> = {
+    id: "",
+  };
+
+  try {
+    const querySnap = await getDocs(
+      query(collection(db, `users/${profileUID}/friend_codes`))
+    );
+    const fetchedCodes: Omit<FriendCodeRegions, "id"> =
+      querySnap.docs[0].data() as FriendCodeRegions;
+    console.log({ fetchedCodes });
+    userFriendCodes.id = querySnap.docs[0]?.id;
+    Object.entries(fetchedCodes ?? {}).forEach(([region, value]) => {
+      if ((value as FriendCode)?.privacyLevel <= accessiblePrivacyLevel) {
+        userFriendCodes[region as keyof typeof fetchedCodes] =
+          value as FriendCode;
+      }
+    });
+  } catch (e) {
+    console.info(accessiblePrivacyLevel, `users/${profileUID}/friend_codes`, e);
+    console.error(e);
+  }
+  return userFriendCodes;
 }
 
 export async function getFirestoreUserDocument(

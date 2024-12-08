@@ -7,16 +7,30 @@ import {
   Stack,
   Tooltip,
   Image,
+  Paper,
+  Code,
+  CopyButton,
+  ActionIcon,
+  Indicator,
 } from "@mantine/core";
-import { IconCalendar, IconHeart } from "@tabler/icons-react";
+import {
+  IconCalendar,
+  IconCheck,
+  IconClipboard,
+  IconHeart,
+  IconStar,
+  IconStarFilled,
+  IconUserPlus,
+} from "@tabler/icons-react";
 import dayjs from "dayjs";
 import useTranslation from "next-translate/useTranslation";
 
 import Picture from "components/core/Picture";
 import { GameCharacter, GameUnit } from "types/game";
-import { UserData } from "types/makotools";
+import { FriendCode, FriendCodeRegions, UserData } from "types/makotools";
 import { getNameOrder } from "services/game";
 import { getAssetURL } from "services/data";
+import { gameRegionsWithBasic } from "services/makotools/friendCodes";
 
 function StatContainer({
   icon,
@@ -168,14 +182,16 @@ function ProfileStats({
   profile,
   characters,
   units,
+  friendCodes,
 }: {
   profile: UserData;
   characters: GameCharacter[];
   units: GameUnit[];
+  friendCodes: Partial<FriendCodeRegions> | undefined;
 }) {
   const { t } = useTranslation("user");
   return (
-    <Group my={7} noWrap spacing="xl" align="flex-start">
+    <Group noWrap my={7} spacing="xl" align="flex-start">
       {profile.profile__start_playing !== "0000-00-00" && (
         <StatContainer
           icon={<IconCalendar size={16} />}
@@ -207,6 +223,57 @@ function ProfileStats({
             )}
           </StatContainer>
         )}
+      {Object.keys(friendCodes ?? {})
+        .filter((key) => key !== "id")
+        .filter(
+          (key) =>
+            ((friendCodes ?? {})[key as keyof FriendCodeRegions] as FriendCode)
+              .code.length > 0
+        ).length > 0 && (
+        <StatContainer
+          icon={<IconUserPlus size={16} />}
+          iconColor="lime"
+          title="Friend Codes"
+        >
+          <Paper withBorder p="xs" mt="xs">
+            <Stack spacing="lg">
+              {Object.entries(friendCodes ?? {})
+                .filter(([key]) => key !== "id")
+                .filter(([region, value]) => (value as FriendCode).code.length)
+                .map(([region, val]) => {
+                  const regionIcon = gameRegionsWithBasic.find(
+                    (r) => r.value === region
+                  )?.icon;
+                  return (
+                    <Group noWrap>
+                      <Indicator
+                        size={12}
+                        disabled={!(val as FriendCode).primary}
+                        label={<IconStarFilled size={12} />}
+                      >
+                        {regionIcon}
+                      </Indicator>
+                      <Code sx={{ flexGrow: 1 }}>
+                        {(val as FriendCode).code}
+                      </Code>
+                      <CopyButton value={(val as FriendCode).code}>
+                        {({ copied, copy }) => (
+                          <ActionIcon onClick={copy} variant="default">
+                            {copied ? (
+                              <IconCheck size={16} />
+                            ) : (
+                              <IconClipboard size={16} />
+                            )}
+                          </ActionIcon>
+                        )}
+                      </CopyButton>
+                    </Group>
+                  );
+                })}
+            </Stack>
+          </Paper>
+        </StatContainer>
+      )}
     </Group>
   );
 }

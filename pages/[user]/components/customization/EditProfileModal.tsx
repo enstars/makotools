@@ -9,8 +9,8 @@ import {
   Accordion,
 } from "@mantine/core";
 import dynamic from "next/dynamic";
-import { Dispatch, SetStateAction } from "react";
-import { IconPencil } from "@tabler/icons-react";
+import { Dispatch, SetStateAction, useState } from "react";
+import { IconExclamationCircle, IconPencil } from "@tabler/icons-react";
 import useTranslation from "next-translate/useTranslation";
 
 import StartPlaying from "../StartPlaying";
@@ -22,7 +22,13 @@ import Name from "./Name";
 import Banner from "./Banner";
 
 import { GameCard, GameCharacter, GameUnit } from "types/game";
-import { Locale, UserData } from "types/makotools";
+import {
+  EditingFriendCodesState,
+  FriendCodeRegions,
+  Locale,
+  UserData,
+} from "types/makotools";
+import FriendCodes from "./FriendCodes";
 
 export type EditingProfile = Pick<
   UserData,
@@ -53,6 +59,8 @@ function EditProfileModal({
   profile,
   profileState,
   setProfileState,
+  friendCodeState,
+  setFriendCodeState,
   characters,
   units,
   locale,
@@ -65,13 +73,21 @@ function EditProfileModal({
   profile: UserData;
   profileState: EditingProfile | undefined;
   setProfileState: Dispatch<SetStateAction<EditingProfile | undefined>>;
+  friendCodeState: EditingFriendCodesState | undefined;
+  setFriendCodeState: Dispatch<
+    SetStateAction<EditingFriendCodesState | undefined>
+  >;
   characters: GameCharacter[];
   units: GameUnit[];
   locale: Locale;
 }) {
   const { t } = useTranslation("user");
   const theme = useMantineTheme();
-  if (!opened || !profileState) return null;
+
+  const [friendCodeError, setFriendCodeError] = useState<boolean>(false);
+
+  if (!opened || !profileState || !friendCodeState) return null;
+
   return (
     <Modal
       opened={opened}
@@ -176,6 +192,31 @@ function EditProfileModal({
             <Bio externalSetter={setProfileState} profileState={profileState} />
           </Accordion.Panel>
         </Accordion.Item>
+        <Accordion.Item value="codes">
+          <Accordion.Control>
+            <Group>
+              <Text weight={700} color={friendCodeError ? "red" : undefined}>
+                Friend Codes
+              </Text>
+              {friendCodeError && (
+                <IconExclamationCircle
+                  size={20}
+                  color={friendCodeError ? theme.colors.red[4] : undefined}
+                />
+              )}
+            </Group>
+          </Accordion.Control>
+          <Accordion.Panel>
+            <FriendCodes
+              {...{
+                friendCodeError,
+                setFriendCodeError,
+                friendCodeState,
+                setFriendCodeState,
+              }}
+            />
+          </Accordion.Panel>
+        </Accordion.Item>
       </Accordion>
       <Group mt="xs" position="right" spacing="xs">
         <Button
@@ -191,6 +232,7 @@ function EditProfileModal({
           onClick={() => {
             saveChanges();
           }}
+          disabled={!!friendCodeError}
         >
           {t("saveChanges")}
         </Button>

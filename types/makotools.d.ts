@@ -230,3 +230,18 @@ interface HSLObject {
   s: number;
   l: number;
 }
+
+interface FriendCode {
+  code: string;
+  privacyLevel: CollectionPrivacyLevel;
+  primary: boolean;
+}
+
+type FriendCodeRegions = Record<GameRegion | "ba", FriendCode> & {
+  id: string;
+};
+
+type EditingFriendCodesState = Record<
+  GameRegion | "ba",
+  FriendCode & { error: boolean | string }
+>;

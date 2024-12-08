@@ -23,3 +23,7 @@ export const cardCollectionQueries = {
 export const reactionQueries = {
   fetchReactions: (pid: string | undefined) => ["fetchReactions", pid],
 };
+
+export const friendCodeQueries = {
+  fetchFriendCodes: (uid: string | undefined) => ["fetchFriendCodes", uid],
+};

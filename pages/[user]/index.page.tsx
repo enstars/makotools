@@ -7,7 +7,6 @@ import {
   Container,
   Group,
   Loader,
-  Notification,
   Space,
   Text,
   Title,
@@ -49,7 +48,12 @@ import ProfileStats from "./components/ProfileStats";
 import CardCollections from "./components/collections/CardCollections";
 
 import { getLayout, useSidebarStatus } from "components/Layout";
-import { Locale, QuerySuccess, UserData } from "types/makotools";
+import {
+  EditingFriendCodesState,
+  Locale,
+  QuerySuccess,
+  UserData,
+} from "types/makotools";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getLocalizedDataArray } from "services/data";
 import { parseStringify } from "services/utilities";
@@ -63,6 +67,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { userQueries } from "services/queries";
 import { showNotification, updateNotification } from "@mantine/notifications";
 import { arrayRemove, arrayUnion } from "firebase/firestore";
+import useFriendCodes from "services/makotools/friendCodes";
 
 function PatreonBanner({ profile }: { profile: UserData }) {
   const { t } = useTranslation("user");
@@ -137,6 +142,12 @@ function Page({
     },
     enabled: !!uid,
   });
+  const {
+    friendCodes,
+    areFriendCodesPending,
+    friendCodesError,
+    updateFriendCodesMutation,
+  } = useFriendCodes(uid);
 
   const sendFriendReq = useMutation({
     mutationFn: async () => {
@@ -410,6 +421,8 @@ function Page({
   const [profileState, setProfileState] = useState<
     EditingProfile | undefined
   >();
+  const [friendCodeState, setFriendCodeState] =
+    useState<EditingFriendCodesState>();
 
   useEffect(() => {
     if (!editModalOpened) setProfileState(undefined);
@@ -424,7 +437,18 @@ function Page({
     if (cleanedProfileState) {
       updateUserDB?.mutate(cleanedProfileState);
     }
-  }, [updateUserDB, userDB, profileState]);
+    if (friendCodeState)
+      updateFriendCodesMutation.mutate({
+        ...friendCodeState,
+        id: friendCodes?.id ?? "",
+      });
+  }, [
+    updateUserDB,
+    userDB,
+    profileState,
+    updateFriendCodesMutation,
+    friendCodeState,
+  ]);
 
   const { collapsed } = useSidebarStatus();
   const isOwnProfile = !!(userDB?.suid === profile.suid);
@@ -501,6 +525,8 @@ function Page({
     );
   }
 
+  console.log("friend codes", friendCodes);
+
   if (
     isProfileDataPending ||
     updateUserDB?.isPending ||
@@ -532,6 +558,8 @@ function Page({
           profile={profileData}
           profileState={profileState}
           setProfileState={setProfileState}
+          friendCodeState={friendCodeState}
+          setFriendCodeState={setFriendCodeState}
           characters={characters}
           units={units}
           locale={locale}
@@ -691,7 +719,9 @@ function Page({
                     ` · ${profileData.profile__pronouns}`}
                 </Text>
               </Box>
-              {!isUserDBPending && !isProfileDataPending ? (
+              {!isUserDBPending &&
+              !isProfileDataPending &&
+              !areFriendCodesPending ? (
                 <ProfileButtons
                   {...{
                     user,
@@ -722,6 +752,44 @@ function Page({
                       profile__fave_units: profileData.profile__fave_units,
                       profile__show_faves: profileData.profile__show_faves,
                     });
+                    setFriendCodeState({
+                      jp: {
+                        code: friendCodes?.jp?.code ?? "",
+                        primary: friendCodes?.jp?.primary ?? false,
+                        privacyLevel: friendCodes?.jp?.privacyLevel ?? 0,
+                        error: false,
+                      },
+                      en: {
+                        code: friendCodes?.en?.code ?? "",
+                        primary: friendCodes?.en?.primary ?? false,
+                        privacyLevel: friendCodes?.en?.privacyLevel ?? 0,
+                        error: false,
+                      },
+                      kr: {
+                        code: friendCodes?.kr?.code ?? "",
+                        primary: friendCodes?.kr?.primary ?? false,
+                        privacyLevel: friendCodes?.kr?.privacyLevel ?? 0,
+                        error: false,
+                      },
+                      tw: {
+                        code: friendCodes?.kr?.code ?? "",
+                        primary: friendCodes?.kr?.primary ?? false,
+                        privacyLevel: friendCodes?.kr?.privacyLevel ?? 0,
+                        error: false,
+                      },
+                      cn: {
+                        code: friendCodes?.kr?.code ?? "",
+                        primary: friendCodes?.kr?.primary ?? false,
+                        privacyLevel: friendCodes?.kr?.privacyLevel ?? 0,
+                        error: false,
+                      },
+                      ba: {
+                        code: friendCodes?.kr?.code ?? "",
+                        primary: friendCodes?.kr?.primary ?? false,
+                        privacyLevel: friendCodes?.kr?.privacyLevel ?? 0,
+                        error: false,
+                      },
+                    });
                   }}
                 />
               ) : (
@@ -737,6 +805,7 @@ function Page({
               profile={profileData}
               characters={characters}
               units={units}
+              friendCodes={friendCodes}
             />
             {profileData?.profile__bio && (
               <BioDisplay
