@@ -384,7 +384,7 @@ export interface Scout<T = string[]> extends CampaignInfo, ScoutStrings<T> {
 
   type: ScoutType;
   /** Related cross scout if scout is a cross scout */
-  related_id?: ID;
+  related_id?: ID | ID[];
 }
 
 export interface BirthdayStrings<T> extends CampaignStrings<T> {}
