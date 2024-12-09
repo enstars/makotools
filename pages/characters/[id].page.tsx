@@ -60,7 +60,6 @@ function Page({
 }) {
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(theme.fn.smallerThan("md"));
-  const user = useUser();
   const { dayjs } = useDayjs();
   const { data: character } = characterQuery;
   const { data: characters } = charactersQuery;
@@ -69,6 +68,8 @@ function Page({
   const { data: scouts } = scoutsQuery;
   const { data: units } = unitsQuery;
   const [renderFaded, setRenderFaded] = useState(false);
+
+  const [yearView, setYearView] = useState(String(1)); // always default to the newest data;
 
   // create a context for the characters colors
 
@@ -233,6 +234,8 @@ function Page({
             character={character}
             renderFaded={renderFaded}
             setRenderFaded={setRenderFaded}
+            yearValue={yearView}
+            setYearValue={setYearView}
           />
           <Box
             id="chara-name-secondaryName"

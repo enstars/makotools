@@ -44,13 +44,16 @@ interface GameCharacter<T = string[]> extends GameCharacterStrings<T> {
 
   /** Height in cms */
   height: number;
+  heights: number[];
 
   /** Weight in kgs */
   weight: number;
+  weights: number[];
 
   /** Birthday in YYYY-MM-DD format */
   birthday: string;
   age?: number;
+  ages?: number[];
   blood_type: "A" | "B" | "O" | "AB";
   circle?: string[];
   sort_id: number;
