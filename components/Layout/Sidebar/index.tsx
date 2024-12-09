@@ -18,6 +18,7 @@ import {
   TablerIconsProps,
   IconExternalLink,
   IconPhoto,
+  IconMusic,
 } from "@tabler/icons-react";
 import {
   Navbar,
@@ -168,6 +169,11 @@ function Sidebar(props: any) {
       link: "/scouts",
       name: "scouts",
       Icon: IconDiamond,
+    },
+    {
+      link: "/songs",
+      name: "songs",
+      Icon: IconMusic,
     },
     {
       link: "/stories",
