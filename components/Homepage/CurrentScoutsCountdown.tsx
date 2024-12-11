@@ -105,9 +105,11 @@ function CurrentScoutsCards({ scouts }: { scouts: Scout[] }) {
 
   return (
     <SimpleGrid
-      cols={scouts.length}
       className={classes.scoutsCards}
-      breakpoints={[{ maxWidth: 755, cols: 1, spacing: "sm" }]}
+      breakpoints={[
+        { maxWidth: 755, cols: 1, spacing: "sm" },
+        { minWidth: 755, cols: 2, spacing: "sm" },
+      ]}
     >
       {scouts.map((scout: Scout) => (
         <ScoutCard key={scout.gacha_id} scout={scout} />
