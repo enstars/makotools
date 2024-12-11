@@ -1,46 +1,63 @@
 import {
+  ActionIcon,
   Box,
   Center,
   Group,
+  Menu,
   Paper,
+  SegmentedControl,
+  Spoiler,
   Stack,
   Text,
   Title,
   useMantineTheme,
 } from "@mantine/core";
-import { IconClock, IconMusic } from "@tabler/icons-react";
+import { useMediaQuery } from "@mantine/hooks";
+import {
+  IconClock,
+  IconDotsVertical,
+  IconMoodSmile,
+  IconMusic,
+} from "@tabler/icons-react";
 import { getLayout } from "components/Layout";
-import PageTitle from "components/sections/PageTitle";
+import { Fragment, useState } from "react";
+import { getLocalizedDataArray } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
+import { getNameOrder } from "services/game";
+import { GameCharacter, GameUnit, Song, SongAlbum } from "types/game";
+import { QuerySuccess } from "types/makotools";
 
-function BackgroundGradient() {
+function Page({
+  songsQuery,
+  unitsQuery,
+  charasQuery,
+  albumsQuery,
+}: {
+  songsQuery: QuerySuccess<Song[]>;
+  unitsQuery: QuerySuccess<GameUnit[]>;
+  charasQuery: QuerySuccess<GameCharacter[]>;
+  albumsQuery: QuerySuccess<SongAlbum[]>;
+}) {
   const theme = useMantineTheme();
-  return (
-    <Box
-      id="background-gradient"
-      sx={{
-        position: "absolute",
-        width: "calc(100% + 48px)",
-        height: "calc(100% + 32px)",
-        top: 0,
-        left: 0,
-        backgroundImage: `linear-gradient(45deg, ${
-          theme.colors[theme.primaryColor][theme.colorScheme === "dark" ? 9 : 2]
-        }21, transparent )`,
-        margin: "-16px -24px",
-      }}
-    />
-  );
-}
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
-function Page() {
-  const theme = useMantineTheme();
+  const { data: songs } = songsQuery;
+  const { data: units } = unitsQuery;
+  const { data: characters } = charasQuery;
+  const { data: albums } = albumsQuery;
+
+  const orderedSongs = songs
+    .filter((song) => song.order)
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+  const [durationType, setDurationType] = useState<string>("full");
+
   return (
     <>
       <Paper
         radius="lg"
         shadow="md"
-        p="xl"
+        p={isMobile ? "sm" : "xl"}
         mt={8}
         sx={{
           backgroundImage: `linear-gradient(45deg, ${
@@ -48,37 +65,284 @@ function Page() {
               theme.colorScheme === "dark" ? 9 : 2
             ]
           }${theme.colorScheme === "dark" ? 21 : 55}, transparent )`,
+          backgroundAttachment: "fixed",
         }}
       >
         <Group noWrap id="page-header" align="center" spacing="xl" p="xl">
-          <Paper shadow="sm" p="xl" sx={{ width: "12vw", height: "12vw" }}>
+          <Paper
+            shadow="sm"
+            p="xl"
+            sx={{
+              aspectRatio: "1",
+              width: isMobile ? "20%" : "12vw",
+              height: "auto",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <Center>
-              <IconMusic />
+              <IconMusic size={isMobile ? 24 : 48} />
             </Center>
           </Paper>
           <Stack>
-            <Title order={1} sx={{ fontSize: "4em" }}>
+            <Title order={1} sx={{ fontSize: isMobile ? "3em" : "4em" }}>
               Songs
             </Title>
-            <Text>#### songs</Text>
+            <Text>{orderedSongs.length} songs</Text>
           </Stack>
         </Group>
-        <Stack p="xl">
-          <Group
-            align="start"
-            sx={{
-              borderBottom: `1px solid ${
-                theme.colors.dark[theme.colorScheme === "dark" ? 2 : 8]
-              }2a`,
-            }}
-          >
-            <Box sx={{ width: "5vw" }}></Box>
-            <Text sx={{ flexGrow: 1 }}>Title</Text>
-            <Text sx={{ flexBasis: "33%" }}>Album</Text>
-            <Text>
-              <IconClock size={20} />
-            </Text>
-          </Group>
+        <Stack spacing="xl" p="xl">
+          {!isMobile && (
+            <Group
+              noWrap
+              align="start"
+              sx={{
+                borderBottom: `1px solid ${
+                  theme.colors.dark[theme.colorScheme === "dark" ? 2 : 8]
+                }2a`,
+              }}
+            >
+              <Box sx={{ flexBasis: "5vw" }}></Box>
+              <Text sx={{ flexBasis: "calc(100% - 50% - 5vw - 4em)" }}>
+                Title
+              </Text>
+              <Text sx={{ flexBasis: "50%" }}>Album</Text>
+              <Group sx={{ flexBasis: "4em", gap: 2 }} align="center">
+                <IconClock size={20} />
+                <Menu withArrow shadow="md" width={200}>
+                  <Menu.Target>
+                    <ActionIcon size="xs">
+                      <IconDotsVertical size={20} />
+                    </ActionIcon>
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    <Menu.Label>Duration Options</Menu.Label>
+                    <SegmentedControl
+                      data={[
+                        { label: "Game Size", value: "game" },
+                        { label: "Full Size", value: "full" },
+                      ]}
+                      value={durationType}
+                      onChange={setDurationType}
+                    />
+                  </Menu.Dropdown>
+                </Menu>
+              </Group>
+            </Group>
+          )}
+          {orderedSongs.map((song) => {
+            const gameDurationInMinutes = song.duration?.game
+              ? `${Math.floor(song.duration.game / 60)}:${
+                  Math.floor(song.duration.game % 60) < 10 ? "0" : ""
+                }${Math.floor(song.duration.game % 60)}`
+              : "--";
+
+            const fullDurationInMinutes = song.duration?.full
+              ? `${Math.floor(song.duration.full / 60)}:${
+                  Math.floor(song.duration.full % 60) < 10 ? "0" : ""
+                }${Math.floor(song.duration.full % 60)}`
+              : "--";
+
+            const unitsInSong = song.unit_id
+              ? song.unit_id
+                  .map((id) =>
+                    id === 100
+                      ? { id: 100, name: ["ES All Stars"] }
+                      : units?.find((unit) => unit.id === id)
+                  )
+                  .filter((song) => song)
+              : [];
+
+            const charactersInSong = song.character_id
+              ? song.character_id
+                  .flat()
+                  .map((id) =>
+                    characters.find((chara) => chara.character_id === id)
+                  )
+                  .filter((song) => song !== undefined)
+              : [];
+
+            const songAlbum = albums.find((album) =>
+              album.tracklist.find((tracks) => tracks?.includes(song.id))
+            );
+            console.log({ songAlbum });
+
+            return (
+              <Group noWrap>
+                <Box
+                  sx={{
+                    flexBasis: isMobile ? "12vw" : "5vw",
+                    minWidth: isMobile ? "12vw" : "5vw",
+                  }}
+                >
+                  <Paper
+                    sx={{
+                      aspectRatio: "1",
+                      height: "100%",
+                      width: "auto",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <IconMoodSmile />
+                  </Paper>
+                </Box>
+                <Stack
+                  sx={{
+                    flexGrow: isMobile ? 1 : undefined,
+                    flexBasis: !isMobile
+                      ? "calc(100% - 50% - 5vw - 4em)"
+                      : undefined,
+                    gap: 2,
+                  }}
+                >
+                  <Text
+                    component="a"
+                    href={`/songs/${song.id}`}
+                    lineClamp={isMobile ? 1 : undefined}
+                    sx={{
+                      flexGrow: 1,
+                    }}
+                  >
+                    {song.name}
+                  </Text>
+                  {unitsInSong.length > 0 &&
+                    (isMobile ? (
+                      <Spoiler
+                        maxHeight={24}
+                        showLabel="More"
+                        hideLabel="Hide"
+                        sx={{
+                          display: "flex",
+                          control: {
+                            display: "inline",
+                          },
+                        }}
+                      >
+                        <Box>
+                          {unitsInSong.map((unit, index) => (
+                            <Text
+                              key={unit?.id}
+                              color="dimmed"
+                              sx={{ display: "inline" }}
+                            >
+                              {unit?.name[0]}
+                              {unitsInSong.length > 1 &&
+                              index < unitsInSong.length - 1
+                                ? ", "
+                                : ""}
+                            </Text>
+                          ))}
+                        </Box>
+                      </Spoiler>
+                    ) : (
+                      <Box>
+                        {unitsInSong.map((unit, index) => (
+                          <Text
+                            key={unit?.id}
+                            color="dimmed"
+                            sx={{ display: "inline" }}
+                          >
+                            {unit?.name[0]}
+                            {unitsInSong.length > 1 &&
+                            index < unitsInSong.length - 1
+                              ? ", "
+                              : ""}
+                          </Text>
+                        ))}
+                      </Box>
+                    ))}
+                  {charactersInSong.length > 0 &&
+                    unitsInSong.length === 0 &&
+                    (isMobile ? (
+                      <Spoiler
+                        maxHeight={24}
+                        showLabel="More"
+                        hideLabel="Hide"
+                        styles={{
+                          control: { display: "inline" },
+                        }}
+                      >
+                        <Box>
+                          {charactersInSong.map((character, index) => (
+                            <>
+                              <Text
+                                component="a"
+                                href={`/characters/${character?.character_id}`}
+                                key={character?.character_id}
+                                color="dimmed"
+                                sx={{ display: "inline" }}
+                              >
+                                {character &&
+                                  getNameOrder({
+                                    first_name: character?.first_name[0],
+                                    last_name: character?.last_name[0],
+                                  })}
+                                {}
+                              </Text>
+                              {character &&
+                                charactersInSong.length > 1 &&
+                                index < charactersInSong.length - 1 && (
+                                  <Text
+                                    sx={{ display: "inline" }}
+                                    color="dimmed"
+                                  >
+                                    ,{" "}
+                                  </Text>
+                                )}
+                            </>
+                          ))}
+                        </Box>
+                      </Spoiler>
+                    ) : (
+                      <Box>
+                        {charactersInSong.map((character, index) => (
+                          <>
+                            <Text
+                              component="a"
+                              href={`/characters/${character?.character_id}`}
+                              key={character?.character_id}
+                              color="dimmed"
+                              sx={{ display: "inline" }}
+                            >
+                              {character &&
+                                getNameOrder({
+                                  first_name: character?.first_name[0],
+                                  last_name: character?.last_name[0],
+                                })}
+                              {}
+                            </Text>
+                            {character &&
+                              charactersInSong.length > 1 &&
+                              index < charactersInSong.length - 1 && (
+                                <Text sx={{ display: "inline" }} color="dimmed">
+                                  ,{" "}
+                                </Text>
+                              )}
+                          </>
+                        ))}
+                      </Box>
+                    ))}
+                </Stack>
+                {!isMobile && (
+                  <Text sx={{ flexBasis: "50%" }}>
+                    {songAlbum && songAlbum.name.alt}
+                  </Text>
+                )}
+                {!isMobile && (
+                  <Text sx={{ flexBasis: "4em" }}>
+                    {durationType === "game"
+                      ? gameDurationInMinutes
+                      : durationType === "full"
+                      ? fullDurationInMinutes
+                      : "--"}
+                  </Text>
+                )}
+              </Group>
+            );
+          })}
         </Stack>
       </Paper>
     </>
@@ -86,10 +350,48 @@ function Page() {
 }
 Page.getLayout = getLayout({ wide: true });
 
-export const getServerSideProps = getServerSideUser(async ({ locale }) => {
-  return {
-    props: {},
-  };
-});
+export const getServerSideProps = getServerSideUser(
+  async ({ locale, params, db }) => {
+    const songData = await getLocalizedDataArray<Song>("songs", locale, "id", [
+      "id",
+      "name",
+      "unit_id",
+      "character_id",
+      "duration",
+      "order",
+    ]);
+
+    const unitData = await getLocalizedDataArray<GameUnit>(
+      "units",
+      locale,
+      "id",
+      ["id", "name", "order"]
+    );
+
+    const charaData = await getLocalizedDataArray<GameCharacter>(
+      "characters",
+      locale,
+      "character_id",
+      ["character_id", "name", "sort_id"]
+    );
+
+    const albumData = await getLocalizedDataArray<SongAlbum>(
+      "albums",
+      locale,
+      "id",
+      ["id", "name", "tracklist"]
+    );
+
+    if (!songData) return { notFound: true };
+    return {
+      props: {
+        songsQuery: songData,
+        unitsQuery: unitData,
+        charasQuery: charaData,
+        albumsQuery: albumData,
+      },
+    };
+  }
+);
 
 export default Page;

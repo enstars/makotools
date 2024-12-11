@@ -38,7 +38,13 @@ export async function getData<T = any>(
         flattenedDataArray.forEach((originalEntry: any) => {
           let filteredEntry: any = {};
           Object.keys(originalEntry)
-            .filter((key) => !fields || fields.includes(key))
+            .filter(
+              (key) =>
+                !fields ||
+                !!fields.find(
+                  (field) => key.includes(field) || field.includes(key)
+                )
+            )
             .forEach((key) => {
               if (key !== "compliant") filteredEntry[key] = originalEntry[key];
             });
