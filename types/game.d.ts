@@ -307,7 +307,7 @@ interface GameCardOld {
 }
 
 export type EventType = "song" | "tour" | "shuffle" | "special";
-export type ScoutType = "scout" | "feature scout";
+export type ScoutType = "scout" | "feature scout" | "original" | "anniv";
 type CampaignType =
   | "birthday"
   | "anniversary"

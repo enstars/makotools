@@ -7,6 +7,7 @@ import {
   IconExclamationMark,
   IconPlayerPlay,
   IconShirt,
+  IconWorld,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -99,19 +100,22 @@ function CalendarListEventCard({
                 ? "lightblue"
                 : event.type === "scout"
                 ? "violet"
+                : event.type === "original"
+                ? "green"
                 : "yellow"
             }
-            sx={(theme) => ({})}
             leftSection={
               <Box mt={4}>
-                {event.type === "birthday" ? (
+                {event.type === "birthday" || event.type === "anniv" ? (
                   <IconCake size={12} strokeWidth={3} />
                 ) : event.type === "feature scout" ? (
                   <IconShirt size={12} strokeWidth={3} />
                 ) : event.type === "scout" ? (
                   <IconDiamond size={12} strokeWidth={3} />
-                ) : event.type === "song" ? (
+                ) : event.type === "song" || event.type === "shuffle" ? (
                   <IconAward size={12} strokeWidth={3} />
+                ) : event.type === "original" ? (
+                  <IconWorld size={12} strokeWidth={3} />
                 ) : (
                   <IconBus size={12} strokeWidth={3} />
                 )}

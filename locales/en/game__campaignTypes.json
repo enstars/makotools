@@ -2,9 +2,11 @@
   "song": "Unit Song Event",
   "tour": "Tour Event",
   "shuffle": "Shuffle Event",
-  "scout": "Scout",
+  "scout": "Theme Scout",
   "feature scout": "Featured Scout",
   "birthday": "Birthday",
   "anniversary": "Anniversary",
+  "anniv": "Anniversary Scout",
+  "original": "Global Scout",
   "other": "Other"
 }
