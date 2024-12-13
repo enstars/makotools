@@ -435,6 +435,7 @@ export interface Song {
   id: number | string;
   name: string;
   unit_id?: number[];
+  unit_name?: string;
   character_id?: number[];
   color?: number;
   difficulty?: SongDifficulty;

@@ -208,8 +208,8 @@ function Page({
                   >
                     {song.name}
                   </Text>
-                  {unitsInSong.length > 0 &&
-                    (isMobile ? (
+                  {unitsInSong.length > 0 ? (
+                    isMobile ? (
                       <Spoiler
                         maxHeight={24}
                         showLabel="More"
@@ -253,8 +253,14 @@ function Page({
                           </Text>
                         ))}
                       </Box>
-                    ))}
+                    )
+                  ) : song.unit_name ? (
+                    <Text color="dimmed">{song.unit_name}</Text>
+                  ) : (
+                    <></>
+                  )}
                   {charactersInSong.length > 0 &&
+                    !song.unit_name &&
                     unitsInSong.length === 0 &&
                     (isMobile ? (
                       <Spoiler
