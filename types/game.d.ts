@@ -235,6 +235,7 @@ type SupportSkillIDs =
   | 14
   | 15
   | 16
+  | 24
   | 28
   | 29
   | 30;
