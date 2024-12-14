@@ -106,6 +106,7 @@ export function supportSkillParse(
         return t(`skills:support.type_${typeId}`, {
           count,
         });
+      case 24:
       case 29:
       case 30:
         return t(`skills:support.type_${typeId}`, {
