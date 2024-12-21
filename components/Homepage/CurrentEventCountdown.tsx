@@ -99,7 +99,9 @@ function Countdown({
           />
         )
       ) : (
-        <Loader variant="dots" />
+        <Box my={3}>
+          <Loader variant="dots" />
+        </Box>
       )}
     </Group>
   );
