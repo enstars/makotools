@@ -155,7 +155,6 @@ export async function getFirestoreUserCollection(
     querySnap.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
       const data = doc.data();
-      console.log("card collection data", data);
       data.id = doc.id;
       userCollection.push(data as CardCollection);
     });
@@ -197,7 +196,6 @@ export async function getFirestoreUserFriendCodes(
     );
     const fetchedCodes: Omit<FriendCodeRegions, "id"> =
       querySnap.docs[0].data() as FriendCodeRegions;
-    console.log({ fetchedCodes });
     userFriendCodes.id = querySnap.docs[0]?.id;
     Object.entries(fetchedCodes ?? {}).forEach(([region, value]) => {
       if ((value as FriendCode)?.privacyLevel <= accessiblePrivacyLevel) {

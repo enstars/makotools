@@ -525,8 +525,6 @@ function Page({
     );
   }
 
-  console.log("friend codes", friendCodes);
-
   if (
     isProfileDataPending ||
     updateUserDB?.isPending ||
