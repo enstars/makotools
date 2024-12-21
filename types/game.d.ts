@@ -307,7 +307,13 @@ interface GameCardOld {
   };
 }
 
-export type EventType = "song" | "tour" | "shuffle" | "special";
+export type EventType =
+  | "song"
+  | "tour"
+  | "shuffle"
+  | "special"
+  | "spotlight"
+  | "merge";
 export type ScoutType = "scout" | "feature scout" | "original" | "anniv";
 type CampaignType =
   | "birthday"
