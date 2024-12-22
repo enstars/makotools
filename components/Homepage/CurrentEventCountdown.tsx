@@ -188,6 +188,7 @@ function CurrentEventCountdown({ events }: { events: Event[] }) {
               </Box>
             )}
             <Button
+              disabled
               color={theme.primaryColor}
               component="a"
               href="/event-calculator"

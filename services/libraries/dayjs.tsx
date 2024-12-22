@@ -10,6 +10,7 @@ import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isToday from "dayjs/plugin/isToday";
 import isBetween from "dayjs/plugin/isBetween";
 import utc from "dayjs/plugin/utc";
+import relativeTime from "dayjs/plugin/relativeTime";
 
 import "dayjs/locale/en";
 import "dayjs/locale/ja";
@@ -39,6 +40,7 @@ dayjs.extend(isSameOrAfter);
 dayjs.extend(isToday);
 dayjs.extend(isBetween);
 dayjs.extend(utc);
+dayjs.extend(relativeTime);
 
 const DayjsContext = createContext({ dayjs });
 export const useDayjs = () => useContext(DayjsContext);

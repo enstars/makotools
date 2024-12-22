@@ -16,10 +16,32 @@ import SupportBanner from "./SupportBanner";
 
 import Affiliates from "assets/Affiliates/affiliates.svg";
 import { CONSTANTS } from "services/makotools/constants";
+import { useQuery } from "@tanstack/react-query";
+import { commitQueries } from "services/queries";
+import { useDayjs } from "services/libraries/dayjs";
 
 function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
   const { t } = useTranslation("footer");
   const theme = useMantineTheme();
+  const { dayjs } = useDayjs();
+  const { data: lastCommit, error: lastCommitError } = useQuery({
+    queryKey: commitQueries.fetchLatestCommit,
+    queryFn: async () => {
+      try {
+        const res = await fetch(
+          "https://api.github.com/repos/enstars/makotools/commits?per_page=1"
+        );
+        const json = await res.json();
+        return json;
+      } catch (e) {
+        throw new Error("Could not fetch latest commit");
+      }
+    },
+  });
+  console.log({ lastCommit });
+  const lastCommitDate = dayjs(lastCommit?.[0].commit?.author?.date);
+  const commitUrl = lastCommit?.[0].html_url;
+  console.log({ lastCommitDate });
   return (
     <Footer
       style={{
@@ -155,6 +177,30 @@ function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
             <Text size="xs" color="dimmed" mt="xs">
               {t("disclaimer")}
             </Text>
+            {lastCommit && (
+              <Group mt="xs" spacing="xs">
+                <Text size="xs" color="dimmed">
+                  Last updated {dayjs(lastCommitDate).fromNow()}
+                </Text>
+                {commitUrl && (
+                  <>
+                    {" "}
+                    <Text size="xs" color="dimmed">
+                      {" "}
+                      ·{" "}
+                    </Text>
+                    <Anchor
+                      component={Link}
+                      href={commitUrl}
+                      size="xs"
+                      target="_blank"
+                    >
+                      View commit on GitHub
+                    </Anchor>
+                  </>
+                )}
+              </Group>
+            )}
           </Box>
         </Group>
       </Container>
