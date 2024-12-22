@@ -11,17 +11,12 @@ import {
   Loader,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
-import Confetti from "react-confetti";
 import Link from "next/link";
 import useTranslation from "next-translate/useTranslation";
 import Trans from "next-translate/Trans";
 
 import Picture from "components/core/Picture";
-import {
-  countdown,
-  isItYippeeTime,
-  toCountdownReadable,
-} from "services/campaigns";
+import { countdown, toCountdownReadable } from "services/campaigns";
 import { useDayjs } from "services/libraries/dayjs";
 import { Event } from "types/game";
 
@@ -51,7 +46,7 @@ function EventImage({ event }: { event: Event }) {
   return (
     <Link href={`/events/${event.event_id}`}>
       <Picture
-        alt={event.name[0]}
+        alt={event.name.filter((name) => name !== null)[0]}
         srcB2={`assets/card_still_full1_${event.banner_id}_evolution.webp`}
         sx={{ width: 300, height: 175 }}
         radius="lg"
@@ -67,7 +62,6 @@ function Countdown({
   date: string;
   status: "start" | "end";
 }) {
-  const { t } = useTranslation("home");
   const [countdownAmt, setCountdownAmt] = useState<string>();
   useEffect(() => {
     const interval = setInterval(() => {
@@ -107,38 +101,84 @@ function Countdown({
   );
 }
 
-function CurrentEventCountdown({ events }: { events: Event[] }) {
+function CurrentEventCountdown({ shownEvent }: { shownEvent: Event }) {
   const theme = useMantineTheme();
   const { t } = useTranslation("home");
   const { dayjs } = useDayjs();
-
-  const [yippeeTime, setYippeeTime] = useState<boolean>(false);
-
-  const { classes } = useStyles();
-
-  const shownEvent = events.filter((event) => {
-    return dayjs().isBefore(event.end.en);
-  })[0];
   const isNextEvent = shownEvent && dayjs().isBefore(shownEvent.start.en);
 
-  useEffect(() => {
-    if (!shownEvent) return;
-    const interval = setInterval(() => {
-      if (isNextEvent) {
-        setYippeeTime(
-          isItYippeeTime(new Date(shownEvent.start.en), new Date(), dayjs)
-        );
-      } else {
-        setYippeeTime(
-          isItYippeeTime(new Date(shownEvent.end.en), new Date(), dayjs)
-        );
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [shownEvent, dayjs, isNextEvent]);
-
+  const { classes } = useStyles();
   return (
     <Box>
+      <Paper
+        shadow="xs"
+        radius="md"
+        p="lg"
+        withBorder
+        className={classes.eventContainer}
+      >
+        <Group
+          sx={{
+            [`@media (max-width: 800px)`]: {
+              flexWrap: "wrap",
+            },
+          }}
+          align="flex-start"
+          spacing="xl"
+        >
+          <EventImage event={shownEvent} />
+          <Stack justify="space-around">
+            {shownEvent && (
+              <Box>
+                <Title order={3} sx={{ maxWidth: "300px" }}>
+                  {shownEvent.name.filter((name) => name !== null)[0]}
+                </Title>
+
+                {isNextEvent ? (
+                  <Countdown date={shownEvent.start.en} status="start" />
+                ) : (
+                  <Countdown date={shownEvent.end.en} status="end" />
+                )}
+              </Box>
+            )}
+            {shownEvent.type !== "spotlight" && shownEvent.type !== "merge" && (
+              <Button
+                disabled
+                color={theme.primaryColor}
+                component="a"
+                href="/event-calculator"
+              >
+                {t("event.eventCalculator")}
+              </Button>
+            )}
+          </Stack>
+        </Group>
+      </Paper>
+    </Box>
+  );
+}
+
+function CurrentEventCountdowns({ events }: { events: Event[] }) {
+  const { dayjs } = useDayjs();
+
+  const theme = useMantineTheme();
+  let shownEvents = events.filter((event) => {
+    return dayjs().isBefore(event.end.en);
+  });
+  if (shownEvents.filter((event) => dayjs().isAfter(event.start.en)).length) {
+    shownEvents = shownEvents.filter((event) =>
+      dayjs().isAfter(event.start.en)
+    );
+  } else {
+    shownEvents = [shownEvents[0]];
+  }
+  const { t } = useTranslation("home");
+  const isNextEvent =
+    shownEvents.length &&
+    shownEvents.some((shownEvent) => dayjs().isBefore(shownEvent.start.en));
+
+  return (
+    <>
       <Group align="end">
         <Title order={2}>
           {isNextEvent ? t("event.next") : t("event.current")}
@@ -155,51 +195,11 @@ function CurrentEventCountdown({ events }: { events: Event[] }) {
           {t("event.seeAll")}
         </Text>
       </Group>
-      <Paper
-        shadow="xs"
-        radius="md"
-        p="lg"
-        withBorder
-        className={classes.eventContainer}
-      >
-        {yippeeTime && <Confetti recycle={false} />}
-        <Group
-          sx={{
-            [`@media (max-width: 800px)`]: {
-              flexWrap: "wrap",
-            },
-          }}
-          align="flex-start"
-          spacing="xl"
-        >
-          <EventImage event={shownEvent} />
-          <Stack justify="space-around">
-            {shownEvent && (
-              <Box>
-                <Title order={3} sx={{ maxWidth: "300px" }}>
-                  {shownEvent.name[0]}
-                </Title>
-
-                {isNextEvent ? (
-                  <Countdown date={shownEvent.start.en} status="start" />
-                ) : (
-                  <Countdown date={shownEvent.end.en} status="end" />
-                )}
-              </Box>
-            )}
-            <Button
-              disabled
-              color={theme.primaryColor}
-              component="a"
-              href="/event-calculator"
-            >
-              {t("event.eventCalculator")}
-            </Button>
-          </Stack>
-        </Group>
-      </Paper>
-    </Box>
+      {shownEvents.map((event) => (
+        <CurrentEventCountdown shownEvent={event} />
+      ))}
+    </>
   );
 }
 
-export default CurrentEventCountdown;
+export default CurrentEventCountdowns;

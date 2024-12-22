@@ -110,7 +110,7 @@ function Page({
     <>
       <RegionInfo region={region} />
       <PageTitle
-        title={event.name[0]}
+        title={event.name.filter((name) => name !== null)[0]}
         sx={{ flex: "1 0 80%" }}
         space={theme.spacing.lg}
         {...{ region }}
@@ -154,15 +154,17 @@ function Page({
         scouts.map((s: Scout) => (
           <>
             <SectionTitle
-              title={t("scoutTitle", { scout: s.name[0] })}
+              title={t("scoutTitle", {
+                scout: s.name.filter((name) => name !== null)[0],
+              })}
               id="scout"
               Icon={IconDiamond}
             />
             <ScoutPointsSummary
               id={s.gacha_id}
               type={event.type}
-              eventName={event.name[0]}
-              scoutName={s.name[0]}
+              eventName={event.name.filter((name) => name !== null)[0]}
+              scoutName={s.name.filter((name) => name !== null)[0]}
               banner={s.banner_id}
             />
           </>
