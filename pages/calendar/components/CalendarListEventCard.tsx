@@ -57,7 +57,9 @@ function CalendarListEventCard({
           : (event as Event).type === "song" ||
             (event as Event).type === "tour" ||
             (event as Event).type === "shuffle" ||
-            (event as Event).type === "special"
+            (event as Event).type === "special" ||
+            (event as Event).type === "merge" ||
+            (event as Event).type === "spotlight"
           ? `/events/${(event as Event).event_id}`
           : `/scouts/${(event as Scout).gacha_id}`
       }
@@ -115,12 +117,12 @@ function CalendarListEventCard({
                   <IconShirt size={12} strokeWidth={3} />
                 ) : event.type === "scout" ? (
                   <IconDiamond size={12} strokeWidth={3} />
-                ) : event.type === "song" || event.type === "shuffle" ? (
-                  <IconAward size={12} strokeWidth={3} />
+                ) : event.type === "tour" ? (
+                  <IconBus size={12} strokeWidth={3} />
                 ) : event.type === "original" ? (
                   <IconWorld size={12} strokeWidth={3} />
                 ) : (
-                  <IconBus size={12} strokeWidth={3} />
+                  <IconAward size={12} strokeWidth={3} />
                 )}
               </Box>
             }
