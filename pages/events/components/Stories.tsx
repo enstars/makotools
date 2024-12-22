@@ -22,10 +22,12 @@ function Stories({ content }: { content: Event | Scout }) {
         <Box sx={{ "&&&": { flex: "1 1 50%", minWidth: 240 } }}>
           <Stack spacing="xs">
             <Title order={3}>
-              {content.story_name && content.story_name[0]}
+              {content.story_name &&
+                content.story_name.filter((name) => name !== null)[0]}
             </Title>
             <Text color="dimmed">
-              {content.intro_lines && content.intro_lines[0]}
+              {content.intro_lines &&
+                content.intro_lines.filter((lines) => lines !== null)[0]}
             </Text>
             {content.intro_lines_tl_credit &&
               content.intro_lines_tl_credit[0] && (

@@ -27,3 +27,7 @@ export const reactionQueries = {
 export const friendCodeQueries = {
   fetchFriendCodes: (uid: string | undefined) => ["fetchFriendCodes", uid],
 };
+
+export const commitQueries = {
+  fetchLatestCommit: ["fetchLatestCommit"],
+};

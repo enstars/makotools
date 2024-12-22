@@ -3,7 +3,7 @@ import { DEFAULT_LOCALE } from "./makotools/locales";
 import { parseStringify } from "./utilities";
 
 import { Lang, Locale, Query, UL } from "types/makotools";
-import { ID } from "types/game";
+import { Event, ID } from "types/game";
 
 const flatten = require("flat");
 
@@ -75,8 +75,13 @@ export async function getLocalizedDataArray<
   const jaData = await getData<Type[]>(data, "ja", true, fields);
   const enFanData = await getData<Type[]>(data, "en", false, fields);
   const enData = await getData<Type[]>(data, "en", true, fields);
+  console.log(
+    "en data",
+    data,
+    enData.data?.filter((data) => (data as Event).event_id === 60910006)
+  );
 
-  let localized = [enFanData, jaData, enData];
+  let localized = [enFanData, enData, jaData];
   if (locale === "ja") {
     localized = [jaData, enFanData, enData];
   }
