@@ -169,10 +169,10 @@ function EventCard({ event }: { event: Birthday | Event | Scout }) {
                   <IconShirt size={12} strokeWidth={3} />
                 ) : event.type === "scout" ? (
                   <IconDiamond size={12} strokeWidth={3} />
-                ) : event.type === "song" ? (
-                  <IconAward size={12} strokeWidth={3} />
-                ) : (
+                ) : event.type === "tour" ? (
                   <IconBus size={12} strokeWidth={3} />
+                ) : (
+                  <IconAward size={12} strokeWidth={3} />
                 )}
               </Text>
             }
