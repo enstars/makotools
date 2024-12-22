@@ -28,20 +28,15 @@ function PageFooter({ wide, textOnly }: { wide: boolean; textOnly: boolean }) {
     queryKey: commitQueries.fetchLatestCommit,
     queryFn: async () => {
       try {
-        const res = await fetch(
-          "https://api.github.com/repos/enstars/makotools/commits?per_page=1"
-        );
-        const json = await res.json();
-        return json;
+        const res = await fetch("/api/github/latest");
+        return await res.json();
       } catch (e) {
         throw new Error("Could not fetch latest commit");
       }
     },
   });
-  console.log({ lastCommit });
-  const lastCommitDate = dayjs(lastCommit?.[0].commit?.author?.date);
-  const commitUrl = lastCommit?.[0].html_url;
-  console.log({ lastCommitDate });
+  const lastCommitDate = dayjs(lastCommit?.commit_date);
+  const commitUrl = lastCommit?.commit_url;
   return (
     <Footer
       style={{
