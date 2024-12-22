@@ -7,6 +7,7 @@ import {
   IconExclamationMark,
   IconPlayerPlay,
   IconShirt,
+  IconWorld,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -56,7 +57,9 @@ function CalendarListEventCard({
           : (event as Event).type === "song" ||
             (event as Event).type === "tour" ||
             (event as Event).type === "shuffle" ||
-            (event as Event).type === "special"
+            (event as Event).type === "special" ||
+            (event as Event).type === "merge" ||
+            (event as Event).type === "spotlight"
           ? `/events/${(event as Event).event_id}`
           : `/scouts/${(event as Scout).gacha_id}`
       }
@@ -102,21 +105,24 @@ function CalendarListEventCard({
                 ? "lightblue"
                 : event.type === "scout"
                 ? "violet"
+                : event.type === "original"
+                ? "green"
                 : "yellow"
             }
-            sx={(theme) => ({})}
             leftSection={
               <Box mt={4}>
-                {event.type === "birthday" ? (
+                {event.type === "birthday" || event.type === "anniv" ? (
                   <IconCake size={12} strokeWidth={3} />
                 ) : event.type === "feature scout" ? (
                   <IconShirt size={12} strokeWidth={3} />
                 ) : event.type === "scout" ? (
                   <IconDiamond size={12} strokeWidth={3} />
-                ) : event.type === "song" ? (
-                  <IconAward size={12} strokeWidth={3} />
-                ) : (
+                ) : event.type === "tour" ? (
                   <IconBus size={12} strokeWidth={3} />
+                ) : event.type === "original" ? (
+                  <IconWorld size={12} strokeWidth={3} />
+                ) : (
+                  <IconAward size={12} strokeWidth={3} />
                 )}
               </Box>
             }

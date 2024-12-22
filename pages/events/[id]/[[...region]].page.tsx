@@ -95,7 +95,11 @@ function Page({
     },
   ];
 
-  if (event.type !== "tour")
+  if (
+    event.type !== "tour" &&
+    event.type !== "spotlight" &&
+    event.type !== "merge"
+  )
     contentItems.splice(contentItems.length - 1, 0, {
       id: "#song",
       name: t("events:song"),
@@ -106,7 +110,7 @@ function Page({
     <>
       <RegionInfo region={region} />
       <PageTitle
-        title={event.name[0]}
+        title={event.name.filter((name) => name !== null)[0]}
         sx={{ flex: "1 0 80%" }}
         space={theme.spacing.lg}
         {...{ region }}
@@ -134,34 +138,38 @@ function Page({
       </ResponsiveGrid>
       <SectionTitle title={t("story")} id="story" Icon={IconBook} />
       <Stories content={event} />
-      {event.type !== "tour" && (
-        <>
-          <SectionTitle title={t("song")} id="song" Icon={IconVinyl} />
-          <Paper p="sm" withBorder>
-            <Text align="center" color="dimmed" size="sm" weight={700}>
-              {t("comingSoon")}
-            </Text>
-          </Paper>
-        </>
-      )}
+      {event.type !== "tour" &&
+        event.type !== "spotlight" &&
+        event.type !== "merge" && (
+          <>
+            <SectionTitle title={t("song")} id="song" Icon={IconVinyl} />
+            <Paper p="sm" withBorder>
+              <Text align="center" color="dimmed" size="sm" weight={700}>
+                {t("comingSoon")}
+              </Text>
+            </Paper>
+          </>
+        )}
       {scouts &&
         scouts.map((s: Scout) => (
           <>
             <SectionTitle
-              title={t("scoutTitle", { scout: s.name[0] })}
+              title={t("scoutTitle", {
+                scout: s.name.filter((name) => name !== null)[0],
+              })}
               id="scout"
               Icon={IconDiamond}
             />
             <ScoutPointsSummary
               id={s.gacha_id}
               type={event.type}
-              eventName={event.name[0]}
-              scoutName={s.name[0]}
+              eventName={event.name.filter((name) => name !== null)[0]}
+              scoutName={s.name.filter((name) => name !== null)[0]}
               banner={s.banner_id}
             />
           </>
         ))}
-      {scouts && <PointsTable />}
+      {!!scouts?.length && <PointsTable />}
       <NewCollectionModal
         // use key to reset internal form state on close
         key={JSON.stringify(newCollectionModalOpened)}
@@ -232,9 +240,6 @@ export const getServerSideProps = getServerSideUser(
       "gacha_id"
     );
 
-    if (getScoutsArray.every((scout) => scout.status === "error"))
-      return { notFound: true };
-
     const getUnits = await getLocalizedDataArray("units", locale, "id");
 
     const cards = await getLocalizedDataArray<GameCard>("cards", locale, "id", [
@@ -263,7 +268,7 @@ export const getServerSideProps = getServerSideUser(
     const scouts = getScoutsArray
       .map((scout) => scout.data)
       .filter((scout) => scout !== null);
-    const title = event.name[0];
+    const title = event.name[0] ?? String(event.event_id);
     const breadcrumbs = ["events", title];
 
     return {

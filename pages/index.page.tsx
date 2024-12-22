@@ -34,6 +34,7 @@ import { fetchOceans } from "services/makotools/posts";
 import RecommendedCountdown from "components/Homepage/RecommendedCountdown";
 import useUser from "services/firebase/user";
 import { getNameOrderSetting } from "components/utilities/formatting/NameOrder";
+import CurrentEventCountdowns from "components/Homepage/CurrentEventCountdown";
 
 const MOBILE_BREAKPOINT = "md";
 const useStyles = createStyles((theme, _params) => ({
@@ -229,7 +230,7 @@ function Page({
             sx={{ width: "100%", "&&": { flexGrow: 1 } }}
             className={classes.mainCol}
           >
-            <CurrentEventCountdown
+            <CurrentEventCountdowns
               events={
                 events.filter(
                   (event: Event) =>
@@ -237,7 +238,9 @@ function Page({
                     (event.type === "song" ||
                       event.type === "tour" ||
                       event.type === "shuffle" ||
-                      event.type === "special")
+                      event.type === "special" ||
+                      event.type === "merge" ||
+                      event.type === "spotlight")
                 ) as Event[]
               }
             />

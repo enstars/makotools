@@ -7,9 +7,11 @@
       "special": "Special Event"
     },
     "scout": {
-      "scout": "Event Scout",
+      "scout": "Theme Scout",
       "feature": "Feature Scout",
-      "feature scout": "Feature Scout"
+      "feature scout": "Feature Scout",
+      "original": "Original Scout",
+      "anniv": "Anniversary Scout"
     },
     "others": {
       "birthday": "Birthday Campaign",
@@ -25,9 +27,11 @@
       "special": "Special"
     },
     "scout": {
-      "scout": "Event",
+      "scout": "Theme",
       "feature": "Feature",
-      "feature scout": "Feature"
+      "feature scout": "Feature",
+      "original": "Global",
+      "anniv": "Anniversary"
     },
     "others": {
       "birthday": "Birthday",
