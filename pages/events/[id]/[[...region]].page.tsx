@@ -95,7 +95,11 @@ function Page({
     },
   ];
 
-  if (event.type !== "tour")
+  if (
+    event.type !== "tour" &&
+    event.type !== "spotlight" &&
+    event.type !== "merge"
+  )
     contentItems.splice(contentItems.length - 1, 0, {
       id: "#song",
       name: t("events:song"),
@@ -134,16 +138,18 @@ function Page({
       </ResponsiveGrid>
       <SectionTitle title={t("story")} id="story" Icon={IconBook} />
       <Stories content={event} />
-      {event.type !== "tour" && (
-        <>
-          <SectionTitle title={t("song")} id="song" Icon={IconVinyl} />
-          <Paper p="sm" withBorder>
-            <Text align="center" color="dimmed" size="sm" weight={700}>
-              {t("comingSoon")}
-            </Text>
-          </Paper>
-        </>
-      )}
+      {event.type !== "tour" &&
+        event.type !== "spotlight" &&
+        event.type !== "merge" && (
+          <>
+            <SectionTitle title={t("song")} id="song" Icon={IconVinyl} />
+            <Paper p="sm" withBorder>
+              <Text align="center" color="dimmed" size="sm" weight={700}>
+                {t("comingSoon")}
+              </Text>
+            </Paper>
+          </>
+        )}
       {scouts &&
         scouts.map((s: Scout) => (
           <>
@@ -161,7 +167,7 @@ function Page({
             />
           </>
         ))}
-      {scouts && <PointsTable />}
+      {!!scouts?.length && <PointsTable />}
       <NewCollectionModal
         // use key to reset internal form state on close
         key={JSON.stringify(newCollectionModalOpened)}
@@ -232,9 +238,6 @@ export const getServerSideProps = getServerSideUser(
       "gacha_id"
     );
 
-    if (getScoutsArray.every((scout) => scout.status === "error"))
-      return { notFound: true };
-
     const getUnits = await getLocalizedDataArray("units", locale, "id");
 
     const cards = await getLocalizedDataArray<GameCard>("cards", locale, "id", [
@@ -263,7 +266,7 @@ export const getServerSideProps = getServerSideUser(
     const scouts = getScoutsArray
       .map((scout) => scout.data)
       .filter((scout) => scout !== null);
-    const title = event.name[0];
+    const title = event.name[0] ?? String(event.event_id);
     const breadcrumbs = ["events", title];
 
     return {
