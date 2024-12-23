@@ -65,7 +65,8 @@
     "seedrandom": "^3.0.5",
     "strapi-sdk-js": "^2.2.0",
     "swr": "^2.0.0",
-    "use-debounce": "^9.0.2"
+    "use-debounce": "^9.0.2",
+    "zod": "^3.24.1"
   },
   "scripts": {
     "dev": "next dev",

@@ -12,6 +12,17 @@ import {
   updatePassword,
   reauthenticateWithPopup,
 } from "firebase/auth";
+import {
+  collection,
+  doc,
+  getDocs,
+  getFirestore,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
+import { validateUsernameDb } from "./firestore";
+import z from "zod";
 
 const parseKey = (key: string) => {
   return key?.replace(/\\n/g, "\n")?.replace(/'/g, "");
@@ -154,6 +165,52 @@ export async function signInWithEmail(
   const clientAuth = getAuth();
   try {
     await signInWithEmailAndPassword(clientAuth, email, password);
+  } catch (error) {
+    onError(error as Error);
+  }
+}
+
+export async function signInWithUsername(
+  username: string,
+  password: string,
+  onError: (error: Error) => void
+) {
+  try {
+    const isUsernameValid = await validateUsernameDb(username);
+    if (!isUsernameValid)
+      throw new TypeError("Could not find user with this username");
+    const db = getFirestore();
+    const usernameQuery = query(
+      collection(db, "users"),
+      where("username", "==", username)
+    );
+    const querySnap = await getDocs(usernameQuery);
+    const userData = querySnap.docs[0];
+    const userEmail = userData.data().email;
+
+    await signInWithEmail(userEmail, password, onError);
+  } catch (error) {
+    onError(error as Error);
+  }
+}
+
+export async function signInFunction(
+  emailOrUsername: string,
+  password: string,
+  onError: (error: Error) => void
+) {
+  try {
+    const parseUsernameEmail = z.string().email().safeParse(emailOrUsername);
+
+    if (!parseUsernameEmail.success) {
+      // this is a username
+      const username = emailOrUsername;
+      await signInWithUsername(username, password, onError);
+    } else {
+      // this is an email
+      const email = emailOrUsername;
+      await signInWithEmail(email, password, onError);
+    }
   } catch (error) {
     onError(error as Error);
   }

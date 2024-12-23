@@ -8079,6 +8079,7 @@ __metadata:
     swr: ^2.0.0
     typescript: ^4.9.4
     use-debounce: ^9.0.2
+    zod: ^3.24.1
   languageName: unknown
   linkType: soft
 
@@ -11337,5 +11338,12 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: f77b3d8d00310def622123df93d4ee654fc6a0096182af8bd60679ddcdfb3474c56c6c7190817c84a2785648cdee9d721c0154eb45698c62176c322fb46fc700
+  languageName: node
+  linkType: hard
+
+"zod@npm:^3.24.1":
+  version: 3.24.1
+  resolution: "zod@npm:3.24.1"
+  checksum: dcd5334725b29555593c186fd6505878bb7ccb4f5954f728d2de24bf71f9397492d83bdb69d5b8a376eb500a02273ae0691b57deb1eb8718df3f64c77cc5534a
   languageName: node
   linkType: hard
