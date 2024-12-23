@@ -26,7 +26,6 @@ function hexToRGB(hex: string) {
   };
 }
 
-// thanks chatgpt
 function RGBLuminance({ r, g, b }: { r: number; g: number; b: number }) {
   const a = [r, g, b].map((v) => {
     v /= 255;
@@ -251,6 +250,12 @@ function isScoutEvent(event: Event | Scout): event is Scout {
   );
 }
 
+function secondsToReadableMinutes(seconds: number): string {
+  return `${Math.floor(seconds / 60)}:${
+    Math.floor(seconds % 60) < 10 ? "0" : ""
+  }${Math.floor(seconds % 60)}`;
+}
+
 export {
   parseStringify,
   generateUUID,
@@ -260,4 +265,5 @@ export {
   HSLToHex,
   isGameEvent,
   isScoutEvent,
+  secondsToReadableMinutes,
 };

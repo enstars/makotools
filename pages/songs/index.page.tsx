@@ -20,10 +20,11 @@ import {
   IconMusic,
 } from "@tabler/icons-react";
 import { getLayout } from "components/Layout";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { getLocalizedDataArray } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getNameOrder } from "services/game";
+import { secondsToReadableMinutes } from "services/utilities";
 import { GameCharacter, GameUnit, Song, SongAlbum } from "types/game";
 import { QuerySuccess } from "types/makotools";
 
@@ -133,15 +134,11 @@ function Page({
           )}
           {orderedSongs.map((song) => {
             const gameDurationInMinutes = song.duration?.game
-              ? `${Math.floor(song.duration.game / 60)}:${
-                  Math.floor(song.duration.game % 60) < 10 ? "0" : ""
-                }${Math.floor(song.duration.game % 60)}`
+              ? secondsToReadableMinutes(song.duration.game)
               : "--";
 
             const fullDurationInMinutes = song.duration?.full
-              ? `${Math.floor(song.duration.full / 60)}:${
-                  Math.floor(song.duration.full % 60) < 10 ? "0" : ""
-                }${Math.floor(song.duration.full % 60)}`
+              ? secondsToReadableMinutes(song.duration.full)
               : "--";
 
             const unitsInSong = song.unit_id

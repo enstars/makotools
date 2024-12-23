@@ -10,7 +10,7 @@ export function CharacterMiniInfo({
 }) {
   const isMobile = useMediaQuery("(max-width: 768px)");
   return (
-    <Group spacing="xs">
+    <Group noWrap spacing="xs">
       <Text
         fz={isMobile ? "sm" : "md"}
         sx={(theme) => ({
