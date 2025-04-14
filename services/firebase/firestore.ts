@@ -59,7 +59,6 @@ export async function getFirestoreUserData(
   uid: string
 ): Promise<UserData | null> {
   // const clientAuth = getAuth();
-  // console.log("clientAuth", clientAuth);
   const db = getFirestore();
 
   // if (clientAuth.currentUser === null) {
@@ -89,8 +88,9 @@ export async function getFirestorePrivateUserData(uid: string) {
   }
 }
 
-export async function validateUsernameDb(username: string | undefined) {
-  if (!username) return undefined;
+export async function validateUsernameDb(
+  username: string | undefined
+): Promise<boolean | undefined> {
   const db = getFirestore();
   const q = query(collection(db, "users"), where("username", "==", username));
   const querySnap = await getDocs(q);
