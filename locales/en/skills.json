@@ -16,6 +16,7 @@
     "type_4": "Increases the amount that the Ensemble Time Gauge rises after a Good/Great/Perfect.",
     "type_29": "During Ensemble Live: Increases the drop rate of all Stat Pieces by {{percent}}%",
     "type_30": "Increases the drop rate of Idol Pieces by {{percent}}%.",
+    "type_24": "Increase the drop rate of Growth Tickets by {{percent}}x",
     "type_generic": "Increases the drop rate of {{type}} stat pieces by {{percent}}%.",
     "pieceNames": {
       "smallRed": "small red",

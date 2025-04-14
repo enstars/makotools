@@ -104,7 +104,8 @@ function Page({
           label: t("startDate"),
           value: "date",
           function: (a: Scout, b: Scout) =>
-            dayjs(a.start.en).unix() - dayjs(b.start.en).unix(),
+            dayjs(a.start[viewOptions.region]).unix() -
+            dayjs(b.start[viewOptions.region]).unix(),
         },
       ],
       baseSort: "id",
@@ -243,7 +244,7 @@ function Page({
                     },
                   }));
                 }}
-                spacing={3}
+                spacing={4}
               >
                 {[
                   {
@@ -269,6 +270,30 @@ function Page({
                       >
                         <IconComet size={16} />
                         {t("campaigns:full.scout.feature")}
+                      </Group>
+                    ),
+                  },
+                  {
+                    value: "original",
+                    label: (
+                      <Group
+                        align="center"
+                        spacing={6}
+                        sx={{ display: "inline-flex" }}
+                      >
+                        {t("campaigns:full.scout.original")}
+                      </Group>
+                    ),
+                  },
+                  {
+                    value: "anniv",
+                    label: (
+                      <Group
+                        align="center"
+                        spacing={6}
+                        sx={{ display: "inline-flex" }}
+                      >
+                        {t("campaigns:full.scout.anniv")}
                       </Group>
                     ),
                   },

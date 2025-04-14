@@ -450,6 +450,17 @@ const supportSkills = {
     4: [],
     5: [[25], [35], [50], [65], [75]],
   },
+  24: {
+    id: 24,
+    daydream_name: "PieceUpGrowthTicket",
+    drop_type: "growth ticket",
+    drop: "growthTicket",
+    1: [],
+    2: [],
+    3: [],
+    4: [],
+    5: [[1.25], [1.35], [1.5], [1.65], [1.75]],
+  },
   28: {
     id: 28,
     daydream_name: "PieceUpAllAll",
