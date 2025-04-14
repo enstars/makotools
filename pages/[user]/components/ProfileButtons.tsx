@@ -8,7 +8,6 @@ import {
   Text,
   useMantineTheme,
 } from "@mantine/core";
-import { showNotification, updateNotification } from "@mantine/notifications";
 import {
   IconPencil,
   IconCopy,
@@ -29,11 +28,13 @@ import { CONSTANTS } from "services/makotools/constants";
 import notify from "services/libraries/notify";
 import { UserData } from "types/makotools";
 import { UseMutateFunction } from "@tanstack/react-query";
+import { AuthUser } from "next-firebase-auth";
 
 /**
  * Friend, edit profile, and sharable link buttons
  */
 function ProfileButtons({
+  user,
   profile,
   isOwnProfile,
   isFriend,
@@ -46,6 +47,7 @@ function ProfileButtons({
   cancelFriendReq,
   openEditModal,
 }: {
+  user: AuthUser | undefined | null;
   profile: UserData;
   isOwnProfile: boolean;
   isFriend: boolean;
@@ -111,7 +113,7 @@ function ProfileButtons({
       </CopyButton>
       {!isOwnProfile && (
         <>
-          {!isFriend && !isOutgoingReq && !isIncomingReq && (
+          {user && !isFriend && !isOutgoingReq && !isIncomingReq && (
             <Tooltip label={t("sendFriendReq")}>
               <ActionIcon
                 onClick={() => sendFriendReq()}

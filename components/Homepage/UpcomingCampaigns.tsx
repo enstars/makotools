@@ -75,7 +75,9 @@ function EventCard({ event }: { event: Birthday | Event | Scout }) {
     ? `/characters/${(event as Birthday).character_id}`
     : ((event as Event).event_id && event.type === "song") ||
       event.type === "shuffle" ||
-      event.type == "tour"
+      event.type == "tour" ||
+      event.type === "spotlight" ||
+      event.type === "merge"
     ? `/events/${(event as Event).event_id}`
     : `/scouts/${(event as Scout).gacha_id}`;
 
@@ -167,10 +169,10 @@ function EventCard({ event }: { event: Birthday | Event | Scout }) {
                   <IconShirt size={12} strokeWidth={3} />
                 ) : event.type === "scout" ? (
                   <IconDiamond size={12} strokeWidth={3} />
-                ) : event.type === "song" ? (
-                  <IconAward size={12} strokeWidth={3} />
-                ) : (
+                ) : event.type === "tour" ? (
                   <IconBus size={12} strokeWidth={3} />
+                ) : (
+                  <IconAward size={12} strokeWidth={3} />
                 )}
               </Text>
             }

@@ -137,7 +137,7 @@ export default function BookmarkButton({
     <Paper
       top={0}
       sx={{
-        zIndex: 999,
+        zIndex: 99,
         cursor: "pointer",
         width: inCard ? 0 : 40,
         color: onBusyBackground ? "white" : undefined,
@@ -158,7 +158,7 @@ export default function BookmarkButton({
           position: "absolute",
           top: -48,
           right: mr || 0,
-          zIndex: 999,
+          zIndex: 99,
           opacity: 0.5,
           transition: "0.2s ease",
           transform: "translateY(0px)",

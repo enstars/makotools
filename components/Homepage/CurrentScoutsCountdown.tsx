@@ -58,7 +58,6 @@ function Countdown({ endDate }: { endDate: string }) {
 
 function ScoutCard({ scout }: { scout: Scout }) {
   const { t } = useTranslation("home");
-  const { classes } = useStyles();
   return (
     <Paper
       withBorder
@@ -81,11 +80,7 @@ function ScoutCard({ scout }: { scout: Scout }) {
         />
         <Stack>
           <Group>
-            <Title order={4}>
-              {scout.type === "scout"
-                ? t("scout.scout", { name: scout.name[0] })
-                : t("scout.fs", { name: scout.name[0] })}
-            </Title>
+            <Title order={4}>{t("scout.fs", { name: scout.name[0] })}</Title>
             <Badge
               variant="filled"
               color={scout.type === "scout" ? "violet" : "lightblue"}
@@ -105,9 +100,11 @@ function CurrentScoutsCards({ scouts }: { scouts: Scout[] }) {
 
   return (
     <SimpleGrid
-      cols={scouts.length}
       className={classes.scoutsCards}
-      breakpoints={[{ maxWidth: 755, cols: 1, spacing: "sm" }]}
+      breakpoints={[
+        { maxWidth: 755, cols: 1, spacing: "sm" },
+        { minWidth: 755, cols: 2, spacing: "sm" },
+      ]}
     >
       {scouts.map((scout: Scout) => (
         <ScoutCard key={scout.gacha_id} scout={scout} />

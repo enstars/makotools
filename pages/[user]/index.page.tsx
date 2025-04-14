@@ -128,6 +128,8 @@ function Page({
 
   const qc = useQueryClient();
 
+  console.log({ uid });
+
   const {
     data: profileData,
     isPending: isProfileDataPending,
@@ -148,6 +150,8 @@ function Page({
     friendCodesError,
     updateFriendCodesMutation,
   } = useFriendCodes(uid);
+
+  console.log({ profileData });
 
   const sendFriendReq = useMutation({
     mutationFn: async () => {
@@ -524,8 +528,6 @@ function Page({
       </Container>
     );
   }
-
-  console.log("friend codes", friendCodes);
 
   if (
     isProfileDataPending ||

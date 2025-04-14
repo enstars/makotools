@@ -252,6 +252,7 @@ type SupportSkillIDs =
   | 14
   | 15
   | 16
+  | 24
   | 28
   | 29
   | 30;
@@ -323,8 +324,14 @@ interface GameCardOld {
   };
 }
 
-export type EventType = "song" | "tour" | "shuffle" | "special";
-export type ScoutType = "scout" | "feature scout";
+export type EventType =
+  | "song"
+  | "tour"
+  | "shuffle"
+  | "special"
+  | "spotlight"
+  | "merge";
+export type ScoutType = "scout" | "feature scout" | "original" | "anniv";
 type CampaignType =
   | "birthday"
   | "anniversary"
