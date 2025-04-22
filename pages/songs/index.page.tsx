@@ -39,6 +39,9 @@ function Page({
   charasQuery: QuerySuccess<GameCharacter[]>;
   albumsQuery: QuerySuccess<SongAlbum[]>;
 }) {
+  // TODO: add sorting and filter options
+  // filter by unit, singers, and album
+  // sort by title, unit, album, and duration
   const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
