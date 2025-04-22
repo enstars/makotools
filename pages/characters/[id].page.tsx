@@ -30,6 +30,7 @@ import {
   Scout,
   GameUnit,
   VersionedCharacterData,
+  VersionOption,
 } from "types/game";
 import { getNameOrder } from "services/game";
 import {
@@ -46,9 +47,7 @@ const CharacterColorsContext = createContext({
   image: "",
 });
 
-export function selectCorrectCharacterVersion() {
-
-}
+export function selectCorrectCharacterVersion() {}
 
 export const useCharacterColors = () => {
   return useContext(CharacterColorsContext);
@@ -92,44 +91,51 @@ function Page({
   const { data: units } = unitsQuery;
   const [renderFaded, setRenderFaded] = useState(false);
 
+  console.log("character", character);
+
   // get different versions of character data
-  const characterVersions: Array<{ date: Dayjs; reason: string; id: number }> =
-    useMemo(() => {
-      const flattenedRendersData: GameCharacter & {
-        "renders.full": Array<VersionedCharacterData<string>>;
-      } = {
-        ...character,
-        "renders.full": character.renders.full,
-      }
+  const characterVersions: Array<VersionOption> = useMemo(() => {
+    const flattenedRendersData: GameCharacter & {
+      "renders.full": Array<VersionedCharacterData<string>>;
+    } = {
+      ...character,
+      "renders.full": character.renders.full,
+    };
 
-      const versionedData: [
-        string,
-        Array<VersionedCharacterData<string[] | string | number>>
-      ][] = Object.entries(flattenedRendersData).filter(([key]) =>
-        differingDataKeys.includes(key)
+    const versionedData: [
+      string,
+      Array<VersionedCharacterData<string[] | string | number>>
+    ][] = Object.entries(flattenedRendersData).filter(([key]) =>
+      differingDataKeys.includes(key)
+    );
+    const flattenedVersionedData = versionedData.map((data) => data[1]).flat();
+    const uniqueVersions = flattenedVersionedData.reduce((acc, current) => {
+      const formattedVersionData = {
+        date: dayjs(current?.date),
+        reason: current.reason,
+      };
+      const doesVersionExistInArray = acc.find(
+        (data) =>
+          data.date.isSame(formattedVersionData.date) ||
+          data.reason === formattedVersionData.reason
       );
-   const flattenedVersionedData = versionedData.map(data => data[1]).flat();
-   const uniqueVersions = flattenedVersionedData.reduce((acc, current) => {
-        const formattedVersionData = {
-            date: dayjs(current.date),
-            reason: current.reason,
-        }
-        const doesVersionExistInArray = acc.find(data => data.date.isSame(formattedVersionData.date) || data.reason === formattedVersionData.reason);
-        if (!doesVersionExistInArray) {
-            const updatedArray = [...acc, formattedVersionData];
-            return updatedArray;
-        } else {
-            return acc;
-        }
-   }, [] as Array<{date: Dayjs; reason: string}>);
+      if (!doesVersionExistInArray) {
+        const updatedArray = [...acc, formattedVersionData];
+        return updatedArray;
+      } else {
+        return acc;
+      }
+    }, [] as Array<{ date: Dayjs; reason: string }>);
 
-   return uniqueVersions.sort((a, b) => {
-    if (a.date.isSameOrBefore(b.date)) return -1;
-    else return 1;
-   }).map((version, index) => ({
-    ...version,
-    id: index,
-   }));
+    return uniqueVersions
+      .sort((a, b) => {
+        if (a.date.isSameOrBefore(b.date)) return -1;
+        else return 1;
+      })
+      .map((version, index) => ({
+        ...version,
+        id: index,
+      }));
   }, [character]);
 
   // create a context for the characters colors
@@ -286,17 +292,18 @@ function Page({
                 },
               }}
             >
-              {character.quote[0]}
+              {character.quotes?.[selectedVersionId]?.value[0] ??
+                character.quote[0]}
             </Text>
           </Box>
           {/* {CharaRender(theme, renderFaded, character, renderHeight)} */}
           <CharaRender
             {...{
-                theme,
-                renderFaded,
-                character,
-                renderHeight,
-                selectedVersion,
+              theme,
+              renderFaded,
+              character,
+              renderHeight,
+              selectedVersion,
             }}
           />
           <ProfileSummary
@@ -410,6 +417,7 @@ function Page({
             character={character}
             locale={characterQuery.lang}
             units={units}
+            selectedVersion={selectedVersionId}
           />
           <CirclesSection characters={characters} character={character} />
           <CardsSection
@@ -434,13 +442,16 @@ function Page({
 }
 
 export const getServerSideProps = getServerSideUser(
-  async ({ res, locale, params, db }) => {
+  async ({ locale, params, db }) => {
     const characters = await getLocalizedDataArray<GameCharacter>(
-      "characters",
+      "characters_beta",
       locale,
       "character_id"
     );
-    const charsEN = await getData<GameCharacter<string>[]>("characters", "en");
+    const charsEN = await getData<GameCharacter<string>[]>(
+      "characters_beta",
+      "en"
+    );
     if (!characters || charsEN.status === "error") return { notFound: true };
     const { data: charactersEN } = charsEN;
 

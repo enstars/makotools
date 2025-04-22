@@ -108,27 +108,35 @@ export function ProfileSummary({
             <Title order={3} size="h3">
               Profile
             </Title>
-            {character.unit.map((unit) => (
-              <Image
-                key={unit}
-                alt={"unit"}
-                src={getAssetURL(`assets/unit_logo_border_${unit}.png`)}
-                width={100}
-              />
-            ))}
+            {(character.units[selectedVersion]?.value ?? character.unit).map(
+              (unit) => (
+                <Image
+                  key={unit}
+                  alt={"unit"}
+                  src={getAssetURL(`assets/unit_logo_border_${unit}.png`)}
+                  width={100}
+                />
+              )
+            )}
           </Group>
           <Stack spacing="xs" mt={6}>
             <CharacterMiniInfo
               label="Age"
-              info={Number(character.age)}
+              info={Number(
+                character.ages?.[selectedVersion]?.value ?? character.age
+              )}
             />
             <CharacterMiniInfo
               label="Height"
-              info={`${character.height}cm`}
+              info={`${
+                character.heights?.[selectedVersion]?.value ?? character.height
+              }cm`}
             />
             <CharacterMiniInfo
               label="Weight"
-              info={`${character.weight}kg`}
+              info={`${
+                character.weights?.[selectedVersion]?.value ?? character.weight
+              }kg`}
             />
             <CharacterMiniInfo
               label="School"
@@ -139,9 +147,19 @@ export function ProfileSummary({
               info={`${dayjs(character.birthday).format("MMMM D")}`}
             />
             <CharacterMiniInfo label="Blood type" info={character.blood_type} />
-            <CharacterMiniInfo info={character.hobby[0]} label="Hobby" />
             <CharacterMiniInfo
-              info={character.specialty ? character.specialty[0] : "--"}
+              info={
+                character.hobbies?.[selectedVersion]?.value[0] ??
+                character.hobby[0]
+              }
+              label="Hobby"
+            />
+            <CharacterMiniInfo
+              info={
+                character.specialties?.[selectedVersion]?.value[0] ??
+                character.specialty?.[0] ??
+                "--"
+              }
               label="Specialty"
             />
             <CharacterMiniInfo

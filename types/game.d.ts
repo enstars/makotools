@@ -16,9 +16,15 @@ interface ForEachRegion<T> {
 // CHARACTERS
 
 interface VersionedCharacterData<T> {
-    date: string;
-    reason: string;
-    value: T;
+  date: string;
+  reason: string;
+  value: T;
+}
+
+interface VersionOption {
+  date: Dayjs;
+  reason: string;
+  id: number;
 }
 
 interface GameCharacterStrings<Type> {
@@ -46,6 +52,7 @@ interface GameCharacterStrings<Type> {
 interface GameCharacter<T = string[]> extends GameCharacterStrings<T> {
   character_id: ID;
   unit: ID[];
+  units: Array<VersionedCharacterData<Array<ID>>>;
   image_color?: HexColorWithTag;
 
   /** Height in cms */
@@ -65,11 +72,11 @@ interface GameCharacter<T = string[]> extends GameCharacterStrings<T> {
   sort_id: number;
 
   /** Versioned strings */
-    hobbies: Array<VersionedCharacterData<T>>;
-    specialties: Array<VersionedCharacterData<T>>;
-    quotes: Array<VersionedCharacterData<T>>;
-    taglines: Array<VersionedCharacterData<T>>;
-    introductions: Array<VersionedCharacterData<T>>;
+  hobbies: Array<VersionedCharacterData<T>>;
+  specialties: Array<VersionedCharacterData<T>>;
+  quotes: Array<VersionedCharacterData<T>>;
+  taglines: Array<VersionedCharacterData<T>>;
+  introductions: Array<VersionedCharacterData<T>>;
 
   /** Horoscope
    *

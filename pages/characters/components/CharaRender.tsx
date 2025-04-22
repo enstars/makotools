@@ -4,6 +4,7 @@ import { Parallax, useParallaxController } from "react-scroll-parallax";
 import { GameCharacter } from "types/game";
 import Picture from "components/core/Picture";
 import { Dayjs } from "dayjs";
+import { useDayjs } from "services/libraries/dayjs";
 
 export function CharaRender(
   // theme,
@@ -24,8 +25,17 @@ export function CharaRender(
     selectedVersion: { date: Dayjs; reason: string; id: number };
   }
 ) {
+  const { dayjs } = useDayjs();
   const parallaxController = useParallaxController();
-  console.log(character);
+  const rendersBeforeSelectedVersion = character.renders.full.filter((render) =>
+    selectedVersion.date.isAfter(dayjs(render.date))
+  );
+  const matchingRenderForVersison =
+    character.renders.full.find((render) =>
+      selectedVersion.date.isSame(dayjs(render.date))
+    )?.value ??
+    rendersBeforeSelectedVersion[rendersBeforeSelectedVersion.length - 1].value;
+
   return (
     <Box
       id="chara-render"
@@ -65,7 +75,7 @@ export function CharaRender(
         <Parallax speed={-10}>
           <Picture
             loading="eager"
-            srcB2={`render/character_full1_${character.character_id}.png`}
+            srcB2={`render/${matchingRenderForVersison}.png`}
             transparent
             alt={character.first_name[0] || "Character render"}
             fill={false}
