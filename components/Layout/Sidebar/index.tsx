@@ -169,12 +169,12 @@ function Sidebar(props: any) {
       name: "scouts",
       Icon: IconDiamond,
     },
-    {
-      link: "/stories",
-      name: "stories",
-      Icon: IconBooks,
-      disabled: true,
-    },
+    // {
+    //   link: "/stories",
+    //   name: "stories",
+    //   Icon: IconBooks,
+    //   disabled: true,
+    // },
     {
       link: "/assets",
       name: "assets",
