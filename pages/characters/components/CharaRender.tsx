@@ -8,25 +8,19 @@ import { useDayjs } from "services/libraries/dayjs";
 import { useEffect, useRef } from "react";
 import { getVersionedItem } from "services/utilities";
 
-export function CharaRender(
-  // theme,
-  // renderFaded: boolean,
-  // character: GameCharacter<string[]>,
-  // renderHeight: number
-  {
-    theme,
-    renderFaded,
-    character,
-    renderHeight,
-    selectedVersion,
-  }: {
-    theme: ReturnType<typeof useMantineTheme>;
-    renderFaded: boolean;
-    character: GameCharacter<string[]>;
-    renderHeight: number;
-    selectedVersion: { date: Dayjs; reason: string; id: number };
-  }
-) {
+export function CharaRender({
+  theme,
+  renderFaded,
+  character,
+  renderHeight,
+  selectedVersion,
+}: {
+  theme: ReturnType<typeof useMantineTheme>;
+  renderFaded: boolean;
+  character: GameCharacter<string[]>;
+  renderHeight: number;
+  selectedVersion: { date: Dayjs; reason: string; id: number };
+}) {
   const parallaxController = useParallaxController();
 
   const matchingRenderForVersion = getVersionedItem(

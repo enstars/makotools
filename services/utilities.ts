@@ -265,7 +265,7 @@ export function getVersionedItem<T>(
   const earlierVersionedData = versionedData.filter((item) =>
     dayjs(item.date).isSameOrBefore(versionDate)
   );
-  return earlierVersionedData[versionedData.length - 1];
+  return earlierVersionedData[earlierVersionedData.length - 1];
 }
 
 export {
