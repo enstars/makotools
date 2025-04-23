@@ -1,4 +1,4 @@
-import { Box, Text, Group, Divider } from "@mantine/core";
+import { Box, Text, Group, Divider, Spoiler } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 
 export function CharacterMiniInfo({
@@ -9,6 +9,7 @@ export function CharacterMiniInfo({
   info: string | number | JSX.Element;
 }) {
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const fontSize = isMobile ? 12 : 16;
   return (
     <Group spacing="xs">
       <Text
@@ -49,7 +50,13 @@ export function CharacterMiniInfo({
           flexBasis: "50%",
         }}
       >
-        {info}
+        <Spoiler
+          maxHeight={fontSize * 3}
+          showLabel="Show more"
+          hideLabel="Hide"
+        >
+          {info}
+        </Spoiler>
       </Text>
     </Group>
   );

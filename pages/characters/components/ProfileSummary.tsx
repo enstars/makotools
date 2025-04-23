@@ -20,6 +20,7 @@ import { useDayjs } from "services/libraries/dayjs";
 import { GameCharacter } from "types/game";
 import { Dayjs } from "dayjs";
 import { Dispatch, SetStateAction } from "react";
+import { getVersionedItem } from "services/utilities";
 
 export function ProfileSummary({
   character,
@@ -39,6 +40,9 @@ export function ProfileSummary({
   const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const { dayjs } = useDayjs();
+
+  const selectedVersionObject = versionList[selectedVersion];
+
   return (
     <>
       <Box
@@ -123,19 +127,22 @@ export function ProfileSummary({
             <CharacterMiniInfo
               label="Age"
               info={Number(
-                character.ages?.[selectedVersion]?.value ?? character.age
+                getVersionedItem(character.ages, selectedVersionObject.date)
+                  ?.value ?? character.age
               )}
             />
             <CharacterMiniInfo
               label="Height"
               info={`${
-                character.heights?.[selectedVersion]?.value ?? character.height
+                getVersionedItem(character.heights, selectedVersionObject.date)
+                  ?.value ?? character.height
               }cm`}
             />
             <CharacterMiniInfo
               label="Weight"
               info={`${
-                character.weights?.[selectedVersion]?.value ?? character.weight
+                getVersionedItem(character.weights, selectedVersionObject.date)
+                  ?.value ?? character.weight
               }kg`}
             />
             <CharacterMiniInfo
@@ -149,14 +156,17 @@ export function ProfileSummary({
             <CharacterMiniInfo label="Blood type" info={character.blood_type} />
             <CharacterMiniInfo
               info={
-                character.hobbies?.[selectedVersion]?.value[0] ??
-                character.hobby[0]
+                getVersionedItem(character.hobbies, selectedVersionObject.date)
+                  ?.value[0] ?? character.hobby[0]
               }
               label="Hobby"
             />
             <CharacterMiniInfo
               info={
-                character.specialties?.[selectedVersion]?.value[0] ??
+                getVersionedItem(
+                  character.specialties,
+                  selectedVersionObject.date
+                )?.value[0] ??
                 character.specialty?.[0] ??
                 "--"
               }

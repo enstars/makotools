@@ -1,7 +1,7 @@
 import { MantineTheme } from "@mantine/core";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
-import { Event, Scout } from "types/game";
+import { Event, Scout, VersionedCharacterData } from "types/game";
 import { HSLObject } from "types/makotools";
 
 function parseStringify(object: any) {
@@ -249,6 +249,23 @@ function isScoutEvent(event: Event | Scout): event is Scout {
     (event as Scout).type === "feature scout" ||
     (event as Scout).type === "scout"
   );
+}
+
+export function getVersionedItem<T>(
+  versionedData: Array<VersionedCharacterData<T>> | undefined,
+  versionDate: Dayjs
+): VersionedCharacterData<T> | undefined {
+  if (!versionedData) return undefined;
+  const sameDateItem = versionedData.find((item) =>
+    dayjs(item.date).isSame(versionDate)
+  );
+  if (sameDateItem) return sameDateItem;
+
+  // get date right before it
+  const earlierVersionedData = versionedData.filter((item) =>
+    dayjs(item.date).isSameOrBefore(versionDate)
+  );
+  return earlierVersionedData[versionedData.length - 1];
 }
 
 export {

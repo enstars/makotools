@@ -5,6 +5,8 @@ import { GameCharacter } from "types/game";
 import Picture from "components/core/Picture";
 import { Dayjs } from "dayjs";
 import { useDayjs } from "services/libraries/dayjs";
+import { useEffect, useRef } from "react";
+import { getVersionedItem } from "services/utilities";
 
 export function CharaRender(
   // theme,
@@ -25,16 +27,20 @@ export function CharaRender(
     selectedVersion: { date: Dayjs; reason: string; id: number };
   }
 ) {
-  const { dayjs } = useDayjs();
   const parallaxController = useParallaxController();
-  const rendersBeforeSelectedVersion = character.renders.full.filter((render) =>
-    selectedVersion.date.isAfter(dayjs(render.date))
-  );
-  const matchingRenderForVersison =
-    character.renders.full.find((render) =>
-      selectedVersion.date.isSame(dayjs(render.date))
-    )?.value ??
-    rendersBeforeSelectedVersion[rendersBeforeSelectedVersion.length - 1].value;
+
+  const matchingRenderForVersion = getVersionedItem(
+    character.renders.full,
+    selectedVersion.date
+  )?.value;
+
+  useEffect(() => {
+    parallaxController?.update();
+  }, [matchingRenderForVersion]);
+
+  useEffect(() => {
+    parallaxController?.update();
+  }, []);
 
   return (
     <Box
@@ -75,11 +81,11 @@ export function CharaRender(
         <Parallax speed={-10}>
           <Picture
             loading="eager"
-            srcB2={`render/${matchingRenderForVersison}.png`}
+            srcB2={`render/${matchingRenderForVersion}.png`}
             transparent
             alt={character.first_name[0] || "Character render"}
             fill={false}
-            width={renderHeight}
+            width={renderHeight / (1500 / 1000)}
             height={renderHeight}
             style={{
               userSelect: "none",
