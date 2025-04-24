@@ -2,10 +2,10 @@ import {
   ActionIcon,
   Box,
   Button,
-  Center,
   Group,
-  Menu,
+  MultiSelect,
   Paper,
+  Popover,
   SegmentedControl,
   SimpleGrid,
   Spoiler,
@@ -13,27 +13,24 @@ import {
   Text,
   TextInput,
   Title,
+  Tooltip,
   useMantineTheme,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import {
+  IconAdjustments,
   IconChevronsDown,
   IconChevronsUp,
   IconClock,
-  IconDotsVertical,
   IconMoodSmile,
-  IconMusic,
   IconSearch,
-  IconSortAscending,
-  IconSortDescending,
 } from "@tabler/icons-react";
+import Picture from "components/core/Picture";
 import { getLayout } from "components/Layout";
-import Image from "next/image";
 import { ReactNode, useMemo, useState } from "react";
 import { getLocalizedDataArray } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getNameOrder } from "services/game";
-import { CONSTANTS } from "services/makotools/constants";
 import useFSSList from "services/makotools/search";
 import { secondsToReadableMinutes } from "services/utilities";
 import {
@@ -49,6 +46,8 @@ const defaultView = {
   filters: {
     units: [] as number[],
     characters: [] as number[],
+    eventSongsOnly: "false",
+    hideInstrumentals: "true",
   },
   search: "",
   sort: {
@@ -154,11 +153,9 @@ function Page({
           values: [] as number[],
           function: (view) => {
             return (song: SongWithAlbum) => {
-              return (
-                view.filters.units.filter((value) =>
-                  song.unit_id?.includes(value)
-                ).length === view.filters.units.length
-              );
+              return !!view.filters.units.filter((value) =>
+                song.unit_id?.includes(value)
+              ).length;
             };
           },
         },
@@ -166,10 +163,22 @@ function Page({
           type: "characters",
           values: [] as number[],
           function: (view) => {
-            return (song: SongWithAlbum) =>
-              view.filters.characters.filter((value) =>
-                song.character_id?.includes(value)
-              ).length === view.filters.characters.length;
+            return (song: SongWithAlbum) => {
+              return !!song.character_id?.filter((chara) =>
+                view.filters.characters.includes(chara)
+              ).length;
+            };
+          },
+        },
+        {
+          type: "eventSongsOnly",
+          values: false,
+          function: (view) => {
+            return (song: SongWithAlbum) => {
+              return view.filters.eventSongsOnly === "true"
+                ? !!song.event_id
+                : true;
+            };
           },
         },
       ],
@@ -204,7 +213,7 @@ function Page({
       ],
       baseSort: "id",
       search: {
-        fields: ["name.0", "name.1", "name.2"],
+        fields: ["name"],
       },
       defaultView,
     };
@@ -215,14 +224,15 @@ function Page({
     typeof defaultView.filters
   >(songsWithAlbums, fssOptions);
 
-  const shuffledAlbums = [
-    albums[Math.floor(Math.random() * (albums.length - 1))],
-    albums[Math.floor(Math.random() * (albums.length - 1))],
-    albums[Math.floor(Math.random() * (albums.length - 1))],
-    albums[Math.floor(Math.random() * (albums.length - 1))],
-  ];
-
-  console.log({ albums, shuffledAlbums });
+  const shuffledAlbums = useMemo(
+    () => [
+      albums[Math.floor(Math.random() * (albums.length - 1))],
+      albums[Math.floor(Math.random() * (albums.length - 1))],
+      albums[Math.floor(Math.random() * (albums.length - 1))],
+      albums[Math.floor(Math.random() * (albums.length - 1))],
+    ],
+    []
+  );
 
   return (
     <>
@@ -232,6 +242,7 @@ function Page({
         p={isMobile ? "sm" : "xl"}
         mt={8}
         sx={{
+          position: "relative",
           backgroundImage: `linear-gradient(45deg, ${
             theme.colors[theme.primaryColor][
               theme.colorScheme === "dark" ? 9 : 2
@@ -240,6 +251,55 @@ function Page({
           backgroundAttachment: "fixed",
         }}
       >
+        <Popover position="bottom-end">
+          <Popover.Target>
+            <Tooltip label="Filter" position="left">
+              <Button
+                variant="subtle"
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
+                  marginTop: theme.spacing.sm,
+                  marginRight: theme.spacing.sm,
+                }}
+              >
+                <IconAdjustments />
+              </Button>
+            </Tooltip>
+          </Popover.Target>
+          <Popover.Dropdown>
+            <Text fz="sm" fw="bold" color="dimmed" mb="xs">
+              Filter
+            </Text>
+            <MultiSelect
+              label="Units"
+              data={units.map((unit) => ({
+                value: String(unit.id),
+                label: unit.name[0],
+              }))}
+            />
+            <MultiSelect
+              label="Characters"
+              data={characters.map((character) => ({
+                value: String(character.character_id),
+                label: getNameOrder({
+                  first_name: character.first_name[0],
+                  last_name: character.last_name[0],
+                }),
+              }))}
+            />
+            <Text>Duration</Text>
+            <SegmentedControl
+              data={[
+                { label: "Game Size", value: "game" },
+                { label: "Full Size", value: "full" },
+              ]}
+              value={durationType}
+              onChange={setDurationType}
+            />
+          </Popover.Dropdown>
+        </Popover>
         <Group noWrap id="page-header" align="center" spacing="xl" p="xl">
           <Paper
             shadow="sm"
@@ -253,15 +313,18 @@ function Page({
               overflow: "hidden",
             }}
           >
-            <SimpleGrid cols={2} spacing={0} verticalSpacing={0}>
+            <SimpleGrid
+              cols={2}
+              spacing={0}
+              verticalSpacing={0}
+              sx={{ width: "100%", height: "100%" }}
+            >
               {shuffledAlbums.map((album) => {
                 return (
-                  <Image
-                    src={`${CONSTANTS.EXTERNAL_URLS.ASSETS}albums/${album.id}.jpg`}
+                  <Picture
+                    srcB2={`albums/${album.id}.png`}
                     alt={album.name.alt}
-                    width={120}
-                    height={120}
-                    style={{ width: "100%", height: "100%" }}
+                    sx={{ width: "100%", height: "100%" }}
                   />
                 );
               })}
@@ -376,12 +439,10 @@ function Page({
                     }}
                   >
                     {song.album_id ? (
-                      <Image
-                        src={`${CONSTANTS.EXTERNAL_URLS.ASSETS}/albums/${song.album_id}.jpg`}
+                      <Picture
+                        srcB2={`albums/${song.album_id}.png`}
                         alt={String(song.album_id)}
-                        width={120}
-                        height={120}
-                        style={{ width: "100%", height: "100%" }}
+                        sx={{ width: "100%", height: "100%" }}
                       />
                     ) : (
                       <IconMoodSmile />

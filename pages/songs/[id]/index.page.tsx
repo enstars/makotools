@@ -3,13 +3,10 @@ import {
   Anchor,
   Box,
   DefaultMantineColor,
-  Grid,
   Group,
   Paper,
-  SimpleGrid,
   Stack,
   Table,
-  Tabs,
   Text,
   Title,
   Tooltip,
@@ -27,7 +24,6 @@ import Picture from "components/core/Picture";
 import ResponsiveGrid from "components/core/ResponsiveGrid";
 import { getLayout } from "components/Layout";
 import Link from "next/link";
-import CharacterCard from "pages/characters/components/CharacterCard";
 import { CharacterMiniInfo } from "pages/characters/components/CharacterMiniInfo";
 import SectionTitle from "pages/events/components/SectionTitle";
 import {
@@ -37,7 +33,7 @@ import {
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getNameOrder } from "services/game";
 import { secondsToReadableMinutes } from "services/utilities";
-import { Event, GameCharacter, GameUnit, Song } from "types/game";
+import { Event, GameCharacter, GameUnit, Song, SongAlbum } from "types/game";
 import { QuerySuccess } from "types/makotools";
 
 function Page({
@@ -45,17 +41,20 @@ function Page({
   unitsQuery,
   charaQuery,
   eventsQuery,
+  albumsQuery,
 }: {
   songQuery: QuerySuccess<Song>;
   unitsQuery: QuerySuccess<GameUnit[]>;
   charaQuery: QuerySuccess<GameCharacter[]>;
   eventsQuery: QuerySuccess<Event[]>;
+  albumsQuery: QuerySuccess<SongAlbum[]>;
 }) {
   const theme = useMantineTheme();
   const { data: song } = songQuery;
   const { data: units } = unitsQuery;
   const { data: characters } = charaQuery;
   const { data: events } = eventsQuery;
+  const { data: albums } = albumsQuery;
 
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.md}px)`);
   const { width, height } = useViewportSize();
@@ -90,7 +89,9 @@ function Page({
     (event) => event.event_id === song.event_id
   );
 
-  console.log({ song, units, correspondingEvent });
+  const correspondingAlbum = albums.find((album) =>
+    album.tracklist?.find((track) => track?.includes(song.id))
+  );
 
   return (
     <Box mt={48} pb={64} pos="relative">
@@ -151,9 +152,18 @@ function Page({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            overflow: "hidden",
           }}
         >
-          <IconMusic size={48} />
+          {correspondingAlbum ? (
+            <Picture
+              srcB2={`albums/${correspondingAlbum.id}.png`}
+              alt={song.name}
+              sx={{ width: "100%", height: "100%" }}
+            />
+          ) : (
+            <IconMusic size={48} />
+          )}
         </Paper>
         <Stack mt={isMobile ? -72 : undefined}>
           <Title
@@ -402,13 +412,18 @@ export const getServerSideProps = getServerSideUser(
     if (!params?.id || Array.isArray(params?.id)) return { notFound: true };
 
     const songs = await getLocalizedDataArray<Song>("songs", locale, "id");
-    const song = getItemFromLocalizedDataArray(
+    const song = getItemFromLocalizedDataArray<Song>(
       songs,
       parseInt(params.id),
       "id"
     );
 
     if (song.status === "error") return { notFound: true };
+    const albums = await getLocalizedDataArray<SongAlbum>(
+      "albums",
+      locale,
+      "id"
+    );
     const units = await getLocalizedDataArray<GameUnit>("units", locale, "id");
     const characters = await getLocalizedDataArray<GameCharacter>(
       "characters",
@@ -429,6 +444,7 @@ export const getServerSideProps = getServerSideUser(
         unitsQuery: units,
         charaQuery: characters,
         eventsQuery: events,
+        albumsQuery: albums,
         breadcrumbs,
         meta: {
           title: song.data.name,
