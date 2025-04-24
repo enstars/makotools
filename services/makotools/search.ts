@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
 import fuzzysort from "fuzzysort";
 
@@ -7,11 +7,10 @@ export default function useFSSList<DataType, Filter>(
   data: DataType[],
   options: FSSOptions<DataType, Filter>
 ) {
-  const [results, setResults] = useState(data);
   const [view, setView] = useState(options.defaultView);
   const [debouncedSearch] = useDebouncedValue(view.search, 200);
 
-  useEffect(() => {
+  const results = useMemo(() => {
     let filteredList = data;
 
     let finalList;
@@ -49,7 +48,8 @@ export default function useFSSList<DataType, Filter>(
       }
       finalList = sortedList;
     }
-    setResults([...finalList]);
+
+    return [...finalList];
   }, [view, debouncedSearch, options]);
 
   return { results, view, setView };

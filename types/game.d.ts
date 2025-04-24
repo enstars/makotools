@@ -421,11 +421,9 @@ export interface SongDifficulty {
   special?: number;
 }
 
-export interface SongDuration {
-  // in seconds
-  game: number; // game size
-  full: number;
-}
+export type SongDurationType = "game" | "full";
+
+export type SongDuration = Record<SongDurationType, number>;
 
 export interface SongLinks {
   youtube_3dmv?: string;
