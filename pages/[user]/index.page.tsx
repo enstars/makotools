@@ -144,6 +144,7 @@ function Page({
     },
     enabled: !!uid,
   });
+
   const { friendCodes, areFriendCodesPending, updateFriendCodesMutation } =
     useFriendCodes(uid);
 

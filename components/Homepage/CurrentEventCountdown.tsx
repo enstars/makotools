@@ -105,7 +105,7 @@ function CurrentEventCountdown({ shownEvent }: { shownEvent: Event }) {
   const theme = useMantineTheme();
   const { t } = useTranslation("home");
   const { dayjs } = useDayjs();
-  const isNextEvent = shownEvent && dayjs().isBefore(shownEvent.start.en);
+  const isNextEvent = shownEvent && dayjs().isBefore(shownEvent?.start.en);
 
   const { classes } = useStyles();
   return (

@@ -1,14 +1,15 @@
 {
   "links": {
-    "characters": "Characters",
-    "cards": "Cards",
-    "events": "Events",
-    "scouts": "Scouts",
-    "stories": "Stories",
+    "about": "About",
     "assets": "Assets",
     "calendar": "Calendar",
-    "about": "About",
+    "cards": "Cards",
+    "characters": "Characters",
+    "events": "Events",
     "patreon": "Patreon",
+    "scouts": "Scouts",
+    "songs": "Songs",
+    "stories": "Stories",
     "user": "User"
   },
   "searchbarMessage": "Search...",

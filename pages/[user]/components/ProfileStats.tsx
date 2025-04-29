@@ -34,6 +34,7 @@ import { FriendCode, FriendCodeRegions, UserData } from "types/makotools";
 import { getNameOrder } from "services/game";
 import { getAssetURL } from "services/data";
 import { gameRegionsWithBasic } from "services/makotools/friendCodes";
+
 import { useMediaQuery } from "@mantine/hooks";
 
 function StatsItems({

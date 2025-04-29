@@ -8,7 +8,7 @@ function SectionTitle({
   iconProps,
 }: {
   title: ReactNode;
-  id: string;
+  id?: string;
   Icon: any;
   iconProps?: any;
 }) {

@@ -309,7 +309,7 @@ function Page({
             {t("resultsFound", { count: results.length })}
           </Text>
           <InfiniteScroll
-            dataLength={slicedCardsList.length}
+            dataLength={results.length}
             next={loadMore}
             hasMore={count < results.length}
             loader={

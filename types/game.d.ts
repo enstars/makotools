@@ -435,3 +435,68 @@ export interface RecommendedEvents {
   event: GameCampaign;
   charId: ID;
 }
+
+export interface SongDifficulty {
+  easy: number;
+  normal: number;
+  hard: number;
+  expert: number;
+  expert_gimmicks?: number;
+  special?: number;
+}
+
+export type SongDurationType = "game" | "full";
+
+export type SongDuration = Record<SongDurationType, number>;
+
+export interface SongLinks {
+  youtube_3dmv?: string;
+  youtube_2dmv?: string;
+}
+
+export interface SongVersionIDs {
+  full?: Array<number | string>;
+  inst?: number | string;
+  unit?: Array<number | string>;
+}
+
+export interface Song {
+  id: number | string;
+  name: string;
+  unit_id?: number[];
+  unit_name?: string;
+  character_id?: number[];
+  color?: number;
+  difficulty?: SongDifficulty;
+  duration?: SongDuration;
+  lyric?: string;
+  composition?: string;
+  arrangement?: string;
+  link?: SongLinks;
+  event_id?: number;
+  version?: SongVersionIDs;
+  order?: number;
+  has_game_edit?: string;
+  limited?: boolean;
+}
+
+export interface SongAlbum {
+  id: number;
+  name: {
+    alt: string;
+    raw: string;
+  };
+  era: 1 | 2;
+  volume: number;
+  unit_id: number[];
+  release_Date: string;
+  tracklist: Array<number | string | null>[];
+  link?: string;
+}
+
+export interface SongSeries {
+  id: stirng;
+  name: string;
+  album_id: Array<number | string>;
+  order: number;
+}
