@@ -1,8 +1,10 @@
 import {
-  ActionIcon,
   Box,
   Button,
+  Center,
+  Checkbox,
   Group,
+  Loader,
   MultiSelect,
   Paper,
   Popover,
@@ -27,7 +29,15 @@ import {
 } from "@tabler/icons-react";
 import Picture from "components/core/Picture";
 import { getLayout } from "components/Layout";
-import { ReactNode, useMemo, useState } from "react";
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { getLocalizedDataArray } from "services/data";
 import getServerSideUser from "services/firebase/getServerSideUser";
 import { getNameOrder } from "services/game";
@@ -47,7 +57,8 @@ const defaultView = {
     units: [] as number[],
     characters: [] as number[],
     eventSongsOnly: "false",
-    hideInstrumentals: "true",
+    showInstrumentals: "false",
+    gameEditsOnly: "true",
   },
   search: "",
   sort: {
@@ -74,6 +85,8 @@ function Page({
   // sort by title, unit, album, and duration
   const theme = useMantineTheme();
   const isMobile = useMediaQuery("(max-width: 768px)");
+
+  const visibleCount = useRef(25);
 
   const { data: songs } = songsQuery;
   const { data: units } = unitsQuery;
@@ -135,6 +148,8 @@ function Page({
   }
 
   const [durationType, setDurationType] = useState<string>("full");
+  const [slicedSongs, setSlicedSongs] = useState<SongWithAlbum[]>([]);
+  const [currentCount, setCurrentCount] = useState(visibleCount.current);
 
   const songsWithAlbums: SongWithAlbum[] = songs.map((song) => {
     const songAlbum = albums.find((album) =>
@@ -142,6 +157,19 @@ function Page({
     );
     return { ...song, album_id: songAlbum?.id };
   });
+
+  const instrumentalIds = useMemo(() => {
+    const songsWithInstrumentals = songsWithAlbums.filter(
+      (song) => song.version?.inst !== undefined && song.version?.inst !== null
+    );
+    const instrumentalSongIds = songsWithInstrumentals.map(
+      (song) => song.version?.inst
+    );
+    const instrumentalSongs = songsWithAlbums.filter((song) =>
+      instrumentalSongIds.includes(song.id)
+    );
+    return instrumentalSongs.map((instrumental) => instrumental.id);
+  }, [songsWithAlbums]);
 
   const fssOptions = useMemo<
     FSSOptions<SongWithAlbum, typeof defaultView.filters>
@@ -153,9 +181,9 @@ function Page({
           values: [] as number[],
           function: (view) => {
             return (song: SongWithAlbum) => {
-              return !!view.filters.units.filter((value) =>
-                song.unit_id?.includes(value)
-              ).length;
+              return view.filters.units.some((unit) =>
+                song.unit_id?.includes(unit)
+              );
             };
           },
         },
@@ -164,9 +192,9 @@ function Page({
           values: [] as number[],
           function: (view) => {
             return (song: SongWithAlbum) => {
-              return !!song.character_id?.filter((chara) =>
-                view.filters.characters.includes(chara)
-              ).length;
+              return view.filters.characters.some((chara) =>
+                song.character_id?.flat().includes(chara)
+              );
             };
           },
         },
@@ -177,6 +205,28 @@ function Page({
             return (song: SongWithAlbum) => {
               return view.filters.eventSongsOnly === "true"
                 ? !!song.event_id
+                : true;
+            };
+          },
+        },
+        {
+          type: "showInstrumentals",
+          values: false,
+          function: (view) => {
+            return (song: SongWithAlbum) => {
+              return view.filters.showInstrumentals === "true"
+                ? true
+                : !instrumentalIds.includes(song.id);
+            };
+          },
+        },
+        {
+          type: "gameEditsOnly",
+          values: true,
+          function: (view) => {
+            return (song: SongWithAlbum) => {
+              return view.filters.gameEditsOnly === "true"
+                ? song.has_game_edit === "TRUE"
                 : true;
             };
           },
@@ -224,15 +274,35 @@ function Page({
     typeof defaultView.filters
   >(songsWithAlbums, fssOptions);
 
-  const shuffledAlbums = useMemo(
-    () => [
-      albums[Math.floor(Math.random() * (albums.length - 1))],
-      albums[Math.floor(Math.random() * (albums.length - 1))],
-      albums[Math.floor(Math.random() * (albums.length - 1))],
-      albums[Math.floor(Math.random() * (albums.length - 1))],
-    ],
-    []
-  );
+  const availableAlbums = useMemo(() => {
+    const filteredAlbums = albums.filter((album) =>
+      results.some((result) => result.album_id === album.id)
+    );
+    return filteredAlbums;
+  }, [results]);
+
+  const shuffledAlbums = useMemo(() => {
+    if (availableAlbums.length < 4) {
+      return [availableAlbums[Math.floor(Math.random() * (albums.length - 1))]];
+    }
+    const tempAlbums = availableAlbums;
+    const selectedAlbums: SongAlbum[] = [];
+    for (let i = 0; i < 4; i++) {
+      const randomAlbumIndex = Math.floor(Math.random() * tempAlbums.length);
+      const randomAlbum = tempAlbums.splice(randomAlbumIndex, 1)[0];
+      selectedAlbums.push(randomAlbum);
+    }
+    return selectedAlbums;
+  }, [availableAlbums]);
+
+  const loadMoreSongs = useCallback(() => {
+    const newCount = currentCount + visibleCount.current;
+    setCurrentCount(newCount);
+  }, [currentCount, setCurrentCount]);
+
+  useEffect(() => {
+    setSlicedSongs(results.slice(0, visibleCount.current));
+  }, [results]);
 
   return (
     <>
@@ -272,32 +342,118 @@ function Page({
             <Text fz="sm" fw="bold" color="dimmed" mb="xs">
               Filter
             </Text>
-            <MultiSelect
-              label="Units"
-              data={units.map((unit) => ({
-                value: String(unit.id),
-                label: unit.name[0],
-              }))}
-            />
-            <MultiSelect
-              label="Characters"
-              data={characters.map((character) => ({
-                value: String(character.character_id),
-                label: getNameOrder({
-                  first_name: character.first_name[0],
-                  last_name: character.last_name[0],
-                }),
-              }))}
-            />
-            <Text>Duration</Text>
-            <SegmentedControl
-              data={[
-                { label: "Game Size", value: "game" },
-                { label: "Full Size", value: "full" },
-              ]}
-              value={durationType}
-              onChange={setDurationType}
-            />
+            <Stack>
+              <MultiSelect
+                label="Units"
+                data={units.map((unit) => ({
+                  value: String(unit.id),
+                  label: unit.name[0],
+                }))}
+                searchable
+                value={view.filters.units.map((unit) => String(unit))}
+                onChange={(newValues) => {
+                  setView((prevView) => {
+                    return {
+                      ...prevView,
+                      filters: {
+                        ...prevView.filters,
+                        units: newValues.map((newValue) =>
+                          parseInt(newValue, 10)
+                        ),
+                      },
+                    };
+                  });
+                }}
+              />
+              <MultiSelect
+                label="Characters"
+                data={characters.map((character) => ({
+                  value: String(character.character_id),
+                  label: getNameOrder({
+                    first_name: character.first_name[0],
+                    last_name: character.last_name?.[0],
+                  }),
+                }))}
+                searchable
+                value={view.filters.characters.map((chara) => String(chara))}
+                onChange={(newValues) => {
+                  setView((prevView) => {
+                    return {
+                      ...prevView,
+                      filters: {
+                        ...prevView.filters,
+                        characters: newValues.map((newValue) =>
+                          parseInt(newValue, 10)
+                        ),
+                      },
+                    };
+                  });
+                }}
+              />
+              <Stack spacing={4}>
+                <Text
+                  component="label"
+                  htmlFor="duration-type-control"
+                  fz="sm"
+                  fw={500}
+                >
+                  Duration
+                </Text>
+                <SegmentedControl
+                  id="duration-type-control"
+                  data={[
+                    { label: "Game Size", value: "game" },
+                    { label: "Full Size", value: "full" },
+                  ]}
+                  value={durationType}
+                  onChange={setDurationType}
+                />
+              </Stack>
+              <Checkbox
+                checked={view.filters.eventSongsOnly === "true" ? true : false}
+                label="Show only event songs"
+                onChange={(event) => {
+                  const value = event.currentTarget.checked;
+                  setView((prevView) => ({
+                    ...prevView,
+                    filters: {
+                      ...prevView.filters,
+                      eventSongsOnly: value ? "true" : "false",
+                    },
+                  }));
+                }}
+              />
+              <Checkbox
+                checked={
+                  view.filters.showInstrumentals === "true" ? true : false
+                }
+                label="Show instrumentals"
+                onChange={(event) => {
+                  const value = event.currentTarget.checked;
+                  setView((prevView) => ({
+                    ...prevView,
+                    filters: {
+                      ...prevView.filters,
+                      showInstrumentals: value ? "true" : "false",
+                    },
+                  }));
+                }}
+              />
+              <Checkbox
+                checked={view.filters.gameEditsOnly === "true" ? true : false}
+                label="Show only songs with game edits"
+                onChange={(event) => {
+                  const value = event.currentTarget.checked;
+                  setView((prevView) => ({
+                    ...prevView,
+                    filters: {
+                      ...prevView.filters,
+                      gameEditsOnly: value ? "true" : "false",
+                    },
+                  }));
+                }}
+              />
+            </Stack>
           </Popover.Dropdown>
         </Popover>
         <Group noWrap id="page-header" align="center" spacing="xl" p="xl">
@@ -313,13 +469,25 @@ function Page({
               overflow: "hidden",
             }}
           >
-            <SimpleGrid
-              cols={2}
-              spacing={0}
-              verticalSpacing={0}
-              sx={{ width: "100%", height: "100%" }}
-            >
-              {shuffledAlbums.map((album) => {
+            {shuffledAlbums.length === 4 ? (
+              <SimpleGrid
+                cols={2}
+                spacing={0}
+                verticalSpacing={0}
+                sx={{ width: "100%", height: "100%" }}
+              >
+                {shuffledAlbums.map((album) => {
+                  return (
+                    <Picture
+                      srcB2={`albums/${album.id}.png`}
+                      alt={album.name.alt}
+                      sx={{ width: "100%", height: "100%" }}
+                    />
+                  );
+                })}
+              </SimpleGrid>
+            ) : (
+              shuffledAlbums.map((album: SongAlbum) => {
                 return (
                   <Picture
                     srcB2={`albums/${album.id}.png`}
@@ -327,8 +495,8 @@ function Page({
                     sx={{ width: "100%", height: "100%" }}
                   />
                 );
-              })}
-            </SimpleGrid>
+              })
+            )}
           </Paper>
           <Stack>
             <Title order={1} sx={{ fontSize: isMobile ? "3em" : "4em" }}>
@@ -387,100 +555,132 @@ function Page({
               </Box>
             </Group>
           )}
-          {results.map((song) => {
-            const gameDurationInMinutes = song.duration?.game
-              ? secondsToReadableMinutes(song.duration.game)
-              : "--";
+          <InfiniteScroll
+            dataLength={slicedSongs.length}
+            next={loadMoreSongs}
+            hasMore={currentCount < results.length}
+            loader={
+              <Center sx={{ gridColumn: "s/e" }} my="lg">
+                <Loader variant="bars" />
+              </Center>
+            }
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: theme.spacing.xl * 2,
+            }}
+          >
+            {slicedSongs.map((song) => {
+              const gameDurationInMinutes = song.duration?.game
+                ? secondsToReadableMinutes(song.duration.game)
+                : "--";
 
-            const fullDurationInMinutes = song.duration?.full
-              ? secondsToReadableMinutes(song.duration.full)
-              : "--";
+              const fullDurationInMinutes = song.duration?.full
+                ? secondsToReadableMinutes(song.duration.full)
+                : "--";
 
-            const unitsInSong = song.unit_id
-              ? song.unit_id
-                  .map((id) =>
-                    id === 100
-                      ? { id: 100, name: ["ES All Stars"] }
-                      : units?.find((unit) => unit.id === id)
-                  )
-                  .filter((song) => song)
-              : [];
+              const unitsInSong = song.unit_id
+                ? song.unit_id
+                    .map((id) =>
+                      id === 100
+                        ? { id: 100, name: ["ES All Stars"] }
+                        : units?.find((unit) => unit.id === id)
+                    )
+                    .filter((song) => song)
+                : [];
 
-            const charactersInSong = song.character_id
-              ? song.character_id
-                  .flat()
-                  .map((id) =>
-                    characters.find((chara) => chara.character_id === id)
-                  )
-                  .filter((song) => song !== undefined)
-              : [];
+              const charactersInSong = song.character_id
+                ? song.character_id
+                    .flat()
+                    .map((id) =>
+                      characters.find((chara) => chara.character_id === id)
+                    )
+                    .filter((song) => song !== undefined)
+                : [];
 
-            const songAlbum = albums.find(
-              (album) => album.id === song.album_id
-            );
+              const songAlbum = albums.find(
+                (album) => album.id === song.album_id
+              );
 
-            return (
-              <Group noWrap>
-                <Box
-                  sx={{
-                    flexBasis: isMobile ? "12vw" : "5vw",
-                    minWidth: isMobile ? "12vw" : "5vw",
-                  }}
-                >
-                  <Paper
+              return (
+                <Group noWrap>
+                  <Box
                     sx={{
-                      aspectRatio: "1",
-                      height: "100%",
-                      width: "auto",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      overflow: "hidden",
+                      flexBasis: isMobile ? "12vw" : "5vw",
+                      minWidth: isMobile ? "12vw" : "5vw",
                     }}
                   >
-                    {song.album_id ? (
-                      <Picture
-                        srcB2={`albums/${song.album_id}.png`}
-                        alt={String(song.album_id)}
-                        sx={{ width: "100%", height: "100%" }}
-                      />
-                    ) : (
-                      <IconMoodSmile />
-                    )}
-                  </Paper>
-                </Box>
-                <Stack
-                  sx={{
-                    flexGrow: isMobile ? 1 : undefined,
-                    flexBasis: !isMobile
-                      ? "calc(100% - 50% - 5vw - 4em)"
-                      : undefined,
-                    gap: 2,
-                  }}
-                >
-                  <Text
-                    component="a"
-                    href={`/songs/${song.id}`}
-                    lineClamp={isMobile ? 1 : undefined}
+                    <Paper
+                      sx={{
+                        aspectRatio: "1",
+                        height: "100%",
+                        width: "auto",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {song.album_id ? (
+                        <Picture
+                          srcB2={`albums/${song.album_id}.png`}
+                          alt={String(song.album_id)}
+                          sx={{ width: "100%", height: "100%" }}
+                        />
+                      ) : (
+                        <IconMoodSmile />
+                      )}
+                    </Paper>
+                  </Box>
+                  <Stack
                     sx={{
-                      flexGrow: 1,
+                      flexGrow: isMobile ? 1 : undefined,
+                      flexBasis: !isMobile
+                        ? "calc(100% - 50% - 5vw - 4em)"
+                        : undefined,
+                      gap: 2,
                     }}
                   >
-                    {song.name}
-                  </Text>
-                  {unitsInSong.length > 0 ? (
-                    isMobile ? (
-                      <Spoiler
-                        maxHeight={24}
-                        showLabel="More"
-                        hideLabel="Hide"
-                        sx={{
-                          display: "flex",
-                          control: {
-                            display: "inline",
-                          },
-                        }}
-                      >
+                    <Text
+                      component="a"
+                      href={`/songs/${song.id}`}
+                      lineClamp={isMobile ? 1 : undefined}
+                      sx={{
+                        flexGrow: 1,
+                      }}
+                    >
+                      {song.name}
+                    </Text>
+                    {unitsInSong.length > 0 ? (
+                      isMobile ? (
+                        <Spoiler
+                          maxHeight={24}
+                          showLabel="More"
+                          hideLabel="Hide"
+                          sx={{
+                            display: "flex",
+                            control: {
+                              display: "inline",
+                            },
+                          }}
+                        >
+                          <Box>
+                            {unitsInSong.map((unit, index) => (
+                              <Text
+                                key={unit?.id}
+                                color="dimmed"
+                                sx={{ display: "inline" }}
+                              >
+                                {unit?.name[0]}
+                                {unitsInSong.length > 1 &&
+                                index < unitsInSong.length - 1
+                                  ? ", "
+                                  : ""}
+                              </Text>
+                            ))}
+                          </Box>
+                        </Spoiler>
+                      ) : (
                         <Box>
                           {unitsInSong.map((unit, index) => (
                             <Text
@@ -496,41 +696,56 @@ function Page({
                             </Text>
                           ))}
                         </Box>
-                      </Spoiler>
+                      )
+                    ) : song.unit_name ? (
+                      <Text color="dimmed">{song.unit_name}</Text>
                     ) : (
-                      <Box>
-                        {unitsInSong.map((unit, index) => (
-                          <Text
-                            key={unit?.id}
-                            color="dimmed"
-                            sx={{ display: "inline" }}
-                          >
-                            {unit?.name[0]}
-                            {unitsInSong.length > 1 &&
-                            index < unitsInSong.length - 1
-                              ? ", "
-                              : ""}
-                          </Text>
-                        ))}
-                      </Box>
-                    )
-                  ) : song.unit_name ? (
-                    <Text color="dimmed">{song.unit_name}</Text>
-                  ) : (
-                    <></>
-                  )}
-                  {charactersInSong.length > 0 &&
-                    !song.unit_name &&
-                    unitsInSong.length === 0 &&
-                    (isMobile ? (
-                      <Spoiler
-                        maxHeight={24}
-                        showLabel="More"
-                        hideLabel="Hide"
-                        styles={{
-                          control: { display: "inline" },
-                        }}
-                      >
+                      <></>
+                    )}
+                    {charactersInSong.length > 0 &&
+                      !song.unit_name &&
+                      unitsInSong.length === 0 &&
+                      (isMobile ? (
+                        <Spoiler
+                          maxHeight={24}
+                          showLabel="More"
+                          hideLabel="Hide"
+                          styles={{
+                            control: { display: "inline" },
+                          }}
+                        >
+                          <Box>
+                            {charactersInSong.map((character, index) => (
+                              <>
+                                <Text
+                                  component="a"
+                                  href={`/characters/${character?.character_id}`}
+                                  key={character?.character_id}
+                                  color="dimmed"
+                                  sx={{ display: "inline" }}
+                                >
+                                  {character &&
+                                    getNameOrder({
+                                      first_name: character?.first_name[0],
+                                      last_name: character?.last_name[0],
+                                    })}
+                                  {}
+                                </Text>
+                                {character &&
+                                  charactersInSong.length > 1 &&
+                                  index < charactersInSong.length - 1 && (
+                                    <Text
+                                      sx={{ display: "inline" }}
+                                      color="dimmed"
+                                    >
+                                      ,{" "}
+                                    </Text>
+                                  )}
+                              </>
+                            ))}
+                          </Box>
+                        </Spoiler>
+                      ) : (
                         <Box>
                           {charactersInSong.map((character, index) => (
                             <>
@@ -561,54 +776,26 @@ function Page({
                             </>
                           ))}
                         </Box>
-                      </Spoiler>
-                    ) : (
-                      <Box>
-                        {charactersInSong.map((character, index) => (
-                          <>
-                            <Text
-                              component="a"
-                              href={`/characters/${character?.character_id}`}
-                              key={character?.character_id}
-                              color="dimmed"
-                              sx={{ display: "inline" }}
-                            >
-                              {character &&
-                                getNameOrder({
-                                  first_name: character?.first_name[0],
-                                  last_name: character?.last_name[0],
-                                })}
-                              {}
-                            </Text>
-                            {character &&
-                              charactersInSong.length > 1 &&
-                              index < charactersInSong.length - 1 && (
-                                <Text sx={{ display: "inline" }} color="dimmed">
-                                  ,{" "}
-                                </Text>
-                              )}
-                          </>
-                        ))}
-                      </Box>
-                    ))}
-                </Stack>
-                {!isMobile && (
-                  <Text sx={{ flexBasis: "50%" }}>
-                    {songAlbum && songAlbum.name.alt}
-                  </Text>
-                )}
-                {!isMobile && (
-                  <Text sx={{ flexBasis: "4em" }}>
-                    {durationType === "game"
-                      ? gameDurationInMinutes
-                      : durationType === "full"
-                      ? fullDurationInMinutes
-                      : "--"}
-                  </Text>
-                )}
-              </Group>
-            );
-          })}
+                      ))}
+                  </Stack>
+                  {!isMobile && (
+                    <Text sx={{ flexBasis: "50%" }}>
+                      {songAlbum && songAlbum.name.alt}
+                    </Text>
+                  )}
+                  {!isMobile && (
+                    <Text sx={{ flexBasis: "4em" }}>
+                      {durationType === "game"
+                        ? gameDurationInMinutes
+                        : durationType === "full"
+                        ? fullDurationInMinutes
+                        : "--"}
+                    </Text>
+                  )}
+                </Group>
+              );
+            })}
+          </InfiniteScroll>
         </Stack>
       </Paper>
     </>
@@ -624,6 +811,8 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     "character_id",
     "duration",
     "order",
+    "version",
+    "has_game_edit",
   ]);
 
   const unitData = await getLocalizedDataArray<GameUnit>(
@@ -637,7 +826,7 @@ export const getServerSideProps = getServerSideUser(async ({ locale }) => {
     "characters",
     locale,
     "character_id",
-    ["character_id", "name", "sort_id"]
+    ["character_id", "name", "sort_id", "unit"]
   );
 
   const albumData = await getLocalizedDataArray<SongAlbum>(

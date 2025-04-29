@@ -452,7 +452,7 @@ export interface Song {
   event_id?: number;
   version?: SongVersionIDs;
   order?: number;
-  has_game_edit?: boolean;
+  has_game_edit?: string;
   limited?: boolean;
 }
 

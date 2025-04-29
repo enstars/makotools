@@ -18,6 +18,7 @@ import {
   IconMoodSing,
   IconMusic,
   IconPlayerPlay,
+  IconPlaylist,
   IconStar,
 } from "@tabler/icons-react";
 import Picture from "components/core/Picture";
@@ -26,6 +27,7 @@ import { getLayout } from "components/Layout";
 import Link from "next/link";
 import { CharacterMiniInfo } from "pages/characters/components/CharacterMiniInfo";
 import SectionTitle from "pages/events/components/SectionTitle";
+import { useMemo } from "react";
 import {
   getItemFromLocalizedDataArray,
   getLocalizedDataArray,
@@ -37,12 +39,14 @@ import { Event, GameCharacter, GameUnit, Song, SongAlbum } from "types/game";
 import { QuerySuccess } from "types/makotools";
 
 function Page({
+  songsQuery,
   songQuery,
   unitsQuery,
   charaQuery,
   eventsQuery,
   albumsQuery,
 }: {
+  songsQuery: QuerySuccess<Song[]>;
   songQuery: QuerySuccess<Song>;
   unitsQuery: QuerySuccess<GameUnit[]>;
   charaQuery: QuerySuccess<GameCharacter[]>;
@@ -50,6 +54,7 @@ function Page({
   albumsQuery: QuerySuccess<SongAlbum[]>;
 }) {
   const theme = useMantineTheme();
+  const { data: songs } = songsQuery;
   const { data: song } = songQuery;
   const { data: units } = unitsQuery;
   const { data: characters } = charaQuery;
@@ -92,6 +97,16 @@ function Page({
   const correspondingAlbum = albums.find((album) =>
     album.tracklist?.find((track) => track?.includes(song.id))
   );
+
+  const songsInAlbum = useMemo(() => {
+    return songs.filter((s) =>
+      correspondingAlbum?.tracklist?.find((track) => track?.includes(s.id))
+    );
+  }, [correspondingAlbum]);
+
+  const songsInAlbumExcludingCurrentSong = useMemo(() => {
+    return songsInAlbum.filter((s) => s.id !== song.id);
+  }, [songsInAlbum]);
 
   return (
     <Box mt={48} pb={64} pos="relative">
@@ -184,7 +199,7 @@ function Page({
             <Group mt={24} sx={{ gap: 0 }}>
               <IconMoodSing size={36} />
               {song.character_id.flat().map((id) => {
-                const correspondingCharacter = characters.find(
+                const correspondingCharacter = characters?.find(
                   (character) => character.character_id === id
                 );
                 if (!correspondingCharacter) return <></>;
@@ -402,6 +417,30 @@ function Page({
             </Box>
           </>
         )}
+        {songsInAlbumExcludingCurrentSong.length > 0 && (
+          <>
+            <SectionTitle title="Album" Icon={IconPlaylist} />
+            <Paper p="lg">
+              <Stack spacing="xl">
+                {songsInAlbum.map((song, index) => (
+                  <Group spacing="lg">
+                    <Text color="dimmed">{index + 1}</Text>
+                    <Text
+                      sx={{ flexGrow: 1 }}
+                      component={Link}
+                      href={`/songs/${song.id}`}
+                    >
+                      {song.name}
+                    </Text>
+                    <Text truncate color="dimmed" sx={{ flexBasis: "17.5%" }}>
+                      {song.unit_name}
+                    </Text>
+                  </Group>
+                ))}
+              </Stack>
+            </Paper>
+          </>
+        )}
       </Box>
     </Box>
   );
@@ -440,6 +479,7 @@ export const getServerSideProps = getServerSideUser(
 
     return {
       props: {
+        songsQuery: songs,
         songQuery: song,
         unitsQuery: units,
         charaQuery: characters,
