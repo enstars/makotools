@@ -144,14 +144,9 @@ function Page({
     },
     enabled: !!uid,
   });
-  const {
-    friendCodes,
-    areFriendCodesPending,
-    friendCodesError,
-    updateFriendCodesMutation,
-  } = useFriendCodes(uid);
 
-  console.log({ profileData });
+  const { friendCodes, areFriendCodesPending, updateFriendCodesMutation } =
+    useFriendCodes(uid);
 
   const sendFriendReq = useMutation({
     mutationFn: async () => {
@@ -529,7 +524,11 @@ function Page({
     );
   }
 
-  if (isProfileDataPending || updateUserDB?.isPending) {
+  if (
+    isProfileDataPending ||
+    updateUserDB?.isPending ||
+    (!userDB && !userDBError)
+  ) {
     return <LoadingState />;
   }
 

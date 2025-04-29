@@ -3,25 +3,39 @@ import { Parallax, useParallaxController } from "react-scroll-parallax";
 
 import { GameCharacter } from "types/game";
 import Picture from "components/core/Picture";
+import { Dayjs } from "dayjs";
+import { useDayjs } from "services/libraries/dayjs";
+import { useEffect, useRef } from "react";
+import { getVersionedItem } from "services/utilities";
 
-export function CharaRender(
-  // theme,
-  // renderFaded: boolean,
-  // character: GameCharacter<string[]>,
-  // renderHeight: number
-  {
-    theme,
-    renderFaded,
-    character,
-    renderHeight,
-  }: {
-    theme: ReturnType<typeof useMantineTheme>;
-    renderFaded: boolean;
-    character: GameCharacter<string[]>;
-    renderHeight: number;
-  }
-) {
+export function CharaRender({
+  theme,
+  renderFaded,
+  character,
+  renderHeight,
+  selectedVersion,
+}: {
+  theme: ReturnType<typeof useMantineTheme>;
+  renderFaded: boolean;
+  character: GameCharacter<string[]>;
+  renderHeight: number;
+  selectedVersion: { date: Dayjs; reason: string; id: number };
+}) {
   const parallaxController = useParallaxController();
+
+  const matchingRenderForVersion = getVersionedItem(
+    character.renders.full,
+    selectedVersion.date
+  )?.value;
+
+  useEffect(() => {
+    parallaxController?.update();
+  }, [matchingRenderForVersion]);
+
+  useEffect(() => {
+    parallaxController?.update();
+  }, []);
+
   return (
     <Box
       id="chara-render"
@@ -61,11 +75,11 @@ export function CharaRender(
         <Parallax speed={-10}>
           <Picture
             loading="eager"
-            srcB2={`render/character_full1_${character.character_id}.png`}
+            srcB2={`render/${matchingRenderForVersion}.png`}
             transparent
             alt={character.first_name[0] || "Character render"}
             fill={false}
-            width={renderHeight}
+            width={renderHeight / (1500 / 1000)}
             height={renderHeight}
             style={{
               userSelect: "none",

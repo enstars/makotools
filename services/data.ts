@@ -1,11 +1,10 @@
+import { flatten } from "flat";
 import { CONSTANTS } from "./makotools/constants";
 import { DEFAULT_LOCALE } from "./makotools/locales";
 import { parseStringify } from "./utilities";
 
 import { Lang, Locale, Query, UL } from "types/makotools";
 import { Event, ID } from "types/game";
-
-const flatten = require("flat");
 
 export function getAssetURL(path: string) {
   return `${CONSTANTS.EXTERNAL_URLS.ASSETS}${path}`;
@@ -90,7 +89,7 @@ export async function getLocalizedDataArray<
   // TODO: Always keep the user's main language as the first one, without filtering out;
   //       This way it can be show mainlang is missing and not immediately replaced with sublang
   const filteredLocalized = localized
-    .filter((l) => l.status === "success")
+    .filter((localeData) => localeData.status === "success")
     // .filter((l) => !(l.lang.locale === "ja" && l.lang.source === true))
     .reverse();
 
@@ -100,40 +99,55 @@ export async function getLocalizedDataArray<
 
   const propertiesToLocalize = new Set();
   let mergedLocales: Lang[] = [];
-  filteredLocalized.forEach((l) => {
-    mergedLocales.unshift(l.lang[0]);
+  filteredLocalized.forEach((localeData) => {
+    mergedLocales.unshift(localeData.lang[0]);
 
     if (
-      !(l.lang[0].locale === "ja" && l.lang[0].source === true) &&
-      l.status === "success"
+      !(
+        localeData.lang[0].locale === "ja" && localeData.lang[0].source === true
+      ) &&
+      localeData.status === "success"
     )
-      l.data?.forEach((ld) => {
-        Object.keys(
-          flatten(ld, {
-            safe: true,
-          })
-        ).forEach((key) => propertiesToLocalize.add(key));
+      localeData.data?.forEach((dataPiece) => {
+        Object.keys(flatten(dataPiece)).forEach((key) =>
+          propertiesToLocalize.add(key)
+        );
       });
   });
 
   propertiesToLocalize.delete(idField);
-
   const combinedArray: LocalizedType[] = jaData.data.map((jaItem) => {
-    let combined = flatten(jaItem, { safe: true });
-    filteredLocalized.forEach((l) => {
-      const thisd =
-        l.data?.find((d: any) => d[idField] === jaItem[idField]) || {};
-      const thisLocalizedData = flatten(thisd, { safe: true });
-      Array.from(propertiesToLocalize).forEach((k: any) => {
-        const thisLanguageFieldData = thisLocalizedData?.[k] || null;
-        if (!combined?.[k] || combined[k].constructor !== Array) {
-          combined[k] = [thisLanguageFieldData];
+    let flattenedJaDataObject = flatten(jaItem);
+    filteredLocalized.forEach((localeData) => {
+      const matchingLocaleData =
+        localeData.data?.find(
+          (dataPiece: any) => dataPiece[idField] === jaItem[idField]
+        ) || {};
+      const flattenedLocalizedData = flatten(matchingLocaleData);
+      Array.from(propertiesToLocalize).forEach((key: string) => {
+        const thisLanguageFieldData =
+          flattenedLocalizedData?.[
+            key as keyof typeof flattenedLocalizedData
+          ] || null;
+        if (
+          !flattenedJaDataObject?.[key as keyof typeof flattenedJaDataObject] ||
+          !Array.isArray(
+            flattenedJaDataObject[key as keyof typeof flattenedJaDataObject]
+          )
+        ) {
+          (flattenedJaDataObject as any)[
+            key as keyof typeof flattenedJaDataObject
+          ] = [thisLanguageFieldData];
         } else {
-          combined[k].unshift(thisLanguageFieldData);
+          (
+            flattenedJaDataObject[
+              key as keyof typeof flattenedJaDataObject
+            ] as any
+          ).unshift(thisLanguageFieldData);
         }
       });
     });
-    return flatten.unflatten(parseStringify(combined));
+    return flatten.unflatten(parseStringify(flattenedJaDataObject));
   });
 
   return Promise.resolve({

@@ -12,10 +12,13 @@ import {
   CopyButton,
   ActionIcon,
   Indicator,
+  Spoiler,
 } from "@mantine/core";
 import {
   IconCalendar,
   IconCheck,
+  IconChevronDown,
+  IconChevronUp,
   IconClipboard,
   IconHeart,
   IconStar,
@@ -32,153 +35,9 @@ import { getNameOrder } from "services/game";
 import { getAssetURL } from "services/data";
 import { gameRegionsWithBasic } from "services/makotools/friendCodes";
 
-function StatContainer({
-  icon,
-  iconColor,
-  title,
-  children,
-}: {
-  icon: any;
-  iconColor: DefaultMantineColor;
-  title: string;
-  children: any;
-}) {
-  return (
-    <Group
-      mt="xs"
-      noWrap
-      align="flex-start"
-      sx={{ flexBasis: "30%", flexGrow: title === "Favorites" ? 1 : 0 }}
-    >
-      <ThemeIcon variant="light" color={iconColor} sx={{ flexShrink: 0 }}>
-        {icon}
-      </ThemeIcon>
-      <Box>
-        <Text size="xs" weight={700} color="dimmed">
-          {title}
-        </Text>
-        {children}
-      </Box>
-    </Group>
-  );
-}
+import { useMediaQuery } from "@mantine/hooks";
 
-function DisplayFaves({
-  faveCharas,
-  faveUnits,
-  characters,
-  units,
-  profile,
-}: {
-  faveCharas: number[];
-  faveUnits: number[];
-  characters: GameCharacter[];
-  units: GameUnit[];
-  profile: UserData;
-}) {
-  const { t } = useTranslation("user");
-  if (faveCharas[0] === 0 && faveUnits[0] === 0) {
-    return <Text>{t("everyoneP")}</Text>;
-  } else if (faveCharas[0] === -1 && faveUnits[0] === -1) {
-    return <Text>{t("hater")}</Text>;
-  } else {
-    return (
-      <Stack spacing={2}>
-        <Group spacing={3}>
-          {faveCharas.map((chara: number) => {
-            if (chara > 0)
-              return (
-                <Tooltip
-                  key={chara}
-                  label={getNameOrder(
-                    {
-                      first_name: characters.filter(
-                        (c) => c.character_id === chara
-                      )[0].first_name[0],
-                      last_name: characters.filter(
-                        (c) => c.character_id === chara
-                      )[0].last_name[0],
-                    },
-                    profile.setting__name_order
-                  )}
-                  transition="slide-up"
-                  transitionDuration={500}
-                  offset={0}
-                  p={3}
-                >
-                  <ThemeIcon
-                    variant="default"
-                    size={50}
-                    radius={25}
-                    sx={{ background: "none", border: "none" }}
-                  >
-                    <Picture
-                      transparent
-                      srcB2={`assets/character_sd_square1_${chara}.png`}
-                      alt={
-                        characters.filter((c) => c.character_id === chara)[0]
-                          .first_name[0]
-                      }
-                      fill={false}
-                      width={50}
-                      height={50}
-                      sx={{
-                        pointerEvents: "none",
-                      }}
-                    />
-                  </ThemeIcon>
-                </Tooltip>
-              );
-          })}
-        </Group>
-        <Group spacing={3}>
-          {faveUnits.map((unit: number) => {
-            if (unit > 0)
-              return (
-                <Tooltip
-                  key={unit}
-                  label={units.filter((u) => u.id === unit)[0].name[0]}
-                  position="bottom"
-                  transition="slide-down"
-                  transitionDuration={500}
-                  offset={0}
-                  p={3}
-                >
-                  <Box
-                    p={5}
-                    sx={() => ({
-                      display: "flex",
-                      alignItems: "center",
-                      height: 50,
-                      minHeight: 50,
-                    })}
-                  >
-                    <Image
-                      src={getAssetURL(`assets/unit_logo_border_${unit}.png`)}
-                      alt={units.filter((u) => u.id === unit)[0].name[0]}
-                      height={
-                        unit === 16 || unit === 14 || unit === 11 || unit === 8
-                          ? 30
-                          : unit === 6 || unit === 9
-                          ? 20
-                          : unit === 15
-                          ? 15
-                          : 25
-                      }
-                      width="auto"
-                      sx={{ pointerEvents: "none" }}
-                    />
-                  </Box>
-                </Tooltip>
-              );
-          })}
-        </Group>
-      </Stack>
-    );
-  }
-}
-
-function ProfileStats({
+function StatsItems({
   profile,
   characters,
   units,
@@ -191,7 +50,7 @@ function ProfileStats({
 }) {
   const { t } = useTranslation("user");
   return (
-    <Group noWrap my={7} spacing="xl" align="flex-start">
+    <>
       {profile.profile__start_playing !== "0000-00-00" && (
         <StatContainer
           icon={<IconCalendar size={16} />}
@@ -274,8 +133,205 @@ function ProfileStats({
           </Paper>
         </StatContainer>
       )}
+    </>
+  );
+}
+
+function StatContainer({
+  icon,
+  iconColor,
+  title,
+  children,
+}: {
+  icon: any;
+  iconColor: DefaultMantineColor;
+  title: string;
+  children: any;
+}) {
+  const isMobile = useMediaQuery("(max-width: 810px)");
+  return (
+    <Group
+      mt="xs"
+      noWrap
+      align="flex-start"
+      sx={{
+        width: isMobile ? "100%" : undefined,
+        flexBasis: "30%",
+        flexGrow: title === "Favorites" ? 1 : 0,
+      }}
+    >
+      <ThemeIcon
+        variant="light"
+        color={iconColor}
+        sx={{ flexShrink: isMobile ? 1 : undefined }}
+      >
+        {icon}
+      </ThemeIcon>
+      <Box sx={{ flexGrow: isMobile ? 1 : undefined }}>
+        <Text size="xs" weight={700} color="dimmed">
+          {title}
+        </Text>
+        {children}
+      </Box>
     </Group>
   );
+}
+
+function DisplayFaves({
+  faveCharas,
+  faveUnits,
+  characters,
+  units,
+  profile,
+}: {
+  faveCharas: number[];
+  faveUnits: number[];
+  characters: GameCharacter[];
+  units: GameUnit[];
+  profile: UserData;
+}) {
+  const { t } = useTranslation("user");
+  if (faveCharas[0] === 0 && faveUnits[0] === 0) {
+    return <Text>{t("everyoneP")}</Text>;
+  } else if (faveCharas[0] === -1 && faveUnits[0] === -1) {
+    return <Text>{t("hater")}</Text>;
+  } else {
+    return (
+      <Stack spacing={2}>
+        <Spoiler
+          maxHeight={50}
+          showLabel={<Text size={14}>Show More</Text>}
+          hideLabel={<Text size={14}>Hide</Text>}
+        >
+          <Group spacing={3}>
+            {faveCharas.map((chara: number) => {
+              if (chara > 0)
+                return (
+                  <Tooltip
+                    key={chara}
+                    label={getNameOrder(
+                      {
+                        first_name: characters.filter(
+                          (c) => c.character_id === chara
+                        )[0].first_name[0],
+                        last_name: characters.filter(
+                          (c) => c.character_id === chara
+                        )[0].last_name[0],
+                      },
+                      profile.setting__name_order
+                    )}
+                    transition="slide-up"
+                    transitionDuration={500}
+                    offset={0}
+                    p={3}
+                  >
+                    <ThemeIcon
+                      variant="default"
+                      size={50}
+                      radius={25}
+                      sx={{ background: "none", border: "none" }}
+                    >
+                      <Picture
+                        transparent
+                        srcB2={`assets/character_sd_square1_${chara}.png`}
+                        alt={
+                          characters.filter((c) => c.character_id === chara)[0]
+                            .first_name[0]
+                        }
+                        fill={false}
+                        width={50}
+                        height={50}
+                        sx={{
+                          pointerEvents: "none",
+                        }}
+                      />
+                    </ThemeIcon>
+                  </Tooltip>
+                );
+            })}
+          </Group>
+        </Spoiler>
+        <Spoiler
+          maxHeight={50}
+          showLabel={<Text size={14}>Show More</Text>}
+          hideLabel={<Text size={14}>Hide</Text>}
+        >
+          <Group spacing={3}>
+            {faveUnits.map((unit: number) => {
+              if (unit > 0)
+                return (
+                  <Tooltip
+                    key={unit}
+                    label={units.filter((u) => u.id === unit)[0].name[0]}
+                    position="bottom"
+                    transition="slide-down"
+                    transitionDuration={500}
+                    offset={0}
+                    p={3}
+                  >
+                    <Box
+                      p={5}
+                      sx={() => ({
+                        display: "flex",
+                        alignItems: "center",
+                        height: 50,
+                        minHeight: 50,
+                      })}
+                    >
+                      <Image
+                        src={getAssetURL(`assets/unit_logo_border_${unit}.png`)}
+                        alt={units.filter((u) => u.id === unit)[0].name[0]}
+                        height={
+                          unit === 16 ||
+                          unit === 14 ||
+                          unit === 11 ||
+                          unit === 8
+                            ? 30
+                            : unit === 6 || unit === 9
+                            ? 20
+                            : unit === 15
+                            ? 15
+                            : 25
+                        }
+                        width="auto"
+                        sx={{ pointerEvents: "none" }}
+                      />
+                    </Box>
+                  </Tooltip>
+                );
+            })}
+          </Group>
+        </Spoiler>
+      </Stack>
+    );
+  }
+}
+
+function ProfileStats({
+  profile,
+  characters,
+  units,
+  friendCodes,
+}: {
+  profile: UserData;
+  characters: GameCharacter[];
+  units: GameUnit[];
+  friendCodes: Partial<FriendCodeRegions> | undefined;
+}) {
+  const isMobile = useMediaQuery("(max-width: 810px)");
+  if (!isMobile) {
+    return (
+      <Group noWrap my={7} spacing="xl" align="flex-start">
+        <StatsItems {...{ profile, characters, units, friendCodes }} />
+      </Group>
+    );
+  } else {
+    return (
+      <Stack my={7} spacing="xl">
+        <StatsItems {...{ profile, characters, units, friendCodes }} />
+      </Stack>
+    );
+  }
 }
 
 export default ProfileStats;

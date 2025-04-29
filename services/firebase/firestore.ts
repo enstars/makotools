@@ -59,7 +59,6 @@ export async function getFirestoreUserData(
   uid: string
 ): Promise<UserData | null> {
   // const clientAuth = getAuth();
-  // console.log("clientAuth", clientAuth);
   const db = getFirestore();
 
   // if (clientAuth.currentUser === null) {
@@ -198,7 +197,7 @@ export async function getFirestoreUserFriendCodes(
     );
     const fetchedCodes: Omit<FriendCodeRegions, "id"> =
       querySnap.docs[0].data() as FriendCodeRegions;
-    console.log({ fetchedCodes });
+
     userFriendCodes.id = querySnap.docs[0]?.id;
     Object.entries(fetchedCodes ?? {}).forEach(([region, value]) => {
       if ((value as FriendCode)?.privacyLevel <= accessiblePrivacyLevel) {

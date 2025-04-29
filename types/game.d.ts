@@ -15,6 +15,18 @@ interface ForEachRegion<T> {
 
 // CHARACTERS
 
+interface VersionedCharacterData<T> {
+  date: string;
+  reason: string;
+  value: T;
+}
+
+interface VersionOption {
+  date: Dayjs;
+  reason: string;
+  id: number;
+}
+
 interface GameCharacterStrings<Type> {
   last_name: Type;
   first_name: Type;
@@ -40,20 +52,31 @@ interface GameCharacterStrings<Type> {
 interface GameCharacter<T = string[]> extends GameCharacterStrings<T> {
   character_id: ID;
   unit: ID[];
+  units: Array<VersionedCharacterData<Array<ID>>>;
   image_color?: HexColorWithTag;
 
   /** Height in cms */
   height: number;
+  heights: Array<VersionedCharacterData<number>>;
 
   /** Weight in kgs */
   weight: number;
+  weights: Array<VersionedCharacterData<number>>;
 
   /** Birthday in YYYY-MM-DD format */
   birthday: string;
   age?: number;
+  ages?: Array<VersionedCharacterData<number>>;
   blood_type: "A" | "B" | "O" | "AB";
   circle?: string[];
   sort_id: number;
+
+  /** Versioned strings */
+  hobbies: Array<VersionedCharacterData<T>>;
+  specialties: Array<VersionedCharacterData<T>>;
+  quotes: Array<VersionedCharacterData<T>>;
+  taglines: Array<VersionedCharacterData<T>>;
+  introductions: Array<VersionedCharacterData<T>>;
 
   /** Horoscope
    *
@@ -85,6 +108,7 @@ interface GameCharacter<T = string[]> extends GameCharacterStrings<T> {
 
   /** Main character renders, sorted by type */
   renders: {
+    full: Array<VersionedCharacterData<string>>;
     /** 1st Feature Scout 5* */
     fs1_5: number;
     /** 1st Feature Scout 4* */

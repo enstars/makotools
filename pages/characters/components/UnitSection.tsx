@@ -14,18 +14,27 @@ export function UnitSection({
   character,
   locale,
   units,
+  selectedVersion,
 }: {
   characters: GameCharacter[];
   character: GameCharacter;
   locale: Lang[];
   units: GameUnit[];
+  selectedVersion: number;
 }) {
-  const charaUnits = units.filter((u) => character.unit.includes(u.id));
+  const charaUnits = units.filter((u) =>
+    (character.units[selectedVersion]?.value ?? character.unit).includes(u.id)
+  );
 
   return (
     <Box id="unit-info">
       {charaUnits.map((unit, index) => {
-        const otherMembers = characters.filter((c) => c.unit.includes(unit.id));
+        const otherMembers = characters.filter((otherChara) => {
+          const isCharaInUnit = otherChara.units.find((otherCharaUnit) =>
+            otherCharaUnit.value.includes(unit.id)
+          );
+          return !!isCharaInUnit;
+        });
         return (
           <Fragment key={unit.id}>
             <SectionTitle

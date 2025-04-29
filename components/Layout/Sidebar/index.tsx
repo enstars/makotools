@@ -175,12 +175,12 @@ function Sidebar(props: any) {
       name: "songs",
       Icon: IconMusic,
     },
-    {
-      link: "/stories",
-      name: "stories",
-      Icon: IconBooks,
-      disabled: true,
-    },
+    // {
+    //   link: "/stories",
+    //   name: "stories",
+    //   Icon: IconBooks,
+    //   disabled: true,
+    // },
     {
       link: "/assets",
       name: "assets",
