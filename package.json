@@ -94,6 +94,7 @@
   "devDependencies": {
     "@next/bundle-analyzer": "^13.1.0",
     "@types/dompurify": "^2.4.0",
+    "@types/flat": "^5.0.5",
     "@types/jsdom": "^20.0.1",
     "@types/lodash": "^4.14.191",
     "@types/node": "^18.11.15",

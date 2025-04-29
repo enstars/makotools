@@ -4,7 +4,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { Event, Scout, VersionedCharacterData } from "types/game";
 import { HSLObject } from "types/makotools";
 
-function parseStringify(object: any) {
+export function parseStringify(object: any) {
   try {
     return JSON.parse(JSON.stringify(object));
   } catch (error) {
@@ -12,7 +12,7 @@ function parseStringify(object: any) {
   }
 }
 
-function hexToRGB(hex: string) {
+export function hexToRGB(hex: string) {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 
   if (!result) {
@@ -26,7 +26,7 @@ function hexToRGB(hex: string) {
   };
 }
 
-function RGBLuminance({ r, g, b }: { r: number; g: number; b: number }) {
+export function RGBLuminance({ r, g, b }: { r: number; g: number; b: number }) {
   const a = [r, g, b].map((v) => {
     v /= 255;
     return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
@@ -34,7 +34,11 @@ function RGBLuminance({ r, g, b }: { r: number; g: number; b: number }) {
   return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
 }
 
-function RGBRelativeLuminance(color: { r: number; g: number; b: number }) {
+export function RGBRelativeLuminance(color: {
+  r: number;
+  g: number;
+  b: number;
+}) {
   // get luminance of white
   const white = RGBLuminance({ r: 255, g: 255, b: 255 });
   // get luminance of color
@@ -43,7 +47,7 @@ function RGBRelativeLuminance(color: { r: number; g: number; b: number }) {
   return c / white;
 }
 
-function hexToHSL(hex: string): HSLObject {
+export function hexToHSL(hex: string): HSLObject {
   // https://www.jameslmilner.com/posts/converting-rgb-hex-hsl-colors/
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 
@@ -95,7 +99,7 @@ function hexToHSL(hex: string): HSLObject {
   return { hsl: `hsl(${h}, ${s}%, ${l}%)`, h, s, l };
 }
 
-function HSLToHex(hsl: HSLObject): string {
+export function HSLToHex(hsl: HSLObject): string {
   const { h, s, l } = hsl;
 
   const hDecimal = l / 100;
@@ -112,7 +116,7 @@ function HSLToHex(hsl: HSLObject): string {
   return `#${f(0)}${f(8)}${f(4)}`;
 }
 
-function makeDark(hsl: HSLObject): string {
+export function makeDark(hsl: HSLObject): string {
   const HUE_ADD = -8;
   const SAT_PROP = 0.75;
   // const SAT_SUBTRACT = 30;
@@ -125,7 +129,7 @@ function makeDark(hsl: HSLObject): string {
   return `hsl(${hue}, ${sat}%, ${lum}%)`;
 }
 
-function makeLight(hsl: HSLObject): string {
+export function makeLight(hsl: HSLObject): string {
   const LUM_SET = 90;
   const SAT_PROP = 0.75;
   const hue: number = hsl.h;
@@ -201,7 +205,7 @@ export function secondaryCharaColor(
   }
 }
 
-function generateUUID() {
+export function generateUUID() {
   let dt = new Date().getTime();
   const uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
     const r = (dt + Math.random() * 16) % 16 | 0;
@@ -211,7 +215,7 @@ function generateUUID() {
   return uuid;
 }
 
-function downloadFromURL(urlParam: string) {
+export function downloadFromURL(urlParam: string) {
   // appent ?download if not already done
   const url = urlParam.includes("?download")
     ? urlParam
@@ -231,11 +235,11 @@ function downloadFromURL(urlParam: string) {
 /**
  * Get string for timestamps in DB
  */
-function getTimestamp(date: Dayjs) {
+export function getTimestamp(date: Dayjs) {
   return date.toISOString();
 }
 
-function isGameEvent(event: Event | Scout): event is Event {
+export function isGameEvent(event: Event | Scout): event is Event {
   return (
     (event as Event).type === "song" ||
     (event as Event).type === "tour" ||
@@ -243,17 +247,18 @@ function isGameEvent(event: Event | Scout): event is Event {
   );
 }
 
-function isScoutEvent(event: Event | Scout): event is Scout {
+export function isScoutEvent(event: Event | Scout): event is Scout {
   return (
     (event as Scout).type === "feature scout" ||
     (event as Scout).type === "scout"
   );
 }
 
-function secondsToReadableMinutes(seconds: number): string {
+export function secondsToReadableMinutes(seconds: number): string {
   return `${Math.floor(seconds / 60)}:${
     Math.floor(seconds % 60) < 10 ? "0" : ""
   }${Math.floor(seconds % 60)}`;
+}
 
 export function getVersionedItem<T>(
   versionedData: Array<VersionedCharacterData<T>> | undefined,
@@ -271,15 +276,3 @@ export function getVersionedItem<T>(
   );
   return earlierVersionedData[earlierVersionedData.length - 1];
 }
-
-export {
-  parseStringify,
-  generateUUID,
-  downloadFromURL,
-  getTimestamp,
-  hexToHSL,
-  HSLToHex,
-  isGameEvent,
-  isScoutEvent,
-  secondsToReadableMinutes,
-};
